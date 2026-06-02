@@ -1,12 +1,19 @@
+---
+source_file: "client/src/utils/core/dateUtils.js"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L308"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # timeAgo()
 
-- **Tipo:** code
-- **Archivo:** client/src/utils/time.js
-- **Comunidad:** [[_COMMUNITY_Community 118]]
+## Connections
+- [[dateUtils.js_1]] - `contains` [EXTRACTED]
+- [[getNow()]] - `calls` [EXTRACTED]
+- [[parseDate()]] - `calls` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[time.js|time.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[time.js|time.js]]
-- [[isToday()|isToday()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

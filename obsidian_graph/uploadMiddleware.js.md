@@ -1,10 +1,14 @@
+---
+source_file: "server/middleware/uploadMiddleware.js"
+type: "code"
+community: "Community 297"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_297
+---
+
 # uploadMiddleware.js
 
-- **Tipo:** code
-- **Archivo:** server/middleware/uploadMiddleware.js
-- **Comunidad:** [[_COMMUNITY_Community 298]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_297

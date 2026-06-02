@@ -1,25 +1,24 @@
+---
+source_file: "server/services/user/patientService.js"
+type: "code"
+community: "Community 51"
+location: "L17"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_51
+---
+
 # PatientService
 
-- **Tipo:** code
-- **Archivo:** server/services/patientService.js
-- **Comunidad:** [[_COMMUNITY_Community 8]]
+## Connections
+- [[.getAllPatients()]] - `method` [EXTRACTED]
+- [[.getNewPatientStats()]] - `method` [EXTRACTED]
+- [[.getPatientDetails()]] - `method` [EXTRACTED]
+- [[.getRecentPatients()]] - `method` [EXTRACTED]
+- [[.getSearchSuggestions()]] - `method` [EXTRACTED]
+- [[.toggleNewPatientStatus()]] - `method` [EXTRACTED]
+- [[.updatePatientDetails()]] - `method` [EXTRACTED]
+- [[patientService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[patientService.js|patientService.js]] (contains)
-- --> [[.getAllPatients()|.getAllPatients()]] (method)
-- --> [[.getPatientDetails()|.getPatientDetails()]] (method)
-- --> [[.updatePatientDetails()|.updatePatientDetails()]] (method)
-- --> [[.toggleNewPatientStatus()|.toggleNewPatientStatus()]] (method)
-- --> [[.getNewPatientStats()|.getNewPatientStats()]] (method)
-
-## Miembros de la misma Comunidad
-- [[dateUtils.js|dateUtils.js]]
-- [[formatLocalSQL()|formatLocalSQL()]]
-- [[nowLocalSQL()|nowLocalSQL()]]
-- [[formatDateOnlySQL()|formatDateOnlySQL()]]
-- [[restoreService.js|restoreService.js]]
-- [[RestoreService|RestoreService]]
-- [[.restoreItem()|.restoreItem()]]
-- [[._restorePatient()|._restorePatient()]]
-- [[._restoreDoctor()|._restoreDoctor()]]
-- [[._restoreSecretary()|._restoreSecretary()]]
+#graphify/code #graphify/EXTRACTED #community/Community_51

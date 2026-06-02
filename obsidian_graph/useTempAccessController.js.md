@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/users/hooks/useTempAccessController.js"
+type: "code"
+community: "Community 43"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_43
+---
+
 # useTempAccessController.js
 
-- **Tipo:** code
-- **Archivo:** client/src/controllers/useTempAccessController.js
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[useTempAccessController()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useTempAccessController()|useTempAccessController()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
-- [[DaySchedule()|DaySchedule()]]
+#graphify/code #graphify/EXTRACTED #community/Community_43

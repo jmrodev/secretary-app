@@ -1,21 +1,22 @@
+---
+source_file: "server/services/finance/afipLocalService.js"
+type: "code"
+community: "Community 48"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_48
+---
+
 # LocalAfipService
 
-- **Tipo:** code
-- **Archivo:** server/services/afipLocalService.js
-- **Comunidad:** [[_COMMUNITY_Community 44]]
+## Connections
+- [[.constructor()_8]] - `method` [EXTRACTED]
+- [[.createVoucher()]] - `method` [EXTRACTED]
+- [[.getAuth()]] - `method` [EXTRACTED]
+- [[.getLastVoucher()]] - `method` [EXTRACTED]
+- [[.getServerStatus()]] - `method` [EXTRACTED]
+- [[afipLocalService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[afipLocalService.js|afipLocalService.js]] (contains)
-- --> [[.constructor()|.constructor()]] (method)
-- --> [[.getAuth()|.getAuth()]] (method)
-- --> [[.getServerStatus()|.getServerStatus()]] (method)
-- --> [[.getLastVoucher()|.getLastVoucher()]] (method)
-- --> [[.createVoucher()|.createVoucher()]] (method)
-
-## Miembros de la misma Comunidad
-- [[afipLocalService.js|afipLocalService.js]]
-- [[.constructor()|.constructor()]]
-- [[.getAuth()|.getAuth()]]
-- [[.getServerStatus()|.getServerStatus()]]
-- [[.getLastVoucher()|.getLastVoucher()]]
-- [[.createVoucher()|.createVoucher()]]
+#graphify/code #graphify/EXTRACTED #community/Community_48

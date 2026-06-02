@@ -3,6 +3,7 @@
 
     background-color: var(--dashboard-card-bg);
     border-radius: var(--radius);
+
     /* XL 1.5rem */
     padding: var(--card-padding);
     box-shadow: var(--shadow-premium);
@@ -75,7 +76,7 @@
     line-height: 1.4;
 }
 
-@media (max-width: 48rem) {
+@media (width <= 48rem) {
     .patient-identity-fields__group {
         grid-column: span 12 !important;
     }

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Switch.jsx"
+type: "code"
+community: "Community 268"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_268
+---
+
 # Switch()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/Switch.jsx
-- **Comunidad:** [[_COMMUNITY_Community 265]]
+## Connections
+- [[Switch.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[Switch.jsx|Switch.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Switch.jsx|Switch.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_268

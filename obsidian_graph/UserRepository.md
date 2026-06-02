@@ -1,25 +1,25 @@
+---
+source_file: "server/repositories/user/userRepository.js"
+type: "code"
+community: "Community 37"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_37
+---
+
 # UserRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/userRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 37]]
+## Connections
+- [[.create()_15]] - `method` [EXTRACTED]
+- [[.delete()_10]] - `method` [EXTRACTED]
+- [[.findAdminPasswordHash()]] - `method` [EXTRACTED]
+- [[.findAllStaff()]] - `method` [EXTRACTED]
+- [[.findByUsername()]] - `method` [EXTRACTED]
+- [[.update()_9]] - `method` [EXTRACTED]
+- [[.updatePassword()]] - `method` [EXTRACTED]
+- [[.upsert()]] - `method` [EXTRACTED]
+- [[userRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[userRepository.js|userRepository.js]] (contains)
-- --> [[.findAllStaff()|.findAllStaff()]] (method)
-- --> [[.create()|.create()]] (method)
-- --> [[.upsert()|.upsert()]] (method)
-- --> [[.updatePassword()|.updatePassword()]] (method)
-- --> [[.update()|.update()]] (method)
-- --> [[.delete()|.delete()]] (method)
-- --> [[.findByUsername()|.findByUsername()]] (method)
-
-## Miembros de la misma Comunidad
-- [[userRepository.js|userRepository.js]]
-- [[.findAllStaff()|.findAllStaff()]]
-- [[.create()|.create()]]
-- [[.upsert()|.upsert()]]
-- [[.updatePassword()|.updatePassword()]]
-- [[.update()|.update()]]
-- [[.delete()|.delete()]]
-- [[.findByUsername()|.findByUsername()]]
+#graphify/code #graphify/EXTRACTED #community/Community_37

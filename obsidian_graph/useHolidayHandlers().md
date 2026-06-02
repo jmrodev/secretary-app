@@ -1,18 +1,19 @@
+---
+source_file: "client/src/features/appointments/hooks/useHolidayHandlers.js"
+type: "code"
+community: "Community 47"
+location: "L6"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_47
+---
+
 # useHolidayHandlers()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/hooks/useHolidayHandlers.js
-- **Comunidad:** [[_COMMUNITY_Community 43]]
+## Connections
+- [[useAppointmentsHandlers()]] - `calls` [INFERRED]
+- [[useAppointmentsHandlers.js]] - `imports` [EXTRACTED]
+- [[useHolidayHandlers.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[useAppointmentsHandlers()|useAppointmentsHandlers()]] (calls)
-- <-- [[useHolidayHandlers.js|useHolidayHandlers.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useAppointmentActions.js|useAppointmentActions.js]]
-- [[useAppointmentActions()|useAppointmentActions()]]
-- [[useAppointmentUIHandlers.js|useAppointmentUIHandlers.js]]
-- [[useAppointmentUIHandlers()|useAppointmentUIHandlers()]]
-- [[useAppointmentsHandlers.js|useAppointmentsHandlers.js]]
-- [[useAppointmentsHandlers()|useAppointmentsHandlers()]]
-- [[useHolidayHandlers.js|useHolidayHandlers.js]]
+#graphify/code #graphify/EXTRACTED #community/Community_47

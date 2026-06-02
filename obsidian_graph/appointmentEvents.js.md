@@ -1,11 +1,17 @@
+---
+source_file: "server/events/appointmentEvents.js"
+type: "code"
+community: "Community 141"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_141
+---
+
 # appointmentEvents.js
 
-- **Tipo:** code
-- **Archivo:** server/events/appointmentEvents.js
-- **Comunidad:** [[_COMMUNITY_Community 130]]
+## Connections
+- [[AppointmentEventEmitter]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AppointmentEventEmitter|AppointmentEventEmitter]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AppointmentEventEmitter|AppointmentEventEmitter]]
+#graphify/code #graphify/EXTRACTED #community/Community_141

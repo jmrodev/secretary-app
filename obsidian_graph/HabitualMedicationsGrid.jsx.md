@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/lists/HabitualMedicationsGrid.jsx"
+type: "code"
+community: "Community 174"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_174
+---
+
 # HabitualMedicationsGrid.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/HabitualMedicationsGrid.jsx
-- **Comunidad:** [[_COMMUNITY_Community 163]]
+## Connections
+- [[HabitualMedicationsGrid()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[HabitualMedicationsGrid()|HabitualMedicationsGrid()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[HabitualMedicationsGrid()|HabitualMedicationsGrid()]]
+#graphify/code #graphify/EXTRACTED #community/Community_174

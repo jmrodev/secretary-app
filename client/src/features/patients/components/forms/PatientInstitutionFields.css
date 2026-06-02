@@ -77,16 +77,13 @@
 .patient-institution-fields__switch-slider {
     position: absolute;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background-color: var(--gray-200);
     transition: .4s;
     border-radius: 2rem;
 }
 
-.patient-institution-fields__switch-slider:before {
+.patient-institution-fields__switch-slider::before {
     position: absolute;
     content: "";
     height: 1.125rem;
@@ -103,7 +100,7 @@
     background-color: var(--primary-color);
 }
 
-.patient-institution-fields__switch-input:checked + .patient-institution-fields__switch-slider:before {
+.patient-institution-fields__switch-input:checked + .patient-institution-fields__switch-slider::before {
     transform: translateX(1.25rem);
 }
 
@@ -128,7 +125,7 @@
     width: 100%;
 }
 
-@media (max-width: 48rem) {
+@media (width <= 48rem) {
     .patient-institution-fields__toggle-row {
         gap: 1rem;
     }

@@ -9,7 +9,7 @@
  */
 async function calculatePrice(pool, doctorId, patientId, serviceType = 'consultation', appointmentInstitutionId = null) {
     try {
-        const [rows] = await pool.query(
+                const rows = await pool.query(
             "SELECT fn_calculate_service_price(?, ?, ?, ?) as price",
             [doctorId, patientId, serviceType, appointmentInstitutionId]
         );

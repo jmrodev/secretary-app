@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/medical/medicationController.js"
+type: "code"
+community: "Community 314"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_314
+---
+
 # medicationController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/medical/medicationController.js
-- **Comunidad:** [[_COMMUNITY_Community 322]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_314

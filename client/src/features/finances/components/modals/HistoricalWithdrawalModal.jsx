@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';

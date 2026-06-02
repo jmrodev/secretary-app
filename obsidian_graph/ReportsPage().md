@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/reports/ReportsPage.jsx"
+type: "code"
+community: "Community 12"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_12
+---
+
 # ReportsPage()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/ReportsPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[ReportsPage.jsx]] - `contains` [EXTRACTED]
+- [[useReportsController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[ReportsPage.jsx|ReportsPage.jsx]] (contains)
-- --> [[useReportsController()|useReportsController()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_12

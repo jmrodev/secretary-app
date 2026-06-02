@@ -1,16 +1,17 @@
+---
+source_file: "server/controllers/communication/whatsappController.js"
+type: "code"
+community: "Community 35"
+location: "L366"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_35
+---
+
 # getBridgeStatus()
 
-- **Tipo:** code
-- **Archivo:** server/services/whatsappService.js
-- **Comunidad:** [[_COMMUNITY_Community 45]]
+## Connections
+- [[whatsappController.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[whatsappService.js|whatsappService.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[whatsappService.js|whatsappService.js]]
-- [[getMetaCredentials()|getMetaCredentials()]]
-- [[sendTemplateMessage()|sendTemplateMessage()]]
-- [[sendMessageDirect()|sendMessageDirect()]]
-- [[sendAutomatedReminders()|sendAutomatedReminders()]]
-- [[sendTestMessage()|sendTestMessage()]]
+#graphify/code #graphify/EXTRACTED #community/Community_35

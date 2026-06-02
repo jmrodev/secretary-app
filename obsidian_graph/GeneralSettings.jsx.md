@@ -1,15 +1,19 @@
+---
+source_file: "client/src/features/config/components/sections/GeneralSettings.jsx"
+type: "code"
+community: "Community 103"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_103
+---
+
 # GeneralSettings.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/config/components/GeneralSettings.jsx
-- **Comunidad:** [[_COMMUNITY_Community 100]]
+## Connections
+- [[GeneralSettings()]] - `contains` [EXTRACTED]
+- [[PermissionsGroup()]] - `contains` [EXTRACTED]
+- [[UrlConfiguration()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[renderPermissionsGroup()|renderPermissionsGroup()]] (contains)
-- --> [[renderUrlConfiguration()|renderUrlConfiguration()]] (contains)
-- --> [[GeneralSettings()|GeneralSettings()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[renderPermissionsGroup()|renderPermissionsGroup()]]
-- [[renderUrlConfiguration()|renderUrlConfiguration()]]
-- [[GeneralSettings()|GeneralSettings()]]
+#graphify/code #graphify/EXTRACTED #community/Community_103

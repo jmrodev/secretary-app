@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/config/SystemConfigPage.jsx"
+type: "code"
+community: "Community 12"
+location: "L62"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_12
+---
+
 # UserSection()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/config/SystemConfigPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 12]]
+## Connections
+- [[SystemConfigPage.jsx]] - `contains` [EXTRACTED]
+- [[useSystemConfigController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[SystemConfigPage.jsx|SystemConfigPage.jsx]] (contains)
-- --> [[useSystemConfigController()|useSystemConfigController()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[InstitutionsPage.jsx|InstitutionsPage.jsx]]
-- [[InstitutionsPage()|InstitutionsPage()]]
-- [[useInstitutionsController.js|useInstitutionsController.js]]
-- [[createInitialFormState()|createInitialFormState()]]
-- [[useInstitutionsController()|useInstitutionsController()]]
-- [[SystemConfigPage.jsx|SystemConfigPage.jsx]]
-- [[ProfileSection()|ProfileSection()]]
-- [[InstitutionsSection()|InstitutionsSection()]]
-- [[AuditLogsSection()|AuditLogsSection()]]
-- [[getTabMetadata()|getTabMetadata()]]
+#graphify/code #graphify/EXTRACTED #community/Community_12

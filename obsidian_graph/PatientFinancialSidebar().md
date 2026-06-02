@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/views/PatientFinancialSidebar.jsx"
+type: "code"
+community: "Community 254"
+location: "L13"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_254
+---
+
 # PatientFinancialSidebar()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientFinancialSidebar.jsx
-- **Comunidad:** [[_COMMUNITY_Community 239]]
+## Connections
+- [[PatientFinancialSidebar.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientFinancialSidebar.jsx|PatientFinancialSidebar.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientFinancialSidebar.jsx|PatientFinancialSidebar.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_254

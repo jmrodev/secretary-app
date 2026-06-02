@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/lists/PrescriptionItemsList.jsx"
+type: "code"
+community: "Community 172"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_172
+---
+
 # PrescriptionItemsList.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/PrescriptionItemsList.jsx
-- **Comunidad:** [[_COMMUNITY_Community 156]]
+## Connections
+- [[PrescriptionItemsList()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PrescriptionItemsList()|PrescriptionItemsList()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PrescriptionItemsList()|PrescriptionItemsList()]]
+#graphify/code #graphify/EXTRACTED #community/Community_172

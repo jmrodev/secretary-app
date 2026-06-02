@@ -1,14 +1,17 @@
+---
+source_file: "server/repositories/system/auditRepository.js"
+type: "code"
+community: "Community 83"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_83
+---
+
 # auditRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/auditRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 78]]
+## Connections
+- [[AuditRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AuditRepository|AuditRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AuditRepository|AuditRepository]]
-- [[.create()|.create()]]
-- [[.findRecentLogs()|.findRecentLogs()]]
-- [[.findRecycleBin()|.findRecycleBin()]]
+#graphify/code #graphify/EXTRACTED #community/Community_83

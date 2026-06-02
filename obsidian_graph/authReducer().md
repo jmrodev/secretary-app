@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/auth/authReducer.js"
+type: "code"
+community: "Community 214"
+location: "L11"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_214
+---
+
 # authReducer()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/authReducer.js
-- **Comunidad:** [[_COMMUNITY_Community 207]]
+## Connections
+- [[authReducer.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[authReducer.js|authReducer.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[authReducer.js|authReducer.js]]
+#graphify/code #graphify/EXTRACTED #community/Community_214

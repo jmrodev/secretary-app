@@ -27,13 +27,11 @@ const FinancesPage = () => {
     const {
         stats,
         loading,
-        doctors,
         selectedDoctorFilter,
         modalOpen,
         closeBoxModal,
         closeAmount,
         editingTx,
-        filters,
         filteredTransactions,
         user,
         settings,

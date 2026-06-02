@@ -1,30 +1,26 @@
+---
+source_file: "server/services/finance/financeService.js"
+type: "code"
+community: "Community 30"
+location: "L11"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_30
+---
+
 # FinanceService
 
-- **Tipo:** code
-- **Archivo:** server/services/finance/financeService.js
-- **Comunidad:** [[_COMMUNITY_Community 8]]
+## Connections
+- [[.closeCashBox()]] - `method` [EXTRACTED]
+- [[.createTransaction()]] - `method` [EXTRACTED]
+- [[.getPendingClosures()]] - `method` [EXTRACTED]
+- [[.getPricing()]] - `method` [EXTRACTED]
+- [[.getTransactions()]] - `method` [EXTRACTED]
+- [[.markAsBonified()]] - `method` [EXTRACTED]
+- [[.payDebt()]] - `method` [EXTRACTED]
+- [[.payInstitutionDebt()]] - `method` [EXTRACTED]
+- [[.syncAppointmentPaymentStatus()]] - `method` [EXTRACTED]
+- [[financeService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[financeService.js|financeService.js]] (contains)
-- --> [[.createTransaction()|.createTransaction()]] (method)
-- --> [[.payDebt()|.payDebt()]] (method)
-- --> [[.getTransactions()|.getTransactions()]] (method)
-- --> [[.getPendingClosures()|.getPendingClosures()]] (method)
-- --> [[.payInstitutionDebt()|.payInstitutionDebt()]] (method)
-- --> [[.syncAppointmentPaymentStatus()|.syncAppointmentPaymentStatus()]] (method)
-- --> [[.syncRequestPaymentStatus()|.syncRequestPaymentStatus()]] (method)
-- --> [[.closeCashBox()|.closeCashBox()]] (method)
-- --> [[.getPricing()|.getPricing()]] (method)
-- --> [[.markAsBonified()|.markAsBonified()]] (method)
-
-## Miembros de la misma Comunidad
-- [[dateUtils.js|dateUtils.js]]
-- [[formatLocalSQL()|formatLocalSQL()]]
-- [[nowLocalSQL()|nowLocalSQL()]]
-- [[formatDateOnlySQL()|formatDateOnlySQL()]]
-- [[restoreService.js|restoreService.js]]
-- [[RestoreService|RestoreService]]
-- [[.restoreItem()|.restoreItem()]]
-- [[._restorePatient()|._restorePatient()]]
-- [[._restoreDoctor()|._restoreDoctor()]]
-- [[._restoreSecretary()|._restoreSecretary()]]
+#graphify/code #graphify/EXTRACTED #community/Community_30

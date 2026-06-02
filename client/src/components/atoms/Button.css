@@ -8,6 +8,7 @@
     --btn-hover-text: var(--text-main);
     --btn-hover-shadow: var(--shadow-md);
     --btn-hover-y: -1px;
+
     /* ------------------------------ */
 
     display: inline-flex;
@@ -32,18 +33,18 @@
     letter-spacing: -0.01em;
 }
 
-.btn:hover:not(:disabled) {
-    background: var(--btn-hover-bg);
-    color: var(--btn-hover-text);
-    box-shadow: var(--btn-hover-shadow);
-    transform: translateY(var(--btn-hover-y));
-}
-
 .btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
+}
+
+.btn:hover:not(:disabled) {
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-text);
+    box-shadow: var(--btn-hover-shadow);
+    transform: translateY(var(--btn-hover-y));
 }
 
 /* Semantic Variants for CRUD and Actions */
@@ -52,16 +53,16 @@
     --btn-bg: var(--primary-color);
     --btn-text: var(--white);
     --btn-border: var(--primary-color);
-    --btn-shadow: 0 4px 10px rgba(72, 128, 255, 0.2);
+    --btn-shadow: 0 4px 10px rgb(72 128 255 / 20%);
     --btn-hover-bg: var(--primary-hover);
-    --btn-hover-shadow: 0 6px 15px rgba(72, 128, 255, 0.3);
+    --btn-hover-shadow: 0 6px 15px rgb(72 128 255 / 30%);
 }
 
 .btn--success {
     --btn-bg: var(--success);
     --btn-text: var(--white);
     --btn-border: var(--success);
-    --btn-shadow: 0 4px 10px rgba(0, 182, 122, 0.2);
+    --btn-shadow: 0 4px 10px rgb(0 182 122 / 20%);
     --btn-hover-bg: #00a36c;
 }
 
@@ -69,7 +70,7 @@
     --btn-bg: var(--danger);
     --btn-text: var(--white);
     --btn-border: var(--danger);
-    --btn-shadow: 0 4px 10px rgba(249, 55, 93, 0.2);
+    --btn-shadow: 0 4px 10px rgb(249 55 93 / 20%);
     --btn-hover-bg: #e02d54;
 }
 
@@ -100,7 +101,7 @@
     --btn-border: var(--red-700);
     --btn-text: var(--red-400);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: rgba(239, 68, 68, 0.1);
+    --btn-hover-bg: rgb(239 68 68 / 10%);
     --btn-hover-border: var(--red-500);
     --btn-hover-text: var(--red-300);
 }
@@ -110,7 +111,7 @@
     --btn-border: var(--green-700);
     --btn-text: var(--green-400);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: rgba(34, 197, 94, 0.1);
+    --btn-hover-bg: rgb(34 197 94 / 10%);
     --btn-hover-border: var(--green-500);
     --btn-hover-text: var(--green-300);
 }
@@ -120,7 +121,7 @@
     --btn-border: var(--amber-700);
     --btn-text: var(--amber-400);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: rgba(245, 158, 11, 0.1);
+    --btn-hover-bg: rgb(245 158 11 / 10%);
     --btn-hover-border: var(--amber-500);
     --btn-hover-text: var(--amber-300);
 }
@@ -136,7 +137,7 @@
 .btn--link {
     --btn-bg: transparent;
     --btn-text: var(--primary-color);
-    --btn-hover-bg: rgba(72, 128, 255, 0.05);
+    --btn-hover-bg: rgb(72 128 255 / 5%);
     --btn-hover-text: var(--primary-hover);
     --btn-hover-y: 0;
 }
@@ -177,7 +178,7 @@
 
 /* State */
 .btn--active {
-    background: rgba(72, 128, 255, 0.1);
+    background: rgb(72 128 255 / 10%);
     border-color: var(--primary-color);
     color: var(--text-main);
 }

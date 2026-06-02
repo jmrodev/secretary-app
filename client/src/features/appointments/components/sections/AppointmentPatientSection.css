@@ -14,8 +14,8 @@
     align-items: center;
     margin-top: 0.5rem; 
     padding: 0.85rem 1.25rem; 
-    background-color: rgba(249, 55, 93, 0.05);
-    border: 1px solid rgba(249, 55, 93, 0.15); 
+    background-color: rgb(249 55 93 / 5%);
+    border: 1px solid rgb(249 55 93 / 15%); 
     border-radius: var(--radius-md); 
     font-size: 0.85rem;
     animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
@@ -44,8 +44,8 @@
 .appointment-patient-section__quick-info {
     margin-top: 0.5rem; 
     padding: 1.25rem; 
-    background-color: rgba(0, 182, 122, 0.05);
-    border: 1px solid rgba(0, 182, 122, 0.15); 
+    background-color: rgb(0 182 122 / 5%);
+    border: 1px solid rgb(0 182 122 / 15%); 
     border-radius: var(--radius-md); 
     display: flex; 
     align-items: center;
@@ -75,7 +75,7 @@
     color: var(--text-main); 
     border: none; 
     background: transparent; 
-    border-bottom: 2px solid rgba(0, 182, 122, 0.2);
+    border-bottom: 2px solid rgb(0 182 122 / 20%);
     padding: 0.25rem 0;
     outline: none;
     transition: border-color 0.2s ease;

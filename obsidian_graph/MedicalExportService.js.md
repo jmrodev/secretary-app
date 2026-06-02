@@ -1,16 +1,17 @@
+---
+source_file: "server/services/medical/MedicalExportService.js"
+type: "code"
+community: "Community 55"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_55
+---
+
 # MedicalExportService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/medical/MedicalExportService.js
-- **Comunidad:** [[_COMMUNITY_Community 50]]
+## Connections
+- [[MedicalExportService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicalExportService|MedicalExportService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicalExportService|MedicalExportService]]
-- [[.exportPrescriptionsJSON()|.exportPrescriptionsJSON()]]
-- [[.exportLicensesJSON()|.exportLicensesJSON()]]
-- [[.exportCertificatesJSON()|.exportCertificatesJSON()]]
-- [[._exportGenericRequestJSON()|._exportGenericRequestJSON()]]
-- [[._buildFilters()|._buildFilters()]]
+#graphify/code #graphify/EXTRACTED #community/Community_55

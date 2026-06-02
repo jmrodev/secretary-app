@@ -1,28 +1,27 @@
+---
+source_file: "client/src/features/medical_documents/hooks/useMedicalDocumentsController.js"
+type: "code"
+community: "Community 13"
+location: "L17"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_13
+---
+
 # useMedicalDocumentsController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/hooks/useMedicalDocumentsController.js
-- **Comunidad:** [[_COMMUNITY_Community 15]]
+## Connections
+- [[MedicalDocumentsPage()]] - `calls` [INFERRED]
+- [[MedicalDocumentsPage.jsx]] - `imports` [EXTRACTED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMedicalDocumentsController.js]] - `contains` [EXTRACTED]
+- [[useMedicalDocumentsHandlers()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
+- [[usePermissions()]] - `calls` [INFERRED]
+- [[useSearch()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[MedicalDocumentsPage()|MedicalDocumentsPage()]] (calls)
-- --> [[useMedicalDocumentsHandlers()|useMedicalDocumentsHandlers()]] (calls)
-- <-- [[useMedicalDocumentsController.js|useMedicalDocumentsController.js]] (contains)
-- --> [[useAuth()|useAuth()]] (calls)
-- --> [[usePermissions()|usePermissions()]] (calls)
-- --> [[useFetch()|useFetch()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[DoctorContext.jsx|DoctorContext.jsx]]
-- [[DoctorProvider()|DoctorProvider()]]
-- [[MedicalDocumentsPage.jsx|MedicalDocumentsPage.jsx]]
-- [[MedicalDocumentsPage()|MedicalDocumentsPage()]]
-- [[useRequirementManagerController.js|useRequirementManagerController.js]]
-- [[useRequirementManagerController()|useRequirementManagerController()]]
-- [[useMedicalDocumentsHandlers.js|useMedicalDocumentsHandlers.js]]
-- [[useMedicalDocumentsHandlers()|useMedicalDocumentsHandlers()]]
-- [[useMedicalDocumentsController.js|useMedicalDocumentsController.js]]
-- [[MedicalRequirementManager.jsx|MedicalRequirementManager.jsx]]
+#graphify/code #graphify/INFERRED #community/Community_13

@@ -32,17 +32,17 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
         setLoading(true);
         try {
             const [apptRes, prescRes, licRes, reqRes] = await Promise.all([
-                api.post('/appointments', { patientId }),
-                api.post('/medical/prescriptions', { patientId }),
-                api.post('/medical/licenses', { patientId }),
-                api.post('/medical/requests', { patientId })
+                api.get('/appointments', { params: { patientId } }),
+                api.get('/medical/prescriptions', { params: { patientId } }),
+                api.get('/medical/licenses', { params: { patientId } }),
+                api.get('/medical/requests', { params: { patientId } })
             ]);
 
             setHistory({
                 appointments: apptRes.data,
-                prescriptions: prescRes.data,
-                licenses: licRes.data,
-                requests: reqRes.data
+                prescriptions: prescRes.data.prescriptions || [],
+                licenses: licRes.data.licenses || [],
+                requests: reqRes.data.requests || []
             });
         } catch (err) {
             console.error("Failed to fetch patient history", err);
@@ -51,9 +51,19 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
         }
     }, [patientId]);
 
-    useEffect(() => {
-        fetchHistory();
+    const fetchHistoryRef = React.useRef(fetchHistory);
+    React.useEffect(() => {
+        fetchHistoryRef.current = fetchHistory;
     }, [fetchHistory]);
+
+    useEffect(() => {
+        if (isOpen && patientId) {
+            const timer = setTimeout(() => {
+                fetchHistoryRef.current();
+            }, 0);
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen, patientId]);
 
     const baseClass = 'patient-history';
 

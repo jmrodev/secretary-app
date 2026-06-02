@@ -1,13 +1,17 @@
+---
+source_file: "client/src/features/auth/useAuthLogic.js"
+type: "code"
+community: "Community 104"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_104
+---
+
 # useAuthLogic.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/useAuthLogic.js
-- **Comunidad:** [[_COMMUNITY_Community 101]]
+## Connections
+- [[useAuthLogic()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useAuthLogic()|useAuthLogic()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useAuthLogic()|useAuthLogic()]]
-- [[AuthContext.jsx|AuthContext.jsx]]
-- [[AuthProvider()|AuthProvider()]]
+#graphify/code #graphify/EXTRACTED #community/Community_104

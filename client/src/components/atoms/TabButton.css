@@ -8,6 +8,7 @@
     --tab-active-color: var(--primary-color);
     --tab-active-border: var(--dashboard-card-border);
     --tab-active-shadow: var(--shadow-sm);
+
     /* ------------------------------ */
 
     padding: 0.625rem 1.25rem;
@@ -49,6 +50,7 @@
     border: none;
     border-bottom: 2px solid var(--tab-active-color);
 }
+
 /* Color Modifiers for active states */
 .tab-btn--green.tab-btn--active {
     --tab-active-color: var(--green-600);

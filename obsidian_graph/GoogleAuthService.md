@@ -1,21 +1,22 @@
+---
+source_file: "server/services/google/GoogleAuthService.js"
+type: "code"
+community: "Community 56"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_56
+---
+
 # GoogleAuthService
 
-- **Tipo:** code
-- **Archivo:** server/services/google/GoogleAuthService.js
-- **Comunidad:** [[_COMMUNITY_Community 51]]
+## Connections
+- [[.constructor()_11]] - `method` [EXTRACTED]
+- [[.getAuthorizedClient()]] - `method` [EXTRACTED]
+- [[.getOAuthClient()]] - `method` [EXTRACTED]
+- [[.getTokens()]] - `method` [EXTRACTED]
+- [[.saveTokens()]] - `method` [EXTRACTED]
+- [[GoogleAuthService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[GoogleAuthService.js|GoogleAuthService.js]] (contains)
-- --> [[.constructor()|.constructor()]] (method)
-- --> [[.getOAuthClient()|.getOAuthClient()]] (method)
-- --> [[.getTokens()|.getTokens()]] (method)
-- --> [[.getAuthorizedClient()|.getAuthorizedClient()]] (method)
-- --> [[.saveTokens()|.saveTokens()]] (method)
-
-## Miembros de la misma Comunidad
-- [[GoogleAuthService.js|GoogleAuthService.js]]
-- [[.constructor()|.constructor()]]
-- [[.getOAuthClient()|.getOAuthClient()]]
-- [[.getTokens()|.getTokens()]]
-- [[.getAuthorizedClient()|.getAuthorizedClient()]]
-- [[.saveTokens()|.saveTokens()]]
+#graphify/code #graphify/EXTRACTED #community/Community_56

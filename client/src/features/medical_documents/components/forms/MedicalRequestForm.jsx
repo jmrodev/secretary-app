@@ -85,7 +85,10 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                             required
                             options={[
                                 { value: '', label: t('select_doctor') },
-                                ...doctors.map(d => ({ value: d.id, label: `${d.full_name} - ${d.specialty}` }))
+                                ...doctors.map(d => ({ 
+                                    value: d.id, 
+                                    label: `${d.full_name}${d.specialty ? ` - ${d.specialty}` : ''}` 
+                                }))
                             ]}
                         />
                     )}

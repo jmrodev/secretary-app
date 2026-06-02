@@ -1,16 +1,17 @@
+---
+source_file: "server/services/google/GoogleAuthService.js"
+type: "code"
+community: "Community 56"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_56
+---
+
 # GoogleAuthService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/google/GoogleAuthService.js
-- **Comunidad:** [[_COMMUNITY_Community 51]]
+## Connections
+- [[GoogleAuthService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[GoogleAuthService|GoogleAuthService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[GoogleAuthService|GoogleAuthService]]
-- [[.constructor()|.constructor()]]
-- [[.getOAuthClient()|.getOAuthClient()]]
-- [[.getTokens()|.getTokens()]]
-- [[.getAuthorizedClient()|.getAuthorizedClient()]]
-- [[.saveTokens()|.saveTokens()]]
+#graphify/code #graphify/EXTRACTED #community/Community_56

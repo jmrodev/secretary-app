@@ -1,17 +1,20 @@
+---
+source_file: "server/services/communication/whatsappService.js"
+type: "code"
+community: "Community 44"
+location: "L90"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_44
+---
+
 # sendAutomatedReminders()
 
-- **Tipo:** code
-- **Archivo:** server/services/whatsappService.js
-- **Comunidad:** [[_COMMUNITY_Community 45]]
+## Connections
+- [[formatDateDisplay()]] - `calls` [INFERRED]
+- [[formatTimeDisplay()]] - `calls` [INFERRED]
+- [[sendMessageDirect()]] - `calls` [EXTRACTED]
+- [[whatsappService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[whatsappService.js|whatsappService.js]] (contains)
-- --> [[sendMessageDirect()|sendMessageDirect()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[whatsappService.js|whatsappService.js]]
-- [[getMetaCredentials()|getMetaCredentials()]]
-- [[sendTemplateMessage()|sendTemplateMessage()]]
-- [[sendMessageDirect()|sendMessageDirect()]]
-- [[sendTestMessage()|sendTestMessage()]]
-- [[getBridgeStatus()|getBridgeStatus()]]
+#graphify/code #graphify/EXTRACTED #community/Community_44

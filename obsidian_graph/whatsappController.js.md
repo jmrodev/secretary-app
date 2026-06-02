@@ -1,28 +1,25 @@
+---
+source_file: "server/controllers/communication/whatsappController.js"
+type: "code"
+community: "Community 35"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_35
+---
+
 # whatsappController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/whatsappController.js
-- **Comunidad:** [[_COMMUNITY_Community 28]]
+## Connections
+- [[broadcastMessage()]] - `contains` [EXTRACTED]
+- [[getAiSuggestion()]] - `contains` [EXTRACTED]
+- [[getBridgeStatus()]] - `contains` [EXTRACTED]
+- [[getPatientHistory()]] - `contains` [EXTRACTED]
+- [[getRecentConversations()]] - `contains` [EXTRACTED]
+- [[receiveWebhook()]] - `contains` [EXTRACTED]
+- [[sendDirectMessage()]] - `contains` [EXTRACTED]
+- [[sendMessage()]] - `contains` [EXTRACTED]
+- [[testConnection()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[sendMessage()|sendMessage()]] (contains)
-- --> [[testConnection()|testConnection()]] (contains)
-- --> [[broadcastMessage()|broadcastMessage()]] (contains)
-- --> [[sendDirectMessage()|sendDirectMessage()]] (contains)
-- --> [[receiveWebhook()|receiveWebhook()]] (contains)
-- --> [[getPatientHistory()|getPatientHistory()]] (contains)
-- --> [[getAiSuggestion()|getAiSuggestion()]] (contains)
-- --> [[getRecentConversations()|getRecentConversations()]] (contains)
-- --> [[getBridgeStatus()|getBridgeStatus()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[worker.js|worker.js]]
-- [[fetch()|fetch()]]
-- [[sendMessage()|sendMessage()]]
-- [[testConnection()|testConnection()]]
-- [[broadcastMessage()|broadcastMessage()]]
-- [[sendDirectMessage()|sendDirectMessage()]]
-- [[receiveWebhook()|receiveWebhook()]]
-- [[getPatientHistory()|getPatientHistory()]]
-- [[getAiSuggestion()|getAiSuggestion()]]
-- [[getRecentConversations()|getRecentConversations()]]
+#graphify/code #graphify/EXTRACTED #community/Community_35

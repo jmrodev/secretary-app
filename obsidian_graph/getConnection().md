@@ -1,11 +1,17 @@
+---
+source_file: "server/db.js"
+type: "code"
+community: "Community 128"
+location: "L16"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_128
+---
+
 # getConnection()
 
-- **Tipo:** code
-- **Archivo:** server/db.js
-- **Comunidad:** [[_COMMUNITY_Community 119]]
+## Connections
+- [[db.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[db.js|db.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[db.js|db.js]]
+#graphify/code #graphify/EXTRACTED #community/Community_128

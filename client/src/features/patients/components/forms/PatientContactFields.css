@@ -61,7 +61,7 @@
     margin-top: 0.5rem;
 }
 
-@media (max-width: 48rem) {
+@media (width <= 48rem) {
     .patient-contact-fields__bento {
         display: flex;
         flex-direction: column;

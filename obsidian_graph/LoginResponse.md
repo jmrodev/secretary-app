@@ -1,20 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/api/ApiService.kt"
+type: "code"
+community: "Price Calculation & Licenses"
+location: "L119"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Price_Calculation_&_Licenses
+---
+
 # LoginResponse
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/api/ApiService.kt
-- **Comunidad:** [[_COMMUNITY_Community 4]]
+## Connections
+- [[ApiService.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ApiService.kt|ApiService.kt]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MainActivity.kt|MainActivity.kt]]
-- [[MainActivity|MainActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.login()|.login()]]
-- [[.showErrorDialog()|.showErrorDialog()]]
-- [[ApiService.kt|ApiService.kt]]
-- [[ApiService|ApiService]]
-- [[.login()|.login()]]
-- [[.getAppointments()|.getAppointments()]]
-- [[.getDoctors()|.getDoctors()]]
+#graphify/code #graphify/EXTRACTED #community/Price_Calculation_&_Licenses

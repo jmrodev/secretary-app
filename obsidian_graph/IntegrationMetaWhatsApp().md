@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/config/components/sections/IntegrationMetaWhatsApp.jsx"
+type: "code"
+community: "Community 206"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_206
+---
+
 # IntegrationMetaWhatsApp()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/IntegrationMetaWhatsApp.jsx
-- **Comunidad:** [[_COMMUNITY_Community 281]]
+## Connections
+- [[IntegrationMetaWhatsApp.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[IntegrationMetaWhatsApp.jsx|IntegrationMetaWhatsApp.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[IntegrationMetaWhatsApp.jsx|IntegrationMetaWhatsApp.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_206

@@ -1,13 +1,17 @@
+---
+source_file: "server/services/google/GoogleCalendarAuditService.js"
+type: "code"
+community: "Community 93"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_93
+---
+
 # GoogleCalendarAuditService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/google/GoogleCalendarAuditService.js
-- **Comunidad:** [[_COMMUNITY_Community 90]]
+## Connections
+- [[GoogleCalendarAuditService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[GoogleCalendarAuditService|GoogleCalendarAuditService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[GoogleCalendarAuditService|GoogleCalendarAuditService]]
-- [[.getAuditData()|.getAuditData()]]
-- [[.sanitizeAppointment()|.sanitizeAppointment()]]
+#graphify/code #graphify/EXTRACTED #community/Community_93

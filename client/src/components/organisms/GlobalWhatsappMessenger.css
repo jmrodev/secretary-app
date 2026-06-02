@@ -10,7 +10,7 @@
     border-radius: 12px;
     padding: 0.75rem 1.25rem;
     font-weight: 700;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 4px 15px rgb(16 185 129 / 20%);
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -33,7 +33,7 @@
     max-width: calc(100vw - 2rem);
     height: 600px; /* Taller for mobile feel */
     max-height: 85vh;
-    background: var(--white, #ffffff);
+    background: var(--white, #fff);
     border-radius: var(--radius-xl, 16px);
     box-shadow: var(--shadow-2xl);
     display: flex; /* Flex instead of grid for single column */
@@ -44,26 +44,34 @@
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Ensure sections take full width in single column */
-.global-wa-messenger__sidebar,
+/* Sidebar Styling */
+.global-wa-messenger__sidebar {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    transition: transform 0.3s ease;
+}
+
+/* Chat Area Styling */
 .global-wa-messenger__chat-area {
     width: 100%;
     height: 100%;
     position: absolute;
     top: 0;
     left: 0;
-    background: white;
-    transition: transform 0.3s ease;
-}
-
-/* Logic to slide between list and chat (handled by JSX classes if possible, or just hide one) */
-.global-wa-messenger__sidebar {
-    z-index: 2;
-}
-
-.global-wa-messenger__chat-area {
     z-index: 3;
     transform: translateX(100%);
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    transition: transform 0.3s ease;
 }
 
 .global-wa-messenger--chat-active .global-wa-messenger__chat-area {
@@ -73,15 +81,6 @@
 .global-wa-messenger--chat-active .global-wa-messenger__sidebar {
     transform: translateX(-20%);
     opacity: 0.5;
-}
-
-
-/* Sidebar Styling */
-.global-wa-messenger__sidebar {
-    border-right: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
-    background: var(--white);
 }
 
 .global-wa-messenger__sidebar-header {
@@ -127,14 +126,6 @@
     text-overflow: ellipsis;
 }
 
-.global-wa-messenger__sidebar-header .global-wa-messenger__close-btn {
-    --btn-text: var(--text-main, #333);
-}
-
-.global-wa-messenger__chat-header .global-wa-messenger__close-btn {
-    --btn-text: var(--white);
-}
-
 .global-wa-messenger__close-btn {
     background: none;
     border: none;
@@ -142,6 +133,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.global-wa-messenger__sidebar-header .global-wa-messenger__close-btn {
+    --btn-text: var(--text-main, #333);
+}
+
+.global-wa-messenger__chat-header .global-wa-messenger__close-btn {
+    --btn-text: var(--white);
 }
 
 /* Conversations List */
@@ -162,7 +161,7 @@
     gap: 10px;
     padding: 0.75rem 1rem;
     cursor: pointer;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgb(0 0 0 / 5%);
     transition: background-color 0.2s;
     position: relative;
 }
@@ -236,13 +235,6 @@
 }
 
 /* Chat Area Styling */
-.global-wa-messenger__chat-area {
-    display: flex;
-    flex-direction: column;
-    background: var(--white);
-    position: relative;
-}
-
 .global-wa-messenger__chat-header {
     padding: 0 1.25rem;
     background: #075e54;
@@ -256,6 +248,7 @@
 
 .global-wa-messenger__back-btn {
     --btn-text: var(--white);
+
     background: none;
     border: none;
     cursor: pointer;
@@ -316,7 +309,7 @@
 /* The global-wa-messenger__close-btn colors are handled above by header context */
 
 .global-wa-messenger__action-btn {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255 255 255 / 10%);
     border: none;
     color: white;
     width: 32px;
@@ -330,7 +323,7 @@
 }
 
 .global-wa-messenger__action-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgb(255 255 255 / 20%);
 }
 
 .global-wa-messenger__chat-content {
@@ -371,7 +364,7 @@
 }
 
 /* Responsive Logic */
-@media (max-width: 900px) {
+@media (width <= 900px) {
     .global-wa-messenger {
         width: 100%;
         left: 0;
@@ -401,10 +394,11 @@
 
 /* Manual Register Button in Header */
 .global-wa-messenger__register-manual-btn {
-    --btn-bg: rgba(255, 255, 255, 0.13);
-    --btn-border: rgba(255, 255, 255, 0.27);
+    --btn-bg: rgb(255 255 255 / 13%);
+    --btn-border: rgb(255 255 255 / 27%);
     --btn-text: var(--white);
-    --btn-hover-bg: rgba(255, 255, 255, 0.27);
+    --btn-hover-bg: rgb(255 255 255 / 27%);
+
     font-weight: 600;
     border-radius: 20px;
     padding: 4px 12px;
@@ -425,6 +419,7 @@
         opacity: 0;
         transform: translateY(30px) scale(0.98);
     }
+
     to {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -445,7 +440,7 @@
     background: white;
     padding: 2rem;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 20px rgb(0 0 0 / 8%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -484,13 +479,13 @@
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: rgba(37, 211, 102, 0.2);
+    background: rgb(37 211 102 / 20%);
     z-index: 1;
     animation: pulse 2s infinite;
 }
 
 .global-wa-messenger__pulse-ring--offline {
-    background: rgba(239, 68, 68, 0.2);
+    background: rgb(239 68 68 / 20%);
 }
 
 @keyframes pulse {
@@ -499,7 +494,7 @@
 }
 
 .global-wa-messenger__pairing h3 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.5rem;
     color: #1f2937;
     font-size: 1.25rem;
     font-weight: 700;
@@ -518,7 +513,7 @@
     background: white;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    box-shadow: 0 10px 25px rgb(0 0 0 / 5%);
     overflow: hidden;
 }
 
@@ -538,7 +533,7 @@
     padding: 8px;
     border-radius: 8px;
     color: #25D366;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
 
 .global-wa-messenger__qr-placeholder {

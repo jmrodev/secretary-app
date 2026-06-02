@@ -3,29 +3,24 @@
     --primary-color: #4880FF; /* DashStack Blue */
     --primary-hover: #3D6EEB; 
     --secondary-color: #273142; /* DashStack Sidebar/Card Dark Bg */
-    
     --accent-color: #4880FF; 
     --accent-hover: #3D6EEB; 
-    
     --background-bg: #1B2431; /* DashStack Page Bg */
     --bg-gradient-blue: linear-gradient(135deg, #1B2431 0%, #273142 100%);
-    
     --dashboard-card-bg: #273142; 
     --dashboard-card-border: #323d4e;
     --modal-bg: #1e293b;
     --modal-bg-dark: #1e293b;
-    
     --text-main: #f8fafc; /* Slate 50 for dark background */
     --text-muted: #94a3b8; /* Slate 400 */
     --text-secondary: #cbd5e1; /* Slate 300 */
-    
     --border-color: #64748b; /* Slate 500 - Stronger borders for Slate-400 bg */
     --error: #ef4444; 
     --success: #10b981;
     --warning: #f59e0b;
 
     /* Gray Scale (Using Slate for a premium feel) */
-    --white: #ffffff;
+    --white: #fff;
     --gray-50: #f8fafc;
     --gray-100: #f1f5f9;
     --gray-200: #e2e8f0;
@@ -151,19 +146,16 @@
     --radius-sm: 0.5rem;
     
     /* Ambient Shadows (Extra-diffused) */
-    --shadow-sm: 0 4px 12px rgba(25, 28, 30, 0.04);
-    --shadow-md: 0 8px 24px rgba(25, 28, 30, 0.06);
-    --shadow-lg: 0 12px 32px rgba(25, 28, 30, 0.08);
-    --shadow-premium: 0 24px 48px -12px rgba(0, 61, 155, 0.15); /* Tinted ambient shadow */
-    
+    --shadow-sm: 0 4px 12px rgb(25 28 30 / 4%);
+    --shadow-md: 0 8px 24px rgb(25 28 30 / 6%);
+    --shadow-lg: 0 12px 32px rgb(25 28 30 / 8%);
+    --shadow-premium: 0 24px 48px -12px rgb(0 61 155 / 15%); /* Tinted ambient shadow */
     --font-main: 'Nunito Sans', 'Inter', system-ui, sans-serif;
     --font-newsreader: 'Newsreader', 'Georgia', serif;
     --font-manrope: 'Manrope', sans-serif;
     --font-nunito: 'Nunito Sans', sans-serif;
-    
-    --glass: rgba(255, 255, 255, 0.05); 
-    --glass-dark: rgba(15, 23, 42, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    
+    --glass: rgb(255 255 255 / 5%); 
+    --glass-dark: rgb(15 23 42 / 40%);
+    --glass-border: rgb(255 255 255 / 5%);
     --sidebar-bg: #273142; /* DashStack Sidebar Bg */
 }

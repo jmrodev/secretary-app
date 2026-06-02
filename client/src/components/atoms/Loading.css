@@ -13,13 +13,9 @@
 
 .loading--full-page {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(15, 23, 42, 0.7);
+    inset: 0;
+    background: rgb(15 23 42 / 70%);
     backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
     z-index: 10000;
 }
 
@@ -35,7 +31,7 @@
     border-radius: 50%;
     border: 2px solid transparent;
     border-top-color: var(--primary-color);
-    border-bottom-color: rgba(72, 128, 255, 0.2);
+    border-bottom-color: rgb(72 128 255 / 20%);
     animation: loading-spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 

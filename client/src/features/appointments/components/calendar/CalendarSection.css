@@ -46,7 +46,30 @@
     animation: fade-in-up 0.3s ease-out;
 }
 
+.calendar-section__monthly-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    width: 100%;
+    align-items: start;
+}
+
+.calendar-section__monthly-calendar {
+    flex: 1;
+    min-width: 0;
+}
+
+.calendar-section__monthly-sidebar {
+    width: 100%;
+}
+
 @keyframes fade-in-up {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@media (width <= 1024px) {
+    .calendar-section__monthly-layout {
+        grid-template-columns: 1fr;
+    }
 }

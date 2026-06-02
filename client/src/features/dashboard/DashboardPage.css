@@ -44,7 +44,7 @@
     animation: fade-in 0.3s ease-out forwards;
 }
 
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
     .dashboard-page-orchestrator__view-container {
         height: auto;
     }

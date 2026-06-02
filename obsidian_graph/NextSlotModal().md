@@ -1,21 +1,20 @@
+---
+source_file: "client/src/features/appointments/components/modals/NextSlotModal.jsx"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # NextSlotModal()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/NextSlotModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[NextSlotModal.jsx]] - `contains` [EXTRACTED]
+- [[getNow()]] - `calls` [INFERRED]
+- [[toInputDate()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[NextSlotModal.jsx|NextSlotModal.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
+#graphify/code #graphify/INFERRED #community/Institutions_&_Medical_Requirements

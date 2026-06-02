@@ -1,16 +1,17 @@
+---
+source_file: "server/controllers/appointments/utils.js"
+type: "code"
+community: "Community 52"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_52
+---
+
 # utils.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/appointments/utils.js
-- **Comunidad:** [[_COMMUNITY_Community 48]]
+## Connections
+- [[validateAdminPassword()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[validateAdminPassword()|validateAdminPassword()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[validateAdminPassword()|validateAdminPassword()]]
-- [[appointmentHelper.js|appointmentHelper.js]]
-- [[formatDateForDB()|formatDateForDB()]]
-- [[freeSlot()|freeSlot()]]
-- [[occupySlot()|occupySlot()]]
-- [[checkModificationPermissions()|checkModificationPermissions()]]
+#graphify/code #graphify/EXTRACTED #community/Community_52

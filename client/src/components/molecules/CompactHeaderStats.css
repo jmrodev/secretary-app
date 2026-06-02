@@ -1,12 +1,12 @@
 .compact-stats {
     --stats-gap: 1.5rem;
-    --stats-pill-bg: rgba(255, 255, 255, 0.04);
-    --stats-pill-border: rgba(255, 255, 255, 0.08);
+    --stats-pill-bg: rgb(255 255 255 / 4%);
+    --stats-pill-border: rgb(255 255 255 / 8%);
 
     display: flex;
     align-items: center;
     gap: var(--stats-gap);
-    animation: fade-inDown 0.6s cubic-bezier(0.2, 0, 0, 1) both;
+    animation: fade-in-down 0.6s cubic-bezier(0.2, 0, 0, 1) both;
 }
 
 .compact-stats__group {
@@ -30,9 +30,9 @@
 }
 
 .compact-stats__pill:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255 255 255 / 10%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgb(0 0 0 / 30%);
 }
 
 .compact-stats__icon-wrapper {
@@ -46,27 +46,27 @@
 }
 
 .compact-stats__icon-wrapper[data-stat="appointments"] {
-    background: rgba(72, 128, 255, 0.2);
+    background: rgb(72 128 255 / 20%);
     color: #4880FF;
 }
 
 .compact-stats__icon-wrapper[data-stat="week"] {
-    background: rgba(16, 185, 129, 0.2);
+    background: rgb(16 185 129 / 20%);
     color: #10B981;
 }
 
 .compact-stats__icon-wrapper[data-stat="month"] {
-    background: rgba(245, 158, 11, 0.2);
+    background: rgb(245 158 11 / 20%);
     color: #F59E0B;
 }
 
 .compact-stats__icon-wrapper[data-stat="patients"] {
-    background: rgba(239, 68, 68, 0.2);
+    background: rgb(239 68 68 / 20%);
     color: #EF4444;
 }
 
 .compact-stats__icon-wrapper[data-stat="growth"] {
-    background: rgba(139, 92, 246, 0.2);
+    background: rgb(139 92 246 / 20%);
     color: #8B5CF6;
 }
 
@@ -81,7 +81,7 @@
 .compact-stats__skeleton {
     width: 40px;
     height: 14px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgb(255 255 255 / 5%);
     border-radius: 4px;
     position: relative;
     overflow: hidden;
@@ -95,23 +95,24 @@
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.05),
+        rgb(255 255 255 / 5%),
         transparent
     );
-    animation: skeletonShimmer 1.5s infinite;
+    animation: skeleton-shimmer 1.5s infinite;
 }
 
-@keyframes skeletonShimmer {
+@keyframes skeleton-shimmer {
     100% {
         transform: translateX(100%);
     }
 }
 
-@keyframes fade-inDown {
+@keyframes fade-in-down {
     from {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

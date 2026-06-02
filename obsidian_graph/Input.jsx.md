@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Input.jsx"
+type: "code"
+community: "Community 277"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_277
+---
+
 # Input.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/Input.jsx
-- **Comunidad:** [[_COMMUNITY_Community 274]]
+## Connections
+- [[Input()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[Input()|Input()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Input()|Input()]]
+#graphify/code #graphify/EXTRACTED #community/Community_277

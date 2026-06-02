@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useLanguage } from '@/hooks/useLanguage';

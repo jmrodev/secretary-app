@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/lists/MedicationList.jsx"
+type: "code"
+community: "Community 175"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_175
+---
+
 # MedicationList()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicationList.jsx
-- **Comunidad:** [[_COMMUNITY_Community 173]]
+## Connections
+- [[MedicationList.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicationList.jsx|MedicationList.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicationList.jsx|MedicationList.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_175

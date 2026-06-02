@@ -5,6 +5,7 @@
     flex-direction: column;
     padding: 0;
     min-height: 0;
+    flex: 1;
     overflow: hidden;
     gap: 1.5rem;
     background-color: transparent;
@@ -15,7 +16,17 @@
    Timeline styles are in ScheduleTimeline.css
 */
 
-@media (max-width: 600px) {
+/* Table view overrides within DaySchedule context */
+.day-schedule__table-empty {
+    padding: 4rem 2rem;
+}
+
+.day-schedule__table-container {
+    margin-top: 0.5rem;
+}
+
+
+@media (width <= 600px) {
     .day-schedule {
         gap: 1rem;
     }

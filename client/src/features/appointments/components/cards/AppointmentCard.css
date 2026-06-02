@@ -1,48 +1,61 @@
-/* AppointmentCard Molecule (BEM Strict) - Dark Mode Standard */
+/* AppointmentCard - High Contrast Production Design */
 
 .appointment-card {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.85rem 1.25rem;
-    background-color: var(--gray-900);
-    border: 1px solid var(--dashboard-card-border);
-    border-radius: var(--radius-md);
+    gap: 1.25rem;
+    padding: 0.9rem 1.25rem;
+    background-color: #0f172a; /* Ultra Dark Blue - High Contrast Base */
+    border: 1.5px solid #475569; /* Silver-Gray Border - Very Sharp */
+    border-radius: 0.85rem;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    box-shadow: 0 10px 20px -10px rgb(0 0 0 / 70%);
     user-select: none;
+    min-width: 0;
+    width: 100%;
+    max-width: 36rem;
 }
 
 .appointment-card:hover {
-    background-color: var(--gray-800);
-    border-color: var(--primary-color);
-    transform: translateX(4px);
-    box-shadow: var(--shadow-md);
+    background-color: #1e293b;
+    border-color: #4880ff;
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 20px 30px -15px rgb(0 0 0 / 90%);
 }
 
-/* --- Status Modifiers (Left Accent) --- */
-.appointment-card--completed  { border-left: 4px solid var(--success); }
-.appointment-card--cancelled  { border-left: 4px solid var(--danger); opacity: 0.6; }
-.appointment-card--absent     { border-left: 4px solid var(--warning); opacity: 0.8; }
-.appointment-card--pending    { border-left: 4px solid var(--primary-color); }
-.appointment-card--confirmed  { border-left: 4px solid var(--info); }
-.appointment-card--arrived    { border-left: 4px solid var(--teal-500); }
-.appointment-card--virtual    { background: linear-gradient(90deg, var(--gray-900), rgba(59, 130, 246, 0.05)); }
+/* --- Status Modifiers (Neon Accents) --- */
+.appointment-card--completed  { border-left: 8px solid #22c55e !important; }
+.appointment-card--cancelled  { border-left: 8px solid #ef4444 !important; opacity: 0.7; }
+.appointment-card--absent     { border-left: 8px solid #f59e0b !important; }
+.appointment-card--pending    { border-left: 8px solid #3b82f6 !important; }
+.appointment-card--confirmed  { border-left: 8px solid #06b6d4 !important; }
+.appointment-card--arrived    { border-left: 8px solid #14b8a6 !important; }
+
+.appointment-card--virtual    { 
+    background: linear-gradient(90deg, #0f172a, rgb(139 92 246 / 15%));
+    border-left: 8px solid #a855f7 !important; 
+}
 
 /* --- Sub-elements --- */
 .appointment-card__time-box {
-    min-width: 3.5rem;
-    display: flex;
-    justify-content: center;
+    min-width: 4.5rem;
+    text-align: center;
+    padding: 0.4rem 0.5rem;
+    flex-shrink: 0;
+    background: #1e293b; /* Slightly lighter box for the time */
+    border: 1px solid #334155;
+    border-radius: 8px;
 }
 
 .appointment-card__time {
-    font-size: 0.9rem;
-    font-weight: 800;
-    color: var(--primary-color);
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #fbbf24; /* Vibrant Amber for the time - Highly readable */
     font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
 }
 
 .appointment-card__info {
@@ -54,12 +67,14 @@
 }
 
 .appointment-card__patient-name {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #fff !important; /* Pure White */
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text-main);
+    gap: 0.65rem;
+    text-shadow: 0 2px 4px rgb(0 0 0 / 30%);
+    min-width: 0;
 }
 
 .appointment-card__patient-name-text {
@@ -70,25 +85,26 @@
 
 .appointment-card__details {
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.75rem;
-    color: var(--text-muted);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    color: #f1f5f9; /* Chalk White - High visibility */
+    min-width: 0;
 }
 
 .appointment-card__doctor {
+    font-weight: 700;
+    color: #e2e8f0; /* Bright Chalk */
     display: flex;
     align-items: center;
-    gap: 0.35rem;
-    font-weight: 600;
-    color: var(--text-secondary);
+    gap: 0.4rem;
 }
 
 .appointment-card__reason {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    opacity: 0.8;
+    color: #cbd5e1; /* Light Slate */
+    overflow-wrap: break-word;
+    opacity: 0.9;
 }
 
 /* --- Status Area (Payment & Chips) --- */
@@ -96,54 +112,80 @@
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 0.35rem;
-    min-width: 6rem;
+    gap: 0.45rem;
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
 .appointment-card__status-chip {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.15rem 0.5rem;
-    border-radius: var(--radius-full);
-    background: var(--gray-800);
-    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    background: #000;
+    color: #fff;
+    border: 1px solid #334155;
 }
 
-.appointment-card__status-chip--completed { color: var(--success); background: rgba(0, 182, 122, 0.1); }
-.appointment-card__status-chip--cancelled { color: var(--danger); background: rgba(249, 55, 93, 0.1); }
-.appointment-card__status-chip--pending   { color: var(--primary-color); background: rgba(59, 130, 246, 0.1); }
+.appointment-card__status-chip--completed { color: #4ade80; border-color: #22c55e; }
+.appointment-card__status-chip--cancelled { color: #f87171; border-color: #ef4444; }
+.appointment-card__status-chip--pending   { color: #60a5fa; border-color: #3b82f6; }
+.appointment-card__status-chip--confirmed { color: #22d3ee; border-color: #0891b2; }
+.appointment-card__status-chip--arrived   { color: #2dd4bf; border-color: #0d9488; }
+.appointment-card__status-chip--absent    { color: #facc15; border-color: #ca8a04; }
+.appointment-card__status-chip--suspended { color: #f87171; border-color: #dc2626; }
+.appointment-card__status-chip--rescheduled { color: #c084fc; border-color: #9333ea; }
 
 /* --- Payment Amount Indicators --- */
 .appointment-card__payment-info {
     display: flex;
     align-items: center;
-    gap: 0.35rem;
-    font-weight: 800;
-    font-size: 0.85rem;
+    gap: 0.4rem;
+    font-weight: 900;
+    font-size: 1rem;
 }
 
-.appointment-card__payment-info--paid { color: var(--success); }
-.appointment-card__payment-info--debt { color: var(--danger); }
-.appointment-card__payment-info--bonified { color: var(--primary-color); }
+.appointment-card__payment-info--paid { color: #4ade80; }
+.appointment-card__payment-info--pending { color: #f1f5f9; }
+.appointment-card__payment-info--debt { color: #f87171; }
+.appointment-card__payment-info--bonified { color: #c084fc; }
 
-.appointment-card__payment-icon {
-    font-size: 0.9rem;
+/* --- Skeleton Loading State --- */
+.appointment-card--skeleton {
+    cursor: default;
+    pointer-events: none;
+    border-color: #334155;
+    background-color: #0f172a;
 }
 
-/* --- Actions Overlay (Visible on hover if needed) --- */
-.appointment-card__actions {
-    display: flex;
-    gap: 0.35rem;
-    margin-left: 0.5rem;
+.appointment-card--skeleton .appointment-card__time-box,
+.appointment-card--skeleton .appointment-card__patient-name,
+.appointment-card--skeleton .appointment-card__details,
+.appointment-card--skeleton .appointment-card__status-chip {
+    position: relative;
+    overflow: hidden;
+    background: #1e293b;
+    border-radius: 4px;
+    color: transparent !important;
+    border: none;
 }
 
-/* --- Specific Styles for Incomplete/Google --- */
-.appointment-card--external {
-    border-style: dashed;
+.appointment-card--skeleton *::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgb(255 255 255 / 5%),
+        transparent
+    );
+    animation: skeleton-shimmer 1.5s infinite;
 }
 
-.appointment-card--anonymous {
-    background-color: var(--gray-950);
+@keyframes skeleton-shimmer {
+    100% { transform: translateX(100%); }
 }

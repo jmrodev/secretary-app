@@ -3,7 +3,7 @@
 .calendar-day-indicator {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 0.25rem;
     margin-top: auto;
     width: 100%;
 }
@@ -11,14 +11,14 @@
 .calendar-day-indicator__grid {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
     width: 100%;
 }
 
 .calendar-day-indicator__row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2px;
+    gap: 3px;
 }
 
 .calendar-day-indicator__row--hidden {
@@ -29,52 +29,58 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2px;
-    border-radius: 4px;
-    font-weight: 900;
+    padding: 2px 4px;
+    border-radius: var(--radius-sm);
+    font-weight: 800;
     font-size: 0.65rem;
-    transition: all 0.2s ease;
+    font-family: var(--font-manrope);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid transparent;
 }
 
 .calendar-day-indicator__appointment-badge:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
     z-index: 5;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    box-shadow: var(--shadow-sm);
 }
 
 .calendar-day-indicator__appointment-badge--free-normal {
     color: var(--success);
-    background: rgba(var(--success-rgb), 0.1);
+    background-color: rgb(16 185 129 / 10%);
+    border-color: rgb(16 185 129 / 15%);
 }
 
 .calendar-day-indicator__appointment-badge--booked-normal {
     color: var(--accent);
-    background: rgba(var(--accent-rgb), 0.1);
+    background-color: rgb(72 128 255 / 10%);
+    border-color: rgb(72 128 255 / 15%);
 }
 
 .calendar-day-indicator__appointment-badge--free-extra {
     color: var(--warning);
-    background: rgba(var(--warning-rgb), 0.1);
+    background-color: rgb(245 158 11 / 10%);
+    border-color: rgb(245 158 11 / 15%);
 }
 
 .calendar-day-indicator__appointment-badge--booked-extra {
-    color: var(--indigo-400);
-    background: rgba(var(--indigo-rgb), 0.1);
+    color: var(--indigo-500);
+    background-color: rgb(99 102 241 / 10%);
+    border-color: rgb(99 102 241 / 15%);
 }
 
 .calendar-day-indicator__appointment-badge--zero {
-    opacity: 0.1;
+    opacity: 0.08;
     color: var(--text-muted);
-    background: transparent;
+    background-color: transparent;
+    border-color: transparent;
 }
 
-/* Modifier for when the parent cell is selected - No nesting from parent! */
-.calendar-day-indicator--selected .calendar-day-indicator__appointment-badge {
-    background: rgba(255, 255, 255, 0.15);
-    color: var(--white);
+/* Selected Modifier - subtle border enhancement to coordinate with the selected cell */
+.calendar-day-indicator--selected .calendar-day-indicator__appointment-badge:not(.calendar-day-indicator__appointment-badge--zero) {
+    border-color: rgb(255 255 255 / 30%);
+    box-shadow: inset 0 0 4px rgb(255 255 255 / 5%);
 }
 
 .calendar-day-indicator--selected .calendar-day-indicator__appointment-badge--zero {
-    opacity: 0.3;
+    opacity: 0.04;
 }

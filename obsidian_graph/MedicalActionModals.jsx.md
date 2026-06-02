@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/modals/MedicalActionModals.jsx"
+type: "code"
+community: "Community 156"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_156
+---
+
 # MedicalActionModals.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicalActionModals.jsx
-- **Comunidad:** [[_COMMUNITY_Community 151]]
+## Connections
+- [[MedicalActionModals()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicalActionModals()|MedicalActionModals()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicalActionModals()|MedicalActionModals()]]
+#graphify/code #graphify/EXTRACTED #community/Community_156

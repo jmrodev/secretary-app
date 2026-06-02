@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/schedule/ScheduleSection.jsx"
+type: "code"
+community: "Community 188"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_188
+---
+
 # ScheduleSection.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/ScheduleSection.jsx
-- **Comunidad:** [[_COMMUNITY_Community 188]]
+## Connections
+- [[ScheduleSection()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ScheduleSection()|ScheduleSection()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ScheduleSection()|ScheduleSection()]]
+#graphify/code #graphify/EXTRACTED #community/Community_188

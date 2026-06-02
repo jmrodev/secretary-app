@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/sections/CashBoxSummary.jsx"
+type: "code"
+community: "Community 124"
+location: "L63"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_124
+---
+
 # CashBoxSummary()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/CashBoxSummary.jsx
-- **Comunidad:** [[_COMMUNITY_Community 224]]
+## Connections
+- [[CashBoxSummary.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[CashBoxSummary.jsx|CashBoxSummary.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[CashBoxSummary.jsx|CashBoxSummary.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_124

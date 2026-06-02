@@ -1,23 +1,19 @@
+---
+source_file: "server/services/appointments/availabilitySearchService.js"
+type: "code"
+community: "Community 89"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_89
+---
+
 # AvailabilitySearchService
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/availabilitySearchService.js
-- **Comunidad:** [[_COMMUNITY_Community 42]]
+## Connections
+- [[.getFreeSlotsBatch()_1]] - `method` [EXTRACTED]
+- [[.getNextFreeSlot()_1]] - `method` [EXTRACTED]
+- [[availabilitySearchService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[availabilitySearchService.js|availabilitySearchService.js]] (contains)
-- --> [[._getDateStr()|._getDateStr()]] (method)
-- --> [[._parseLocalDate()|._parseLocalDate()]] (method)
-- --> [[.getNextFreeSlot()|.getNextFreeSlot()]] (method)
-- --> [[.getFreeSlotsBatch()|.getFreeSlotsBatch()]] (method)
-- --> [[._isBusy()|._isBusy()]] (method)
-- --> [[._injectOutOfHoursGaps()|._injectOutOfHoursGaps()]] (method)
-
-## Miembros de la misma Comunidad
-- [[availabilitySearchService.js|availabilitySearchService.js]]
-- [[._getDateStr()|._getDateStr()]]
-- [[._parseLocalDate()|._parseLocalDate()]]
-- [[.getNextFreeSlot()|.getNextFreeSlot()]]
-- [[.getFreeSlotsBatch()|.getFreeSlotsBatch()]]
-- [[._isBusy()|._isBusy()]]
-- [[._injectOutOfHoursGaps()|._injectOutOfHoursGaps()]]
+#graphify/code #graphify/EXTRACTED #community/Community_89

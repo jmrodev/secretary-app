@@ -15,6 +15,7 @@
 .holiday-list__item:hover { transform: translateX(4px); border-color: var(--red-200); background: var(--red-50); }
 
 .holiday-list__info { display: flex; flex-direction: column; gap: 0.25rem; }
+
 .holiday-list__date {
     font-size: 0.75rem; font-weight: 800; color: var(--red-600); text-transform: uppercase;
     display: flex; align-items: center; gap: 0.5rem;

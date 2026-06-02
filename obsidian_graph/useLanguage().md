@@ -1,89 +1,86 @@
+---
+source_file: "client/src/hooks/useLanguage.js"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Agenda_&_Slot_Management
+---
+
 # useLanguage()
 
-- **Tipo:** code
-- **Archivo:** client/src/context/LanguageContext.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[AdminUsersPage()]] - `calls` [INFERRED]
+- [[AiSettings()]] - `calls` [INFERRED]
+- [[AppointmentActionModal()]] - `calls` [INFERRED]
+- [[AppointmentCard()]] - `calls` [INFERRED]
+- [[AppointmentFormModal()]] - `calls` [INFERRED]
+- [[BillingSettings()]] - `calls` [INFERRED]
+- [[Calendar()]] - `calls` [INFERRED]
+- [[CalendarSection()]] - `calls` [INFERRED]
+- [[ChatConversationItem()]] - `calls` [INFERRED]
+- [[ChatSidebar()]] - `calls` [INFERRED]
+- [[ChatThread()]] - `calls` [INFERRED]
+- [[CommunicationSettings()]] - `calls` [INFERRED]
+- [[CompactHeaderStats()]] - `calls` [INFERRED]
+- [[ConfirmModal()]] - `calls` [INFERRED]
+- [[DaySchedule()]] - `calls` [INFERRED]
+- [[DoctorFiscalSettings()]] - `calls` [INFERRED]
+- [[DoctorScheduleSettings()]] - `calls` [INFERRED]
+- [[DoctorSelector()]] - `calls` [INFERRED]
+- [[GlobalWhatsappMessenger()]] - `calls` [INFERRED]
+- [[InstitutionForm()]] - `calls` [INFERRED]
+- [[InsuranceFormModal()]] - `calls` [INFERRED]
+- [[InsuranceList()]] - `calls` [INFERRED]
+- [[LanguageSelector()]] - `calls` [INFERRED]
+- [[MedicalHistoryTable()]] - `calls` [INFERRED]
+- [[MedicalRequestForm()]] - `calls` [INFERRED]
+- [[MedicalRequestList()]] - `calls` [INFERRED]
+- [[MedicalRequirementManager()]] - `calls` [INFERRED]
+- [[MedicationAutocomplete()]] - `calls` [INFERRED]
+- [[NextSlotCalendarModal()]] - `calls` [INFERRED]
+- [[NextSlotModal()]] - `calls` [INFERRED]
+- [[PageHeader()]] - `calls` [INFERRED]
+- [[PatientHistoryModal()]] - `calls` [INFERRED]
+- [[PatientHistoryView()]] - `calls` [INFERRED]
+- [[PatientMedications()]] - `calls` [INFERRED]
+- [[PatientRecycleBin()]] - `calls` [INFERRED]
+- [[PatientSearchSelect()]] - `calls` [INFERRED]
+- [[PhoneNumbersManager()]] - `calls` [INFERRED]
+- [[ProtectedRoute()]] - `calls` [INFERRED]
+- [[QRCodeModal()]] - `calls` [INFERRED]
+- [[RequestsPage()]] - `calls` [INFERRED]
+- [[SearchBar()]] - `calls` [INFERRED]
+- [[TempAccessPage()]] - `calls` [INFERRED]
+- [[TransactionModal()]] - `calls` [INFERRED]
+- [[UserForm()]] - `calls` [INFERRED]
+- [[UserManagement()]] - `calls` [INFERRED]
+- [[UserTable()]] - `calls` [INFERRED]
+- [[WhatsAppModal()]] - `calls` [INFERRED]
+- [[useAppointmentBooking()]] - `calls` [INFERRED]
+- [[useAppointmentsPageController()]] - `calls` [INFERRED]
+- [[useAuditLogsController()]] - `calls` [INFERRED]
+- [[useDashboardController()]] - `calls` [INFERRED]
+- [[useDayScheduleHandlers()]] - `calls` [INFERRED]
+- [[useDoctorsPageController()]] - `calls` [INFERRED]
+- [[useFinancesPageController()]] - `calls` [INFERRED]
+- [[useInstitutionsController()]] - `calls` [INFERRED]
+- [[useInsurancesController()]] - `calls` [INFERRED]
+- [[useLanguage.js]] - `contains` [EXTRACTED]
+- [[useLayoutController()]] - `calls` [INFERRED]
+- [[useLoginController()]] - `calls` [INFERRED]
+- [[useMedicalDocumentsController()]] - `calls` [INFERRED]
+- [[usePatientFormController()]] - `calls` [INFERRED]
+- [[usePatientsPageController()]] - `calls` [INFERRED]
+- [[useProfileController()]] - `calls` [INFERRED]
+- [[useRegisterController()]] - `calls` [INFERRED]
+- [[useRentalsController()]] - `calls` [INFERRED]
+- [[useReportsController()]] - `calls` [INFERRED]
+- [[useRequirementManagerController()]] - `calls` [INFERRED]
+- [[useSystemConfigController()]] - `calls` [INFERRED]
+- [[useTransactionForm()]] - `calls` [INFERRED]
+- [[useUsers()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[LanguageContext.jsx|LanguageContext.jsx]] (contains)
-- <-- [[useInstitutionsController()|useInstitutionsController()]] (calls)
-- <-- [[InstitutionForm()|InstitutionForm()]] (calls)
-- <-- [[useDashboardController()|useDashboardController()]] (calls)
-- <-- [[RequestsPage()|RequestsPage()]] (calls)
-- <-- [[useRequirementManagerController()|useRequirementManagerController()]] (calls)
-- <-- [[useMedicalDocumentsController()|useMedicalDocumentsController()]] (calls)
-- <-- [[MedicationAutocomplete()|MedicationAutocomplete()]] (calls)
-- <-- [[MedicalRequestForm()|MedicalRequestForm()]] (calls)
-- <-- [[MedicalRequestList()|MedicalRequestList()]] (calls)
-- <-- [[MedicalHistoryTable()|MedicalHistoryTable()]] (calls)
-- <-- [[MedicalRequirementManager()|MedicalRequirementManager()]] (calls)
-- <-- [[useInsurancesController()|useInsurancesController()]] (calls)
-- <-- [[InsuranceList()|InsuranceList()]] (calls)
-- <-- [[InsuranceFormModal()|InsuranceFormModal()]] (calls)
-- <-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]] (calls)
-- <-- [[useAppointmentsPageController()|useAppointmentsPageController()]] (calls)
-- <-- [[useAppointmentBooking()|useAppointmentBooking()]] (calls)
-- <-- [[useAppointments()|useAppointments()]] (calls)
-- <-- [[DaySchedule()|DaySchedule()]] (calls)
-- <-- [[AppointmentCard()|AppointmentCard()]] (calls)
-- <-- [[CalendarSection()|CalendarSection()]] (calls)
-- <-- [[AppointmentActionModal()|AppointmentActionModal()]] (calls)
-- <-- [[Calendar()|Calendar()]] (calls)
-- <-- [[NextSlotCalendarModal()|NextSlotCalendarModal()]] (calls)
-- <-- [[NextSlotModal()|NextSlotModal()]] (calls)
-- <-- [[AppointmentFormModal()|AppointmentFormModal()]] (calls)
-- <-- [[PatientHistoryView()|PatientHistoryView()]] (calls)
-- <-- [[useSystemConfigController()|useSystemConfigController()]] (calls)
-- <-- [[AiSettings()|AiSettings()]] (calls)
-- <-- [[CommunicationSettings()|CommunicationSettings()]] (calls)
-- <-- [[BillingSettings()|BillingSettings()]] (calls)
-- <-- [[WhatsAppModal()|WhatsAppModal()]] (calls)
-- <-- [[ChatThread()|ChatThread()]] (calls)
-- <-- [[ChatSidebar()|ChatSidebar()]] (calls)
-- <-- [[ChatConversationItem()|ChatConversationItem()]] (calls)
-- <-- [[TempAccessPage()|TempAccessPage()]] (calls)
-- <-- [[useLoginController()|useLoginController()]] (calls)
-- <-- [[useProfileController()|useProfileController()]] (calls)
-- <-- [[useRegisterController()|useRegisterController()]] (calls)
-- <-- [[useFinancesPageController()|useFinancesPageController()]] (calls)
-- <-- [[useTransactionForm()|useTransactionForm()]] (calls)
-- <-- [[TransactionModal()|TransactionModal()]] (calls)
-- <-- [[AdminUsersPage()|AdminUsersPage()]] (calls)
-- <-- [[useUsers()|useUsers()]] (calls)
-- <-- [[UserManagement()|UserManagement()]] (calls)
-- <-- [[UserTable()|UserTable()]] (calls)
-- <-- [[UserForm()|UserForm()]] (calls)
-- <-- [[useRentalsController()|useRentalsController()]] (calls)
-- <-- [[useDoctorsPageController()|useDoctorsPageController()]] (calls)
-- <-- [[DoctorSelector()|DoctorSelector()]] (calls)
-- <-- [[DoctorFiscalSettings()|DoctorFiscalSettings()]] (calls)
-- <-- [[DoctorScheduleSettings()|DoctorScheduleSettings()]] (calls)
-- <-- [[useSidebarController()|useSidebarController()]] (calls)
-- <-- [[usePatientsPageController()|usePatientsPageController()]] (calls)
-- <-- [[usePatientFormController()|usePatientFormController()]] (calls)
-- <-- [[PatientMedications()|PatientMedications()]] (calls)
-- <-- [[QRCodeModal()|QRCodeModal()]] (calls)
-- <-- [[PatientSearchSelect()|PatientSearchSelect()]] (calls)
-- <-- [[PatientRecycleBin()|PatientRecycleBin()]] (calls)
-- <-- [[PatientHistoryModal()|PatientHistoryModal()]] (calls)
-- <-- [[useReportsController()|useReportsController()]] (calls)
-- <-- [[useAuditLogsController()|useAuditLogsController()]] (calls)
-- <-- [[LanguageSelector()|LanguageSelector()]] (calls)
-- <-- [[GlobalWhatsappMessenger()|GlobalWhatsappMessenger()]] (calls)
-- <-- [[PageHeader()|PageHeader()]] (calls)
-- <-- [[NavTabs()|NavTabs()]] (calls)
-- <-- [[ConfirmModal()|ConfirmModal()]] (calls)
-- <-- [[PhoneNumbersManager()|PhoneNumbersManager()]] (calls)
-- <-- [[CompactHeaderStats()|CompactHeaderStats()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
-- [[CalendarSection()|CalendarSection()]]
+#graphify/code #graphify/INFERRED #community/Agenda_&_Slot_Management

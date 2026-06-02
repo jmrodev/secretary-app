@@ -254,15 +254,18 @@ export const useAppointmentBooking = (doctors) => {
         bookAppointment,
         resetForm,
         handlers: {
-            handleDateChange: (val) => setDate(val),
-            handleDoctorChange: (val) => setSelectedDoctor(val),
+            handleDateChange: (e) => setDate(e?.target ? e.target.value : e),
+            handleDoctorChange: (e) => setSelectedDoctor(e?.target ? e.target.value : e),
             handlePatientChange: (val, obj) => {
                 setSelectedPatient(val);
                 setSelectedPatientData(obj);
             },
             handleTypeChange: (val) => setType(val),
-            handleInstitutionChange: (val) => setSelectedInstitution(val),
-            handleReasonChange: (val) => setReason(capitalizeFirst(val)),
+            handleInstitutionChange: (e) => setSelectedInstitution(e?.target ? e.target.value : e),
+            handleReasonChange: (e) => {
+                const val = e?.target ? e.target.value : e;
+                setReason(capitalizeFirst(val));
+            },
             handleBonifiedChange: (val) => setBonified(val),
             handlePhoneChange: (val) => setSelectedPatientData(prev => ({ ...prev, phone: val })),
             toggleForm: () => setShowForm(prev => !prev),

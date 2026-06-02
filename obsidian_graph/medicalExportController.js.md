@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/medical/medicalExportController.js"
+type: "code"
+community: "Community 315"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_315
+---
+
 # medicalExportController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/medical/medicalExportController.js
-- **Comunidad:** [[_COMMUNITY_Community 323]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_315

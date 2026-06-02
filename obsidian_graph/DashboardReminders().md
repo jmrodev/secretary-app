@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/dashboard/components/DashboardReminders.jsx"
+type: "code"
+community: "Community 155"
+location: "L13"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_155
+---
+
 # DashboardReminders()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/dashboard/components/DashboardReminders.jsx
-- **Comunidad:** [[_COMMUNITY_Community 148]]
+## Connections
+- [[DashboardReminders.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[DashboardReminders.jsx|DashboardReminders.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DashboardReminders.jsx|DashboardReminders.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_155

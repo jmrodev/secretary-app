@@ -1,18 +1,17 @@
+---
+source_file: "server/repositories/core/institutionRepository.js"
+type: "code"
+community: "Community 41"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_41
+---
+
 # institutionRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/institutionRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 39]]
+## Connections
+- [[InstitutionRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[InstitutionRepository|InstitutionRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InstitutionRepository|InstitutionRepository]]
-- [[.findAll()|.findAll()]]
-- [[.findById()|.findById()]]
-- [[.create()|.create()]]
-- [[.update()|.update()]]
-- [[.delete()|.delete()]]
-- [[.getInstitutionFinances()|.getInstitutionFinances()]]
-- [[.getPatientList()|.getPatientList()]]
+#graphify/code #graphify/EXTRACTED #community/Community_41

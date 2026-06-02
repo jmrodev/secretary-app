@@ -1,21 +1,18 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/AppointmentsActivity.kt"
+type: "code"
+community: "Community 18"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_18
+---
+
 # AppointmentsActivity.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/AppointmentsActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 21]]
+## Connections
+- [[AppointmentsActivity]] - `contains` [EXTRACTED]
+- [[FilterMode]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[FilterMode|FilterMode]] (contains)
-- --> [[AppointmentsActivity|AppointmentsActivity]] (contains)
-
-## Miembros de la misma Comunidad
-- [[FilterMode|FilterMode]]
-- [[AppointmentsActivity|AppointmentsActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.onResume()|.onResume()]]
-- [[.setupDoctorSpinner()|.setupDoctorSpinner()]]
-- [[.applyFilters()|.applyFilters()]]
-- [[.fetchAppointments()|.fetchAppointments()]]
-- [[AppointmentAdapter.kt|AppointmentAdapter.kt]]
-- [[AppointmentAdapter|AppointmentAdapter]]
-- [[.submitList()|.submitList()]]
+#graphify/code #graphify/EXTRACTED #community/Community_18

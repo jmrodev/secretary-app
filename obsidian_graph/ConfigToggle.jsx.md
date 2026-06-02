@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/config/components/ui/ConfigToggle.jsx"
+type: "code"
+community: "Community 204"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_204
+---
+
 # ConfigToggle.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/ConfigToggle.jsx
-- **Comunidad:** [[_COMMUNITY_Community 289]]
+## Connections
+- [[ConfigToggle()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ConfigToggle()|ConfigToggle()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ConfigToggle()|ConfigToggle()]]
+#graphify/code #graphify/EXTRACTED #community/Community_204

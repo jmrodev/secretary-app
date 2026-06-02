@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/user/authController.js"
+type: "code"
+community: "Community 324"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_324
+---
+
 # authController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/authController.js
-- **Comunidad:** [[_COMMUNITY_Community 304]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_324

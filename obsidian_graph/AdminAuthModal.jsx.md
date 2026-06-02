@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/auth/components/modals/AdminAuthModal.jsx"
+type: "code"
+community: "Community 215"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_215
+---
+
 # AdminAuthModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/components/AdminAuthModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 208]]
+## Connections
+- [[AdminAuthModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AdminAuthModal()|AdminAuthModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AdminAuthModal()|AdminAuthModal()]]
+#graphify/code #graphify/EXTRACTED #community/Community_215

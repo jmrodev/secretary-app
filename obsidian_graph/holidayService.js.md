@@ -1,14 +1,17 @@
+---
+source_file: "server/services/appointments/holidayService.js"
+type: "code"
+community: "Community 76"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_76
+---
+
 # holidayService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/holidayService.js
-- **Comunidad:** [[_COMMUNITY_Community 71]]
+## Connections
+- [[HolidayService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[HolidayService|HolidayService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[HolidayService|HolidayService]]
-- [[.getHolidays()|.getHolidays()]]
-- [[.addHoliday()|.addHoliday()]]
-- [[.deleteHoliday()|.deleteHoliday()]]
+#graphify/code #graphify/EXTRACTED #community/Community_76

@@ -1,11 +1,17 @@
+---
+source_file: "server/scripts/maintenance/reset_admin.js"
+type: "code"
+community: "Community 138"
+location: "L4"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_138
+---
+
 # reset()
 
-- **Tipo:** code
-- **Archivo:** server/utils/reset_admin.js
-- **Comunidad:** [[_COMMUNITY_Community 125]]
+## Connections
+- [[reset_admin.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[reset_admin.js|reset_admin.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[reset_admin.js|reset_admin.js]]
+#graphify/code #graphify/EXTRACTED #community/Community_138

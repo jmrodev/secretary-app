@@ -82,7 +82,7 @@ export const useAppointmentUIHandlers = ({
                 type: 'income_patient',
                 patientId: appt.patient_id,
                 patientName: appt.patient_name || appt.full_name,
-                amount: appt.tariff,
+                amount: appt.cost,
                 description: `Turno - ${appt.patient_name || appt.full_name} - ${appt.appointment_date ? new Date(appt.appointment_date).toLocaleDateString() : 'Sin Fecha'}`,
                 doctorId: appt.doctor_id,
                 appointment_id: appt.id,

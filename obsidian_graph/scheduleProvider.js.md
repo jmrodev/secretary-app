@@ -1,13 +1,17 @@
+---
+source_file: "server/services/appointments/providers/scheduleProvider.js"
+type: "code"
+community: "Community 92"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_92
+---
+
 # scheduleProvider.js
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/providers/scheduleProvider.js
-- **Comunidad:** [[_COMMUNITY_Community 89]]
+## Connections
+- [[ScheduleProvider]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ScheduleProvider|ScheduleProvider]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ScheduleProvider|ScheduleProvider]]
-- [[.getDoctorSchedule()|.getDoctorSchedule()]]
-- [[.getDoctorConfig()|.getDoctorConfig()]]
+#graphify/code #graphify/EXTRACTED #community/Community_92

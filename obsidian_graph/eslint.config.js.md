@@ -1,10 +1,14 @@
+---
+source_file: "client/eslint.config.js"
+type: "code"
+community: "Community 371"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_371
+---
+
 # eslint.config.js
 
-- **Tipo:** code
-- **Archivo:** client/eslint.config.js
-- **Comunidad:** [[_COMMUNITY_Community 374]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_371

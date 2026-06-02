@@ -14,18 +14,8 @@ const ALLOWED_UPDATES = [
 class MedicalRequestRepository {
     async findAll(filters = {}, conn = pool) {
         let query = `
-            SELECT r.*, p.full_name as patient_name, p.user_id as patient_user_id, d.full_name as doctor_name, d.user_id as doctor_user_id,
-            COALESCE(NULLIF(r.debt_amount, 0), 0) as resolved_debt_amount,
-            COALESCE(tx.paid_amount, 0) as paid_amount
-            FROM medical_requests r
-            LEFT JOIN patients p ON r.patient_id = p.id
-            LEFT JOIN doctors d ON r.doctor_id = d.id
-            LEFT JOIN (
-                SELECT request_id, SUM(amount) as paid_amount
-                FROM transactions
-                WHERE status = 'paid' AND request_id IS NOT NULL
-                GROUP BY request_id
-            ) tx ON tx.request_id = r.id
+            SELECT r.*
+            FROM v_medical_request_details r
         `;
         const params = [];
         const whereClauses = [];
@@ -105,10 +95,8 @@ class MedicalRequestRepository {
 
     async findDetailedById(id, conn = pool) {
         const rows = await conn.query(`
-            SELECT r.*, p.full_name as patient_name, p.user_id as patient_user_id, d.full_name as doctor_name, d.user_id as doctor_user_id
-            FROM medical_requests r
-            JOIN patients p ON r.patient_id = p.id
-            JOIN doctors d ON r.doctor_id = d.id
+            SELECT r.*
+            FROM v_medical_request_details r
             WHERE r.id = ?
         `, [id]);
         return rows[0] || null;

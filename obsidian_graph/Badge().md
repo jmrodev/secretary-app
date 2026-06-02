@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Badge.jsx"
+type: "code"
+community: "Community 270"
+location: "L16"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_270
+---
+
 # Badge()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/Badge.jsx
-- **Comunidad:** [[_COMMUNITY_Community 267]]
+## Connections
+- [[Badge.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[Badge.jsx|Badge.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Badge.jsx|Badge.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_270

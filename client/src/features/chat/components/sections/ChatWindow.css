@@ -7,6 +7,7 @@
     --chat-input-bg: var(--white);
     --chat-border: var(--border-color);
     --chat-avatar-bg: var(--primary-light, #e0f2fe);
+
     /* ------------------------------ */
 
     display: flex;
@@ -191,7 +192,7 @@
 .chat-window__input:focus {
     background-color: var(--white);
     border-color: var(--primary-light);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 4px rgb(59 130 246 / 10%);
 }
 
 .chat-window__send-button {
@@ -222,7 +223,7 @@
     color: var(--text-main);
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .chat-window__back-button {
         display: flex;
     }

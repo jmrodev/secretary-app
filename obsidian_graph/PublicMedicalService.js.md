@@ -1,20 +1,17 @@
+---
+source_file: "server/services/medical/PublicMedicalService.js"
+type: "code"
+community: "Institutions Feature"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_Feature
+---
+
 # PublicMedicalService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/medical/PublicMedicalService.js
-- **Comunidad:** [[_COMMUNITY_Community 2]]
+## Connections
+- [[PublicMedicalService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PublicMedicalService|PublicMedicalService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[priceCalculator.js|priceCalculator.js]]
-- [[calculatePrice()|calculatePrice()]]
-- [[.getPricing()|.getPricing()]]
-- [[bookingService.js|bookingService.js]]
-- [[BookingService|BookingService]]
-- [[.createAppointment()|.createAppointment()]]
-- [[.handleOverwrite()|.handleOverwrite()]]
-- [[.generateDebt()|.generateDebt()]]
-- [[LicenseService.js|LicenseService.js]]
-- [[LicenseService|LicenseService]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_Feature

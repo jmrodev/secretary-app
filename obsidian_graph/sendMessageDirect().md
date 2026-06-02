@@ -1,17 +1,20 @@
+---
+source_file: "server/services/communication/whatsappService.js"
+type: "code"
+community: "Community 50"
+location: "L62"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_50
+---
+
 # sendMessageDirect()
 
-- **Tipo:** code
-- **Archivo:** server/services/whatsappService.js
-- **Comunidad:** [[_COMMUNITY_Community 45]]
+## Connections
+- [[sendAutomatedReminders()]] - `calls` [EXTRACTED]
+- [[sendConfirmationMessage()]] - `calls` [EXTRACTED]
+- [[sendDebtReminder()]] - `calls` [EXTRACTED]
+- [[whatsappService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[whatsappService.js|whatsappService.js]] (contains)
-- <-- [[sendAutomatedReminders()|sendAutomatedReminders()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[whatsappService.js|whatsappService.js]]
-- [[getMetaCredentials()|getMetaCredentials()]]
-- [[sendTemplateMessage()|sendTemplateMessage()]]
-- [[sendAutomatedReminders()|sendAutomatedReminders()]]
-- [[sendTestMessage()|sendTestMessage()]]
-- [[getBridgeStatus()|getBridgeStatus()]]
+#graphify/code #graphify/EXTRACTED #community/Community_50

@@ -1,28 +1,23 @@
+---
+source_file: "client/src/features/finances/components/modals/TransactionModal.jsx"
+type: "code"
+community: "Community 21"
+location: "L156"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_21
+---
+
 # TransactionModal()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/TransactionModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 27]]
+## Connections
+- [[TransactionModal.jsx]] - `contains` [EXTRACTED]
+- [[getServiceTypes()]] - `calls` [INFERRED]
+- [[getStatusOptions()]] - `calls` [INFERRED]
+- [[getTransactionTypes()]] - `calls` [INFERRED]
+- [[useConfig()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useTransactionForm()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useConfig()|useConfig()]] (calls)
-- --> [[useTransactionForm()|useTransactionForm()]] (calls)
-- <-- [[TransactionModal.jsx|TransactionModal.jsx]] (contains)
-- --> [[getTransactionTypes()|getTransactionTypes()]] (calls)
-- --> [[getPaymentMethods()|getPaymentMethods()]] (calls)
-- --> [[getStatusOptions()|getStatusOptions()]] (calls)
-- --> [[getServiceTypes()|getServiceTypes()]] (calls)
-- --> [[formatPrice()|formatPrice()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[TransactionModal.jsx|TransactionModal.jsx]]
-- [[DoctorCard.jsx|DoctorCard.jsx]]
-- [[DoctorCard()|DoctorCard()]]
-- [[DebtPaymentModal.jsx|DebtPaymentModal.jsx]]
-- [[DebtPaymentModal()|DebtPaymentModal()]]
-- [[transactionOptions.js|transactionOptions.js]]
-- [[getTransactionTypes()|getTransactionTypes()]]
-- [[getPaymentMethods()|getPaymentMethods()]]
-- [[getStatusOptions()|getStatusOptions()]]
-- [[getServiceTypes()|getServiceTypes()]]
+#graphify/code #graphify/INFERRED #community/Community_21

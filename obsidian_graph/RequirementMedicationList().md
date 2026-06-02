@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/lists/RequirementMedicationList.jsx"
+type: "code"
+community: "Community 171"
+location: "L11"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_171
+---
+
 # RequirementMedicationList()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/RequirementMedicationList.jsx
-- **Comunidad:** [[_COMMUNITY_Community 150]]
+## Connections
+- [[RequirementMedicationList.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[RequirementMedicationList.jsx|RequirementMedicationList.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RequirementMedicationList.jsx|RequirementMedicationList.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_171

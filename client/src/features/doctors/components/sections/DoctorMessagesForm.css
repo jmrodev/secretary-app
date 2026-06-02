@@ -54,7 +54,7 @@
     padding: 1.5rem;
     border-radius: var(--radius-lg);
     border: 1px solid var(--slate-200);
-    box-shadow: inset 0 0 20px rgba(var(--slate-200-rgb), 0.2);
+    box-shadow: inset 0 0 20px rgb(var(--slate-200-rgb), 0.2);
 }
 
 .doctor-messages-form__ai-header {
@@ -126,7 +126,7 @@
 .doctor-messages-form__textarea:focus {
     outline: none;
     border-color: var(--purple-500);
-    box-shadow: 0 0 0 3px rgba(var(--purple-500-rgb), 0.1);
+    box-shadow: 0 0 0 3px rgb(var(--purple-500-rgb), 0.1);
 }
 
 .doctor-messages-form__input {
@@ -186,7 +186,7 @@
     line-height: 1.4;
 }
 
-@media (max-width: 900px) {
+@media (width <= 900px) {
     .doctor-messages-form__ai-grid {
         grid-template-columns: 1fr;
     }

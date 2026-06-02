@@ -31,5 +31,5 @@
 }
 
 [data-theme='dark'] .pagination {
-    border-top-color: rgba(255, 255, 255, 0.05);
+    border-top-color: rgb(255 255 255 / 5%);
 }

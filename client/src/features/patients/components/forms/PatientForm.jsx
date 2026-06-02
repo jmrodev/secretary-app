@@ -12,8 +12,6 @@ import PatientAddressFields from '@/features/patients/components/forms/PatientAd
 import PatientInstitutionFields from '@/features/patients/components/forms/PatientInstitutionFields';
 import PatientAdminFields from '@/features/patients/components/forms/PatientAdminFields';
 import PatientMedicalNotes from '@/features/patients/components/forms/PatientMedicalNotes';
-import { use } from 'react';
-import { LanguageContext } from '@/context/LanguageContext';
 import './PatientForm.css';
 
 

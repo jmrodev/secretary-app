@@ -1,22 +1,19 @@
+---
+source_file: "client/src/features/appointments/components/modals/AppointmentFormModal.jsx"
+type: "code"
+community: "Android Messaging"
+location: "L20"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Android_Messaging
+---
+
 # AppointmentFormModal()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/AppointmentFormModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 6]]
+## Connections
+- [[AppointmentFormModal.jsx]] - `contains` [EXTRACTED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[AppointmentFormModal.jsx|AppointmentFormModal.jsx]] (contains)
-- --> [[useAuth()|useAuth()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[RequestsPage.jsx|RequestsPage.jsx]]
-- [[RequestsPage()|RequestsPage()]]
-- [[useMedicalRequest.js|useMedicalRequest.js]]
-- [[useMedicalRequest()|useMedicalRequest()]]
-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]]
-- [[MedicalRequestForm()|MedicalRequestForm()]]
-- [[MedicalRequestList.jsx|MedicalRequestList.jsx]]
-- [[MedicalRequestList()|MedicalRequestList()]]
-- [[MedicalHistoryTable.jsx|MedicalHistoryTable.jsx]]
-- [[MedicalHistoryTable()|MedicalHistoryTable()]]
+#graphify/code #graphify/INFERRED #community/Android_Messaging

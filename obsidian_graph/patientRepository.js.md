@@ -1,20 +1,17 @@
+---
+source_file: "server/repositories/user/patientRepository.js"
+type: "code"
+community: "Community 14"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_14
+---
+
 # patientRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/patientRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 14]]
+## Connections
+- [[PatientRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PatientRepository|PatientRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientRepository|PatientRepository]]
-- [[.findById()|.findById()]]
-- [[.findTariffAndInstitutionPrice()|.findTariffAndInstitutionPrice()]]
-- [[.findByUserId()|.findByUserId()]]
-- [[.findUserIdById()|.findUserIdById()]]
-- [[.findByFullName()|.findByFullName()]]
-- [[.findByDni()|.findByDni()]]
-- [[.findByFuzzyName()|.findByFuzzyName()]]
-- [[.findByNameLike()|.findByNameLike()]]
-- [[.create()|.create()]]
+#graphify/code #graphify/EXTRACTED #community/Community_14

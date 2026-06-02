@@ -1,20 +1,17 @@
+---
+source_file: "server/repositories/medical/prescriptionRepository.js"
+type: "code"
+community: "Database Utils & Repositories"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Database_Utils_&_Repositories
+---
+
 # prescriptionRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/prescriptionRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 1]]
+## Connections
+- [[PrescriptionRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PrescriptionRepository|PrescriptionRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[sqlUtils.js|sqlUtils.js]]
-- [[filterValidColumns()|filterValidColumns()]]
-- [[buildUpdateQuery()|buildUpdateQuery()]]
-- [[buildInsertQuery()|buildInsertQuery()]]
-- [[licenseRepository.js|licenseRepository.js]]
-- [[LicenseRepository|LicenseRepository]]
-- [[.findById()|.findById()]]
-- [[.findAll()|.findAll()]]
-- [[.countAll()|.countAll()]]
-- [[.create()|.create()]]
+#graphify/code #graphify/EXTRACTED #community/Database_Utils_&_Repositories

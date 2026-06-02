@@ -2,11 +2,8 @@
 
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    inset: 0;
+    background-color: rgb(0 0 0 / 60%);
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
@@ -96,4 +93,5 @@
 }
 
 @keyframes modal-fade-in { from { opacity: 0; } to { opacity: 1; } }
+
 @keyframes modal-slide-up { from { opacity: 0; transform: translateY(1.25rem); } to { opacity: 1; transform: translateY(0); } }

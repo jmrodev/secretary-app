@@ -1,21 +1,17 @@
+---
+source_file: "server/controllers/communication/whatsappController.js"
+type: "code"
+community: "Community 35"
+location: "L174"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_35
+---
+
 # getAiSuggestion()
 
-- **Tipo:** code
-- **Archivo:** server/controllers/whatsappController.js
-- **Comunidad:** [[_COMMUNITY_Community 28]]
+## Connections
+- [[whatsappController.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[fetch()|fetch()]] (calls)
-- <-- [[whatsappController.js|whatsappController.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[worker.js|worker.js]]
-- [[fetch()|fetch()]]
-- [[whatsappController.js|whatsappController.js]]
-- [[sendMessage()|sendMessage()]]
-- [[testConnection()|testConnection()]]
-- [[broadcastMessage()|broadcastMessage()]]
-- [[sendDirectMessage()|sendDirectMessage()]]
-- [[receiveWebhook()|receiveWebhook()]]
-- [[getPatientHistory()|getPatientHistory()]]
-- [[getRecentConversations()|getRecentConversations()]]
+#graphify/code #graphify/EXTRACTED #community/Community_35

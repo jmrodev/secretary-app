@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/views/PatientInfoBlock.jsx"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # PatientInfoBlock.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientInfoBlock.jsx
-- **Comunidad:** [[_COMMUNITY_Community 249]]
+## Connections
+- [[PatientInfoBlock()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PatientInfoBlock()|PatientInfoBlock()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientInfoBlock()|PatientInfoBlock()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

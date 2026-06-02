@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/insurances/hooks/useInsurancesController.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Modals_&_Prescriptions
+---
+
 # useInsurancesController.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/insurances/hooks/useInsurancesController.js
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[useInsurancesController()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useInsurancesController()|useInsurancesController()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
-- [[DaySchedule()|DaySchedule()]]
+#graphify/code #graphify/EXTRACTED #community/Modals_&_Prescriptions

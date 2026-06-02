@@ -1,14 +1,18 @@
+---
+source_file: "client/src/context/ModalContext.jsx"
+type: "code"
+community: "Community 101"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_101
+---
+
 # ModalContext.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/context/ModalContext.jsx
-- **Comunidad:** [[_COMMUNITY_Community 97]]
+## Connections
+- [[ModalProvider()]] - `contains` [EXTRACTED]
+- [[useModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (contains)
-- --> [[ModalProvider()|ModalProvider()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModalLogic.js|useModalLogic.js]]
-- [[useModalLogic()|useModalLogic()]]
-- [[ModalProvider()|ModalProvider()]]
+#graphify/code #graphify/EXTRACTED #community/Community_101

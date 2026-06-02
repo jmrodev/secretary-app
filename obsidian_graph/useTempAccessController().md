@@ -1,22 +1,19 @@
+---
+source_file: "client/src/features/users/hooks/useTempAccessController.js"
+type: "code"
+community: "Community 43"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_43
+---
+
 # useTempAccessController()
 
-- **Tipo:** code
-- **Archivo:** client/src/controllers/useTempAccessController.js
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[TempAccessPage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
+- [[useTempAccessController.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- <-- [[useTempAccessController.js|useTempAccessController.js]] (contains)
-- <-- [[TempAccessPage()|TempAccessPage()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
-- [[DaySchedule()|DaySchedule()]]
+#graphify/code #graphify/INFERRED #community/Community_43

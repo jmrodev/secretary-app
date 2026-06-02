@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/organisms/GlobalPatientRegistrar.jsx"
+type: "code"
+community: "Community 281"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_281
+---
+
 # GlobalPatientRegistrar.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/organisms/GlobalPatientRegistrar.jsx
-- **Comunidad:** [[_COMMUNITY_Community 278]]
+## Connections
+- [[GlobalPatientRegistrar()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[GlobalPatientRegistrar()|GlobalPatientRegistrar()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[GlobalPatientRegistrar()|GlobalPatientRegistrar()]]
+#graphify/code #graphify/EXTRACTED #community/Community_281

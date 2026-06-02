@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/sections/FinanceStatsCards.jsx"
+type: "code"
+community: "Community 230"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_230
+---
+
 # FinanceStatsCards.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/FinanceStatsCards.jsx
-- **Comunidad:** [[_COMMUNITY_Community 218]]
+## Connections
+- [[FinanceStatsCards()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[FinanceStatsCards()|FinanceStatsCards()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[FinanceStatsCards()|FinanceStatsCards()]]
+#graphify/code #graphify/EXTRACTED #community/Community_230

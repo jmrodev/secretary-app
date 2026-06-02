@@ -1,15 +1,19 @@
+---
+source_file: "server/repositories/finance/invoiceRepository.js"
+type: "code"
+community: "Community 97"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_97
+---
+
 # InvoiceRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/invoiceRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 95]]
+## Connections
+- [[.create()_1]] - `method` [EXTRACTED]
+- [[.findByTransactionId()]] - `method` [EXTRACTED]
+- [[invoiceRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[invoiceRepository.js|invoiceRepository.js]] (contains)
-- --> [[.create()|.create()]] (method)
-- --> [[.findByTransactionId()|.findByTransactionId()]] (method)
-
-## Miembros de la misma Comunidad
-- [[invoiceRepository.js|invoiceRepository.js]]
-- [[.create()|.create()]]
-- [[.findByTransactionId()|.findByTransactionId()]]
+#graphify/code #graphify/EXTRACTED #community/Community_97

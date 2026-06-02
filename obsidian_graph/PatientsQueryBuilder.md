@@ -1,36 +1,30 @@
+---
+source_file: "server/utils/database/queryBuilders/PatientsQueryBuilder.js"
+type: "code"
+community: "Community 23"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_23
+---
+
 # PatientsQueryBuilder
 
-- **Tipo:** code
-- **Archivo:** server/utils/queryBuilders/PatientsQueryBuilder.js
-- **Comunidad:** [[_COMMUNITY_Community 16]]
+## Connections
+- [[.applySearch()_1]] - `method` [EXTRACTED]
+- [[.constructor()_7]] - `method` [EXTRACTED]
+- [[.filterByDoctor()]] - `method` [EXTRACTED]
+- [[.filterByInstitution()]] - `method` [EXTRACTED]
+- [[.filterByInsurance()]] - `method` [EXTRACTED]
+- [[.filterByRiskStatus()]] - `method` [EXTRACTED]
+- [[.includeInstitution()]] - `method` [EXTRACTED]
+- [[.includeInsurance()]] - `method` [EXTRACTED]
+- [[.onlyNew()]] - `method` [EXTRACTED]
+- [[.onlyWithDebt()]] - `method` [EXTRACTED]
+- [[.sortByDebt()]] - `method` [EXTRACTED]
+- [[.sortByName()_1]] - `method` [EXTRACTED]
+- [[.withFullDetails()_1]] - `method` [EXTRACTED]
+- [[PatientsQueryBuilder.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientsQueryBuilder.js|PatientsQueryBuilder.js]] (contains)
-- --> [[.constructor()|.constructor()]] (method)
-- --> [[.includeInsurance()|.includeInsurance()]] (method)
-- --> [[.includeInstitution()|.includeInstitution()]] (method)
-- --> [[.includeDebtStats()|.includeDebtStats()]] (method)
-- --> [[.includeAppointmentStats()|.includeAppointmentStats()]] (method)
-- --> [[.applyRoleFilter()|.applyRoleFilter()]] (method)
-- --> [[.filterByDoctor()|.filterByDoctor()]] (method)
-- --> [[.applySearch()|.applySearch()]] (method)
-- --> [[.onlyNew()|.onlyNew()]] (method)
-- --> [[.filterByInsurance()|.filterByInsurance()]] (method)
-- --> [[.filterByInstitution()|.filterByInstitution()]] (method)
-- --> [[.filterByBehavior()|.filterByBehavior()]] (method)
-- --> [[.sortByDebt()|.sortByDebt()]] (method)
-- --> [[.sortByName()|.sortByName()]] (method)
-- --> [[.sortByCreatedAt()|.sortByCreatedAt()]] (method)
-- --> [[.withFullDetails()|.withFullDetails()]] (method)
-
-## Miembros de la misma Comunidad
-- [[PatientsQueryBuilder.js|PatientsQueryBuilder.js]]
-- [[.constructor()|.constructor()]]
-- [[.includeInsurance()|.includeInsurance()]]
-- [[.includeInstitution()|.includeInstitution()]]
-- [[.includeDebtStats()|.includeDebtStats()]]
-- [[.includeAppointmentStats()|.includeAppointmentStats()]]
-- [[.applyRoleFilter()|.applyRoleFilter()]]
-- [[.filterByDoctor()|.filterByDoctor()]]
-- [[.applySearch()|.applySearch()]]
-- [[.onlyNew()|.onlyNew()]]
+#graphify/code #graphify/EXTRACTED #community/Community_23

@@ -45,13 +45,13 @@ export const useAuthLogic = () => {
                     const updatedUser = { ...userObj, ...verifiedUser };
                     localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
                     dispatch({ type: 'AUTH_INIT', payload: { user: updatedUser, token: storedToken } });
-                } catch (verifyError) {
+                } catch {
                     logout();
                 }
             } else {
                 dispatch({ type: 'FINISH_LOADING' });
             }
-        } catch (error) {
+        } catch {
             logout();
         }
     }, [logout]);

@@ -63,9 +63,6 @@ const DashboardPage = () => {
         navigate
     } = handlers;
 
-    const handleSearchSubmit = (event) => {
-        event.preventDefault();
-    };
 
     if (!user) {
         return <Loading variant="full-page" />;
@@ -170,6 +167,7 @@ const DashboardPage = () => {
                     isOpen={prescribeModal.open}
                     onClose={() => setPrescribeModal(prev => ({ ...prev, open: false }))}
                     patientName={prescribeModal.patientName}
+                    patientId={prescribeModal.patientId}
                     onSubmit={handlePrescriptionSubmit}
                     t={t}
                     isSubmitting={isSubmitting}

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/doctors/components/sections/DoctorMessagesForm.jsx"
+type: "code"
+community: "Community 236"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_236
+---
+
 # DoctorMessagesForm()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/doctors/components/DoctorMessagesForm.jsx
-- **Comunidad:** [[_COMMUNITY_Community 230]]
+## Connections
+- [[DoctorMessagesForm.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[DoctorMessagesForm.jsx|DoctorMessagesForm.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DoctorMessagesForm.jsx|DoctorMessagesForm.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_236

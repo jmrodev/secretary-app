@@ -21,17 +21,36 @@ const CalendarSection = ({
 
     return (
         <div className={`calendar-section ${className}`}>
-            {(activeTab === 'calendar' || activeTab === 'monthly') ? (
-                <>
-                    <Calendar
-                        selectedDate={selectedDate} onDateSelect={onDateSelect}
-                        appointments={appointments} calendarStats={calendarStats}
-                        holidays={holidays} showOutOfHours={showOutOfHours}
-                        compact={true}
-                    />
-
-                    {/* Tools section removed per user request */}
-                </>
+            {activeTab === 'calendar' ? (
+                <Calendar
+                    selectedDate={selectedDate} onDateSelect={onDateSelect}
+                    appointments={appointments} calendarStats={calendarStats}
+                    holidays={holidays} showOutOfHours={showOutOfHours}
+                    compact={true}
+                />
+            ) : activeTab === 'monthly' ? (
+                <div className="calendar-section__monthly-layout animate-fade-in">
+                    <div className="calendar-section__monthly-calendar">
+                        <Calendar
+                            selectedDate={selectedDate} onDateSelect={onDateSelect}
+                            appointments={appointments} calendarStats={calendarStats}
+                            holidays={holidays} showOutOfHours={showOutOfHours}
+                            compact={false}
+                        />
+                    </div>
+                    <div className="calendar-section__monthly-sidebar">
+                        <div className="calendar-section__holiday-card dashboard-card">
+                            <h3 className="dashboard-card__title">
+                                <Icon name="event_busy" size="1rem" />
+                                {t('block_agenda')}
+                            </h3>
+                            <p className="calendar-section__info-text">
+                                {t('holiday_license_info')}
+                            </p>
+                            <HolidayForm onAdd={onAddHoliday} />
+                        </div>
+                    </div>
+                </div>
             ) : (
                 <div className="calendar-section__holiday-card dashboard-card">
                     <h3 className="dashboard-card__title">

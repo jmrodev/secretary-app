@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/views/PatientDetailsView.jsx"
+type: "code"
+community: "Community 252"
+location: "L22"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_252
+---
+
 # PatientDetailsView()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientDetailsView.jsx
-- **Comunidad:** [[_COMMUNITY_Community 233]]
+## Connections
+- [[PatientDetailsView.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientDetailsView.jsx|PatientDetailsView.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientDetailsView.jsx|PatientDetailsView.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_252

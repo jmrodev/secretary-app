@@ -1,11 +1,17 @@
+---
+source_file: "client/src/utils/core/clipboardUtils.js"
+type: "code"
+community: "Community 289"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_289
+---
+
 # clipboardUtils.js
 
-- **Tipo:** code
-- **Archivo:** client/src/utils/clipboardUtils.js
-- **Comunidad:** [[_COMMUNITY_Community 290]]
+## Connections
+- [[copyToClipboard()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[copyToClipboard()|copyToClipboard()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[copyToClipboard()|copyToClipboard()]]
+#graphify/code #graphify/EXTRACTED #community/Community_289

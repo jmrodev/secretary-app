@@ -1,11 +1,20 @@
+---
+source_file: "client/src/features/patients/components/views/PatientList.jsx"
+type: "code"
+community: "Community 88"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_88
+---
+
 # PatientList.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientList.jsx
-- **Comunidad:** [[_COMMUNITY_Community 251]]
+## Connections
+- [[InstitutionRow()]] - `contains` [EXTRACTED]
+- [[PatientList()]] - `contains` [EXTRACTED]
+- [[PatientRow()]] - `contains` [EXTRACTED]
+- [[RatingStars()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PatientList()|PatientList()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientList()|PatientList()]]
+#graphify/code #graphify/EXTRACTED #community/Community_88

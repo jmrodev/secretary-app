@@ -1,10 +1,14 @@
+---
+source_file: "android_native/settings.gradle.kts"
+type: "code"
+community: "Community 368"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_368
+---
+
 # settings.gradle.kts
 
-- **Tipo:** code
-- **Archivo:** android_native/settings.gradle.kts
-- **Comunidad:** [[_COMMUNITY_Community 371]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_368

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/doctors/components/sections/DoctorGoogleSettings.jsx"
+type: "code"
+community: "Community 237"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_237
+---
+
 # DoctorGoogleSettings.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/doctors/components/DoctorGoogleSettings.jsx
-- **Comunidad:** [[_COMMUNITY_Community 231]]
+## Connections
+- [[DoctorGoogleSettings()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[DoctorGoogleSettings()|DoctorGoogleSettings()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DoctorGoogleSettings()|DoctorGoogleSettings()]]
+#graphify/code #graphify/EXTRACTED #community/Community_237

@@ -1,9 +1,9 @@
 .public-register-paginated {
     min-height: 100vh;
-    background: #ffffff;
+    background: #fff;
     display: flex;
     flex-direction: column;
-    color: #000000;
+    color: #000;
     font-family: system-ui, -apple-system, sans-serif;
 }
 
@@ -54,25 +54,25 @@
     font-weight: 900;
     line-height: 1.1;
     margin-bottom: 2rem;
-    color: #000000;
+    color: #000;
 }
 
 .accessible-input {
     width: 100%;
     font-size: 2rem;
     padding: 1.5rem;
-    border: 4px solid #000000;
+    border: 4px solid #000;
     border-radius: 1rem;
     background: #f1f3f5;
-    color: #000000;
+    color: #000;
     font-weight: 700;
 }
 
 .accessible-input:focus {
     outline: none;
     border-color: #007bff;
-    background: #ffffff;
-    box-shadow: 0 0 0 6px rgba(0, 123, 255, 0.2);
+    background: #fff;
+    box-shadow: 0 0 0 6px rgb(0 123 255 / 20%);
 }
 
 .accessible-input--disabled {
@@ -103,19 +103,19 @@
 }
 
 .btn-huge--primary {
-    background: #000000;
-    color: #ffffff;
+    background: #000;
+    color: #fff;
 }
 
 .btn-huge--secondary {
     background: #e9ecef;
-    color: #000000;
-    border: 3px solid #000000;
+    color: #000;
+    border: 3px solid #000;
 }
 
 .btn-huge--success {
     background: #28a745;
-    color: #ffffff;
+    color: #fff;
 }
 
 .accessible-error {
@@ -158,14 +158,16 @@
 }
 
 /* Specific adjustments for very small phones */
-@media (max-width: 400px) {
+@media (width <= 400px) {
     .accessible-label {
         font-size: 1.8rem;
     }
+
     .accessible-input {
         font-size: 1.5rem;
         padding: 1rem;
     }
+
     .btn-huge {
         font-size: 1.25rem;
         height: 5rem;

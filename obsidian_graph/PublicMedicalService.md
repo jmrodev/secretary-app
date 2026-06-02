@@ -1,23 +1,20 @@
+---
+source_file: "server/services/medical/PublicMedicalService.js"
+type: "code"
+community: "Institutions Feature"
+location: "L15"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_Feature
+---
+
 # PublicMedicalService
 
-- **Tipo:** code
-- **Archivo:** server/services/medical/PublicMedicalService.js
-- **Comunidad:** [[_COMMUNITY_Community 2]]
+## Connections
+- [[.generatePrescriptionRequestToken()]] - `method` [EXTRACTED]
+- [[.getPublicPrescriptionRequestData()]] - `method` [EXTRACTED]
+- [[.submitPublicPrescriptionRequest()]] - `method` [EXTRACTED]
+- [[PublicMedicalService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PublicMedicalService.js|PublicMedicalService.js]] (contains)
-- --> [[.generatePrescriptionRequestToken()|.generatePrescriptionRequestToken()]] (method)
-- --> [[.getPublicPrescriptionRequestData()|.getPublicPrescriptionRequestData()]] (method)
-- --> [[.submitPublicPrescriptionRequest()|.submitPublicPrescriptionRequest()]] (method)
-
-## Miembros de la misma Comunidad
-- [[priceCalculator.js|priceCalculator.js]]
-- [[calculatePrice()|calculatePrice()]]
-- [[.getPricing()|.getPricing()]]
-- [[bookingService.js|bookingService.js]]
-- [[BookingService|BookingService]]
-- [[.createAppointment()|.createAppointment()]]
-- [[.handleOverwrite()|.handleOverwrite()]]
-- [[.generateDebt()|.generateDebt()]]
-- [[LicenseService.js|LicenseService.js]]
-- [[LicenseService|LicenseService]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_Feature

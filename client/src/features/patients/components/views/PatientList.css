@@ -2,6 +2,7 @@
 
 .patient-list {
     width: 100%;
+
     /* Remove default table behavior for layout if needed, but keeping table for accessibility */
 }
 
@@ -91,7 +92,7 @@
 
 .patient-list__inst-icon {
     color: var(--amber-400);
-    filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.3));
+    filter: drop-shadow(0 0 8px rgb(245 158 11 / 30%));
 }
 
 .patient-list__inst-name {
@@ -176,7 +177,7 @@
     font-size: 0.938rem !important;
     padding: 0.5rem 1rem !important;
     border-radius: var(--radius-sm) !important;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+    box-shadow: 0 4px 12px rgb(245 158 11 / 20%);
 }
 
 .patient-list__zero-debt {

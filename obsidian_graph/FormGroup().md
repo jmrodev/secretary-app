@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/molecules/FormGroup.jsx"
+type: "code"
+community: "Community 287"
+location: "L4"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_287
+---
+
 # FormGroup()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/FormGroup.jsx
-- **Comunidad:** [[_COMMUNITY_Community 287]]
+## Connections
+- [[FormGroup.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[FormGroup.jsx|FormGroup.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[FormGroup.jsx|FormGroup.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_287

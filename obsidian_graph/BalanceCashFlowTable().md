@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/tables/BalanceCashFlowTable.jsx"
+type: "code"
+community: "Community 225"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_225
+---
+
 # BalanceCashFlowTable()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/BalanceCashFlowTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 220]]
+## Connections
+- [[BalanceCashFlowTable.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[BalanceCashFlowTable.jsx|BalanceCashFlowTable.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[BalanceCashFlowTable.jsx|BalanceCashFlowTable.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_225

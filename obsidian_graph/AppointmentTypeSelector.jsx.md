@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/forms/AppointmentTypeSelector.jsx"
+type: "code"
+community: "Community 194"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_194
+---
+
 # AppointmentTypeSelector.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/AppointmentTypeSelector.jsx
-- **Comunidad:** [[_COMMUNITY_Community 190]]
+## Connections
+- [[AppointmentTypeSelector()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AppointmentTypeSelector()|AppointmentTypeSelector()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AppointmentTypeSelector()|AppointmentTypeSelector()]]
+#graphify/code #graphify/EXTRACTED #community/Community_194

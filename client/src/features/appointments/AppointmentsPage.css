@@ -8,11 +8,11 @@
     --appointments-panel-shadow: var(--shadow-sm);
     --appointments-gap: 2rem;
     --appointments-radius: var(--radius-xl);
-
-    --live-indicator-bg: rgba(0, 182, 122, 0.08);
+    --live-indicator-bg: rgb(0 182 122 / 8%);
     --live-indicator-dot: var(--success); 
     --live-indicator-text: var(--success);
     --search-bg: var(--gray-900);
+
     /* ------------------------------ */
 
     flex: 1;
@@ -41,14 +41,14 @@
 }
 
 .appointments-page-orchestrator__next-slot-btn {
-    box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.3);
+    box-shadow: 0 0 15px rgb(var(--accent-rgb), 0.3);
     animation: pulse-glow 2s infinite;
 }
 
 @keyframes pulse-glow {
-    0% { box-shadow: 0 0 5px rgba(var(--accent-rgb), 0.2); }
-    50% { box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.5); }
-    100% { box-shadow: 0 0 5px rgba(var(--accent-rgb), 0.2); }
+    0% { box-shadow: 0 0 5px rgb(var(--accent-rgb), 0.2); }
+    50% { box-shadow: 0 0 20px rgb(var(--accent-rgb), 0.5); }
+    100% { box-shadow: 0 0 5px rgb(var(--accent-rgb), 0.2); }
 }
 
 /* --- Live Indicator --- */
@@ -59,7 +59,7 @@
     padding: 0.4rem 1rem;
     background: var(--live-indicator-bg);
     border-radius: var(--radius-full);
-    border: 1px solid rgba(0, 182, 122, 0.2);
+    border: 1px solid rgb(0 182 122 / 20%);
 }
 
 .appointments-page-orchestrator__live-dot {
@@ -68,7 +68,7 @@
     background-color: var(--live-indicator-dot);
     border-radius: 50%;
     box-shadow: 0 0 8px var(--live-indicator-dot);
-    animation: dotPulse 2s infinite;
+    animation: dot-pulse 2s infinite;
 }
 
 .appointments-page-orchestrator__live-text {
@@ -109,12 +109,22 @@
     gap: var(--appointments-gap);
 }
 
+.appointments-page-orchestrator__main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
 .appointments-page-orchestrator__main-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: minmax(22rem, 0.36fr) 1fr;
-    gap: 1.5rem;
+    grid-template-columns: minmax(26rem, 0.44fr) 1fr;
+    gap: 2rem;
+    min-height: 0;
 }
+
+
 
 .appointments-page-orchestrator__main-grid--monthly {
     grid-template-columns: 1fr;
@@ -167,7 +177,7 @@
 }
 
 /* --- Animations --- */
-@keyframes dotPulse {
+@keyframes dot-pulse {
     0% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.4; transform: scale(0.9); }
     100% { opacity: 1; transform: scale(1); }
@@ -178,10 +188,11 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-@media (max-width: 1024px) {
-    .appointments-page-orchestrator__grid {
+@media (width <= 1024px) {
+    .appointments-page-orchestrator__main-grid {
         grid-template-columns: 1fr;
     }
+
     .appointments-page-orchestrator__header {
         flex-direction: column;
     }

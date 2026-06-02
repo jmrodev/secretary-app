@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/reports/hooks/useReportsController.js"
+type: "code"
+community: "Community 12"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_12
+---
+
 # useReportsController.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/hooks/useReportsController.js
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[useReportsController()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useReportsController()|useReportsController()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_12

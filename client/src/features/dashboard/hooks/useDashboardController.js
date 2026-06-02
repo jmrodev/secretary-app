@@ -114,13 +114,15 @@ export const useDashboardController = () => {
         }
     };
 
-    const handlePrescriptionSubmit = async ({ medications, instructions, bonified }) => {
+    const handlePrescriptionSubmit = async ({ medications, instructions, items, bonified }) => {
         setIsSubmitting(true);
         try {
             await savePrescription({
                 apptId: modalsHook.prescribeModal.apptId,
+                patientId: modalsHook.prescribeModal.patientId,
                 medications,
                 instructions,
+                items,
                 bonified
             }, () => {
                 modalsHook.setPrescribeModal({ ...modalsHook.prescribeModal, open: false });

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/sections/HolidayList.jsx"
+type: "code"
+community: "Community 201"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_201
+---
+
 # HolidayList.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/HolidayList.jsx
-- **Comunidad:** [[_COMMUNITY_Community 187]]
+## Connections
+- [[HolidayList()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[HolidayList()|HolidayList()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[HolidayList()|HolidayList()]]
+#graphify/code #graphify/EXTRACTED #community/Community_201

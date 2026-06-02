@@ -14,7 +14,7 @@
 }
 
 .edit-request-modal__prescriptions {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgb(255 255 255 / 3%);
     border-radius: 12px;
     padding: 0.5rem;
     max-height: 200px;
@@ -23,8 +23,8 @@
 
 .edit-request-modal__payment-status {
     padding: 1rem;
-    background: rgba(var(--accent-color-rgb), 0.05);
-    border: 1px solid rgba(var(--accent-color-rgb), 0.1);
+    background: rgb(var(--accent-color-rgb), 0.05);
+    border: 1px solid rgb(var(--accent-color-rgb), 0.1);
     border-radius: 12px;
 }
 

@@ -30,7 +30,7 @@
 }
 
 .appointment-type-selector__btn--active { 
-    background: rgba(59, 130, 246, 0.1); 
+    background: rgb(59 130 246 / 10%); 
     color: var(--primary-color); 
     border-color: var(--primary-color);
     box-shadow: 0 0 0 1px var(--primary-color);

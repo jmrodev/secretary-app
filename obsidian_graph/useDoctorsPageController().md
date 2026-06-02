@@ -1,21 +1,25 @@
+---
+source_file: "client/src/features/doctors/hooks/useDoctorsPageController.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Modals_&_Prescriptions
+---
+
 # useDoctorsPageController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/doctors/hooks/useDoctorsPageController.js
-- **Comunidad:** [[_COMMUNITY_Community 83]]
+## Connections
+- [[DoctorsPage()]] - `calls` [INFERRED]
+- [[DoctorsSection()]] - `calls` [INFERRED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useDoctorsPageController.js]] - `contains` [EXTRACTED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
+- [[useSearch()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[DoctorsSection()|DoctorsSection()]] (calls)
-- --> [[useAuth()|useAuth()]] (calls)
-- <-- [[DoctorsPage()|DoctorsPage()]] (calls)
-- <-- [[useDoctorsPageController.js|useDoctorsPageController.js]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[DoctorsSection()|DoctorsSection()]]
-- [[DoctorsPage.jsx|DoctorsPage.jsx]]
-- [[DoctorsPage()|DoctorsPage()]]
-- [[useDoctorsPageController.js|useDoctorsPageController.js]]
+#graphify/code #graphify/INFERRED #community/Modals_&_Prescriptions

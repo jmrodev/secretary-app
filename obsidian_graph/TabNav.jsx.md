@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/molecules/TabNav.jsx"
+type: "code"
+community: "Community 283"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_283
+---
+
 # TabNav.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/TabNav.jsx
-- **Comunidad:** [[_COMMUNITY_Community 279]]
+## Connections
+- [[TabNav()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[TabNav()|TabNav()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[TabNav()|TabNav()]]
+#graphify/code #graphify/EXTRACTED #community/Community_283

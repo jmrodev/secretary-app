@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/tables/InstitutionTransactionsTable.jsx"
+type: "code"
+community: "Community 224"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_224
+---
+
 # InstitutionTransactionsTable.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/InstitutionTransactionsTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 219]]
+## Connections
+- [[InstitutionTransactionsTable()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[InstitutionTransactionsTable()|InstitutionTransactionsTable()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InstitutionTransactionsTable()|InstitutionTransactionsTable()]]
+#graphify/code #graphify/EXTRACTED #community/Community_224

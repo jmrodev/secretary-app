@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Button.jsx"
+type: "code"
+community: "Community 267"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_267
+---
+
 # Button()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/Button.jsx
-- **Comunidad:** [[_COMMUNITY_Community 264]]
+## Connections
+- [[Button.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[Button.jsx|Button.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Button.jsx|Button.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_267

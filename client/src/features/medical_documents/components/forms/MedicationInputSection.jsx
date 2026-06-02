@@ -17,7 +17,7 @@ const MedicationInputSection = ({
     tempMed, setTempMed,
     tempDose, setTempDose,
     tempFreqPreset, setTempFreqPreset,
-    tempFreq, setTempFreq,
+    setTempFreq,
     tempDailyUnits, setTempDailyUnits,
     tempUnitsPerBox, setTempUnitsPerBox,
     tempQty, setTempQty,

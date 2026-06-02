@@ -45,8 +45,7 @@
 
 /* ── Table ──────────────────────────────────────────── */
 .patient-history-view__table-wrapper {
-    overflow-x: auto;
-    overflow-y: auto;
+    overflow: auto;
     flex: 1;
 }
 
@@ -133,11 +132,11 @@
     letter-spacing: 0.03em;
 }
 
-.patient-history-view__status-chip--completed  { background: rgba(0, 182, 122, 0.1);  color: var(--success); }
-.patient-history-view__status-chip--pending    { background: rgba(59, 130, 246, 0.1); color: var(--primary-color); }
-.patient-history-view__status-chip--confirmed  { background: rgba(14, 165, 233, 0.1); color: var(--info); }
-.patient-history-view__status-chip--cancelled  { background: rgba(249, 55, 93, 0.1);  color: var(--danger); }
-.patient-history-view__status-chip--absent     { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.patient-history-view__status-chip--completed  { background: rgb(0 182 122 / 10%);  color: var(--success); }
+.patient-history-view__status-chip--pending    { background: rgb(59 130 246 / 10%); color: var(--primary-color); }
+.patient-history-view__status-chip--confirmed  { background: rgb(14 165 233 / 10%); color: var(--info); }
+.patient-history-view__status-chip--cancelled  { background: rgb(249 55 93 / 10%);  color: var(--danger); }
+.patient-history-view__status-chip--absent     { background: rgb(245 158 11 / 10%); color: var(--warning); }
 
 /* ── Payment badge ─────────────────────────────────── */
 .patient-history-view__payment-badge {
@@ -149,9 +148,9 @@
     border: 1px solid transparent;
 }
 
-.patient-history-view__payment-badge--paid     { background: rgba(0, 182, 122, 0.1); color: var(--success); border-color: rgba(0, 182, 122, 0.2); }
-.patient-history-view__payment-badge--debt     { background: rgba(249, 55, 93, 0.1); color: var(--danger); border-color: rgba(249, 55, 93, 0.2); }
-.patient-history-view__payment-badge--bonified { background: rgba(59, 130, 246, 0.1); color: var(--primary-color); border-color: rgba(59, 130, 246, 0.2); }
+.patient-history-view__payment-badge--paid     { background: rgb(0 182 122 / 10%); color: var(--success); border-color: rgb(0 182 122 / 20%); }
+.patient-history-view__payment-badge--debt     { background: rgb(249 55 93 / 10%); color: var(--danger); border-color: rgb(249 55 93 / 20%); }
+.patient-history-view__payment-badge--bonified { background: rgb(59 130 246 / 10%); color: var(--primary-color); border-color: rgb(59 130 246 / 20%); }
 
 /* ── Empty State ───────────────────────────────────── */
 .patient-history-view__empty {

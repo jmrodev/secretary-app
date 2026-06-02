@@ -9,6 +9,7 @@
     --report-row-hover: var(--gray-50);
     --report-accent-blue: var(--blue-50);
     --report-accent-text: var(--blue-700);
+
     /* ------------------------------ */
 
     display: flex;

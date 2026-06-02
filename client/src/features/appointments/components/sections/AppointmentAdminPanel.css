@@ -5,14 +5,13 @@
     --panel-group-bg: var(--gray-900);
     --panel-group-border: var(--dashboard-card-border);
     --panel-group-border-left: var(--gray-700);
-
-    --panel-highlight-bg: rgba(59, 130, 246, 0.05);
-    --panel-highlight-border: rgba(59, 130, 246, 0.15);
+    --panel-highlight-bg: rgb(59 130 246 / 5%);
+    --panel-highlight-border: rgb(59 130 246 / 15%);
     --panel-highlight-border-left: var(--primary-color);
-
-    --panel-danger-bg: rgba(249, 55, 93, 0.05);
-    --panel-danger-border: rgba(249, 55, 93, 0.15);
+    --panel-danger-bg: rgb(249 55 93 / 5%);
+    --panel-danger-border: rgb(249 55 93 / 15%);
     --panel-danger-border-left: var(--danger);
+
     /* ------------------------------ */
 
     display: flex;
@@ -75,7 +74,7 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     color: var(--text-muted);
-    margin: 0 0 0.25rem 0;
+    margin: 0 0 0.25rem;
     font-weight: 800;
 }
 
@@ -112,7 +111,7 @@
     color: var(--primary-color);
 }
 
-@media (max-width: 480px) {
+@media (width <= 480px) {
     .appointment-admin-panel__grid {
         flex-direction: column;
     }

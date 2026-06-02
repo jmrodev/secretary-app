@@ -1,32 +1,29 @@
+---
+source_file: "server/utils/database/queryBuilders/DoctorsQueryBuilder.js"
+type: "code"
+community: "Community 26"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_26
+---
+
 # DoctorsQueryBuilder
 
-- **Tipo:** code
-- **Archivo:** server/utils/queryBuilders/DoctorsQueryBuilder.js
-- **Comunidad:** [[_COMMUNITY_Community 25]]
+## Connections
+- [[.applyRoleFilter()]] - `method` [EXTRACTED]
+- [[.applySearch()]] - `method` [EXTRACTED]
+- [[.constructor()_5]] - `method` [EXTRACTED]
+- [[.filterByOffice()]] - `method` [EXTRACTED]
+- [[.filterBySpecialty()]] - `method` [EXTRACTED]
+- [[.includeAppointmentStats()]] - `method` [EXTRACTED]
+- [[.includePatientCount()]] - `method` [EXTRACTED]
+- [[.includeRevenue()]] - `method` [EXTRACTED]
+- [[.includeUserInfo()]] - `method` [EXTRACTED]
+- [[.sortByName()]] - `method` [EXTRACTED]
+- [[.sortBySpecialty()]] - `method` [EXTRACTED]
+- [[.withFullDetails()]] - `method` [EXTRACTED]
+- [[DoctorsQueryBuilder.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[DoctorsQueryBuilder.js|DoctorsQueryBuilder.js]] (contains)
-- --> [[.constructor()|.constructor()]] (method)
-- --> [[.includeUserInfo()|.includeUserInfo()]] (method)
-- --> [[.includeAppointmentStats()|.includeAppointmentStats()]] (method)
-- --> [[.includePatientCount()|.includePatientCount()]] (method)
-- --> [[.includeRevenue()|.includeRevenue()]] (method)
-- --> [[.filterBySpecialty()|.filterBySpecialty()]] (method)
-- --> [[.filterByOffice()|.filterByOffice()]] (method)
-- --> [[.applySearch()|.applySearch()]] (method)
-- --> [[.applyRoleFilter()|.applyRoleFilter()]] (method)
-- --> [[.sortByName()|.sortByName()]] (method)
-- --> [[.sortBySpecialty()|.sortBySpecialty()]] (method)
-- --> [[.withFullDetails()|.withFullDetails()]] (method)
-
-## Miembros de la misma Comunidad
-- [[DoctorsQueryBuilder.js|DoctorsQueryBuilder.js]]
-- [[.constructor()|.constructor()]]
-- [[.includeUserInfo()|.includeUserInfo()]]
-- [[.includeAppointmentStats()|.includeAppointmentStats()]]
-- [[.includePatientCount()|.includePatientCount()]]
-- [[.includeRevenue()|.includeRevenue()]]
-- [[.filterBySpecialty()|.filterBySpecialty()]]
-- [[.filterByOffice()|.filterByOffice()]]
-- [[.applySearch()|.applySearch()]]
-- [[.applyRoleFilter()|.applyRoleFilter()]]
+#graphify/code #graphify/EXTRACTED #community/Community_26

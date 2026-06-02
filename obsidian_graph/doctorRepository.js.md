@@ -1,20 +1,17 @@
+---
+source_file: "server/repositories/user/doctorRepository.js"
+type: "code"
+community: "Community 15"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_15
+---
+
 # doctorRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/doctorRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 18]]
+## Connections
+- [[DoctorRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[DoctorRepository|DoctorRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DoctorRepository|DoctorRepository]]
-- [[.findAll()|.findAll()]]
-- [[.findFirst()|.findFirst()]]
-- [[.findById()|.findById()]]
-- [[.findByUserId()|.findByUserId()]]
-- [[.create()|.create()]]
-- [[.updateById()|.updateById()]]
-- [[.updateByUserId()|.updateByUserId()]]
-- [[.getDoctorConfig()|.getDoctorConfig()]]
-- [[.getDoctorConfigByUserId()|.getDoctorConfigByUserId()]]
+#graphify/code #graphify/EXTRACTED #community/Community_15

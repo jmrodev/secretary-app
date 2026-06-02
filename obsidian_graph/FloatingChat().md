@@ -1,23 +1,20 @@
+---
+source_file: "client/src/features/chat/components/sections/FloatingChat.jsx"
+type: "code"
+community: "Android Messaging"
+location: "L19"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Android_Messaging
+---
+
 # FloatingChat()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/chat/components/FloatingChat.jsx
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[FloatingChat.jsx]] - `contains` [EXTRACTED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useFloatingChatController()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useFloatingChatController()|useFloatingChatController()]] (calls)
-- <-- [[FloatingChat.jsx|FloatingChat.jsx]] (contains)
-- --> [[useAuth()|useAuth()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
+#graphify/code #graphify/INFERRED #community/Android_Messaging

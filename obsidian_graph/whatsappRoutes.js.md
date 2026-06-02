@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/communication/whatsappRoutes.js"
+type: "code"
+community: "Community 339"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_339
+---
+
 # whatsappRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/whatsappRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 337]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_339

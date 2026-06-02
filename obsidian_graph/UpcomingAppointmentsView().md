@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/views/UpcomingAppointmentsView.jsx"
+type: "code"
+community: "Community 198"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_198
+---
+
 # UpcomingAppointmentsView()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/UpcomingAppointmentsView.jsx
-- **Comunidad:** [[_COMMUNITY_Community 189]]
+## Connections
+- [[UpcomingAppointmentsView.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[UpcomingAppointmentsView.jsx|UpcomingAppointmentsView.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[UpcomingAppointmentsView.jsx|UpcomingAppointmentsView.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_198

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/routes/AppRouter.jsx"
+type: "code"
+community: "Community 150"
+location: "L38"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_150
+---
+
 # AppRouter()
 
-- **Tipo:** code
-- **Archivo:** client/src/routes/AppRouter.jsx
-- **Comunidad:** [[_COMMUNITY_Community 140]]
+## Connections
+- [[AppRouter.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[AppRouter.jsx|AppRouter.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AppRouter.jsx|AppRouter.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_150

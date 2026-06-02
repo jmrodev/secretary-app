@@ -21,7 +21,6 @@ const InsurancesPage = () => {
         modalOpen,
         editingId,
         formData,
-        setSearchTerm,
         setModalOpen,
         setFormData,
         handlers,

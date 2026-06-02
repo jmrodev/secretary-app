@@ -1,11 +1,17 @@
+---
+source_file: "server/scripts/bulk_sync_spreadsheet.js"
+type: "code"
+community: "Community 136"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_136
+---
+
 # bulk_sync_spreadsheet.js
 
-- **Tipo:** code
-- **Archivo:** server/scripts/bulk_sync_spreadsheet.js
-- **Comunidad:** [[_COMMUNITY_Community 127]]
+## Connections
+- [[run()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[run()|run()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[run()|run()]]
+#graphify/code #graphify/EXTRACTED #community/Community_136

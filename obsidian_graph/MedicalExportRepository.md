@@ -1,15 +1,19 @@
+---
+source_file: "server/repositories/medical/medicalExportRepository.js"
+type: "code"
+community: "Community 98"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_98
+---
+
 # MedicalExportRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/medicalExportRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 93]]
+## Connections
+- [[.findGenericRequestsForExport()]] - `method` [EXTRACTED]
+- [[.findPrescriptionsForExport()]] - `method` [EXTRACTED]
+- [[medicalExportRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[medicalExportRepository.js|medicalExportRepository.js]] (contains)
-- --> [[.findPrescriptionsForExport()|.findPrescriptionsForExport()]] (method)
-- --> [[.findGenericRequestsForExport()|.findGenericRequestsForExport()]] (method)
-
-## Miembros de la misma Comunidad
-- [[medicalExportRepository.js|medicalExportRepository.js]]
-- [[.findPrescriptionsForExport()|.findPrescriptionsForExport()]]
-- [[.findGenericRequestsForExport()|.findGenericRequestsForExport()]]
+#graphify/code #graphify/EXTRACTED #community/Community_98

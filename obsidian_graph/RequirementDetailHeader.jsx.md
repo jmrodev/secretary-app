@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/sections/RequirementDetailHeader.jsx"
+type: "code"
+community: "Community 179"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_179
+---
+
 # RequirementDetailHeader.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/RequirementDetailHeader.jsx
-- **Comunidad:** [[_COMMUNITY_Community 154]]
+## Connections
+- [[RequirementDetailHeader()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[RequirementDetailHeader()|RequirementDetailHeader()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RequirementDetailHeader()|RequirementDetailHeader()]]
+#graphify/code #graphify/EXTRACTED #community/Community_179

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/ui/RescheduleBanner.jsx"
+type: "code"
+community: "Community 186"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_186
+---
+
 # RescheduleBanner()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/RescheduleBanner.jsx
-- **Comunidad:** [[_COMMUNITY_Community 186]]
+## Connections
+- [[RescheduleBanner.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[RescheduleBanner.jsx|RescheduleBanner.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RescheduleBanner.jsx|RescheduleBanner.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_186

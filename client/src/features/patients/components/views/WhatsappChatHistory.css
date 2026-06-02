@@ -10,7 +10,7 @@
 }
 
 .whatsapp-chat__header {
-    background: var(--surface-primary, #ffffff);
+    background: var(--surface-primary, #fff);
     border-bottom: 1px solid var(--border-color, #e0e0e0);
     display: flex;
     align-items: center;
@@ -56,12 +56,12 @@
 }
 
 .whatsapp-chat__date-divider span {
-    background: var(--surface-primary, #ffffff);
+    background: var(--surface-primary, #fff);
     color: var(--text-secondary, #4b5563);
     font-size: 0.7rem;
     padding: 0.2rem 0.5rem;
     border-radius: var(--radius-sm, 4px);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
 }
 
 .whatsapp-chat__bubble-wrapper {
@@ -82,7 +82,7 @@
     padding: var(--space-xs, 0.5rem) var(--space-sm, 0.75rem);
     border-radius: var(--radius-md, 8px);
     position: relative;
-    box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 1px rgb(0 0 0 / 10%);
     display: flex;
     flex-direction: column;
 }
@@ -93,7 +93,7 @@
 }
 
 .whatsapp-chat__bubble--inbound {
-    background-color: #ffffff;
+    background-color: #fff;
     border-top-left-radius: 0;
 }
 
@@ -141,16 +141,16 @@
     padding: 0.75rem 1rem;
     border: none;
     border-radius: 9999px;
-    background: var(--surface-primary, #ffffff);
+    background: var(--surface-primary, #fff);
     font-size: var(--text-sm, 0.875rem);
     color: var(--text-primary, #111827);
     outline: none;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
     transition: box-shadow 0.2s;
 }
 
 .whatsapp-chat__input:focus {
-    box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.2);
+    box-shadow: 0 0 0 2px rgb(37 211 102 / 20%);
 }
 
 .whatsapp-chat__input:disabled {
@@ -170,12 +170,12 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 10px rgba(74, 0, 224, 0.3);
+    box-shadow: 0 4px 10px rgb(74 0 224 / 30%);
 }
 
 .whatsapp-chat__ai-btn:hover:not(:disabled) {
     transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 6px 15px rgba(74, 0, 224, 0.4);
+    box-shadow: 0 6px 15px rgb(74 0 224 / 40%);
 }
 
 .whatsapp-chat__ai-btn:disabled {
@@ -206,7 +206,7 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgb(0 0 0 / 10%);
 }
 
 .whatsapp-chat__send-btn:hover:not(:disabled) {

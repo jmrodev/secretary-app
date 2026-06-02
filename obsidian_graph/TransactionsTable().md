@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/tables/TransactionsTable.jsx"
+type: "code"
+community: "Community 222"
+location: "L16"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_222
+---
+
 # TransactionsTable()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/TransactionsTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 212]]
+## Connections
+- [[TransactionsTable.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[TransactionsTable.jsx|TransactionsTable.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[TransactionsTable.jsx|TransactionsTable.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_222

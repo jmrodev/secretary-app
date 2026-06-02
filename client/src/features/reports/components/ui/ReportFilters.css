@@ -4,6 +4,7 @@
     /* --- Local Component Tokens --- */
     --filter-bg: var(--white);
     --filter-border: var(--gray-300);
+
     /* ------------------------------ */
 
     display: flex;
@@ -63,7 +64,7 @@
     margin-left: auto;
 }
 
-@media (max-width: 1024px) {
+@media (width <= 1024px) {
     .report-filters__actions {
         margin-left: 0;
         width: 100%;
@@ -71,7 +72,7 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .report-filters {
         flex-direction: column;
         align-items: stretch;

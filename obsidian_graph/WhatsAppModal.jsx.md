@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/chat/components/ui/WhatsAppModal.jsx"
+type: "code"
+community: "Medical Requests & History"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Medical_Requests_&_History
+---
+
 # WhatsAppModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/chat/components/WhatsAppModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[WhatsAppModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[WhatsAppModal()|WhatsAppModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Medical_Requests_&_History

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/sections/DocumentsHeader.jsx"
+type: "code"
+community: "Community 178"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_178
+---
+
 # DocumentsHeader()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/DocumentsHeader.jsx
-- **Comunidad:** [[_COMMUNITY_Community 153]]
+## Connections
+- [[DocumentsHeader.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[DocumentsHeader.jsx|DocumentsHeader.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DocumentsHeader.jsx|DocumentsHeader.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_178

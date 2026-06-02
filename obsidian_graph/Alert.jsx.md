@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Alert.jsx"
+type: "code"
+community: "Community 279"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_279
+---
+
 # Alert.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/Alert.jsx
-- **Comunidad:** [[_COMMUNITY_Community 276]]
+## Connections
+- [[Alert()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[Alert()|Alert()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Alert()|Alert()]]
+#graphify/code #graphify/EXTRACTED #community/Community_279

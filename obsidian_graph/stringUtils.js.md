@@ -1,15 +1,19 @@
+---
+source_file: "client/src/utils/core/stringUtils.js"
+type: "code"
+community: "Community 111"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_111
+---
+
 # stringUtils.js
 
-- **Tipo:** code
-- **Archivo:** client/src/utils/stringUtils.js
-- **Comunidad:** [[_COMMUNITY_Community 105]]
+## Connections
+- [[capitalizeFirst()]] - `contains` [EXTRACTED]
+- [[capitalizeWords()]] - `contains` [EXTRACTED]
+- [[replaceTemplateVariables()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[replaceTemplateVariables()|replaceTemplateVariables()]] (contains)
-- --> [[capitalizeFirst()|capitalizeFirst()]] (contains)
-- --> [[capitalizeWords()|capitalizeWords()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[replaceTemplateVariables()|replaceTemplateVariables()]]
-- [[capitalizeFirst()|capitalizeFirst()]]
-- [[capitalizeWords()|capitalizeWords()]]
+#graphify/code #graphify/EXTRACTED #community/Community_111

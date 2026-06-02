@@ -1,11 +1,17 @@
+---
+source_file: "server/controllers/appointments/modification.js"
+type: "code"
+community: "Community 134"
+location: "L4"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_134
+---
+
 # handleError()
 
-- **Tipo:** code
-- **Archivo:** server/controllers/appointments/modification.js
-- **Comunidad:** [[_COMMUNITY_Community 124]]
+## Connections
+- [[modification.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[modification.js|modification.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[modification.js|modification.js]]
+#graphify/code #graphify/EXTRACTED #community/Community_134

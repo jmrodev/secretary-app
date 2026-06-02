@@ -1,16 +1,17 @@
+---
+source_file: "server/services/appointments/googleSyncService.js"
+type: "code"
+community: "Community 54"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_54
+---
+
 # googleSyncService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/googleSyncService.js
-- **Comunidad:** [[_COMMUNITY_Community 49]]
+## Connections
+- [[GoogleSyncService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[GoogleSyncService|GoogleSyncService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[GoogleSyncService|GoogleSyncService]]
-- [[.buildDescription()|.buildDescription()]]
-- [[.syncCreate()|.syncCreate()]]
-- [[.syncUpdate()|.syncUpdate()]]
-- [[.syncDelete()|.syncDelete()]]
-- [[.enqueue()|.enqueue()]]
+#graphify/code #graphify/EXTRACTED #community/Community_54

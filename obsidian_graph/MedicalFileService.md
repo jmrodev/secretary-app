@@ -1,17 +1,20 @@
+---
+source_file: "server/services/medical/MedicalFileService.js"
+type: "code"
+community: "Community 78"
+location: "L11"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_78
+---
+
 # MedicalFileService
 
-- **Tipo:** code
-- **Archivo:** server/services/medical/MedicalFileService.js
-- **Comunidad:** [[_COMMUNITY_Community 75]]
+## Connections
+- [[.deleteFile()]] - `method` [EXTRACTED]
+- [[.getPatientFiles()]] - `method` [EXTRACTED]
+- [[.uploadFile()]] - `method` [EXTRACTED]
+- [[MedicalFileService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicalFileService.js|MedicalFileService.js]] (contains)
-- --> [[.uploadFile()|.uploadFile()]] (method)
-- --> [[.getPatientFiles()|.getPatientFiles()]] (method)
-- --> [[.deleteFile()|.deleteFile()]] (method)
-
-## Miembros de la misma Comunidad
-- [[MedicalFileService.js|MedicalFileService.js]]
-- [[.uploadFile()|.uploadFile()]]
-- [[.getPatientFiles()|.getPatientFiles()]]
-- [[.deleteFile()|.deleteFile()]]
+#graphify/code #graphify/EXTRACTED #community/Community_78

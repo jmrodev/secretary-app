@@ -1,16 +1,17 @@
+---
+source_file: "server/repositories/communication/reminderRepository.js"
+type: "code"
+community: "Community 59"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_59
+---
+
 # reminderRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/reminderRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 55]]
+## Connections
+- [[ReminderRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ReminderRepository|ReminderRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ReminderRepository|ReminderRepository]]
-- [[.findPendingReminders()|.findPendingReminders()]]
-- [[.updatePatientReminder()|.updatePatientReminder()]]
-- [[.clearPatientReminder()|.clearPatientReminder()]]
-- [[.updateMedicationReminders()|.updateMedicationReminders()]]
-- [[.clearMedicationReminders()|.clearMedicationReminders()]]
+#graphify/code #graphify/EXTRACTED #community/Community_59

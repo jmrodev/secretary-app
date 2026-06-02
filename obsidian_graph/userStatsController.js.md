@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/user/userStatsController.js"
+type: "code"
+community: "Community 329"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_329
+---
+
 # userStatsController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/user/userStatsController.js
-- **Comunidad:** [[_COMMUNITY_Community 336]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_329

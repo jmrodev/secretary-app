@@ -1,21 +1,18 @@
+---
+source_file: "client/src/utils/core/format.js"
+type: "code"
+community: "Community 21"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_21
+---
+
 # format.js
 
-- **Tipo:** code
-- **Archivo:** client/src/utils/format.js
-- **Comunidad:** [[_COMMUNITY_Community 27]]
+## Connections
+- [[formatCurrency()]] - `contains` [EXTRACTED]
+- [[formatDate()_1]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[formatPrice()|formatPrice()]] (contains)
-- --> [[formatDate()|formatDate()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[TransactionModal.jsx|TransactionModal.jsx]]
-- [[TransactionModal()|TransactionModal()]]
-- [[DoctorCard.jsx|DoctorCard.jsx]]
-- [[DoctorCard()|DoctorCard()]]
-- [[DebtPaymentModal.jsx|DebtPaymentModal.jsx]]
-- [[DebtPaymentModal()|DebtPaymentModal()]]
-- [[transactionOptions.js|transactionOptions.js]]
-- [[getTransactionTypes()|getTransactionTypes()]]
-- [[getPaymentMethods()|getPaymentMethods()]]
-- [[getStatusOptions()|getStatusOptions()]]
+#graphify/code #graphify/EXTRACTED #community/Community_21

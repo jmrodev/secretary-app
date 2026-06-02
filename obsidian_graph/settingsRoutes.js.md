@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/system/settingsRoutes.js"
+type: "code"
+community: "Community 351"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_351
+---
+
 # settingsRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/settingsRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 354]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_351

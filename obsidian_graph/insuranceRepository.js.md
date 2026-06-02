@@ -1,16 +1,17 @@
+---
+source_file: "server/repositories/core/insuranceRepository.js"
+type: "code"
+community: "Community 58"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_58
+---
+
 # insuranceRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/insuranceRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 53]]
+## Connections
+- [[InsuranceRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[InsuranceRepository|InsuranceRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InsuranceRepository|InsuranceRepository]]
-- [[.findAll()|.findAll()]]
-- [[.findById()|.findById()]]
-- [[.create()|.create()]]
-- [[.update()|.update()]]
-- [[.delete()|.delete()]]
+#graphify/code #graphify/EXTRACTED #community/Community_58

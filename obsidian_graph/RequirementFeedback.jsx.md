@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/sections/RequirementFeedback.jsx"
+type: "code"
+community: "Community 181"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_181
+---
+
 # RequirementFeedback.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/RequirementFeedback.jsx
-- **Comunidad:** [[_COMMUNITY_Community 169]]
+## Connections
+- [[RequirementFeedback()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[RequirementFeedback()|RequirementFeedback()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RequirementFeedback()|RequirementFeedback()]]
+#graphify/code #graphify/EXTRACTED #community/Community_181

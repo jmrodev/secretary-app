@@ -62,6 +62,7 @@ const AppointmentsPage = () => {
                     <FeatureToolbar
                         className="appointments-page-orchestrator__top-actions"
                         tabs={[
+                            { id: 'calendar', label: t('combined_view') || 'Calendario y Agenda', icon: 'view_quilt' },
                             { id: 'agenda', label: t('daily_agenda') || 'Agenda Diaria', icon: 'view_day' },
                             { id: 'monthly', label: t('monthly_view') || 'Vista Mensual', icon: 'calendar_month' },
                             { id: 'upcoming', label: t('upcoming') || 'Próximos', icon: 'upcoming' }
@@ -113,18 +114,20 @@ const AppointmentsPage = () => {
                             />
                         </section>
                     ) : (
-                        <div className={`appointments-page-orchestrator__main-grid ${activeTab === 'monthly' ? 'appointments-page-orchestrator__main-grid--monthly' : ''}`}>
-                            <section className="appointments-page-orchestrator__panel appointments-page-orchestrator__panel--calendar">
-                                <CalendarSection
-                                    activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
-                                    appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
-                                    onAddHoliday={handlers.handleAddHoliday} showOutOfHours={showOutOfHours}
-                                    viewDoctorId={viewDoctorId} onSearchPatientId={setSearchPatientId} searchPatientId={searchPatientId}
-                                    onCreatePatient={booking.createPatient} onNextFreeSlot={handlers.openNextSlot}
-                                    onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
-                                    loading={agendaLoading}
-                                />
-                            </section>
+                        <div className={`appointments-page-orchestrator__main-grid ${(activeTab === 'monthly' || activeTab === 'agenda') ? 'appointments-page-orchestrator__main-grid--monthly' : ''}`}>
+                            {activeTab !== 'agenda' && (
+                                <section className="appointments-page-orchestrator__panel appointments-page-orchestrator__panel--calendar">
+                                    <CalendarSection
+                                        activeTab={activeTab} selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
+                                        appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
+                                        onAddHoliday={handlers.handleAddHoliday} showOutOfHours={showOutOfHours}
+                                        viewDoctorId={viewDoctorId} onSearchPatientId={setSearchPatientId} searchPatientId={searchPatientId}
+                                        onCreatePatient={booking.createPatient} onNextFreeSlot={handlers.openNextSlot}
+                                        onSyncDayToGoogle={() => handlers.syncDayToGoogle(viewDoctorId, selectedDate)}
+                                        loading={agendaLoading}
+                                    />
+                                </section>
+                            )}
 
                             {activeTab !== 'monthly' && (
                                 <section className="appointments-page-orchestrator__panel appointments-page-orchestrator__panel--agenda">

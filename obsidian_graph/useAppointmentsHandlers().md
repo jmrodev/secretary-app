@@ -1,21 +1,22 @@
+---
+source_file: "client/src/features/appointments/hooks/useAppointmentsHandlers.js"
+type: "code"
+community: "Community 47"
+location: "L15"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_47
+---
+
 # useAppointmentsHandlers()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/hooks/useAppointmentsHandlers.js
-- **Comunidad:** [[_COMMUNITY_Community 43]]
+## Connections
+- [[useAppointmentActions()]] - `calls` [INFERRED]
+- [[useAppointmentUIHandlers()]] - `calls` [INFERRED]
+- [[useAppointmentsHandlers.js]] - `contains` [EXTRACTED]
+- [[useAppointmentsPageController()]] - `calls` [INFERRED]
+- [[useAppointmentsPageController.js]] - `imports` [EXTRACTED]
+- [[useHolidayHandlers()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useAppointmentActions()|useAppointmentActions()]] (calls)
-- <-- [[useAppointmentsPageController()|useAppointmentsPageController()]] (calls)
-- --> [[useAppointmentUIHandlers()|useAppointmentUIHandlers()]] (calls)
-- <-- [[useAppointmentsHandlers.js|useAppointmentsHandlers.js]] (contains)
-- --> [[useHolidayHandlers()|useHolidayHandlers()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useAppointmentActions.js|useAppointmentActions.js]]
-- [[useAppointmentActions()|useAppointmentActions()]]
-- [[useAppointmentUIHandlers.js|useAppointmentUIHandlers.js]]
-- [[useAppointmentUIHandlers()|useAppointmentUIHandlers()]]
-- [[useAppointmentsHandlers.js|useAppointmentsHandlers.js]]
-- [[useHolidayHandlers.js|useHolidayHandlers.js]]
-- [[useHolidayHandlers()|useHolidayHandlers()]]
+#graphify/code #graphify/INFERRED #community/Community_47

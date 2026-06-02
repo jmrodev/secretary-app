@@ -10,7 +10,6 @@ import './InstitutionManager.css';
 
 const InstitutionManager = ({
     institutions,
-    loading,
     activeTab,
     setActiveTab,
     isFormModalOpen,

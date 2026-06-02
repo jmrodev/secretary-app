@@ -1,14 +1,18 @@
+---
+source_file: "client/src/hooks/useLiveClock.js"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # useLiveClock()
 
-- **Tipo:** code
-- **Archivo:** client/src/hooks/useLiveClock.js
-- **Comunidad:** [[_COMMUNITY_Community 104]]
+## Connections
+- [[LiveClock()]] - `calls` [INFERRED]
+- [[useLiveClock.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[useLiveClock.js|useLiveClock.js]] (contains)
-- <-- [[LiveClock()|LiveClock()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useLiveClock.js|useLiveClock.js]]
-- [[LiveClock.jsx|LiveClock.jsx]]
-- [[LiveClock()|LiveClock()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

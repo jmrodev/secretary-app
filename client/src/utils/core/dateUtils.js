@@ -131,7 +131,7 @@ export const addMonths = (date, months) => {
 /**
  * Returns the number of days in the month for a given date.
  */
-const getDaysInMonth = (date) => {
+export const getDaysInMonth = (date) => {
     const d = parseDate(date);
     if (!d) return 0;
     const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0);

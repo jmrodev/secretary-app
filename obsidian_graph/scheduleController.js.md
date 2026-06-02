@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/scheduling/scheduleController.js"
+type: "code"
+community: "Community 299"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_299
+---
+
 # scheduleController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/scheduleController.js
-- **Comunidad:** [[_COMMUNITY_Community 307]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_299

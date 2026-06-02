@@ -2,6 +2,7 @@
     /* --- Local Component Tokens --- */
     --badge-bg: var(--gray-800);
     --badge-color: var(--gray-300);
+
     /* ------------------------------ */
 
     display: inline-flex;
@@ -37,6 +38,7 @@
 .badge--blue {
     --badge-bg: var(--blue-800);
     --badge-color: var(--blue-200);
+
     border: 1px solid var(--blue-700);
 }
 
@@ -45,6 +47,7 @@
 .badge--completed {
     --badge-bg: var(--green-800);
     --badge-color: var(--green-200);
+
     border: 1px solid var(--green-700);
 }
 
@@ -53,6 +56,7 @@
 .badge--rejected {
     --badge-bg: var(--red-800);
     --badge-color: var(--red-200);
+
     border: 1px solid var(--red-700);
 }
 
@@ -61,6 +65,7 @@
 .badge--pending {
     --badge-bg: var(--amber-700);
     --badge-color: var(--amber-200);
+
     border: 1px solid var(--amber-600);
 }
 
@@ -68,12 +73,14 @@
 .badge--consult {
     --badge-bg: var(--purple-800);
     --badge-color: var(--purple-200);
+
     border: 1px solid var(--purple-700);
 }
 
 .badge--accent {
     --badge-bg: var(--primary-color);
     --badge-color: var(--text-main);
+
     box-shadow: var(--shadow-sm);
 }
 

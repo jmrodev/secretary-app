@@ -1,26 +1,23 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/ui/ChatAdapter.kt"
+type: "code"
+community: "Community 11"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_11
+---
+
 # ChatAdapter
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/ui/ChatAdapter.kt
-- **Comunidad:** [[_COMMUNITY_Community 13]]
+## Connections
+- [[.formatTime()]] - `method` [EXTRACTED]
+- [[.getItemCount()_4]] - `method` [EXTRACTED]
+- [[.getItemViewType()]] - `method` [EXTRACTED]
+- [[.onBindViewHolder()_4]] - `method` [EXTRACTED]
+- [[.onCreateViewHolder()_4]] - `method` [EXTRACTED]
+- [[.setupRecyclerView()]] - `calls` [INFERRED]
+- [[ChatAdapter.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[.setupRecyclerView()|.setupRecyclerView()]] (calls)
-- <-- [[ChatAdapter.kt|ChatAdapter.kt]] (contains)
-- --> [[.getItemViewType()|.getItemViewType()]] (method)
-- --> [[.onCreateViewHolder()|.onCreateViewHolder()]] (method)
-- --> [[.onBindViewHolder()|.onBindViewHolder()]] (method)
-- --> [[.getItemCount()|.getItemCount()]] (method)
-- --> [[.formatTime()|.formatTime()]] (method)
-
-## Miembros de la misma Comunidad
-- [[MessageDetailActivity.kt|MessageDetailActivity.kt]]
-- [[MessageDetailActivity|MessageDetailActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.setupRecyclerView()|.setupRecyclerView()]]
-- [[.setupListeners()|.setupListeners()]]
-- [[.notifyTyping()|.notifyTyping()]]
-- [[.startTypingLogic()|.startTypingLogic()]]
-- [[.checkOtherTypingStatus()|.checkOtherTypingStatus()]]
-- [[.startAutoRefresh()|.startAutoRefresh()]]
-- [[.loadThread()|.loadThread()]]
+#graphify/code #graphify/EXTRACTED #community/Community_11

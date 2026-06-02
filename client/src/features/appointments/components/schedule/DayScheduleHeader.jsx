@@ -11,7 +11,8 @@ import './DayScheduleHeader.css';
  */
 const DayScheduleHeader = ({
     date, holiday, showOutOfHours, setShowOutOfHours, showCancelled, setShowCancelled,
-    onPrevDay, onToday, onNextDay, onPrint, onNextFreeSlot, t
+    onPrevDay, onToday, onNextDay, onPrint, onNextFreeSlot, t,
+    viewMode, setViewMode
 }) => {
     return (
         <header className="day-schedule-header">
@@ -29,11 +30,27 @@ const DayScheduleHeader = ({
 
             <div className="day-schedule-header__nav">
                 <Button variant="ghost" size="sm-compact" onClick={onPrevDay} icon={<Icon name="chevron_left" />} />
-                <Button variant="ghost" size="sm-compact" onClick={onToday}>{t('today') || "Hoy"}</Button>
+                <Button variant="ghost" size="sm-compact" onClick={onToday}>{t('today')}</Button>
                 <Button variant="ghost" size="sm-compact" onClick={onNextDay} icon={<Icon name="chevron_right" />} />
             </div>
 
             <div className="day-schedule-header__toolbar">
+                <div className="day-schedule-header__view-toggle">
+                    <Button 
+                        variant={viewMode === 'timeline' ? 'primary' : 'ghost'} 
+                        size="sm-compact" 
+                        onClick={() => setViewMode('timeline')}
+                        icon={<Icon name="view_day" size="0.95rem" />}
+                        title={t('timeline_view')}
+                    />
+                    <Button 
+                        variant={viewMode === 'table' ? 'primary' : 'ghost'} 
+                        size="sm-compact" 
+                        onClick={() => setViewMode('table')}
+                        icon={<Icon name="table_rows" size="0.95rem" />}
+                        title={t('table_view')}
+                    />
+                </div>
                 <div className="day-schedule-header__controls">
                     <Switch label={t('show_out_of_hours')} checked={showOutOfHours} onChange={setShowOutOfHours} />
                     <Switch label={t('show_cancelled')} checked={showCancelled} onChange={setShowCancelled} />

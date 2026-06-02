@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/auth/components/forms/RegisterForm.jsx"
+type: "code"
+community: "Android Messaging"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Android_Messaging
+---
+
 # RegisterForm()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/components/RegisterForm.jsx
-- **Comunidad:** [[_COMMUNITY_Community 6]]
+## Connections
+- [[RegisterForm.jsx]] - `contains` [EXTRACTED]
+- [[useRegisterController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useRegisterController()|useRegisterController()]] (calls)
-- <-- [[RegisterForm.jsx|RegisterForm.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RequestsPage.jsx|RequestsPage.jsx]]
-- [[RequestsPage()|RequestsPage()]]
-- [[useMedicalRequest.js|useMedicalRequest.js]]
-- [[useMedicalRequest()|useMedicalRequest()]]
-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]]
-- [[MedicalRequestForm()|MedicalRequestForm()]]
-- [[MedicalRequestList.jsx|MedicalRequestList.jsx]]
-- [[MedicalRequestList()|MedicalRequestList()]]
-- [[MedicalHistoryTable.jsx|MedicalHistoryTable.jsx]]
-- [[MedicalHistoryTable()|MedicalHistoryTable()]]
+#graphify/code #graphify/EXTRACTED #community/Android_Messaging

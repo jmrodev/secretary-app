@@ -20,6 +20,7 @@
     --history-border: var(--gray-300);
     --history-header-bg: var(--gray-50);
     --history-row-hover: var(--gray-50);
+
     /* ------------------------------ */
 
     background-color: var(--history-bg);

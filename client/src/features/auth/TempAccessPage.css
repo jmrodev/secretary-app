@@ -20,7 +20,7 @@
 .temp-access__card {
     background: white;
     border-radius: 1.5rem;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 25px -5px rgb(0 0 0 / 5%), 0 8px 10px -6px rgb(0 0 0 / 5%);
     overflow: hidden;
 }
 
@@ -55,7 +55,7 @@
     justify-content: space-between;
     gap: 1.5rem;
     border: 1px solid var(--slate-100, #f1f5f9);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 5%);
 }
 
 .temp-access__download-info {
@@ -81,7 +81,7 @@
     flex-shrink: 0;
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
     .temp-access__download-card {
         flex-direction: column;
         text-align: center;

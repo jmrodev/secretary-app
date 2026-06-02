@@ -25,6 +25,7 @@ const globalLimiter = rateLimit({
 
 // Register Event Listeners
 require('./listeners/appointmentListeners');
+require('./listeners/financeListener');
 
 const { initScheduler } = require('./utils/system/scheduler');
 

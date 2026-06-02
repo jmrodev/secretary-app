@@ -29,7 +29,6 @@ const PrescriptionForm = ({
     patientMeds,
     medicationItems,
     setMedicationItems,
-    baseClass,
     // Prop-drilled state from useMedicalRequest
     tempMed, setTempMed,
     tempDose, setTempDose,
@@ -50,16 +49,11 @@ const PrescriptionForm = ({
         return Math.floor((upb * boxes) / daily);
     }, [tempUnitsPerBox, tempQty, tempDailyUnits]);
 
-    const [clientRefillDate, setClientRefillDate] = useState(null);
-
-    React.useEffect(() => {
-        if (!daysSupply) {
-            setClientRefillDate(null);
-            return;
-        }
+    const clientRefillDate = useMemo(() => {
+        if (!daysSupply) return null;
         const d = getNow();
         d.setDate(d.getDate() + daysSupply);
-        setClientRefillDate(formatDate(d, { monthName: true, hideYear: true }));
+        return formatDate(d, { monthName: true, hideYear: true });
     }, [daysSupply]);
 
     // ── Handlers ─────────────────────────────────────────────────────────────

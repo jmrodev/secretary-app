@@ -7,7 +7,7 @@ export const useDashboardModals = () => {
 
     const [actionModal, setActionModal] = useState({ open: false, appt: null });
     const [historyModal, setHistoryModal] = useState({ open: false, patientId: null, patientName: '' });
-    const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
+    const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientId: null, patientName: '', medications: '', instructions: '' });
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {}, apptId: null });
 
     const handleOpenPayment = useCallback((appt) => {
@@ -42,6 +42,7 @@ export const useDashboardModals = () => {
         setPrescribeModal({
             open: true,
             apptId: appt.id,
+            patientId: appt.patientId || appt.patient_id,
             patientName: appt.patient_name,
             medications: '',
             instructions: ''

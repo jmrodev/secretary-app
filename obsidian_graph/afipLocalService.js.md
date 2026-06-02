@@ -1,16 +1,17 @@
+---
+source_file: "server/services/finance/afipLocalService.js"
+type: "code"
+community: "Community 48"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_48
+---
+
 # afipLocalService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/afipLocalService.js
-- **Comunidad:** [[_COMMUNITY_Community 44]]
+## Connections
+- [[LocalAfipService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[LocalAfipService|LocalAfipService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[LocalAfipService|LocalAfipService]]
-- [[.constructor()|.constructor()]]
-- [[.getAuth()|.getAuth()]]
-- [[.getServerStatus()|.getServerStatus()]]
-- [[.getLastVoucher()|.getLastVoucher()]]
-- [[.createVoucher()|.createVoucher()]]
+#graphify/code #graphify/EXTRACTED #community/Community_48

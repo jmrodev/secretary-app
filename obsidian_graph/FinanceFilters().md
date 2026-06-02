@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/finances/components/ui/FinanceFilters.jsx"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L15"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # FinanceFilters()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/FinanceFilters.jsx
-- **Comunidad:** [[_COMMUNITY_Community 17]]
+## Connections
+- [[FinanceFilters.jsx]] - `contains` [EXTRACTED]
+- [[getMonthsOptions()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[FinanceFilters.jsx|FinanceFilters.jsx]] (contains)
-- --> [[getMonthsOptions()|getMonthsOptions()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[FinanceFilters.jsx|FinanceFilters.jsx]]
-- [[ReportFilters.jsx|ReportFilters.jsx]]
-- [[ReportFilters()|ReportFilters()]]
-- [[dateUtils.js|dateUtils.js]]
-- [[parseDate()|parseDate()]]
-- [[formatDate()|formatDate()]]
-- [[getMonthName()|getMonthName()]]
-- [[getMonthsOptions()|getMonthsOptions()]]
-- [[formatTime()|formatTime()]]
-- [[toInputDateTime()|toInputDateTime()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

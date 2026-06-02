@@ -1,20 +1,18 @@
+---
+source_file: "client/src/features/appointments/components/calendar/Calendar.jsx"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # Calendar.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/Calendar.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[Calendar()]] - `contains` [EXTRACTED]
+- [[CalendarGrid()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[Calendar()|Calendar()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

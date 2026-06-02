@@ -5,17 +5,17 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.35rem 0.85rem;
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: rgb(255 255 255 / 8%);
     backdrop-filter: blur(16px);
     border-radius: 100px;
     border: none; /* No border as requested */
     transition: background-color 0.3s ease;
     vertical-align: middle;
-    color: #ffffff;
+    color: #fff;
 }
 
 .doctor-selector:hover {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgb(255 255 255 / 15%);
 }
 
 .doctor-selector__select {
@@ -34,7 +34,7 @@
 
 /* Ensure options are always readable */
 .doctor-selector__select option {
-    background-color: #ffffff;
+    background-color: #fff;
     color: #1e293b;
     font-weight: 400;
 }
@@ -44,7 +44,7 @@
     font-size: 0.85rem;
     margin-left: 0.5rem;
     font-weight: 700;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255 255 255 / 10%);
     padding: 0.2rem 0.6rem;
     border-radius: 1rem;
     border: none;

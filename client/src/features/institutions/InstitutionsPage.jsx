@@ -32,15 +32,9 @@ const InstitutionsPage = () => {
         handleInputChange,
     } = handlers;
 
-    const [selectedInstId, setSelectedInstId] = React.useState('');
+    const [_selectedInstId, setSelectedInstId] = React.useState('');
+    const selectedInstId = _selectedInstId || (institutions.length > 0 ? String(institutions[0].id) : '');
     const [viewMode, setViewMode] = React.useState('transactions');
-
-    // Sync selectedInstId with institutions list if not set
-    React.useEffect(() => {
-        if (!selectedInstId && institutions.length > 0) {
-            setSelectedInstId(String(institutions[0].id));
-        }
-    }, [institutions, selectedInstId]);
 
     return (
         <MainLayout wide flush title={t('institutions') || 'Instituciones'}>

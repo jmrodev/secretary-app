@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Icon.jsx"
+type: "code"
+community: "Community 272"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_272
+---
+
 # Icon()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/Icon.jsx
-- **Comunidad:** [[_COMMUNITY_Community 269]]
+## Connections
+- [[Icon.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[Icon.jsx|Icon.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Icon.jsx|Icon.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_272

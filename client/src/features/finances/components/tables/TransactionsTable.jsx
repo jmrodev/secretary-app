@@ -15,7 +15,6 @@ import './TransactionsTable.css';
  */
 const TransactionsTable = ({
     transactions,
-    totalCount,
     currentPage,
     totalPages,
     onPageChange,

@@ -1,5 +1,5 @@
 /* DocumentsHeader.css */
-@import '@/styles/layout-dashboard.css';
+@import url('@/styles/layout-dashboard.css');
 
 .documents-header {
     margin-bottom: 2rem;

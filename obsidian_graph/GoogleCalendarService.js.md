@@ -1,20 +1,17 @@
+---
+source_file: "server/services/google/GoogleCalendarService.js"
+type: "code"
+community: "Community 24"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_24
+---
+
 # GoogleCalendarService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/google/GoogleCalendarService.js
-- **Comunidad:** [[_COMMUNITY_Community 24]]
+## Connections
+- [[GoogleCalendarService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[GoogleCalendarService|GoogleCalendarService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[GoogleCalendarService|GoogleCalendarService]]
-- [[.getColorForStatus()|.getColorForStatus()]]
-- [[._isSyncEnabled()|._isSyncEnabled()]]
-- [[._getCalendar()|._getCalendar()]]
-- [[.listEvents()|.listEvents()]]
-- [[.createEventHelper()|.createEventHelper()]]
-- [[.updateEventHelper()|.updateEventHelper()]]
-- [[.deleteEventHelper()|.deleteEventHelper()]]
-- [[.checkConflict()|.checkConflict()]]
-- [[.getBusyIntervals()|.getBusyIntervals()]]
+#graphify/code #graphify/EXTRACTED #community/Community_24

@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/patients/components/medications/PatientMedications.jsx"
+type: "code"
+community: "Community 20"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_20
+---
+
 # PatientMedications.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientMedications.jsx
-- **Comunidad:** [[_COMMUNITY_Community 3]]
+## Connections
+- [[PatientMedications()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PatientMedications()|PatientMedications()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useMessage()|useMessage()]]
-- [[useConfig()|useConfig()]]
-- [[DashboardPage.jsx|DashboardPage.jsx]]
-- [[DashboardPage()|DashboardPage()]]
-- [[useDashboardController.js|useDashboardController.js]]
-- [[useDashboardController()|useDashboardController()]]
-- [[useDashboardModals.js|useDashboardModals.js]]
-- [[useDashboardModals()|useDashboardModals()]]
-- [[useDashboardWhatsApp.js|useDashboardWhatsApp.js]]
-- [[useDashboardWhatsApp()|useDashboardWhatsApp()]]
+#graphify/code #graphify/EXTRACTED #community/Community_20

@@ -1,202 +1,110 @@
+const knex = require('knex')({ client: 'mysql2' }); // Usamos mysql2 para compatibilidad con MariaDB
+
 /**
- * BaseQueryBuilder - Clase base para todos los Query Builders
- * Proporciona métodos comunes para construir queries SQL de forma segura y legible
+ * BaseQueryBuilder Refactorizado con Knex.js
+ * Utiliza Knex para generar consultas SQL seguras y a prueba de inyecciones,
+ * manteniendo la compatibilidad con el pool de conexiones existente.
  */
 class BaseQueryBuilder {
     constructor(baseTable, user = null) {
-        this.baseTable = baseTable;
         this.user = user;
-        this.selectFields = [];
-        this.selectParams = [];
-        this.joins = [];
-        this.conditions = [];
-        this.params = [];
-        this.orderByClause = '';
-        this.limitClause = '';
-        this.groupByClause = '';
+        // Soporte para alias ej: "patients p" -> "patients as p"
+        const tableString = baseTable.includes(' ') ? baseTable.replace(' ', ' as ') : baseTable;
+        this.query = knex(tableString);
     }
 
     /**
-     * Agrega campos al SELECT con soporte de parámetros
+     * Agrega campos al SELECT
      */
     select(fields, params = []) {
         if (Array.isArray(fields)) {
-            this.selectFields.push(...fields);
+            // Knex raw para soportar subqueries complejas como strings
+            fields.forEach(f => this.query.select(knex.raw(f, params)));
         } else {
-            this.selectFields.push(fields);
-        }
-
-        if (params && params.length > 0) {
-            this.selectParams.push(...params);
+            this.query.select(knex.raw(fields, params));
         }
         return this;
     }
 
     /**
-     * Agrega un JOIN a la query
-     * @param {string} table - Tabla a joinear
-     * @param {string} condition - Condición del JOIN
-     * @param {string} type - Tipo de JOIN (INNER, LEFT, RIGHT)
+     * Joins genéricos usando raw para soportar tablas derivadas
      */
-    join(table, condition, type = 'INNER') {
-        this.joins.push({ table, condition, type });
+    join(table, condition, type = 'inner') {
+        this.query.joinRaw(`${type} join ${table} on ${condition}`);
         return this;
     }
 
-    /**
-     * Agrega un LEFT JOIN
-     */
     leftJoin(table, condition) {
-        return this.join(table, condition, 'LEFT');
+        return this.join(table, condition, 'left');
     }
 
-    /**
-     * Agrega un INNER JOIN
-     */
     innerJoin(table, condition) {
-        return this.join(table, condition, 'INNER');
+        return this.join(table, condition, 'inner');
     }
 
-    /**
-     * Agrega una condición WHERE
-     * @param {string} condition - Condición SQL
-     * @param {*} params - Parámetros para la condición (pueden ser múltiples)
-     */
     where(condition, ...params) {
-        this.conditions.push(condition);
-        this.params.push(...params);
+        this.query.whereRaw(condition, params);
         return this;
     }
 
-    /**
-     * Agrega múltiples condiciones OR
-     * @param {Array} conditions - Array de {condition, params}
-     */
     orWhere(conditions) {
-        const orConditions = conditions.map(c => c.condition);
-        this.conditions.push(`(${orConditions.join(' OR ')})`);
-        conditions.forEach(c => {
-            if (c.params) {
-                this.params.push(...(Array.isArray(c.params) ? c.params : [c.params]));
-            }
+        this.query.where(function() {
+            conditions.forEach((c, index) => {
+                const params = Array.isArray(c.params) ? c.params : (c.params ? [c.params] : []);
+                if (index === 0) {
+                    this.whereRaw(c.condition, params);
+                } else {
+                    this.orWhereRaw(c.condition, params);
+                }
+            });
         });
         return this;
     }
 
-    /**
-     * Agrega ORDER BY
-     */
     orderBy(field, direction = 'ASC') {
-        this.orderByClause = `ORDER BY ${field} ${direction}`;
+        this.query.orderByRaw(`${field} ${direction}`);
         return this;
     }
 
-    /**
-     * Agrega LIMIT
-     */
+    orderByRaw(rawClause) {
+        this.query.orderByRaw(rawClause);
+        return this;
+    }
+
     limit(limit, offset = 0) {
-        this.limitClause = offset > 0 ? `LIMIT ${offset}, ${limit}` : `LIMIT ${limit}`;
+        this.query.limit(limit).offset(offset);
         return this;
     }
 
-    /**
-     * Agrega GROUP BY
-     */
     groupBy(fields) {
-        this.groupByClause = `GROUP BY ${Array.isArray(fields) ? fields.join(', ') : fields}`;
+        const groupByFields = Array.isArray(fields) ? fields.join(', ') : fields;
+        this.query.groupByRaw(groupByFields);
         return this;
     }
 
     /**
-     * Construye y retorna la query final con sus parámetros
-     * @returns {{query: string, params: Array}}
+     * Retorna la query compilada y sus bindings, compatible con pool.query()
      */
     build() {
-        let query = 'SELECT ';
-
-        // SELECT clause
-        if (this.selectFields.length > 0) {
-            query += this.selectFields.join(', ');
-        } else {
-            query += '*';
-        }
-
-        // FROM clause
-        query += ` FROM ${this.baseTable}`;
-
-        // JOINs
-        this.joins.forEach(join => {
-            query += ` ${join.type} JOIN ${join.table} ON ${join.condition}`;
-        });
-
-        // WHERE clause
-        if (this.conditions.length > 0) {
-            query += ' WHERE ' + this.conditions.join(' AND ');
-        }
-
-        // GROUP BY
-        if (this.groupByClause) {
-            query += ' ' + this.groupByClause;
-        }
-
-        // ORDER BY
-        if (this.orderByClause) {
-            query += ' ' + this.orderByClause;
-        }
-
-        // LIMIT
-        if (this.limitClause) {
-            query += ' ' + this.limitClause;
-        }
-
-        return {
-            query,
-            params: [...this.selectParams, ...this.params] // Combinamos ambos en orden
-        };
+        const { sql, bindings } = this.query.toSQL().toNative();
+        return { query: sql, params: bindings };
     }
 
-    /**
-     * Construye y retorna la query para contar registros totales
-     * @returns {{query: string, params: Array}}
-     */
     buildCount() {
-        let query = 'SELECT COUNT(*) as total';
+        // Clona la consulta, limpia los selects y ordenamientos, y cuenta
+        const countQuery = this.query.clone()
+            .clearSelect()
+            .clearOrder()
+            .clear('limit')
+            .clear('offset')
+            .count('* as total');
 
-        // FROM clause
-        query += ` FROM ${this.baseTable}`;
-
-        // JOINs (Sólo INNER JOINs suelen ser necesarios para contar si afectan resultados, 
-        // pero incluimos todos por si hay filtros en tablas joineadas)
-        this.joins.forEach(join => {
-            query += ` ${join.type} JOIN ${join.table} ON ${join.condition}`;
-        });
-
-        // WHERE clause
-        if (this.conditions.length > 0) {
-            query += ' WHERE ' + this.conditions.join(' AND ');
-        }
-
-        // GROUP BY (Si hay group by, el count es más complejo, pero para casos simples...)
-        if (this.groupByClause) {
-            query = `SELECT COUNT(*) as total FROM (${query} ${this.groupByClause}) as count_table`;
-        }
-
-        return {
-            query,
-            params: this.params // Solo usamos los parámetros del WHERE
-        };
+        const { sql, bindings } = countQuery.toSQL().toNative();
+        return { query: sql, params: bindings };
     }
 
-    /**
-     * Retorna solo la query como string (para debugging)
-     */
     toSQL() {
-        const { query, params } = this.build();
-        let finalQuery = query;
-        params.forEach(param => {
-            finalQuery = finalQuery.replace('?', typeof param === 'string' ? `'${param}'` : param);
-        });
-        return finalQuery;
+        return this.query.toString();
     }
 }
 

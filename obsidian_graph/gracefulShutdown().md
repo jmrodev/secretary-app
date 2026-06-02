@@ -1,11 +1,17 @@
+---
+source_file: "server/app.js"
+type: "code"
+community: "Community 130"
+location: "L149"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_130
+---
+
 # gracefulShutdown()
 
-- **Tipo:** code
-- **Archivo:** server/app.js
-- **Comunidad:** [[_COMMUNITY_Community 120]]
+## Connections
+- [[app.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[app.js|app.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[app.js|app.js]]
+#graphify/code #graphify/EXTRACTED #community/Community_130

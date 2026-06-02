@@ -1,56 +1,29 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import Loading from '@/components/atoms/Loading';
-import { formatDate, toInputDate, getNow, createDate, parseDate } from '@/utils/core/dateUtils';
+import { formatDate, toInputDate, getNow, parseDate } from '@/utils/core/dateUtils';
 import './NextSlotCalendarModal.css';
 
 /**
  * NextSlotCalendarModal (Executor Component).
- * Advanced search UI for free slots using a monthly calendar grid or a list view.
+ * Two-step slot finder:
+ *  Step 1 — "days": scrollable list of available days with free-slot count chip.
+ *  Step 2 — "slots": time slots for the chosen day.
+ *
+ * Chip logic:
+ *  - includeOutOfHours OFF → chip shows only in-hours count; days with 0 in-hours are hidden.
+ *  - includeOutOfHours ON  → chip shows total count; out-of-hours-only days appear with amber chip.
  */
-const SlotControls = ({ includeOutOfHours, onToggleOutOfHours, viewMode, setViewMode, selectedDate, nextSlotData, t }) => (
-    <div className="calendar-slot-controls">
-        <label className="calendar-slot-controls__checkbox">
-            <input type="checkbox" className="calendar-slot-controls__input" checked={includeOutOfHours} onChange={(e) => onToggleOutOfHours(e.target.checked)} />
-            <span className="calendar-slot-controls__label">
-                <Icon name="lock_open" size="1rem" />
-                {t('include_overtime')}
-            </span>
-        </label>
-        <div className="calendar-slot-controls__toggle-group">
-            <Button 
-                variant="ghost"
-                className={`calendar-slot-controls__toggle-btn ${viewMode === 'calendar' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} 
-                onClick={() => setViewMode('calendar')}
-                icon={<Icon name="calendar_today" size="1rem" />}
-            >
-                {t('calendar')}
-            </Button>
-            <Button 
-                variant="ghost"
-                className={`calendar-slot-controls__toggle-btn ${viewMode === 'list' ? 'calendar-slot-controls__toggle-btn--active' : ''}`} 
-                onClick={() => {
-                    if (!selectedDate && nextSlotData?.results?.length > 0) {
-                        // handled by parent
-                    }
-                    setViewMode('list');
-                }}
-                icon={<Icon name="list" size="1rem" />}
-            >
-                {t('list')}
-            </Button>
-        </div>
-    </div>
-);
 
+/* ─── SlotSection ─────────────────────────────────────────────────────────── */
 const SlotSection = ({ title, slots, type, onWhatsApp, onSelect, t }) => {
     if (slots.length === 0) return null;
     return (
         <div className="slots-list__section">
-            <div className={`slots-list__section-header ${type === 'normal' ? 'slots-list__section-header--normal' : 'slots-list__section-header--extra'}`}>{title}</div>
+            <div className={`slots-list__section-header slots-list__section-header--${type === 'normal' ? 'normal' : 'extra'}`}>{title}</div>
             <table className="slots-list__table">
                 <tbody>{slots.map((slot) => (
                     <tr key={`${type}-${slot.iso}`} className={`slots-list__row ${type !== 'normal' ? 'slots-list__row--extra' : ''}`}>
@@ -63,8 +36,19 @@ const SlotSection = ({ title, slots, type, onWhatsApp, onSelect, t }) => {
                         </td>
                         <td className="slots-list__cell slots-list__cell--actions">
                             <div className="slots-list__actions">
-                                <Button className="slots-list__wa-btn" onClick={(e) => { e.stopPropagation(); onWhatsApp(slot); }} title="WhatsApp" unstyled><Icon name="chat" size="1.1rem" /></Button>
-                                <Button variant={type === 'normal' ? 'primary' : 'secondary'} size="sm-compact" onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}>
+                                <Button
+                                    className="slots-list__wa-btn"
+                                    onClick={(e) => { e.stopPropagation(); onWhatsApp(slot); }}
+                                    title="WhatsApp"
+                                    unstyled
+                                >
+                                    <Icon name="chat" size="1.1rem" />
+                                </Button>
+                                <Button
+                                    variant={type === 'normal' ? 'primary' : 'secondary'}
+                                    size="sm-compact"
+                                    onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}
+                                >
                                     {type === 'normal' ? t('select') : (type === 'break' ? t('assign_ext') : t('assign_extra'))}
                                 </Button>
                             </div>
@@ -76,249 +60,231 @@ const SlotSection = ({ title, slots, type, onWhatsApp, onSelect, t }) => {
     );
 };
 
-const modalInitialState = {
-    selectedDate: null,
-    currentMonth: getNow(),
-    viewMode: 'calendar',
-    hasInitialized: false,
-    clientDates: { todayIso: '', selectedDateStr: '' }
+/* ─── DayListItem ─────────────────────────────────────────────────────────── */
+const DayListItem = ({ dayName, dateStr, dateLabel, isToday, inCount, outCount, includeOutOfHours, onClick }) => {
+    const chipCount  = includeOutOfHours ? inCount + outCount : inCount;
+    const isOutOnly  = inCount === 0 && outCount > 0;
+    const chipVariant = isOutOnly ? 'amber' : 'green';
+
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); }
+    };
+
+    return (
+        <div
+            role="button"
+            tabIndex={0}
+            className={`day-list__item${isToday ? ' day-list__item--today' : ''}${isOutOnly ? ' day-list__item--out-only' : ''}`}
+            onClick={onClick}
+            onKeyDown={handleKeyDown}
+            aria-label={`${dayName} ${dateLabel} — ${chipCount} turnos libres`}
+        >
+            <div className="day-list__date-info">
+                <span className="day-list__day-name">{dayName}</span>
+                <span className="day-list__date-label">{dateLabel}</span>
+                {isToday && <span className="day-list__today-badge">HOY</span>}
+            </div>
+            <div className="day-list__chip-group">
+                {isOutOnly && <Icon name="lock_open" size="0.85rem" className="day-list__out-icon" />}
+                <span className={`day-list__chip day-list__chip--${chipVariant}`}>{chipCount}</span>
+            </div>
+        </div>
+    );
 };
 
-function modalReducer(state, action) {
-    switch (action.type) {
-        case 'SET_DATE': return { ...state, selectedDate: action.payload };
-        case 'SET_MONTH': return { ...state, currentMonth: action.payload };
-        case 'SET_VIEW_MODE': return { ...state, viewMode: action.payload };
-        case 'SET_INITIALIZED': return { ...state, hasInitialized: action.payload };
-        case 'SET_CLIENT_DATES': return { ...state, clientDates: { ...state.clientDates, ...action.payload } };
-        case 'RESET': return { ...modalInitialState, currentMonth: getNow() };
-        default: return state;
-    }
-}
-
+/* ─── Main Component ──────────────────────────────────────────────────────── */
 const NextSlotCalendarModal = ({
     isOpen, onClose, loading, nextSlotData, includeOutOfHours, onToggleOutOfHours,
     onSelect, onWhatsApp, onLoadMore, hasMore
 }) => {
     const { t } = useLanguage();
-    const [state, dispatch] = React.useReducer(modalReducer, modalInitialState);
-    const { selectedDate, currentMonth, viewMode, hasInitialized, clientDates } = state;
+    const [step, setStep] = React.useState('days');          // 'days' | 'slots'
+    const [selectedDate, setSelectedDate] = React.useState(null);
+    const listBottomRef = useRef(null);
+    const onLoadMoreRef = useRef(onLoadMore);
+    const todayIso = toInputDate(getNow());
 
-    const monthNames = t('months_array') || [];
-    const dayNames = t('days_short_array') || [];
+    useEffect(() => { onLoadMoreRef.current = onLoadMore; }, [onLoadMore]);
 
-    // Initial state setup for client-side dates
+    // Reset on close
     useEffect(() => {
-        const todayIso = toInputDate(getNow());
-        const selectedDateStr = selectedDate ? formatDate(selectedDate + 'T12:00:00') : '';
-        
-        dispatch({ 
-            type: 'SET_CLIENT_DATES', 
-            payload: { todayIso, selectedDateStr } 
-        });
-    }, [selectedDate]);
-
-    const slotsByDate = useMemo(() => {
-        const grouped = {};
-        if (nextSlotData?.results) {
-            nextSlotData.results.forEach(day => {
-                grouped[day.date] = {
-                    total: day.slots.length,
-                    inHours: day.slots.filter(s => !s.is_out_of_hours && !s.is_break).length,
-                    outHours: day.slots.filter(s => s.is_out_of_hours).length,
-                    breakSlotsCount: day.slots.filter(s => s.is_break).length,
-                    slots: day.slots, dayName: day.dayName
-                };
-            });
+        if (!isOpen) {
+            setStep('days');
+            setSelectedDate(null);
         }
-        return grouped;
-    }, [nextSlotData]);
-
-    const calendarDays = useMemo(() => {
-        const year = currentMonth.getFullYear();
-        const month = currentMonth.getMonth();
-        const firstDay = createDate(year, month, 1).getDay();
-        const lastDay = createDate(year, month + 1, 0).getDate();
-        const days = [];
-        for (let i = 0; i < firstDay; i++) days.push(null);
-        for (let day = 1; day <= lastDay; day++) {
-            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            days.push({ day, dateStr, isToday: dateStr === clientDates.todayIso, slots: slotsByDate[dateStr] || null });
-        }
-        return days;
-    }, [currentMonth, slotsByDate, clientDates.todayIso]);
-
-    const selectedSlots = selectedDate ? slotsByDate[selectedDate]?.slots || [] : [];
-    const handlePrevMonth = () => dispatch({ type: 'SET_MONTH', payload: createDate(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1) });
-    const handleNextMonth = () => dispatch({ type: 'SET_MONTH', payload: createDate(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1) });
-
-    const handleDateClick = (dateStr) => {
-        if (slotsByDate[dateStr]) { 
-            dispatch({ type: 'SET_DATE', payload: dateStr }); 
-            dispatch({ type: 'SET_VIEW_MODE', payload: 'list' }); 
-        }
-    };
-
-    const handleKeyDown = (e, dateStr, hasSlots) => {
-        if ((e.key === 'Enter' || e.key === ' ') && hasSlots) {
-            e.preventDefault();
-            handleDateClick(dateStr);
-        }
-    };
-
-    useEffect(() => {
-        if (!isOpen) queueMicrotask(() => dispatch({ type: 'SET_INITIALIZED', payload: false }));
     }, [isOpen]);
 
-    useEffect(() => {
-        let isMounted = true;
-        if (nextSlotData?.results?.length > 0 && isOpen && !hasInitialized) {
-            if (isMounted) {
-                const [year, month] = nextSlotData.results[0].date.split('-');
-                queueMicrotask(() => {
-                    dispatch({ type: 'SET_MONTH', payload: createDate(parseInt(year), parseInt(month) - 1, 1) });
-                    dispatch({ type: 'SET_INITIALIZED', payload: true });
-                });
-            }
-        }
-        return () => { isMounted = false; };
-    }, [nextSlotData, isOpen, hasInitialized]);
+    /* Build structured day rows from backend results */
+    const dayRows = useMemo(() => {
+        if (!nextSlotData?.results) return [];
+        return nextSlotData.results
+            .map(day => {
+                const inCount  = day.slots.filter(s => !s.is_out_of_hours && !s.is_break).length;
+                const outCount = day.slots.filter(s => s.is_out_of_hours || s.is_break).length;
+                // When out-of-hours is OFF, hide days with 0 in-hours slots
+                if (!includeOutOfHours && inCount === 0) return null;
+                return {
+                    date: day.date,
+                    dayName: day.dayName,
+                    slots: day.slots,
+                    inCount,
+                    outCount,
+                };
+            })
+            .filter(Boolean);
+    }, [nextSlotData, includeOutOfHours]);
 
-    const onLoadMoreRef = React.useRef(onLoadMore);
-    useEffect(() => {
-        onLoadMoreRef.current = onLoadMore;
-    }, [onLoadMore]);
+    /* Slots for selected day */
+    const selectedSlots = useMemo(() => {
+        if (!selectedDate || !nextSlotData?.results) return [];
+        return nextSlotData.results.find(d => d.date === selectedDate)?.slots || [];
+    }, [selectedDate, nextSlotData]);
 
+    const selectedDayRow = dayRows.find(d => d.date === selectedDate);
+
+    /* Auto-load more when reaching the bottom of the list */
     useEffect(() => {
-        if (!loading && hasMore && isOpen) {
-            const lastDate = nextSlotData?.results?.[nextSlotData.results.length - 1]?.date;
-            if (lastDate && createDate(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0) > parseDate(lastDate)) {
-                onLoadMoreRef.current();
-            }
-        }
-    }, [currentMonth, loading, hasMore, nextSlotData, isOpen]);
+        if (!listBottomRef.current || !hasMore || loading) return;
+        const observer = new IntersectionObserver(
+            (entries) => { if (entries[0].isIntersecting) onLoadMoreRef.current?.(); },
+            { threshold: 0.1 }
+        );
+        const el = listBottomRef.current;
+        observer.observe(el);
+        return () => observer.unobserve(el);
+    }, [hasMore, loading, dayRows]);
+
+    /* ── Handlers ── */
+    const handleDayClick = (dateStr) => {
+        setSelectedDate(dateStr);
+        setStep('slots');
+    };
+
+    const handleBack = () => setStep('days');
+
+    /* ── Slot sections ── */
+    const firstNormal = selectedSlots.find(s => !s.is_out_of_hours && !s.is_break);
+    const lastNormal  = [...selectedSlots].filter(s => !s.is_out_of_hours && !s.is_break).pop();
+    const beforeSlots = selectedSlots.filter(s => s.is_out_of_hours && s.iso < (firstNormal?.iso || '99:99'));
+    const normalSlots = selectedSlots.filter(s => !s.is_out_of_hours && !s.is_break);
+    const breakSlots  = selectedSlots.filter(s => s.is_break);
+    const afterSlots  = selectedSlots.filter(s => s.is_out_of_hours && s.iso > (lastNormal?.iso  || '00:00'));
+
+    const selectedDateLabel = selectedDate
+        ? formatDate(selectedDate + 'T12:00:00', { weekday: true, monthName: true })
+        : '';
 
     return (
-        <Modal 
-            isOpen={isOpen} 
-            onClose={onClose} 
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
             title={(
                 <div className="calendar-slot-modal__title-group">
                     <Icon name="search" size="1.2rem" />
                     {t('search_free_slots')}
                 </div>
-            )} 
-            size="lg" 
+            )}
+            size="md"
             className="calendar-slot-modal-container"
         >
             <div className="calendar-slot-modal">
-                <SlotControls 
-                    includeOutOfHours={includeOutOfHours}
-                    onToggleOutOfHours={onToggleOutOfHours}
-                    viewMode={viewMode}
-                    setViewMode={(mode) => {
-                        if (mode === 'list' && !selectedDate && nextSlotData?.results?.length > 0) {
-                            dispatch({ type: 'SET_DATE', payload: nextSlotData.results[0].date });
-                        }
-                        dispatch({ type: 'SET_VIEW_MODE', payload: mode });
-                    }}
-                    selectedDate={selectedDate}
-                    nextSlotData={nextSlotData}
-                    t={t}
-                />
+
+                {/* ── Controls bar ── */}
+                <div className="calendar-slot-controls">
+                    <label className="calendar-slot-controls__checkbox">
+                        <input
+                            type="checkbox"
+                            className="calendar-slot-controls__input"
+                            checked={includeOutOfHours}
+                            onChange={(e) => onToggleOutOfHours(e.target.checked)}
+                        />
+                        <span className="calendar-slot-controls__label">
+                            <Icon name="lock_open" size="1rem" />
+                            {t('include_overtime')}
+                        </span>
+                    </label>
+                </div>
+
+                {/* ── Content ── */}
                 <div className="calendar-slot-modal__content">
                     {loading && !nextSlotData ? (
                         <Loading text={t('exploring_schedule')} />
-                    ) : !nextSlotData || nextSlotData.results?.length === 0 ? (
+                    ) : !dayRows.length ? (
                         <div className="calendar-empty">
-                            <p className="calendar-empty__text">{t('no_slots_available')}</p>
+                            <Icon name="event_busy" size="2.5rem" className="calendar-empty__icon" />
+                            <p className="calendar-empty__text">
+                                {includeOutOfHours ? t('no_slots_available') : t('no_slots_try_overtime')}
+                            </p>
                         </div>
-                    ) : viewMode === 'calendar' ? (
-                        <div className="calendar-grid">
-                            <div className="calendar-header">
-                                <Button onClick={handlePrevMonth} variant="ghost" size="sm-compact" icon={<Icon name="chevron_left" />} />
-                                <h3 className="calendar-header__title">{monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}</h3>
-                                <Button onClick={handleNextMonth} variant="ghost" size="sm-compact" icon={<Icon name="chevron_right" />} />
-                            </div>
-                            <div className="day-headers">
-                                {dayNames.map((day) => <div key={`header-${day}`} className="day-headers__day">{day}</div>)}
-                            </div>
-                            <div className="calendar-grid__body">
-                                {calendarDays.map((dayData, cellIdx) => {
-                                    if (!dayData) return <div key={`pad-${currentMonth.getTime()}-${cellIdx}`} className="calendar-day-cell calendar-day-cell--other-month"></div>;
-                                    const { day, dateStr, isToday, slots } = dayData;
-                                    const hasSlots = slots && slots.total > 0;
-                                    const isDisabled = dateStr < clientDates.todayIso;
-                                    return (
-                                        <div 
-                                            key={dateStr} 
-                                            role="button"
-                                            tabIndex={hasSlots ? 0 : -1}
-                                            aria-label={`${day} ${monthNames[currentMonth.getMonth()]}`}
-                                            className={`calendar-day-cell ${isDisabled ? 'calendar-day-cell--disabled' : ''} ${hasSlots ? 'calendar-day-cell--interactive' : ''} ${isToday ? 'calendar-day-cell--today' : ''}`} 
-                                            onClick={() => hasSlots && handleDateClick(dateStr)}
-                                            onKeyDown={(e) => handleKeyDown(e, dateStr, hasSlots)}
-                                        >
-                                            <div className="calendar-day-cell__date">
-                                                <span className="calendar-day-cell__number">{day}</span>
-                                                {isToday && <span className="calendar-day-cell__today-marker">HOY</span>}
-                                            </div>
-                                            {hasSlots && (
-                                                <div className="calendar-slot__indicators">
-                                                    {slots.inHours > 0 && <div className="calendar-slot__badge calendar-slot__badge--normal">{slots.inHours}</div>}
-                                                    {slots.outHours > 0 && <div className="calendar-slot__badge calendar-slot__badge--extra">{slots.outHours}</div>}
-                                                    {slots.breakSlotsCount > 0 && <div className="calendar-slot__badge calendar-slot__badge--break">{slots.breakSlotsCount}</div>}
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
+                    ) : step === 'days' ? (
+
+                        /* ── Step 1: Day list ── */
+                        <div className="day-list">
+                            {dayRows.map(row => (
+                                <DayListItem
+                                    key={row.date}
+                                    dateStr={row.date}
+                                    dayName={row.dayName}
+                                    dateLabel={formatDate(row.date + 'T12:00:00', { monthName: true })}
+                                    isToday={row.date === todayIso}
+                                    inCount={row.inCount}
+                                    outCount={row.outCount}
+                                    includeOutOfHours={includeOutOfHours}
+                                    onClick={() => handleDayClick(row.date)}
+                                />
+                            ))}
+                            {/* Sentinel for infinite scroll */}
+                            <div ref={listBottomRef} className="day-list__sentinel">
+                                {loading && <Loading text={t('loading')} />}
                             </div>
                         </div>
+
                     ) : (
+
+                        /* ── Step 2: Slots for selected day ── */
                         <div className="slots-list">
                             <div className="slots-list__header">
                                 <h3 className="slots-list__title">
-                                    {slotsByDate[selectedDate]?.dayName || t('search_free_slots')} 
-                                    {selectedDate && clientDates.selectedDateStr ? ` - ${clientDates.selectedDateStr}` : ''}
+                                    {selectedDayRow?.dayName || ''}
+                                    {selectedDateLabel ? <span className="slots-list__title-date"> — {selectedDateLabel}</span> : ''}
                                 </h3>
-                                <Button 
-                                    onClick={() => dispatch({ type: 'SET_VIEW_MODE', payload: 'calendar' })} 
-                                    variant="ghost" 
-                                    size="sm-compact" 
+                                <Button
+                                    onClick={handleBack}
+                                    variant="ghost"
+                                    size="sm-compact"
                                     icon={<Icon name="arrow_back" />}
                                 >
-                                    {t('back_to_calendar')}
+                                    {t('back')}
                                 </Button>
                             </div>
                             <div className="slots-list__body">
-                                <SlotSection 
+                                <SlotSection
                                     title={<><Icon name="lock_open" /> {t('before_hours_extra')}</>}
-                                    slots={selectedSlots.filter(s => s.is_out_of_hours && s.iso < (selectedSlots.find(n => !n.is_out_of_hours && !n.is_break)?.iso || '99:99'))}
+                                    slots={beforeSlots}
                                     type="before"
                                     onWhatsApp={onWhatsApp}
                                     onSelect={onSelect}
                                     t={t}
                                 />
-                                <SlotSection 
+                                <SlotSection
                                     title={<><Icon name="check_circle" /> {t('attention_hours')}</>}
-                                    slots={selectedSlots.filter(s => !s.is_out_of_hours && !s.is_break)}
+                                    slots={normalSlots}
                                     type="normal"
                                     onWhatsApp={onWhatsApp}
                                     onSelect={onSelect}
                                     t={t}
                                 />
-                                <SlotSection 
+                                <SlotSection
                                     title={<><Icon name="coffee" /> {t('breaks_special_slots')}</>}
-                                    slots={selectedSlots.filter(s => s.is_break)}
+                                    slots={breakSlots}
                                     type="break"
                                     onWhatsApp={onWhatsApp}
                                     onSelect={onSelect}
                                     t={t}
                                 />
-                                <SlotSection 
+                                <SlotSection
                                     title={<><Icon name="lock_open" /> {t('after_hours_extra')}</>}
-                                    slots={selectedSlots.filter(s => s.is_out_of_hours && s.iso > (selectedSlots.filter(n => !n.is_out_of_hours && !n.is_break).pop()?.iso || '00:00'))}
+                                    slots={afterSlots}
                                     type="after"
                                     onWhatsApp={onWhatsApp}
                                     onSelect={onSelect}
@@ -328,7 +294,14 @@ const NextSlotCalendarModal = ({
                         </div>
                     )}
                 </div>
+
+                {/* ── Footer ── */}
                 <div className="calendar-slot-modal__footer">
+                    {step === 'slots' && (
+                        <Button variant="ghost" size="sm" onClick={handleBack} icon={<Icon name="arrow_back" />}>
+                            {t('back')}
+                        </Button>
+                    )}
                     <Button variant="secondary" outline size="sm" onClick={onClose}>
                         {t('close')}
                     </Button>

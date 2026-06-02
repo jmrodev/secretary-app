@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/config/components/ui/ConfigField.jsx"
+type: "code"
+community: "Community 203"
+location: "L13"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_203
+---
+
 # ConfigField()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/ConfigField.jsx
-- **Comunidad:** [[_COMMUNITY_Community 282]]
+## Connections
+- [[ConfigField.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ConfigField.jsx|ConfigField.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ConfigField.jsx|ConfigField.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_203

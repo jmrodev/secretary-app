@@ -1,14 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/utils/RatingUtils.kt"
+type: "code"
+community: "Community 84"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_84
+---
+
 # RatingUtils.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/utils/RatingUtils.kt
-- **Comunidad:** [[_COMMUNITY_Community 79]]
+## Connections
+- [[RatingUtils]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[RatingUtils|RatingUtils]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RatingUtils|RatingUtils]]
-- [[.calculateFinancialRating()|.calculateFinancialRating()]]
-- [[.calculateAttendanceRating()|.calculateAttendanceRating()]]
-- [[.getStarString()|.getStarString()]]
+#graphify/code #graphify/EXTRACTED #community/Community_84

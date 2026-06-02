@@ -1,17 +1,21 @@
+---
+source_file: "client/src/utils/printing/reportPrintHelper.js"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # reportPrintHelper.js
 
-- **Tipo:** code
-- **Archivo:** client/src/utils/reportPrintHelper.js
-- **Comunidad:** [[_COMMUNITY_Community 84]]
+## Connections
+- [[formatDate()]] - `imports` [EXTRACTED]
+- [[generateAppointmentsPrint()]] - `contains` [EXTRACTED]
+- [[generateBalancePrint()]] - `contains` [EXTRACTED]
+- [[generatePrescriptionsPrint()]] - `contains` [EXTRACTED]
+- [[printReport()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[printReport()|printReport()]] (contains)
-- --> [[generateBalancePrint()|generateBalancePrint()]] (contains)
-- --> [[generateAppointmentsPrint()|generateAppointmentsPrint()]] (contains)
-- --> [[generatePrescriptionsPrint()|generatePrescriptionsPrint()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[printReport()|printReport()]]
-- [[generateBalancePrint()|generateBalancePrint()]]
-- [[generateAppointmentsPrint()|generateAppointmentsPrint()]]
-- [[generatePrescriptionsPrint()|generatePrescriptionsPrint()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

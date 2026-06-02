@@ -48,9 +48,9 @@ export const usePatientsPageController = () => {
     });
 
     // Supplementary Lists
-    const { data: doctorsData = [] } = useFetch('/users/doctors', { initialData: [] });
-    const { data: insurancesData = [] } = useFetch('/insurances', { initialData: [] });
-    const { data: institutionsData = [] } = useFetch('/institutions', { initialData: [] });
+    const { data: doctorsData = {} } = useFetch('/users/doctors', { initialData: { doctors: [] } });
+    const { data: insurancesData = {} } = useFetch('/insurances', { initialData: { insurances: [] } });
+    const { data: institutionsData = {} } = useFetch('/institutions', { initialData: { institutions: [] } });
 
     const doctors = doctorsData?.doctors || [];
     const insurances = insurancesData?.insurances || [];

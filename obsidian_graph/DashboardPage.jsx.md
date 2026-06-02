@@ -1,20 +1,18 @@
+---
+source_file: "client/src/features/dashboard/DashboardPage.jsx"
+type: "code"
+community: "Community 29"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_29
+---
+
 # DashboardPage.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/dashboard/DashboardPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 3]]
+## Connections
+- [[DashboardPage()]] - `contains` [EXTRACTED]
+- [[useDashboardController()]] - `imports` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[DashboardPage()|DashboardPage()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useMessage()|useMessage()]]
-- [[useConfig()|useConfig()]]
-- [[DashboardPage()|DashboardPage()]]
-- [[useDashboardController.js|useDashboardController.js]]
-- [[useDashboardController()|useDashboardController()]]
-- [[useDashboardModals.js|useDashboardModals.js]]
-- [[useDashboardModals()|useDashboardModals()]]
-- [[useDashboardWhatsApp.js|useDashboardWhatsApp.js]]
-- [[useDashboardWhatsApp()|useDashboardWhatsApp()]]
-- [[PrescriptionModal.jsx|PrescriptionModal.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_29

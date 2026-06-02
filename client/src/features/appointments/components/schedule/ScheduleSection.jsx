@@ -13,10 +13,11 @@ const EMPTY_ARRAY = [];
 const ScheduleSection = ({
     activeTab, selectedDate, selectedDoctor, viewDoctorId, appointments = EMPTY_ARRAY,
     doctorSchedule = EMPTY_ARRAY, holidays = EMPTY_ARRAY, onSlotClick, onDeleteHoliday,
-    onDateSelect, showOutOfHours, setShowOutOfHours, onNextFreeSlot, className
+    onDateSelect, showOutOfHours, setShowOutOfHours, onNextFreeSlot, className,
+    loading = false
 }) => {
     const getDoctorThemeModifier = () => viewDoctorId ? `schedule-section--doctor-${Number(viewDoctorId) % 10}` : '';
-    const isCalendar = activeTab === 'calendar';
+    const isCalendar = activeTab === 'calendar' || activeTab === 'agenda'; // Added agenda for safety
     const variantClass = isCalendar ? 'schedule-section__container' : 'schedule-section__card';
     const themedClass = (isCalendar && viewDoctorId) ? "schedule-section__container--themed" : "";
 
@@ -29,6 +30,7 @@ const ScheduleSection = ({
                     onSlotClick={onSlotClick} doctor={selectedDoctor} schedule={doctorSchedule}
                     holidays={holidays} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
                     onNextFreeSlot={onNextFreeSlot}
+                    isLoading={loading}
                 />
             ) : (
                 <>

@@ -1,13 +1,17 @@
+---
+source_file: "server/repositories/system/statsRepository.js"
+type: "code"
+community: "Community 28"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_28
+---
+
 # statsRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/statsRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 92]]
+## Connections
+- [[StatsRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[StatsRepository|StatsRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[StatsRepository|StatsRepository]]
-- [[.countAppointments()|.countAppointments()]]
-- [[.countPatients()|.countPatients()]]
+#graphify/code #graphify/EXTRACTED #community/Community_28

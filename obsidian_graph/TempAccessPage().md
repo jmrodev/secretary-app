@@ -1,22 +1,19 @@
+---
+source_file: "client/src/features/auth/TempAccessPage.jsx"
+type: "code"
+community: "Community 43"
+location: "L25"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_43
+---
+
 # TempAccessPage()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/TempAccessPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[TempAccessPage.jsx]] - `contains` [EXTRACTED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useTempAccessController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useTempAccessController()|useTempAccessController()]] (calls)
-- <-- [[TempAccessPage.jsx|TempAccessPage.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/INFERRED #community/Community_43

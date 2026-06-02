@@ -13,7 +13,6 @@ import './FinanceSidebar.css';
  * Refactored to follow BEM and Atomic Design standards.
  */
 const FinanceSidebar = ({
-    isAdminOrSecretary,
     user,
     doctors,
     selectedDoctorFilter,

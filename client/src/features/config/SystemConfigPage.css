@@ -6,6 +6,7 @@
     --config-border: var(--gray-200);
     --config-island-bg: #f8fafc;
     --config-header-color: var(--slate-800);
+
     /* ------------------------------ */
     display: flex;
     flex-direction: column;
@@ -52,7 +53,7 @@
 .system-config-tabs .tab-button--active {
     background-color: var(--accent-color);
     color: white !important;
-    box-shadow: 0 4px 12px rgba(var(--accent-rgb, 14, 165, 233), 0.3);
+    box-shadow: 0 4px 12px rgb(var(--accent-rgb, 14, 165, 233), 0.3);
 }
 
 .system-config-tabs .tab-button:not(.tab-button--active):hover {
@@ -179,7 +180,7 @@
 }
 
 .config-field__input--monospace {
-    font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+    font-family: Monaco, Consolas, 'Courier New', monospace;
     font-size: 0.8rem;
     line-height: 1.4;
 }

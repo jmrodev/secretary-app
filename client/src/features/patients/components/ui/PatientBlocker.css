@@ -9,11 +9,11 @@
 }
 
 .patient-blocker__card {
-    background-color: var(--color-bg-primary, #ffffff);
+    background-color: var(--color-bg-primary, #fff);
     max-width: 448px;
     padding: 2rem;
     border-radius: 1rem;
-    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 10%));
 }
 
 .patient-blocker__icon-container {

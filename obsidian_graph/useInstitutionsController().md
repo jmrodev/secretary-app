@@ -1,26 +1,23 @@
+---
+source_file: "client/src/features/institutions/hooks/useInstitutionsController.js"
+type: "code"
+community: "Community 12"
+location: "L17"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_12
+---
+
 # useInstitutionsController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/institutions/hooks/useInstitutionsController.js
-- **Comunidad:** [[_COMMUNITY_Community 12]]
+## Connections
+- [[InstitutionsPage()]] - `calls` [INFERRED]
+- [[InstitutionsSection()]] - `calls` [INFERRED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useInstitutionsController.js]] - `contains` [EXTRACTED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[InstitutionsPage()|InstitutionsPage()]] (calls)
-- <-- [[useInstitutionsController.js|useInstitutionsController.js]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-- <-- [[InstitutionsSection()|InstitutionsSection()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[InstitutionsPage.jsx|InstitutionsPage.jsx]]
-- [[InstitutionsPage()|InstitutionsPage()]]
-- [[useInstitutionsController.js|useInstitutionsController.js]]
-- [[createInitialFormState()|createInitialFormState()]]
-- [[SystemConfigPage.jsx|SystemConfigPage.jsx]]
-- [[ProfileSection()|ProfileSection()]]
-- [[InstitutionsSection()|InstitutionsSection()]]
-- [[AuditLogsSection()|AuditLogsSection()]]
-- [[UserSection()|UserSection()]]
-- [[getTabMetadata()|getTabMetadata()]]
+#graphify/code #graphify/INFERRED #community/Community_12

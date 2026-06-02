@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/tables/TransactionRow.jsx"
+type: "code"
+community: "Community 223"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_223
+---
+
 # TransactionRow.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/TransactionRow.jsx
-- **Comunidad:** [[_COMMUNITY_Community 215]]
+## Connections
+- [[TransactionRow()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[TransactionRow()|TransactionRow()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[TransactionRow()|TransactionRow()]]
+#graphify/code #graphify/EXTRACTED #community/Community_223

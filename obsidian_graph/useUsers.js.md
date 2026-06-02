@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/users/hooks/useUsers.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Modals_&_Prescriptions
+---
+
 # useUsers.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/users/hooks/useUsers.js
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[useDoctors()_1]] - `contains` [EXTRACTED]
+- [[useUsers()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useUsers()|useUsers()]] (contains)
-- --> [[useDoctors()|useDoctors()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
+#graphify/code #graphify/EXTRACTED #community/Modals_&_Prescriptions

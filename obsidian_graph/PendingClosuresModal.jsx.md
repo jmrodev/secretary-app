@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/modals/PendingClosuresModal.jsx"
+type: "code"
+community: "Community 218"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_218
+---
+
 # PendingClosuresModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/PendingClosuresModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 214]]
+## Connections
+- [[PendingClosuresModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PendingClosuresModal()|PendingClosuresModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PendingClosuresModal()|PendingClosuresModal()]]
+#graphify/code #graphify/EXTRACTED #community/Community_218

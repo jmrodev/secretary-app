@@ -1,20 +1,18 @@
+---
+source_file: "client/src/utils/core/dateUtils.js"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L198"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # getMonthName()
 
-- **Tipo:** code
-- **Archivo:** client/src/utils/dateUtils.js
-- **Comunidad:** [[_COMMUNITY_Community 17]]
+## Connections
+- [[dateUtils.js_1]] - `contains` [EXTRACTED]
+- [[getNow()]] - `calls` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[dateUtils.js|dateUtils.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[FinanceFilters.jsx|FinanceFilters.jsx]]
-- [[FinanceFilters()|FinanceFilters()]]
-- [[ReportFilters.jsx|ReportFilters.jsx]]
-- [[ReportFilters()|ReportFilters()]]
-- [[dateUtils.js|dateUtils.js]]
-- [[parseDate()|parseDate()]]
-- [[formatDate()|formatDate()]]
-- [[getMonthsOptions()|getMonthsOptions()]]
-- [[formatTime()|formatTime()]]
-- [[toInputDateTime()|toInputDateTime()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

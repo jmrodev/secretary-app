@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/auth/components/forms/ProfileEditor.jsx"
+type: "code"
+community: "Community 216"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_216
+---
+
 # ProfileEditor()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/components/ProfileEditor.jsx
-- **Comunidad:** [[_COMMUNITY_Community 209]]
+## Connections
+- [[ProfileEditor.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ProfileEditor.jsx|ProfileEditor.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ProfileEditor.jsx|ProfileEditor.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_216

@@ -3,7 +3,6 @@ import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import MedicalRequirementManager from './components/ui/MedicalRequirementManager';
 import MainLayout from '@/components/templates/MainLayout';
-import PageHeader from '@/components/organisms/PageHeader';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 

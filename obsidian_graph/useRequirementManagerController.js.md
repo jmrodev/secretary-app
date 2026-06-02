@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/hooks/useRequirementManagerController.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Modals_&_Prescriptions
+---
+
 # useRequirementManagerController.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/hooks/useRequirementManagerController.js
-- **Comunidad:** [[_COMMUNITY_Community 15]]
+## Connections
+- [[useRequirementManagerController()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useRequirementManagerController()|useRequirementManagerController()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DoctorContext.jsx|DoctorContext.jsx]]
-- [[DoctorProvider()|DoctorProvider()]]
-- [[MedicalDocumentsPage.jsx|MedicalDocumentsPage.jsx]]
-- [[MedicalDocumentsPage()|MedicalDocumentsPage()]]
-- [[useRequirementManagerController()|useRequirementManagerController()]]
-- [[useMedicalDocumentsHandlers.js|useMedicalDocumentsHandlers.js]]
-- [[useMedicalDocumentsHandlers()|useMedicalDocumentsHandlers()]]
-- [[useMedicalDocumentsController.js|useMedicalDocumentsController.js]]
-- [[useMedicalDocumentsController()|useMedicalDocumentsController()]]
-- [[MedicalRequirementManager.jsx|MedicalRequirementManager.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Modals_&_Prescriptions

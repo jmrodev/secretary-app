@@ -1,16 +1,17 @@
+---
+source_file: "server/services/core/insuranceService.js"
+type: "code"
+community: "Community 53"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_53
+---
+
 # insuranceService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/insuranceService.js
-- **Comunidad:** [[_COMMUNITY_Community 46]]
+## Connections
+- [[InsuranceService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[InsuranceService|InsuranceService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InsuranceService|InsuranceService]]
-- [[.getAllInsurances()|.getAllInsurances()]]
-- [[.getInsuranceById()|.getInsuranceById()]]
-- [[.createInsurance()|.createInsurance()]]
-- [[.updateInsurance()|.updateInsurance()]]
-- [[.deleteInsurance()|.deleteInsurance()]]
+#graphify/code #graphify/EXTRACTED #community/Community_53

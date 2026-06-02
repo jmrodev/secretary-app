@@ -59,8 +59,6 @@ const MedicalRequestList = ({
                     <tbody>
                         {requests.map(r => {
                             const isPending = r.status === 'pending';
-                            const isCompleted = r.status === 'completed';
-                            const isRejected = r.status === 'rejected';
 
                             const paymentStatusClass = r.payment_status === 'paid' ? 'paid' :
                                 r.payment_status === 'debt' || r.payment_status === 'partial' ? 'debt' :

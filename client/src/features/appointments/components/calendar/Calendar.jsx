@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import CalendarDayCell from './CalendarDayCell.jsx';
 import CalendarHeader from './CalendarHeader.jsx';
 import DayHeaders from '../schedule/DayHeaders.jsx';
 import { useLanguage } from '@/hooks/useLanguage';
-import { isPastDay, isSameDay, getNow, parseDate, createDate } from '@/utils/core/dateUtils';
+import { isPastDay, isSameDay, getNow, parseDate, createDate, getDaysInMonth } from '@/utils/core/dateUtils';
 import './Calendar.css';
 
 /**
@@ -28,26 +28,21 @@ const Calendar = ({
     compact = false 
 }) => {
     const [viewDate, setViewDate] = useState(() => parseDate(selectedDate || getNow()));
+    const [prevSelectedDate, setPrevSelectedDate] = useState(selectedDate);
     const { t } = useLanguage();
 
-    // Sync viewDate when selectedDate prop changes
-    useEffect(() => {
-        const nextDate = parseDate(selectedDate || getNow());
-        setViewDate(prev => {
-            if (isSameDay(prev, nextDate)) return prev;
-            return nextDate;
-        });
-    }, [selectedDate]);
+    // React 19 best practice: Sync state from props during render using state, not refs
+    const parsedSelected = parseDate(selectedDate || getNow());
+    if (selectedDate !== prevSelectedDate) {
+        setPrevSelectedDate(selectedDate);
+        if (!isSameDay(viewDate, parsedSelected)) {
+            setViewDate(parsedSelected);
+        }
+    }
 
-    const getDaysInMonth = (date) => {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const days = createDate(year, month + 1, 0).getDate();
-        const firstDay = createDate(year, month, 1).getDay();
-        return { days, firstDay };
-    };
 
-    const { days, firstDay } = getDaysInMonth(viewDate);
+    const days = getDaysInMonth(viewDate);
+    const firstDay = createDate(viewDate.getFullYear(), viewDate.getMonth(), 1).getDay();
     const months = t('months_array') || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const daysOfWeek = t('days_short_array') || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 

@@ -47,7 +47,7 @@
     margin: 0;
 }
 
-@media (max-width: 600px) {
+@media (width <= 600px) {
     .general-settings__app-card {
         flex-direction: column;
         align-items: stretch;

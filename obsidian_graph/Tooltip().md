@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Tooltip.jsx"
+type: "code"
+community: "Community 265"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_265
+---
+
 # Tooltip()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/Tooltip.jsx
-- **Comunidad:** [[_COMMUNITY_Community 262]]
+## Connections
+- [[Tooltip.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[Tooltip.jsx|Tooltip.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Tooltip.jsx|Tooltip.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_265

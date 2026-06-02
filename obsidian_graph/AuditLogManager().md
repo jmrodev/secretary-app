@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/reports/components/views/AuditLogManager.jsx"
+type: "code"
+community: "Community 262"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_262
+---
+
 # AuditLogManager()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/components/AuditLogManager.jsx
-- **Comunidad:** [[_COMMUNITY_Community 256]]
+## Connections
+- [[AuditLogManager.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[AuditLogManager.jsx|AuditLogManager.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AuditLogManager.jsx|AuditLogManager.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_262

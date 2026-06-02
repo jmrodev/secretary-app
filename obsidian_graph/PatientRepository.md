@@ -1,40 +1,34 @@
+---
+source_file: "server/repositories/user/patientRepository.js"
+type: "code"
+community: "Community 14"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_14
+---
+
 # PatientRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/patientRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 14]]
+## Connections
+- [[.create()_14]] - `method` [EXTRACTED]
+- [[.findByDni()]] - `method` [EXTRACTED]
+- [[.findByFullName()]] - `method` [EXTRACTED]
+- [[.findByFuzzyName()]] - `method` [EXTRACTED]
+- [[.findById()_12]] - `method` [EXTRACTED]
+- [[.findByNameLike()]] - `method` [EXTRACTED]
+- [[.findByUserId()_1]] - `method` [EXTRACTED]
+- [[.findRecentMedications()]] - `method` [EXTRACTED]
+- [[.findTariffAndInstitutionPrice()]] - `method` [EXTRACTED]
+- [[.findUserIdById()]] - `method` [EXTRACTED]
+- [[.getAssignedDoctors()]] - `method` [EXTRACTED]
+- [[.getPrescriptionInterval()]] - `method` [EXTRACTED]
+- [[.searchPatients()]] - `method` [EXTRACTED]
+- [[.update()_8]] - `method` [EXTRACTED]
+- [[.updateAssignedDoctors()]] - `method` [EXTRACTED]
+- [[.updateLicenseInfo()]] - `method` [EXTRACTED]
+- [[.updatePrescriptionInfo()]] - `method` [EXTRACTED]
+- [[patientRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[patientRepository.js|patientRepository.js]] (contains)
-- --> [[.findById()|.findById()]] (method)
-- --> [[.findTariffAndInstitutionPrice()|.findTariffAndInstitutionPrice()]] (method)
-- --> [[.findByUserId()|.findByUserId()]] (method)
-- --> [[.findUserIdById()|.findUserIdById()]] (method)
-- --> [[.findByFullName()|.findByFullName()]] (method)
-- --> [[.findByDni()|.findByDni()]] (method)
-- --> [[.findByFuzzyName()|.findByFuzzyName()]] (method)
-- --> [[.findByNameLike()|.findByNameLike()]] (method)
-- --> [[.create()|.create()]] (method)
-- --> [[.update()|.update()]] (method)
-- --> [[.getDebt()|.getDebt()]] (method)
-- --> [[.updateLicenseInfo()|.updateLicenseInfo()]] (method)
-- --> [[.updatePrescriptionInfo()|.updatePrescriptionInfo()]] (method)
-- --> [[.getPrescriptionInterval()|.getPrescriptionInterval()]] (method)
-- --> [[.getNewPatientStats()|.getNewPatientStats()]] (method)
-- --> [[.findAdminPasswordHash()|.findAdminPasswordHash()]] (method)
-- --> [[.findRecentMedications()|.findRecentMedications()]] (method)
-- --> [[.getAssignedDoctors()|.getAssignedDoctors()]] (method)
-- --> [[.updateAssignedDoctors()|.updateAssignedDoctors()]] (method)
-- --> [[.getHistoryFull()|.getHistoryFull()]] (method)
-
-## Miembros de la misma Comunidad
-- [[patientRepository.js|patientRepository.js]]
-- [[.findById()|.findById()]]
-- [[.findTariffAndInstitutionPrice()|.findTariffAndInstitutionPrice()]]
-- [[.findByUserId()|.findByUserId()]]
-- [[.findUserIdById()|.findUserIdById()]]
-- [[.findByFullName()|.findByFullName()]]
-- [[.findByDni()|.findByDni()]]
-- [[.findByFuzzyName()|.findByFuzzyName()]]
-- [[.findByNameLike()|.findByNameLike()]]
-- [[.create()|.create()]]
+#graphify/code #graphify/EXTRACTED #community/Community_14

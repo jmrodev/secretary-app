@@ -1,25 +1,22 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/ui/AppointmentHistoryAdapter.kt"
+type: "code"
+community: "Community 10"
+location: "L11"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_10
+---
+
 # AppointmentHistoryAdapter
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/ui/AppointmentHistoryAdapter.kt
-- **Comunidad:** [[_COMMUNITY_Community 9]]
+## Connections
+- [[.getItemCount()_3]] - `method` [EXTRACTED]
+- [[.onBindViewHolder()_3]] - `method` [EXTRACTED]
+- [[.onCreateViewHolder()_3]] - `method` [EXTRACTED]
+- [[.setupDoctorRecyclerViews()]] - `calls` [INFERRED]
+- [[.updateList()_1]] - `method` [EXTRACTED]
+- [[AppointmentHistoryAdapter.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[.setupDoctorRecyclerViews()|.setupDoctorRecyclerViews()]] (calls)
-- <-- [[AppointmentHistoryAdapter.kt|AppointmentHistoryAdapter.kt]] (contains)
-- --> [[.onCreateViewHolder()|.onCreateViewHolder()]] (method)
-- --> [[.onBindViewHolder()|.onBindViewHolder()]] (method)
-- --> [[.getItemCount()|.getItemCount()]] (method)
-- --> [[.updateList()|.updateList()]] (method)
-
-## Miembros de la misma Comunidad
-- [[AppointmentDetailActivity.kt|AppointmentDetailActivity.kt]]
-- [[AppointmentDetailActivity|AppointmentDetailActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.updateButtonVisibility()|.updateButtonVisibility()]]
-- [[.updateAppointment()|.updateAppointment()]]
-- [[.updateStatus()|.updateStatus()]]
-- [[.updatePayment()|.updatePayment()]]
-- [[.setupDoctorRecyclerViews()|.setupDoctorRecyclerViews()]]
-- [[.loadPatientDetails()|.loadPatientDetails()]]
-- [[PatientFilesActivity.kt|PatientFilesActivity.kt]]
+#graphify/code #graphify/EXTRACTED #community/Community_10

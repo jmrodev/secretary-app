@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/molecules/SearchBar.jsx"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Agenda_&_Slot_Management
+---
+
 # SearchBar.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/SearchBar.jsx
-- **Comunidad:** [[_COMMUNITY_Community 288]]
+## Connections
+- [[SearchBar()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[SearchBar()|SearchBar()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[SearchBar()|SearchBar()]]
+#graphify/code #graphify/EXTRACTED #community/Agenda_&_Slot_Management

@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/medical_documents/MedicalDocumentsPage.jsx"
+type: "code"
+community: "Community 13"
+location: "L26"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_13
+---
+
 # MedicalDocumentsPage()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/MedicalDocumentsPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 15]]
+## Connections
+- [[MedicalDocumentsPage.jsx]] - `contains` [EXTRACTED]
+- [[useMedicalDocumentsController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[MedicalDocumentsPage.jsx|MedicalDocumentsPage.jsx]] (contains)
-- --> [[useMedicalDocumentsController()|useMedicalDocumentsController()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[DoctorContext.jsx|DoctorContext.jsx]]
-- [[DoctorProvider()|DoctorProvider()]]
-- [[MedicalDocumentsPage.jsx|MedicalDocumentsPage.jsx]]
-- [[useRequirementManagerController.js|useRequirementManagerController.js]]
-- [[useRequirementManagerController()|useRequirementManagerController()]]
-- [[useMedicalDocumentsHandlers.js|useMedicalDocumentsHandlers.js]]
-- [[useMedicalDocumentsHandlers()|useMedicalDocumentsHandlers()]]
-- [[useMedicalDocumentsController.js|useMedicalDocumentsController.js]]
-- [[useMedicalDocumentsController()|useMedicalDocumentsController()]]
-- [[MedicalRequirementManager.jsx|MedicalRequirementManager.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_13

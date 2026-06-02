@@ -9,6 +9,7 @@
     --modal-border: var(--dashboard-card-border);
     --btn-active-bg: var(--primary-color);
     --btn-hover-bg: var(--gray-700);
+
     /* ------------------------------ */
 
     display: flex;
@@ -230,7 +231,7 @@
 }
 
 /* ── Responsive: stack numeric row on small screens ── */
-@media (max-width: 480px) {
+@media (width <= 480px) {
     .prescription-modal__numeric-row {
         grid-template-columns: 1fr 1fr;
     }

@@ -96,7 +96,7 @@
     cursor: pointer;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .medication-config-fields__grid,
     .medication-config-fields__row {
         grid-template-columns: 1fr;

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/chat/components/ui/ChatMessageBubble.jsx"
+type: "code"
+community: "Community 209"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_209
+---
+
 # ChatMessageBubble.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/chat/components/ChatMessageBubble.jsx
-- **Comunidad:** [[_COMMUNITY_Community 202]]
+## Connections
+- [[ChatMessageBubble()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ChatMessageBubble()|ChatMessageBubble()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ChatMessageBubble()|ChatMessageBubble()]]
+#graphify/code #graphify/EXTRACTED #community/Community_209

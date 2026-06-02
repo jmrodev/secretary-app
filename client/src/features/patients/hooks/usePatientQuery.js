@@ -37,7 +37,7 @@ export const usePatientQuery = (options = {}) => {
         return () => clearTimeout(timer);
     }, [searchTerm, debounceMs]);
 
-    const { debouncedSearch, currentPage: page } = queryState;
+    const { debouncedSearch } = queryState;
 
     // Synchronize currentPage with handlePageChange
     const setCurrentPage = (newPage) => dispatchQuery({ currentPage: newPage });

@@ -6,6 +6,7 @@
     --stats-card-border: var(--gray-300);
     --stats-header-color: var(--gray-400);
     --stats-summary-bg: var(--gray-50);
+
     /* ------------------------------ */
 
     display: flex;

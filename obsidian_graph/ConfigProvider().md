@@ -1,16 +1,19 @@
+---
+source_file: "client/src/context/ConfigContext.jsx"
+type: "code"
+community: "Community 20"
+location: "L20"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_20
+---
+
 # ConfigProvider()
 
-- **Tipo:** code
-- **Archivo:** client/src/context/ConfigContext.jsx
-- **Comunidad:** [[_COMMUNITY_Community 81]]
+## Connections
+- [[ConfigContext.jsx]] - `contains` [EXTRACTED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useConfigLogic()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useConfigLogic()|useConfigLogic()]] (calls)
-- <-- [[ConfigContext.jsx|ConfigContext.jsx]] (contains)
-- --> [[useAuth()|useAuth()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useConfigLogic.js|useConfigLogic.js]]
-- [[configReducer()|configReducer()]]
-- [[useConfigLogic()|useConfigLogic()]]
-- [[ConfigContext.jsx|ConfigContext.jsx]]
+#graphify/code #graphify/INFERRED #community/Community_20

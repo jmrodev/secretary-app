@@ -1,23 +1,20 @@
+---
+source_file: "client/src/features/appointments/hooks/useDayScheduleHandlers.js"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Agenda_&_Slot_Management
+---
+
 # useDayScheduleHandlers()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/hooks/useDayScheduleHandlers.js
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[DaySchedule()]] - `calls` [INFERRED]
+- [[useDayScheduleHandlers.js]] - `contains` [EXTRACTED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]] (contains)
-- <-- [[DaySchedule()|DaySchedule()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
-- [[DaySchedule()|DaySchedule()]]
+#graphify/code #graphify/INFERRED #community/Agenda_&_Slot_Management

@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/medical/medicalRequestController.js"
+type: "code"
+community: "Community 316"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_316
+---
+
 # medicalRequestController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/medical/medicalRequestController.js
-- **Comunidad:** [[_COMMUNITY_Community 324]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_316

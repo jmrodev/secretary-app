@@ -91,7 +91,7 @@ export const useAppointmentsPageController = () => {
     const { updateStatus, updateAppointment, cancelAppointment, deleteAppointment, rescheduleAppointment, savePrescription } = useAppointments();
     const { holidays, addHoliday, deleteHoliday } = useHolidays();
     const { doctorSchedule } = useDoctorSchedules(viewDoctorId);
-    const { syncDayToGoogle } = useGoogleSync(doctors);
+    const { syncDayToGoogle } = useGoogleSync();
     const { handleWhatsAppUniversal } = useWhatsAppUniversal(doctors);
     const booking = useAppointmentBooking(doctors);
     const nextSlot = useNextFreeSlot(viewDoctorId || booking.selectedDoctor);

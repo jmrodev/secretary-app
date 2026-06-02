@@ -1,4 +1,4 @@
-import React, { useReducer, useMemo } from 'react';
+import React, { useReducer, useMemo, useCallback } from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { formatDate, formatTime, parseDate } from '@/utils/core/dateUtils';
@@ -60,7 +60,7 @@ const PatientPrintableView = ({
         dispatch({ type: 'TOGGLE_EXCLUDE', payload: idKey });
     };
 
-    const filterByDateAndLimit = (items, dateProp) => {
+    const filterByDateAndLimit = useCallback((items, dateProp) => {
         if (!items) return [];
         let filtered = [...items];
 
@@ -88,16 +88,16 @@ const PatientPrintableView = ({
         }
 
         return filtered;
-    };
+    }, [fromDate, toDate, limitCount]);
 
     const filteredAppointments = useMemo(() => 
         filterByDateAndLimit(details.appointments, 'appointment_date'),
-        [details.appointments, fromDate, toDate, limitCount]
+        [details.appointments, filterByDateAndLimit]
     );
 
     const filteredRequests = useMemo(() => 
         filterByDateAndLimit(recentRequests, 'created_at'),
-        [recentRequests, fromDate, toDate, limitCount]
+        [recentRequests, filterByDateAndLimit]
     );
 
     const formatMedicationData = (dataStr) => {
@@ -119,7 +119,7 @@ const PatientPrintableView = ({
                         </ul>
                     );
                 }
-            } catch (e) { /* fallback */ }
+            } catch { /* fallback */ }
         }
         
         const lines = cleanStr.split(/[\r\n]+/).filter(l => l.trim().length > 0);

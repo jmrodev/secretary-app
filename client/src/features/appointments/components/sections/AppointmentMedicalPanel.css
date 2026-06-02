@@ -1,10 +1,10 @@
 /* AppointmentMedicalPanel Component Styles (BEM) - Dark Mode Standard */
 
 .appointment-medical-panel {
-    background-color: rgba(59, 130, 246, 0.05);
+    background-color: rgb(59 130 246 / 5%);
     padding: 1.5rem;
     border-radius: var(--radius-md);
-    border: 1px solid rgba(59, 130, 246, 0.15);
+    border: 1px solid rgb(59 130 246 / 15%);
     border-left: 4px solid var(--info);
     display: flex;
     flex-direction: column;
@@ -14,7 +14,7 @@
 }
 
 .appointment-medical-panel:hover {
-    background-color: rgba(59, 130, 246, 0.08);
+    background-color: rgb(59 130 246 / 8%);
     box-shadow: var(--shadow-md);
 }
 

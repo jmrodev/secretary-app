@@ -1,22 +1,19 @@
+---
+source_file: "client/src/features/dashboard/hooks/useDashboardReminders.js"
+type: "code"
+community: "Community 29"
+location: "L6"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_29
+---
+
 # useDashboardReminders()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/dashboard/hooks/useDashboardReminders.js
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[useDashboardController()]] - `calls` [INFERRED]
+- [[useDashboardReminders.js]] - `contains` [EXTRACTED]
+- [[useFetch()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[useDashboardController()|useDashboardController()]] (calls)
-- <-- [[useDashboardReminders.js|useDashboardReminders.js]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
-- [[FloatingChat.jsx|FloatingChat.jsx]]
+#graphify/code #graphify/INFERRED #community/Community_29

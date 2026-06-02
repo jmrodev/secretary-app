@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/forms/HolidayForm.jsx"
+type: "code"
+community: "Community 193"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_193
+---
+
 # HolidayForm.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/HolidayForm.jsx
-- **Comunidad:** [[_COMMUNITY_Community 184]]
+## Connections
+- [[HolidayForm()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[HolidayForm()|HolidayForm()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[HolidayForm()|HolidayForm()]]
+#graphify/code #graphify/EXTRACTED #community/Community_193

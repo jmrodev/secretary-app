@@ -1,25 +1,24 @@
+---
+source_file: "server/services/medical/MedicationService.js"
+type: "code"
+community: "Community 40"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_40
+---
+
 # MedicationService
 
-- **Tipo:** code
-- **Archivo:** server/services/medical/MedicationService.js
-- **Comunidad:** [[_COMMUNITY_Community 36]]
+## Connections
+- [[.addPatientMedication()]] - `method` [EXTRACTED]
+- [[.calculateNextRefillDate()]] - `method` [EXTRACTED]
+- [[.calculateRefillDays()]] - `method` [EXTRACTED]
+- [[.deletePatientMedication()]] - `method` [EXTRACTED]
+- [[.getPatientMedications()]] - `method` [EXTRACTED]
+- [[.searchVademecum()]] - `method` [EXTRACTED]
+- [[.updatePatientMedication()]] - `method` [EXTRACTED]
+- [[MedicationService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicationService.js|MedicationService.js]] (contains)
-- --> [[.searchVademecum()|.searchVademecum()]] (method)
-- --> [[.getPatientMedications()|.getPatientMedications()]] (method)
-- --> [[.addPatientMedication()|.addPatientMedication()]] (method)
-- --> [[.updatePatientMedication()|.updatePatientMedication()]] (method)
-- --> [[.deletePatientMedication()|.deletePatientMedication()]] (method)
-- --> [[.calculateRefillDays()|.calculateRefillDays()]] (method)
-- --> [[.calculateNextRefillDate()|.calculateNextRefillDate()]] (method)
-
-## Miembros de la misma Comunidad
-- [[MedicationService.js|MedicationService.js]]
-- [[.searchVademecum()|.searchVademecum()]]
-- [[.getPatientMedications()|.getPatientMedications()]]
-- [[.addPatientMedication()|.addPatientMedication()]]
-- [[.updatePatientMedication()|.updatePatientMedication()]]
-- [[.deletePatientMedication()|.deletePatientMedication()]]
-- [[.calculateRefillDays()|.calculateRefillDays()]]
-- [[.calculateNextRefillDate()|.calculateNextRefillDate()]]
+#graphify/code #graphify/EXTRACTED #community/Community_40

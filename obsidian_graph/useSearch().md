@@ -1,19 +1,26 @@
+---
+source_file: "client/src/hooks/useSearch.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Modals_&_Prescriptions
+---
+
 # useSearch()
 
-- **Tipo:** code
-- **Archivo:** client/src/context/SearchContext.jsx
-- **Comunidad:** [[_COMMUNITY_Community 58]]
+## Connections
+- [[PageHeader()]] - `calls` [INFERRED]
+- [[useDoctorsPageController()]] - `calls` [INFERRED]
+- [[useFinancesPageController()]] - `calls` [INFERRED]
+- [[useInsurancesController()]] - `calls` [INFERRED]
+- [[useMedicalDocumentsController()]] - `calls` [INFERRED]
+- [[usePatientAppointmentSearch()]] - `calls` [INFERRED]
+- [[usePatientQuery()]] - `calls` [INFERRED]
+- [[usePatientsPageController()]] - `calls` [INFERRED]
+- [[useRequirementManagerController()]] - `calls` [INFERRED]
+- [[useSearch.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[SearchContext.jsx|SearchContext.jsx]] (contains)
-- <-- [[usePatientSearch()|usePatientSearch()]] (calls)
-- <-- [[usePatientsPageController()|usePatientsPageController()]] (calls)
-- <-- [[PageHeader()|PageHeader()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[SearchContext.jsx|SearchContext.jsx]]
-- [[SearchProvider()|SearchProvider()]]
-- [[usePatientSearch.js|usePatientSearch.js]]
-- [[usePatientSearch()|usePatientSearch()]]
-- [[PageHeader.jsx|PageHeader.jsx]]
-- [[PageHeader()|PageHeader()]]
+#graphify/code #graphify/INFERRED #community/Modals_&_Prescriptions

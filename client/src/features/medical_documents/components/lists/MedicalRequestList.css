@@ -11,13 +11,13 @@
     --requests-border: var(--gray-300);
     --requests-header-bg: var(--gray-50);
     --requests-row-hover: var(--gray-50);
-    
     --type-rx-bg: var(--blue-100);
     --type-rx-text: var(--blue-700);
     --type-lic-bg: var(--amber-100);
     --type-lic-text: var(--amber-700);
     --type-cert-bg: var(--purple-100);
     --type-cert-text: var(--purple-700);
+
     /* ------------------------------ */
 
     background-color: var(--requests-bg);
@@ -231,7 +231,7 @@
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: currentColor;
+    background: currentcolor;
 }
 
 .medical-requests__payment-method {

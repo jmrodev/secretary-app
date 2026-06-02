@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/schedule/ScheduleBulkActions.jsx"
+type: "code"
+community: "Community 189"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_189
+---
+
 # ScheduleBulkActions()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/ScheduleBulkActions.jsx
-- **Comunidad:** [[_COMMUNITY_Community 191]]
+## Connections
+- [[ScheduleBulkActions.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ScheduleBulkActions.jsx|ScheduleBulkActions.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ScheduleBulkActions.jsx|ScheduleBulkActions.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_189

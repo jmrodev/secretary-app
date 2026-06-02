@@ -8,6 +8,7 @@
     --schedule-day-active-bg: var(--white);
     --schedule-day-border: var(--gray-200);
     --schedule-day-active-border: var(--blue-500);
+
     /* ------------------------------ */
 
     background-color: var(--schedule-container-bg);
@@ -179,7 +180,7 @@
     background-color: var(--border-color);
 }
 
-@media (max-width: 640px) {
+@media (width <= 640px) {
     .time-block__divider {
         display: none;
     }

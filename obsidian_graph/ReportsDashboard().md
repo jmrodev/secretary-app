@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/reports/components/views/ReportsDashboard.jsx"
+type: "code"
+community: "Community 261"
+location: "L16"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_261
+---
+
 # ReportsDashboard()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/components/ReportsDashboard.jsx
-- **Comunidad:** [[_COMMUNITY_Community 254]]
+## Connections
+- [[ReportsDashboard.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ReportsDashboard.jsx|ReportsDashboard.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ReportsDashboard.jsx|ReportsDashboard.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_261

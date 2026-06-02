@@ -21,7 +21,7 @@
 
 .medical-requirement-detail-modal__body--editing {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(72, 128, 255, 0.1);
+    box-shadow: 0 0 0 4px rgb(72 128 255 / 10%);
 }
 
 .medical-requirement-detail-modal__section-title {

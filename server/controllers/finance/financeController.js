@@ -19,6 +19,9 @@ exports.getPricing = async (req, res) => {
         const doctor_id = isPost ? (body.doctor_id ?? body.doctorId) : (query.doctor_id ?? query.doctorId);
         const service_type = isPost ? (body.service_type ?? body.serviceType) : (query.service_type ?? query.serviceType);
         const patientId = isPost ? (body.patientId ?? body.patient_id) : undefined;
+        
+        console.log(`[getPricing Controller] doctor_id: ${doctor_id}, patientId: ${patientId}, service_type: ${service_type}`);
+        
         const hasQueryPatientId = Object.prototype.hasOwnProperty.call(query, 'patientId') || Object.prototype.hasOwnProperty.call(query, 'patient_id');
         if (!isPost && hasQueryPatientId) {
             return res.status(400).send("Invalid request parameters");
@@ -29,6 +32,9 @@ exports.getPricing = async (req, res) => {
             return res.status(400).send("Invalid request parameters");
         }
         const result = await financeService.getPricing(normalizedDoctorId, patientId, service_type);
+        
+        console.log(`[getPricing Controller] Result price: ${result.price}, explanation: ${result.explanation}`);
+        
         res.json({ price: result.price.toFixed(2), explanation: result.explanation });
     } catch (err) {
         console.error(err);

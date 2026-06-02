@@ -25,7 +25,7 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    background-color: var(--dashboard-card-bg-alt, rgba(0,0,0,0.02));
+    background-color: var(--dashboard-card-bg-alt, rgb(0 0 0 / 2%));
     padding: 0.15rem;
     border-radius: var(--radius-md);
     border: 1px solid var(--dashboard-card-border);
@@ -58,7 +58,7 @@
     border-left: 1px solid var(--dashboard-card-border);
 }
 
-@media (max-width: 1200px) {
+@media (width <= 1200px) {
     .report-filters--horizontal {
         flex-direction: column;
         align-items: stretch;

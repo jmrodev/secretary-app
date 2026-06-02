@@ -7,6 +7,7 @@ const Select = ({
     value,
     onChange,
     options = EMPTY_ARRAY,
+    placeholder,
     className = '',
     disabled = false,
     id,
@@ -37,6 +38,11 @@ const Select = ({
             disabled={disabled}
             required={required}
         >
+            {placeholder && (
+                <option value="" disabled={required}>
+                    {placeholder}
+                </option>
+            )}
             {options.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                     {opt.label}

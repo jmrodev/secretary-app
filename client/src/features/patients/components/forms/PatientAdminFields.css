@@ -116,7 +116,7 @@
     display: none;
 }
 
-@media (max-width: 48rem) {
+@media (width <= 48rem) {
     .patient-admin-fields__group {
         grid-column: span 12 !important;
     }

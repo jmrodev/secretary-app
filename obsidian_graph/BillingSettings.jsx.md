@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/config/components/sections/BillingSettings.jsx"
+type: "code"
+community: "Medical Requests & History"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Medical_Requests_&_History
+---
+
 # BillingSettings.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/BillingSettings.jsx
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[BillingSettings()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[BillingSettings()|BillingSettings()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Medical_Requests_&_History

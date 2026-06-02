@@ -62,7 +62,7 @@
 .patient-insurance-fields__select:focus {
     border-color: var(--primary-color);
     background-color: var(--white);
-    box-shadow: 0 0 0 0.125rem rgba(0, 61, 155, 0.1);
+    box-shadow: 0 0 0 0.125rem rgb(0 61 155 / 10%);
 }
 
 .patient-insurance-fields__status-card {
@@ -93,7 +93,7 @@
     color: var(--gray-700);
 }
 
-@media (max-width: 48rem) {
+@media (width <= 48rem) {
     .patient-insurance-fields__group {
         grid-column: span 12 !important;
     }

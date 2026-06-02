@@ -1,21 +1,22 @@
+---
+source_file: "server/repositories/communication/whatsappRepository.js"
+type: "code"
+community: "Community 60"
+location: "L3"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_60
+---
+
 # WhatsappRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/whatsappRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 56]]
+## Connections
+- [[.createMessage()]] - `method` [EXTRACTED]
+- [[.findPatientByPhone()]] - `method` [EXTRACTED]
+- [[.getHistoryByPatient()]] - `method` [EXTRACTED]
+- [[.getRecentConversations()]] - `method` [EXTRACTED]
+- [[.updateMessageStatus()]] - `method` [EXTRACTED]
+- [[whatsappRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[whatsappRepository.js|whatsappRepository.js]] (contains)
-- --> [[.createMessage()|.createMessage()]] (method)
-- --> [[.getHistoryByPatient()|.getHistoryByPatient()]] (method)
-- --> [[.updateMessageStatus()|.updateMessageStatus()]] (method)
-- --> [[.getRecentConversations()|.getRecentConversations()]] (method)
-- --> [[.findPatientByPhone()|.findPatientByPhone()]] (method)
-
-## Miembros de la misma Comunidad
-- [[whatsappRepository.js|whatsappRepository.js]]
-- [[.createMessage()|.createMessage()]]
-- [[.getHistoryByPatient()|.getHistoryByPatient()]]
-- [[.updateMessageStatus()|.updateMessageStatus()]]
-- [[.getRecentConversations()|.getRecentConversations()]]
-- [[.findPatientByPhone()|.findPatientByPhone()]]
+#graphify/code #graphify/EXTRACTED #community/Community_60

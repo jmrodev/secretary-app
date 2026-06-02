@@ -50,9 +50,9 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     }, []);
 
     const fetchPricing = useCallback(async (docId, patId, serviceType = 'consultation') => {
-        if (!docId || !patId) return;
+        if (!docId) return;
         try {
-            const data = await financeService.getPricing(docId, patId, serviceType);
+            const data = await financeService.getPricing(docId, patId || null, serviceType);
             if (data) {
                 setFormData(prev => {
                     const newPayments = prev.payments.map((p, index) => 
@@ -83,8 +83,8 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             type: data.type || 'income_patient',
             payments: data.payments ? data.payments.map(p => ({ ...p, _tmpId: p._tmpId || Math.random() })) : [{ _tmpId: Date.now(), amount: data.amount !== undefined ? data.amount : '', method: data.method || 'cash' }],
             description: data.description || '',
-            related_user_id: data.related_user_id || data.patientUserId || data.patientId || '',
-            doctor_id: data.doctorId || '',
+            related_user_id: (data.related_user_id || data.patientUserId || data.patientId) ? String(data.related_user_id || data.patientUserId || data.patientId) : '',
+            doctor_id: data.doctorId ? String(data.doctorId) : '',
             status: data.status || 'paid',
             service_type: initialServiceType,
             proof: null,
@@ -113,8 +113,8 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             setTotalPrice(Number(data.amount));
         }
 
-        if (data.doctorId && data.patientId && (!data.amount || Number(data.amount) === 0)) {
-            fetchPricing(data.doctorId, data.patientId, initialServiceType);
+        if (data.doctorId && (!data.amount || Number(data.amount) === 0)) {
+            fetchPricing(data.doctorId, data.patientId || null, initialServiceType);
         }
     }, [initialData, fetchPricing]);
 
@@ -172,14 +172,16 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     };
 
     const updateDoctor = (newDocId) => {
-        setFormData(prev => ({ ...prev, doctor_id: newDocId }));
+        const docIdStr = newDocId ? String(newDocId) : '';
+        setFormData(prev => ({ ...prev, doctor_id: docIdStr }));
         if (formData.type === 'income_patient' && selectedPatient) {
-            fetchPricing(newDocId, selectedPatient.id, formData.service_type);
+            fetchPricing(docIdStr, selectedPatient.id, formData.service_type);
         }
     };
 
     const selectPatient = (patient) => {
-        setFormData(prev => ({ ...prev, related_user_id: patient.user_id }));
+        const userStr = patient.user_id ? String(patient.user_id) : '';
+        setFormData(prev => ({ ...prev, related_user_id: userStr }));
         setSelectedPatient(patient);
         setPatientSearch(`${patient.full_name} (${patient.dni || 'N/A'})`);
         setShowPatientList(false);

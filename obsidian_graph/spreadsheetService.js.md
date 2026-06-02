@@ -1,12 +1,17 @@
+---
+source_file: "server/services/integrations/spreadsheetService.js"
+type: "code"
+community: "Community 115"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_115
+---
+
 # spreadsheetService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/spreadsheetService.js
-- **Comunidad:** [[_COMMUNITY_Community 107]]
+## Connections
+- [[SpreadsheetService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[SpreadsheetService|SpreadsheetService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[SpreadsheetService|SpreadsheetService]]
-- [[.logTransaction()|.logTransaction()]]
+#graphify/code #graphify/EXTRACTED #community/Community_115

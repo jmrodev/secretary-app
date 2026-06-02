@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/lists/MedicalHistoryTable.jsx"
+type: "code"
+community: "Android Messaging"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Android_Messaging
+---
+
 # MedicalHistoryTable.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicalHistoryTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 6]]
+## Connections
+- [[MedicalHistoryTable()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicalHistoryTable()|MedicalHistoryTable()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RequestsPage.jsx|RequestsPage.jsx]]
-- [[RequestsPage()|RequestsPage()]]
-- [[useMedicalRequest.js|useMedicalRequest.js]]
-- [[useMedicalRequest()|useMedicalRequest()]]
-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]]
-- [[MedicalRequestForm()|MedicalRequestForm()]]
-- [[MedicalRequestList.jsx|MedicalRequestList.jsx]]
-- [[MedicalRequestList()|MedicalRequestList()]]
-- [[MedicalHistoryTable()|MedicalHistoryTable()]]
-- [[AppointmentFormModal.jsx|AppointmentFormModal.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Android_Messaging

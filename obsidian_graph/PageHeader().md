@@ -1,18 +1,19 @@
+---
+source_file: "client/src/components/organisms/PageHeader.jsx"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L17"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Agenda_&_Slot_Management
+---
+
 # PageHeader()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/organisms/PageHeader.jsx
-- **Comunidad:** [[_COMMUNITY_Community 58]]
+## Connections
+- [[PageHeader.jsx]] - `contains` [EXTRACTED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useSearch()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useSearch()|useSearch()]] (calls)
-- <-- [[PageHeader.jsx|PageHeader.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[SearchContext.jsx|SearchContext.jsx]]
-- [[SearchProvider()|SearchProvider()]]
-- [[useSearch()|useSearch()]]
-- [[usePatientSearch.js|usePatientSearch.js]]
-- [[usePatientSearch()|usePatientSearch()]]
-- [[PageHeader.jsx|PageHeader.jsx]]
+#graphify/code #graphify/INFERRED #community/Agenda_&_Slot_Management

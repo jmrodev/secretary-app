@@ -7,7 +7,10 @@ import './Modal.css';
 const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant = 'light', className = '' }) => {
     // Prevent scrolling on body when modal is open and handle global Escape key
     const onCloseRef = React.useRef(onClose);
-    onCloseRef.current = onClose;
+    
+    useEffect(() => {
+        onCloseRef.current = onClose;
+    });
 
     // Prevent scrolling on body when modal is open and handle global Escape key
     useEffect(() => {

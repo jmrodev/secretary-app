@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/modals/EditRequestModal.jsx"
+type: "code"
+community: "Community 158"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_158
+---
+
 # EditRequestModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/EditRequestModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 157]]
+## Connections
+- [[EditRequestModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[EditRequestModal()|EditRequestModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[EditRequestModal()|EditRequestModal()]]
+#graphify/code #graphify/EXTRACTED #community/Community_158

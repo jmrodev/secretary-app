@@ -1,5 +1,6 @@
 import React from 'react';
 import CalendarDayIndicator from './CalendarDayIndicator';
+import Icon from '@/components/atoms/Icon';
 import './CalendarDayCell.css';
 
 const EMPTY_OBJECT = {};
@@ -62,8 +63,16 @@ const CalendarDayCell = ({
         <div className="calendar-day-cell__date">
           <span className="calendar-day-cell__number">{day}</span>
           <div className="calendar-day-cell__markers">
-            {isHoliday && <span className="calendar-day-cell__holiday-marker" title={holidayDescription}>H</span>}
-            {isToday && <span className="calendar-day-cell__today-marker">HOY</span>}
+            {isHoliday && (
+              <span className="calendar-day-cell__holiday-marker" title={holidayDescription}>
+                <Icon name="event_busy" size="0.7rem" />
+              </span>
+            )}
+            {isToday && (
+              <span className="calendar-day-cell__today-marker">
+                {t('today') || 'Hoy'}
+              </span>
+            )}
           </div>
         </div>
 
@@ -79,3 +88,4 @@ const CalendarDayCell = ({
 };
 
 export default CalendarDayCell;
+

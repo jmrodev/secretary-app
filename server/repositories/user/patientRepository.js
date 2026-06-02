@@ -19,7 +19,7 @@ static ALLOWED_FIELDS = [
         if (!id) return null;
         const connection = conn || await pool.getConnection();
         try {
-            const PatientsQueryBuilder = require('../../utils/queryBuilders/PatientsQueryBuilder');
+            const PatientsQueryBuilder = require('../../utils/database/queryBuilders/PatientsQueryBuilder');
             const builder = new PatientsQueryBuilder();
             builder.withFullDetails().where('p.id = ?', id);
             const { query, params } = builder.build();

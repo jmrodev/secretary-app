@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/users/components/UserManager.jsx"
+type: "code"
+community: "Community 233"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_233
+---
+
 # UserManager.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/users/components/UserManager.jsx
-- **Comunidad:** [[_COMMUNITY_Community 227]]
+## Connections
+- [[UserManager()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[UserManager()|UserManager()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[UserManager()|UserManager()]]
+#graphify/code #graphify/EXTRACTED #community/Community_233

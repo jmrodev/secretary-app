@@ -17,7 +17,7 @@ const ProtectedRoute = () => {
         return <Loading variant="full-page" text="Cargando Clínica..." />;
     }
     
-    if (!user) return <Navigate to="/login" />;
+    if (!user) return <Navigate to="/" />;
 
     // Patients should not be able to access the management dashboard or other views
     if (user.role === 'patient') {

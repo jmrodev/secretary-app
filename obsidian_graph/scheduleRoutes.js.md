@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/appointments/scheduleRoutes.js"
+type: "code"
+community: "Community 343"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_343
+---
+
 # scheduleRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/scheduleRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 351]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_343

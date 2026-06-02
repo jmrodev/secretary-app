@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/medications/ActiveMedicationsList.jsx"
+type: "code"
+community: "Community 239"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_239
+---
+
 # ActiveMedicationsList.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/ActiveMedicationsList.jsx
-- **Comunidad:** [[_COMMUNITY_Community 236]]
+## Connections
+- [[ActiveMedicationsList()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ActiveMedicationsList()|ActiveMedicationsList()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ActiveMedicationsList()|ActiveMedicationsList()]]
+#graphify/code #graphify/EXTRACTED #community/Community_239

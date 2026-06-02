@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/sections/MedicationCard.jsx"
+type: "code"
+community: "Community 182"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_182
+---
+
 # MedicationCard.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicationCard.jsx
-- **Comunidad:** [[_COMMUNITY_Community 170]]
+## Connections
+- [[MedicationCard()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicationCard()|MedicationCard()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicationCard()|MedicationCard()]]
+#graphify/code #graphify/EXTRACTED #community/Community_182

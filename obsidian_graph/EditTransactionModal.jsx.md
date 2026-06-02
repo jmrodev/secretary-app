@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/modals/EditTransactionModal.jsx"
+type: "code"
+community: "Community 221"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_221
+---
+
 # EditTransactionModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/EditTransactionModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 223]]
+## Connections
+- [[EditTransactionModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[EditTransactionModal()|EditTransactionModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[EditTransactionModal()|EditTransactionModal()]]
+#graphify/code #graphify/EXTRACTED #community/Community_221

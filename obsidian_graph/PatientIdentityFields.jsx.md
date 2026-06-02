@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/forms/PatientIdentityFields.jsx"
+type: "code"
+community: "Community 250"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_250
+---
+
 # PatientIdentityFields.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientIdentityFields.jsx
-- **Comunidad:** [[_COMMUNITY_Community 247]]
+## Connections
+- [[PatientIdentityFields()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PatientIdentityFields()|PatientIdentityFields()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientIdentityFields()|PatientIdentityFields()]]
+#graphify/code #graphify/EXTRACTED #community/Community_250

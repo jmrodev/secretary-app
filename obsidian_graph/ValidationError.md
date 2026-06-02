@@ -1,21 +1,18 @@
+---
+source_file: "server/utils/core/errors.js"
+type: "code"
+community: "Community 32"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_32
+---
+
 # ValidationError
 
-- **Tipo:** code
-- **Archivo:** server/utils/errors.js
-- **Comunidad:** [[_COMMUNITY_Community 31]]
+## Connections
+- [[.constructor()_1]] - `method` [EXTRACTED]
+- [[errors.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[errors.js|errors.js]] (contains)
-- --> [[.constructor()|.constructor()]] (method)
-
-## Miembros de la misma Comunidad
-- [[errors.js|errors.js]]
-- [[AppError|AppError]]
-- [[.constructor()|.constructor()]]
-- [[.constructor()|.constructor()]]
-- [[ConflictError|ConflictError]]
-- [[.constructor()|.constructor()]]
-- [[NotFoundError|NotFoundError]]
-- [[.constructor()|.constructor()]]
-- [[AuthRequiredError|AuthRequiredError]]
-- [[.constructor()|.constructor()]]
+#graphify/code #graphify/EXTRACTED #community/Community_32

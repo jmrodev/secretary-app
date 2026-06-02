@@ -4,6 +4,7 @@
     --user-table-border: var(--gray-200);
     --user-table-text: var(--gray-800);
     --user-table-muted: var(--gray-500);
+
     /* ------------------------------ */
 
     overflow-x: auto;

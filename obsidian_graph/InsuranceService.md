@@ -1,21 +1,22 @@
+---
+source_file: "server/services/core/insuranceService.js"
+type: "code"
+community: "Community 53"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_53
+---
+
 # InsuranceService
 
-- **Tipo:** code
-- **Archivo:** server/services/insuranceService.js
-- **Comunidad:** [[_COMMUNITY_Community 46]]
+## Connections
+- [[.createInsurance()]] - `method` [EXTRACTED]
+- [[.deleteInsurance()]] - `method` [EXTRACTED]
+- [[.getAllInsurances()]] - `method` [EXTRACTED]
+- [[.getInsuranceById()]] - `method` [EXTRACTED]
+- [[.updateInsurance()]] - `method` [EXTRACTED]
+- [[insuranceService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[insuranceService.js|insuranceService.js]] (contains)
-- --> [[.getAllInsurances()|.getAllInsurances()]] (method)
-- --> [[.getInsuranceById()|.getInsuranceById()]] (method)
-- --> [[.createInsurance()|.createInsurance()]] (method)
-- --> [[.updateInsurance()|.updateInsurance()]] (method)
-- --> [[.deleteInsurance()|.deleteInsurance()]] (method)
-
-## Miembros de la misma Comunidad
-- [[insuranceService.js|insuranceService.js]]
-- [[.getAllInsurances()|.getAllInsurances()]]
-- [[.getInsuranceById()|.getInsuranceById()]]
-- [[.createInsurance()|.createInsurance()]]
-- [[.updateInsurance()|.updateInsurance()]]
-- [[.deleteInsurance()|.deleteInsurance()]]
+#graphify/code #graphify/EXTRACTED #community/Community_53

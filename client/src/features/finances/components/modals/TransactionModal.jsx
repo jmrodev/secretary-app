@@ -22,12 +22,8 @@ import FormGroup from '@/components/molecules/FormGroup';
 import { MedicationInput } from '@/features/medical_documents';
 import './TransactionModal.css';
 
-/**
- * TransactionSummaryHeader Sub-component.
- */
-const TransactionSummaryHeader = ({ requestId, patientSearch, doctors, doctor_id, t }) => {
-    if (!requestId) return null;
-    return (
+const TransactionSummaryHeader = ({ requestId, patientSearch, doctors, doctor_id, t }) => (
+    requestId ? (
         <div className="transaction-modal__summary-header">
             <div className="transaction-modal__summary-item">
                 <span className="transaction-modal__summary-label">{t('patient')}:</span>
@@ -35,11 +31,11 @@ const TransactionSummaryHeader = ({ requestId, patientSearch, doctors, doctor_id
             </div>
             <div className="transaction-modal__summary-item">
                 <span className="transaction-modal__summary-label">{t('doctor')}:</span>
-                <span className="transaction-modal__summary-value">{doctors.find(d => d.id === doctor_id)?.full_name}</span>
+                <span className="transaction-modal__summary-value">{doctors.find(d => String(d.id) === String(doctor_id))?.full_name}</span>
             </div>
         </div>
-    );
-};
+    ) : null
+);
 
 /**
  * TransactionPaymentsSection Sub-component.
@@ -90,39 +86,31 @@ const TransactionPaymentsSection = ({
                 </Button>
             </div>
 
-            <div className="transaction-modal__payment-methods-list">
                 {payments.map((payment, index) => (
                     <div key={payment._tmpId || index} className="transaction-modal__payment-row">
                         <div className="transaction-modal__payment-row-amount">
                             <CurrencyInput
-                                placeholder={t('amount_label')}
-                                value={payment.amount}
+                                placeholder={t('amount_label')} value={payment.amount}
                                 onChange={e => handlePaymentChange(index, 'amount', e.target.value)}
                                 className="transaction-modal__payment-input"
                             />
                         </div>
                         <div className="transaction-modal__payment-row-method">
                             <Select
-                                value={payment.method}
-                                onChange={e => handlePaymentChange(index, 'method', e.target.value)}
-                                options={paymentMethods}
-                                className="transaction-modal__payment-select"
+                                value={payment.method} onChange={e => handlePaymentChange(index, 'method', e.target.value)}
+                                options={paymentMethods} className="transaction-modal__payment-select"
                             />
                         </div>
                         <div className="transaction-modal__payment-row-action">
                             {payments.length > 1 && (
                                 <Button
-                                    variant="ghost"
-                                    size="sm-compact"
-                                    onClick={() => removePaymentMethod(index)}
-                                    icon={<Icon name="close" size="1rem" />}
-                                    className="transaction-modal__remove-btn"
+                                    variant="ghost" size="sm-compact" onClick={() => removePaymentMethod(index)}
+                                    icon={<Icon name="close" size="1rem" />} className="transaction-modal__remove-btn"
                                 />
                             )}
                         </div>
                     </div>
                 ))}
-            </div>
 
             <div className="transaction-modal__payment-summary">
                 {totalPrice > 0 && (
@@ -158,29 +146,10 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
     const { settings } = useConfig();
 
     const {
-        formData,
-        loading,
-        patients,
-        doctors,
-        pricingInfo,
-        totalPrice,
-        patientSearch,
-        showPatientList,
-        setPatientSearch,
-        setShowPatientList,
-        updateField,
-        updateServiceType,
-        updateDoctor,
-        selectPatient,
-        handlePaymentChange,
-        addPaymentMethod,
-        removePaymentMethod,
-        saveTransaction,
-        medications,
-        selectedPatient,
-        addMedication,
-        removeMedication,
-        setTotalPrice
+        formData, loading, patients, doctors, pricingInfo, totalPrice, patientSearch, showPatientList,
+        setPatientSearch, setShowPatientList, updateField, updateServiceType, updateDoctor, selectPatient,
+        handlePaymentChange, addPaymentMethod, removePaymentMethod, saveTransaction, medications,
+        selectedPatient, addMedication, removeMedication, setTotalPrice
     } = useTransactionForm(isOpen, initialData, requestId, onSuccess, onClose);
 
     const currentPaidTotal = formData.payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
@@ -192,12 +161,12 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
 
     const doctorOptions = React.useMemo(() => [
         { value: '', label: t('select_doctor') }, 
-        ...doctors.map(d => ({ value: d.id, label: d.full_name }))
+        ...doctors.map(d => ({ value: String(d.id), label: d.full_name }))
     ], [doctors, t]);
 
     const doctorUserOptions = React.useMemo(() => [
         { value: '', label: t('select_doctor') }, 
-        ...doctors.map(d => ({ value: d.user_id, label: d.full_name }))
+        ...doctors.map(d => ({ value: String(d.user_id), label: d.full_name }))
     ], [doctors, t]);
 
     const filteredPatients = React.useMemo(() => {
@@ -248,33 +217,18 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                         <div className="transaction-modal__autocomplete">
                             <Input
                                 value={patientSearch}
-                                onChange={(e) => {
-                                    setPatientSearch(e.target.value);
-                                    setShowPatientList(true);
-                                    updateField('related_user_id', '');
-                                }}
+                                onChange={e => { setPatientSearch(e.target.value); setShowPatientList(true); updateField('related_user_id', ''); }}
                                 onFocus={() => !initialData?.patientId && setShowPatientList(true)}
-                                placeholder={t('search_name_dni')}
-                                disabled={!!initialData?.patientId}
-                                icon={<Icon name="search" size="1.1rem" />}
-                                className="transaction-modal__input"
+                                placeholder={t('search_name_dni')} disabled={!!initialData?.patientId}
+                                icon={<Icon name="search" size="1.1rem" />} className="transaction-modal__input"
                             />
                             {showPatientList && patientSearch && !formData.related_user_id && (
                                 <ul className="transaction-modal__results" role="listbox">
                                     {filteredPatients.map(p => (
                                         <li
-                                            key={p.id}
-                                            onClick={() => selectPatient(p)}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter' || e.key === ' ') {
-                                                    e.preventDefault();
-                                                    selectPatient(p);
-                                                }
-                                            }}
-                                            className="transaction-modal__item"
-                                            role="option"
-                                            aria-selected={false}
-                                            tabIndex={0}
+                                            key={p.id} onClick={() => selectPatient(p)}
+                                            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectPatient(p); } }}
+                                            className="transaction-modal__item" role="option" aria-selected={false} tabIndex={0}
                                         >
                                             <span className="transaction-modal__item-name">{p.full_name}</span>
                                             <span className="transaction-modal__hint">{p.dni}</span>
@@ -331,17 +285,11 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 )}
 
                 <TransactionPaymentsSection 
-                    pricingInfo={pricingInfo}
-                    totalPrice={totalPrice}
-                    setTotalPrice={setTotalPrice}
-                    payments={formData.payments}
-                    handlePaymentChange={handlePaymentChange}
-                    addPaymentMethod={addPaymentMethod}
-                    removePaymentMethod={removePaymentMethod}
-                    currentPaidTotal={currentPaidTotal}
-                    debtAmount={debtAmount}
-                    formatCurrency={formatCurrency}
-                    t={t}
+                    pricingInfo={pricingInfo} totalPrice={totalPrice} setTotalPrice={setTotalPrice}
+                    payments={formData.payments} handlePaymentChange={handlePaymentChange}
+                    addPaymentMethod={addPaymentMethod} removePaymentMethod={removePaymentMethod}
+                    currentPaidTotal={currentPaidTotal} debtAmount={debtAmount}
+                    formatCurrency={formatCurrency} t={t}
                 />
 
                 {!requestId && (

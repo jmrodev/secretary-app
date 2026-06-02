@@ -4,6 +4,7 @@
     /* --- Local Component Tokens --- */
     --modal-panel-bg: var(--gray-900);
     --modal-panel-border: var(--dashboard-card-border);
+
     /* ------------------------------ */
 
     display: flex;

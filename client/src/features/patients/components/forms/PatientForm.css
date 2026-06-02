@@ -16,7 +16,8 @@
     background: var(--dashboard-card-bg);
     border-bottom: 1px solid var(--dashboard-card-border);
     z-index: 10;
-    box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.02);
+    box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 2%);
+
     /* Very subtle shadow instead of line */
 }
 
@@ -66,10 +67,12 @@
     flex-shrink: 0;
     background: var(--gray-800);
     border-top: 1px solid var(--dashboard-card-border);
+
     /* Tonal shift instead of white to separate from content */
     padding: 1.25rem 2rem;
     z-index: 10;
-    box-shadow: 0 -0.25rem 1rem rgba(0, 0, 0, 0.03);
+    box-shadow: 0 -0.25rem 1rem rgb(0 0 0 / 3%);
+
     /* Ambient shadow instead of line */
 }
 
@@ -125,7 +128,7 @@
     border-color: var(--accent);
     color: white;
     transform: scale(1.1);
-    box-shadow: 0 0 0 0.25rem rgba(0, 61, 155, 0.1);
+    box-shadow: 0 0 0 0.25rem rgb(0 61 155 / 10%);
 }
 
 .patient-form__step--active .patient-form__step-label {
@@ -139,7 +142,7 @@
 }
 
 /* High-Density Bento Grid Pro */
-@media (min-width: 48rem) {
+@media (width >= 48rem) {
     .patient-form__step-content {
         display: grid;
         grid-template-columns: repeat(12, 1fr);
@@ -147,7 +150,7 @@
     }
 }
 
-@media (max-width: 37.5rem) {
+@media (width <= 37.5rem) {
     .patient-form__step-label {
         display: none;
     }

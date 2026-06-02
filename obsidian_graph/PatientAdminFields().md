@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/forms/PatientAdminFields.jsx"
+type: "code"
+community: "Community 251"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_251
+---
+
 # PatientAdminFields()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientAdminFields.jsx
-- **Comunidad:** [[_COMMUNITY_Community 250]]
+## Connections
+- [[PatientAdminFields.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientAdminFields.jsx|PatientAdminFields.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientAdminFields.jsx|PatientAdminFields.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_251

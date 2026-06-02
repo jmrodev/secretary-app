@@ -1,6 +1,5 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
 import { formatDate, formatTime, formatDateTimeLong } from '@/utils/core/dateUtils';
@@ -11,28 +10,43 @@ import './AppointmentCard.css';
  * AppointmentCard Molecule (Internal to feature).
  * Compact representation of an appointment for lists and timelines.
  */
-const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction }) => {
+const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction, isLoading = false }) => {
     const { t } = useLanguage();
-    const [clientTime, setClientTime] = React.useState('');
+    
+    // --- Derived State during render (No Effects needed) ---
+    const clientTime = (!isLoading && appt?.appointment_date) 
+        ? formatTime(appt.appointment_date, { hour12: false }) 
+        : '';
+        
+    const rescheduledDate = (!isLoading && appt?.rescheduled_from_date) 
+        ? formatDate(appt.rescheduled_from_date) 
+        : '';
+        
+    const rescheduledFull = (!isLoading && appt?.rescheduled_from_date) 
+        ? formatDateTimeLong(appt.rescheduled_from_date) 
+        : '';
 
-    React.useEffect(() => {
-        if (appt.appointment_date) {
-            setClientTime(formatTime(appt.appointment_date, { hour12: false }));
-        }
-    }, [appt.appointment_date]);
+    // --- Conditional Render AFTER Hooks ---
+    if (isLoading) {
+        return (
+            <div className="appointment-card appointment-card--skeleton">
+                <div className="appointment-card__time-box">
+                    <span className="appointment-card__time">00:00</span>
+                </div>
+                <div className="appointment-card__info">
+                    <div className="appointment-card__patient-name">Loading…</div>
+                    <div className="appointment-card__details">Loading details…</div>
+                </div>
+                <div className="appointment-card__status">
+                    <div className="appointment-card__status-chip">…</div>
+                </div>
+            </div>
+        );
+    }
 
+    // --- Standard Logic ---
     const isExternal = appt.source === 'google' || appt.source === 'google-incomplete' || appt.status === 'external';
     const isAnonymous = !appt.patient_id;
-
-    const [rescheduledDate, setRescheduledDate] = React.useState('');
-    const [rescheduledFull, setRescheduledFull] = React.useState('');
-
-    React.useEffect(() => {
-        if (appt.rescheduled_from_date) {
-            setRescheduledDate(formatDate(appt.rescheduled_from_date));
-            setRescheduledFull(formatDateTimeLong(appt.rescheduled_from_date));
-        }
-    }, [appt.rescheduled_from_date]);
 
     const handleKeyDown = (e) => {
         if (onClick && (e.key === 'Enter' || e.key === ' ')) {
@@ -41,9 +55,17 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
         }
     };
 
+    const cardClasses = [
+        'appointment-card',
+        appt.status && `appointment-card--${appt.status}`,
+        appt.type === 'virtual' && 'appointment-card--virtual',
+        isExternal && 'appointment-card--external',
+        isAnonymous && 'appointment-card--anonymous'
+    ].filter(Boolean).join(' ');
+
     return (
         <div
-            className={`appointment-card appointment-card--${appt.status} ${appt.type === 'virtual' ? 'appointment-card--virtual' : ''} ${isExternal ? 'appointment-card--external' : ''} ${isAnonymous ? 'appointment-card--anonymous' : ''}`}
+            className={cardClasses}
             onClick={onClick}
             onKeyDown={handleKeyDown}
             role="button"
@@ -71,16 +93,6 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                         </Badge>
                     )}
                 </div>
-                {appt.patient_phone && (
-                    <Button
-                        to={`tel:${String(appt.patient_phone).replace(/[^0-9+]/g, '')}`}
-                        variant="phone" size="sm" className="appointment-card__phone"
-                        onClick={(e) => e.stopPropagation()}
-                        icon={<Icon name="call" size="0.9rem" />}
-                    >
-                        {appt.patient_phone}
-                    </Button>
-                )}
                 <div className="appointment-card__details">
                     <span className="appointment-card__doctor">
                         <Icon name="person" size="1rem" />
@@ -149,21 +161,6 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                     {t(appt.status) || appt.status}
                 </span>
             </div>
-
-            {showActions && appt.status !== 'completed' && (
-                <div className="appointment-card__actions">
-                    <Button
-                        variant="ghost" size="sm-compact"
-                        onClick={(e) => { e.stopPropagation(); onWhatsAppAction(appt, 'reminder'); }}
-                        className="appointment-card__action-btn" icon={<Icon name="send" />}
-                    />
-                    <Button
-                        variant="ghost" size="sm-compact"
-                        onClick={(e) => { e.stopPropagation(); onWhatsAppAction(appt, 'confirmation'); }}
-                        className="appointment-card__action-btn" icon={<Icon name="auto_awesome" />}
-                    />
-                </div>
-            )}
         </div>
     );
 };

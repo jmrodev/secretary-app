@@ -1,22 +1,19 @@
+---
+source_file: "client/src/features/medical_documents/components/ui/MedicationAutocomplete.jsx"
+type: "code"
+community: "Community 107"
+location: "L16"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_107
+---
+
 # MedicationAutocomplete()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicationAutocomplete.jsx
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[MedicationAutocomplete.jsx]] - `contains` [EXTRACTED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMedicationAutocomplete()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useMedicationAutocomplete()|useMedicationAutocomplete()]] (calls)
-- <-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
-- [[FloatingChat.jsx|FloatingChat.jsx]]
+#graphify/code #graphify/INFERRED #community/Community_107

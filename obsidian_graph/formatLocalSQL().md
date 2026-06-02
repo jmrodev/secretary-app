@@ -1,24 +1,24 @@
+---
+source_file: "server/utils/core/dateUtils.js"
+type: "code"
+community: "Community 44"
+location: "L15"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_44
+---
+
 # formatLocalSQL()
 
-- **Tipo:** code
-- **Archivo:** server/utils/dateUtils.js
-- **Comunidad:** [[_COMMUNITY_Community 8]]
+## Connections
+- [[._restorePatient()]] - `calls` [INFERRED]
+- [[.createAppointment()]] - `calls` [INFERRED]
+- [[.createTransaction()]] - `calls` [INFERRED]
+- [[.getNextFreeSlot()_1]] - `calls` [INFERRED]
+- [[.updatePatientDetails()]] - `calls` [INFERRED]
+- [[dateUtils.js]] - `contains` [EXTRACTED]
+- [[formatDateForDB()]] - `calls` [INFERRED]
+- [[nowLocalSQL()]] - `calls` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[dateUtils.js|dateUtils.js]] (contains)
-- <-- [[nowLocalSQL()|nowLocalSQL()]] (calls)
-- <-- [[._restorePatient()|._restorePatient()]] (calls)
-- <-- [[.updatePatientDetails()|.updatePatientDetails()]] (calls)
-- <-- [[.createTransaction()|.createTransaction()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[dateUtils.js|dateUtils.js]]
-- [[nowLocalSQL()|nowLocalSQL()]]
-- [[formatDateOnlySQL()|formatDateOnlySQL()]]
-- [[restoreService.js|restoreService.js]]
-- [[RestoreService|RestoreService]]
-- [[.restoreItem()|.restoreItem()]]
-- [[._restorePatient()|._restorePatient()]]
-- [[._restoreDoctor()|._restoreDoctor()]]
-- [[._restoreSecretary()|._restoreSecretary()]]
-- [[._restoreMedicalRequest()|._restoreMedicalRequest()]]
+#graphify/code #graphify/INFERRED #community/Community_44

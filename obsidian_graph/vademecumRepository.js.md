@@ -1,13 +1,17 @@
+---
+source_file: "server/repositories/medical/vademecumRepository.js"
+type: "code"
+community: "Community 99"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_99
+---
+
 # vademecumRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/vademecumRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 94]]
+## Connections
+- [[VademecumRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[VademecumRepository|VademecumRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[VademecumRepository|VademecumRepository]]
-- [[.findBySearchQuery()|.findBySearchQuery()]]
-- [[.findById()|.findById()]]
+#graphify/code #graphify/EXTRACTED #community/Community_99

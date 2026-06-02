@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/appointments/components/cards/AppointmentCard.jsx"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Agenda_&_Slot_Management
+---
+
 # AppointmentCard()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/AppointmentCard.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[AppointmentCard.jsx]] - `contains` [EXTRACTED]
+- [[useLanguage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[AppointmentCard.jsx|AppointmentCard.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
-- [[CalendarSection()|CalendarSection()]]
+#graphify/code #graphify/EXTRACTED #community/Agenda_&_Slot_Management

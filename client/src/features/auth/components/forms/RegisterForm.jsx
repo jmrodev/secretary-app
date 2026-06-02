@@ -144,7 +144,7 @@ const RegisterForm = () => {
                 <footer className="auth-card__footer">
                     <p className="auth-card__footer-text">
                         {t('already_account')}
-                        <Link to="/login" className="auth-card__link">{t('login')}</Link>
+                        <Link to="/" className="auth-card__link">{t('login')}</Link>
                     </p>
                 </footer>
             </main>

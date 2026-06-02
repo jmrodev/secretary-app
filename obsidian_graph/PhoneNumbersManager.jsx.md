@@ -1,20 +1,17 @@
+---
+source_file: "client/src/components/molecules/PhoneNumbersManager.jsx"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Agenda_&_Slot_Management
+---
+
 # PhoneNumbersManager.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/PhoneNumbersManager.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[PhoneNumbersManager()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PhoneNumbersManager()|PhoneNumbersManager()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Agenda_&_Slot_Management

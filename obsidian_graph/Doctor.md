@@ -1,13 +1,18 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/model/Doctor.kt"
+type: "code"
+community: "Community 120"
+location: "L3"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_120
+---
+
 # Doctor
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/model/Doctor.kt
-- **Comunidad:** [[_COMMUNITY_Community 114]]
+## Connections
+- [[.toString()]] - `method` [EXTRACTED]
+- [[Doctor.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[Doctor.kt|Doctor.kt]] (contains)
-- --> [[.toString()|.toString()]] (method)
-
-## Miembros de la misma Comunidad
-- [[Doctor.kt|Doctor.kt]]
-- [[.toString()|.toString()]]
+#graphify/code #graphify/EXTRACTED #community/Community_120

@@ -64,7 +64,7 @@
     line-height: 1.4;
 }
 
-@media (max-width: 48rem) {
+@media (width <= 48rem) {
     .patient-account-fields__group {
         grid-column: span 12 !important;
     }

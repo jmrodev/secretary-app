@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/schedule/ScheduleTimeline.jsx"
+type: "code"
+community: "Community 190"
+location: "L11"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_190
+---
+
 # ScheduleTimeline()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/ScheduleTimeline.jsx
-- **Comunidad:** [[_COMMUNITY_Community 192]]
+## Connections
+- [[ScheduleTimeline.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ScheduleTimeline.jsx|ScheduleTimeline.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ScheduleTimeline.jsx|ScheduleTimeline.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_190

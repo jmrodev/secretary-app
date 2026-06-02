@@ -1,5 +1,4 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
@@ -11,10 +10,24 @@ import { capitalizeFirst } from '@/utils/core/stringUtils';
 import PrescriptionHabitualMeds from '@/features/medical_documents/components/sections/PrescriptionHabitualMeds';
 import PrescriptionFormFields from '@/features/medical_documents/components/forms/PrescriptionFormFields';
 import PrescriptionItemsList from '@/features/medical_documents/components/lists/PrescriptionItemsList';
+import PrescriptionExtraFields from '@/features/medical_documents/components/sections/PrescriptionExtraFields';
+import { usePatientMedications } from '@/features/medical_documents/hooks/usePatientMedications';
 
 import './PrescriptionModal.css';
 
 const generateId = () => `${Date.now()}-${Math.random()}`;
+
+const getFrequencyText = (selectedPreset, dailyUnits) => {
+    if (selectedPreset) return selectedPreset.text;
+    if (!dailyUnits) return '';
+    const num = parseFloat(dailyUnits);
+    if (num === 1) return 'cada 24hs';
+    if (num === 2) return 'cada 12hs';
+    if (num === 3) return 'cada 8hs';
+    if (num === 4) return 'cada 6hs';
+    if (num === 0.5) return 'día por medio';
+    return `${dailyUnits} por día`;
+};
 
 // Common frequency presets: label (display) + unitsPerDay (numeric)
 const FREQ_PRESETS = [
@@ -100,58 +113,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     };
 
     // ── Fetch data ──────────────────────────────────────────────────────────
-    React.useEffect(() => {
-        if (!patientId) return;
-
-        import('@/api/axios').then(module => {
-            const api = module.default;
-
-            // Fetch habitual meds
-            api.get(`/medical/patients/${patientId}/medications`)
-                .then(res => setPatientMeds(res.data))
-                .catch(err => console.error("Error fetching meds", err));
-
-            // Fetch recent prescriptions to build history list
-            api.post('/medical/requests', { patientId, type: 'prescription' })
-                .then(res => {
-                    const historyItems = [];
-                    const seenNames = new Set();
-
-                    res.data.forEach(req => {
-                        // 1. Try structured data first
-                        if (req.raw_medication_data) {
-                            try {
-                                const rawItems = typeof req.raw_medication_data === 'string'
-                                    ? JSON.parse(req.raw_medication_data)
-                                    : req.raw_medication_data;
-
-                                if (Array.isArray(rawItems)) {
-                                    rawItems.forEach(it => {
-                                        const name = it.medication_name || it.name;
-                                        if (name && !seenNames.has(name.toLowerCase())) {
-                                            historyItems.push(it);
-                                            seenNames.add(name.toLowerCase());
-                                        }
-                                    });
-                                }
-                            } catch (e) { console.warn("Error parsing raw_medication_data", e); }
-                        }
-
-                        // 2. Fallback to parsing text field if we need more
-                        if (req.medications && seenNames.size < 10) {
-                            req.medications.split('\n').forEach(line => {
-                                const name = line.trim().split(' (')[0].split(' x')[0].split(' cada')[0];
-                                if (name && !seenNames.has(name.toLowerCase())) {
-                                    historyItems.push({ medication_name: name });
-                                    seenNames.add(name.toLowerCase());
-                                }
-                            });
-                        }
-                    });
-                    setHistoryMeds(historyItems.slice(0, 15));
-                });
-        });
-    }, [patientId]);
+    usePatientMedications(patientId, setPatientMeds, setHistoryMeds);
 
     // ── Live days-supply calculation ─────────────────────────────────────────
     const daysSupply = useMemo(() => ds(parseFloat(tempUnitsPerBox), parseFloat(tempBoxes), parseFloat(tempDailyUnits)), [tempUnitsPerBox, tempBoxes, tempDailyUnits]);
@@ -179,7 +141,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         }
 
         const dose = med.dose || '';
-        const upb = med.units_per_box || med.units_per_box || '';
+        const upb = med.units_per_box || '';
         const daily = med.daily_units || med.daily_intake || '';
         const boxes = med.boxes_count || med.quantity || '';
         const vademecumId = med.vademecum_id || med.id;
@@ -194,16 +156,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
 
         // Always add it to the list as long as we have a name
         if (medName) {
-            let frequencyText = '';
-            if (daily) {
-                const num = parseFloat(daily);
-                if (num === 1) frequencyText = 'cada 24hs';
-                else if (num === 2) frequencyText = 'cada 12hs';
-                else if (num === 3) frequencyText = 'cada 8hs';
-                else if (num === 4) frequencyText = 'cada 6hs';
-                else if (num === 0.5) frequencyText = 'día por medio';
-                else frequencyText = `${daily} por día`;
-            }
+            const frequencyText = getFrequencyText(null, daily);
 
             const calcDs = ds(parseFloat(upb), parseFloat(boxes), parseFloat(daily));
 
@@ -239,18 +192,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
         const medName = tempMed.trim();
         const selectedPreset = tempFreqPreset !== null ? FREQ_PRESETS[tempFreqPreset] : null;
 
-        let frequencyText = '';
-        if (selectedPreset) {
-            frequencyText = selectedPreset.text;
-        } else if (tempDailyUnits) {
-            const num = parseFloat(tempDailyUnits);
-            if (num === 1) frequencyText = 'cada 24hs';
-            else if (num === 2) frequencyText = 'cada 12hs';
-            else if (num === 3) frequencyText = 'cada 8hs';
-            else if (num === 4) frequencyText = 'cada 6hs';
-            else if (num === 0.5) frequencyText = 'día por medio';
-            else frequencyText = `${tempDailyUnits} por día`;
-        }
+        const frequencyText = getFrequencyText(selectedPreset, tempDailyUnits);
 
         const newItem = {
             _id: generateId(),
@@ -293,18 +235,7 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
 
         if (tempMed.trim()) {
             const selectedPreset = tempFreqPreset !== null ? FREQ_PRESETS[tempFreqPreset] : null;
-            let frequencyText = '';
-            if (selectedPreset) {
-                frequencyText = selectedPreset.text;
-            } else if (tempDailyUnits) {
-                const num = parseFloat(tempDailyUnits);
-                if (num === 1) frequencyText = 'cada 24hs';
-                else if (num === 2) frequencyText = 'cada 12hs';
-                else if (num === 3) frequencyText = 'cada 8hs';
-                else if (num === 4) frequencyText = 'cada 6hs';
-                else if (num === 0.5) frequencyText = 'día por medio';
-                else frequencyText = `${tempDailyUnits} por día`;
-            }
+            const frequencyText = getFrequencyText(selectedPreset, tempDailyUnits);
 
             const itemToInclude = {
                 vademecum_id: currentVademecumId,
@@ -392,31 +323,13 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
                     t={t}
                 />
 
-                <article className="prescription-modal__group">
-                    <h3 className="visually-hidden">{t('instructions')}</h3>
-                    <label className="prescription-modal__label">{t('instructions')}</label>
-                    <textarea
-                        className="input-field"
-                        rows="3"
-                        value={instructions}
-                        onChange={e => setInstructions(capitalizeFirst(e.target.value))}
-                        placeholder={t('instructions_placeholder') || 'ej. Tomar con comida. No superar dosis máxima.'}
-                    />
-                </article>
-
-                <article className="prescription-modal__group checkbox-group">
-                    <h3 className="visually-hidden">{t('bonified')}</h3>
-                    <input
-                        type="checkbox"
-                        id="bonified-prescription"
-                        checked={bonified}
-                        onChange={e => setBonified(e.target.checked)}
-                        className="prescription-modal__checkbox"
-                    />
-                    <label htmlFor="bonified-prescription" className="input-label checkbox-label">
-                        {t('bonified')}
-                    </label>
-                </article>
+                <PrescriptionExtraFields
+                    instructions={instructions}
+                    setInstructions={setInstructions}
+                    bonified={bonified}
+                    setBonified={setBonified}
+                    t={t}
+                />
             </section>
         </Modal>
     );

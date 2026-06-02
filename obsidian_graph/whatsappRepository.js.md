@@ -1,16 +1,17 @@
+---
+source_file: "server/repositories/communication/whatsappRepository.js"
+type: "code"
+community: "Community 60"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_60
+---
+
 # whatsappRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/whatsappRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 56]]
+## Connections
+- [[WhatsappRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[WhatsappRepository|WhatsappRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[WhatsappRepository|WhatsappRepository]]
-- [[.createMessage()|.createMessage()]]
-- [[.getHistoryByPatient()|.getHistoryByPatient()]]
-- [[.updateMessageStatus()|.updateMessageStatus()]]
-- [[.getRecentConversations()|.getRecentConversations()]]
-- [[.findPatientByPhone()|.findPatientByPhone()]]
+#graphify/code #graphify/EXTRACTED #community/Community_60

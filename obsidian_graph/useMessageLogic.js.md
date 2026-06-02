@@ -1,15 +1,18 @@
+---
+source_file: "client/src/context/useMessageLogic.js"
+type: "code"
+community: "Community 85"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_85
+---
+
 # useMessageLogic.js
 
-- **Tipo:** code
-- **Archivo:** client/src/context/useMessageLogic.js
-- **Comunidad:** [[_COMMUNITY_Community 80]]
+## Connections
+- [[messageReducer()]] - `contains` [EXTRACTED]
+- [[useMessageLogic()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[messageReducer()|messageReducer()]] (contains)
-- --> [[useMessageLogic()|useMessageLogic()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[messageReducer()|messageReducer()]]
-- [[useMessageLogic()|useMessageLogic()]]
-- [[MessageContext.jsx|MessageContext.jsx]]
-- [[MessageProvider()|MessageProvider()]]
+#graphify/code #graphify/EXTRACTED #community/Community_85

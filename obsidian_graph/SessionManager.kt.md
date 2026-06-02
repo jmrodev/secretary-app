@@ -1,15 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/api/SessionManager.kt"
+type: "code"
+community: "Community 70"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_70
+---
+
 # SessionManager.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/api/SessionManager.kt
-- **Comunidad:** [[_COMMUNITY_Community 65]]
+## Connections
+- [[SessionManager]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[SessionManager|SessionManager]] (contains)
-
-## Miembros de la misma Comunidad
-- [[SessionManager|SessionManager]]
-- [[.init()|.init()]]
-- [[.saveSession()|.saveSession()]]
-- [[.clear()|.clear()]]
-- [[.isLoggedIn()|.isLoggedIn()]]
+#graphify/code #graphify/EXTRACTED #community/Community_70

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/institutions/components/forms/InstitutionFormModal.jsx"
+type: "code"
+community: "Community 152"
+location: "L5"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_152
+---
+
 # InstitutionFormModal()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/institutions/components/InstitutionFormModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 144]]
+## Connections
+- [[InstitutionFormModal.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[InstitutionFormModal.jsx|InstitutionFormModal.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InstitutionFormModal.jsx|InstitutionFormModal.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_152

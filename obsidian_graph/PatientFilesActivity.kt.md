@@ -1,20 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/PatientFilesActivity.kt"
+type: "code"
+community: "Community 10"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_10
+---
+
 # PatientFilesActivity.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/PatientFilesActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 9]]
+## Connections
+- [[PatientFilesActivity]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PatientFilesActivity|PatientFilesActivity]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AppointmentDetailActivity.kt|AppointmentDetailActivity.kt]]
-- [[AppointmentDetailActivity|AppointmentDetailActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.updateButtonVisibility()|.updateButtonVisibility()]]
-- [[.updateAppointment()|.updateAppointment()]]
-- [[.updateStatus()|.updateStatus()]]
-- [[.updatePayment()|.updatePayment()]]
-- [[.setupDoctorRecyclerViews()|.setupDoctorRecyclerViews()]]
-- [[.loadPatientDetails()|.loadPatientDetails()]]
-- [[PatientFilesActivity|PatientFilesActivity]]
+#graphify/code #graphify/EXTRACTED #community/Community_10

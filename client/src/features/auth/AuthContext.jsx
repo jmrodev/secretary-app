@@ -1,4 +1,4 @@
-import { createContext, use, useMemo } from 'react';
+import { createContext, use } from 'react';
 import { useAuthLogic } from '@/features/auth/useAuthLogic';
 
 const AuthContext = createContext();

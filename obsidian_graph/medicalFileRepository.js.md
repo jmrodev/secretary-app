@@ -1,15 +1,17 @@
+---
+source_file: "server/repositories/medical/medicalFileRepository.js"
+type: "code"
+community: "Community 68"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_68
+---
+
 # medicalFileRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/medicalFileRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 63]]
+## Connections
+- [[MedicalFileRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicalFileRepository|MedicalFileRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicalFileRepository|MedicalFileRepository]]
-- [[.create()|.create()]]
-- [[.findById()|.findById()]]
-- [[.findAll()|.findAll()]]
-- [[.delete()|.delete()]]
+#graphify/code #graphify/EXTRACTED #community/Community_68

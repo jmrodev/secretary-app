@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/patients/PublicRegisterPage.jsx"
+type: "code"
+community: "Community 125"
+location: "L98"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_125
+---
+
 # PublicRegisterPage()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/PublicRegisterPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[PublicRegisterPage.jsx]] - `contains` [EXTRACTED]
+- [[useFetch()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[PublicRegisterPage.jsx|PublicRegisterPage.jsx]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
+#graphify/code #graphify/EXTRACTED #community/Community_125

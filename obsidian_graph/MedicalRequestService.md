@@ -1,29 +1,26 @@
+---
+source_file: "server/services/medical/MedicalRequestService.js"
+type: "code"
+community: "Institutions Feature"
+location: "L18"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_Feature
+---
+
 # MedicalRequestService
 
-- **Tipo:** code
-- **Archivo:** server/services/medical/MedicalRequestService.js
-- **Comunidad:** [[_COMMUNITY_Community 2]]
+## Connections
+- [[._checkPermissions()_3]] - `method` [EXTRACTED]
+- [[._processRequestItems()]] - `method` [EXTRACTED]
+- [[.createRequest()]] - `method` [EXTRACTED]
+- [[.deleteRequest()]] - `method` [EXTRACTED]
+- [[.generateRequestDebt()]] - `method` [EXTRACTED]
+- [[.getRequests()]] - `method` [EXTRACTED]
+- [[.updateRequest()]] - `method` [EXTRACTED]
+- [[.updateRequestPaymentStatus()]] - `method` [EXTRACTED]
+- [[.updateRequestStatus()]] - `method` [EXTRACTED]
+- [[MedicalRequestService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicalRequestService.js|MedicalRequestService.js]] (contains)
-- --> [[.createRequest()|.createRequest()]] (method)
-- --> [[.getRequests()|.getRequests()]] (method)
-- --> [[.updateRequestStatus()|.updateRequestStatus()]] (method)
-- --> [[.updateRequest()|.updateRequest()]] (method)
-- --> [[.updateRequestPaymentStatus()|.updateRequestPaymentStatus()]] (method)
-- --> [[.deleteRequest()|.deleteRequest()]] (method)
-- --> [[.generateRequestDebt()|.generateRequestDebt()]] (method)
-- --> [[._processRequestItems()|._processRequestItems()]] (method)
-- --> [[._checkPermissions()|._checkPermissions()]] (method)
-
-## Miembros de la misma Comunidad
-- [[priceCalculator.js|priceCalculator.js]]
-- [[calculatePrice()|calculatePrice()]]
-- [[.getPricing()|.getPricing()]]
-- [[bookingService.js|bookingService.js]]
-- [[BookingService|BookingService]]
-- [[.createAppointment()|.createAppointment()]]
-- [[.handleOverwrite()|.handleOverwrite()]]
-- [[.generateDebt()|.generateDebt()]]
-- [[LicenseService.js|LicenseService.js]]
-- [[LicenseService|LicenseService]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_Feature

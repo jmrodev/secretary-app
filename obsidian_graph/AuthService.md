@@ -1,23 +1,23 @@
+---
+source_file: "server/services/user/authService.js"
+type: "code"
+community: "Community 46"
+location: "L15"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_46
+---
+
 # AuthService
 
-- **Tipo:** code
-- **Archivo:** server/services/authService.js
-- **Comunidad:** [[_COMMUNITY_Community 40]]
+## Connections
+- [[._createPatientProfile()]] - `method` [EXTRACTED]
+- [[._generateToken()]] - `method` [EXTRACTED]
+- [[._getDisplayName()]] - `method` [EXTRACTED]
+- [[.login()]] - `method` [EXTRACTED]
+- [[.publicRegister()]] - `method` [EXTRACTED]
+- [[.register()]] - `method` [EXTRACTED]
+- [[authService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[authService.js|authService.js]] (contains)
-- --> [[.publicRegister()|.publicRegister()]] (method)
-- --> [[.register()|.register()]] (method)
-- --> [[.login()|.login()]] (method)
-- --> [[._generateToken()|._generateToken()]] (method)
-- --> [[._getDisplayName()|._getDisplayName()]] (method)
-- --> [[._createPatientProfile()|._createPatientProfile()]] (method)
-
-## Miembros de la misma Comunidad
-- [[authService.js|authService.js]]
-- [[.publicRegister()|.publicRegister()]]
-- [[.register()|.register()]]
-- [[.login()|.login()]]
-- [[._generateToken()|._generateToken()]]
-- [[._getDisplayName()|._getDisplayName()]]
-- [[._createPatientProfile()|._createPatientProfile()]]
+#graphify/code #graphify/EXTRACTED #community/Community_46

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/calendar/CalendarDayIndicator.jsx"
+type: "code"
+community: "Community 195"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_195
+---
+
 # CalendarDayIndicator.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/CalendarDayIndicator.jsx
-- **Comunidad:** [[_COMMUNITY_Community 178]]
+## Connections
+- [[CalendarDayIndicator()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[CalendarDayIndicator()|CalendarDayIndicator()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[CalendarDayIndicator()|CalendarDayIndicator()]]
+#graphify/code #graphify/EXTRACTED #community/Community_195

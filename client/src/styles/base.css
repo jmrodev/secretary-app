@@ -34,8 +34,8 @@ body.dev-mode::before {
     transform: translate(-50%, -50%) rotate(-30deg);
     font-size: 15vw;
     font-weight: 900;
-    color: rgba(25, 135, 84, 0.2); /* Darker green, semi-transparent overlay */
-    -webkit-text-stroke: 1.5px rgba(150, 150, 150, 0.4); /* Soft grey border */
+    color: rgb(25 135 84 / 20%); /* Darker green, semi-transparent overlay */
+    -webkit-text-stroke: 1.5px rgb(150 150 150 / 40%); /* Soft grey border */
     z-index: 999999; /* Overlays on top of cards and tables */
     pointer-events: none;
     white-space: nowrap;
@@ -48,7 +48,7 @@ h3,
 h4,
 h5,
 h6 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.5rem;
     font-weight: 800;
     color: var(--text-main);
     line-height: 1.1;
@@ -88,7 +88,7 @@ a:hover {
 }
 
 /* Base Form Elements */
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+input:not([type="checkbox"], [type="radio"], [type="range"]),
 select,
 textarea,
 .form-control,
@@ -113,7 +113,7 @@ textarea:focus,
 .form-control:focus,
 .input-field:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(72, 128, 255, 0.1);
+    box-shadow: 0 0 0 3px rgb(72 128 255 / 10%);
 }
 
 input:disabled,
@@ -142,7 +142,7 @@ label {
 }
 
 .table-base tbody tr:nth-child(even) {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgb(255 255 255 / 2%);
 }
 
 .table-base tbody tr:nth-child(odd) {
@@ -154,5 +154,5 @@ label {
 }
 
 .table-base tbody tr:hover {
-    background-color: rgba(99, 102, 241, 0.02);
+    background-color: rgb(99 102 241 / 2%);
 }

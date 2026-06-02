@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/lists/MedicalRequirementTable.jsx"
+type: "code"
+community: "Community 173"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_173
+---
+
 # MedicalRequirementTable()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicalRequirementTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 160]]
+## Connections
+- [[MedicalRequirementTable.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicalRequirementTable.jsx|MedicalRequirementTable.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicalRequirementTable.jsx|MedicalRequirementTable.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_173

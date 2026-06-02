@@ -1,20 +1,20 @@
+---
+source_file: "client/src/utils/core/dateUtils.js"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L171"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # formatDate()
 
-- **Tipo:** code
-- **Archivo:** client/src/utils/format.js
-- **Comunidad:** [[_COMMUNITY_Community 27]]
+## Connections
+- [[dateUtils.js_1]] - `contains` [EXTRACTED]
+- [[parseDate()]] - `calls` [EXTRACTED]
+- [[printInvoice.js]] - `imports` [EXTRACTED]
+- [[reportPrintHelper.js]] - `imports` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[format.js|format.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[TransactionModal.jsx|TransactionModal.jsx]]
-- [[TransactionModal()|TransactionModal()]]
-- [[DoctorCard.jsx|DoctorCard.jsx]]
-- [[DoctorCard()|DoctorCard()]]
-- [[DebtPaymentModal.jsx|DebtPaymentModal.jsx]]
-- [[DebtPaymentModal()|DebtPaymentModal()]]
-- [[transactionOptions.js|transactionOptions.js]]
-- [[getTransactionTypes()|getTransactionTypes()]]
-- [[getPaymentMethods()|getPaymentMethods()]]
-- [[getStatusOptions()|getStatusOptions()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

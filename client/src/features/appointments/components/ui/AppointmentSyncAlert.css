@@ -4,8 +4,8 @@
     grid-column: 1 / -1;
     margin-bottom: 1.5rem;
     padding: 1.25rem;
-    background-color: rgba(245, 158, 11, 0.05); /* Amber with low opacity */
-    border: 1px solid rgba(245, 158, 11, 0.2);
+    background-color: rgb(245 158 11 / 5%); /* Amber with low opacity */
+    border: 1px solid rgb(245 158 11 / 20%);
     border-left: 4px solid var(--warning);
     border-radius: var(--radius-md);
     display: flex;

@@ -27,7 +27,7 @@ const MedicalDocumentsPage = () => {
     const controller = useMedicalDocumentsController();
     const {
         user, t, activeTab, requestsSubTab,
-        searchTerm, isEditing,
+        isEditing,
         requests, files, prescriptions, licenses, doctors,
         requestsPage, requestsTotalPages,
         prescriptionsPage, prescriptionsTotalPages,
@@ -47,7 +47,7 @@ const MedicalDocumentsPage = () => {
     } = controller;
 
     const {
-        handleSearchChange, handleTabChange, handleSubTabChange,
+        handleTabChange, handleSubTabChange,
         handleFileDescChange, handleFilePatientChange, handleFileUploadChange,
         handleActionNoteChange, handleEditDataChange, handleLicenseEditDataChange,
         handleRequestEditDataChange, handleSelectMedication, toggleEditing,
@@ -91,22 +91,20 @@ const MedicalDocumentsPage = () => {
         }, [])
     ].toSorted((a, b) => compareDates(a.created_at, b.created_at, true));
 
-    const combinedCertificates = [
-        ...requests.reduce((acc, r) => {
-            if (r.type === 'certificate' && r.status === 'completed') {
-                acc.push({
-                    ...r,
-                    _origin: 'request',
-                    description: r.request_note
-                });
-            }
-            return acc;
-        }, [])
-    ].toSorted((a, b) => compareDates(a.created_at, b.created_at, true));
+    const combinedCertificates = requests.reduce((acc, r) => {
+        if (r.type === 'certificate' && r.status === 'completed') {
+            acc.push({
+                ...r,
+                _origin: 'request',
+                description: r.request_note
+            });
+        }
+        return acc;
+    }, []).toSorted((a, b) => compareDates(a.created_at, b.created_at, true));
 
-    const [printDate, setPrintDate] = React.useState(() => formatDate(getNow(), { time: true }));
-    React.useEffect(() => {
-        setPrintDate(formatDate(getNow(), { time: true }));
+    const printDate = React.useMemo(() => {
+        if (t) { /* force reactivity on translation change */ }
+        return formatDate(getNow(), { time: true });
     }, [t]);
 
     return (

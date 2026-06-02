@@ -1,11 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/model/PatientFile.kt"
+type: "code"
+community: "Community 143"
+location: "L3"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_143
+---
+
 # PatientFile
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/model/PatientFile.kt
-- **Comunidad:** [[_COMMUNITY_Community 134]]
+## Connections
+- [[PatientFile.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientFile.kt|PatientFile.kt]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientFile.kt|PatientFile.kt]]
+#graphify/code #graphify/EXTRACTED #community/Community_143

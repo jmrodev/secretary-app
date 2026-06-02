@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/sections/AppointmentMedicalPanel.jsx"
+type: "code"
+community: "Community 202"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_202
+---
+
 # AppointmentMedicalPanel()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/AppointmentMedicalPanel.jsx
-- **Comunidad:** [[_COMMUNITY_Community 195]]
+## Connections
+- [[AppointmentMedicalPanel.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[AppointmentMedicalPanel.jsx|AppointmentMedicalPanel.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AppointmentMedicalPanel.jsx|AppointmentMedicalPanel.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_202

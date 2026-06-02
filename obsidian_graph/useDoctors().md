@@ -1,21 +1,17 @@
+---
+source_file: "client/src/context/DoctorContextDefinition.js"
+type: "code"
+community: "Community 149"
+location: "L5"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_149
+---
+
 # useDoctors()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/users/hooks/useUsers.js
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[DoctorContextDefinition.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[useUsers.js|useUsers.js]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
+#graphify/code #graphify/EXTRACTED #community/Community_149

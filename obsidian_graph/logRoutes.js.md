@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/system/logRoutes.js"
+type: "code"
+community: "Community 350"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_350
+---
+
 # logRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/logRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 344]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_350

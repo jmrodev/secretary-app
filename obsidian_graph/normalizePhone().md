@@ -1,12 +1,17 @@
+---
+source_file: "client/src/features/patients/components/views/WhatsappChatHistory.jsx"
+type: "code"
+community: "Community 110"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_110
+---
+
 # normalizePhone()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/WhatsappChatHistory.jsx
-- **Comunidad:** [[_COMMUNITY_Community 117]]
+## Connections
+- [[WhatsappChatHistory.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[WhatsappChatHistory.jsx|WhatsappChatHistory.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[WhatsappChatHistory.jsx|WhatsappChatHistory.jsx]]
-- [[WhatsappChatHistory()|WhatsappChatHistory()]]
+#graphify/code #graphify/EXTRACTED #community/Community_110

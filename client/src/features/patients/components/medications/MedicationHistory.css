@@ -108,7 +108,7 @@
     justify-content: flex-end;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .medication-history__th:nth-child(2),
     .medication-history__cell:nth-child(2) {
         display: none;

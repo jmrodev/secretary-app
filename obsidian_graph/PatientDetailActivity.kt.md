@@ -1,19 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/PatientDetailActivity.kt"
+type: "code"
+community: "Community 38"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_38
+---
+
 # PatientDetailActivity.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/PatientDetailActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 34]]
+## Connections
+- [[PatientDetailActivity]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PatientDetailActivity|PatientDetailActivity]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientDetailActivity|PatientDetailActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.loadPatientDetails()|.loadPatientDetails()]]
-- [[.onSaveInstanceState()|.onSaveInstanceState()]]
-- [[.checkCameraPermission()|.checkCameraPermission()]]
-- [[.takePhoto()|.takePhoto()]]
-- [[.createImageFile()|.createImageFile()]]
-- [[.uploadPhoto()|.uploadPhoto()]]
-- [[.observeUploads()|.observeUploads()]]
+#graphify/code #graphify/EXTRACTED #community/Community_38

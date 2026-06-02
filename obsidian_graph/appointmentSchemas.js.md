@@ -1,10 +1,14 @@
+---
+source_file: "server/validators/appointmentSchemas.js"
+type: "code"
+community: "Community 365"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_365
+---
+
 # appointmentSchemas.js
 
-- **Tipo:** code
-- **Archivo:** server/validators/appointmentSchemas.js
-- **Comunidad:** [[_COMMUNITY_Community 368]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_365

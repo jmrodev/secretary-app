@@ -1,10 +1,14 @@
+---
+source_file: "client/src/main.jsx"
+type: "code"
+community: "Community 372"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_372
+---
+
 # main.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/main.jsx
-- **Comunidad:** [[_COMMUNITY_Community 375]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_372

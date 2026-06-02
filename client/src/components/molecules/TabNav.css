@@ -9,7 +9,7 @@
     width: fit-content;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .tab-nav {
         width: 100%;
         flex-wrap: wrap;

@@ -81,7 +81,7 @@
     gap: 1.5rem;
 }
 
-@media (min-width: 1024px) {
+@media (width >= 1024px) {
     .patient-details__grid {
         grid-template-columns: 2fr 1fr;
     }
@@ -245,7 +245,7 @@
 
 .patient-details__financial-header {
     padding: 1.25rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgb(255 255 255 / 5%);
 }
 
 .patient-details__financial-content {
@@ -265,12 +265,12 @@
 
 .patient-details__financial-amount--debt {
     color: var(--danger);
-    text-shadow: 0 0 20px rgba(249, 55, 93, 0.3);
+    text-shadow: 0 0 20px rgb(249 55 93 / 30%);
 }
 
 .patient-details__financial-amount--clear {
     color: var(--success);
-    text-shadow: 0 0 20px rgba(0, 182, 122, 0.3);
+    text-shadow: 0 0 20px rgb(0 182 122 / 30%);
 }
 
 /* History Table Section */

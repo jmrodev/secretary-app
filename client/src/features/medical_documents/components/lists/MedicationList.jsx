@@ -12,7 +12,6 @@ const EMPTY_ARRAY = [];
 const MedicationList = ({
     medications = EMPTY_ARRAY,
     onRemove,
-    emptyMessage = 'No medications added yet',
     className = ''
 }) => {
     if (medications.length === 0) {

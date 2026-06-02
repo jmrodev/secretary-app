@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/reports/components/tables/AppointmentReportTable.jsx"
+type: "code"
+community: "Community 255"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_255
+---
+
 # AppointmentReportTable.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/components/AppointmentReportTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 252]]
+## Connections
+- [[AppointmentReportTable()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AppointmentReportTable()|AppointmentReportTable()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AppointmentReportTable()|AppointmentReportTable()]]
+#graphify/code #graphify/EXTRACTED #community/Community_255

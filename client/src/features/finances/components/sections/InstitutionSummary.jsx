@@ -7,10 +7,7 @@ import Icon from '@/components/atoms/Icon';
  */
 const InstitutionSummary = ({
     report,
-    showPendingOnly,
-    setShowPendingOnly,
     selectedAmount = 0,
-    onPayClick,
     t
 }) => {
     if (!report) return null;

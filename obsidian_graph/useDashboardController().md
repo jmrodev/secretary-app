@@ -1,30 +1,28 @@
+---
+source_file: "client/src/features/dashboard/hooks/useDashboardController.js"
+type: "code"
+community: "Community 29"
+location: "L18"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_29
+---
+
 # useDashboardController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/dashboard/hooks/useDashboardController.js
-- **Comunidad:** [[_COMMUNITY_Community 3]]
+## Connections
+- [[DashboardPage()]] - `calls` [INFERRED]
+- [[DashboardPage.jsx]] - `imports` [EXTRACTED]
+- [[useAppointments()]] - `calls` [INFERRED]
+- [[useConfig()]] - `calls` [INFERRED]
+- [[useDashboardController.js]] - `contains` [EXTRACTED]
+- [[useDashboardModals()]] - `calls` [INFERRED]
+- [[useDashboardReminders()]] - `calls` [INFERRED]
+- [[useDashboardStats()]] - `calls` [INFERRED]
+- [[useDashboardWhatsApp()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[usePermissions()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useConfig()|useConfig()]] (calls)
-- <-- [[DashboardPage()|DashboardPage()]] (calls)
-- <-- [[useDashboardController.js|useDashboardController.js]] (contains)
-- --> [[usePermissions()|usePermissions()]] (calls)
-- --> [[useAppointments()|useAppointments()]] (calls)
-- --> [[useDashboardStats()|useDashboardStats()]] (calls)
-- --> [[useDashboardReminders()|useDashboardReminders()]] (calls)
-- --> [[useDashboardModals()|useDashboardModals()]] (calls)
-- --> [[useDashboardWhatsApp()|useDashboardWhatsApp()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useMessage()|useMessage()]]
-- [[useConfig()|useConfig()]]
-- [[DashboardPage.jsx|DashboardPage.jsx]]
-- [[DashboardPage()|DashboardPage()]]
-- [[useDashboardController.js|useDashboardController.js]]
-- [[useDashboardModals.js|useDashboardModals.js]]
-- [[useDashboardModals()|useDashboardModals()]]
-- [[useDashboardWhatsApp.js|useDashboardWhatsApp.js]]
-- [[useDashboardWhatsApp()|useDashboardWhatsApp()]]
-- [[PrescriptionModal.jsx|PrescriptionModal.jsx]]
+#graphify/code #graphify/INFERRED #community/Community_29

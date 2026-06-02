@@ -1,22 +1,19 @@
+---
+source_file: "client/src/features/chat/hooks/useFloatingChatController.js"
+type: "code"
+community: "Android Messaging"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Android_Messaging
+---
+
 # useFloatingChatController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/chat/hooks/useFloatingChatController.js
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[FloatingChat()]] - `calls` [INFERRED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useFloatingChatController.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[useFloatingChatController.js|useFloatingChatController.js]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-- <-- [[FloatingChat()|FloatingChat()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[FloatingChat.jsx|FloatingChat.jsx]]
+#graphify/code #graphify/INFERRED #community/Android_Messaging

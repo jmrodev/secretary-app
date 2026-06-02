@@ -4,11 +4,12 @@
     --input-border: var(--dashboard-card-border);
     --input-text: var(--text-main);
     --input-focus-border: var(--primary-color);
-    --input-focus-ring: rgba(72, 128, 255, 0.1);
+    --input-focus-ring: rgb(72 128 255 / 10%);
     --input-error-border: var(--danger);
-    --input-error-ring: rgba(249, 55, 93, 0.1);
+    --input-error-ring: rgb(249 55 93 / 10%);
     --input-disabled-bg: var(--gray-800);
     --input-disabled-text: var(--text-muted);
+
     /* ------------------------------ */
 
     width: 100%;
@@ -48,7 +49,7 @@
 }
 
 .input--error:focus {
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+    box-shadow: 0 0 0 4px rgb(239 68 68 / 10%);
 }
 
 .input--sm {

@@ -73,7 +73,7 @@
     object-fit: cover;
     filter: brightness(0.35) grayscale(0.2);
     opacity: 0.6;
-    animation: headerSlowZoom 20s infinite alternate linear;
+    animation: header-slow-zoom 20s infinite alternate linear;
     pointer-events: none;
     user-select: none;
 }
@@ -116,7 +116,7 @@
     justify-content: center;
     width: 100%;
     padding-top: 0.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgb(255 255 255 / 5%);
 }
 
 /* Search Bar — Premium Glass (No Border) */
@@ -124,7 +124,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    background: rgba(255, 255, 255, 0.06);
+    background: rgb(255 255 255 / 6%);
     border: none; /* No border as requested */
     border-radius: 10px;
     padding: 0 1rem;
@@ -135,12 +135,12 @@
 }
 
 .page-header__search-container:focus-within {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255 255 255 / 10%);
     box-shadow: none; /* No shadow/ring */
 }
 
 .page-header__search-icon {
-    color: rgba(255, 255, 255, 0.3);
+    color: rgb(255 255 255 / 30%);
     margin-right: 0.6rem;
 }
 
@@ -150,6 +150,7 @@
     --input-border: transparent;
     --input-text: var(--white);
     --input-focus-ring: transparent;
+
     padding: 0;
     height: 100%;
     box-shadow: none;
@@ -163,12 +164,12 @@
 }
 
 .page-header__search-input.input::placeholder {
-    color: rgba(255, 255, 255, 0.35);
+    color: rgb(255 255 255 / 35%);
     font-weight: 400;
 }
 
 /* Responsive */
-@media (max-width: 1200px) {
+@media (width <= 1200px) {
     .page-header--premium .page-header__utilities {
         display: flex;
         flex-direction: column;
@@ -188,7 +189,7 @@
 }
 
 /* Animations */
-@keyframes headerSlowZoom {
+@keyframes header-slow-zoom {
     from { transform: scale(1.02); }
     to { transform: scale(1.08); }
 }

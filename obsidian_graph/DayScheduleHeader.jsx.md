@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/schedule/DayScheduleHeader.jsx"
+type: "code"
+community: "Community 191"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_191
+---
+
 # DayScheduleHeader.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/DayScheduleHeader.jsx
-- **Comunidad:** [[_COMMUNITY_Community 193]]
+## Connections
+- [[DayScheduleHeader()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[DayScheduleHeader()|DayScheduleHeader()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DayScheduleHeader()|DayScheduleHeader()]]
+#graphify/code #graphify/EXTRACTED #community/Community_191

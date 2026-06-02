@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/forms/PrescriptionForm.jsx"
+type: "code"
+community: "Community 167"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_167
+---
+
 # PrescriptionForm.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/PrescriptionForm.jsx
-- **Comunidad:** [[_COMMUNITY_Community 164]]
+## Connections
+- [[PrescriptionForm()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PrescriptionForm()|PrescriptionForm()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PrescriptionForm()|PrescriptionForm()]]
+#graphify/code #graphify/EXTRACTED #community/Community_167

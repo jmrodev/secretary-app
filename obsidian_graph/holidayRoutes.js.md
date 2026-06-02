@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/appointments/holidayRoutes.js"
+type: "code"
+community: "Community 342"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_342
+---
+
 # holidayRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/holidayRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 347]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_342

@@ -9,7 +9,7 @@ class AvailabilitySearchService {
     async getNextFreeSlot({ doctor_id, start_date, include_out_of_hours = 'false' }) {
         const slots = await appointmentRepository.callSpGetFreeSlots({
             doctor_id,
-            start_date: formatLocalSQL(start_date),
+            start_date: formatLocalSQL(start_date || new Date()),
             days_to_check: 30,
             include_out_of_hours: include_out_of_hours === 'true' ? 1 : 0
         });
@@ -39,9 +39,16 @@ class AvailabilitySearchService {
         return { results, nextStartDate };
     }
 
-    // Batch method used by some features
-    async getFreeSlotsBatch(params) {
-        return this.getNextFreeSlot(params);
+    // Batch method used by some features (Supports both positional and config object calls)
+    async getFreeSlotsBatch(doctorId, startDate, includeOutOfHours) {
+        if (doctorId && typeof doctorId === 'object') {
+            return this.getNextFreeSlot(doctorId);
+        }
+        return this.getNextFreeSlot({
+            doctor_id: doctorId,
+            start_date: startDate,
+            include_out_of_hours: includeOutOfHours === true || includeOutOfHours === 'true' ? 'true' : 'false'
+        });
     }
 }
 

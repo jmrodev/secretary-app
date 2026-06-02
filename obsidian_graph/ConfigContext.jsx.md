@@ -1,15 +1,18 @@
+---
+source_file: "client/src/context/ConfigContext.jsx"
+type: "code"
+community: "Community 20"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_20
+---
+
 # ConfigContext.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/context/ConfigContext.jsx
-- **Comunidad:** [[_COMMUNITY_Community 81]]
+## Connections
+- [[ConfigProvider()]] - `contains` [EXTRACTED]
+- [[useConfig()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useConfig()|useConfig()]] (contains)
-- --> [[ConfigProvider()|ConfigProvider()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useConfigLogic.js|useConfigLogic.js]]
-- [[configReducer()|configReducer()]]
-- [[useConfigLogic()|useConfigLogic()]]
-- [[ConfigProvider()|ConfigProvider()]]
+#graphify/code #graphify/EXTRACTED #community/Community_20

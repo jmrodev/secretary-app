@@ -4,7 +4,6 @@ import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import DoctorCard from '@/features/doctors/components/cards/DoctorCard';
 import DoctorEditModal from '@/features/doctors/components/modals/DoctorEditModal';
-import SearchBar from '@/components/molecules/SearchBar';
 import './DoctorsManager.css';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';

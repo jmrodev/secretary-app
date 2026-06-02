@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/views/PatientHistoryTable.jsx"
+type: "code"
+community: "Community 253"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_253
+---
+
 # PatientHistoryTable.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientHistoryTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 237]]
+## Connections
+- [[PatientHistoryTable()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PatientHistoryTable()|PatientHistoryTable()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientHistoryTable()|PatientHistoryTable()]]
+#graphify/code #graphify/EXTRACTED #community/Community_253

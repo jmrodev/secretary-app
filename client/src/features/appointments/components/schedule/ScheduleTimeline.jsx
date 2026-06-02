@@ -9,7 +9,8 @@ import './ScheduleTimeline.css';
  * Renders the list of time slots and their associated appointments.
  */
 const ScheduleTimeline = ({
-    timeSlots, showOutOfHours, showCancelled, onSlotClick, onSlotAction, getAppointmentsForSlot, t
+    timeSlots, showOutOfHours, showCancelled, onSlotClick, onSlotAction, getAppointmentsForSlot, t,
+    isLoading = false
 }) => {
     return (
         <div className="schedule-timeline">
@@ -44,17 +45,22 @@ const ScheduleTimeline = ({
                                 </div>
                             ) : (
                                 <div className={`schedule-timeline__apps-grid ${slotApps.length > 1 ? 'schedule-timeline__apps-grid--multiple' : ''}`}>
-                                    {slotApps.reduce((acc, appt) => {
-                                        if (showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status)) {
-                                            acc.push(
-                                                <AppointmentCard
-                                                    key={appt.id} appt={appt}
-                                                    onClick={() => onSlotClick(time.getHours(), appt)}
-                                                />
-                                            );
-                                        }
-                                        return acc;
-                                    }, [])}
+                                    {isLoading && slotApps.length === 0 ? (
+                                        <AppointmentCard isLoading={true} />
+                                    ) : (
+                                        slotApps.reduce((acc, appt) => {
+                                            if (showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status)) {
+                                                acc.push(
+                                                    <AppointmentCard
+                                                        key={appt.id} appt={appt}
+                                                        onClick={() => onSlotClick(time.getHours(), appt)}
+                                                        isLoading={isLoading}
+                                                    />
+                                                );
+                                            }
+                                            return acc;
+                                        }, [])
+                                    )}
                                 </div>
                             )}
 

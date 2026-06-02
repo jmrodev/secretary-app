@@ -1,5 +1,4 @@
 import React from 'react';
-import ReportTabs from '@/features/reports/components/ui/ReportTabs';
 import ReportFilters from '@/features/reports/components/ui/ReportFilters';
 import AppointmentReportTable from '@/features/reports/components/tables/AppointmentReportTable';
 import PrescriptionReportTable from '@/features/reports/components/tables/PrescriptionReportTable';
@@ -8,7 +7,6 @@ import CertificateReportTable from '@/features/reports/components/tables/Certifi
 import BalanceView from '@/features/reports/components/views/BalanceView';
 import PageHeader from '@/components/organisms/PageHeader';
 
-import Icon from '@/components/atoms/Icon';
 import './ReportsDashboard.css';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';

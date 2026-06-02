@@ -1,20 +1,18 @@
+---
+source_file: "client/src/components/molecules/StatusDisplay.jsx"
+type: "code"
+community: "Community 127"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_127
+---
+
 # StatusDisplay.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/StatusDisplay.jsx
-- **Comunidad:** [[_COMMUNITY_Community 12]]
+## Connections
+- [[StatusContent()]] - `contains` [EXTRACTED]
+- [[StatusDisplay()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[StatusDisplay()|StatusDisplay()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InstitutionsPage.jsx|InstitutionsPage.jsx]]
-- [[InstitutionsPage()|InstitutionsPage()]]
-- [[useInstitutionsController.js|useInstitutionsController.js]]
-- [[createInitialFormState()|createInitialFormState()]]
-- [[useInstitutionsController()|useInstitutionsController()]]
-- [[SystemConfigPage.jsx|SystemConfigPage.jsx]]
-- [[ProfileSection()|ProfileSection()]]
-- [[InstitutionsSection()|InstitutionsSection()]]
-- [[AuditLogsSection()|AuditLogsSection()]]
-- [[UserSection()|UserSection()]]
+#graphify/code #graphify/EXTRACTED #community/Community_127

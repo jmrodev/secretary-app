@@ -1,11 +1,17 @@
+---
+source_file: "server/scripts/vademecum/importVademecum.js"
+type: "code"
+community: "Community 137"
+location: "L17"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_137
+---
+
 # importVademecum()
 
-- **Tipo:** code
-- **Archivo:** server/scripts/vademecum/importVademecum.js
-- **Comunidad:** [[_COMMUNITY_Community 128]]
+## Connections
+- [[importVademecum.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[importVademecum.js|importVademecum.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[importVademecum.js|importVademecum.js]]
+#graphify/code #graphify/EXTRACTED #community/Community_137

@@ -9,17 +9,18 @@ import './PatientInstitutionFields.css';
  * Optimized for Bento Box layout.
  */
 const PatientInstitutionFields = ({ coveredByInstitution, toggleInstitutionCoverage, formData, updatePatientData, institutions, t }) => {
-    const safeInstitutions = Array.isArray(institutions) ? institutions : (institutions?.institutions || []);
-
-    const institutionOptions = React.useMemo(() => [
-        { value: '', label: t('select_institution') },
-        ...safeInstitutions.reduce((acc, inst) => {
-            if (inst.status === 'active') {
-                acc.push({ value: inst.id, label: inst.name });
-            }
-            return acc;
-        }, [])
-    ], [safeInstitutions, t]);
+    const institutionOptions = React.useMemo(() => {
+        const safeInstitutions = Array.isArray(institutions) ? institutions : (institutions?.institutions || []);
+        return [
+            { value: '', label: t('select_institution') },
+            ...safeInstitutions.reduce((acc, inst) => {
+                if (inst.status === 'active') {
+                    acc.push({ value: inst.id, label: inst.name });
+                }
+                return acc;
+            }, [])
+        ];
+    }, [institutions, t]);
 
     return (
         <article className="patient-institution-fields">

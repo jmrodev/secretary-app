@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -57,7 +56,8 @@ export const useMedicalDocumentsController = () => {
     // --- FETCH DATA using useFetch ---
 
     // Doctors
-    const { data: doctors = [] } = useFetch('/users/doctors', { initialData: [] });
+    const { data: doctorsData = {} } = useFetch('/users/doctors', { initialData: { doctors: [] } });
+    const doctors = doctorsData?.doctors || [];
 
     // Status filter logic based on active tab
     const requestsStatus = useMemo(() => {

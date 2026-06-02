@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 
 /**
@@ -18,11 +18,7 @@ export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectM
         refetch: fetchSuggestions 
     } = useFetch(searchTerm.length >= 2 ? `/medical/vademecum/search?q=${encodeURIComponent(searchTerm)}` : null, {
         initialData: [],
-        immediate: false, // We control it with debounce
-        onSuccess: (data) => {
-            setShowSuggestions(data.length > 0);
-            setCursor(-1);
-        }
+        immediate: false // We control it with debounce
     });
 
     const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
@@ -36,9 +32,19 @@ export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectM
         if (onChange) onChange(text);
 
         if (debounceTimer.current) clearTimeout(debounceTimer.current);
-        debounceTimer.current = setTimeout(() => {
+        debounceTimer.current = setTimeout(async () => {
             if (text.length >= 2) {
-                fetchSuggestions();
+                try {
+                    const data = await fetchSuggestions(`/medical/vademecum/search?q=${encodeURIComponent(text)}`);
+                    if (data && data.length > 0) {
+                        setShowSuggestions(true);
+                        setCursor(-1);
+                    } else {
+                        setShowSuggestions(false);
+                    }
+                } catch {
+                    setShowSuggestions(false);
+                }
             } else {
                 setShowSuggestions(false);
             }

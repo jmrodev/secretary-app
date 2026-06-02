@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/medications/MedicationConfigFields.jsx"
+type: "code"
+community: "Community 242"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_242
+---
+
 # MedicationConfigFields.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/MedicationConfigFields.jsx
-- **Comunidad:** [[_COMMUNITY_Community 248]]
+## Connections
+- [[MedicationConfigFields()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicationConfigFields()|MedicationConfigFields()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicationConfigFields()|MedicationConfigFields()]]
+#graphify/code #graphify/EXTRACTED #community/Community_242

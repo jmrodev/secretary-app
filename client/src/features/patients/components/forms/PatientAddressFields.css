@@ -88,7 +88,7 @@
     color: var(--text-main);
 }
 
-@media (max-width: 48rem) {
+@media (width <= 48rem) {
     .patient-address-fields__group {
         grid-column: span 12 !important;
     }

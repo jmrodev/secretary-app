@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/forms/MedicationEditor.jsx"
+type: "code"
+community: "Community 170"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_170
+---
+
 # MedicationEditor()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicationEditor.jsx
-- **Comunidad:** [[_COMMUNITY_Community 171]]
+## Connections
+- [[MedicationEditor.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicationEditor.jsx|MedicationEditor.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicationEditor.jsx|MedicationEditor.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_170

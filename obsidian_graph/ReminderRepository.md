@@ -1,21 +1,22 @@
+---
+source_file: "server/repositories/communication/reminderRepository.js"
+type: "code"
+community: "Community 59"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_59
+---
+
 # ReminderRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/reminderRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 55]]
+## Connections
+- [[.clearMedicationReminders()]] - `method` [EXTRACTED]
+- [[.clearPatientReminder()]] - `method` [EXTRACTED]
+- [[.findPendingReminders()]] - `method` [EXTRACTED]
+- [[.updateMedicationReminders()]] - `method` [EXTRACTED]
+- [[.updatePatientReminder()]] - `method` [EXTRACTED]
+- [[reminderRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[reminderRepository.js|reminderRepository.js]] (contains)
-- --> [[.findPendingReminders()|.findPendingReminders()]] (method)
-- --> [[.updatePatientReminder()|.updatePatientReminder()]] (method)
-- --> [[.clearPatientReminder()|.clearPatientReminder()]] (method)
-- --> [[.updateMedicationReminders()|.updateMedicationReminders()]] (method)
-- --> [[.clearMedicationReminders()|.clearMedicationReminders()]] (method)
-
-## Miembros de la misma Comunidad
-- [[reminderRepository.js|reminderRepository.js]]
-- [[.findPendingReminders()|.findPendingReminders()]]
-- [[.updatePatientReminder()|.updatePatientReminder()]]
-- [[.clearPatientReminder()|.clearPatientReminder()]]
-- [[.updateMedicationReminders()|.updateMedicationReminders()]]
-- [[.clearMedicationReminders()|.clearMedicationReminders()]]
+#graphify/code #graphify/EXTRACTED #community/Community_59

@@ -1,13 +1,17 @@
+---
+source_file: "server/services/google/GoogleContactService.js"
+type: "code"
+community: "Community 94"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_94
+---
+
 # GoogleContactService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/google/GoogleContactService.js
-- **Comunidad:** [[_COMMUNITY_Community 91]]
+## Connections
+- [[GoogleContactService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[GoogleContactService|GoogleContactService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[GoogleContactService|GoogleContactService]]
-- [[.syncContact()|.syncContact()]]
-- [[.importContacts()|.importContacts()]]
+#graphify/code #graphify/EXTRACTED #community/Community_94

@@ -7,7 +7,7 @@ import './CalendarDayIndicator.css';
  */
 const CalendarDayIndicator = ({
   count, bookedInCount, bookedOutCount, freeInCount, freeOutCount, isHoliday,
-  holidayDescription = '', variant = 'normal', showOutOfHours = false, isSelected = false, t
+  showOutOfHours = false, isSelected = false, t
 }) => {
   if (count === 0 && !isHoliday && !freeInCount && !freeOutCount) return null;
   const translate = (key, fallback) => (t && t(key)) || fallback;

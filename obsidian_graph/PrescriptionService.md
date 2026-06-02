@@ -1,28 +1,25 @@
+---
+source_file: "server/services/medical/PrescriptionService.js"
+type: "code"
+community: "Institutions Feature"
+location: "L17"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_Feature
+---
+
 # PrescriptionService
 
-- **Tipo:** code
-- **Archivo:** server/services/medical/PrescriptionService.js
-- **Comunidad:** [[_COMMUNITY_Community 2]]
+## Connections
+- [[._checkOwnership()]] - `method` [EXTRACTED]
+- [[._checkPermissions()_2]] - `method` [EXTRACTED]
+- [[._handleFinancialsAndReminders()]] - `method` [EXTRACTED]
+- [[._processPrescriptionItems()]] - `method` [EXTRACTED]
+- [[.createPrescription()]] - `method` [EXTRACTED]
+- [[.deletePrescription()]] - `method` [EXTRACTED]
+- [[.getPrescriptions()]] - `method` [EXTRACTED]
+- [[.updatePrescription()]] - `method` [EXTRACTED]
+- [[PrescriptionService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PrescriptionService.js|PrescriptionService.js]] (contains)
-- --> [[.createPrescription()|.createPrescription()]] (method)
-- --> [[.getPrescriptions()|.getPrescriptions()]] (method)
-- --> [[.updatePrescription()|.updatePrescription()]] (method)
-- --> [[.deletePrescription()|.deletePrescription()]] (method)
-- --> [[._processPrescriptionItems()|._processPrescriptionItems()]] (method)
-- --> [[._handleFinancialsAndReminders()|._handleFinancialsAndReminders()]] (method)
-- --> [[._checkOwnership()|._checkOwnership()]] (method)
-- --> [[._checkPermissions()|._checkPermissions()]] (method)
-
-## Miembros de la misma Comunidad
-- [[priceCalculator.js|priceCalculator.js]]
-- [[calculatePrice()|calculatePrice()]]
-- [[.getPricing()|.getPricing()]]
-- [[bookingService.js|bookingService.js]]
-- [[BookingService|BookingService]]
-- [[.createAppointment()|.createAppointment()]]
-- [[.handleOverwrite()|.handleOverwrite()]]
-- [[.generateDebt()|.generateDebt()]]
-- [[LicenseService.js|LicenseService.js]]
-- [[LicenseService|LicenseService]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_Feature

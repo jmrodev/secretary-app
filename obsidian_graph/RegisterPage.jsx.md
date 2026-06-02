@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/auth/RegisterPage.jsx"
+type: "code"
+community: "Community 213"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_213
+---
+
 # RegisterPage.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/RegisterPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 206]]
+## Connections
+- [[RegisterPage()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[RegisterPage()|RegisterPage()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RegisterPage()|RegisterPage()]]
+#graphify/code #graphify/EXTRACTED #community/Community_213

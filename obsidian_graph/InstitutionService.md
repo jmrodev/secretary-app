@@ -1,25 +1,23 @@
+---
+source_file: "server/services/core/institutionService.js"
+type: "code"
+community: "Community 45"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_45
+---
+
 # InstitutionService
 
-- **Tipo:** code
-- **Archivo:** client/src/services/institutionService.js
-- **Comunidad:** [[_COMMUNITY_Community 35]]
+## Connections
+- [[.createInstitution()]] - `method` [EXTRACTED]
+- [[.deleteInstitution()]] - `method` [EXTRACTED]
+- [[.getAllInstitutions()]] - `method` [EXTRACTED]
+- [[.getInstitutionFinances()]] - `method` [EXTRACTED]
+- [[.getInstitutionPatients()]] - `method` [EXTRACTED]
+- [[.updateInstitution()]] - `method` [EXTRACTED]
+- [[institutionService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[institutionService.js|institutionService.js]] (contains)
-- --> [[.getAllInstitutions()|.getAllInstitutions()]] (method)
-- --> [[.createInstitution()|.createInstitution()]] (method)
-- --> [[.updateInstitution()|.updateInstitution()]] (method)
-- --> [[.getInstitutionFinances()|.getInstitutionFinances()]] (method)
-- --> [[.getInstitutionPatients()|.getInstitutionPatients()]] (method)
-- --> [[.deleteInstitution()|.deleteInstitution()]] (method)
-- <-- [[institutionService.js|institutionService.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[institutionService.js|institutionService.js]]
-- [[.getAllInstitutions()|.getAllInstitutions()]]
-- [[.createInstitution()|.createInstitution()]]
-- [[.updateInstitution()|.updateInstitution()]]
-- [[.getInstitutionFinances()|.getInstitutionFinances()]]
-- [[.getInstitutionPatients()|.getInstitutionPatients()]]
-- [[.deleteInstitution()|.deleteInstitution()]]
-- [[institutionService.js|institutionService.js]]
+#graphify/code #graphify/EXTRACTED #community/Community_45

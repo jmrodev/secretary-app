@@ -182,19 +182,26 @@ const AppointmentAdminPanel = ({
                                 />
                             </div>
                             <div className={`${baseClass}__grid`}>
-                                    <Button
-                                        to={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
-                                        variant="primary" className={`${baseClass}__action`}
-                                        icon={<Icon name="call" size="1rem" />}
+                                <Button
+                                    to={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
+                                    variant="primary" className={`${baseClass}__action`}
+                                    icon={<Icon name="call" size="1rem" />}
                                 >
                                     {t('call')}
+                                </Button>
+                                <Button
+                                    variant="success" className={`${baseClass}__action`}
+                                    onClick={() => onWhatsApp(appt, 'chat')}
+                                    icon={<Icon name="chat" size="1rem" />}
+                                >
+                                    {t('whatsapp_chat') || 'WhatsApp'}
                                 </Button>
                                 {appt.status !== 'completed' && (
                                     <>
                                         <Button
                                             variant="success" className={`${baseClass}__action`}
                                             onClick={() => onWhatsApp(appt, 'reminder')}
-                                            icon={<Icon name="send" size="1rem" />}
+                                            icon={<Icon name="notifications" size="1rem" />}
                                         >
                                             {t('reminder')}
                                         </Button>

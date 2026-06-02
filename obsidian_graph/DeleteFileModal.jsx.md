@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/modals/DeleteFileModal.jsx"
+type: "code"
+community: "Community 163"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_163
+---
+
 # DeleteFileModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/DeleteFileModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 172]]
+## Connections
+- [[DeleteFileModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[DeleteFileModal()|DeleteFileModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DeleteFileModal()|DeleteFileModal()]]
+#graphify/code #graphify/EXTRACTED #community/Community_163

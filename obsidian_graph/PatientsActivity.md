@@ -1,26 +1,23 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/PatientsActivity.kt"
+type: "code"
+community: "Community 19"
+location: "L26"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_19
+---
+
 # PatientsActivity
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/PatientsActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 22]]
+## Connections
+- [[.filter()]] - `method` [EXTRACTED]
+- [[.handleIntent()]] - `method` [EXTRACTED]
+- [[.handlePatientClick()]] - `method` [EXTRACTED]
+- [[.loadPatients()]] - `method` [EXTRACTED]
+- [[.onCreate()_4]] - `method` [EXTRACTED]
+- [[.uploadSharedFile()]] - `method` [EXTRACTED]
+- [[PatientsActivity.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientsActivity.kt|PatientsActivity.kt]] (contains)
-- --> [[.onCreate()|.onCreate()]] (method)
-- --> [[.handleIntent()|.handleIntent()]] (method)
-- --> [[.handlePatientClick()|.handlePatientClick()]] (method)
-- --> [[.uploadSharedFile()|.uploadSharedFile()]] (method)
-- --> [[.loadPatients()|.loadPatients()]] (method)
-- --> [[.filter()|.filter()]] (method)
-
-## Miembros de la misma Comunidad
-- [[PatientsActivity.kt|PatientsActivity.kt]]
-- [[.onCreate()|.onCreate()]]
-- [[.handleIntent()|.handleIntent()]]
-- [[.handlePatientClick()|.handlePatientClick()]]
-- [[.uploadSharedFile()|.uploadSharedFile()]]
-- [[.loadPatients()|.loadPatients()]]
-- [[.filter()|.filter()]]
-- [[PatientAdapter.kt|PatientAdapter.kt]]
-- [[PatientAdapter|PatientAdapter]]
-- [[PatientViewHolder|PatientViewHolder]]
+#graphify/code #graphify/EXTRACTED #community/Community_19

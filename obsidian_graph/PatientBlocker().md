@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/patients/components/ui/PatientBlocker.jsx"
+type: "code"
+community: "Android Messaging"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Android_Messaging
+---
+
 # PatientBlocker()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientBlocker.jsx
-- **Comunidad:** [[_COMMUNITY_Community 6]]
+## Connections
+- [[PatientBlocker.jsx]] - `contains` [EXTRACTED]
+- [[useAuth()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useAuth()|useAuth()]] (calls)
-- <-- [[PatientBlocker.jsx|PatientBlocker.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RequestsPage.jsx|RequestsPage.jsx]]
-- [[RequestsPage()|RequestsPage()]]
-- [[useMedicalRequest.js|useMedicalRequest.js]]
-- [[useMedicalRequest()|useMedicalRequest()]]
-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]]
-- [[MedicalRequestForm()|MedicalRequestForm()]]
-- [[MedicalRequestList.jsx|MedicalRequestList.jsx]]
-- [[MedicalRequestList()|MedicalRequestList()]]
-- [[MedicalHistoryTable.jsx|MedicalHistoryTable.jsx]]
-- [[MedicalHistoryTable()|MedicalHistoryTable()]]
+#graphify/code #graphify/EXTRACTED #community/Android_Messaging

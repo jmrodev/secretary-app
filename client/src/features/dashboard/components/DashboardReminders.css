@@ -4,15 +4,15 @@
     --reminders-item-bg: var(--dashboard-card-bg);
     --reminders-item-border: var(--dashboard-card-border);
     --reminders-item-hover: var(--gray-800);
-    
-    --badge-visit-bg: rgba(245, 158, 11, 0.15);
+    --badge-visit-bg: rgb(245 158 11 / 15%);
     --badge-visit-text: var(--amber-400);
-    --badge-prescription-bg: rgba(16, 185, 129, 0.15);
+    --badge-prescription-bg: rgb(16 185 129 / 15%);
     --badge-prescription-text: var(--green-400);
-    --badge-medication-bg: rgba(239, 68, 68, 0.15);
+    --badge-medication-bg: rgb(239 68 68 / 15%);
     --badge-medication-text: var(--red-400);
-    --badge-license-bg: rgba(59, 130, 246, 0.15);
+    --badge-license-bg: rgb(59 130 246 / 15%);
     --badge-license-text: var(--blue-400);
+
     /* ------------------------------ */
 
     display: flex;

@@ -59,7 +59,7 @@
     letter-spacing: 0.075em;
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .schedule-bulk__actions {
         flex-direction: column;
         align-items: stretch;

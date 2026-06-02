@@ -1,16 +1,17 @@
+---
+source_file: "server/services/system/temporaryAccessService.js"
+type: "code"
+community: "Community 57"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_57
+---
+
 # temporaryAccessService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/temporaryAccessService.js
-- **Comunidad:** [[_COMMUNITY_Community 47]]
+## Connections
+- [[TemporaryAccessService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[TemporaryAccessService|TemporaryAccessService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[TemporaryAccessService|TemporaryAccessService]]
-- [[.generateToken()|.generateToken()]]
-- [[.verifyToken()|.verifyToken()]]
-- [[.completeProfile()|.completeProfile()]]
-- [[._updateExistingPatient()|._updateExistingPatient()]]
-- [[._createNewPatient()|._createNewPatient()]]
+#graphify/code #graphify/EXTRACTED #community/Community_57

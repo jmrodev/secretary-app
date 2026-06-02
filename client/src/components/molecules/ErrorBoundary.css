@@ -36,7 +36,7 @@
 
 .error-details {
     text-align: left;
-    background-color: rgba(231, 76, 60, 0.1);
+    background-color: rgb(231 76 60 / 10%);
     padding: 1rem;
     border-radius: var(--border-radius-md);
     margin-bottom: 2rem;

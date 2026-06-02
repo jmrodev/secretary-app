@@ -7,7 +7,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import './InstitutionForm.css';
 
-const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, isSubmitting = false }) => {
+const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting = false }) => {
     const { t } = useLanguage();
 
     const statusOptions = [
