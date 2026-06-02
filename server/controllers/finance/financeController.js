@@ -2,7 +2,6 @@ const { logAction } = require('../../utils/system/audit');
 const { formatLocalSQL } = require('../../utils/core/dateUtils');
 const statsService = require('../../services/finance/statsService');
 const financeService = require('../../services/finance/financeService');
-const transactionRepository = require('../../repositories/finance/transactionRepository');
 const { pool } = require('../../db');
 
 /**
@@ -11,7 +10,12 @@ const { pool } = require('../../db');
  * All business logic is delegated to financeService.
  */
 
-exports.getPricing = async (req, res) => {
+class FinanceController {
+    constructor(transactionRepository) {
+        this.transactionRepository = transactionRepository;
+    }
+
+    getPricing = async (req, res) => {
     try {
         const query = req.query || {};
         const body = req.body || {};
@@ -42,7 +46,7 @@ exports.getPricing = async (req, res) => {
     }
 };
 
-exports.createTransaction = async (req, res) => {
+    createTransaction = async (req, res) => {
     try {
         const data = { ...req.body };
         if (req.file) data.proof_file = `/uploads/${req.file.filename}`;
@@ -61,7 +65,7 @@ exports.createTransaction = async (req, res) => {
     }
 };
 
-exports.getTransactions = async (req, res) => {
+    getTransactions = async (req, res) => {
     try {
         let { doctor_id, patientId, page, limit, search } = req.query;
         if (doctor_id === 'all' || !doctor_id) doctor_id = null;
@@ -73,7 +77,7 @@ exports.getTransactions = async (req, res) => {
     }
 };
 
-exports.getPendingClosures = async (req, res) => {
+    getPendingClosures = async (req, res) => {
     try {
         let { doctor_id } = req.query;
         if (doctor_id === 'all' || !doctor_id) doctor_id = null;
@@ -89,7 +93,7 @@ exports.getPendingClosures = async (req, res) => {
     }
 };
 
-exports.getStats = async (req, res) => {
+    getStats = async (req, res) => {
     try {
         let { doctor_id } = req.query;
         if (doctor_id === 'all' || !doctor_id) doctor_id = null;
@@ -130,7 +134,7 @@ exports.getStats = async (req, res) => {
     }
 };
 
-exports.closeCashBox = async (req, res) => {
+    closeCashBox = async (req, res) => {
     try {
         await financeService.closeCashBox(req.body);
         logAction(req, 'FINANCE_WITHDRAWAL', `Closed box for Doctor ID ${req.body.doctor_id}: delivered $${req.body.amount_delivered}`);
@@ -142,7 +146,7 @@ exports.closeCashBox = async (req, res) => {
     }
 };
 
-exports.payDebt = async (req, res) => {
+    payDebt = async (req, res) => {
     try {
         const totalPaid = await financeService.payDebt(req.body, req.user?.user_id);
         res.json({ message: "Payment processed", paid: totalPaid });
@@ -152,7 +156,7 @@ exports.payDebt = async (req, res) => {
     }
 };
 
-exports.payInstitutionDebt = async (req, res) => {
+    payInstitutionDebt = async (req, res) => {
     try {
         const totalPaid = await financeService.payInstitutionDebt(req.body, req.user?.user_id);
         res.json({ message: "Institution payment processed", paid: totalPaid });
@@ -162,15 +166,15 @@ exports.payInstitutionDebt = async (req, res) => {
     }
 };
 
-exports.updateTransaction = async (req, res) => {
+    updateTransaction = async (req, res) => {
     try {
         const { id } = req.params;
         const { amount, description, method, status, transaction_date } = req.body;
-        const oldTx = await transactionRepository.findById(id);
+        const oldTx = await this.transactionRepository.findById(id);
         if (!oldTx) return res.status(404).send("Transaction not found");
 
         const finalDate = formatLocalSQL(transaction_date) || formatLocalSQL(oldTx.transaction_date);
-        await transactionRepository.update(id, { amount, description, method, status, transaction_date: finalDate });
+        await this.transactionRepository.update(id, { amount, description, method, status, transaction_date: finalDate });
 
         if (oldTx.appointment_id) await financeService.syncAppointmentPaymentStatus(oldTx.appointment_id, req.user?.user_id);
         if (oldTx.request_id) await financeService.syncRequestPaymentStatus(oldTx.request_id);
@@ -182,13 +186,13 @@ exports.updateTransaction = async (req, res) => {
     }
 };
 
-exports.deleteTransaction = async (req, res) => {
+    deleteTransaction = async (req, res) => {
     try {
         const { id } = req.params;
-        const oldTx = await transactionRepository.findById(id);
+        const oldTx = await this.transactionRepository.findById(id);
         if (!oldTx) return res.status(404).send("Transaction not found");
 
-        await transactionRepository.delete(id);
+        await this.transactionRepository.delete(id);
         if (oldTx.appointment_id) await financeService.syncAppointmentPaymentStatus(oldTx.appointment_id, req.user?.user_id);
         if (oldTx.request_id) await financeService.syncRequestPaymentStatus(oldTx.request_id);
 
@@ -200,14 +204,18 @@ exports.deleteTransaction = async (req, res) => {
     }
 };
 
-exports.getTransactionAudits = async (req, res) => {
+    getTransactionAudits = async (req, res) => {
     try {
         if (req.user.role !== 'admin') return res.status(403).send("Admin only");
         const { transaction_id, action } = req.query;
-        const audits = await transactionRepository.getAudits({ transaction_id, action });
+        const audits = await this.transactionRepository.getAudits({ transaction_id, action });
         res.json(audits);
     } catch (err) {
         console.error(err);
         res.status(500).send("Server Error");
     }
 };
+
+}
+
+module.exports = FinanceController;

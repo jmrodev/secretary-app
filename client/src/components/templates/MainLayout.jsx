@@ -1,6 +1,10 @@
 import React from 'react';
 import { Navbar } from '@/features/layout';
-import PageHeader from '@/components/organisms/PageHeader';
+import PageHeader from '@/components/ui/PageHeader';
+import { useSearch } from '@/hooks/useSearch';
+import { useLanguage } from '@/hooks/useLanguage';
+import { DoctorSelector } from '@/features/doctors';
+import CompactHeaderStats from '@/components/molecules/CompactHeaderStats';
 import './MainLayout.css';
 
 /**
@@ -18,6 +22,9 @@ const MainLayout = ({
     actionSlot,
     hideTitle = (variant === 'premium')
 }) => {
+    const { searchTerm, setSearchTerm } = useSearch();
+    const { t } = useLanguage();
+
     return (
         <div className="app-layout">
             <Navbar />
@@ -27,9 +34,15 @@ const MainLayout = ({
                         title={title}
                         variant={variant}
                         backgroundUrl={backgroundUrl}
-                        hideDoctorSelector={hideDoctorSelector}
                         actionSlot={actionSlot}
                         hideTitle={hideTitle}
+                        searchTerm={searchTerm}
+                        onSearchChange={setSearchTerm}
+                        statsSlot={<CompactHeaderStats />}
+                        doctorSelectorSlot={!hideDoctorSelector ? <DoctorSelector /> : null}
+                        labels={{
+                            searchPlaceholder: t('search_placeholder') || 'Search...'
+                        }}
                     />
                 )}
                 <div className="main-content__inner">

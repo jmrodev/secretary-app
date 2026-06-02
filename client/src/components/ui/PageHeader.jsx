@@ -1,18 +1,13 @@
 import React from 'react';
-import { DoctorSelector } from '@/features/doctors';
-import { useDoctors } from '@/context/DoctorContextDefinition';
-import { useLanguage } from '@/hooks/useLanguage';
-import { useSearch } from '@/hooks/useSearch';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import LiveClock from '@/components/atoms/LiveClock';
-import CompactHeaderStats from '@/components/molecules/CompactHeaderStats';
 import defaultHeroBg from '@/features/dashboard/assets/dashboard_hero.png';
 import './PageHeader.css';
 
 /**
  * PageHeader Organism.
- * Unified clinical header with global search, stats and real-time utilities.
+ * Pure UI component for the clinical header.
  */
 const PageHeader = ({
     title,
@@ -21,11 +16,15 @@ const PageHeader = ({
     className = '',
     variant = 'standard',
     backgroundUrl,
-    hideDoctorSelector = false,
-    hideTitle = false
+    hideTitle = false,
+    searchTerm = '',
+    onSearchChange = () => {},
+    statsSlot = null,
+    doctorSelectorSlot = null,
+    labels = {
+        searchPlaceholder: 'Search...'
+    }
 }) => {
-    const { searchTerm, setSearchTerm } = useSearch();
-    const { t } = useLanguage();
     const isPremium = variant === 'premium';
 
     // Standard variant
@@ -66,9 +65,9 @@ const PageHeader = ({
                         <Input
                             type="text"
                             className="page-header__search-input"
-                            placeholder={t('search_placeholder') || 'Search...'}
+                            placeholder={labels.searchPlaceholder}
                             value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onChange={(e) => onSearchChange(e.target.value)}
                         />
                     </div>
 
@@ -77,15 +76,15 @@ const PageHeader = ({
                     </div>
 
                     <div className="page-header__stats-container">
-                        <CompactHeaderStats />
+                        {statsSlot}
                         {actionSlot && <div className="page-header__extra-actions">{actionSlot}</div>}
                     </div>
                 </div>
 
                 {/* SELECTOR ROW: Dedicated row for Doctor context */}
-                {!hideDoctorSelector && (
+                {doctorSelectorSlot && (
                     <div className="page-header__selectors">
-                        <DoctorSelector />
+                        {doctorSelectorSlot}
                     </div>
                 )}
             </div>

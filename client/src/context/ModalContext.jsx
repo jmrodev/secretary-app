@@ -1,5 +1,6 @@
 import React, { createContext, use, useMemo } from 'react';
-import ConfirmModal from '@/components/molecules/ConfirmModal';
+import ConfirmModal from '@/components/ui/ConfirmModal';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useModalLogic } from '@/context/useModalLogic';
 
 const ModalContext = createContext(null);
@@ -23,6 +24,7 @@ export const ModalProvider = ({ children }) => {
         alert, confirm, prompt, doubleConfirm, 
         modalConfig, handleConfirm, handleCancel 
     } = useModalLogic();
+    const { t } = useLanguage();
 
     const contextValue = useMemo(() => ({
         alert,
@@ -42,6 +44,13 @@ export const ModalProvider = ({ children }) => {
                 initialValue={modalConfig.initialValue}
                 onConfirm={handleConfirm}
                 onCancel={handleCancel}
+                labels={{
+                    alert: t('alert'),
+                    confirm: t('confirm'),
+                    close: t('close'),
+                    cancel: t('cancel'),
+                    accept: t('accept')
+                }}
             />
         </ModalContext.Provider>
     );

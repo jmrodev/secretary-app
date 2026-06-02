@@ -2,8 +2,9 @@ import React from 'react';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
-import SearchBar from '@/components/molecules/SearchBar';
+import SearchBar from '@/components/ui/SearchBar';
 import Button from '@/components/atoms/Button';
+import { useFetch } from '@/hooks/useFetch';
 import { DoctorSelector } from '@/features/doctors';
 import './DocumentsSidebar.css';
 
@@ -22,6 +23,20 @@ const DocumentsSidebar = ({
     handleExportJSON,
     handlePrintPrescriptions
 }) => {
+    const [showSuggestions, setShowSuggestions] = React.useState(false);
+    const { data: suggestions, refetch: fetchSuggestions } = useFetch('/users/search/suggestions', {
+        immediate: false,
+        initialData: []
+    });
+
+    const openSuggestionsOnFocus = () => {
+        if (!searchTerm) {
+            fetchSuggestions();
+            setShowSuggestions(true);
+        }
+    };
+    const closeSuggestions = () => setShowSuggestions(false);
+
     return (
         <aside className="dashboard-layout__sidebar medical-documents__sidebar animate-fade-in">
             <div className="dashboard-nav-bar">
@@ -66,6 +81,24 @@ const DocumentsSidebar = ({
                     onChange={e => handleSearchChange(e.target.value)}
                     placeholder={t('search_docs_placeholder')}
                     className="medical-documents__search-input"
+                    suggestions={suggestions}
+                    showSuggestions={showSuggestions}
+                    onFocus={openSuggestionsOnFocus}
+                    onCloseSuggestions={closeSuggestions}
+                    onClear={() => {
+                        handleSearchChange('');
+                        closeSuggestions();
+                    }}
+                    onSelect={(item) => {
+                        handleSearchChange(item.label);
+                        closeSuggestions();
+                    }}
+                    labels={{
+                        placeholder: t('search_docs_placeholder'),
+                        clearSearch: t('clear_search'),
+                        recentActivity: t('recent_activity'),
+                        debtStatusPrefix: t('debt_status_prefix')
+                    }}
                 />
             </div>
 

@@ -1,47 +1,45 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
-import { useFetch } from '@/hooks/useFetch';
-import { useLanguage } from '@/hooks/useLanguage';
 import './SearchBar.css';
 
 /**
- * SearchBar molecule with Smart Suggestions and Debt Status.
- * Architectural Note: Uses useFetch for data fetching and Button atom for UI.
+ * SearchBar UI Component
+ * Pure component for displaying a search bar with optional suggestions.
  */
-const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) => {
-    const { t } = useLanguage();
-    const [showSuggestions, setShowSuggestions] = useState(false);
+const SearchBar = ({ 
+    value, 
+    onChange, 
+    placeholder, 
+    onSelect, 
+    className = '',
+    suggestions = [],
+    showSuggestions = false,
+    onFocus,
+    onClear,
+    onCloseSuggestions,
+    labels = {
+        placeholder: 'Search...',
+        clearSearch: 'Clear search',
+        recentActivity: 'Recent activity',
+        debtStatusPrefix: 'Status:'
+    }
+}) => {
     const wrapperRef = useRef(null);
-
-    // Fetch smart suggestions using architectural standard useFetch
-    const { data: suggestions, refetch: fetchSuggestions } = useFetch('/users/search/suggestions', {
-        immediate: false,
-        initialData: []
-    });
-
-    // Load suggestions when focused and empty
-    const openSuggestionsOnFocus = () => {
-        if (!value) {
-            fetchSuggestions();
-            setShowSuggestions(true);
-        }
-    };
 
     // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-                setShowSuggestions(false);
+                onCloseSuggestions && onCloseSuggestions();
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+    }, [onCloseSuggestions]);
 
     const handleClearSearch = () => {
-        onChange({ target: { value: '' } });
-        setShowSuggestions(false);
+        if (onClear) onClear();
     };
 
     const handleSelectSuggestion = (item) => {
@@ -49,8 +47,8 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
             onSelect(item);
         } else {
             onChange({ target: { value: item.label } });
+            onCloseSuggestions && onCloseSuggestions();
         }
-        setShowSuggestions(false);
     };
 
     return (
@@ -61,11 +59,11 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
                 </span>
                 <input
                     type="text"
-                    placeholder={placeholder || t('search_placeholder')}
+                    placeholder={placeholder || labels.placeholder}
                     className="search-box__input"
                     value={value}
                     onChange={onChange}
-                    onFocus={openSuggestionsOnFocus}
+                    onFocus={onFocus}
                     autoComplete="off"
                 />
                 {value && (
@@ -75,7 +73,7 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
                             size="sm-compact"
                             onClick={handleClearSearch}
                             icon={<Icon name="close" />}
-                            title={t('clear_search')}
+                            title={labels.clearSearch}
                         />
                     </div>
                 )}
@@ -84,7 +82,7 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
             {showSuggestions && suggestions.length > 0 && !value && (
                 <div className="search-box__suggestions">
                     <header className="search-box__suggestions-header">
-                        <Icon name="history" /> {t('recent_activity')}
+                        <Icon name="history" /> {labels.recentActivity}
                     </header>
                     <ul className="search-box__suggestions-list" role="listbox">
                         {suggestions.map((item) => {
@@ -121,9 +119,9 @@ const SearchBar = ({ value, onChange, placeholder, onSelect, className = '' }) =
                                     {item.debt_status && (
                                         <div 
                                             className={`search-box__suggestion-status search-box__suggestion-status--${item.debt_status}`}
-                                            title={t(`debt_status_${item.debt_status}`)}
+                                            title={`${labels.debtStatusPrefix} ${item.debt_status}`}
                                             role="status"
-                                            aria-label={t(`debt_status_${item.debt_status}`)}
+                                            aria-label={`${labels.debtStatusPrefix} ${item.debt_status}`}
                                         />
                                     )}
                                 </li>

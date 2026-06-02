@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import ReactDOM from 'react-dom';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import { useLanguage } from '@/hooks/useLanguage';
 import './ConfirmModal.css';
 
 const ConfirmModal = ({
@@ -12,9 +11,15 @@ const ConfirmModal = ({
     type = 'confirm',
     initialValue = '',
     onConfirm,
-    onCancel
+    onCancel,
+    labels = {
+        alert: 'Alert',
+        confirm: 'Confirm',
+        close: 'Close',
+        cancel: 'Cancel',
+        accept: 'Accept'
+    }
 }) => {
-    const { t } = useLanguage();
     const inputRef = useRef(null);
 
     React.useEffect(() => {
@@ -39,14 +44,14 @@ const ConfirmModal = ({
             <div className="modal-content-bem animate-fade-in">
                 <div className="modal-header-bem">
                     <h3 className="modal-header-bem__title">
-                        {title || (type === 'alert' ? t('alert') : t('confirm'))}
+                        {title || (type === 'alert' ? labels.alert : labels.confirm)}
                     </h3>
                     <Button
                         className="modal-header-bem__close"
                         onClick={handleCancelClick}
                         unstyled
                         icon={<Icon name="close" />}
-                        aria-label={t('close')}
+                        aria-label={labels.close}
                     />
                 </div>
                 <div className="modal-body-bem">
@@ -71,7 +76,7 @@ const ConfirmModal = ({
                             onClick={handleCancelClick}
                             unstyled
                         >
-                            {t('cancel')}
+                            {labels.cancel}
                         </Button>
                     )}
                     <Button
@@ -79,7 +84,7 @@ const ConfirmModal = ({
                         onClick={handleConfirm}
                         unstyled
                     >
-                        {t('accept')}
+                        {labels.accept}
                     </Button>
                 </div>
             </div>

@@ -100,7 +100,12 @@ app.use('/api/appointments', require('./routes/appointments/appointmentRoutes'))
 app.use('/api/consultorios', require('./routes/core/consultorioRoutes'));
 app.use('/api/medical', require('./routes/medical/medicalRoutes'));
 app.use('/api/whatsapp', require('./routes/communication/whatsappRoutes'));
-app.use('/api/finances', require('./routes/finance/financeRoutes'));
+
+const transactionRepository = require('./repositories/finance/transactionRepository');
+const FinanceController = require('./controllers/finance/financeController');
+const financeController = new FinanceController(transactionRepository);
+const financeRoutes = require('./routes/finance/financeRoutes')(financeController);
+app.use('/api/finances', financeRoutes);
 app.use('/api/logs', require('./routes/system/logRoutes'));
 app.use('/api/google', require('./routes/integrations/googleRoutes'));
 app.use('/api/import', require('./routes/system/importRoutes'));
