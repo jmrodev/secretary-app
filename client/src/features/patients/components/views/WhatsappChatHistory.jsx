@@ -1,138 +1,23 @@
-import React, { useState, useEffect, useRef, useCallback, useEffectEvent } from 'react';
-import api from '@/api/axios';
+import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useMessage } from '@/context/MessageContext';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
+import { useWhatsappChatController } from '@/features/patients/hooks/useWhatsappChatController';
 import './WhatsappChatHistory.css';
-
-const normalizePhone = (raw) => {
-    const digits = raw.replace(/\D/g, '');
-    return !digits.startsWith('54') && digits.length >= 10 ? '549' + digits : digits;
-};
-
-const initialState = {
-    messages: [],
-    loading: true,
-    newMessage: '',
-    sending: false,
-    aiLoading: false,
-};
-
-function chatReducer(state, action) {
-    switch (action.type) {
-        case 'SET_MESSAGES': return { ...state, messages: action.payload, loading: false };
-        case 'SET_LOADING': return { ...state, loading: action.payload };
-        case 'SET_NEW_MESSAGE': return { ...state, newMessage: action.payload };
-        case 'SET_SENDING': return { ...state, sending: action.payload };
-        case 'SET_AI_LOADING': return { ...state, aiLoading: action.payload };
-        case 'SEND_SUCCESS': return { ...state, newMessage: '', sending: false };
-        default: return state;
-    }
-}
 
 const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
     const { showMessage } = useMessage();
-    const [state, dispatch] = React.useReducer(chatReducer, initialState);
-    const { messages, loading, newMessage, sending, aiLoading } = state;
+    const {
+        state,
+        dispatch,
+        messagesEndRef,
+        handleGetAiSuggestion,
+        handleSendMessage,
+        fetchHistory
+    } = useWhatsappChatController(patientId, phone, showMessage, t);
     
-    const messagesEndRef = useRef(null);
-
-    const fetchHistory = useCallback(async () => {
-        try {
-            dispatch({ type: 'SET_LOADING', payload: true });
-            const res = await api.post('/whatsapp/history', { patientId, phone });
-            if (res.data.success) {
-                dispatch({ type: 'SET_MESSAGES', payload: res.data.data });
-            } else {
-                dispatch({ type: 'SET_LOADING', payload: false });
-            }
-        } catch (error) {
-            console.error("Error fetching WhatsApp history", error);
-            dispatch({ type: 'SET_LOADING', payload: false });
-        }
-    }, [patientId, phone]);
-
-    const onFetchHistory = useEffectEvent(() => {
-        fetchHistory();
-    });
-
-    useEffect(() => {
-        if (patientId || phone) {
-            const initFetchTimer = setTimeout(() => onFetchHistory(), 0);
-            
-            const intervalId = setInterval(() => {
-                api.post('/whatsapp/history', { patientId, phone })
-                   .then(res => {
-                       if (res.data.success) {
-                           dispatch({ type: 'SET_MESSAGES', payload: res.data.data });
-                       }
-                   }).catch(err => console.error("Auto-poll error", err));
-            }, 5000);
-            
-            return () => {
-                clearTimeout(initFetchTimer);
-                clearInterval(intervalId);
-            };
-        }
-    }, [patientId, phone]);
-
-    useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [messages.length]);
-
-    const handleGetAiSuggestion = async () => {
-        if (aiLoading) return;
-        try {
-            dispatch({ type: 'SET_AI_LOADING', payload: true });
-            const res = await api.post('/whatsapp/ai-suggestion', { patientId });
-            
-            if (res.data.success && res.data.suggestion) {
-                dispatch({ type: 'SET_NEW_MESSAGE', payload: res.data.suggestion });
-            } else {
-                showMessage(t('ai_no_context') || "La IA no pudo generar una respuesta.", "warning");
-            }
-        } catch (error) {
-            console.error("[AI] Error al obtener sugerencia:", error);
-            showMessage("Error de conexión con la IA", "error");
-        } finally {
-            dispatch({ type: 'SET_AI_LOADING', payload: false });
-        }
-    };
-
-    const handleSendMessage = async (e) => {
-        e.preventDefault();
-        if (!newMessage.trim() || sending) return;
-
-        try {
-            dispatch({ type: 'SET_SENDING', payload: true });
-            let targetPhone;
-            if (patientId) {
-                const patientRes = await api.get(`/users/patients/${patientId}`);
-                targetPhone = normalizePhone(patientRes.data.phone);
-            } else if (phone) {
-                targetPhone = normalizePhone(phone);
-            } else {
-                return;
-            }
-
-            await api.post('/whatsapp/send-direct', {
-                to: targetPhone,
-                message: newMessage,
-                patientId: patientId || null
-            });
-            
-            dispatch({ type: 'SEND_SUCCESS' });
-            fetchHistory();
-        } catch (error) {
-            console.error("Error sending message", error);
-            showMessage(t('error_sending_whatsapp'), "error");
-        } finally {
-            dispatch({ type: 'SET_SENDING', payload: false });
-        }
-    };
+    const { messages, loading, newMessage, sending, aiLoading } = state;
 
     return (
         <section className={`whatsapp-chat ${hideHeader ? 'whatsapp-chat--no-header' : ''}`}>
@@ -177,7 +62,7 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
                 <div ref={messagesEndRef} />
             </div>
 
-            <form className="whatsapp-chat__input-area" onSubmit={handleSendMessage}>
+            <form className="whatsapp-chat__input-area" onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
                 <input
                     type="text"
                     className="whatsapp-chat__input"

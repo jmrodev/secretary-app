@@ -2,22 +2,15 @@ import React from 'react';
 import { useAppointmentsPageController } from './hooks/useAppointmentsPageController';
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
-import { PatientManagerModal, PatientHistoryModal } from '@/features/patients';
-import { PrescriptionModal } from '@/features/medical_documents';
-import WhatsAppModal from '@/features/chat/components/ui/WhatsAppModal';
-import AdminAuthModal from '@/features/auth/components/modals/AdminAuthModal';
 import Icon from '@/components/atoms/Icon';
-import { TransactionModal } from '@/features/finances';
 
 // Feature Components (Executors)
 import CalendarSection from './components/calendar/CalendarSection';
 import ScheduleSection from './components/schedule/ScheduleSection';
 import RescheduleBanner from './components/ui/RescheduleBanner';
-import AppointmentActionModal from './components/modals/AppointmentActionModal';
-import AppointmentFormModal from './components/modals/AppointmentFormModal';
 import PatientHistoryView from './components/views/PatientHistoryView';
 import UpcomingAppointmentsView from './components/views/UpcomingAppointmentsView';
-import NextSlotModal from './components/modals/NextSlotModal';
+import { AppointmentsModals } from './components/sections/AppointmentsModals';
 import Button from '@/components/atoms/Button';
 import './AppointmentsPage.css';
 
@@ -147,72 +140,18 @@ const AppointmentsPage = () => {
             </div>
 
             {/* --- Modals --- */}
-            <AppointmentActionModal
-                isOpen={actionModal.open} onClose={() => setActionModal(prev => ({ ...prev, open: false }))}
-                appt={actionModal.appt} doctors={doctors} onHistory={handlers.handleOpenHistory}
-                onPrescribe={handlers.handleOpenPrescribe} onUpdateStatus={handlers.handleUpdateStatus}
-                onReschedule={handlers.handleOpenReschedule} onCancel={handlers.handleCancel} onDelete={handlers.handleDelete}
-                onSync={handlers.handleOpenSync} onPay={handlers.handleOpenPayment} onWhatsApp={handlers.handleWhatsAppUniversal}
-                onUpdateType={handlers.handleUpdateType} onHardEdit={handlers.handleHardEdit} onBonify={handlers.handleBonify}
-                onSaveNote={handlers.handleSaveNote} fetchAppointments={handlers.fetchAppointments}
+            <AppointmentsModals
+                doctors={doctors} insurances={insurances} institutions={institutions} booking={booking} nextSlot={nextSlot}
+                paymentModal={paymentModal} setPaymentModal={setPaymentModal}
+                actionModal={actionModal} setActionModal={setActionModal}
+                historyModal={historyModal} setHistoryModal={setHistoryModal}
+                prescribeModal={prescribeModal} setPrescribeModal={setPrescribeModal}
+                whatsappModal={whatsappModal} setWhatsappModal={setWhatsappModal}
+                showNextSlotModal={showNextSlotModal} setShowNextSlotModal={setShowNextSlotModal}
+                editPatientModalOpen={editPatientModalOpen} setEditPatientModalOpen={setEditPatientModalOpen}
+                authModalOpen={authModalOpen} setAuthModalOpen={setAuthModalOpen}
+                handlers={handlers} loading={loading} t={t}
             />
-
-            {prescribeModal.open && (
-                <PrescriptionModal
-                    isOpen={prescribeModal.open} onClose={() => setPrescribeModal(prev => ({ ...prev, open: false }))}
-                    patientName={prescribeModal.patientName} patientId={prescribeModal.patientId}
-                    onSubmit={(data) => handlers.handleSavePrescription({ ...prescribeModal, ...data })} t={t} isSubmitting={loading}
-                />
-            )}
-
-            {historyModal.open && (
-                <PatientHistoryModal
-                    isOpen={historyModal.open} onClose={() => setHistoryModal(prev => ({ ...prev, open: false }))}
-                    patientId={historyModal.patientId} patientName={historyModal.patientName}
-                />
-            )}
-
-            {whatsappModal.open && (
-                <WhatsAppModal
-                    isOpen={whatsappModal.open} onClose={() => setWhatsappModal(prev => ({ ...prev, open: false }))}
-                    phone={whatsappModal.phone} message={whatsappModal.message}
-                    onMessageChange={(msg) => setWhatsappModal(prev => ({ ...prev, message: msg }))}
-                />
-            )}
-
-            {showNextSlotModal && (
-                <NextSlotModal
-                    isOpen={showNextSlotModal} onClose={() => setShowNextSlotModal(false)}
-                    loading={nextSlot.loading} nextSlotData={nextSlot.nextSlotData}
-                    includeOutOfHours={nextSlot.includeOutOfHours}
-                    onToggleOutOfHours={(val) => { nextSlot.setIncludeOutOfHours(val); handlers.handleNextFreeSlot(null, val); }}
-                    slotsPage={nextSlot.slotsPage} setSlotsPage={nextSlot.setSlotsPage} slotPages={nextSlot.slotPages}
-                    onSelect={handlers.confirmNextSlot} onWhatsApp={handlers.handleWhatsAppSlot}
-                    onNextGroup={nextSlot.handleNextPage} onPrevGroup={nextSlot.handlePrevPage}
-                    hasPrevGroup={nextSlot.slotHistory?.length > 0} hasNextGroup={!!nextSlot.nextSlotData?.nextStartDate}
-                />
-            )}
-
-            {editPatientModalOpen && (
-                <PatientManagerModal
-                    isOpen={editPatientModalOpen} onClose={() => setEditPatientModalOpen(false)}
-                    patient={booking.selectedPatientData} referenceInfo={booking.syncReferenceInfo}
-                    onUpdate={(updatedData) => { booking.setSelectedPatient(updatedData.id); booking.setSelectedPatientData(updatedData); }}
-                    doctors={doctors}
-                    insurances={insurances}
-                />
-            )}
-
-            {booking.showForm && (
-                <AppointmentFormModal
-                    isOpen={booking.showForm} onClose={() => booking.setShowForm(false)}
-                    {...booking} onSubmit={handlers.handleBook} doctors={doctors} institutions={institutions}
-                    onOpenEditPatient={() => setEditPatientModalOpen(true)} t={t} handlers={booking.handlers}
-                />
-            )}
-
-            <AdminAuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} onConfirm={handlers.handleAdminAuthConfirm} />
-            <TransactionModal isOpen={paymentModal.open} onClose={() => setPaymentModal(prev => ({ ...prev, open: false }))} initialData={paymentModal.initialData} onSuccess={() => handlers.fetchAppointments()} />
         </MainLayout>
     );
 };

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import api from '@/api/axios';
+import { usePatientDetailsController } from '@/features/patients/hooks/usePatientDetailsController';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
@@ -34,23 +35,7 @@ const PatientDetailsView = ({
 }) => {
     const [activeTab, setActiveTab] = useState('general'); // 'general' | 'history' | 'finances' | 'chat'
     const [isCleanView, setIsCleanView] = useState(false);
-    const [chronicMeds, setChronicMeds] = useState([]);
-    const [recentRequests, setRecentRequests] = useState([]);
-
-    useEffect(() => {
-        if (!details.id) return;
-        
-        api.get(`/medical/patients/${details.id}/medications`)
-            .then(res => setChronicMeds(res.data))
-            .catch(err => console.error("Error fetching chronic meds:", err));
-
-        api.get(`/medical/requests?patientId=${details.id}`)
-            .then(res => {
-                const prescriptions = res.data.requests.filter(r => r.type === 'prescription');
-                setRecentRequests(prescriptions);
-            })
-            .catch(err => console.error("Error fetching requests:", err));
-    }, [details.id]);
+    const { chronicMeds, recentRequests } = usePatientDetailsController(details.id);
 
     return (
         <>

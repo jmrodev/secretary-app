@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Modal from '@/components/molecules/Modal';
 import TabButton from '@/components/atoms/TabButton';
-import api from '@/api/axios';
 import { useLanguage } from '@/hooks/useLanguage';
+import { usePatientHistoryController } from '@/features/patients/hooks/usePatientHistoryController';
 import Icon from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
 import './PatientHistoryModal.css';
@@ -18,52 +18,7 @@ const SimpleDateDisplay = ({ date }) => formatDate(date);
 const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState('appointments');
-    const [loading, setLoading] = useState(true);
-
-    const [history, setHistory] = useState({
-        appointments: [],
-        prescriptions: [],
-        licenses: [],
-        requests: []
-    });
-
-    const fetchHistory = useCallback(async () => {
-        if (!patientId) return;
-        setLoading(true);
-        try {
-            const [apptRes, prescRes, licRes, reqRes] = await Promise.all([
-                api.get('/appointments', { params: { patientId } }),
-                api.get('/medical/prescriptions', { params: { patientId } }),
-                api.get('/medical/licenses', { params: { patientId } }),
-                api.get('/medical/requests', { params: { patientId } })
-            ]);
-
-            setHistory({
-                appointments: apptRes.data,
-                prescriptions: prescRes.data.prescriptions || [],
-                licenses: licRes.data.licenses || [],
-                requests: reqRes.data.requests || []
-            });
-        } catch (err) {
-            console.error("Failed to fetch patient history", err);
-        } finally {
-            setLoading(false);
-        }
-    }, [patientId]);
-
-    const fetchHistoryRef = React.useRef(fetchHistory);
-    React.useEffect(() => {
-        fetchHistoryRef.current = fetchHistory;
-    }, [fetchHistory]);
-
-    useEffect(() => {
-        if (isOpen && patientId) {
-            const timer = setTimeout(() => {
-                fetchHistoryRef.current();
-            }, 0);
-            return () => clearTimeout(timer);
-        }
-    }, [isOpen, patientId]);
+    const { history, loading } = usePatientHistoryController(patientId, isOpen);
 
     const baseClass = 'patient-history';
 
