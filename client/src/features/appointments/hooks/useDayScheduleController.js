@@ -44,6 +44,7 @@ export const useDayScheduleController = (date, doctor, schedule, appointments, s
     // Fetch SQL-First daily schedule
     const { data: rawSlots = EMPTY_ARRAY, loading, refetch } = useFetch('/appointments/daily-schedule', {
         params: { doctorId: doctor?.id, date: dateStr },
+        immediate: !!doctor?.id,
         initialData: EMPTY_ARRAY
     });
 
