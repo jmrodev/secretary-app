@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 # React Doctor Reports
-reports/
+/reports/
+/reports
 doctor-report.json
 .agents/

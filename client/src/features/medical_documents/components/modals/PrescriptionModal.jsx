@@ -23,14 +23,14 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     const {
         instructions, items, patientMeds, historyMeds, bonified,
         tempMed, tempDose, tempUnitsPerBox, tempDailyUnits, tempBoxes,
-        tempFreqPreset
+        tempFreqPreset, tempDays
     } = state;
 
     const {
         setInstructions, setBonified, setTempMed, setTempDose,
         setTempUnitsPerBox, setTempDailyUnits, setTempBoxes,
         handleSelectMedication, handleFreqPreset, handleAddItem,
-        handleRemoveItem, handleSubmit
+        handleRemoveItem, handleSubmit, handleQuantityChange
     } = handlers;
 
     const { daysSupply, refillDateStr } = computed;

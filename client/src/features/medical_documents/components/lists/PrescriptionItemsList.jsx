@@ -64,7 +64,7 @@ const PrescriptionItemsList = ({
                                     value={tempFreqPreset !== null ? tempFreqPreset : ''}
                                     onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
                                 >
-                                    <option value="" disabled style={{ color: 'black' }}>Frecuencia...</option>
+                                    <option value="" disabled style={{ color: 'black' }}>Frecuencia…</option>
                                     {freqPresets && freqPresets.map((p, idx) => {
                                         const safeKey = p.label.replace('½', 'half').replace('¼', 'quarter').replace('¾', 'three_quarters').replace('/', '_per_').replace(' ', '_').toLowerCase();
                                         const translationKey = `freq_${safeKey}`;

@@ -11,6 +11,7 @@ import Modal from '@/components/molecules/Modal';
 // Feature Components
 import UserTable from '@/features/users/components/UserTable';
 import UserForm from '@/features/users/components/UserForm';
+import styles from './UserManagement.module.css';
 
 const EMPTY_EXCLUDE = [];
 

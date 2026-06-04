@@ -59,7 +59,7 @@ export const HolidaysPage = () => {
                     <div className={styles.card}>
                         <h3 className={styles.cardTitle}>Feriados Registrados</h3>
                         {loading ? (
-                            <div style={{ textAlign: 'center', padding: '2rem' }}>Cargando...</div>
+                            <div style={{ textAlign: 'center', padding: '2rem' }}>Cargando…</div>
                         ) : (
                             <HolidayList holidays={holidays} onDelete={deleteHoliday} />
                         )}
