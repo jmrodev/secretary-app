@@ -150,4 +150,6 @@ scratch/
 !schema_local.sql
 !schema_pi.sql
 !server/scripts/*.sql
+!server/scripts/migrations/*.sql
+
 
