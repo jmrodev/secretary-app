@@ -13,7 +13,9 @@ export const useFloatingChatController = (user, showMessage) => {
 
     // Refs to track state inside callbacks without adding dependencies
     const selectedConvoRef = useRef(selectedConvo);
-    selectedConvoRef.current = selectedConvo;
+    useEffect(() => {
+        selectedConvoRef.current = selectedConvo;
+    }, [selectedConvo]);
 
     const [messageText, setMessageText] = useState('');
     const [sending, setSending] = useState(false);

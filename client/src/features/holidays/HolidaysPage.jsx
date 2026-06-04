@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useHolidays } from '@/features/appointments/hooks/useHolidays';
-import Layout from '@/components/templates/Layout';
-import SectionHeader from '@/components/molecules/SectionHeader';
+import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import HolidayList from '@/features/appointments/components/sections/HolidayList';
@@ -24,13 +23,8 @@ export const HolidaysPage = () => {
     };
 
     return (
-        <Layout>
+        <MainLayout wide flush title={t('holidays') || 'Feriados y Días No Laborables'}>
             <div className={styles.root}>
-                <SectionHeader 
-                    title={t('holidays') || 'Feriados y Días No Laborables'} 
-                    description={t('holidays_desc') || 'Gestiona los días en que la clínica permanecerá cerrada. No se podrán agendar turnos en estos días.'}
-                    icon="beach_access"
-                />
 
                 <div className={styles.content}>
                     <div className={styles.card}>
@@ -66,6 +60,6 @@ export const HolidaysPage = () => {
                     </div>
                 </div>
             </div>
-        </Layout>
+        </MainLayout>
     );
 };
