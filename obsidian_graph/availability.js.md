@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/appointments/availability.js"
+type: "code"
+community: "Community 311"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_311
+---
+
 # availability.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/appointments/availability.js
-- **Comunidad:** [[_COMMUNITY_Community 319]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_311

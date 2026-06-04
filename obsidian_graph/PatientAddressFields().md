@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/forms/PatientAddressFields.jsx"
+type: "code"
+community: "Community 247"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_247
+---
+
 # PatientAddressFields()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientAddressFields.jsx
-- **Comunidad:** [[_COMMUNITY_Community 243]]
+## Connections
+- [[PatientAddressFields.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientAddressFields.jsx|PatientAddressFields.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientAddressFields.jsx|PatientAddressFields.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_247

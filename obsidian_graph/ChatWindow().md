@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/chat/components/sections/ChatWindow.jsx"
+type: "code"
+community: "Community 211"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_211
+---
+
 # ChatWindow()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/chat/components/ChatWindow.jsx
-- **Comunidad:** [[_COMMUNITY_Community 203]]
+## Connections
+- [[ChatWindow.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ChatWindow.jsx|ChatWindow.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ChatWindow.jsx|ChatWindow.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_211

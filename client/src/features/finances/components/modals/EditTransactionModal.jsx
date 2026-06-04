@@ -8,7 +8,7 @@ import AutoTextarea from '@/components/atoms/AutoTextarea';
 import Icon from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
 import { toInputDateTime } from '@/utils/core/dateUtils';
-import './EditTransactionModal.css';
+import styles from './EditTransactionModal.module.css';
 
 /**
  * EditTransactionModal Molecule.
@@ -53,7 +53,7 @@ const EditTransactionModal = ({
             onClose={onClose}
             title={t('edit_transaction') || "Editar Transacción"}
             footer={
-                <div className="edit-transaction-modal__footer">
+                <div className={`${styles.footer}`}>
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
                     <Button onClick={onSave} variant="primary" icon={<Icon name="save" size="1.1rem" />}>
                         {t('save')}
@@ -61,7 +61,7 @@ const EditTransactionModal = ({
                 </div>
             }
         >
-            <div className="edit-transaction-modal">
+            <div className={`${styles.root}`}>
                 <FormGroup label={t('amount')}>
                     <CurrencyInput
                         value={transaction.amount}
@@ -105,12 +105,12 @@ const EditTransactionModal = ({
                             onChange={e => handleTransactionChange('transaction_date', e.target.value)}
                             className="edit-transaction-modal__input"
                         />
-                        <div className="edit-transaction-modal__warning">
-                            <Icon name="WARNING" size="1rem" className="edit-transaction-modal__warning-icon" />
+                        <div className={`${styles.warning}`}>
+                            <Icon name="WARNING" size="1rem" className={`${styles.warningIcon}`} />
                             <span>{t('date_browser_warning') || 'El formato depende de su navegador. Verifique el mes al seleccionar.'}</span>
                         </div>
-                        <div className="edit-transaction-modal__warning">
-                            <Icon name="WARNING" size="1rem" className="edit-transaction-modal__warning-icon" />
+                        <div className={`${styles.warning}`}>
+                            <Icon name="WARNING" size="1rem" className={`${styles.warningIcon}`} />
                             <span>{t('date_order_warning') || 'Cuidado: Cambiar la fecha puede afectar el orden cronológico.'}</span>
                         </div>
                     </FormGroup>

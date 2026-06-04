@@ -1,14 +1,19 @@
-
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import api from '@/api/axios';
 import { useFetch } from '@/hooks/useFetch';
+import { useDoctors } from '@/context/DoctorContextDefinition';
 
 /**
  * useMedicalRequest Hook (Feature-based).
  * Centralizes logic for creating medical requests (prescriptions, licenses, certificates).
  */
 export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMessage, t, onRequestCreated) => {
-    const [selectedDoctor, setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    const { doctors } = useDoctors();
+    const [selectedDoctor, _setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    const setSelectedDoctor = (id) => {
+        _setSelectedDoctor(id);
+        if (id) localStorage.setItem('last_selected_doctor_id', id);
+    };
     const [selectedPatient, setSelectedPatient] = useState('');
     const [patientData, setPatientData] = useState(null);
     const [reqType, setReqType] = useState(initialType || 'prescription');
@@ -33,12 +38,6 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
     const [tempUnitsPerBox, setTempUnitsPerBox] = useState('');
     const [tempQty, setTempQty] = useState('');
     const [tempVademecumId, setTempVademecumId] = useState(null);
-
-    useEffect(() => {
-        if (selectedDoctor) {
-            localStorage.setItem('last_selected_doctor_id', selectedDoctor);
-        }
-    }, [selectedDoctor]);
 
     const handleCreateRequest = async (e, initialItems = [], initialNote = '') => {
         if (e) e.preventDefault();
@@ -96,12 +95,15 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
             }).join('\n');
         }
 
+        const currentDoc = user?.role === 'doctor' ? doctors.find(d => Number(d.user_id) === Number(user.user_id || user.id)) : null;
+        const finalDoctorId = user?.role === 'doctor' ? (currentDoc?.id || user.user_id || user.id) : selectedDoctor;
+
         setIsSubmitting(true);
         try {
             await api.post('/medical/requests', {
                 type: reqType,
                 patientId: selectedPatient,
-                doctor_id: user?.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
+                doctor_id: finalDoctorId,
                 request_note: finalNote,
                 raw_medication_data: JSON.stringify(finalItems),
                 status: sendToDoctor ? 'pending' : 'completed',
@@ -128,7 +130,9 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
 
             if (onRequestCreated) onRequestCreated();
         } catch (err) {
-            const errorMsg = err.response?.data || err.message || t('request_failed');
+            console.error("[useMedicalRequest] Error:", err);
+            const data = err.response?.data;
+            const errorMsg = (typeof data === 'object' ? (data.error || data.message) : data) || err.message || t('request_failed');
             showMessage(`${t('request_failed')}: ${errorMsg}`, 'error');
         } finally {
             setIsSubmitting(false);

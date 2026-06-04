@@ -1,11 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/model/StatsResponse.kt"
+type: "code"
+community: "Community 145"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_145
+---
+
 # StatsResponse.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/model/StatsResponse.kt
-- **Comunidad:** [[_COMMUNITY_Community 136]]
+## Connections
+- [[StatsResponse]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[StatsResponse|StatsResponse]] (contains)
-
-## Miembros de la misma Comunidad
-- [[StatsResponse|StatsResponse]]
+#graphify/code #graphify/EXTRACTED #community/Community_145

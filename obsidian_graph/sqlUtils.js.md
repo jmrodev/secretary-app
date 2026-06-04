@@ -1,22 +1,19 @@
+---
+source_file: "server/utils/core/sqlUtils.js"
+type: "code"
+community: "Database Utils & Repositories"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Database_Utils_&_Repositories
+---
+
 # sqlUtils.js
 
-- **Tipo:** code
-- **Archivo:** server/utils/sqlUtils.js
-- **Comunidad:** [[_COMMUNITY_Community 1]]
+## Connections
+- [[buildInsertQuery()]] - `contains` [EXTRACTED]
+- [[buildUpdateQuery()]] - `contains` [EXTRACTED]
+- [[filterValidColumns()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[filterValidColumns()|filterValidColumns()]] (contains)
-- --> [[buildUpdateQuery()|buildUpdateQuery()]] (contains)
-- --> [[buildInsertQuery()|buildInsertQuery()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[filterValidColumns()|filterValidColumns()]]
-- [[buildUpdateQuery()|buildUpdateQuery()]]
-- [[buildInsertQuery()|buildInsertQuery()]]
-- [[licenseRepository.js|licenseRepository.js]]
-- [[LicenseRepository|LicenseRepository]]
-- [[.findById()|.findById()]]
-- [[.findAll()|.findAll()]]
-- [[.countAll()|.countAll()]]
-- [[.create()|.create()]]
-- [[.update()|.update()]]
+#graphify/code #graphify/EXTRACTED #community/Database_Utils_&_Repositories

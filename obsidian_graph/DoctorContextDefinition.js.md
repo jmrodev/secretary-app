@@ -1,11 +1,17 @@
+---
+source_file: "client/src/context/DoctorContextDefinition.js"
+type: "code"
+community: "Community 149"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_149
+---
+
 # DoctorContextDefinition.js
 
-- **Tipo:** code
-- **Archivo:** client/src/context/DoctorContextDefinition.js
-- **Comunidad:** [[_COMMUNITY_Community 139]]
+## Connections
+- [[useDoctors()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useDoctors()|useDoctors()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useDoctors()|useDoctors()]]
+#graphify/code #graphify/EXTRACTED #community/Community_149

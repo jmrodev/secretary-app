@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Button.css';
+import styles from './Button.module.css';
 
 /**
  * Button Atom component.
@@ -22,11 +22,12 @@ const Button = ({
     iconRight = null,
     active = false,
     unstyled = false,
+    outline = false,
     target = '_self',
     rel = 'noopener noreferrer',
     ...rest
 }) => {
-    const baseClass = 'btn';
+    const baseClass = styles.root;
 
     // Construct BEM classes
     const variantClass = variant ? `${baseClass}--${variant}` : '';
@@ -47,9 +48,9 @@ const Button = ({
 
     const content = (
         <>
-            {icon && <span className="btn__icon">{icon}</span>}
-            {children && <span className="btn__content">{children}</span>}
-            {iconRight && <span className="btn__icon">{iconRight}</span>}
+            {icon && <span className={`${styles.icon}`}>{icon}</span>}
+            {children && <span className={`${styles.content}`}>{children}</span>}
+            {iconRight && <span className={`${styles.icon}`}>{iconRight}</span>}
         </>
     );
 

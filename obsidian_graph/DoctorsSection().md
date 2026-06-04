@@ -1,15 +1,18 @@
+---
+source_file: "client/src/features/config/SystemConfigPage.jsx"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L33"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Modals_&_Prescriptions
+---
+
 # DoctorsSection()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/config/SystemConfigPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 83]]
+## Connections
+- [[SystemConfigPage.jsx]] - `contains` [EXTRACTED]
+- [[useDoctorsPageController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[SystemConfigPage.jsx|SystemConfigPage.jsx]] (contains)
-- --> [[useDoctorsPageController()|useDoctorsPageController()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[DoctorsPage.jsx|DoctorsPage.jsx]]
-- [[DoctorsPage()|DoctorsPage()]]
-- [[useDoctorsPageController.js|useDoctorsPageController.js]]
-- [[useDoctorsPageController()|useDoctorsPageController()]]
+#graphify/code #graphify/EXTRACTED #community/Modals_&_Prescriptions

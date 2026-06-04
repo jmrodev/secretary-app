@@ -5,7 +5,7 @@ import Select from '@/components/atoms/Select';
 import Tooltip from '@/components/atoms/Tooltip';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './MedicationInputSection.css';
+import styles from './MedicationInputSection.module.css';
 
 
 /**
@@ -17,7 +17,7 @@ const MedicationInputSection = ({
     tempMed, setTempMed,
     tempDose, setTempDose,
     tempFreqPreset, setTempFreqPreset,
-    tempFreq, setTempFreq,
+    setTempFreq,
     tempDailyUnits, setTempDailyUnits,
     tempUnitsPerBox, setTempUnitsPerBox,
     tempQty, setTempQty,
@@ -77,7 +77,7 @@ const MedicationInputSection = ({
                         <div className={`${baseClass ? `${baseClass}__freq-presets` : ''} ${compClass}__freq-presets`}>
                             {freqPresets.map((p, idx) => (
                                 <Button
-                                    key={`freq-${p.label}-${idx}`}
+                                    key={p.label}
                                     variant="ghost"
                                     active={tempFreqPreset === idx}
                                     className={`${baseClass ? `${baseClass}__freq-btn` : ''} ${compClass}__freq-btn`}

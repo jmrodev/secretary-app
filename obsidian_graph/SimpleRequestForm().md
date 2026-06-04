@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/forms/SimpleRequestForm.jsx"
+type: "code"
+community: "Community 166"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_166
+---
+
 # SimpleRequestForm()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/SimpleRequestForm.jsx
-- **Comunidad:** [[_COMMUNITY_Community 161]]
+## Connections
+- [[SimpleRequestForm.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[SimpleRequestForm.jsx|SimpleRequestForm.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[SimpleRequestForm.jsx|SimpleRequestForm.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_166

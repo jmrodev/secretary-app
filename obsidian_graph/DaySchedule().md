@@ -1,22 +1,22 @@
+---
+source_file: "client/src/features/appointments/components/schedule/DaySchedule.jsx"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L19"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # DaySchedule()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/DaySchedule.jsx
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[DaySchedule.jsx]] - `contains` [EXTRACTED]
+- [[createDate()]] - `calls` [INFERRED]
+- [[toInputDate()]] - `calls` [INFERRED]
+- [[useDayScheduleHandlers()]] - `calls` [INFERRED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useDayScheduleHandlers()|useDayScheduleHandlers()]] (calls)
-- <-- [[DaySchedule.jsx|DaySchedule.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/INFERRED #community/Institutions_&_Medical_Requirements

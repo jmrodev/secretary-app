@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/forms/PatientContactFields.jsx"
+type: "code"
+community: "Community 248"
+location: "L13"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_248
+---
+
 # PatientContactFields()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientContactFields.jsx
-- **Comunidad:** [[_COMMUNITY_Community 244]]
+## Connections
+- [[PatientContactFields.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientContactFields.jsx|PatientContactFields.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientContactFields.jsx|PatientContactFields.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_248

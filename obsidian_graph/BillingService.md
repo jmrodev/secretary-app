@@ -1,23 +1,23 @@
+---
+source_file: "server/services/finance/billingService.js"
+type: "code"
+community: "Community 39"
+location: "L16"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_39
+---
+
 # BillingService
 
-- **Tipo:** code
-- **Archivo:** server/services/billingService.js
-- **Comunidad:** [[_COMMUNITY_Community 41]]
+## Connections
+- [[.createInvoice()]] - `method` [EXTRACTED]
+- [[.generateCsr()]] - `method` [EXTRACTED]
+- [[.getAfipEnvironment()]] - `method` [EXTRACTED]
+- [[.getAfipInstance()]] - `method` [EXTRACTED]
+- [[.getMockAfip()]] - `method` [EXTRACTED]
+- [[.uploadCert()]] - `method` [EXTRACTED]
+- [[billingService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[billingService.js|billingService.js]] (contains)
-- --> [[.getAfipInstance()|.getAfipInstance()]] (method)
-- --> [[.getMockAfip()|.getMockAfip()]] (method)
-- --> [[.generateCsr()|.generateCsr()]] (method)
-- --> [[.createInvoice()|.createInvoice()]] (method)
-- --> [[.uploadCert()|.uploadCert()]] (method)
-- --> [[.getAfipEnvironment()|.getAfipEnvironment()]] (method)
-
-## Miembros de la misma Comunidad
-- [[billingService.js|billingService.js]]
-- [[.getAfipInstance()|.getAfipInstance()]]
-- [[.getMockAfip()|.getMockAfip()]]
-- [[.generateCsr()|.generateCsr()]]
-- [[.createInvoice()|.createInvoice()]]
-- [[.uploadCert()|.uploadCert()]]
-- [[.getAfipEnvironment()|.getAfipEnvironment()]]
+#graphify/code #graphify/EXTRACTED #community/Community_39

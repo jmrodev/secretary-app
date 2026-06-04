@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/sections/InvoiceDetailContent.jsx"
+type: "code"
+community: "Community 231"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_231
+---
+
 # InvoiceDetailContent.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/InvoiceDetailContent.jsx
-- **Comunidad:** [[_COMMUNITY_Community 225]]
+## Connections
+- [[InvoiceDetailContent()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[InvoiceDetailContent()|InvoiceDetailContent()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InvoiceDetailContent()|InvoiceDetailContent()]]
+#graphify/code #graphify/EXTRACTED #community/Community_231

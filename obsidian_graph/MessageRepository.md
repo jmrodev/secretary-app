@@ -1,34 +1,31 @@
+---
+source_file: "server/repositories/communication/messageRepository.js"
+type: "code"
+community: "Community 17"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_17
+---
+
 # MessageRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/messageRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 20]]
+## Connections
+- [[.create()_4]] - `method` [EXTRACTED]
+- [[.delete()_3]] - `method` [EXTRACTED]
+- [[.findById()_3]] - `method` [EXTRACTED]
+- [[.findInbox()]] - `method` [EXTRACTED]
+- [[.findSent()]] - `method` [EXTRACTED]
+- [[.getConversations()_1]] - `method` [EXTRACTED]
+- [[.getPossibleRecipients()]] - `method` [EXTRACTED]
+- [[.getThread()_1]] - `method` [EXTRACTED]
+- [[.getTypingStatus()_1]] - `method` [EXTRACTED]
+- [[.getUnreadCount()_1]] - `method` [EXTRACTED]
+- [[.markAsRead()_1]] - `method` [EXTRACTED]
+- [[.markDelivered()]] - `method` [EXTRACTED]
+- [[.markThreadRead()]] - `method` [EXTRACTED]
+- [[.updateTypingStatus()_1]] - `method` [EXTRACTED]
+- [[messageRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[messageRepository.js|messageRepository.js]] (contains)
-- --> [[.create()|.create()]] (method)
-- --> [[.findInbox()|.findInbox()]] (method)
-- --> [[.findSent()|.findSent()]] (method)
-- --> [[.findById()|.findById()]] (method)
-- --> [[.markAsRead()|.markAsRead()]] (method)
-- --> [[.delete()|.delete()]] (method)
-- --> [[.getUnreadCount()|.getUnreadCount()]] (method)
-- --> [[.getConversations()|.getConversations()]] (method)
-- --> [[.markDelivered()|.markDelivered()]] (method)
-- --> [[.getThread()|.getThread()]] (method)
-- --> [[.markThreadRead()|.markThreadRead()]] (method)
-- --> [[.getPossibleRecipients()|.getPossibleRecipients()]] (method)
-- --> [[.updateTypingStatus()|.updateTypingStatus()]] (method)
-- --> [[.getTypingStatus()|.getTypingStatus()]] (method)
-
-## Miembros de la misma Comunidad
-- [[messageRepository.js|messageRepository.js]]
-- [[.create()|.create()]]
-- [[.findInbox()|.findInbox()]]
-- [[.findSent()|.findSent()]]
-- [[.findById()|.findById()]]
-- [[.markAsRead()|.markAsRead()]]
-- [[.delete()|.delete()]]
-- [[.getUnreadCount()|.getUnreadCount()]]
-- [[.getConversations()|.getConversations()]]
-- [[.markDelivered()|.markDelivered()]]
+#graphify/code #graphify/EXTRACTED #community/Community_17

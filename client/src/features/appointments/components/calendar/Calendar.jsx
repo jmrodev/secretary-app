@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import CalendarDayCell from './CalendarDayCell.jsx';
 import CalendarHeader from './CalendarHeader.jsx';
 import DayHeaders from '../schedule/DayHeaders.jsx';
 import { useLanguage } from '@/hooks/useLanguage';
-import { isPastDay, isSameDay, getNow, parseDate, createDate } from '@/utils/core/dateUtils';
-import './Calendar.css';
+import { isPastDay, isSameDay, getNow, parseDate, createDate, getDaysInMonth } from '@/utils/core/dateUtils';
+import styles from './Calendar.module.css';
 
 /**
  * Calendar (Executor Component).
@@ -27,25 +27,14 @@ const Calendar = ({
     showOutOfHours = false, 
     compact = false 
 }) => {
-    const [viewDate, setViewDate] = useState(() => parseDate(selectedDate || getNow()));
     const { t } = useLanguage();
 
-    // Sync viewDate when selectedDate prop changes
-    useEffect(() => {
-        if (selectedDate) {
-            setViewDate(parseDate(selectedDate));
-        }
-    }, [selectedDate]);
+    // React 19 best practice: derived state during render
+    const viewDate = parseDate(selectedDate || getNow());
 
-    const getDaysInMonth = (date) => {
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const days = createDate(year, month + 1, 0).getDate();
-        const firstDay = createDate(year, month, 1).getDay();
-        return { days, firstDay };
-    };
 
-    const { days, firstDay } = getDaysInMonth(viewDate);
+    const days = getDaysInMonth(viewDate);
+    const firstDay = createDate(viewDate.getFullYear(), viewDate.getMonth(), 1).getDay();
     const months = t('months_array') || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     const daysOfWeek = t('days_short_array') || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -73,18 +62,16 @@ const Calendar = ({
 
     const handlePrevMonth = () => {
         const newDate = createDate(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
-        setViewDate(newDate);
         onDateSelect(newDate);
     };
 
     const handleNextMonth = () => {
         const newDate = createDate(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
-        setViewDate(newDate);
         onDateSelect(newDate);
     };
 
     return (
-        <div className="calendar">
+        <div className={`${styles.root}`}>
             {!hideNavigation && (
                 <CalendarHeader
                     month={months[viewDate.getMonth()]} year={viewDate.getFullYear()}
@@ -92,13 +79,13 @@ const Calendar = ({
                 />
             )}
             {hideNavigation && (
-                <div className="calendar__simple-title">
+                <div className={`${styles.simpleTitle}`}>
                     {months[viewDate.getMonth()]} {viewDate.getFullYear()}
                 </div>
             )}
-            <div className="calendar__main-container">
+            <div className={`${styles.mainContainer}`}>
                 <DayHeaders daysOfWeek={daysOfWeek} />
-                <div className="calendar__body">
+                <div className={`${styles.body}`}>
                     <CalendarGrid 
                         viewDate={viewDate}
                         selectedDate={selectedDate}
@@ -125,13 +112,15 @@ const CalendarGrid = ({
     const dayElements = [];
     
     // Empty cells before first day
-    for (let i = 0; i < firstDay; i++) {
-        dayElements.push(<div key={`empty-pre-${viewDate.getFullYear()}-${viewDate.getMonth()}-${i}`} className="calendar__cell calendar__cell--empty"></div>);
+    const year = viewDate.getFullYear();
+    const month = viewDate.getMonth();
+    for (let cellIdx = 0; cellIdx < firstDay; cellIdx++) {
+        dayElements.push(<div key={`pre-pad-${year}-${month}-${cellIdx}`} className={`${styles.cellEmpty}`}></div>);
     }
 
     // Days of the month
-    for (let i = 1; i <= days; i++) {
-        const currentDay = createDate(viewDate.getFullYear(), viewDate.getMonth(), i);
+    for (let dayNum = 1; dayNum <= days; dayNum++) {
+        const currentDay = createDate(year, month, dayNum);
         const isSelected = selectedDate && isSameDay(parseDate(selectedDate), currentDay);
         const isTodayDate = isSameDay(getNow(), currentDay);
         const dateStr = [currentDay.getFullYear(), String(currentDay.getMonth() + 1).padStart(2, '0'), String(currentDay.getDate()).padStart(2, '0')].join('-');
@@ -147,7 +136,7 @@ const CalendarGrid = ({
         dayElements.push(
             <CalendarDayCell
                 key={dateStr} 
-                day={i} 
+                day={dayNum} 
                 status={{
                     isSelected,
                     isToday: isTodayDate,
@@ -171,8 +160,8 @@ const CalendarGrid = ({
     // Fill to 6 rows (42 cells)
     const totalCells = 42;
     const currentCount = dayElements.length;
-    for (let i = 0; i < (totalCells - currentCount); i++) {
-        dayElements.push(<div key={`empty-post-${viewDate.getFullYear()}-${viewDate.getMonth()}-${i}`} className="calendar__cell calendar__cell--empty"></div>);
+    for (let postIdx = 0; postIdx < (totalCells - currentCount); postIdx++) {
+        dayElements.push(<div key={`post-pad-${year}-${month}-${postIdx}`} className={`${styles.cellEmpty}`}></div>);
     }
 
     return <>{dayElements}</>;

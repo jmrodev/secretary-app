@@ -1,19 +1,21 @@
+---
+source_file: "server/services/communication/whatsappBridgeService.js"
+type: "code"
+community: "Community 65"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_65
+---
+
 # WhatsAppBridgeService
 
-- **Tipo:** code
-- **Archivo:** server/services/whatsappBridgeService.js
-- **Comunidad:** [[_COMMUNITY_Community 61]]
+## Connections
+- [[.constructor()_9]] - `method` [EXTRACTED]
+- [[.isBridgeRunning()]] - `method` [EXTRACTED]
+- [[.startBridge()]] - `method` [EXTRACTED]
+- [[.stopBridge()]] - `method` [EXTRACTED]
+- [[whatsappBridgeService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[whatsappBridgeService.js|whatsappBridgeService.js]] (contains)
-- --> [[.constructor()|.constructor()]] (method)
-- --> [[.isBridgeRunning()|.isBridgeRunning()]] (method)
-- --> [[.startBridge()|.startBridge()]] (method)
-- --> [[.stopBridge()|.stopBridge()]] (method)
-
-## Miembros de la misma Comunidad
-- [[whatsappBridgeService.js|whatsappBridgeService.js]]
-- [[.constructor()|.constructor()]]
-- [[.isBridgeRunning()|.isBridgeRunning()]]
-- [[.startBridge()|.startBridge()]]
-- [[.stopBridge()|.stopBridge()]]
+#graphify/code #graphify/EXTRACTED #community/Community_65

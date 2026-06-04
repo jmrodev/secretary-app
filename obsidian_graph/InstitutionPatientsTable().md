@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/tables/InstitutionPatientsTable.jsx"
+type: "code"
+community: "Community 227"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_227
+---
+
 # InstitutionPatientsTable()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/InstitutionPatientsTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 222]]
+## Connections
+- [[InstitutionPatientsTable.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[InstitutionPatientsTable.jsx|InstitutionPatientsTable.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InstitutionPatientsTable.jsx|InstitutionPatientsTable.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_227

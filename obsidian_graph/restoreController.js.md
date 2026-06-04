@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/system/restoreController.js"
+type: "code"
+community: "Community 331"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_331
+---
+
 # restoreController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/restoreController.js
-- **Comunidad:** [[_COMMUNITY_Community 301]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_331

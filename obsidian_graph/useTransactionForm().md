@@ -1,24 +1,20 @@
+---
+source_file: "client/src/features/finances/hooks/useTransactionForm.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Modals_&_Prescriptions
+---
+
 # useTransactionForm()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/hooks/useTransactionForm.js
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[TransactionModal()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
+- [[useTransactionForm.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[useTransactionForm.js|useTransactionForm.js]] (contains)
-- --> [[toInputDateTime()|toInputDateTime()]] (calls)
-- <-- [[TransactionModal()|TransactionModal()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/INFERRED #community/Modals_&_Prescriptions

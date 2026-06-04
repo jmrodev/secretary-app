@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/medications/AddMedicationForm.jsx"
+type: "code"
+community: "Community 238"
+location: "L19"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_238
+---
+
 # AddMedicationForm()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/AddMedicationForm.jsx
-- **Comunidad:** [[_COMMUNITY_Community 235]]
+## Connections
+- [[AddMedicationForm.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[AddMedicationForm.jsx|AddMedicationForm.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AddMedicationForm.jsx|AddMedicationForm.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_238

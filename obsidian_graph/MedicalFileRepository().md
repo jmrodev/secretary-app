@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/lists/MedicalFileRepository.jsx"
+type: "code"
+community: "Community 177"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_177
+---
+
 # MedicalFileRepository()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicalFileRepository.jsx
-- **Comunidad:** [[_COMMUNITY_Community 175]]
+## Connections
+- [[MedicalFileRepository.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicalFileRepository.jsx|MedicalFileRepository.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicalFileRepository.jsx|MedicalFileRepository.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_177

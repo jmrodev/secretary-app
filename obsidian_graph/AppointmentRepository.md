@@ -1,42 +1,39 @@
+---
+source_file: "server/repositories/appointments/appointmentRepository.js"
+type: "code"
+community: "Database Utils & Repositories"
+location: "L4"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Database_Utils_&_Repositories
+---
+
 # AppointmentRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/appointmentRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 1]]
+## Connections
+- [[.addRecentlyFreedSlot()]] - `method` [EXTRACTED]
+- [[.callSpBookAppointment()]] - `method` [EXTRACTED]
+- [[.callSpGetFreeSlots()]] - `method` [EXTRACTED]
+- [[.create()_6]] - `method` [EXTRACTED]
+- [[.createOverwrittenReservation()]] - `method` [EXTRACTED]
+- [[.delete()_4]] - `method` [EXTRACTED]
+- [[.deleteFromRecentlyFreedSlots()]] - `method` [EXTRACTED]
+- [[.findAllDetailed()]] - `method` [EXTRACTED]
+- [[.findByDoctorAndDateForSync()]] - `method` [EXTRACTED]
+- [[.findByGoogleEventId()]] - `method` [EXTRACTED]
+- [[.findById()_4]] - `method` [EXTRACTED]
+- [[.findByPatientId()]] - `method` [EXTRACTED]
+- [[.findBySlot()]] - `method` [EXTRACTED]
+- [[.findForAudit()]] - `method` [EXTRACTED]
+- [[.findInRange()]] - `method` [EXTRACTED]
+- [[.findLastByPatientId()]] - `method` [EXTRACTED]
+- [[.findMonthlyAppointments()]] - `method` [EXTRACTED]
+- [[.findTomorrowAppointments()]] - `method` [EXTRACTED]
+- [[.getDailySchedule()_1]] - `method` [EXTRACTED]
+- [[.getHistory()]] - `method` [EXTRACTED]
+- [[.searchAppointments()]] - `method` [EXTRACTED]
+- [[.update()_3]] - `method` [EXTRACTED]
+- [[appointmentRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[appointmentRepository.js|appointmentRepository.js]] (contains)
-- --> [[.findById()|.findById()]] (method)
-- --> [[.findBySlot()|.findBySlot()]] (method)
-- --> [[.create()|.create()]] (method)
-- --> [[.update()|.update()]] (method)
-- --> [[.delete()|.delete()]] (method)
-- --> [[.deleteFromRecentlyFreedSlots()|.deleteFromRecentlyFreedSlots()]] (method)
-- --> [[.addRecentlyFreedSlot()|.addRecentlyFreedSlot()]] (method)
-- --> [[.createOverwrittenReservation()|.createOverwrittenReservation()]] (method)
-- --> [[.getHistory()|.getHistory()]] (method)
-- --> [[.findMonthlyAppointments()|.findMonthlyAppointments()]] (method)
-- --> [[.findByDoctorAndDateForSync()|.findByDoctorAndDateForSync()]] (method)
-- --> [[.findLastByPatientId()|.findLastByPatientId()]] (method)
-- --> [[.findByGoogleEventId()|.findByGoogleEventId()]] (method)
-- --> [[.findAllDetailed()|.findAllDetailed()]] (method)
-- --> [[.findForAudit()|.findForAudit()]] (method)
-- --> [[.findInRange()|.findInRange()]] (method)
-- --> [[.findByPatientId()|.findByPatientId()]] (method)
-- --> [[.getStats()|.getStats()]] (method)
-- --> [[.getAppointmentSummaryStats()|.getAppointmentSummaryStats()]] (method)
-- --> [[.getAppointmentDebt()|.getAppointmentDebt()]] (method)
-- --> [[.getTotalDebt()|.getTotalDebt()]] (method)
-- --> [[.findTomorrowAppointments()|.findTomorrowAppointments()]] (method)
-
-## Miembros de la misma Comunidad
-- [[sqlUtils.js|sqlUtils.js]]
-- [[filterValidColumns()|filterValidColumns()]]
-- [[buildUpdateQuery()|buildUpdateQuery()]]
-- [[buildInsertQuery()|buildInsertQuery()]]
-- [[licenseRepository.js|licenseRepository.js]]
-- [[LicenseRepository|LicenseRepository]]
-- [[.findById()|.findById()]]
-- [[.findAll()|.findAll()]]
-- [[.countAll()|.countAll()]]
-- [[.create()|.create()]]
+#graphify/code #graphify/EXTRACTED #community/Database_Utils_&_Repositories

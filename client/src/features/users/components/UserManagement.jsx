@@ -11,6 +11,7 @@ import Modal from '@/components/molecules/Modal';
 // Feature Components
 import UserTable from '@/features/users/components/UserTable';
 import UserForm from '@/features/users/components/UserForm';
+import styles from './UserManagement.module.css';
 
 const EMPTY_EXCLUDE = [];
 
@@ -83,7 +84,7 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
     );
 
     return (
-        <div className="user-management-organism">
+        <div className={`${styles.userManagementOrganism}`}>
             <section className="action-bar">
                 <div className="action-bar__search">
                     <div className="search-box__wrapper">
@@ -105,9 +106,9 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
                 </div>
             </section>
 
-            <Card className="user-management__table-container">
+            <Card className={`${styles.tableContainer}`}>
                 {loading ? (
-                    <div className="user-management__loader">{t('loading_users')}</div>
+                    <div className={`${styles.loader}`}>{t('loading_users')}</div>
                 ) : (
                     <UserTable
                         users={filteredUsers}

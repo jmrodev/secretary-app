@@ -1,15 +1,17 @@
+---
+source_file: "whatsapp-bridge-go/main.go"
+type: "code"
+community: "Community 69"
+location: "L66"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_69
+---
+
 # SendRequest
 
-- **Tipo:** code
-- **Archivo:** whatsapp-bridge-go/main.go
-- **Comunidad:** [[_COMMUNITY_Community 64]]
+## Connections
+- [[main.go]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[main.go|main.go]] (contains)
-
-## Miembros de la misma Comunidad
-- [[main.go|main.go]]
-- [[eventHandler()|eventHandler()]]
-- [[handleSend()|handleSend()]]
-- [[handleStatus()|handleStatus()]]
-- [[main()|main()]]
+#graphify/code #graphify/EXTRACTED #community/Community_69

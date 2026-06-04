@@ -1,38 +1,52 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
 import { formatDate, formatTime, formatDateTimeLong } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
-import './AppointmentCard.css';
+import styles from './AppointmentCard.module.css';
 
 /**
  * AppointmentCard Molecule (Internal to feature).
  * Compact representation of an appointment for lists and timelines.
  */
-const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction }) => {
+const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction, isLoading = false }) => {
     const { t } = useLanguage();
-    const [clientTime, setClientTime] = React.useState('');
+    
+    // --- Derived State during render (No Effects needed) ---
+    const clientTime = (!isLoading && appt?.appointment_date) 
+        ? formatTime(appt.appointment_date, { hour12: false }) 
+        : '';
+        
+    const rescheduledDate = (!isLoading && appt?.rescheduled_from_date) 
+        ? formatDate(appt.rescheduled_from_date) 
+        : '';
+        
+    const rescheduledFull = (!isLoading && appt?.rescheduled_from_date) 
+        ? formatDateTimeLong(appt.rescheduled_from_date) 
+        : '';
 
-    React.useEffect(() => {
-        if (appt.appointment_date) {
-            setClientTime(formatTime(appt.appointment_date, { hour12: false }));
-        }
-    }, [appt.appointment_date]);
+    // --- Conditional Render AFTER Hooks ---
+    if (isLoading) {
+        return (
+            <div className={`${styles.root} ${styles.skeleton}`}>
+                <div className={`${styles.info}`}>
+                    <div className={`${styles.patientName}`}>Loading…</div>
+                    <div className={`${styles.details}`}>
+                        <span className={`${styles.timeLine}`}>00:00</span>
+                        <span className={`${styles.doctor}`}>Loading details…</span>
+                    </div>
+                </div>
+                <div className={`${styles.status}`}>
+                    <div className={`${styles.statusChip}`}>…</div>
+                </div>
+            </div>
+        );
+    }
 
+    // --- Standard Logic ---
     const isExternal = appt.source === 'google' || appt.source === 'google-incomplete' || appt.status === 'external';
     const isAnonymous = !appt.patient_id;
-
-    const [rescheduledDate, setRescheduledDate] = React.useState('');
-    const [rescheduledFull, setRescheduledFull] = React.useState('');
-
-    React.useEffect(() => {
-        if (appt.rescheduled_from_date) {
-            setRescheduledDate(formatDate(appt.rescheduled_from_date));
-            setRescheduledFull(formatDateTimeLong(appt.rescheduled_from_date));
-        }
-    }, [appt.rescheduled_from_date]);
 
     const handleKeyDown = (e) => {
         if (onClick && (e.key === 'Enter' || e.key === ' ')) {
@@ -41,54 +55,60 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
         }
     };
 
+    const cardClasses = [
+        styles.root,
+        appt.status && styles[appt.status.toLowerCase()],
+        appt.type === 'virtual' && styles.virtual,
+        isExternal && styles.external,
+        isAnonymous && styles.anonymous
+    ].filter(Boolean).join(' ');
+
     return (
         <div
-            className={`appointment-card appointment-card--${appt.status} ${appt.type === 'virtual' ? 'appointment-card--virtual' : ''} ${isExternal ? 'appointment-card--external' : ''} ${isAnonymous ? 'appointment-card--anonymous' : ''}`}
+            className={cardClasses}
             onClick={onClick}
             onKeyDown={handleKeyDown}
             role="button"
             tabIndex={0}
         >
-            <div className="appointment-card__time-box">
-                <span className="appointment-card__time">
-                    {clientTime}
-                </span>
+            <div className={`${styles.timeLineTop}`}>
+                {clientTime}
             </div>
-
-            <div className="appointment-card__info">
-                <div className="appointment-card__patient-name">
+            <div className={`${styles.info}`}>
+                <div className={`${styles.patientName}`}>
                     {appt.type === 'virtual' && <Icon name="videocam" size="1.1rem" />}
-                    <span className="appointment-card__patient-name-text">
-                        {appt.patient_name || 'S/N'}
-                    </span>
+                    <div className={`${styles.patientNameText}`}>
+                        {(appt.patient_name || 'S/N').split(' ').map((part, index) => (
+                            <span key={index} className={index === 0 ? styles.surname : styles.givenName}>
+                                {part}
+                            </span>
+                        ))}
+                    </div>
                     {appt.attended_appointments > 0 && (
                         <Badge 
                             variant="success" 
-                            className="appointment-card__visit-count" 
+                            className={styles.visitCount} 
                             title={`${t('attended_appointments') || 'Visitas'}: ${appt.attended_appointments}`}
                         >
                             <Icon name="history" size="0.9rem" /> {appt.attended_appointments}
                         </Badge>
                     )}
                 </div>
-                {appt.patient_phone && (
-                    <Button
-                        to={`tel:${String(appt.patient_phone).replace(/[^0-9+]/g, '')}`}
-                        variant="phone" size="sm" className="appointment-card__phone"
-                        onClick={(e) => e.stopPropagation()}
-                        icon={<Icon name="call" size="0.9rem" />}
-                    >
-                        {appt.patient_phone}
-                    </Button>
-                )}
-                <div className="appointment-card__details">
-                    <span className="appointment-card__doctor">
-                        <Icon name="person" size="1rem" />
+                
+                <div className={`${styles.details}`}>
+                    <span className={`${styles.doctor}`}>
                         {appt.doctor_name}
                     </span>
-                    {appt.reason && <span className="appointment-card__reason">• {appt.reason}</span>}
+                    {(appt.reason_for_visit || appt.notes) && (
+                        <span className={`${styles.reason}`}>
+                            <Icon name="event_note" size="1rem" />
+                            <span className={`${styles.reasonText}`}>
+                                {appt.reason_for_visit || appt.notes}
+                            </span>
+                        </span>
+                    )}
                     {appt.rescheduled_from_date && (
-                        <span className="appointment-card__rescheduled-info" title={`Reprogramado del ${rescheduledFull}`}>
+                        <span className={styles.rescheduledInfo} title={`Reprogramado del ${rescheduledFull}`}>
                             <Icon name="history" size="0.9rem" />
                             {rescheduledDate}
                         </span>
@@ -96,7 +116,7 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                 </div>
             </div>
 
-            <div className="appointment-card__status">
+            <div className={`${styles.status}`}>
                 {(() => {
                     const isAttended = ['arrived', 'attended', 'completed'].includes(appt.status);
                     const paid = Number(appt.paid_amount || 0);
@@ -110,9 +130,9 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
 
                     if (appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') {
                         return (
-                            <div className="appointment-card__payment-info appointment-card__payment-info--bonified">
+                            <div className={`${styles.paymentInfo} ${styles.paymentInfoBonified}`}>
                                 <span>{t('bonified') || 'Bonif.'}</span>
-                                <Icon name="verified" className="appointment-card__payment-icon" />
+                                <Icon name="verified" className={styles.paymentIcon} />
                             </div>
                         );
                     }
@@ -126,44 +146,29 @@ const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction 
                     if (paid >= effectiveTotal && effectiveTotal > 0) {
                         colorModifier = 'paid';
                         amountToDisplay = paid;
-                        statusIcon = <Icon name="check_circle" className="appointment-card__payment-icon" />;
+                        statusIcon = <Icon name="check_circle" className={styles.paymentIcon} />;
                     } else if (!isAttended) {
                         colorModifier = 'pending';
                     } else if (pending > 0 || (!hasTransactions && cost > 0)) {
                         colorModifier = 'debt';
                         amountToDisplay = pending > 0 ? pending : cost;
-                        statusIcon = <Icon name="error" className="appointment-card__payment-icon" />;
+                        statusIcon = <Icon name="error" className={styles.paymentIcon} />;
                     }
 
                     if (amountToDisplay === 0) return null;
 
                     return (
-                        <div className={`appointment-card__payment-info appointment-card__payment-info--${colorModifier}`}>
+                        <div className={`${styles.paymentInfo} ${styles['paymentInfo' + colorModifier.charAt(0).toUpperCase() + colorModifier.slice(1)]}`}>
                             <span>{formatCurrency(amountToDisplay)}</span>
                             {statusIcon}
                         </div>
                     );
                 })()}
 
-                <span className={`appointment-card__status-chip appointment-card__status-chip--${appt.status}`}>
+                <span className={`${styles.statusChip} ${styles['statusChip' + appt.status.charAt(0).toUpperCase() + appt.status.slice(1)]}`}>
                     {t(appt.status) || appt.status}
                 </span>
             </div>
-
-            {showActions && appt.status !== 'completed' && (
-                <div className="appointment-card__actions">
-                    <Button
-                        variant="ghost" size="sm-compact"
-                        onClick={(e) => { e.stopPropagation(); onWhatsAppAction(appt, 'reminder'); }}
-                        className="appointment-card__action-btn" icon={<Icon name="send" />}
-                    />
-                    <Button
-                        variant="ghost" size="sm-compact"
-                        onClick={(e) => { e.stopPropagation(); onWhatsAppAction(appt, 'confirmation'); }}
-                        className="appointment-card__action-btn" icon={<Icon name="auto_awesome" />}
-                    />
-                </div>
-            )}
         </div>
     );
 };

@@ -5,7 +5,7 @@ import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import { InstitutionFinances } from '@/features/finances';
 import { useInstitutionsController, InstitutionFormModal } from '@/features/institutions/index';
-import './InstitutionsPage.css';
+import styles from './InstitutionsPage.module.css';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
@@ -32,19 +32,13 @@ const InstitutionsPage = () => {
         handleInputChange,
     } = handlers;
 
-    const [selectedInstId, setSelectedInstId] = React.useState('');
+    const [_selectedInstId, setSelectedInstId] = React.useState('');
+    const selectedInstId = _selectedInstId || (institutions.length > 0 ? String(institutions[0].id) : '');
     const [viewMode, setViewMode] = React.useState('transactions');
-
-    // Sync selectedInstId with institutions list if not set
-    React.useEffect(() => {
-        if (!selectedInstId && institutions.length > 0) {
-            setSelectedInstId(String(institutions[0].id));
-        }
-    }, [institutions, selectedInstId]);
 
     return (
         <MainLayout wide flush title={t('institutions') || 'Instituciones'}>
-            <div className="institutions-page-orchestrator">
+            <div className={`${styles.institutionsPageOrchestrator}`}>
                 <div className="layout-content-area animate-fade-in">
                     {loading && institutions.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />

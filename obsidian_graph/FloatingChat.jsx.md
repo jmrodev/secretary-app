@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/chat/components/sections/FloatingChat.jsx"
+type: "code"
+community: "Android Messaging"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Android_Messaging
+---
+
 # FloatingChat.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/chat/components/FloatingChat.jsx
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[FloatingChat()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[FloatingChat()|FloatingChat()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
+#graphify/code #graphify/EXTRACTED #community/Android_Messaging

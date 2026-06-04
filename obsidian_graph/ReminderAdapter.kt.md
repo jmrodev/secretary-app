@@ -1,21 +1,18 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/ui/ReminderAdapter.kt"
+type: "code"
+community: "Community 31"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_31
+---
+
 # ReminderAdapter.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/ui/ReminderAdapter.kt
-- **Comunidad:** [[_COMMUNITY_Community 30]]
+## Connections
+- [[ReminderAdapter]] - `contains` [EXTRACTED]
+- [[ViewHolder_1]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ReminderAdapter|ReminderAdapter]] (contains)
-- --> [[ViewHolder|ViewHolder]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RemindersActivity.kt|RemindersActivity.kt]]
-- [[RemindersActivity|RemindersActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.loadReminders()|.loadReminders()]]
-- [[ReminderAdapter|ReminderAdapter]]
-- [[ViewHolder|ViewHolder]]
-- [[.onCreateViewHolder()|.onCreateViewHolder()]]
-- [[.onBindViewHolder()|.onBindViewHolder()]]
-- [[.safeParse()|.safeParse()]]
-- [[.getItemCount()|.getItemCount()]]
+#graphify/code #graphify/EXTRACTED #community/Community_31

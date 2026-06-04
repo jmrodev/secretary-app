@@ -23,14 +23,60 @@ class FinanceService {
                 else data.type = 'income';
             }
 
-            const transactionId = await transactionRepository.callSpCreateTransaction({
-                ...data,
-                related_user_id: data.related_user_id || data.patientUserId || null,
-                transaction_date: finalDate
-            }, connection);
+            let relatedUserId = data.related_user_id || data.patientUserId || null;
+            if (!relatedUserId && (data.patient_id || data.patientId)) {
+                try {
+                    relatedUserId = await patientRepository.findUserIdById(data.patient_id || data.patientId, connection);
+                } catch (err) {
+                    console.warn(`[FinanceService] Failed to find patient user ID: ${err.message}`);
+                }
+            }
+
+            let lastTransactionId = null;
+            let paymentsList = [];
+
+            if (data.payments && Array.isArray(data.payments) && data.payments.length > 0) {
+                paymentsList = data.payments;
+            } else if (data.amount !== undefined && data.amount !== null && data.amount !== '') {
+                paymentsList = [{ amount: data.amount, method: data.method || 'cash' }];
+            }
+
+            if (paymentsList.length > 0) {
+                for (const payment of paymentsList) {
+                    const paymentAmount = parseFloat(payment.amount);
+                    if (isNaN(paymentAmount) || paymentAmount <= 0) continue;
+                    
+                    lastTransactionId = await transactionRepository.callSpCreateTransaction({
+                        ...data,
+                        amount: paymentAmount,
+                        method: payment.method || 'cash',
+                        related_user_id: relatedUserId,
+                        transaction_date: finalDate
+                    }, connection);
+                }
+            } else {
+                lastTransactionId = await transactionRepository.callSpCreateTransaction({
+                    ...data,
+                    related_user_id: relatedUserId,
+                    transaction_date: finalDate
+                }, connection);
+            }
+
+            // Handle debt_amount if present and positive
+            const debtAmount = parseFloat(data.debt_amount);
+            if (!isNaN(debtAmount) && debtAmount > 0) {
+                await transactionRepository.callSpCreateTransaction({
+                    ...data,
+                    amount: debtAmount,
+                    status: 'pending',
+                    description: data.description ? `${data.description} (Saldo Pendiente)` : 'Saldo Pendiente',
+                    related_user_id: relatedUserId,
+                    transaction_date: finalDate
+                }, connection);
+            }
 
             if (!conn) await connection.commit();
-            return transactionId;
+            return lastTransactionId;
         } catch (err) {
             if (!conn) await connection.rollback();
             throw err;

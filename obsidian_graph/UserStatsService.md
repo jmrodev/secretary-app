@@ -1,13 +1,18 @@
+---
+source_file: "server/services/system/userStatsService.js"
+type: "code"
+community: "Community 117"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_117
+---
+
 # UserStatsService
 
-- **Tipo:** code
-- **Archivo:** server/services/userStatsService.js
-- **Comunidad:** [[_COMMUNITY_Community 109]]
+## Connections
+- [[.getStats()]] - `method` [EXTRACTED]
+- [[userStatsService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[userStatsService.js|userStatsService.js]] (contains)
-- --> [[.getStats()|.getStats()]] (method)
-
-## Miembros de la misma Comunidad
-- [[userStatsService.js|userStatsService.js]]
-- [[.getStats()|.getStats()]]
+#graphify/code #graphify/EXTRACTED #community/Community_117

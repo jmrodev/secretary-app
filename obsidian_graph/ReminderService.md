@@ -1,15 +1,19 @@
+---
+source_file: "server/services/communication/reminderService.js"
+type: "code"
+community: "Community 91"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_91
+---
+
 # ReminderService
 
-- **Tipo:** code
-- **Archivo:** server/services/reminderService.js
-- **Comunidad:** [[_COMMUNITY_Community 86]]
+## Connections
+- [[.completeReminder()]] - `method` [EXTRACTED]
+- [[.getRemindersForUser()]] - `method` [EXTRACTED]
+- [[reminderService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[reminderService.js|reminderService.js]] (contains)
-- --> [[.getRemindersForUser()|.getRemindersForUser()]] (method)
-- --> [[.completeReminder()|.completeReminder()]] (method)
-
-## Miembros de la misma Comunidad
-- [[reminderService.js|reminderService.js]]
-- [[.getRemindersForUser()|.getRemindersForUser()]]
-- [[.completeReminder()|.completeReminder()]]
+#graphify/code #graphify/EXTRACTED #community/Community_91

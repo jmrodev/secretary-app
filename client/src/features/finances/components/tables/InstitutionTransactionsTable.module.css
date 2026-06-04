@@ -1,0 +1,156 @@
+
+/* InstitutionTransactionsTable Molecule Styles (BEM) */
+
+.root {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    padding: 1.25rem 1.5rem;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.badge {
+    background: var(--gray-200);
+    color: var(--text-muted);
+    padding: 0.125rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.actions {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.viewToggle {
+    display: flex;
+    background: var(--gray-100);
+    padding: 0.2rem;
+    border-radius: var(--radius-sm);
+    gap: 0.2rem;
+}
+
+.wrapper {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    background-color: white;
+    border-bottom: 2px solid var(--gray-100);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--gray-50);
+    font-size: 0.875rem;
+    color: var(--text-main);
+    vertical-align: middle;
+}
+
+.trPending td {
+    background-color: var(--red-50);
+}
+
+.trSelected td {
+    background-color: var(--blue-50);
+}
+
+.trSelected {
+    outline: 2px solid var(--blue-400);
+    outline-offset: -2px;
+}
+
+.table tr:hover:not(.trSelected) td {
+    background-color: var(--gray-50);
+}
+
+.cellRight {
+    text-align: right;
+}
+
+.cellCenter {
+    text-align: center;
+}
+
+.patientLink {
+    font-weight: 700;
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.patientLink:hover {
+    color: var(--blue-700);
+    text-decoration: underline;
+}
+
+.amountBold {
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.ageBadge {
+    padding: 0.125rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+}
+
+.ageBadgeWarning {
+    background-color: var(--warning-bg, #fef3c7);
+    color: var(--warning-text, #92400e);
+}
+
+.ageBadgeCritical {
+    background-color: var(--error-bg, #fee2e2);
+    color: var(--error, #b91c1c);
+}
+
+.textMuted {
+    color: var(--text-muted);
+}
+
+.empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+}

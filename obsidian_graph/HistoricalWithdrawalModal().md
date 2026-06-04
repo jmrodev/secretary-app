@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/modals/HistoricalWithdrawalModal.jsx"
+type: "code"
+community: "Community 219"
+location: "L16"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_219
+---
+
 # HistoricalWithdrawalModal()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/HistoricalWithdrawalModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 216]]
+## Connections
+- [[HistoricalWithdrawalModal.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[HistoricalWithdrawalModal.jsx|HistoricalWithdrawalModal.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[HistoricalWithdrawalModal.jsx|HistoricalWithdrawalModal.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_219

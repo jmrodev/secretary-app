@@ -1,24 +1,20 @@
+---
+source_file: "client/src/features/config/components/sections/BillingSettings.jsx"
+type: "code"
+community: "Medical Requests & History"
+location: "L15"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Medical_Requests_&_History
+---
+
 # BillingSettings()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/BillingSettings.jsx
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[BillingSettings.jsx]] - `contains` [EXTRACTED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[BillingSettings.jsx|BillingSettings.jsx]] (contains)
-- <-- [[BillingSettings.jsx|BillingSettings.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/INFERRED #community/Medical_Requests_&_History

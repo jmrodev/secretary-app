@@ -1,21 +1,22 @@
+---
+source_file: "server/services/system/temporaryAccessService.js"
+type: "code"
+community: "Community 57"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_57
+---
+
 # TemporaryAccessService
 
-- **Tipo:** code
-- **Archivo:** server/services/temporaryAccessService.js
-- **Comunidad:** [[_COMMUNITY_Community 47]]
+## Connections
+- [[._createNewPatient()]] - `method` [EXTRACTED]
+- [[._updateExistingPatient()]] - `method` [EXTRACTED]
+- [[.completeProfile()]] - `method` [EXTRACTED]
+- [[.generateToken()]] - `method` [EXTRACTED]
+- [[.verifyToken()]] - `method` [EXTRACTED]
+- [[temporaryAccessService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[temporaryAccessService.js|temporaryAccessService.js]] (contains)
-- --> [[.generateToken()|.generateToken()]] (method)
-- --> [[.verifyToken()|.verifyToken()]] (method)
-- --> [[.completeProfile()|.completeProfile()]] (method)
-- --> [[._updateExistingPatient()|._updateExistingPatient()]] (method)
-- --> [[._createNewPatient()|._createNewPatient()]] (method)
-
-## Miembros de la misma Comunidad
-- [[temporaryAccessService.js|temporaryAccessService.js]]
-- [[.generateToken()|.generateToken()]]
-- [[.verifyToken()|.verifyToken()]]
-- [[.completeProfile()|.completeProfile()]]
-- [[._updateExistingPatient()|._updateExistingPatient()]]
-- [[._createNewPatient()|._createNewPatient()]]
+#graphify/code #graphify/EXTRACTED #community/Community_57

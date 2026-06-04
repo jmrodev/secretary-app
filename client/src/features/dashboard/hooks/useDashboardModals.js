@@ -1,13 +1,17 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '@/utils/core/dateUtils';
 
 export const useDashboardModals = () => {
     const navigate = useNavigate();
 
     const [actionModal, setActionModal] = useState({ open: false, appt: null });
     const [historyModal, setHistoryModal] = useState({ open: false, patientId: null, patientName: '' });
-    const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientName: '', medications: '', instructions: '' });
+    const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientId: null, patientName: '', medications: '', instructions: '' });
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {}, apptId: null });
+    const [newRequestModal, setNewRequestModal] = useState({ open: false });
+
+    const handleOpenNewRequest = useCallback(() => setNewRequestModal({ open: true }), []);
 
     const handleOpenPayment = useCallback((appt) => {
         setPaymentModal({
@@ -20,7 +24,7 @@ export const useDashboardModals = () => {
                 patientDni: appt.patient_dni,
                 patientUserId: appt.patient_user_id,
                 doctorId: appt.doctor_id,
-                description: `Payment for appointment on ${new Date(appt.appointment_date).toLocaleDateString()}`,
+                description: `Payment for appointment on ${formatDate(appt.appointment_date)}`,
                 apptId: appt.id
             },
             apptId: appt.id
@@ -41,6 +45,7 @@ export const useDashboardModals = () => {
         setPrescribeModal({
             open: true,
             apptId: appt.id,
+            patientId: appt.patientId || appt.patient_id,
             patientName: appt.patient_name,
             medications: '',
             instructions: ''
@@ -65,16 +70,18 @@ export const useDashboardModals = () => {
         historyModal, setHistoryModal,
         prescribeModal, setPrescribeModal,
         paymentModal, setPaymentModal,
+        newRequestModal, setNewRequestModal,
         handleOpenPayment,
         handleOpenHistory,
         handleOpenPrescribe,
         handleOpenReschedule,
         handleOpenSync,
         handleHardEdit,
+        handleOpenNewRequest,
         navigate
     }), [
-        actionModal, historyModal, prescribeModal, paymentModal,
+        actionModal, historyModal, prescribeModal, paymentModal, newRequestModal,
         handleOpenPayment, handleOpenHistory, handleOpenPrescribe,
-        handleOpenReschedule, handleOpenSync, handleHardEdit, navigate
+        handleOpenReschedule, handleOpenSync, handleHardEdit, handleOpenNewRequest, navigate
     ]);
 };

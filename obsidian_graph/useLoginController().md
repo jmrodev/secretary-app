@@ -1,23 +1,20 @@
+---
+source_file: "client/src/features/auth/hooks/useLoginController.js"
+type: "code"
+community: "Android Messaging"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Android_Messaging
+---
+
 # useLoginController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/hooks/useLoginController.js
-- **Comunidad:** [[_COMMUNITY_Community 6]]
+## Connections
+- [[LoginForm()]] - `calls` [INFERRED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useLoginController.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useAuth()|useAuth()]] (calls)
-- <-- [[useLoginController.js|useLoginController.js]] (contains)
-- <-- [[LoginForm()|LoginForm()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[RequestsPage.jsx|RequestsPage.jsx]]
-- [[RequestsPage()|RequestsPage()]]
-- [[useMedicalRequest.js|useMedicalRequest.js]]
-- [[useMedicalRequest()|useMedicalRequest()]]
-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]]
-- [[MedicalRequestForm()|MedicalRequestForm()]]
-- [[MedicalRequestList.jsx|MedicalRequestList.jsx]]
-- [[MedicalRequestList()|MedicalRequestList()]]
-- [[MedicalHistoryTable.jsx|MedicalHistoryTable.jsx]]
-- [[MedicalHistoryTable()|MedicalHistoryTable()]]
+#graphify/code #graphify/INFERRED #community/Android_Messaging

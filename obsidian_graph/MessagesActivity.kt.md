@@ -1,20 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/MessagesActivity.kt"
+type: "code"
+community: "Android Main Activity"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Android_Main_Activity
+---
+
 # MessagesActivity.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/MessagesActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 5]]
+## Connections
+- [[MessagesActivity]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MessagesActivity|MessagesActivity]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ComposeMessageActivity.kt|ComposeMessageActivity.kt]]
-- [[ComposeMessageActivity|ComposeMessageActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.setupRecipientTypeSpinner()|.setupRecipientTypeSpinner()]]
-- [[.loadRecipients()|.loadRecipients()]]
-- [[.setupListeners()|.setupListeners()]]
-- [[.sendBroadcast()|.sendBroadcast()]]
-- [[MessagesActivity|MessagesActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.setupRecyclerView()|.setupRecyclerView()]]
+#graphify/code #graphify/EXTRACTED #community/Android_Main_Activity

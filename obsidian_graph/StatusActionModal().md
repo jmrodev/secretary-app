@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/modals/StatusActionModal.jsx"
+type: "code"
+community: "Community 157"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_157
+---
+
 # StatusActionModal()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/StatusActionModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 152]]
+## Connections
+- [[StatusActionModal.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[StatusActionModal.jsx|StatusActionModal.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[StatusActionModal.jsx|StatusActionModal.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_157

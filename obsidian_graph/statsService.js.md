@@ -1,11 +1,17 @@
+---
+source_file: "server/services/finance/statsService.js"
+type: "code"
+community: "Community 139"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_139
+---
+
 # statsService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/finance/statsService.js
-- **Comunidad:** [[_COMMUNITY_Community 129]]
+## Connections
+- [[populateData()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[populateData()|populateData()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[populateData()|populateData()]]
+#graphify/code #graphify/EXTRACTED #community/Community_139

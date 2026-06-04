@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/reports/components/tables/CertificateReportTable.jsx"
+type: "code"
+community: "Community 259"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_259
+---
+
 # CertificateReportTable.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/components/CertificateReportTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 260]]
+## Connections
+- [[CertificateReportTable()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[CertificateReportTable()|CertificateReportTable()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[CertificateReportTable()|CertificateReportTable()]]
+#graphify/code #graphify/EXTRACTED #community/Community_259

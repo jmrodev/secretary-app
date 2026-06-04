@@ -1,20 +1,17 @@
+---
+source_file: "server/services/communication/messageService.js"
+type: "code"
+community: "Community 27"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_27
+---
+
 # messageService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/messageService.js
-- **Comunidad:** [[_COMMUNITY_Community 26]]
+## Connections
+- [[MessageService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MessageService|MessageService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MessageService|MessageService]]
-- [[.sendMessage()|.sendMessage()]]
-- [[.getInbox()|.getInbox()]]
-- [[.getSent()|.getSent()]]
-- [[.getMessage()|.getMessage()]]
-- [[.markAsRead()|.markAsRead()]]
-- [[.deleteMessage()|.deleteMessage()]]
-- [[.getUnreadCount()|.getUnreadCount()]]
-- [[.getConversations()|.getConversations()]]
-- [[.getThread()|.getThread()]]
+#graphify/code #graphify/EXTRACTED #community/Community_27

@@ -1,26 +1,23 @@
+---
+source_file: "client/src/features/users/hooks/useUsers.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Modals_&_Prescriptions
+---
+
 # useUsers()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/users/hooks/useUsers.js
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[UserManagement()]] - `calls` [INFERRED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
+- [[usePatientsPageController()]] - `calls` [INFERRED]
+- [[useUsers.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[useUsers.js|useUsers.js]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-- <-- [[UserManagement()|UserManagement()]] (calls)
-- <-- [[usePatientsPageController()|usePatientsPageController()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
+#graphify/code #graphify/INFERRED #community/Modals_&_Prescriptions

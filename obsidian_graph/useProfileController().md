@@ -1,25 +1,22 @@
+---
+source_file: "client/src/features/auth/hooks/useProfileController.js"
+type: "code"
+community: "Community 13"
+location: "L11"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_13
+---
+
 # useProfileController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/hooks/useProfileController.js
-- **Comunidad:** [[_COMMUNITY_Community 12]]
+## Connections
+- [[ProfilePage()]] - `calls` [INFERRED]
+- [[ProfileSection()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[usePermissions()]] - `calls` [INFERRED]
+- [[useProfileController.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[ProfileSection()|ProfileSection()]] (calls)
-- <-- [[ProfilePage()|ProfilePage()]] (calls)
-- <-- [[useProfileController.js|useProfileController.js]] (contains)
-- --> [[usePermissions()|usePermissions()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[InstitutionsPage.jsx|InstitutionsPage.jsx]]
-- [[InstitutionsPage()|InstitutionsPage()]]
-- [[useInstitutionsController.js|useInstitutionsController.js]]
-- [[createInitialFormState()|createInitialFormState()]]
-- [[useInstitutionsController()|useInstitutionsController()]]
-- [[SystemConfigPage.jsx|SystemConfigPage.jsx]]
-- [[ProfileSection()|ProfileSection()]]
-- [[InstitutionsSection()|InstitutionsSection()]]
-- [[AuditLogsSection()|AuditLogsSection()]]
-- [[UserSection()|UserSection()]]
+#graphify/code #graphify/INFERRED #community/Community_13

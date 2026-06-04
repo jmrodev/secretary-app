@@ -1,0 +1,124 @@
+.root {
+    /* --- Local Component Tokens --- */
+    --badge-bg: var(--gray-800);
+    --badge-color: var(--gray-300);
+
+    /* ------------------------------ */
+
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border-radius: var(--radius-sm, 0.35rem);
+    background-color: var(--badge-bg);
+    color: var(--badge-color);
+    font-family: var(--font-manrope);
+    font-size: 0.6875rem;
+    font-weight: 800;
+    line-height: 1;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.interactive {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.interactive:hover {
+    opacity: 0.8;
+}
+
+.sm {
+    padding: 0.125rem 0.625rem;
+    font-size: 0.6875rem;
+}
+
+/* Variants - Tonal Layering Strategy for Dark Mode */
+.blue {
+    --badge-bg: var(--blue-800);
+    --badge-color: var(--blue-200);
+
+    border: 1px solid var(--blue-700);
+}
+
+.green,
+.success,
+.completed {
+    --badge-bg: var(--green-800);
+    --badge-color: var(--green-200);
+
+    border: 1px solid var(--green-700);
+}
+
+.red,
+.danger,
+.rejected {
+    --badge-bg: var(--red-800);
+    --badge-color: var(--red-200);
+
+    border: 1px solid var(--red-700);
+}
+
+.amber,
+.warning,
+.pending {
+    --badge-bg: var(--amber-700);
+    --badge-color: var(--amber-200);
+
+    border: 1px solid var(--amber-600);
+}
+
+.purple,
+.consult {
+    --badge-bg: var(--purple-800);
+    --badge-color: var(--purple-200);
+
+    border: 1px solid var(--purple-700);
+}
+
+.accent {
+    --badge-bg: var(--primary-color);
+    --badge-color: var(--text-main);
+
+    box-shadow: var(--shadow-sm);
+}
+
+/* Notification Badge (Counter) */
+.notification {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1rem;
+    height: 1rem;
+    padding: 0 0.25rem;
+    background: var(--red-500);
+    color: var(--text-main);
+    font-size: 0.625rem;
+    font-weight: 700;
+    border-radius: 9999px;
+    border: 2px solid var(--dashboard-card-bg);
+    line-height: 1;
+}
+
+/* Notification Badge Positions */
+.notification.topRight {
+    top: -0.25rem;
+    right: -0.25rem;
+}
+
+.notification.topLeft {
+    top: -0.25rem;
+    left: -0.25rem;
+}
+
+.notification.bottomRight {
+    bottom: -0.25rem;
+    right: -0.25rem;
+}
+
+.notification.bottomLeft {
+    bottom: -0.25rem;
+    left: -0.25rem;
+}

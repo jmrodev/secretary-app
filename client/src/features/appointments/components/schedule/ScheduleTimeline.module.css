@@ -1,0 +1,200 @@
+/* ScheduleTimeline Styles (BEM) - Dark Mode Standard */
+
+.root {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: 0.75rem;
+    padding: 1rem 0.75rem 2rem 0;
+    overflow: hidden auto;
+    flex: 1;
+    min-height: 0;
+    position: relative;
+}
+
+.currentTimeLine {
+    position: absolute;
+    top: -10px;
+    bottom: -10px;
+    width: 2px;
+    z-index: 50;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.currentTimeLineLabel {
+    position: absolute;
+    top: 0;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--white);
+    background: var(--danger);
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-sm, 0.35rem);
+    letter-spacing: 0.05em;
+    border: 1px solid rgb(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgb(220, 38, 38, 0.5);
+    white-space: nowrap;
+    transform: translateX(-50%);
+}
+
+.currentTimeLineBar {
+    width: 2px;
+    height: 100%;
+    margin-top: 20px;
+    background: linear-gradient(180deg, rgb(220, 38, 38, 0.8) 0%, rgb(220, 38, 38, 1) 50%, rgb(220, 38, 38, 0.8) 100%);
+    box-shadow: 0 0 8px rgb(220, 38, 38, 0.6);
+}
+
+.root::-webkit-scrollbar {
+    width: 6px;
+}
+
+.root::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.root::-webkit-scrollbar-thumb {
+    background: rgb(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.root::-webkit-scrollbar-thumb:hover {
+    background: rgb(255, 255, 255, 0.2);
+}
+
+/* --- Available / Empty Slot Card --- */
+.availableCard {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, rgb(255, 255, 255, 0.03), rgb(255, 255, 255, 0.01));
+    backdrop-filter: blur(16px);
+    border: 1px dashed rgb(255, 255, 255, 0.15);
+    border-radius: 0.75rem;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    width: 200px;
+    min-height: 185px;
+    padding: 0.75rem;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    flex: 0 0 auto;
+}
+
+.availableCard:hover {
+    border-style: solid;
+    border-color: rgb(255, 255, 255, 0.3);
+    background: rgb(255, 255, 255, 0.05);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.availableTimeTop {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgb(255, 255, 255, 0.05);
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.availableBody {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    gap: 0.5rem;
+    opacity: 0.6;
+    margin-top: 0.5rem;
+    min-height: 50px;
+}
+
+.availableCard:hover .availableBody {
+    opacity: 1;
+}
+
+.availableIcon {
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.availableCard:hover .availableIcon {
+    color: var(--primary-color);
+    transform: rotate(90deg);
+}
+
+.availableLabel {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+}
+
+.availableClosed {
+    background: rgb(249 55 93 / 3%);
+    border-color: rgb(249, 55, 93, 0.2);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.availableClosed:hover {
+    transform: none;
+    background: rgb(249 55 93 / 5%);
+    border-color: var(--danger);
+    box-shadow: none;
+}
+
+.availableClosed:hover .availableIcon {
+    transform: none;
+    color: var(--danger);
+}
+
+/* --- Google Blocked Card --- */
+.googleBlocked {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    width: 200px;
+    min-height: 185px;
+    background: rgb(255, 255, 255, 0.02);
+    border: 1px solid rgb(255, 255, 255, 0.05);
+    border-radius: 0.75rem;
+    color: var(--text-muted);
+    padding: 0.75rem;
+    flex: 0 0 auto;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.googleBlocked span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.googleBlocked span {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+}
+
+/* Past and closed slot modifiers for blocked placeholders */
+.slotClosed .googleBlocked {
+    opacity: 0.6;
+}
+
+.slotPast .googleBlocked {
+    opacity: 0.45;
+}

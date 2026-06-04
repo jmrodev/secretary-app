@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useCallback, useMemo } from 'react';
+import React, { useReducer, useEffect, useCallback, useMemo } from 'react';
 import api from '@/api/axios';
 
 const initialState = {
@@ -48,13 +48,17 @@ export const useConfigLogic = (user) => {
         }
     }, [user]);
 
-    useEffect(() => {
-        if (user) {
-            fetchSettings();
-        } else {
+    const onMountOrUserChange = React.useEffectEvent(() => {
+        if (!user) {
             dispatch({ type: 'SET_LOADING', payload: false });
+            return;
         }
-    }, [user, fetchSettings]);
+        fetchSettings();
+    });
+
+    useEffect(() => {
+        onMountOrUserChange();
+    }, [user]); // Now only depends on user change
 
     const updateSetting = useCallback(async (key, value) => {
         try {

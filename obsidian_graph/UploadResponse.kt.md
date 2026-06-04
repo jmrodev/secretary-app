@@ -1,11 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/model/UploadResponse.kt"
+type: "code"
+community: "Community 144"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_144
+---
+
 # UploadResponse.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/model/UploadResponse.kt
-- **Comunidad:** [[_COMMUNITY_Community 135]]
+## Connections
+- [[UploadResponse]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[UploadResponse|UploadResponse]] (contains)
-
-## Miembros de la misma Comunidad
-- [[UploadResponse|UploadResponse]]
+#graphify/code #graphify/EXTRACTED #community/Community_144

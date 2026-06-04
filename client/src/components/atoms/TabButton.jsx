@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
-import './TabButton.css';
+import styles from './TabButton.module.css';
 
 const TabButton = ({
     children,
@@ -10,7 +10,7 @@ const TabButton = ({
     activeColor = 'blue', // 'blue' | 'purple' | 'green' | 'amber' | 'default'
     className = ''
 }) => {
-    const baseClass = 'tab-btn';
+    const baseClass = styles.tabBtn;
 
     const variantClass = `${baseClass}--${variant}`;
     const colorClass = isActive ? `${baseClass}--${activeColor}` : '';

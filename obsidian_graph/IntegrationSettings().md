@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/config/components/sections/IntegrationSettings.jsx"
+type: "code"
+community: "Community 207"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_207
+---
+
 # IntegrationSettings()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/config/components/IntegrationSettings.jsx
-- **Comunidad:** [[_COMMUNITY_Community 198]]
+## Connections
+- [[IntegrationSettings.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[IntegrationSettings.jsx|IntegrationSettings.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[IntegrationSettings.jsx|IntegrationSettings.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_207

@@ -1,14 +1,18 @@
+---
+source_file: "client/src/context/LanguageProvider.jsx"
+type: "code"
+community: "Community 102"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_102
+---
+
 # LanguageProvider()
 
-- **Tipo:** code
-- **Archivo:** client/src/context/LanguageContext.jsx
-- **Comunidad:** [[_COMMUNITY_Community 98]]
+## Connections
+- [[LanguageProvider.jsx]] - `contains` [EXTRACTED]
+- [[useLanguageLogic()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[LanguageContext.jsx|LanguageContext.jsx]] (contains)
-- --> [[useLanguageLogic()|useLanguageLogic()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[LanguageContext.jsx|LanguageContext.jsx]]
-- [[useLanguageLogic.js|useLanguageLogic.js]]
-- [[useLanguageLogic()|useLanguageLogic()]]
+#graphify/code #graphify/EXTRACTED #community/Community_102

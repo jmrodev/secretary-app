@@ -1,11 +1,17 @@
+---
+source_file: "client/src/App.jsx"
+type: "code"
+community: "Community 147"
+location: "L17"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_147
+---
+
 # App()
 
-- **Tipo:** code
-- **Archivo:** client/src/App.jsx
-- **Comunidad:** [[_COMMUNITY_Community 138]]
+## Connections
+- [[App.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[App.jsx|App.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[App.jsx|App.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_147

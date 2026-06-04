@@ -1,14 +1,18 @@
+---
+source_file: "client/src/components/atoms/LiveClock.jsx"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # LiveClock()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/LiveClock.jsx
-- **Comunidad:** [[_COMMUNITY_Community 104]]
+## Connections
+- [[LiveClock.jsx]] - `contains` [EXTRACTED]
+- [[useLiveClock()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLiveClock()|useLiveClock()]] (calls)
-- <-- [[LiveClock.jsx|LiveClock.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLiveClock.js|useLiveClock.js]]
-- [[useLiveClock()|useLiveClock()]]
-- [[LiveClock.jsx|LiveClock.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

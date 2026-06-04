@@ -14,7 +14,7 @@ import DoctorFiscalSettings from '@/features/doctors/components/sections/DoctorF
 import DoctorMessagesForm from '@/features/doctors/components/sections/DoctorMessagesForm';
 import { UserForm } from '@/features/users';
 import { useDoctorFiscalController } from '@/features/doctors/hooks/useDoctorFiscalController';
-import './DoctorEditModal.css';
+import styles from './DoctorEditModal.module.css';
 
 const DoctorEditModal = ({
     isOpen,
@@ -72,19 +72,19 @@ const DoctorEditModal = ({
             }
         >
             {type === 'EDIT' && (
-                <div className="doctor-edit-modal__header-info animate-fade-in">
-                    <div className="doctor-edit-modal__avatar">
+                <div className={`${styles.headerInfo} animate-fade-in`}>
+                    <div className={`${styles.avatar}`}>
                         <Icon name="person" size="1.5rem" />
                     </div>
-                    <div className="doctor-edit-modal__doctor-info">
-                        <h4 className="doctor-edit-modal__doctor-name">{data.full_name}</h4>
-                        <p className="doctor-edit-modal__doctor-specialty">{data.specialty || t('no_specialty')}</p>
+                    <div className={`${styles.doctorInfo}`}>
+                        <h4 className={`${styles.doctorName}`}>{data.full_name}</h4>
+                        <p className={`${styles.doctorSpecialty}`}>{data.specialty || t('no_specialty')}</p>
                     </div>
                 </div>
             )}
 
             {type === 'EDIT' && (
-                <TabNav className="doctor-edit-modal__tabs">
+                <TabNav className={`${styles.tabs}`}>
                     {[
                         { id: 'tariffs', label: t('tariffs'), icon: 'payments' },
                         { id: 'schedule', label: t('schedule'), icon: 'calendar_today' },
@@ -97,7 +97,7 @@ const DoctorEditModal = ({
                             isActive={activeTab === tab.id}
                             onClick={() => onTabChange(tab.id)}
                         >
-                            <Icon name={tab.icon} size="1rem" className="doctor-edit-modal__tab-icon" />
+                            <Icon name={tab.icon} size="1rem" className={`${styles.tabIcon}`} />
                             {tab.label}
                         </TabButton>
                     ))}
@@ -105,7 +105,7 @@ const DoctorEditModal = ({
             )}
 
             {type === 'CREATE' && (
-                <div className="doctor-edit-modal__content animate-fade-in">
+                <div className={`${styles.content} animate-fade-in`}>
                     <UserForm
                         type="CREATE"
                         formData={data}
@@ -114,7 +114,7 @@ const DoctorEditModal = ({
                 </div>
             )}
             {type === 'EDIT' && (
-                <div className="doctor-edit-modal__content animate-fade-in">
+                <div className={`${styles.content} animate-fade-in`}>
                     {activeTab === 'tariffs' && (
                         <DoctorTariffsForm
                             data={data}
@@ -125,8 +125,8 @@ const DoctorEditModal = ({
                     )}
 
                     {activeTab === 'schedule' && (
-                        <div className="doctor-edit-modal__schedule-config">
-                            <div className="doctor-edit-modal__duration-grid">
+                        <div className={`${styles.scheduleConfig}`}>
+                            <div className={`${styles.durationGrid}`}>
                                 <FormGroup label="Duración Turno (min)">
                                     <Input
                                         type="number"
@@ -143,11 +143,11 @@ const DoctorEditModal = ({
                                 </FormGroup>
                             </div>
 
-                            <div className="doctor-edit-modal__overturn-section">
-                                <h4 className="doctor-edit-modal__overturn-title">
+                            <div className={`${styles.overturnSection}`}>
+                                <h4 className={`${styles.overturnTitle}`}>
                                     <Icon name="schedule" size="1rem" /> {t('overturn_range_title') || 'Horario Sobreturnos (Fuera de Horario)'}
                                 </h4>
-                                <div className="doctor-edit-modal__overturn-grid">
+                                <div className={`${styles.overturnGrid}`}>
                                     <FormGroup label={t('overturn_start_label') || 'Inicio Sobreturnos'}>
                                         <Input
                                             type="time"
@@ -163,13 +163,13 @@ const DoctorEditModal = ({
                                         />
                                     </FormGroup>
                                 </div>
-                                <div className="doctor-edit-modal__overturn-footer">
+                                <div className={`${styles.overturnFooter}`}>
                                     <Switch
                                         label={t('force_hour_alignment_label') || "Coordinar con minuto cero (:00)"}
                                         checked={data.force_hour_alignment}
                                         onChange={val => onChangeData({ force_hour_alignment: val })}
                                     />
-                                    <p className="doctor-edit-modal__overturn-help">
+                                    <p className={`${styles.overturnHelp}`}>
                                         {t('force_hour_alignment_help') || "Si un turno arranca 8:15, el siguiente será clavado a las 9:00, luego 10:00, etc."}
                                     </p>
                                 </div>

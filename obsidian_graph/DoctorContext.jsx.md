@@ -1,20 +1,17 @@
+---
+source_file: "client/src/context/DoctorContext.jsx"
+type: "code"
+community: "Community 13"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_13
+---
+
 # DoctorContext.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/context/DoctorContext.jsx
-- **Comunidad:** [[_COMMUNITY_Community 15]]
+## Connections
+- [[DoctorProvider()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[DoctorProvider()|DoctorProvider()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DoctorProvider()|DoctorProvider()]]
-- [[MedicalDocumentsPage.jsx|MedicalDocumentsPage.jsx]]
-- [[MedicalDocumentsPage()|MedicalDocumentsPage()]]
-- [[useRequirementManagerController.js|useRequirementManagerController.js]]
-- [[useRequirementManagerController()|useRequirementManagerController()]]
-- [[useMedicalDocumentsHandlers.js|useMedicalDocumentsHandlers.js]]
-- [[useMedicalDocumentsHandlers()|useMedicalDocumentsHandlers()]]
-- [[useMedicalDocumentsController.js|useMedicalDocumentsController.js]]
-- [[useMedicalDocumentsController()|useMedicalDocumentsController()]]
-- [[MedicalRequirementManager.jsx|MedicalRequirementManager.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_13

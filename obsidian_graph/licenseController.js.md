@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/medical/licenseController.js"
+type: "code"
+community: "Community 317"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_317
+---
+
 # licenseController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/medical/licenseController.js
-- **Comunidad:** [[_COMMUNITY_Community 325]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_317

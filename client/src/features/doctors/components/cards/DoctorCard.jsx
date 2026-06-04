@@ -1,72 +1,72 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import { formatPrice } from '@/utils/core/format';
-import './DoctorCard.css';
+import { formatCurrency } from '@/utils/core/format';
+import styles from './DoctorCard.module.css';
 
 const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
     return (
-        <article className="card doctor-card animate-fade-in">
-            <header className="doctor-card__header">
-                <div className="doctor-card__avatar">
+        <article className={`${styles.root} card animate-fade-in`}>
+            <header className={`${styles.header}`}>
+                <div className={`${styles.avatar}`}>
                     {doctor.full_name?.charAt(0).toUpperCase()}
                 </div>
-                <div className="doctor-card__info">
-                    <h3 className="doctor-card__name">
+                <div className={`${styles.info}`}>
+                    <h3 className={`${styles.name}`}>
                         {doctor.full_name}
                     </h3>
-                    <p className="doctor-card__specialty">
+                    <p className={`${styles.specialty}`}>
                         {doctor.specialty || t('general_physician') || 'Médico General'}
                     </p>
                 </div>
             </header>
 
-            <div className="doctor-card__details">
-                <div className="doctor-card__detail-item">
-                    <Icon name="phone" size="1rem" className="doctor-card__detail-icon" />
+            <div className={`${styles.details}`}>
+                <div className={`${styles.detailItem}`}>
+                    <Icon name="phone" size="1rem" className={`${styles.detailIcon}`} />
                     {doctor.phone ? (
                         <a
                             href={`tel:${doctor.phone.replace(/[^0-9+]/g, '')}`}
-                            className="doctor-card__phone-link"
+                            className={`${styles.phoneLink}`}
                             onClick={(e) => e.stopPropagation()}
                         >
                             {doctor.phone}
                         </a>
                     ) : (
-                        <span className="doctor-card__phone-empty">
+                        <span className={`${styles.phoneEmpty}`}>
                             {t('no_phone') || 'Sin teléfono'}
                         </span>
                     )}
                 </div>
-                <div className="doctor-card__detail-item">
-                    <Icon name="location_on" size="1rem" className="doctor-card__detail-icon" />
-                    <span className="doctor-card__office-label">
-                        {t('office') || 'Consultorio'}: <span className="doctor-card__office-value">{doctor.office_number || 'N/A'}</span>
+                <div className={`${styles.detailItem}`}>
+                    <Icon name="location_on" size="1rem" className={`${styles.detailIcon}`} />
+                    <span className={`${styles.officeLabel}`}>
+                        {t('office') || 'Consultorio'}: <span className={`${styles.officeValue}`}>{doctor.office_number || 'N/A'}</span>
                     </span>
                 </div>
             </div>
 
-            <div className="doctor-card__prices">
-                <div className="doctor-card__price-box">
-                    <div className="doctor-card__price-label">
+            <div className={`${styles.prices}`}>
+                <div className={`${styles.priceBox}`}>
+                    <div className={`${styles.priceLabel}`}>
                         {t('consult_abbrev') || 'CONSULTA'}
                     </div>
-                    <div className="doctor-card__price-value">{formatPrice(doctor.consultation_price)}</div>
+                    <div className={`${styles.priceValue}`}>{formatCurrency(doctor.consultation_price)}</div>
                 </div>
-                <div className="doctor-card__price-box">
-                    <div className="doctor-card__price-label">
+                <div className={`${styles.priceBox}`}>
+                    <div className={`${styles.priceLabel}`}>
                         {t('rx_abbrev') || 'RECETA'}
                     </div>
-                    <div className="doctor-card__price-value">{formatPrice(doctor.prescription_price)}</div>
+                    <div className={`${styles.priceValue}`}>{formatCurrency(doctor.prescription_price)}</div>
                 </div>
             </div>
 
             {(currentUser.role === 'admin' || currentUser.role === 'secretary' || currentUser.user_id === doctor.user_id) && (
-                <footer className="doctor-card__footer">
+                <footer className={`${styles.footer}`}>
                     <Button
                         variant="secondary"
                         size="sm"
-                        className="doctor-card__config-btn"
+                        className={`${styles.configBtn}`}
                         onClick={() => onEdit(doctor)}
                         icon={<Icon name="settings" size="1rem" />}
                     >

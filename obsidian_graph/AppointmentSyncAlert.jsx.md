@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/ui/AppointmentSyncAlert.jsx"
+type: "code"
+community: "Community 185"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_185
+---
+
 # AppointmentSyncAlert.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/AppointmentSyncAlert.jsx
-- **Comunidad:** [[_COMMUNITY_Community 183]]
+## Connections
+- [[AppointmentSyncAlert()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AppointmentSyncAlert()|AppointmentSyncAlert()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AppointmentSyncAlert()|AppointmentSyncAlert()]]
+#graphify/code #graphify/EXTRACTED #community/Community_185

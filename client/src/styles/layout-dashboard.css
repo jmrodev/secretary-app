@@ -156,7 +156,7 @@
 /**
  * 5. Responsive Adjustments
  */
-@media (max-width: 1300px) {
+@media (width <= 1300px) {
     .dashboard-layout__grid {
         grid-template-columns: 1fr;
         display: flex;
@@ -187,6 +187,7 @@
         opacity: 0;
         transform: translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

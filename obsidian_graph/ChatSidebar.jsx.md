@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/chat/components/sections/ChatSidebar.jsx"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Agenda_&_Slot_Management
+---
+
 # ChatSidebar.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/chat/components/ChatSidebar.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[ChatSidebar()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ChatSidebar()|ChatSidebar()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Agenda_&_Slot_Management

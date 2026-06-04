@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Modal from '@/components/molecules/Modal';
 import TabButton from '@/components/atoms/TabButton';
-import api from '@/api/axios';
 import { useLanguage } from '@/hooks/useLanguage';
+import { usePatientHistoryController } from '@/features/patients/hooks/usePatientHistoryController';
 import Icon from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
-import './PatientHistoryModal.css';
+import styles from './PatientHistoryModal.module.css';
 
 /**
  * PatientHistoryModal Molecule (Executor).
@@ -18,46 +18,9 @@ const SimpleDateDisplay = ({ date }) => formatDate(date);
 const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState('appointments');
-    const [loading, setLoading] = useState(true);
+    const { history, loading } = usePatientHistoryController(patientId, isOpen);
 
-    const [history, setHistory] = useState({
-        appointments: [],
-        prescriptions: [],
-        licenses: [],
-        requests: []
-    });
-
-    const fetchHistory = useCallback(async () => {
-        if (!patientId) return;
-        setLoading(true);
-        try {
-            const [apptRes, prescRes, licRes, reqRes] = await Promise.all([
-                api.post('/appointments', { patientId }),
-                api.post('/medical/prescriptions', { patientId }),
-                api.post('/medical/licenses', { patientId }),
-                api.post('/medical/requests', { patientId })
-            ]);
-
-            setHistory({
-                appointments: apptRes.data,
-                prescriptions: prescRes.data,
-                licenses: licRes.data,
-                requests: reqRes.data
-            });
-        } catch (err) {
-            console.error("Failed to fetch patient history", err);
-        } finally {
-            setLoading(false);
-        }
-    }, [patientId]);
-
-    useEffect(() => {
-        if (isOpen) fetchHistory();
-    }, [isOpen, fetchHistory]);
-
-    if (!isOpen) return null;
-
-    const baseClass = 'patient-history';
+    const baseClass = styles.root;
 
     return (
         <Modal

@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/finance/financeController.js"
+type: "code"
+community: "Community 303"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_303
+---
+
 # financeController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/financeController.js
-- **Comunidad:** [[_COMMUNITY_Community 312]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_303

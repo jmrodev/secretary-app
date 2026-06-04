@@ -1,10 +1,17 @@
+---
+source_file: "server/services/finance/financeService.js"
+type: "code"
+community: "Community 30"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_30
+---
+
 # financeService.js
 
-- **Tipo:** code
-- **Archivo:** client/src/services/financeService.js
-- **Comunidad:** [[_COMMUNITY_Community 400]]
+## Connections
+- [[FinanceService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_30

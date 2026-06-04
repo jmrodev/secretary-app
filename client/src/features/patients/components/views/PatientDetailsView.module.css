@@ -1,0 +1,329 @@
+/* PatientDetailsView Styles (BEM) - Feature Specific */
+
+.root {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    animation: fade-in 0.3s ease-out;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--dashboard-card-border);
+}
+
+.titleArea {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 2.2rem;
+    font-weight: 900;
+    text-transform: capitalize;
+    color: var(--text-main);
+    letter-spacing: -0.04em;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-top: 0.25rem;
+}
+
+.tabsNav {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem;
+    background-color: var(--gray-900);
+    border-radius: var(--radius-md);
+    width: fit-content;
+    border: 1px solid var(--dashboard-card-border);
+}
+
+.tabLink {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.25rem;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.tabLink:hover {
+    color: var(--primary-color);
+    background-color: var(--gray-800);
+}
+
+.tabLinkActive {
+    background-color: var(--dashboard-card-bg);
+    color: var(--primary-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (width >= 1024px) {
+    .grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Unified Block Structure (Internal Molecule) */
+.block {
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+}
+
+.blockHeader {
+    padding: 1rem 1.5rem;
+    background-color: var(--gray-900);
+    border-bottom: 2px solid var(--primary-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.blockTitle {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.blockContent {
+    padding: 0;
+}
+
+.blockContentPadded {
+    padding: 1.5rem;
+}
+
+/* Modifier for sidebar blocks */
+.blockSidebar .blockHeader {
+    padding: 1rem;
+    border-bottom-width: 1px;
+    background: transparent;
+}
+
+.blockSidebar .blockTitle {
+    font-size: 0.75rem;
+}
+
+/* Colors for headers (Semantics) */
+.blockInfo .blockHeader { border-bottom-color: var(--primary-color); }
+.blockHistory .blockHeader { border-bottom-color: var(--gray-700); }
+.blockFinancial .blockHeader { border-bottom-color: var(--danger); }
+.blockTools .blockHeader { border-bottom-color: var(--success); }
+.blockMedications .blockHeader { border-bottom-color: var(--accent-color); }
+
+/* Info Table Section */
+.infoTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.infoRow {
+    border-bottom: 1px solid var(--dashboard-card-border);
+}
+
+.infoRow:last-child {
+    border-bottom: none;
+}
+
+.infoLabel {
+    width: 30%;
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    background-color: var(--gray-900);
+    border-right: 1px solid var(--dashboard-card-border);
+}
+
+.infoValue {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.infoHint {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-left: 0.5rem;
+}
+
+/* Date Indicators Section */
+.dateIndicators {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.dateIndicator {
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--dashboard-card-border);
+    background: var(--gray-900);
+}
+
+.dateIndicatorRose { border-left: 4px solid var(--rose-500); }
+.dateIndicatorAmber { border-left: 4px solid var(--amber-500); }
+.dateIndicatorIndigo { border-left: 4px solid var(--primary-color); }
+
+.dateLabel {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+    color: var(--text-muted);
+}
+
+.dateValue {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+/* Financial Debt Block */
+.financialCard {
+    background: linear-gradient(135deg, var(--gray-800), var(--gray-950));
+    color: var(--white);
+    text-align: center;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+    border: 1px solid var(--dashboard-card-border);
+}
+
+.financialHeader {
+    padding: 1.25rem;
+    border-bottom: 1px solid rgb(255 255 255 / 5%);
+}
+
+.financialContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem 1.5rem;
+}
+
+.financialAmount {
+    font-size: 3.5rem;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 1;
+}
+
+.financialAmountDebt {
+    color: var(--danger);
+    text-shadow: 0 0 20px rgb(249 55 93 / 30%);
+}
+
+.financialAmountClear {
+    color: var(--success);
+    text-shadow: 0 0 20px rgb(0 182 122 / 30%);
+}
+
+/* History Table Section */
+.historyContainer {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.historyTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.historyTh {
+    position: sticky;
+    top: 0;
+    padding: 1rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--gray-900);
+    border-bottom: 1px solid var(--dashboard-card-border);
+    z-index: 10;
+}
+
+.historyRow {
+    border-bottom: 1px solid var(--dashboard-card-border);
+    transition: background-color 0.2s ease;
+}
+
+.historyRow:hover {
+    background-color: var(--gray-800);
+}
+
+.historyCell {
+    padding: 1rem;
+    color: var(--text-main);
+}
+
+/* Animations */
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Print Styles */
+@media print {
+    .root { padding: 0; }
+    .tabsNav, .header, .noPrint { display: none; }
+    .block { border: 1px solid #ccc; box-shadow: none; }
+    .title { color: black; }
+}
+

@@ -63,8 +63,8 @@ class MedicationRepository {
 
     async createRequestMedication(data, conn = pool) {
         return await conn.query(
-            "INSERT INTO medical_request_items (request_id, vademecum_id, dose, quantity) VALUES (?, ?, ?, ?)",
-            [data.request_id, data.medication_id, data.dosage, data.quantity]
+            "INSERT INTO medical_request_items (request_id, vademecum_id, medication_name, dose, quantity) VALUES (?, ?, ?, ?, ?)",
+            [data.request_id, data.vademecum_id, data.medication_name, data.dose, data.quantity]
         );
     }
 }

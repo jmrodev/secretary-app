@@ -3,12 +3,11 @@ import api from '@/api/axios';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import WhatsappChatHistory from '@/features/patients/components/views/WhatsappChatHistory';
-import { useLanguage } from '@/hooks/useLanguage';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import WhatsappInbox from '../molecules/WhatsappInbox';
 import WhatsappPairing from '../molecules/WhatsappPairing';
 import WhatsappChatPlaceholder from '../molecules/WhatsappChatPlaceholder';
-import './GlobalWhatsappMessenger.css';
+import styles from './GlobalWhatsappMessenger.module.css';
 
 /**
  * GlobalWhatsappMessenger Organism
@@ -41,8 +40,7 @@ function messengerReducer(state, action) {
     }
 }
 
-const GlobalWhatsappMessenger = () => {
-    const { t } = useLanguage();
+const GlobalWhatsappMessenger = ({ t }) => {
     const { viewDoctorId, doctorDisplayName } = useDoctors();
     const [state, dispatch] = React.useReducer(messengerReducer, initialState);
     const { isOpen, activeChat, conversations, loading, bridgeStatus, statusLoading } = state;
@@ -106,29 +104,31 @@ const GlobalWhatsappMessenger = () => {
         }
     }, []);
 
-    // Polling logic
-    useEffect(() => {
-        if (isOpen) {
-            const initStatusTimer = setTimeout(() => fetchStatus(), 0);
-            const statusInterval = setInterval(fetchStatus, 5000);
-            
-            let conversationsInterval;
-            let initConvTimer;
+    // Use React 19 useEffectEvent for stable, up-to-date callback references
+    const onPollStatus = React.useEffectEvent(() => {
+        fetchStatus();
+    });
 
-            if (bridgeStatus.status === 'connected' && !activeChat) {
-                initConvTimer = setTimeout(() => fetchConversations(), 0);
-                conversationsInterval = setInterval(() => fetchConversations(true), 5000);
-            }
-
-            return () => {
-                clearTimeout(initStatusTimer);
-                if (initConvTimer) clearTimeout(initConvTimer);
-                clearInterval(statusInterval);
-                if (conversationsInterval) clearInterval(conversationsInterval);
-            };
+    const onPollConversations = React.useEffectEvent(() => {
+        if (bridgeStatus.status === 'connected' && !activeChat) {
+            fetchConversations(true);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, activeChat, bridgeStatus.status, viewDoctorId]);
+    });
+
+    useEffect(() => {
+        if (!isOpen) return;
+
+        // Initial fetch
+        onPollStatus();
+        
+        const statusInterval = setInterval(onPollStatus, 5000);
+        const conversationsInterval = setInterval(onPollConversations, 5000);
+
+        return () => {
+            clearInterval(statusInterval);
+            clearInterval(conversationsInterval);
+        };
+    }, [isOpen]); // Only depends on isOpen now!
 
     const handlePatientClick = (conv) => {
         setActiveChat({ patientId: conv.patientId || conv.patient_id, phone: conv.patient_phone });
@@ -141,9 +141,9 @@ const GlobalWhatsappMessenger = () => {
 
     if (!isOpen) {
         return (
-            <div className="global-wa-trigger-container">
+            <div className={`${styles.globalWaTriggerContainer}`}>
                 <Button 
-                    className="global-wa-simple-btn" 
+                    className={`${styles.globalWaSimpleBtn}`} 
                     onClick={() => setIsOpen(true)}
                     variant="success"
                     icon={<Icon name="CHAT" size="1.2rem" />}
@@ -155,11 +155,7 @@ const GlobalWhatsappMessenger = () => {
     }
 
     return (
-        <aside className={`
-            global-wa-messenger 
-            ${activeChat ? 'global-wa-messenger--chat-active' : ''} 
-            animate-slide-up
-        `}>
+        <aside className={`${styles.root} ${styles.animateSlideUp} ${activeChat ? styles.chatActive : ''}`}>
             {/* Sidebar: Conversations List */}
             <WhatsappInbox 
                 conversations={conversations}
@@ -174,38 +170,38 @@ const GlobalWhatsappMessenger = () => {
             />
 
             {/* Main: Chat View */}
-            <section className="global-wa-messenger__chat-area">
-                <header className="global-wa-messenger__chat-header">
-                     <div className="global-wa-messenger__header-left">
+            <section className={`${styles.chatArea}`}>
+                <header className={`${styles.chatHeader}`}>
+                     <div className={`${styles.headerLeft}`}>
                         {activeChat && (
                             <Button 
                                 variant="ghost"
                                 size="sm"
-                                className="global-wa-messenger__back-btn" 
+                                className={`${styles.backBtn}`} 
                                 onClick={handleBack}
                                 icon={<Icon name="arrow_back" size="1.2rem" />}
                             />
                         )}
-                        <div className="global-wa-messenger__chat-user">
+                        <div className={`${styles.chatUser}`}>
                             {activeChat ? (
                                 <>
                                     <strong>{activeChat.patientId ? (conversations.find(c => (c.patientId === activeChat.patientId || c.patient_id === activeChat.patientId))?.patient_name) : activeChat.phone}</strong>
-                                    <span className="global-wa-messenger__online-status">{t('live')}</span>
+                                    <span className={`${styles.onlineStatus}`}>{t('live')}</span>
                                 </>
                             ) : (
-                                <div className="global-wa-messenger__chat-placeholder-header">
+                                <div className={`${styles.chatPlaceholderHeader}`}>
                                     {t('whatsapp_messenger')}
                                 </div>
                             )}
                         </div>
                     </div>
                     
-                    <div className="global-wa-messenger__header-actions">
+                    <div className={`${styles.headerActions}`}>
                         {activeChat && !activeChat.patientId && (
                             <Button 
                                 variant="primary" 
                                 size="sm" 
-                                className="global-wa-messenger__register-manual-btn"
+                                className={`${styles.registerManualBtn}`}
                                 onClick={() => {
                                     const event = new CustomEvent('openPatientRegistration', { 
                                         detail: { phone: activeChat.phone } 
@@ -220,14 +216,14 @@ const GlobalWhatsappMessenger = () => {
                         <Button 
                             variant="ghost"
                             size="sm"
-                            className="global-wa-messenger__close-btn" 
+                            className={`${styles.closeBtn}`} 
                             onClick={() => setIsOpen(false)}
                             icon={<Icon name="close" size="1.2rem" />}
                         />
                     </div>
                 </header>
 
-                <div className="global-wa-messenger__chat-content">
+                <div className={`${styles.chatContent}`}>
                     {bridgeStatus.status !== 'connected' ? (
                         <WhatsappPairing 
                             bridgeStatus={bridgeStatus}
@@ -236,7 +232,7 @@ const GlobalWhatsappMessenger = () => {
                             t={t}
                         />
                     ) : activeChat ? (
-                        <div className="global-wa-messenger__chat-wrapper">
+                        <div className={`${styles.chatWrapper}`}>
                             <WhatsappChatHistory 
                                 patientId={activeChat.patientId} 
                                 phone={activeChat.phone}

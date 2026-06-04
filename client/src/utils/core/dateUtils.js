@@ -44,7 +44,7 @@ export const parseDate = (input) => {
 
     // Check if it's DD/MM/YYYY
     const ddmmyyyy = /^(\d{1,2})[/-](\d{1,2})[/-](\d{4})/;
-    const match = input.match(ddmmyyyy);
+    const match = typeof input === 'string' ? input.match(ddmmyyyy) : null;
     if (match) {
         return new Date(match[3], match[2] - 1, match[1]);
     }
@@ -129,29 +129,13 @@ export const addMonths = (date, months) => {
 };
 
 /**
- * Returns the first day of the month for a given date.
- */
-export const startOfMonth = (date) => {
-    const d = parseDate(date);
-    if (!d) return null;
-    return new Date(d.getFullYear(), d.getMonth(), 1);
-};
-
-/**
- * Returns the last day of the month for a given date.
- */
-export const endOfMonth = (date) => {
-    const d = parseDate(date);
-    if (!d) return null;
-    return new Date(d.getFullYear(), d.getMonth() + 1, 0);
-};
-
-/**
  * Returns the number of days in the month for a given date.
  */
 export const getDaysInMonth = (date) => {
-    const d = endOfMonth(date);
-    return d ? d.getDate() : 0;
+    const d = parseDate(date);
+    if (!d) return 0;
+    const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+    return lastDay.getDate();
 };
 
 /**

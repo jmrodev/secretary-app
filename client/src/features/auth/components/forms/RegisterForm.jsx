@@ -5,7 +5,7 @@ import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import FormGroup from '@/components/molecules/FormGroup';
-import './RegisterForm.css';
+import styles from './RegisterForm.module.css';
 
 /**
  * RegisterForm - Executor Component.
@@ -22,18 +22,18 @@ const RegisterForm = () => {
     const { updateRegisterData, handleSubmit } = handlers;
 
     return (
-        <div className="auth-layout auth-layout--hero">
-            <div className="auth-layout__overlay"></div>
+        <div className={`${styles.authLayout} ${styles.authLayoutHero}`}>
+            <div className={`${styles.overlay}`}></div>
 
-            <main className="auth-card auth-card--register">
-                <header className="auth-card__header">
-                    <h1 className="auth-card__title">{t('create_account')}</h1>
-                    <p className="auth-card__subtitle">Completa el formulario para unirte.</p>
+            <main className={`${styles.root} ${styles.register}`}>
+                <header className={`${styles.header}`}>
+                    <h1 className={`${styles.title}`}>{t('create_account')}</h1>
+                    <p className={`${styles.subtitle}`}>Completa el formulario para unirte.</p>
                 </header>
 
-                {error && <div className="auth-card__error">{error}</div>}
+                {error && <div className={`${styles.error}`}>{error}</div>}
 
-                <form className="auth-card__form" onSubmit={handleSubmit}>
+                <form className={`${styles.form}`} onSubmit={handleSubmit}>
                     <FormGroup label={t('i_am')}>
                         <Select
                             name="role"
@@ -95,7 +95,7 @@ const RegisterForm = () => {
 
                     {/* Role specific fields */}
                     {formData.role === 'doctor' && (
-                        <div className="animate-fade-in">
+                        <div className={`${styles.animateFadeIn}`}>
                             <FormGroup label={t('specialty')}>
                                 <Input
                                     name="specialty"
@@ -118,7 +118,7 @@ const RegisterForm = () => {
                     )}
 
                     {formData.role === 'patient' && (
-                        <div className="animate-fade-in">
+                        <div className={`${styles.animateFadeIn}`}>
                             <FormGroup label={t('dob')}>
                                 <Input
                                     type="date"
@@ -134,17 +134,17 @@ const RegisterForm = () => {
                     <Button
                         type="submit"
                         variant="primary"
-                        className="auth-card__button--submit"
+                        className={`${styles.buttonSubmit}`}
                         disabled={loading}
                     >
                         {loading ? 'Preparando todo...' : t('register')}
                     </Button>
                 </form>
 
-                <footer className="auth-card__footer">
-                    <p className="auth-card__footer-text">
+                <footer className={`${styles.footer}`}>
+                    <p className={`${styles.footerText}`}>
                         {t('already_account')}
-                        <Link to="/login" className="auth-card__link">{t('login')}</Link>
+                        <Link to="/" className={`${styles.link}`}>{t('login')}</Link>
                     </p>
                 </footer>
             </main>

@@ -1,15 +1,18 @@
+---
+source_file: "client/src/features/doctors/DoctorsPage.jsx"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Modals_&_Prescriptions
+---
+
 # DoctorsPage()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/doctors/DoctorsPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 83]]
+## Connections
+- [[DoctorsPage.jsx]] - `contains` [EXTRACTED]
+- [[useDoctorsPageController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[DoctorsPage.jsx|DoctorsPage.jsx]] (contains)
-- --> [[useDoctorsPageController()|useDoctorsPageController()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[DoctorsSection()|DoctorsSection()]]
-- [[DoctorsPage.jsx|DoctorsPage.jsx]]
-- [[useDoctorsPageController.js|useDoctorsPageController.js]]
-- [[useDoctorsPageController()|useDoctorsPageController()]]
+#graphify/code #graphify/EXTRACTED #community/Modals_&_Prescriptions

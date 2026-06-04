@@ -2,50 +2,50 @@ import React from 'react';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
-import './InstitutionList.css';
+import styles from './InstitutionList.module.css';
 
 const InstitutionList = ({ institutions, onEdit, onDelete, t }) => {
 
     if (institutions.length === 0) {
         return (
-            <div className="institution-list__empty">
-                <Icon name="business" size="3rem" className="institution-list__empty-icon" />
-                <p className="institution-list__empty-text">{t('no_institutions') || 'No hay instituciones registradas'}</p>
+            <div className={`${styles.empty}`}>
+                <Icon name="business" size="3rem" className={`${styles.emptyIcon}`} />
+                <p className={`${styles.emptyText}`}>{t('no_institutions') || 'No hay instituciones registradas'}</p>
             </div>
         );
     }
 
     return (
         <div className="institution-list-container">
-            <table className="institution-list__table table-base">
+            <table className={`${styles.table} table-base`}>
                 <thead>
                     <tr>
-                        <th className="institution-list__th">{t('name') || 'Nombre'}</th>
-                        <th className="institution-list__th">{t('base_amount') || 'Monto Base'}</th>
-                        <th className="institution-list__th">{t('pending_debt') || 'Deuda Pendiente'}</th>
-                        <th className="institution-list__th">{t('status') || 'Estado'}</th>
-                        <th className="institution-list__th institution-list__th--right">{t('actions') || 'Acciones'}</th>
+                        <th className={`${styles.th}`}>{t('name') || 'Nombre'}</th>
+                        <th className={`${styles.th}`}>{t('base_amount') || 'Monto Base'}</th>
+                        <th className={`${styles.th}`}>{t('pending_debt') || 'Deuda Pendiente'}</th>
+                        <th className={`${styles.th}`}>{t('status') || 'Estado'}</th>
+                        <th className={`${styles.th} ${styles.thRight}`}>{t('actions') || 'Acciones'}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {institutions.map(inst => (
-                        <tr key={inst.id} className="institution-list__row">
-                            <td className="institution-list__td">
-                                <span className="institution-list__name">{inst.name}</span>
+                        <tr key={inst.id} className={`${styles.row}`}>
+                            <td className={`${styles.td}`}>
+                                <span className={`${styles.name}`}>{inst.name}</span>
                             </td>
-                            <td className="institution-list__td">
-                                <span className="institution-list__price">${Number(inst.base_price || 0).toLocaleString()}</span>
+                            <td className={`${styles.td}`}>
+                                <span className={`${styles.price}`}>${Number(inst.base_price || 0).toLocaleString()}</span>
                             </td>
-                            <td className="institution-list__td">
-                                <span className="institution-list__debt">${Number(inst.total_debt || 0).toLocaleString()}</span>
+                            <td className={`${styles.td}`}>
+                                <span className={`${styles.debt}`}>${Number(inst.total_debt || 0).toLocaleString()}</span>
                             </td>
-                            <td className="institution-list__td">
+                            <td className={`${styles.td}`}>
                                 <Badge variant={inst.status === 'active' ? 'green' : 'red'}>
                                     {t(inst.status) || inst.status}
                                 </Badge>
                             </td>
-                            <td className="institution-list__td">
-                                <div className="institution-list__actions">
+                            <td className={`${styles.td}`}>
+                                <div className={`${styles.actions}`}>
                                     <Button
                                         variant="ghost"
                                         size="sm-compact"

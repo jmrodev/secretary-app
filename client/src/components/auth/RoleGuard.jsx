@@ -30,7 +30,7 @@ const RoleGuard = ({
     }
 
     if (!user) {
-        return redirectTo ? <Navigate to="/login" replace /> : null;
+        return redirectTo ? <Navigate to="/" replace /> : null;
     }
 
     const hasAccess = allowedRoles.length === 0 || allowedRoles.includes(user.role);

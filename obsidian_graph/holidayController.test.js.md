@@ -1,10 +1,14 @@
+---
+source_file: "server/tests/controllers/holidayController.test.js"
+type: "code"
+community: "Community 293"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_293
+---
+
 # holidayController.test.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/__tests__/holidayController.test.js
-- **Comunidad:** [[_COMMUNITY_Community 315]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_293

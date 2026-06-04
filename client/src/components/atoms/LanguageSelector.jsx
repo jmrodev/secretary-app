@@ -1,29 +1,26 @@
 import React from 'react';
-import { useLanguage, useLanguageActions } from '@/hooks/useLanguage';
 import Button from '@/components/atoms/Button';
-import './LanguageSelector.css';
+import styles from './LanguageSelector.module.css';
 
 /**
  * LanguageSelector Atom follows Atomic Design & BEM.
  * Removed Tailwind utility classes.
+ * Receives language state and toggle function via props.
  */
-const LanguageSelector = () => {
-    const { language } = useLanguage();
-    const { toggleLanguage } = useLanguageActions();
-
+const LanguageSelector = ({ currentLanguage, onToggleLanguage, switchTitle }) => {
     return (
-        <div className="language-selector">
+        <div className={`${styles.root}`}>
             <Button
                 variant="ghost"
-                className="language-selector__button"
-                onClick={toggleLanguage}
-                title={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}
+                className={`${styles.button}`}
+                onClick={onToggleLanguage}
+                title={switchTitle}
             >
-                <span className="language-selector__icon">
-                    {language === 'es' ? '🇪🇸' : '🇺🇸'}
+                <span className={`${styles.icon}`}>
+                    {currentLanguage === 'es' ? '🇪🇸' : '🇺🇸'}
                 </span>
-                <span className="language-selector__text">
-                    {language === 'es' ? 'Español' : 'English'}
+                <span className={`${styles.text}`}>
+                    {currentLanguage === 'es' ? 'Español' : 'English'}
                 </span>
             </Button>
         </div>

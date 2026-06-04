@@ -67,7 +67,8 @@ class AppointmentRepository {
         const connection = conn || await pool.getConnection();
         try {
             const values = [...updateValues, id];
-            const result = await connection.query(`UPDATE appointments SET ${setClauses} WHERE id = ?`, values);
+            const sql = "UPDATE appointments SET " + setClauses + " WHERE id = ?";
+            const result = await connection.query(sql, values);
             return result.affectedRows;
         } finally {
             if (!conn) connection.release();
@@ -210,13 +211,14 @@ class AppointmentRepository {
 
     async findInRange(doctorId, start, end, excludedStatuses = [], conn) {
         const connection = conn || await pool.getConnection();
-        const statusSql = excludedStatuses.length > 0
-            ? `AND status NOT IN (${excludedStatuses.map(() => '?').join(', ')})`
-            : "";
-        const query = `SELECT appointment_date, duration, is_out_of_hours, status 
-                       FROM appointments 
-                       WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ? ${statusSql}`;
-        const params = [doctorId, start, end, ...excludedStatuses];
+        let query = "SELECT appointment_date, duration, is_out_of_hours, status FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ?";
+        let params = [doctorId, start, end];
+        
+        if (excludedStatuses && excludedStatuses.length > 0) {
+            query += " AND status NOT IN (" + excludedStatuses.map(() => "?").join(", ") + ")";
+            params.push(...excludedStatuses);
+        }
+        
         try {
             return await connection.query(query, params);
         } finally {

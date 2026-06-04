@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from 'react';
+import React, { useReducer, useEffect, useCallback, useMemo, useState } from 'react';
 import api from '@/api/axios';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
@@ -25,12 +24,20 @@ export const usePatientFormController = ({
     const { showMessage } = useMessage();
     const { settings } = useConfig();
 
-    // Data State
-    const [insurances, setInsurances] = useState(providedInsurances);
-    const [doctors, setDoctors] = useState(providedDoctors);
-    const [institutions, setInstitutions] = useState([]);
-    const [loadingData, setLoadingData] = useState(false);
+    // Data State (Consolidated for atomic updates)
+    const [dataState, dispatchData] = React.useReducer((s, a) => ({ ...s, ...a }), {
+        insurances: providedInsurances,
+        doctors: providedDoctors,
+        institutions: [],
+        loadingData: false
+    });
+    const { insurances, doctors, institutions, loadingData } = dataState;
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const setInsurances = (val) => dispatchData({ insurances: val });
+    const setDoctors = (val) => dispatchData({ doctors: val });
+    const setInstitutions = (val) => dispatchData({ institutions: val });
+    const setLoadingData = (val) => dispatchData({ loadingData: val });
 
     // Form State
     const [formData, setFormData] = useState({
@@ -73,13 +80,12 @@ export const usePatientFormController = ({
             setLoadingData(true);
             
             try {
-                // Fetch independently to avoid index mixups and handle partial failures
                 const fetchInsurances = async () => {
                     if (insurances.length > 0) return;
                     try {
                         const res = await api.get('/insurances');
                         const data = Array.isArray(res.data) ? res.data : (res.data.insurances || []);
-                        setInsurances(data);
+                        dispatchData({ insurances: data });
                     } catch (e) { console.error("Error fetching insurances", e); }
                 };
 
@@ -88,7 +94,7 @@ export const usePatientFormController = ({
                     try {
                         const res = await api.get('/users/doctors');
                         const data = Array.isArray(res.data) ? res.data : (res.data.doctors || []);
-                        setDoctors(data);
+                        dispatchData({ doctors: data });
                     } catch (e) { console.error("Error fetching doctors", e); }
                 };
 
@@ -97,7 +103,7 @@ export const usePatientFormController = ({
                     try {
                         const res = await api.get('/institutions');
                         const data = Array.isArray(res.data) ? res.data : (res.data.institutions || []);
-                        setInstitutions(data);
+                        dispatchData({ institutions: data });
                     } catch (e) { console.error("Error fetching institutions", e); }
                 };
 
@@ -110,7 +116,7 @@ export const usePatientFormController = ({
             } catch (err) {
                 console.error("Failed to fetch form resources", err);
             } finally {
-                setLoadingData(false);
+                dispatchData({ loadingData: false });
             }
         };
 

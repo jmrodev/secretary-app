@@ -1,0 +1,44 @@
+.root {
+    min-height: 100vh;
+    background-color: var(--color-bg-secondary, #f8fafc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    text-align: center;
+}
+
+.card {
+    background-color: var(--color-bg-primary, #fff);
+    max-width: 448px;
+    padding: 2rem;
+    border-radius: 1rem;
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 10%));
+}
+
+.iconContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.iconSuccess {
+    color: var(--color-success, #22c55e);
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--color-text-primary, #1e293b);
+}
+
+.message {
+    color: var(--color-text-secondary, #64748b);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.button {
+    width: 100%;
+}

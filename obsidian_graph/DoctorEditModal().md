@@ -1,14 +1,18 @@
+---
+source_file: "client/src/features/doctors/components/modals/DoctorEditModal.jsx"
+type: "code"
+community: "Community 108"
+location: "L19"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_108
+---
+
 # DoctorEditModal()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/doctors/components/DoctorEditModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 103]]
+## Connections
+- [[DoctorEditModal.jsx]] - `contains` [EXTRACTED]
+- [[useDoctorFiscalController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useDoctorFiscalController()|useDoctorFiscalController()]] (calls)
-- <-- [[DoctorEditModal.jsx|DoctorEditModal.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useDoctorFiscalController.js|useDoctorFiscalController.js]]
-- [[useDoctorFiscalController()|useDoctorFiscalController()]]
-- [[DoctorEditModal.jsx|DoctorEditModal.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_108

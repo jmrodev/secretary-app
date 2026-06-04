@@ -1,0 +1,214 @@
+/* PatientList Feature Component - Premium Bento Box Style */
+
+.root {
+    width: 100%;
+
+    /* Remove default table behavior for layout if needed, but keeping table for accessibility */
+}
+
+.table {
+    width: 100%;
+    min-width: 1000px;
+    border-collapse: separate;
+    border-spacing: 0 0.75rem; /* Bento Box: Floating rows */
+    table-layout: auto;
+}
+
+.table th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    background: transparent;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.table th:first-child { padding-left: 1.5rem; }
+.table th:last-child { padding-right: 1.5rem; }
+
+.row {
+    background-color: var(--dashboard-card-bg); /* Unified dark theme */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+}
+
+.row:hover {
+    transform: translateY(-2px) scale(1.002);
+    box-shadow: var(--shadow-premium);
+    background-color: var(--gray-800);
+    z-index: 10;
+}
+
+.table td {
+    padding: 1.25rem 1rem;
+    font-size: 0.938rem;
+    vertical-align: middle;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--dashboard-card-border);
+    border-bottom: 1px solid var(--dashboard-card-border);
+}
+
+/* Rounded corners for the bento row */
+.table td:first-child {
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--dashboard-card-border);
+    border-top-left-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+}
+
+.table td:last-child {
+    padding-right: 1.5rem;
+    border-right: 1px solid var(--dashboard-card-border);
+    border-top-right-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+}
+
+.nameCell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.name {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--white);
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.rowInstitution {
+    background-color: var(--dashboard-card-bg); /* Dark contrast for institutions */
+    border-color: var(--dashboard-card-border);
+}
+
+.rowInstitution td {
+    color: var(--text-secondary);
+    border-color: var(--dashboard-card-border);
+}
+
+.instIcon {
+    color: var(--amber-400);
+    filter: drop-shadow(0 0 8px rgb(245 158 11 / 30%));
+}
+
+.instName {
+    font-weight: 700;
+    color: var(--amber-300);
+}
+
+.idInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.813rem;
+    color: var(--gray-600);
+}
+
+.idLabel {
+    font-weight: 700;
+    color: var(--gray-400);
+    width: 2.2rem;
+    display: inline-block;
+    font-size: 0.688rem;
+    text-transform: uppercase;
+}
+
+.contactInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.contactRow {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.contactLink {
+    color: var(--primary-color);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.813rem;
+    letter-spacing: -0.2px;
+}
+
+.contactLink:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+.ratingGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.ratingItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.125rem 0;
+}
+
+.ratingLabel {
+    font-size: 0.625rem;
+    font-weight: 900;
+    color: var(--gray-400);
+    width: 2.5rem;
+    letter-spacing: 0.05em;
+}
+
+.stars {
+    display: flex;
+    gap: 2px;
+}
+
+.starsGold { color: var(--amber-500); }
+.starsBlue { color: var(--primary-color); }
+.starsPink { color: var(--rose-600); }
+
+.debtBadge {
+    font-weight: 800 !important;
+    font-size: 0.938rem !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: var(--radius-sm) !important;
+    box-shadow: 0 4px 12px rgb(245 158 11 / 20%);
+}
+
+.zeroDebt {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--green-600);
+    background: var(--green-50);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--green-100);
+}
+
+.actions {
+    text-align: right;
+}
+
+.viewBtn {
+    font-weight: 800 !important;
+    letter-spacing: 0.3px;
+}
+
+.empty {
+    padding: 5rem 2rem;
+    text-align: center;
+    background: var(--dashboard-card-bg);
+    border: 2px dashed var(--dashboard-card-border);
+    border-radius: var(--radius-lg);
+}
+
+.emptyText {
+    color: var(--text-muted);
+    font-size: 1.125rem;
+    font-weight: 600;
+}

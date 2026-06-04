@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/config/components/sections/IntegrationGoogleCalendar.jsx"
+type: "code"
+community: "Community 205"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_205
+---
+
 # IntegrationGoogleCalendar.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/IntegrationGoogleCalendar.jsx
-- **Comunidad:** [[_COMMUNITY_Community 280]]
+## Connections
+- [[IntegrationGoogleCalendar()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[IntegrationGoogleCalendar()|IntegrationGoogleCalendar()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[IntegrationGoogleCalendar()|IntegrationGoogleCalendar()]]
+#graphify/code #graphify/EXTRACTED #community/Community_205

@@ -1,24 +1,21 @@
+---
+source_file: "client/src/features/medical_documents/components/forms/MedicalRequestForm.jsx"
+type: "code"
+community: "Community 106"
+location: "L28"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_106
+---
+
 # MedicalRequestForm()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicalRequestForm.jsx
-- **Comunidad:** [[_COMMUNITY_Community 6]]
+## Connections
+- [[MedicalRequestForm.jsx]] - `contains` [EXTRACTED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMedicalRequest()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useMedicalRequest()|useMedicalRequest()]] (calls)
-- <-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]] (contains)
-- --> [[useAuth()|useAuth()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[RequestsPage.jsx|RequestsPage.jsx]]
-- [[RequestsPage()|RequestsPage()]]
-- [[useMedicalRequest.js|useMedicalRequest.js]]
-- [[useMedicalRequest()|useMedicalRequest()]]
-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]]
-- [[MedicalRequestList.jsx|MedicalRequestList.jsx]]
-- [[MedicalRequestList()|MedicalRequestList()]]
-- [[MedicalHistoryTable.jsx|MedicalHistoryTable.jsx]]
-- [[MedicalHistoryTable()|MedicalHistoryTable()]]
-- [[AppointmentFormModal.jsx|AppointmentFormModal.jsx]]
+#graphify/code #graphify/INFERRED #community/Community_106

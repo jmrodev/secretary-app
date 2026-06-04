@@ -5,7 +5,7 @@ import Icon from '@/components/atoms/Icon';
 import { formatDate, getNow, toInputDate } from '@/utils/core/dateUtils';
 import { useLanguage } from '@/hooks/useLanguage';
 import Loading from '@/components/atoms/Loading';
-import './NextSlotModal.css';
+import styles from './NextSlotModal.module.css';
 
 /**
  * NextSlotModal (Executor Component).
@@ -41,23 +41,23 @@ const NextSlotModal = ({
     const todayIso = toInputDate(getNow());
     const currentSlots = slotPages.length > 0 ? slotPages[Math.min(slotsPage, slotPages.length - 1)] : [];
 
-    const baseClass = 'next-slot-modal';
+    const baseClass = styles.root;
 
     return (
         <Modal 
             isOpen={isOpen} 
             onClose={onClose} 
             title={
-                <div className={`${baseClass}__title`}>
+                <div className={styles.title}>
                     <Icon name="search" size="1.2rem" />
                     {t('search_free_slots')}
                 </div>
             } 
             size="lg"
-            className={`${baseClass}-container`}
+            className={styles.container}
         >
-            <div className={baseClass}>
-                <div className={`${baseClass}__controls`}>
+            <div className={styles.root}>
+                <div className={styles.controls}>
 
 
 
@@ -66,10 +66,10 @@ const NextSlotModal = ({
                 {(!nextSlotData || loading) ? (
                     <Loading text={t('exploring_schedule')} />
                 ) : (
-                    <div className={`${baseClass}__table-wrapper`}>
-                        <table className={`${baseClass}__table`}>
+                    <div className={styles.tableWrapper}>
+                        <table className={styles.table}>
 
-                            <tbody className={`${baseClass}__tbody`}>
+                            <tbody className={styles.tbody}>
                                 {currentSlots.map((slot, index) => {
                                     const [y, m] = slot.dayDate.split('-'); 
                                     const isToday = slot.dayDate === todayIso; 
@@ -81,20 +81,20 @@ const NextSlotModal = ({
                                     return (
                                         <Fragment key={`${slot.dayDate}-${slot.iso}`}>
                                             {showMonthHeader && (
-                                                <tr className={`${baseClass}__month-header`}>
-                                                    <td colSpan="2" className={`${baseClass}__month-cell`}>
+                                                <tr className={styles.monthHeader}>
+                                                    <td colSpan="2" className={styles.monthCell}>
                                                         {monthLabel}
                                                     </td>
                                                 </tr>
                                             )}
                                             {showDayHeader && (
-                                                <tr className={`${baseClass}__day-header`}>
-                                                    <td colSpan="2" className={`${baseClass}__day-cell`}>
-                                                        <div className={`${baseClass}__day-content`}>
-                                                            <Icon name="event" size="1rem" className={`${baseClass}__day-icon`} />
-                                                            <span className={`${baseClass}__day-name`}>{slot.dayName}</span>
+                                                <tr className={styles.dayHeader}>
+                                                    <td colSpan="2" className={styles.dayCell}>
+                                                        <div className={styles.dayContent}>
+                                                            <Icon name="event" size="1rem" className={styles.dayIcon} />
+                                                            <span className={styles.dayName}>{slot.dayName}</span>
                                                             {isToday && (
-                                                                <span className={`${baseClass}__today-badge`}>
+                                                                <span className={styles.todayBadge}>
                                                                     {t('today')}
                                                                 </span>
                                                             )}
@@ -102,26 +102,26 @@ const NextSlotModal = ({
                                                     </td>
                                                 </tr>
                                             )}
-                                            <tr className={`${baseClass}__slot-row ${slot.is_out_of_hours ? `${baseClass}__slot-row--out-of-hours` : ''}`}>
-                                                <td className={`${baseClass}__slot-cell`}>
-                                                    <div className={`${baseClass}__slot-content`}>
-                                                        <span className={`${baseClass}__slot-time ${slot.is_out_of_hours ? `${baseClass}__slot-time--out-of-hours` : `${baseClass}__slot-time--normal`}`}>
+                                            <tr className={`${styles.slotRow} ${slot.is_out_of_hours ? styles.slotRowOutOfHours : ''}`}>
+                                                <td className={styles.slotCell}>
+                                                    <div className={styles.slotContent}>
+                                                        <span className={`${styles.slotTime} ${slot.is_out_of_hours ? styles.slotTimeOutOfHours : styles.slotTimeNormal}`}>
                                                             {slot.time}
                                                         </span>
                                                         {slot.is_break && (
-                                                            <span className={`${baseClass}__slot-badge ${baseClass}__slot-badge--extra`}>
+                                                            <span className={`${styles.slotBadge} ${styles.slotBadgeExtra}`}>
                                                                 EXT
                                                             </span>
                                                         )}
                                                         {slot.is_out_of_hours && (
-                                                            <span className={`${baseClass}__slot-badge ${baseClass}__slot-badge--out-of-hours`}>
+                                                            <span className={`${styles.slotBadge} ${styles.slotBadgeOutOfHours}`}>
                                                                 EXTRA
                                                             </span>
                                                         )}
                                                     </div>
                                                 </td>
-                                                <td className={`${baseClass}__actions-cell`}>
-                                                    <div className={`${baseClass}__actions-content`}>
+                                                <td className={styles.actionsCell}>
+                                                    <div className={styles.actionsContent}>
                                                         <Button 
                                                             variant="whatsapp"
                                                             size="icon"
@@ -132,7 +132,7 @@ const NextSlotModal = ({
                                                         <Button 
                                                             variant={slot.is_out_of_hours ? "accent" : "dark"}
                                                             size="md"
-                                                            className={`${baseClass}__select-btn`}
+                                                            className={styles.selectBtn}
                                                             onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}
                                                         >
                                                             {t('select')}
@@ -148,23 +148,23 @@ const NextSlotModal = ({
                     </div>
                 )}
 
-                <div className={`${baseClass}__pagination`}>
-                    <div className={`${baseClass}__toggle-row`}>
-                        <label className={`${baseClass}__toggle-label`}>
+                <div className={styles.pagination}>
+                    <div className={styles.toggleRow}>
+                        <label className={styles.toggleLabel}>
                             <input
                                 type="checkbox"
-                                className={`${baseClass}__toggle-checkbox`}
+                                className={styles.toggleCheckbox}
                                 checked={includeOutOfHours}
                                 onChange={(e) => onToggleOutOfHours(e.target.checked)}
                             />
-                            <span className={`${baseClass}__toggle-text`}>
+                            <span className={styles.toggleText}>
                                 <Icon name="lock_open" size="1rem" />
                                 {t('include_overtime_short')}
                             </span>
                         </label>
                     </div>
 
-                    <div className={`${baseClass}__pagination-controls`}>
+                    <div className={styles.paginationControls}>
                         <Button 
                             variant="secondary" 
                             size="sm" 
@@ -174,7 +174,7 @@ const NextSlotModal = ({
                         >
                             {t('previous')}
                         </Button>
-                        <span className={`${baseClass}__page-info`}>
+                        <span className={styles.pageInfo}>
                             {slotsPage + 1} / {slotPages.length}
                         </span>
                         <Button 

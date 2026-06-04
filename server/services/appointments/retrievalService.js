@@ -117,7 +117,18 @@ class RetrievalService {
                     metodos_pago: '', 
                     dia: dateStr,
                     tipo_atencion: a.type,
-                    is_overturn: !!a.is_out_of_hours
+                    is_overturn: !!a.is_out_of_hours,
+                    // Modern fields for standard components:
+                    patient_name: finalName || 'Desconocido',
+                    doctor_name: a.doctor_name,
+                    reason: detail,
+                    status: a.status,
+                    paid_amount: a.paid_amount,
+                    pending_amount: a.pending_amount,
+                    cost: a.cost,
+                    type: a.type,
+                    patient_id: a.patient_id,
+                    rescheduled_from_date: a.rescheduled_from_date
                 });
             }
         });

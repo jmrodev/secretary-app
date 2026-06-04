@@ -5,9 +5,9 @@ import Select from '@/components/atoms/Select';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
 import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/core/stringUtils';
-import './InstitutionForm.css';
+import styles from './InstitutionForm.module.css';
 
-const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, isSubmitting = false }) => {
+const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting = false }) => {
     const { t } = useLanguage();
 
     const statusOptions = [
@@ -16,9 +16,9 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, is
     ];
 
     return (
-        <form onSubmit={onSubmit} className="institution-form">
-            <div className="institution-form__group">
-                <label className="institution-form__label">{t('institution_name')} *</label>
+        <form onSubmit={onSubmit} className={`${styles.root}`}>
+            <div className={`${styles.group}`}>
+                <label className={`${styles.label}`}>{t('institution_name')} *</label>
                 <Input
                     type="text"
                     className="institution-form__input"
@@ -28,8 +28,8 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, is
                 />
             </div>
 
-            <div className="institution-form__group">
-                <label className="institution-form__label">{t('base_amount_label')}</label>
+            <div className={`${styles.group}`}>
+                <label className={`${styles.label}`}>{t('base_amount_label')}</label>
                 <Input
                     type="number"
                     className="institution-form__input"
@@ -46,8 +46,8 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, is
                 />
             </div>
 
-            <div className="institution-form__group">
-                <label className="institution-form__label">{t('description')}</label>
+            <div className={`${styles.group}`}>
+                <label className={`${styles.label}`}>{t('description')}</label>
                 <Input
                     type="textarea"
                     rows={3}
@@ -57,8 +57,8 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, is
                 />
             </div>
 
-            <div className="institution-form__group">
-                <label className="institution-form__label">{t('status')}</label>
+            <div className={`${styles.group}`}>
+                <label className={`${styles.label}`}>{t('status')}</label>
                 <Select
                     className="institution-form__input"
                     value={formData.status}
@@ -67,7 +67,7 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isEditing, is
                 />
             </div>
 
-            <div className="institution-form__footer">
+            <div className={`${styles.footer}`}>
                 {onCancel && (
                     <Button variant="secondary" onClick={onCancel} type="button">
                         {t('cancel')}

@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/user/patientManagementController.js"
+type: "code"
+community: "Community 325"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_325
+---
+
 # patientManagementController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/user/patientManagementController.js
-- **Comunidad:** [[_COMMUNITY_Community 332]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_325

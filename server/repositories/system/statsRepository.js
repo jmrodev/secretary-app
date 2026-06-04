@@ -130,7 +130,7 @@ class StatsRepository {
     }
 
     async getPatientAppointmentStats(patientId, conn = pool) {
-        return await conn.query(`
+        const [rows] = await conn.query(`
             SELECT 
                 COUNT(*) as total,
                 COUNT(CASE WHEN status IN ('completed', 'attended', 'arrived') THEN 1 END) as attended,
@@ -138,6 +138,7 @@ class StatsRepository {
                 COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled
             FROM appointments 
             WHERE patient_id = ?`, [patientId]);
+        return rows[0] || { total: 0, attended: 0, absent: 0, cancelled: 0 };
     }
 
     async getNewPatientStats(conn = pool) {

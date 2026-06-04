@@ -4,7 +4,7 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
-import './PatientHistoryView.css';
+import styles from './PatientHistoryView.module.css';
 
 /**
  * PatientHistoryView (Executor Component).
@@ -18,10 +18,10 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
 
     if (!patientAppointments || patientAppointments.length === 0) {
         return (
-            <div className="patient-history-view__empty">
-                <Icon name="history_off" size="3rem" className="patient-history-view__empty-icon" />
-                <h3 className="patient-history-view__empty-title">{translate('no_history_found')}</h3>
-                <Button onClick={onClose} variant="ghost" className="patient-history-view__empty-button">{translate('back')}</Button>
+            <div className={`${styles.empty}`}>
+                <Icon name="history_off" size="3rem" className={`${styles.emptyIcon}`} />
+                <h3 className={`${styles.emptyTitle}`}>{translate('no_history_found')}</h3>
+                <Button onClick={onClose} variant="ghost">{translate('back')}</Button>
             </div>
         );
     }
@@ -29,14 +29,14 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
     const patientName = patientAppointments[0]?.patient_name || translate('patient');
 
     return (
-        <div className="patient-history-view">
-            <header className="patient-history-view__header">
-                <div className="patient-history-view__header-info">
-                    <h2 className="patient-history-view__title">
+        <div className={`${styles.root}`}>
+            <header className={`${styles.header}`}>
+                <div className={`${styles.headerInfo}`}>
+                    <h2 className={`${styles.title}`}>
                         <Icon name="person_search" size="1.2rem" />
                         {patientName}
                     </h2>
-                    <span className="patient-history-view__count">
+                    <span className={`${styles.count}`}>
                         {patientAppointments.length} {translate('appointments') || 'turnos'}
                     </span>
                 </div>
@@ -49,17 +49,17 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
                 />
             </header>
 
-            <div className="patient-history-view__table-wrapper">
-                <table className="patient-history-view__table table-base">
+            <div className={`${styles.tableWrapper}`}>
+                <table className={`${styles.table} table-base`}>
                     <thead>
                         <tr>
-                            <th className="patient-history-view__th">{translate('date')}</th>
-                            <th className="patient-history-view__th">{translate('time') || 'Hora'}</th>
-                            <th className="patient-history-view__th">{translate('doctor')}</th>
-                            <th className="patient-history-view__th">{translate('reason') || 'Motivo'}</th>
-                            <th className="patient-history-view__th patient-history-view__th--status">{translate('status')}</th>
-                            <th className="patient-history-view__th patient-history-view__th--payment">{translate('payment')}</th>
-                            <th className="patient-history-view__th patient-history-view__th--actions">{translate('actions')}</th>
+                            <th className={`${styles.th}`}>{translate('date')}</th>
+                            <th className={`${styles.th}`}>{translate('time') || 'Hora'}</th>
+                            <th className={`${styles.th}`}>{translate('doctor')}</th>
+                            <th className={`${styles.th}`}>{translate('reason') || 'Motivo'}</th>
+                            <th className={`${styles.th} ${styles.thStatus}`}>{translate('status')}</th>
+                            <th className={`${styles.th} ${styles.thPayment}`}>{translate('payment')}</th>
+                            <th className={`${styles.th} ${styles.thActions}`}>{translate('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,38 +84,38 @@ const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPa
                             return (
                                 <tr
                                     key={appt.id}
-                                    className={`patient-history-view__row patient-history-view__row--${appt.status}`}
+                                    className={`${styles.row} ${styles['row' + appt.status.charAt(0).toUpperCase() + appt.status.slice(1)]}`}
                                     onClick={() => handlers.handleOpenAction(appt)}
                                     title={translate('view')}
                                 >
-                                    <td className="patient-history-view__td">
+                                    <td className={`${styles.td}`}>
                                         {formatDate(appt.appointment_date)}
                                     </td>
-                                    <td className="patient-history-view__td patient-history-view__td--time">
+                                    <td className={`${styles.td} ${styles.tdTime}`}>
                                         {formatTime(appt.appointment_date, { hour12: false })}
                                     </td>
-                                    <td className="patient-history-view__td patient-history-view__td--doctor">
+                                    <td className={`${styles.td} ${styles.tdDoctor}`}>
                                         {appt.doctor_name ? `Dr. ${appt.doctor_name.split(' ').pop()}` : '-'}
                                     </td>
-                                    <td className="patient-history-view__td patient-history-view__td--reason">
+                                    <td className={`${styles.td} ${styles.tdReason}`}>
                                         <span title={appt.reason}>{appt.reason || '-'}</span>
                                         {appt.type === 'virtual' && (
-                                            <Icon name="videocam" size="0.9rem" className="patient-history-view__virtual-icon" title="Virtual" />
+                                            <Icon name="videocam" size="0.9rem" className={styles.virtualIcon} title="Virtual" />
                                         )}
                                     </td>
-                                    <td className="patient-history-view__td">
-                                        <span className={`patient-history-view__status-chip patient-history-view__status-chip--${appt.status}`}>
+                                    <td className={`${styles.td}`}>
+                                        <span className={`${styles.statusChip} ${styles['statusChip' + appt.status.charAt(0).toUpperCase() + appt.status.slice(1)]}`}>
                                             {translate(appt.status) || appt.status}
                                         </span>
                                     </td>
-                                    <td className="patient-history-view__td">
+                                    <td className={`${styles.td}`}>
                                         {paymentLabel !== '-' ? (
-                                            <span className={`patient-history-view__payment-badge patient-history-view__payment-badge--${paymentClass}`}>
+                                            <span className={`${styles.paymentBadge} ${styles['paymentBadge' + paymentClass.charAt(0).toUpperCase() + paymentClass.slice(1)]}`}>
                                                 {paymentLabel}
                                             </span>
-                                        ) : <span className="patient-history-view__td--muted">-</span>}
+                                        ) : <span className={styles.tdMuted}>-</span>}
                                     </td>
-                                    <td className="patient-history-view__td patient-history-view__td--actions" onClick={e => e.stopPropagation()}>
+                                    <td className={`${styles.td}`} onClick={e => e.stopPropagation()}>
                                         {appt.patient_phone && (
                                             <Button
                                                 to={`tel:${String(appt.patient_phone).replace(/[^0-9+]/g, '')}`}

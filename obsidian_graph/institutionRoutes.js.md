@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/core/institutionRoutes.js"
+type: "code"
+community: "Community 337"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_337
+---
+
 # institutionRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/institutionRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 341]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_337

@@ -1,8 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { replaceTemplateVariables } from '@/utils/core/stringUtils';
-import { useLanguage } from '@/hooks/useLanguage';
-import { useMessage } from '@/context/MessageContext';
 import api from '@/api/axios';
 
 export const useDashboardWhatsApp = ({ user, settings, showMessage, t }) => {

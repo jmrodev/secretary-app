@@ -1,17 +1,20 @@
+---
+source_file: "server/services/appointments/scheduleService.js"
+type: "code"
+community: "Community 74"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_74
+---
+
 # ScheduleService
 
-- **Tipo:** code
-- **Archivo:** server/services/scheduleService.js
-- **Comunidad:** [[_COMMUNITY_Community 69]]
+## Connections
+- [[._checkPermissions()]] - `method` [EXTRACTED]
+- [[.getSchedule()]] - `method` [EXTRACTED]
+- [[.updateSchedule()]] - `method` [EXTRACTED]
+- [[scheduleService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[scheduleService.js|scheduleService.js]] (contains)
-- --> [[.getSchedule()|.getSchedule()]] (method)
-- --> [[.updateSchedule()|.updateSchedule()]] (method)
-- --> [[._checkPermissions()|._checkPermissions()]] (method)
-
-## Miembros de la misma Comunidad
-- [[scheduleService.js|scheduleService.js]]
-- [[.getSchedule()|.getSchedule()]]
-- [[.updateSchedule()|.updateSchedule()]]
-- [[._checkPermissions()|._checkPermissions()]]
+#graphify/code #graphify/EXTRACTED #community/Community_74

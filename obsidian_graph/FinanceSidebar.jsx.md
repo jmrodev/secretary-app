@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/ui/FinanceSidebar.jsx"
+type: "code"
+community: "Community 228"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_228
+---
+
 # FinanceSidebar.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/FinanceSidebar.jsx
-- **Comunidad:** [[_COMMUNITY_Community 213]]
+## Connections
+- [[FinanceSidebar()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[FinanceSidebar()|FinanceSidebar()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[FinanceSidebar()|FinanceSidebar()]]
+#graphify/code #graphify/EXTRACTED #community/Community_228

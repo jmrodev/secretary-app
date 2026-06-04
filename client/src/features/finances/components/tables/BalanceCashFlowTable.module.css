@@ -1,0 +1,74 @@
+
+/* BalanceCashFlowTable Molecule Styles (BEM) */
+
+.root {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.title {
+    font-size: 0.875rem;
+    font-weight: 800;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: -1rem 0 0.5rem;
+}
+
+.tableWrapper {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    text-align: left;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 0.75rem 0.5rem;
+    border-bottom: 2px solid var(--gray-50);
+}
+
+.table td {
+    padding: 0.85rem 0.5rem;
+    border-bottom: 1px solid var(--gray-50);
+    font-size: 0.875rem;
+}
+
+.cellRight {
+    text-align: right;
+}
+
+.cellBold {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.table tfoot tr {
+    background-color: var(--gray-50);
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.table tfoot td {
+    border-top: 2px solid var(--gray-200);
+    border-bottom: none;
+    padding: 1rem 0.5rem;
+}

@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/core/insuranceRoutes.js"
+type: "code"
+community: "Community 338"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_338
+---
+
 # insuranceRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/insuranceRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 349]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_338

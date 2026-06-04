@@ -10,14 +10,14 @@ import MedicalDocumentsPrintView from './components/ui/MedicalDocumentsPrintView
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
-import Button from '@/components/atoms/Button';
 import TabButton from '@/components/atoms/TabButton';
 import TabNav from '@/components/molecules/TabNav';
-import { formatDate, compareDates, getNow } from '@/utils/core/dateUtils';
+
+import { useMedicalDocumentsDerivedData } from './hooks/useMedicalDocumentsDerivedData';
+import { MedicalDocumentsToolbar } from './components/sections/MedicalDocumentsToolbar';
 
 // Styles
-import './MedicalDocumentsPage.css';
+import styles from './MedicalDocumentsPage.module.css';
 
 /**
  * MedicalDocumentsPage (Orchestrator).
@@ -27,7 +27,7 @@ const MedicalDocumentsPage = () => {
     const controller = useMedicalDocumentsController();
     const {
         user, t, activeTab, requestsSubTab,
-        searchTerm, isEditing,
+        isEditing,
         requests, files, prescriptions, licenses, doctors,
         requestsPage, requestsTotalPages,
         prescriptionsPage, prescriptionsTotalPages,
@@ -47,7 +47,7 @@ const MedicalDocumentsPage = () => {
     } = controller;
 
     const {
-        handleSearchChange, handleTabChange, handleSubTabChange,
+        handleTabChange, handleSubTabChange,
         handleFileDescChange, handleFilePatientChange, handleFileUploadChange,
         handleActionNoteChange, handleEditDataChange, handleLicenseEditDataChange,
         handleRequestEditDataChange, handleSelectMedication, toggleEditing,
@@ -59,98 +59,27 @@ const MedicalDocumentsPage = () => {
         filterItem, handleExportJSON, handlePrintPrescriptions
     } = handlers;
 
-    // --- Derived Data for Combined Views ---
-    const combinedPrescriptions = [
-        ...prescriptions.map(p => ({ ...p, _origin: 'prescription' })),
-        ...requests.reduce((acc, r) => {
-            if (r.type === 'prescription' && r.status === 'completed') {
-                acc.push({
-                    ...r,
-                    _origin: 'request',
-                    medications: r.request_note,
-                    instructions: r.doctor_note
-                });
-            }
-            return acc;
-        }, [])
-    ].toSorted((a, b) => compareDates(a.created_at, b.created_at, true));
-
-    const combinedLicenses = [
-        ...licenses.map(l => ({ ...l, _origin: 'license' })),
-        ...requests.reduce((acc, r) => {
-            if (r.type === 'license' && r.status === 'completed') {
-                acc.push({
-                    ...r,
-                    _origin: 'request',
-                    start_date: r.created_at,
-                    days_duration: '-',
-                    diagnosis: r.request_note
-                });
-            }
-            return acc;
-        }, [])
-    ].toSorted((a, b) => compareDates(a.created_at, b.created_at, true));
-
-    const combinedCertificates = [
-        ...requests.reduce((acc, r) => {
-            if (r.type === 'certificate' && r.status === 'completed') {
-                acc.push({
-                    ...r,
-                    _origin: 'request',
-                    description: r.request_note
-                });
-            }
-            return acc;
-        }, [])
-    ].toSorted((a, b) => compareDates(a.created_at, b.created_at, true));
-
-    const [printDate, setPrintDate] = React.useState(() => formatDate(getNow(), { time: true }));
-    React.useEffect(() => {
-        setPrintDate(formatDate(getNow(), { time: true }));
-    }, [t]);
+    const {
+        combinedPrescriptions,
+        combinedLicenses,
+        combinedCertificates,
+        printDate
+    } = useMedicalDocumentsDerivedData({ prescriptions, requests, licenses, t });
 
     return (
         <MainLayout wide flush title={t('medical_documents')}>
-            <div className="medical-documents-page-orchestrator layout-content-area">
-                <FeatureToolbar
-                    className="medical-documents-page-orchestrator__top-actions"
-                    tabs={[
-                        { id: 'requests', label: t('requests_workflow'), icon: 'description' },
-                        { id: 'files', label: t('file_repository'), icon: 'folder_open' },
-                        { id: 'prescriptions', label: t('prescriptions'), icon: 'medication' },
-                        { id: 'licenses', label: t('medical_licenses'), icon: 'description' },
-                        { id: 'certificates', label: t('certificates'), icon: 'verified' }
-                    ]}
+            <div className={`${styles.medicalDocumentsPageOrchestrator} layout-content-area`}>
+                <MedicalDocumentsToolbar 
                     activeTab={activeTab}
-                    onTabChange={handleTabChange}
-                    actions={
-                        ['requests', 'prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
-                            <>
-                                {(activeTab === 'requests' && requestsSubTab === 'list' || activeTab === 'prescriptions') && (
-                                    <Button
-                                        variant="secondary"
-                                        size="sm"
-                                        onClick={handleExportJSON}
-                                        icon={<Icon name="save" size="1rem" />}
-                                    >
-                                        {t('export_json')}
-                                    </Button>
-                                )}
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    onClick={handlePrintPrescriptions}
-                                    icon={<Icon name="print" size="1rem" />}
-                                >
-                                    {t('print_backup')}
-                                </Button>
-                            </>
-                        )
-                    }
+                    requestsSubTab={requestsSubTab}
+                    handleTabChange={handleTabChange}
+                    handleExportJSON={handleExportJSON}
+                    handlePrintPrescriptions={handlePrintPrescriptions}
+                    t={t}
                 />
 
-                <main className="medical-documents-page-orchestrator__main animate-fade-in no-print">
-                    <div className="medical-documents__tabs-content">
+                <main className={`${styles.main} ${styles.animateFadeIn} ${styles.noPrint}`}>
+                    <div className={`${styles.tabsContent}`}>
                         {activeTab === 'requests' && (
                             <article className="medical-documents__requests-layout">
                                 <TabNav className="tab-nav--sub">

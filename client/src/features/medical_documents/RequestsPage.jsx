@@ -3,12 +3,11 @@ import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import MedicalRequirementManager from './components/ui/MedicalRequirementManager';
 import MainLayout from '@/components/templates/MainLayout';
-import PageHeader from '@/components/organisms/PageHeader';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 
 // Local Styles
-import './RequestsPage.css';
+import styles from './RequestsPage.module.css';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
@@ -22,7 +21,7 @@ const RequestsPage = () => {
 
     return (
         <MainLayout wide flush>
-            <div className="requests-page-orchestrator">
+            <div className={`${styles.requestsPageOrchestrator}`}>
                 <FeatureToolbar
                     className="requests-page-orchestrator__top-actions"
                     actions={
@@ -40,7 +39,7 @@ const RequestsPage = () => {
                 <div className="layout-content-area animate-fade-in">
                     <main className="dashboard-layout__main dashboard-layout__main--full">
                         <article className="dashboard-card no-padding">
-                            <section className="requests-page__section">
+                            <section className={`${styles.section}`}>
                                 <MedicalRequirementManager user={user} />
                             </section>
                         </article>

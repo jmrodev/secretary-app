@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/modals/CashBoxDeliveryModal.jsx"
+type: "code"
+community: "Community 217"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_217
+---
+
 # CashBoxDeliveryModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/CashBoxDeliveryModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 211]]
+## Connections
+- [[CashBoxDeliveryModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[CashBoxDeliveryModal()|CashBoxDeliveryModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[CashBoxDeliveryModal()|CashBoxDeliveryModal()]]
+#graphify/code #graphify/EXTRACTED #community/Community_217

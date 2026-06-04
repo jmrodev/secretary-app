@@ -1,22 +1,19 @@
+---
+source_file: "client/src/utils/core/dateUtils.js"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L212"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # getMonthsOptions()
 
-- **Tipo:** code
-- **Archivo:** client/src/utils/dateUtils.js
-- **Comunidad:** [[_COMMUNITY_Community 17]]
+## Connections
+- [[FinanceFilters()]] - `calls` [INFERRED]
+- [[ReportFilters()]] - `calls` [INFERRED]
+- [[dateUtils.js_1]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[FinanceFilters()|FinanceFilters()]] (calls)
-- <-- [[ReportFilters()|ReportFilters()]] (calls)
-- <-- [[dateUtils.js|dateUtils.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[FinanceFilters.jsx|FinanceFilters.jsx]]
-- [[FinanceFilters()|FinanceFilters()]]
-- [[ReportFilters.jsx|ReportFilters.jsx]]
-- [[ReportFilters()|ReportFilters()]]
-- [[dateUtils.js|dateUtils.js]]
-- [[parseDate()|parseDate()]]
-- [[formatDate()|formatDate()]]
-- [[getMonthName()|getMonthName()]]
-- [[formatTime()|formatTime()]]
-- [[toInputDateTime()|toInputDateTime()]]
+#graphify/code #graphify/INFERRED #community/Institutions_&_Medical_Requirements

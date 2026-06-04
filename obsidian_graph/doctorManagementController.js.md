@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/user/doctorManagementController.js"
+type: "code"
+community: "Community 327"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_327
+---
+
 # doctorManagementController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/user/doctorManagementController.js
-- **Comunidad:** [[_COMMUNITY_Community 334]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_327

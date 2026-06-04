@@ -1,11 +1,17 @@
+---
+source_file: "server/middleware/authMiddleware.js"
+type: "code"
+community: "Community 132"
+location: "L5"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_132
+---
+
 # verifyToken()
 
-- **Tipo:** code
-- **Archivo:** server/middleware/authMiddleware.js
-- **Comunidad:** [[_COMMUNITY_Community 122]]
+## Connections
+- [[authMiddleware.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[authMiddleware.js|authMiddleware.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[authMiddleware.js|authMiddleware.js]]
+#graphify/code #graphify/EXTRACTED #community/Community_132

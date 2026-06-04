@@ -1,13 +1,17 @@
+---
+source_file: "server/services/appointments/retrievalService.js"
+type: "code"
+community: "Community 77"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_77
+---
+
 # retrievalService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/retrievalService.js
-- **Comunidad:** [[_COMMUNITY_Community 88]]
+## Connections
+- [[RetrievalService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[RetrievalService|RetrievalService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RetrievalService|RetrievalService]]
-- [[.getAppointments()|.getAppointments()]]
-- [[.getMonthlyReport()|.getMonthlyReport()]]
+#graphify/code #graphify/EXTRACTED #community/Community_77

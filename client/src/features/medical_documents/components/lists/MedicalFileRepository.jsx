@@ -3,7 +3,7 @@ import React from 'react';
 import { PatientSearchSelect } from '@/features/patients';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './MedicalFileRepository.css';
+import styles from './MedicalFileRepository.module.css';
 
 /**
  * MedicalFileRepository Organism (Feature-based).
@@ -24,7 +24,7 @@ const MedicalFileRepository = ({
     canDeleteFile
 }) => {
     return (
-        <div className="medical-file-repository">
+        <div className={`${styles.root}`}>
             <section className="medical-file-repository__upload">
                 <div className="dashboard-card">
                     <h3 className="dashboard-card__title">{t('upload_document')}</h3>
@@ -56,26 +56,26 @@ const MedicalFileRepository = ({
                                 required
                             />
                         </div>
-                        <Button type="submit" className="medical-file-repository__btn-submit">{t('upload_file')}</Button>
+                        <Button type="submit" className={`${styles.btnSubmit}`}>{t('upload_file')}</Button>
                     </form>
                 </div>
             </section>
 
             <section className="medical-file-repository__list">
                 <div className="dashboard-card no-padding">
-                    <div className="medical-file-repository__table-container">
+                    <div className={`${styles.tableContainer}`}>
                         {files.filter(filterItem).length === 0 ? (
-                            <div className="medical-file-repository__empty">
-                                <Icon name="folder_open" size="3rem" className="medical-file-repository__empty-icon" />
+                            <div className={`${styles.empty}`}>
+                                <Icon name="folder_open" size="3rem" className={`${styles.emptyIcon}`} />
                                 {t('no_files')}
                             </div>
                         ) : (
-                            <table className="medical-file-repository__table">
+                            <table className={`${styles.table}`}>
                                 <thead>
                                     <tr>
-                                        <th className="medical-file-repository__cell--pl">{t('file')}</th>
+                                        <th className={`${styles.cellPl}`}>{t('file')}</th>
                                         <th>{t('patient')}</th>
-                                        <th className="medical-file-repository__cell--pr medical-file-repository__cell--right">{t('actions')}</th>
+                                        <th className={`${styles.cellPr} ${styles.cellRight}`}>{t('actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -84,24 +84,24 @@ const MedicalFileRepository = ({
                                             acc.push(
                                                 <tr
                                                     key={f.id}
-                                                    className="medical-file-repository__row--interactive"
+                                                    className={`${styles.rowInteractive}`}
                                                     onClick={() => window.open(f.file_url, '_blank')}
                                                 >
-                                                    <td className="medical-file-repository__cell--pl medical-file-repository__cell--py">
+                                                    <td className={`${styles.cellPl} ${styles.cellPy}`}>
                                                         <div className="config-flex">
-                                                            <Icon name="folder_open" size="1.2rem" className="medical-file-repository__file-icon" />
-                                                            <span className="medical-file-repository__file-name">{f.description || f.file_name}</span>
+                                                            <Icon name="folder_open" size="1.2rem" className={`${styles.fileIcon}`} />
+                                                            <span className={`${styles.fileName}`}>{f.description || f.file_name}</span>
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <span className="medical-file-repository__patient-name">{f.patient_name}</span>
+                                                        <span className={`${styles.patientName}`}>{f.patient_name}</span>
                                                     </td>
-                                                    <td className="medical-file-repository__cell--pr medical-file-repository__cell--right">
+                                                    <td className={`${styles.cellPr} ${styles.cellRight}`}>
                                                         {(user?.role === 'admin' || canDeleteFile) && (
                                                             <Button
                                                                 variant="ghost"
                                                                 size="sm-compact"
-                                                                className="medical-file-repository__btn--delete"
+                                                                className={`${styles.btnDelete}`}
                                                                 onClick={(e) => { e.stopPropagation(); openDeleteFileModal(f); }}
                                                                 icon={<Icon name="delete" size="1rem" />}
                                                             />

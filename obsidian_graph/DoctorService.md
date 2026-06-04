@@ -1,15 +1,19 @@
+---
+source_file: "server/services/user/doctorService.js"
+type: "code"
+community: "Community 96"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_96
+---
+
 # DoctorService
 
-- **Tipo:** code
-- **Archivo:** server/services/doctorService.js
-- **Comunidad:** [[_COMMUNITY_Community 87]]
+## Connections
+- [[.getAllDoctors()]] - `method` [EXTRACTED]
+- [[.updateDoctor()]] - `method` [EXTRACTED]
+- [[doctorService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[doctorService.js|doctorService.js]] (contains)
-- --> [[.getAllDoctors()|.getAllDoctors()]] (method)
-- --> [[.updateDoctor()|.updateDoctor()]] (method)
-
-## Miembros de la misma Comunidad
-- [[doctorService.js|doctorService.js]]
-- [[.getAllDoctors()|.getAllDoctors()]]
-- [[.updateDoctor()|.updateDoctor()]]
+#graphify/code #graphify/EXTRACTED #community/Community_96

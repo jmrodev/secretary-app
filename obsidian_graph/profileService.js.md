@@ -1,13 +1,17 @@
+---
+source_file: "server/services/user/profileService.js"
+type: "code"
+community: "Community 95"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_95
+---
+
 # profileService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/profileService.js
-- **Comunidad:** [[_COMMUNITY_Community 85]]
+## Connections
+- [[ProfileService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ProfileService|ProfileService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ProfileService|ProfileService]]
-- [[.getProfile()|.getProfile()]]
-- [[.updateProfile()|.updateProfile()]]
+#graphify/code #graphify/EXTRACTED #community/Community_95

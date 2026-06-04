@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from '@/components/atoms/Card';
 import Icon from '@/components/atoms/Icon';
-import './FinanceStatsCards.css';
+import styles from './FinanceStatsCards.module.css';
 
 /**
  * FinanceStatsCards Feature Organism.
@@ -35,37 +35,37 @@ const FinanceStatsCards = ({ stats, t }) => {
     };
 
     return (
-        <section className="finance-stats">
+        <section className={`${styles.root}`}>
             <h2 className="visually-hidden">{t('financial_summary_title')}</h2>
             {/* Breakdown Cards (Appointments, Prescriptions, Licenses, Certificates) */}
             {otherStats.map((s) => (
-                <Card key={s.type} className="finance-stats__card">
-                    <h3 className="finance-stats__title">
+                <Card key={s.type} className={`${styles.card}`}>
+                    <h3 className={`${styles.title}`}>
                         <Icon 
                             name={typeIcons[s.type]} 
                             size="0.8rem" 
-                            className={`finance-stats__icon finance-stats__icon--${s.type}`} 
+                            className={`${styles.icon} finance-stats__icon--${s.type}`} 
                         />
                         {t(s.type) || s.type}
                     </h3>
 
-                    <div className="finance-stats__breakdown">
-                        <table className="finance-stats__table">
+                    <div className={`${styles.breakdown}`}>
+                        <table className={`${styles.table}`}>
                             <thead>
                                 <tr>
-                                    <th className="finance-stats__table-header">{t('period_label')}</th>
-                                    <th className="finance-stats__table-header finance-stats__table-header--right">
+                                    <th className={`${styles.tableHeader}`}>{t('period_label')}</th>
+                                    <th className={`${styles.tableHeader} ${styles.tableHeaderRight}`}>
                                         {t('count_label')}
                                     </th>
-                                    <th className="finance-stats__table-header finance-stats__table-header--right">{t('bonified_short') || 'Bonif.'}</th>
-                                    <th className="finance-stats__table-header finance-stats__table-header--right">{t('payment')}</th>
+                                    <th className={`${styles.tableHeader} ${styles.tableHeaderRight}`}>{t('bonified_short') || 'Bonif.'}</th>
+                                    <th className={`${styles.tableHeader} ${styles.tableHeaderRight}`}>{t('payment')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {[
-                                    { l: 'this_day', d: s.today, c: 'finance-stats__value--purple' },
-                                    { l: 'this_month', d: s.month, c: 'finance-stats__value--gray' },
-                                    { l: 'this_year', d: s.year, c: 'finance-stats__value--muted' }
+                                    { l: 'this_day', d: s.today, c: styles.valuePurple },
+                                    { l: 'this_month', d: s.month, c: styles.valueGray },
+                                    { l: 'this_year', d: s.year, c: styles.valueMuted }
                                 ]
                                     .map(row => {
                                         const count = typeof row.d === 'object' ? (row.d?.count ?? 0) : 0;
@@ -74,14 +74,14 @@ const FinanceStatsCards = ({ stats, t }) => {
 
                                         return (
                                             <tr key={row.l}>
-                                                <td className="finance-stats__table-cell finance-stats__label">{t(row.l) || row.l}</td>
-                                                <td className={`finance-stats__table-cell finance-stats__table-cell--right finance-stats__value--bold ${row.c}`}>
+                                                <td className={`${styles.tableCell} ${styles.label}`}>{t(row.l) || row.l}</td>
+                                                <td className={`${styles.tableCell} ${styles.tableCellRight} ${styles.valueBold} ${row.c}`}>
                                                     {Number(count).toLocaleString()}
                                                 </td>
-                                                <td className="finance-stats__table-cell finance-stats__table-cell--right finance-stats__value--muted finance-stats__value--bold">
+                                                <td className={`${styles.tableCell} ${styles.tableCellRight} ${styles.valueMuted} ${styles.valueBold}`}>
                                                     {Number(bonified).toLocaleString()}
                                                 </td>
-                                                <td className="finance-stats__table-cell finance-stats__table-cell--right finance-stats__value--green finance-stats__value--bold">
+                                                <td className={`${styles.tableCell} ${styles.tableCellRight} ${styles.valueGreen} ${styles.valueBold}`}>
                                                     ${Number(paid).toLocaleString()}
                                                 </td>
                                             </tr>
@@ -89,9 +89,9 @@ const FinanceStatsCards = ({ stats, t }) => {
                                     })}
                             </tbody>
                         </table>
-                        <div className="finance-stats__row finance-stats__row--divider">
-                            <span className="finance-stats__label finance-stats__label--bold">{t('debt')}</span>
-                            <span className={`finance-stats__value ${s.debt > 0 ? 'finance-stats__value--red' : 'finance-stats__value--muted'}`}>
+                        <div className={`${styles.row} ${styles.rowDivider}`}>
+                            <span className={`${styles.label} ${styles.labelBold}`}>{t('debt')}</span>
+                            <span className={`${styles.value} ${s.debt > 0 ? styles.valueRed : styles.valueMuted}`}>
                                 ${Number(s.debt || 0).toLocaleString()}
                             </span>
                         </div>
@@ -101,19 +101,19 @@ const FinanceStatsCards = ({ stats, t }) => {
 
             {/* Combined Payment Methods Card with Financial Summary */}
             {(tableStats.length > 0 || financialSummary.length > 0) && (
-                <Card className="finance-stats__card">
-                    <h3 className="finance-stats__title">
-                        <Icon name="payments" size="0.8rem" className="finance-stats__icon" />
+                <Card className={`${styles.card}`}>
+                    <h3 className={`${styles.title}`}>
+                        <Icon name="payments" size="0.8rem" className={`${styles.icon}`} />
                         {t('payment_methods_summary')}
                     </h3>
-                    <div className="finance-stats__breakdown">
-                        <table className="finance-stats__table">
+                    <div className={`${styles.breakdown}`}>
+                        <table className={`${styles.table}`}>
                             <thead>
                                 <tr>
-                                    <th className="finance-stats__table-header">{t('concept_label')}</th>
-                                    <th className="finance-stats__table-header finance-stats__table-header--right">{t('this_day')}</th>
-                                    <th className="finance-stats__table-header finance-stats__table-header--right">{t('this_month')}</th>
-                                    <th className="finance-stats__table-header finance-stats__table-header--right">{t('this_year')}</th>
+                                    <th className={`${styles.tableHeader}`}>{t('concept_label')}</th>
+                                    <th className={`${styles.tableHeader} ${styles.tableHeaderRight}`}>{t('this_day')}</th>
+                                    <th className={`${styles.tableHeader} ${styles.tableHeaderRight}`}>{t('this_month')}</th>
+                                    <th className={`${styles.tableHeader} ${styles.tableHeaderRight}`}>{t('this_year')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -121,45 +121,45 @@ const FinanceStatsCards = ({ stats, t }) => {
                                     const isNegative = ['expenses', 'withdrawal'].includes(s.type);
                                     return (
                                         <tr key={s.type} className="finance-stats__method-row">
-                                            <td className="finance-stats__table-cell finance-stats__label">
+                                            <td className={`${styles.tableCell} ${styles.label}`}>
                                                 <Icon 
                                                     name={typeIcons[s.type]} 
                                                     size="0.7rem" 
-                                                    className={`finance-stats__icon finance-stats__icon--${s.type}`} 
+                                                    className={`${styles.icon} finance-stats__icon--${s.type}`} 
                                                 />
                                                 {(t(s.type) || s.type).toUpperCase()}
                                                 {s.type === 'cash' ? ` (${t('concept_income')})` : ''}
                                                 {s.type === 'transfer' ? ` (${t('concept_income')})` : ''}
                                             </td>
-                                            <td className={`finance-stats__table-cell finance-stats__table-cell--right finance-stats__value--bold ${isNegative ? 'finance-stats__value--red' : 'finance-stats__value--blue'}`}>
+                                            <td className={`${styles.tableCell} ${styles.tableCellRight} ${styles.valueBold} ${isNegative ? styles.valueRed : styles.valueBlue}`}>
                                                 {isNegative ? '-' : '+'}${Number(s.today).toLocaleString()}
                                             </td>
-                                            <td className="finance-stats__table-cell finance-stats__table-cell--right finance-stats__value--gray finance-stats__value--bold">
+                                            <td className={`${styles.tableCell} ${styles.tableCellRight} ${styles.valueGray} ${styles.valueBold}`}>
                                                 ${Number(s.month).toLocaleString()}
                                             </td>
-                                            <td className="finance-stats__table-cell finance-stats__table-cell--right finance-stats__value--muted finance-stats__value--bold">
+                                            <td className={`${styles.tableCell} ${styles.tableCellRight} ${styles.valueMuted} ${styles.valueBold}`}>
                                                 ${Number(s.year).toLocaleString()}
                                             </td>
                                         </tr>
                                     );
                                 })}
                                 {financialSummary.map((s) => (
-                                    <tr key={s.type} className="finance-stats__summary-row">
-                                        <td className="finance-stats__table-cell finance-stats__label finance-stats__label--bold">
+                                    <tr key={s.type} className={`${styles.summaryRow}`}>
+                                        <td className={`${styles.tableCell} ${styles.label} ${styles.labelBold}`}>
                                             <Icon 
                                                 name={typeIcons[s.type]} 
                                                 size="0.75rem" 
-                                                className={`finance-stats__icon finance-stats__icon--${s.type}`} 
+                                                className={`${styles.icon} finance-stats__icon--${s.type}`} 
                                             />
                                             = {(t(s.type) || s.type).toUpperCase()}
                                         </td>
-                                        <td className="finance-stats__table-cell finance-stats__table-cell--right finance-stats__value--purple finance-stats__value--bold">
+                                        <td className={`${styles.tableCell} ${styles.tableCellRight} ${styles.valuePurple} ${styles.valueBold}`}>
                                             ${Number(s.today).toLocaleString()}
                                         </td>
-                                        <td className="finance-stats__table-cell finance-stats__table-cell--right finance-stats__value--gray finance-stats__value--bold">
+                                        <td className={`${styles.tableCell} ${styles.tableCellRight} ${styles.valueGray} ${styles.valueBold}`}>
                                             ${Number(s.month).toLocaleString()}
                                         </td>
-                                        <td className="finance-stats__table-cell finance-stats__table-cell--right finance-stats__value--muted finance-stats__value--bold">
+                                        <td className={`${styles.tableCell} ${styles.tableCellRight} ${styles.valueMuted} ${styles.valueBold}`}>
                                             ${Number(s.year).toLocaleString()}
                                         </td>
                                     </tr>

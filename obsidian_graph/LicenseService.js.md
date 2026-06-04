@@ -1,20 +1,17 @@
+---
+source_file: "server/services/medical/LicenseService.js"
+type: "code"
+community: "Institutions Feature"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_Feature
+---
+
 # LicenseService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/medical/LicenseService.js
-- **Comunidad:** [[_COMMUNITY_Community 2]]
+## Connections
+- [[LicenseService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[LicenseService|LicenseService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[priceCalculator.js|priceCalculator.js]]
-- [[calculatePrice()|calculatePrice()]]
-- [[.getPricing()|.getPricing()]]
-- [[bookingService.js|bookingService.js]]
-- [[BookingService|BookingService]]
-- [[.createAppointment()|.createAppointment()]]
-- [[.handleOverwrite()|.handleOverwrite()]]
-- [[.generateDebt()|.generateDebt()]]
-- [[LicenseService|LicenseService]]
-- [[.createLicense()|.createLicense()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_Feature

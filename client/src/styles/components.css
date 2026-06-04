@@ -85,7 +85,7 @@
     gap: 1.5rem;
 }
 
-@media (min-width: 768px) {
+@media (width >= 768px) {
     .config-grid {
         grid-template-columns: 1fr 1fr;
     }
@@ -192,4 +192,26 @@
     color: var(--accent-color, #3b82f6);
     text-decoration: underline;
     font-weight: 700;
+}
+
+/* =========================================
+   PREMIUM GLASSMORPHISM & BENTO COMPONENTS
+   ========================================= */
+
+.bento-card, .glass-panel {
+    background: rgb(255, 255, 255, 0.03); /* Translucent white */
+    backdrop-filter: blur(20px);
+    border: 1px solid rgb(255, 255, 255, 0.08); /* Solid white edge for light mode */
+    border-radius: 20px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px 0 rgb(31, 38, 135, 0.07); /* Very soft blue shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    min-height: 200px;
+}
+
+.bento-card:hover, .glass-panel:hover {
+    box-shadow: 0 12px 40px 0 rgb(0, 0, 0, 0.4);
+    border-color: rgb(255, 255, 255, 0.15);
 }

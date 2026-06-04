@@ -1,5 +1,5 @@
 import Icon from '@/components/atoms/Icon';
-import './RequirementDetailHeader.css';
+import styles from './RequirementDetailHeader.module.css';
 
 /**
  * RequirementDetailHeader Feature Molecule.
@@ -8,14 +8,14 @@ import './RequirementDetailHeader.css';
  */
 const RequirementDetailHeader = ({ selectedRequest }) => {
     return (
-        <header className="requirements-detail__header animate-fade-in">
-            <div className="requirements-detail__patient">
-                <span className="requirements-detail__patient-name">{selectedRequest.patient_name}</span>
+        <header className={`${styles.header} animate-fade-in`}>
+            <div className={`${styles.patient}`}>
+                <span className={`${styles.patientName}`}>{selectedRequest.patient_name}</span>
                 {selectedRequest.patient_dni && (
-                    <small className="requirements-detail__patient-dni">DNI: {selectedRequest.patient_dni}</small>
+                    <small className={`${styles.patientDni}`}>DNI: {selectedRequest.patient_dni}</small>
                 )}
             </div>
-            <div className="requirements-detail__doctor">
+            <div className={`${styles.doctor}`}>
                 <Icon name="medical_services" size="1.1rem" color="var(--accent-color)" />
                 <span className="requirements-detail__doctor-name">Dr. {selectedRequest.doctor_name}</span>
             </div>

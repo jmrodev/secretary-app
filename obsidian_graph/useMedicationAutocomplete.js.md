@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/hooks/useMedicationAutocomplete.js"
+type: "code"
+community: "Community 107"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_107
+---
+
 # useMedicationAutocomplete.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/hooks/useMedicationAutocomplete.js
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[useMedicationAutocomplete()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useMedicationAutocomplete()|useMedicationAutocomplete()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
-- [[FloatingChat.jsx|FloatingChat.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_107

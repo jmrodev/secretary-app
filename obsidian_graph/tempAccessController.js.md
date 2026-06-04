@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/system/tempAccessController.js"
+type: "code"
+community: "Community 333"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_333
+---
+
 # tempAccessController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/tempAccessController.js
-- **Comunidad:** [[_COMMUNITY_Community 306]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_333

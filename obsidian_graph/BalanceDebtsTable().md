@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/tables/BalanceDebtsTable.jsx"
+type: "code"
+community: "Community 226"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_226
+---
+
 # BalanceDebtsTable()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/BalanceDebtsTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 221]]
+## Connections
+- [[BalanceDebtsTable.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[BalanceDebtsTable.jsx|BalanceDebtsTable.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[BalanceDebtsTable.jsx|BalanceDebtsTable.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_226

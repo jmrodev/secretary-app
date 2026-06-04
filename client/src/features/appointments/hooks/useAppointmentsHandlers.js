@@ -1,13 +1,11 @@
 import { useCallback, useMemo } from 'react';
 import api from '@/api/axios';
-import { getNow, parseDate, toInputDateTime, toInputDate, createDate, formatDate } from '@/utils/core/dateUtils';
+import { parseDate, toInputDateTime, toInputDate, createDate, formatDate } from '@/utils/core/dateUtils';
+import { formatCurrency } from '@/utils/core/format';
 
 // Feature internal hooks
 import { useAppointmentActions } from './useAppointmentActions';
 import { useAppointmentUIHandlers } from './useAppointmentUIHandlers';
-import { useHolidayHandlers } from './useHolidayHandlers';
-
-const PRICE_FORMATTER = new Intl.NumberFormat(undefined, { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 });
 
 /**
  * High-level handlers for the appointments feature.
@@ -21,7 +19,7 @@ export const useAppointmentsHandlers = ({
     setActionModal, setPrescribeModal, setAuthModalOpen, setRetryAction, setShowNextSlotModal, setWhatsappModal,
     setEditPatientModalOpen, setPaymentModal, setHistoryModal, setSelectedPatient, exitRescheduleMode,
     updateStatus, updateAppointment, fetchAppointments, savePrescription, deleteAppointment, rescheduleAppointment, bookAppointment,
-    setIsOutOfHours, fetchNextFreeSlots, addHoliday: addHolidayAction, deleteHoliday: deleteHolidayAction,
+    setIsOutOfHours, fetchNextFreeSlots, 
     selectedPatientData, copyToClipboard, booking, setSlotHistory
 }) => {
 
@@ -36,10 +34,6 @@ export const useAppointmentsHandlers = ({
         setReason, setSyncReferenceInfo, setSyncingZombieId, setActionModal, setPrescribeModal, setAuthModalOpen,
         setRetryAction, setShowNextSlotModal, setWhatsappModal, setEditPatientModalOpen, setPaymentModal, setHistoryModal,
         exitRescheduleMode, viewDoctorId, rescheduleAppt, holidays, user, confirm, showMessage, t, doctors
-    });
-
-    const holidayHandlers = useHolidayHandlers({
-        addHoliday: addHolidayAction, deleteHoliday: deleteHolidayAction, confirm, showMessage, t
     });
 
     const handleDateSelect = useCallback((date) => setSelectedDate(date), [setSelectedDate]);
@@ -199,7 +193,7 @@ export const useAppointmentsHandlers = ({
                 .replace(/{[\s]*time[\s]*}/gi, timeStr)
                 .replace(/{[\s]*appointment_type[\s]*}/gi, isVirtualSlot ? 'VIRTUAL' : 'PRESENCIAL')
                 .replace(/{[\s]*appointment_location[\s]*}/gi, address)
-                .replace(/{[\s]*price[\s]*}/gi, PRICE_FORMATTER.format(slotPrice))
+                .replace(/{[\s]*price[\s]*}/gi, formatCurrency(slotPrice))
                 .replace(/{[\s]*secretary_name[\s]*}/gi, user.name || 'Secretaría');
         } else {
             message = `Hola, tenemos un turno ${isVirtualSlot ? 'VIRTUAL' : 'PRESENCIAL'} disponible el ${slot.formattedDate || dateStr} a las ${timeStr} con el/la Dr/a. ${doctorName}.`;
@@ -236,7 +230,6 @@ export const useAppointmentsHandlers = ({
         handleOpenPayment: uiHandlers.handleOpenPayment,
         handleOpenHistory: uiHandlers.handleOpenHistory,
         handleOpenPrescribe: uiHandlers.handleOpenPrescribe,
-        handleDeleteHoliday: holidayHandlers.handleDeleteHoliday,
         handleOpenReschedule: (appt) => navigate('/appointments', { state: { rescheduleAppt: appt } }),
         handleOpenSync: (appt) => navigate('/appointments', { state: { syncAppt: appt } }),
         handleSelectMedication: (med) => setPrescribeModal(prev => ({ ...prev, medications: (prev.medications || '').trim() ? `${prev.medications}\n${med.full_label}` : med.full_label })),
@@ -249,7 +242,7 @@ export const useAppointmentsHandlers = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }), [
         handleSlotClick, handleDateSelect, handleUpdateStatus, handleSavePrescription, handleDelete, handleReschedule,
-        appointmentActions, uiHandlers, holidayHandlers, booking,
+        appointmentActions, uiHandlers, booking,
         navigate, fetchNextFreeSlots
     ]);
 };

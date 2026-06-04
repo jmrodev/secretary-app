@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useCallback, useMemo, useState } from 'react';
+import { useReducer, useEffect, useCallback } from 'react';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
@@ -121,13 +121,13 @@ export const useFinancesPageController = () => {
         dispatch({ type: 'SET_PAGE', payload: 1 });
     };
 
-    const calculateBalanceByMethod = (doctorId) => {
+    const calculateBalanceByMethod = (_doctorId) => {
         const cashBalance = stats.find(s => s.type === 'cash_balance')?.today || 0;
         const transferBalance = stats.find(s => s.type === 'transfer_balance')?.today || 0;
         return { cash: cashBalance, transfer: transferBalance };
     };
 
-    const calculateBalance = (doctorId) => {
+    const calculateBalance = (_doctorId) => {
         return stats.find(s => s.type === 'total_net')?.today || 0;
     };
 

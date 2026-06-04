@@ -1,33 +1,30 @@
+---
+source_file: "server/services/google/GoogleCalendarService.js"
+type: "code"
+community: "Community 24"
+location: "L13"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_24
+---
+
 # GoogleCalendarService
 
-- **Tipo:** code
-- **Archivo:** server/services/google/GoogleCalendarService.js
-- **Comunidad:** [[_COMMUNITY_Community 24]]
+## Connections
+- [[._buildEventData()]] - `method` [EXTRACTED]
+- [[._createNewEvent()]] - `method` [EXTRACTED]
+- [[._getCalendar()]] - `method` [EXTRACTED]
+- [[._isSyncEnabled()]] - `method` [EXTRACTED]
+- [[.checkConflict()]] - `method` [EXTRACTED]
+- [[.createEventHelper()]] - `method` [EXTRACTED]
+- [[.deleteEventHelper()]] - `method` [EXTRACTED]
+- [[.getBusyIntervals()_1]] - `method` [EXTRACTED]
+- [[.getColorForStatus()]] - `method` [EXTRACTED]
+- [[.listEvents()]] - `method` [EXTRACTED]
+- [[.retryFailedSyncItems()]] - `method` [EXTRACTED]
+- [[.syncDayToGoogle()]] - `method` [EXTRACTED]
+- [[.updateEventHelper()]] - `method` [EXTRACTED]
+- [[GoogleCalendarService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[GoogleCalendarService.js|GoogleCalendarService.js]] (contains)
-- --> [[.getColorForStatus()|.getColorForStatus()]] (method)
-- --> [[._isSyncEnabled()|._isSyncEnabled()]] (method)
-- --> [[._getCalendar()|._getCalendar()]] (method)
-- --> [[.listEvents()|.listEvents()]] (method)
-- --> [[.createEventHelper()|.createEventHelper()]] (method)
-- --> [[.updateEventHelper()|.updateEventHelper()]] (method)
-- --> [[.deleteEventHelper()|.deleteEventHelper()]] (method)
-- --> [[.checkConflict()|.checkConflict()]] (method)
-- --> [[.getBusyIntervals()|.getBusyIntervals()]] (method)
-- --> [[.syncDayToGoogle()|.syncDayToGoogle()]] (method)
-- --> [[._buildEventData()|._buildEventData()]] (method)
-- --> [[._createNewEvent()|._createNewEvent()]] (method)
-- --> [[.retryFailedSyncItems()|.retryFailedSyncItems()]] (method)
-
-## Miembros de la misma Comunidad
-- [[GoogleCalendarService.js|GoogleCalendarService.js]]
-- [[.getColorForStatus()|.getColorForStatus()]]
-- [[._isSyncEnabled()|._isSyncEnabled()]]
-- [[._getCalendar()|._getCalendar()]]
-- [[.listEvents()|.listEvents()]]
-- [[.createEventHelper()|.createEventHelper()]]
-- [[.updateEventHelper()|.updateEventHelper()]]
-- [[.deleteEventHelper()|.deleteEventHelper()]]
-- [[.checkConflict()|.checkConflict()]]
-- [[.getBusyIntervals()|.getBusyIntervals()]]
+#graphify/code #graphify/EXTRACTED #community/Community_24

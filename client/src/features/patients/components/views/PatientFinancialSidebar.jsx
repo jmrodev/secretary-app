@@ -4,7 +4,7 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 
 // Local Styles
-import './PatientFinancialSidebar.css';
+import styles from './PatientFinancialSidebar.module.css';
 
 /**
  * PatientFinancialSidebar (Executor).
@@ -20,23 +20,23 @@ const PatientFinancialSidebar = ({
     onDelete
 }) => {
     return (
-        <aside className="patient-details__sidebar">
+        <aside className={`${styles.sidebar}`}>
             {/* Sidebar Block 1: Financial Status */}
-            <div className="patient-details__financial-card">
-                <header className="patient-details__financial-header">
-                    <h4 className="patient-details__financial-title">
+            <div className={`${styles.financialCard}`}>
+                <header className={`${styles.financialHeader}`}>
+                    <h4 className={`${styles.financialTitle}`}>
                         {t('financial_history_debt') || 'HISTORIAL FINANCIERO Y DEUDA'}
                     </h4>
                 </header>
-                <div className="patient-details__financial-content patient-details__financial-content--padded-xl">
-                    <span className={`patient-details__financial-amount ${Number(details.total_debt) > 0 ? 'patient-details__financial-amount--debt' : 'patient-details__financial-amount--clear'}`}>
+                <div className={`${styles.financialContent} ${styles.financialContentPaddedXl}`}>
+                    <span className={`${styles.financialAmount} ${Number(details.total_debt) > 0 ? styles.financialAmountDebt : styles.financialAmountClear}`}>
                         ${Number(details.total_debt).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     {Number(details.total_debt) > 0 && (
                         <div className="config-flex config-flex--column config-flex--gap-1">
                             <Button
                                 variant="primary"
-                                className="patient-details__pay-debt-btn"
+                                className={`${styles.payDebtBtn}`}
                                 onClick={(e) => onPayDebt(e, details.id, details.total_debt)}
                                 icon={<Icon name="payments" size="1.2rem" />}
                             >
@@ -45,7 +45,7 @@ const PatientFinancialSidebar = ({
                             <Button
                                 variant="whatsapp"
                                 size="sm"
-                                className="patient-details__remind-debt-btn"
+                                className={`${styles.remindDebtBtn}`}
                                 icon={<Icon name="chat" size="1.1rem" />}
                                 onClick={() => {
                                     const phone = details.phoneNumbers?.find(p => p.is_primary)?.phone_number || details.phone;

@@ -1,5 +1,5 @@
 import React from 'react';
-import './Select.css';
+import styles from './Select.module.css';
 
 const EMPTY_ARRAY = [];
 
@@ -7,6 +7,7 @@ const Select = ({
     value,
     onChange,
     options = EMPTY_ARRAY,
+    placeholder,
     className = '',
     disabled = false,
     id,
@@ -15,7 +16,7 @@ const Select = ({
     variant = 'default', // 'default', 'error'
     size = 'md' // 'sm', 'md', 'lg'
 }) => {
-    const baseClass = 'select';
+    const baseClass = styles.root;
 
     const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
     const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
@@ -37,6 +38,11 @@ const Select = ({
             disabled={disabled}
             required={required}
         >
+            {placeholder && (
+                <option value="" disabled={required}>
+                    {placeholder}
+                </option>
+            )}
             {options.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                     {opt.label}

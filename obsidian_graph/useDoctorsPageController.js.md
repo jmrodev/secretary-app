@@ -1,14 +1,17 @@
+---
+source_file: "client/src/features/doctors/hooks/useDoctorsPageController.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Modals_&_Prescriptions
+---
+
 # useDoctorsPageController.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/doctors/hooks/useDoctorsPageController.js
-- **Comunidad:** [[_COMMUNITY_Community 83]]
+## Connections
+- [[useDoctorsPageController()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useDoctorsPageController()|useDoctorsPageController()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DoctorsSection()|DoctorsSection()]]
-- [[DoctorsPage.jsx|DoctorsPage.jsx]]
-- [[DoctorsPage()|DoctorsPage()]]
-- [[useDoctorsPageController()|useDoctorsPageController()]]
+#graphify/code #graphify/EXTRACTED #community/Modals_&_Prescriptions

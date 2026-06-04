@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/schedule/ScheduleTimeBlock.jsx"
+type: "code"
+community: "Community 192"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_192
+---
+
 # ScheduleTimeBlock.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/ScheduleTimeBlock.jsx
-- **Comunidad:** [[_COMMUNITY_Community 194]]
+## Connections
+- [[ScheduleTimeBlock()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ScheduleTimeBlock()|ScheduleTimeBlock()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ScheduleTimeBlock()|ScheduleTimeBlock()]]
+#graphify/code #graphify/EXTRACTED #community/Community_192

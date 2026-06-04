@@ -16,7 +16,7 @@ import TransactionsTable from '@/features/finances/components/tables/Transaction
 import CashBoxDeliveryModal from '@/features/finances/components/modals/CashBoxDeliveryModal';
 import PendingClosuresModal from '@/features/finances/components/modals/PendingClosuresModal';
 
-import './FinancesPage.css';
+import styles from './FinancesPage.module.css';
 
 /**
  * FinancesPage (Orchestrator).
@@ -27,13 +27,11 @@ const FinancesPage = () => {
     const {
         stats,
         loading,
-        doctors,
         selectedDoctorFilter,
         modalOpen,
         closeBoxModal,
         closeAmount,
         editingTx,
-        filters,
         filteredTransactions,
         user,
         settings,
@@ -45,7 +43,7 @@ const FinancesPage = () => {
 
     return (
         <MainLayout wide flush title={t('finances') || 'Finanzas'}>
-            <div className="finances-page-orchestrator layout-content-area animate-fade-in">
+            <div className={`${styles.financesPageOrchestrator} layout-content-area animate-fade-in`}>
                 <FeatureToolbar
                     className="finances-page-orchestrator__toolbar"
                     actions={

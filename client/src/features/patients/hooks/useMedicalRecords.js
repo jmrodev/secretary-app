@@ -65,7 +65,7 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
             setIsAdding(false);
             setPendingMedications([]);
             fetchMedications();
-        } catch (err) {
+        } catch {
             showMessage(t('error_adding_medication') || 'Error al agregar medicamento', 'error');
         }
     };
@@ -76,7 +76,7 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
             await api.delete(`/medical/patients/medications/${id}`);
             showMessage(t('medication_discontinued') || 'Medicamento descontinuado', 'success');
             fetchMedications();
-        } catch (err) {
+        } catch {
             showMessage(t('error_discontinuing_med') || 'Error al descontinuar', 'error');
         }
     };

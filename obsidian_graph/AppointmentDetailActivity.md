@@ -1,27 +1,24 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/AppointmentDetailActivity.kt"
+type: "code"
+community: "Community 10"
+location: "L28"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_10
+---
+
 # AppointmentDetailActivity
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/AppointmentDetailActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 9]]
+## Connections
+- [[.loadPatientDetails()]] - `method` [EXTRACTED]
+- [[.onCreate()_2]] - `method` [EXTRACTED]
+- [[.setupDoctorRecyclerViews()]] - `method` [EXTRACTED]
+- [[.updateAppointment()_1]] - `method` [EXTRACTED]
+- [[.updateButtonVisibility()]] - `method` [EXTRACTED]
+- [[.updatePayment()]] - `method` [EXTRACTED]
+- [[.updateStatus()_1]] - `method` [EXTRACTED]
+- [[AppointmentDetailActivity.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[AppointmentDetailActivity.kt|AppointmentDetailActivity.kt]] (contains)
-- --> [[.onCreate()|.onCreate()]] (method)
-- --> [[.updateButtonVisibility()|.updateButtonVisibility()]] (method)
-- --> [[.updateAppointment()|.updateAppointment()]] (method)
-- --> [[.updateStatus()|.updateStatus()]] (method)
-- --> [[.updatePayment()|.updatePayment()]] (method)
-- --> [[.setupDoctorRecyclerViews()|.setupDoctorRecyclerViews()]] (method)
-- --> [[.loadPatientDetails()|.loadPatientDetails()]] (method)
-
-## Miembros de la misma Comunidad
-- [[AppointmentDetailActivity.kt|AppointmentDetailActivity.kt]]
-- [[.onCreate()|.onCreate()]]
-- [[.updateButtonVisibility()|.updateButtonVisibility()]]
-- [[.updateAppointment()|.updateAppointment()]]
-- [[.updateStatus()|.updateStatus()]]
-- [[.updatePayment()|.updatePayment()]]
-- [[.setupDoctorRecyclerViews()|.setupDoctorRecyclerViews()]]
-- [[.loadPatientDetails()|.loadPatientDetails()]]
-- [[PatientFilesActivity.kt|PatientFilesActivity.kt]]
-- [[PatientFilesActivity|PatientFilesActivity]]
+#graphify/code #graphify/EXTRACTED #community/Community_10

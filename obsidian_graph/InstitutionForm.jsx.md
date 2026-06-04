@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/institutions/components/forms/InstitutionForm.jsx"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Agenda_&_Slot_Management
+---
+
 # InstitutionForm.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/institutions/components/InstitutionForm.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[InstitutionForm()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[InstitutionForm()|InstitutionForm()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
-- [[CalendarSection()|CalendarSection()]]
+#graphify/code #graphify/EXTRACTED #community/Agenda_&_Slot_Management

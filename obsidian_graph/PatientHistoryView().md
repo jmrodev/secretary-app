@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/appointments/components/views/PatientHistoryView.jsx"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L13"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Agenda_&_Slot_Management
+---
+
 # PatientHistoryView()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/PatientHistoryView.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[PatientHistoryView.jsx]] - `contains` [EXTRACTED]
+- [[useLanguage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[PatientHistoryView.jsx|PatientHistoryView.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Agenda_&_Slot_Management

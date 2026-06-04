@@ -1,19 +1,21 @@
+---
+source_file: "server/services/user/UserAccountService.js"
+type: "code"
+community: "Community 66"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_66
+---
+
 # UserAccountService
 
-- **Tipo:** code
-- **Archivo:** server/services/UserAccountService.js
-- **Comunidad:** [[_COMMUNITY_Community 60]]
+## Connections
+- [[._getRepoForRole()]] - `method` [EXTRACTED]
+- [[.createUser()]] - `method` [EXTRACTED]
+- [[.deleteUser()]] - `method` [EXTRACTED]
+- [[.updateUser()]] - `method` [EXTRACTED]
+- [[UserAccountService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[UserAccountService.js|UserAccountService.js]] (contains)
-- --> [[.createUser()|.createUser()]] (method)
-- --> [[.updateUser()|.updateUser()]] (method)
-- --> [[.deleteUser()|.deleteUser()]] (method)
-- --> [[._getRepoForRole()|._getRepoForRole()]] (method)
-
-## Miembros de la misma Comunidad
-- [[UserAccountService.js|UserAccountService.js]]
-- [[.createUser()|.createUser()]]
-- [[.updateUser()|.updateUser()]]
-- [[.deleteUser()|.deleteUser()]]
-- [[._getRepoForRole()|._getRepoForRole()]]
+#graphify/code #graphify/EXTRACTED #community/Community_66

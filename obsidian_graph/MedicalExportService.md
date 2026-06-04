@@ -1,21 +1,22 @@
+---
+source_file: "server/services/medical/MedicalExportService.js"
+type: "code"
+community: "Community 55"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_55
+---
+
 # MedicalExportService
 
-- **Tipo:** code
-- **Archivo:** server/services/medical/MedicalExportService.js
-- **Comunidad:** [[_COMMUNITY_Community 50]]
+## Connections
+- [[._buildFilters()]] - `method` [EXTRACTED]
+- [[._exportGenericRequestJSON()]] - `method` [EXTRACTED]
+- [[.exportCertificatesJSON()]] - `method` [EXTRACTED]
+- [[.exportLicensesJSON()]] - `method` [EXTRACTED]
+- [[.exportPrescriptionsJSON()]] - `method` [EXTRACTED]
+- [[MedicalExportService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicalExportService.js|MedicalExportService.js]] (contains)
-- --> [[.exportPrescriptionsJSON()|.exportPrescriptionsJSON()]] (method)
-- --> [[.exportLicensesJSON()|.exportLicensesJSON()]] (method)
-- --> [[.exportCertificatesJSON()|.exportCertificatesJSON()]] (method)
-- --> [[._exportGenericRequestJSON()|._exportGenericRequestJSON()]] (method)
-- --> [[._buildFilters()|._buildFilters()]] (method)
-
-## Miembros de la misma Comunidad
-- [[MedicalExportService.js|MedicalExportService.js]]
-- [[.exportPrescriptionsJSON()|.exportPrescriptionsJSON()]]
-- [[.exportLicensesJSON()|.exportLicensesJSON()]]
-- [[.exportCertificatesJSON()|.exportCertificatesJSON()]]
-- [[._exportGenericRequestJSON()|._exportGenericRequestJSON()]]
-- [[._buildFilters()|._buildFilters()]]
+#graphify/code #graphify/EXTRACTED #community/Community_55

@@ -1,33 +1,30 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/MessageDetailActivity.kt"
+type: "code"
+community: "Community 11"
+location: "L29"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_11
+---
+
 # MessageDetailActivity
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/MessageDetailActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 13]]
+## Connections
+- [[.checkOtherTypingStatus()]] - `method` [EXTRACTED]
+- [[.loadSingleMessage()]] - `method` [EXTRACTED]
+- [[.loadThread()]] - `method` [EXTRACTED]
+- [[.notifyTyping()]] - `method` [EXTRACTED]
+- [[.onCreate()]] - `method` [EXTRACTED]
+- [[.playNotificationSound()]] - `method` [EXTRACTED]
+- [[.scrollToBottom()]] - `method` [EXTRACTED]
+- [[.sendMessage()_1]] - `method` [EXTRACTED]
+- [[.setupListeners()]] - `method` [EXTRACTED]
+- [[.setupRecyclerView()]] - `method` [EXTRACTED]
+- [[.showErrorDialog()]] - `method` [EXTRACTED]
+- [[.startAutoRefresh()]] - `method` [EXTRACTED]
+- [[.startTypingLogic()]] - `method` [EXTRACTED]
+- [[MessageDetailActivity.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MessageDetailActivity.kt|MessageDetailActivity.kt]] (contains)
-- --> [[.onCreate()|.onCreate()]] (method)
-- --> [[.setupRecyclerView()|.setupRecyclerView()]] (method)
-- --> [[.setupListeners()|.setupListeners()]] (method)
-- --> [[.notifyTyping()|.notifyTyping()]] (method)
-- --> [[.startTypingLogic()|.startTypingLogic()]] (method)
-- --> [[.checkOtherTypingStatus()|.checkOtherTypingStatus()]] (method)
-- --> [[.startAutoRefresh()|.startAutoRefresh()]] (method)
-- --> [[.loadThread()|.loadThread()]] (method)
-- --> [[.loadSingleMessage()|.loadSingleMessage()]] (method)
-- --> [[.sendMessage()|.sendMessage()]] (method)
-- --> [[.scrollToBottom()|.scrollToBottom()]] (method)
-- --> [[.showErrorDialog()|.showErrorDialog()]] (method)
-- --> [[.playNotificationSound()|.playNotificationSound()]] (method)
-
-## Miembros de la misma Comunidad
-- [[MessageDetailActivity.kt|MessageDetailActivity.kt]]
-- [[.onCreate()|.onCreate()]]
-- [[.setupRecyclerView()|.setupRecyclerView()]]
-- [[.setupListeners()|.setupListeners()]]
-- [[.notifyTyping()|.notifyTyping()]]
-- [[.startTypingLogic()|.startTypingLogic()]]
-- [[.checkOtherTypingStatus()|.checkOtherTypingStatus()]]
-- [[.startAutoRefresh()|.startAutoRefresh()]]
-- [[.loadThread()|.loadThread()]]
-- [[.loadSingleMessage()|.loadSingleMessage()]]
+#graphify/code #graphify/EXTRACTED #community/Community_11

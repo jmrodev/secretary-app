@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/chat/ChatPage.jsx"
+type: "code"
+community: "Android Messaging"
+location: "L11"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Android_Messaging
+---
+
 # ChatPage()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/chat/ChatPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 6]]
+## Connections
+- [[ChatPage.jsx]] - `contains` [EXTRACTED]
+- [[useMessagesPageController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[ChatPage.jsx|ChatPage.jsx]] (contains)
-- --> [[useMessagesPageController()|useMessagesPageController()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[RequestsPage.jsx|RequestsPage.jsx]]
-- [[RequestsPage()|RequestsPage()]]
-- [[useMedicalRequest.js|useMedicalRequest.js]]
-- [[useMedicalRequest()|useMedicalRequest()]]
-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]]
-- [[MedicalRequestForm()|MedicalRequestForm()]]
-- [[MedicalRequestList.jsx|MedicalRequestList.jsx]]
-- [[MedicalRequestList()|MedicalRequestList()]]
-- [[MedicalHistoryTable.jsx|MedicalHistoryTable.jsx]]
-- [[MedicalHistoryTable()|MedicalHistoryTable()]]
+#graphify/code #graphify/EXTRACTED #community/Android_Messaging

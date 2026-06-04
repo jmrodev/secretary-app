@@ -1,20 +1,17 @@
+---
+source_file: "server/repositories/user/googleIntegrationRepository.js"
+type: "code"
+community: "Community 16"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_16
+---
+
 # googleIntegrationRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/googleIntegrationRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 19]]
+## Connections
+- [[GoogleIntegrationRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[GoogleIntegrationRepository|GoogleIntegrationRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[GoogleIntegrationRepository|GoogleIntegrationRepository]]
-- [[.findDoctorIntegration()|.findDoctorIntegration()]]
-- [[.findAllDoctorIds()|.findAllDoctorIds()]]
-- [[.deleteDoctorIntegration()|.deleteDoctorIntegration()]]
-- [[.findGlobalToken()|.findGlobalToken()]]
-- [[.deleteGlobalTokens()|.deleteGlobalTokens()]]
-- [[.findAfipEnvironment()|.findAfipEnvironment()]]
-- [[.resetSyncQueue()|.resetSyncQueue()]]
-- [[.resetSpreadsheetId()|.resetSpreadsheetId()]]
-- [[.updateSpreadsheetId()|.updateSpreadsheetId()]]
+#graphify/code #graphify/EXTRACTED #community/Community_16

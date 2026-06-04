@@ -7,13 +7,11 @@ import { usePermissions } from '@/hooks/usePermissions';
 import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';
-import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
 import QRCodeModal from '@/features/patients/components/modals/QRCodeModal';
 import Pagination from '@/components/atoms/Pagination';
-import TabNav from '@/components/molecules/TabNav';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 

@@ -1,25 +1,22 @@
+---
+source_file: "client/src/features/rentals/hooks/useRentalsController.js"
+type: "code"
+community: "Android Messaging"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Android_Messaging
+---
+
 # useRentalsController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/rentals/hooks/useRentalsController.js
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[RentalsPage()]] - `calls` [INFERRED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[useRentalsController.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useAuth()|useAuth()]] (calls)
-- <-- [[RentalsPage()|RentalsPage()]] (calls)
-- <-- [[useRentalsController.js|useRentalsController.js]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
+#graphify/code #graphify/INFERRED #community/Android_Messaging

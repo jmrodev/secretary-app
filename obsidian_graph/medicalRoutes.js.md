@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/medical/medicalRoutes.js"
+type: "code"
+community: "Community 344"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_344
+---
+
 # medicalRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/medicalRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 346]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_344

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import api from '@/api/axios';
+import { usePatientDetailsController } from '@/features/patients/hooks/usePatientDetailsController';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
@@ -13,7 +14,7 @@ import PatientFinancialSidebar from '@/features/patients/components/views/Patien
 import PatientPrintableView from '@/features/patients/components/views/PatientPrintableView';
 import WhatsappChatHistory from '@/features/patients/components/views/WhatsappChatHistory';
 
-import './PatientDetailsView.css';
+import styles from './PatientDetailsView.module.css';
 
 /**
  * PatientDetailsView (Executor/Sub-Orchestrator).
@@ -34,23 +35,7 @@ const PatientDetailsView = ({
 }) => {
     const [activeTab, setActiveTab] = useState('general'); // 'general' | 'history' | 'finances' | 'chat'
     const [isCleanView, setIsCleanView] = useState(false);
-    const [chronicMeds, setChronicMeds] = useState([]);
-    const [recentRequests, setRecentRequests] = useState([]);
-
-    useEffect(() => {
-        if (!details.id) return;
-        
-        api.get(`/medical/patients/${details.id}/medications`)
-            .then(res => setChronicMeds(res.data))
-            .catch(err => console.error("Error fetching chronic meds:", err));
-
-        api.get(`/medical/requests?patientId=${details.id}`)
-            .then(res => {
-                const prescriptions = res.data.requests.filter(r => r.type === 'prescription');
-                setRecentRequests(prescriptions);
-            })
-            .catch(err => console.error("Error fetching requests:", err));
-    }, [details.id]);
+    const { chronicMeds, recentRequests } = usePatientDetailsController(details.id);
 
     return (
         <>
@@ -63,8 +48,8 @@ const PatientDetailsView = ({
                     t={t}
                 />
             ) : (
-                <section className="patient-details animate-fade-in no-print-section">
-                <header className="patient-details__header">
+                <section className={`${styles.root} animate-fade-in no-print-section`}>
+                <header className={`${styles.header}`}>
                     <Button variant="secondary" onClick={onBack}>
                         &larr; {t('back_to_list')}
                     </Button>
@@ -74,7 +59,7 @@ const PatientDetailsView = ({
                             variant="ghost" 
                             onClick={() => setIsCleanView(true)} 
                             icon={<Icon name="print" size="1rem" />}
-                            className="no-print"
+                            className={`${styles.noPrint}`}
                         >
                             {t('print') || 'Imprimir'}
                         </Button>
@@ -100,39 +85,39 @@ const PatientDetailsView = ({
 
                 </header>
 
-                <h1 className="patient-details__title">{details.full_name}</h1>
+                <h1 className={`${styles.title}`}>{details.full_name}</h1>
 
-                <div className="patient-details__tabs-nav">
+                <div className={`${styles.tabsNav}`}>
                     <button 
-                        className={`patient-details__tab-link ${activeTab === 'general' ? 'patient-details__tab-link--active' : ''}`}
+                        className={`${styles.tabLink} ${activeTab === 'general' ? styles.tabLinkActive : ''}`}
                         onClick={() => setActiveTab('general')}
                     >
                         <Icon name="person" size="1.1rem" />
                         {t('general_info') || 'General'}
                     </button>
                     <button 
-                        className={`patient-details__tab-link ${activeTab === 'history' ? 'patient-details__tab-link--active' : ''}`}
+                        className={`${styles.tabLink} ${activeTab === 'history' ? styles.tabLinkActive : ''}`}
                         onClick={() => setActiveTab('history')}
                     >
                         <Icon name="history" size="1.1rem" />
                         {t('medical_history') || 'Historia'}
                     </button>
                     <button 
-                        className={`patient-details__tab-link ${activeTab === 'finances' ? 'patient-details__tab-link--active' : ''}`}
+                        className={`${styles.tabLink} ${activeTab === 'finances' ? styles.tabLinkActive : ''}`}
                         onClick={() => setActiveTab('finances')}
                     >
                         <Icon name="payments" size="1.1rem" />
                         {t('finances') || 'Finanzas'}
                     </button>
                     <button 
-                        className={`patient-details__tab-link ${activeTab === 'medications' ? 'patient-details__tab-link--active' : ''}`}
+                        className={`${styles.tabLink} ${activeTab === 'medications' ? styles.tabLinkActive : ''}`}
                         onClick={() => setActiveTab('medications')}
                     >
                         <Icon name="description" size="1.1rem" />
                         {t('prescriptions') || 'Recetas'}
                     </button>
                     <button 
-                        className={`patient-details__tab-link ${activeTab === 'chat' ? 'patient-details__tab-link--active' : ''}`}
+                        className={`${styles.tabLink} ${activeTab === 'chat' ? styles.tabLinkActive : ''}`}
                         onClick={() => setActiveTab('chat')}
                     >
 
@@ -141,9 +126,9 @@ const PatientDetailsView = ({
                     </button>
                 </div>
 
-                <div className="patient-details__grid">
+                <div className={`${styles.grid}`}>
                     {/* Main Content Area */}
-                    <main className="patient-details__main">
+                    <main className={`${styles.main}`}>
                         {activeTab === 'general' && (
                             <>
                                 <PatientInfoBlock
@@ -178,9 +163,9 @@ const PatientDetailsView = ({
 
                         {activeTab === 'medications' && (
                             <div className="patient-details__meds-tab">
-                                <section className="patient-details__block patient-details__block--medications">
-                                    <header className="patient-details__block-header">
-                                        <h3 className="patient-details__block-title">
+                                <section className={`${styles.block} ${styles.blockMedications}`}>
+                                    <header className={`${styles.blockHeader}`}>
+                                        <h3 className={`${styles.blockTitle}`}>
                                             <Icon name="medication" size="1.2rem" />
                                             {t('current_medication') || 'Medicación actual'}
                                         </h3>
@@ -188,7 +173,7 @@ const PatientDetailsView = ({
                                             {t('configure')}
                                         </Button>
                                     </header>
-                                    <div className="patient-details__block-content patient-details__block-content--padded">
+                                    <div className={`${styles.blockContent} ${styles.blockContentPadded}`}>
                                         {chronicMeds.length > 0 ? (
                                             <ul className="patient-details__meds-list">
                                                 {chronicMeds.map((m, i) => <li key={m.id || `med-${i}`}>{m.name || m}</li>)}
@@ -197,9 +182,9 @@ const PatientDetailsView = ({
                                     </div>
                                 </section>
 
-                                <section className="patient-details__block patient-details__block--medications" style={{marginTop: '2rem'}}>
-                                    <header className="patient-details__block-header">
-                                        <h3 className="patient-details__block-title">
+                                <section className={`${styles.block} ${styles.blockMedications}`} style={{marginTop: "2rem"}}>
+                                    <header className={`${styles.blockHeader}`}>
+                                        <h3 className={`${styles.blockTitle}`}>
                                             <Icon name="folder_open" size="1.2rem" />
                                             {t('recent_prescriptions')}
                                         </h3>
@@ -207,7 +192,7 @@ const PatientDetailsView = ({
                                             {t('new_prescription')}
                                         </Button>
                                     </header>
-                                    <div className="patient-details__block-content patient-details__block-content--padded">
+                                    <div className={`${styles.blockContent} ${styles.blockContentPadded}`}>
                                         {recentRequests.length > 0 ? (
                                             <ul className="patient-details__requests-list">
                                                 {recentRequests.map((r, i) => (

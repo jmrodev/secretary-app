@@ -1,24 +1,22 @@
+---
+source_file: "client/src/features/appointments/hooks/useWhatsAppUniversal.js"
+type: "code"
+community: "Medical Requests & History"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Medical_Requests_&_History
+---
+
 # useWhatsAppUniversal()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/hooks/useWhatsAppUniversal.js
-- **Comunidad:** [[_COMMUNITY_Community 3]]
+## Connections
+- [[useAppointmentsPageController()]] - `calls` [INFERRED]
+- [[useAppointmentsPageController.js]] - `imports` [EXTRACTED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useConfig()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[useWhatsAppUniversal.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useConfig()|useConfig()]] (calls)
-- <-- [[useWhatsAppUniversal.js|useWhatsAppUniversal.js]] (contains)
-- --> [[useAuth()|useAuth()]] (calls)
-- <-- [[useAppointmentsPageController()|useAppointmentsPageController()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useMessage()|useMessage()]]
-- [[useConfig()|useConfig()]]
-- [[DashboardPage.jsx|DashboardPage.jsx]]
-- [[DashboardPage()|DashboardPage()]]
-- [[useDashboardController.js|useDashboardController.js]]
-- [[useDashboardController()|useDashboardController()]]
-- [[useDashboardModals.js|useDashboardModals.js]]
-- [[useDashboardModals()|useDashboardModals()]]
-- [[useDashboardWhatsApp.js|useDashboardWhatsApp.js]]
-- [[useDashboardWhatsApp()|useDashboardWhatsApp()]]
+#graphify/code #graphify/INFERRED #community/Medical_Requests_&_History

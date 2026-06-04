@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/patients/components/modals/QRCodeModal.jsx"
+type: "code"
+community: "Community 20"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_20
+---
+
 # QRCodeModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/QRCodeModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[QRCodeModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[QRCodeModal()|QRCodeModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_20

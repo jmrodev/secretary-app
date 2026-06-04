@@ -1,14 +1,11 @@
+import React, { useState, useMemo } from 'react';
 import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useAuth } from '@/features/auth';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
+import { formatDate, formatTime } from '@/utils/core/dateUtils';
+import { formatCurrency } from '@/utils/core/format';
 import api from '@/api/axios';
-
-const PRICE_FORMATTER = new Intl.NumberFormat('es-AR', { 
-    style: 'currency', 
-    currency: 'ARS', 
-    maximumFractionDigits: 0 
-});
 
 /**
  * useWhatsAppUniversal (Handler Hook).
@@ -59,20 +56,20 @@ export const useWhatsAppUniversal = (doctors) => {
                 const address = appt.type === 'virtual' ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
                 const context = {
                     patient_name: appt.patient_name,
-                    date: new Date(appt.appointment_date).toLocaleDateString(),
-                    time: new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                    date: formatDate(appt.appointment_date),
+                    time: formatTime(appt.appointment_date, { hour12: false }),
                     doctor_name: doctor?.full_name || 'Doctor',
                     appointment_type: appt.type === 'virtual' ? 'VIRTUAL' : 'PRESENCIAL',
                     appointment_location: address,
-                    price: PRICE_FORMATTER.format(appt.type === 'virtual' ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0)),
+                    price: formatCurrency(appt.type === 'virtual' ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0)),
                     secretary_name: user.name || 'Secretaría'
                 };
                 if (await handleMetaSend(phone, metaTemplateName, metaParamsOrder, context)) return;
             }
         }
 
-        const dateStr = new Date(appt.appointment_date).toLocaleDateString();
-        const timeStr = new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        const dateStr = formatDate(appt.appointment_date);
+        const timeStr = formatTime(appt.appointment_date, { hour12: false });
         const doctor = doctors.find(d => Number(d.id) === Number(appt.doctor_id));
         const isVirtual = appt.type === 'virtual';
 
@@ -86,7 +83,7 @@ export const useWhatsAppUniversal = (doctors) => {
         }
 
         const address = isVirtual ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
-        const price = PRICE_FORMATTER.format(isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0));
+        const price = formatCurrency(isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0));
         const apptType = isVirtual ? 'VIRTUAL' : 'PRESENCIAL';
 
         const message = messageTemplate

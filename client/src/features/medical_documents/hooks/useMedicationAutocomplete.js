@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 
 /**
@@ -6,23 +6,18 @@ import { useFetch } from '@/hooks/useFetch';
  * Logic for fetching and managing medication suggestions from the vademecum.
  */
 export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectMedication) => {
-    const [searchTerm, setSearchTerm] = useState(initialValue);
+    const [searchTerm, setSearchTerm] = useState(initialValue || '');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [cursor, setCursor] = useState(-1);
     const debounceTimer = useRef(null);
 
-    // --- Data Fetching ---
     const { 
         data: suggestions = [], 
         loading, 
         refetch: fetchSuggestions 
-    } = useFetch(searchTerm.length >= 2 ? `/medical/vademecum/search?q=${encodeURIComponent(searchTerm)}` : null, {
+    } = useFetch((searchTerm && searchTerm.length >= 2) ? `/medical/vademecum/search?q=${encodeURIComponent(searchTerm)}` : null, {
         initialData: [],
-        immediate: false, // We control it with debounce
-        onSuccess: (data) => {
-            setShowSuggestions(data.length > 0);
-            setCursor(-1);
-        }
+        immediate: false // We control it with debounce
     });
 
     const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
@@ -36,9 +31,19 @@ export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectM
         if (onChange) onChange(text);
 
         if (debounceTimer.current) clearTimeout(debounceTimer.current);
-        debounceTimer.current = setTimeout(() => {
-            if (text.length >= 2) {
-                fetchSuggestions();
+        debounceTimer.current = setTimeout(async () => {
+            if (text && text.length >= 2) {
+                try {
+                    const data = await fetchSuggestions(`/medical/vademecum/search?q=${encodeURIComponent(text)}`);
+                    if (data && data.length > 0) {
+                        setShowSuggestions(true);
+                        setCursor(-1);
+                    } else {
+                        setShowSuggestions(false);
+                    }
+                } catch {
+                    setShowSuggestions(false);
+                }
             } else {
                 setShowSuggestions(false);
             }

@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/finance/financeRoutes.js"
+type: "code"
+community: "Community 335"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_335
+---
+
 # financeRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/financeRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 350]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_335

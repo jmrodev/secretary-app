@@ -1,12 +1,17 @@
+---
+source_file: "server/services/appointments/availabilityStatsService.js"
+type: "code"
+community: "Community 113"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_113
+---
+
 # availabilityStatsService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/availabilityStatsService.js
-- **Comunidad:** [[_COMMUNITY_Community 110]]
+## Connections
+- [[AvailabilityStatsService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AvailabilityStatsService|AvailabilityStatsService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AvailabilityStatsService|AvailabilityStatsService]]
-- [[.getCalendarStats()|.getCalendarStats()]]
+#graphify/code #graphify/EXTRACTED #community/Community_113

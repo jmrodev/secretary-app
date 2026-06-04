@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/StatusIndicator.jsx"
+type: "code"
+community: "Community 278"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_278
+---
+
 # StatusIndicator()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/StatusIndicator.jsx
-- **Comunidad:** [[_COMMUNITY_Community 275]]
+## Connections
+- [[StatusIndicator.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[StatusIndicator.jsx|StatusIndicator.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[StatusIndicator.jsx|StatusIndicator.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_278

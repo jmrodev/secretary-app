@@ -1,15 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/api/RetrofitClient.kt"
+type: "code"
+community: "Community 71"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_71
+---
+
 # RetrofitClient.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/api/RetrofitClient.kt
-- **Comunidad:** [[_COMMUNITY_Community 66]]
+## Connections
+- [[RetrofitClient]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[RetrofitClient|RetrofitClient]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RetrofitClient|RetrofitClient]]
-- [[.initialize()|.initialize()]]
-- [[.loadBaseUrlFromPreferences()|.loadBaseUrlFromPreferences()]]
-- [[.getBaseUrl()|.getBaseUrl()]]
-- [[.updateBaseUrl()|.updateBaseUrl()]]
+#graphify/code #graphify/EXTRACTED #community/Community_71

@@ -6,7 +6,7 @@ import { useAuth } from '@/features/auth';
 import { timeAgo, formatDate } from '@/utils/core/dateUtils';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './MedicalHistoryTable.css';
+import styles from './MedicalHistoryTable.module.css';
 
 const MedicalHistoryTable = ({ 
     items, 
@@ -29,8 +29,8 @@ const MedicalHistoryTable = ({
     const safeItems = Array.isArray(items) ? items : [];
 
     return (
-        <section className={`medical-history ${loading ? 'medical-history--loading' : 'animate-fade-in'}`}>
-            <header className="medical-history__title">
+        <section className={`${styles.root} ${loading ? 'medical-history--loading' : 'animate-fade-in'}`}>
+            <header className={`${styles.title}`}>
                 <span className="medical-history__title-icon">
                     <Icon name={icon} size="1.2rem" />
                 </span>
@@ -38,31 +38,31 @@ const MedicalHistoryTable = ({
             </header>
 
             <div className="medical-history__wrapper">
-                <table className="medical-history__table table-base">
+                <table className={`${styles.table} table-base`}>
                     <thead>
                         <tr>
-                            <th className="medical-history__th medical-history__th--date">{t('date')}</th>
-                            <th className="medical-history__th">{t('patient')}</th>
-                            <th className="medical-history__th medical-history__th--detail">{t('detail')}</th>
-                            <th className="medical-history__th">{t('doctor')}</th>
-                            <th className="medical-history__th medical-history__th--actions">{t('actions')}</th>
+                            <th className={`${styles.th} ${styles.thDate}`}>{t('date')}</th>
+                            <th className={`${styles.th}`}>{t('patient')}</th>
+                            <th className={`${styles.th} ${styles.thDetail}`}>{t('detail')}</th>
+                            <th className={`${styles.th}`}>{t('doctor')}</th>
+                            <th className={`${styles.th} ${styles.thActions}`}>{t('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {safeItems.map(item => (
-                            <tr key={`${item._origin}_${item.id}`} className="medical-history__row">
-                                <td className="medical-history__td">
-                                    <div className="medical-history__date-cell">
-                                        <span className="medical-history__date">{formatDate(item.appointment_date || item.created_at)}</span>
-                                        <span className="medical-history__time-ago">{timeAgo(item.appointment_date || item.created_at)}</span>
+                            <tr key={`${item._origin}_${item.id}`} className={`${styles.row}`}>
+                                <td className={`${styles.td}`}>
+                                    <div className={`${styles.dateCell}`}>
+                                        <span className={`${styles.date}`}>{formatDate(item.appointment_date || item.created_at)}</span>
+                                        <span className={`${styles.timeAgo}`}>{timeAgo(item.appointment_date || item.created_at)}</span>
                                     </div>
                                 </td>
-                                <td className="medical-history__td">
-                                    <div className="medical-history__patient-cell">
-                                        <span className="medical-history__patient-name">{item.patient_name}</span>
+                                <td className={`${styles.td}`}>
+                                    <div className={`${styles.patientCell}`}>
+                                        <span className={`${styles.patientName}`}>{item.patient_name}</span>
                                         {item._origin === 'request' && (
                                             <span
-                                                className="medical-history__origin-tag medical-history__origin-tag--clickable"
+                                                className={`${styles.originTag} ${styles.originTagClickable}`}
                                                 onClick={() => onView({ ...item, _readOnly: true })}
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter' || e.key === ' ') {
@@ -79,16 +79,16 @@ const MedicalHistoryTable = ({
                                         )}
                                     </div>
                                 </td>
-                                <td className="medical-history__td">
-                                    <div className="medical-history__detail" title={item.medications || item.request_note || item.diagnosis || item.description}>
+                                <td className={`${styles.td}`}>
+                                    <div className={`${styles.detail}`} title={item.medications || item.request_note || item.diagnosis || item.description}>
                                         {item.medications || item.request_note || item.diagnosis || item.description}
                                     </div>
                                 </td>
-                                <td className="medical-history__td">
-                                    <div className="medical-history__doctor-name">Dr. {item.doctor_name}</div>
+                                <td className={`${styles.td}`}>
+                                    <div className={`${styles.doctorName}`}>Dr. {item.doctor_name}</div>
                                 </td>
-                                <td className="medical-history__td">
-                                    <div className="medical-history__actions">
+                                <td className={`${styles.td}`}>
+                                    <div className={`${styles.actions}`}>
                                         <Button
                                             variant="ghost"
                                             size="sm-compact"
@@ -122,7 +122,7 @@ const MedicalHistoryTable = ({
                 </table>
 
                 {safeItems.length === 0 && (
-                    <div className="medical-history__empty">
+                    <div className={`${styles.empty}`}>
                         <p>{t('none_found')}</p>
                     </div>
                 )}

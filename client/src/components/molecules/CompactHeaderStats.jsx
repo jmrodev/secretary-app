@@ -1,64 +1,72 @@
 import React from 'react';
-import { useLanguage } from '@/hooks/useLanguage';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats';
 import Icon from '@/components/atoms/Icon';
-import './CompactHeaderStats.css';
+import styles from './CompactHeaderStats.module.css';
 
 /**
  * CompactHeaderStats - Molecule component for header metrics.
+ * 
+ * @param {Object} texts - Translations { today, week, month, patients, growth }
  */
-const CompactHeaderStats = () => {
-    const { t } = useLanguage();
+const CompactHeaderStats = ({ texts = {} }) => {
     const { isStaff, viewDoctorId } = useDoctors();
     const { stats, newPatientStats, loadingStats } = useDashboardStats(isStaff, viewDoctorId);
 
+    const tx = {
+        today: texts.today || 'Hoy',
+        week: texts.week || 'Semana',
+        month: texts.month || 'Mes',
+        patients: texts.patients || 'Pacientes',
+        growth: texts.growth || 'Crecimiento'
+    };
+
     if (loadingStats || !stats) {
         return (
-            <div className="compact-stats compact-stats--loading">
-                <div className="compact-stats__pill"><div className="compact-stats__skeleton" /></div>
-                <div className="compact-stats__pill"><div className="compact-stats__skeleton" /></div>
-                <div className="compact-stats__pill"><div className="compact-stats__skeleton" /></div>
+            <div className={`${styles.root} compact-stats--loading`}>
+                <div className={`${styles.pill}`}><div className={`${styles.skeleton}`} /></div>
+                <div className={`${styles.pill}`}><div className={`${styles.skeleton}`} /></div>
+                <div className={`${styles.pill}`}><div className={`${styles.skeleton}`} /></div>
             </div>
         );
     }
 
     return (
-        <div className="compact-stats">
-            <div className="compact-stats__group">
-                <div className="compact-stats__pill" title={t('today')}>
-                    <div className="compact-stats__icon-wrapper" data-stat="appointments">
+        <div className={`${styles.root}`}>
+            <div className={`${styles.group}`}>
+                <div className={`${styles.pill}`} title={tx.today}>
+                    <div className={`${styles.iconWrapper}`} data-stat="appointments">
                         <Icon name="CALENDAR_TODAY" size="0.9rem" />
                     </div>
-                    <span className="compact-stats__value">{stats.appointments_today || 0}</span>
+                    <span className={`${styles.value}`}>{stats.appointments_today || 0}</span>
                 </div>
-                <div className="compact-stats__pill" title={t('week')}>
-                    <div className="compact-stats__icon-wrapper" data-stat="week">
+                <div className={`${styles.pill}`} title={tx.week}>
+                    <div className={`${styles.iconWrapper}`} data-stat="week">
                         <Icon name="VIEW_WEEK" size="0.9rem" />
                     </div>
-                    <span className="compact-stats__value">{stats.appointments_week || 0}</span>
+                    <span className={`${styles.value}`}>{stats.appointments_week || 0}</span>
                 </div>
-                <div className="compact-stats__pill" title={t('month')}>
-                    <div className="compact-stats__icon-wrapper" data-stat="month">
+                <div className={`${styles.pill}`} title={tx.month}>
+                    <div className={`${styles.iconWrapper}`} data-stat="month">
                         <Icon name="DATE_RANGE" size="0.9rem" />
                     </div>
-                    <span className="compact-stats__value">{stats.appointments_month || 0}</span>
+                    <span className={`${styles.value}`}>{stats.appointments_month || 0}</span>
                 </div>
-                <div className="compact-stats__pill" title={t('patients')}>
-                    <div className="compact-stats__icon-wrapper" data-stat="patients">
+                <div className={`${styles.pill}`} title={tx.patients}>
+                    <div className={`${styles.iconWrapper}`} data-stat="patients">
                         <Icon name="GROUPS" size="0.9rem" />
                     </div>
-                    <span className="compact-stats__value">{stats.total_patients || 0}</span>
+                    <span className={`${styles.value}`}>{stats.total_patients || 0}</span>
                 </div>
             </div>
 
             {isStaff && newPatientStats && (
-                <div className="compact-stats__group">
-                    <div className="compact-stats__pill compact-stats__pill--growth" title={t('growth')}>
-                        <div className="compact-stats__icon-wrapper" data-stat="growth">
+                <div className={`${styles.group}`}>
+                    <div className={`${styles.pill} compact-stats__pill--growth`} title={tx.growth}>
+                        <div className={`${styles.iconWrapper}`} data-stat="growth">
                             <Icon name="TRENDING_UP" size="0.9rem" />
                         </div>
-                        <span className="compact-stats__value">+{newPatientStats.currentDay || 0}</span>
+                        <span className={`${styles.value}`}>+{newPatientStats.currentDay || 0}</span>
                     </div>
                 </div>
             )}

@@ -1,16 +1,17 @@
+---
+source_file: "server/repositories/appointments/holidayRepository.js"
+type: "code"
+community: "Community 61"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_61
+---
+
 # holidayRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/holidayRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 54]]
+## Connections
+- [[HolidayRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[HolidayRepository|HolidayRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[HolidayRepository|HolidayRepository]]
-- [[.findActiveByMonth()|.findActiveByMonth()]]
-- [[.getHolidaysInRange()|.getHolidaysInRange()]]
-- [[.findAll()|.findAll()]]
-- [[.create()|.create()]]
-- [[.delete()|.delete()]]
+#graphify/code #graphify/EXTRACTED #community/Community_61

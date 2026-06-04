@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/institutions/components/views/InstitutionManager.jsx"
+type: "code"
+community: "Community 153"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_153
+---
+
 # InstitutionManager.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/institutions/components/InstitutionManager.jsx
-- **Comunidad:** [[_COMMUNITY_Community 142]]
+## Connections
+- [[InstitutionManager()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[InstitutionManager()|InstitutionManager()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InstitutionManager()|InstitutionManager()]]
+#graphify/code #graphify/EXTRACTED #community/Community_153

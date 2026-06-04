@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/system/settingsController.js"
+type: "code"
+community: "Community 332"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_332
+---
+
 # settingsController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/settingsController.js
-- **Comunidad:** [[_COMMUNITY_Community 302]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_332

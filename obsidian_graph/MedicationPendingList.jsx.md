@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/medications/MedicationPendingList.jsx"
+type: "code"
+community: "Community 240"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_240
+---
+
 # MedicationPendingList.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/MedicationPendingList.jsx
-- **Comunidad:** [[_COMMUNITY_Community 242]]
+## Connections
+- [[MedicationPendingList()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicationPendingList()|MedicationPendingList()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicationPendingList()|MedicationPendingList()]]
+#graphify/code #graphify/EXTRACTED #community/Community_240

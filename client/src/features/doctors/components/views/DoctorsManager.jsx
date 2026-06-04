@@ -4,8 +4,7 @@ import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import DoctorCard from '@/features/doctors/components/cards/DoctorCard';
 import DoctorEditModal from '@/features/doctors/components/modals/DoctorEditModal';
-import SearchBar from '@/components/molecules/SearchBar';
-import './DoctorsManager.css';
+import styles from './DoctorsManager.module.css';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
@@ -21,7 +20,7 @@ const DoctorsManager = ({
     settings
 }) => {
     return (
-        <section className="doctors-manager">
+        <section className={`${styles.root}`}>
             <FeatureToolbar
                 className="doctors-manager-orchestrator__top-actions"
                 actions={
@@ -34,7 +33,7 @@ const DoctorsManager = ({
                         >
                             {t('new') || 'Nuevo'}
                         </Button>
-                        <div className="doctors-manager__counter">
+                        <div className={`${styles.counter}`}>
                             <Icon name="medical_services" size="1.2rem" />
                             <span>{filteredDoctors.length} {t('doctors_count') || 'Médicos activos'}</span>
                         </div>
@@ -47,13 +46,13 @@ const DoctorsManager = ({
             ) : (
                 <div className="dashboard-layout__grid animate-fade-in">
                     <main className="dashboard-layout__main dashboard-layout__main--full">
-                        <div className="doctors-manager__grid">
+                        <div className={`${styles.grid}`}>
                             {filteredDoctors.length === 0 ? (
-                                <div className="doctors-manager__empty-state">
-                                    <div className="doctors-manager__empty-icon">
+                                <div className={`${styles.emptyState}`}>
+                                    <div className={`${styles.emptyIcon}`}>
                                         <Icon name="medical_services" size="3rem" />
                                     </div>
-                                    <p className="doctors-manager__empty-text">{t('no_doctors_found')}</p>
+                                    <p className={`${styles.emptyText}`}>{t('no_doctors_found')}</p>
                                 </div>
                             ) : filteredDoctors.map(doctor => (
                                 <DoctorCard

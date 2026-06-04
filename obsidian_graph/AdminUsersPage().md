@@ -1,22 +1,19 @@
+---
+source_file: "client/src/features/users/AdminUsersPage.jsx"
+type: "code"
+community: "Android Messaging"
+location: "L16"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Android_Messaging
+---
+
 # AdminUsersPage()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/users/AdminUsersPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 6]]
+## Connections
+- [[AdminUsersPage.jsx]] - `contains` [EXTRACTED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useAuth()|useAuth()]] (calls)
-- <-- [[AdminUsersPage.jsx|AdminUsersPage.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RequestsPage.jsx|RequestsPage.jsx]]
-- [[RequestsPage()|RequestsPage()]]
-- [[useMedicalRequest.js|useMedicalRequest.js]]
-- [[useMedicalRequest()|useMedicalRequest()]]
-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]]
-- [[MedicalRequestForm()|MedicalRequestForm()]]
-- [[MedicalRequestList.jsx|MedicalRequestList.jsx]]
-- [[MedicalRequestList()|MedicalRequestList()]]
-- [[MedicalHistoryTable.jsx|MedicalHistoryTable.jsx]]
-- [[MedicalHistoryTable()|MedicalHistoryTable()]]
+#graphify/code #graphify/INFERRED #community/Android_Messaging

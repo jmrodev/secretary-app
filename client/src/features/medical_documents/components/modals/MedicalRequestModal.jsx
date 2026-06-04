@@ -12,7 +12,7 @@ const MedicalRequestModal = ({ isOpen, onClose, doctors, t, onRequestCreated }) 
             isOpen={isOpen}
             onClose={onClose}
             title={t('new_request')}
-            size="lg"
+            size="xl"
         >
             <MedicalRequestForm 
                 doctors={doctors} 

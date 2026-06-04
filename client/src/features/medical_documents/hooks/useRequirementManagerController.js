@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -64,7 +64,21 @@ export const useRequirementManagerController = (user) => {
     const recycleRequests = recycleBinData.filter(item => item.entity_type === 'medical_request');
 
     // Selection/Edit State
-    const [selectedRequest, setSelectedRequest] = useState(null);
+    const [selectedRequest, _setSelectedRequest] = useState(null);
+    const setSelectedRequest = (req) => {
+        _setSelectedRequest(req);
+        if (req) {
+            const { meds, notes } = extractMedicationDetails(req);
+            dispatch({
+                type: 'RESET',
+                payload: {
+                    editMeds: meds,
+                    editNotes: notes,
+                    editDoctorNote: req.doctor_note || ''
+                }
+            });
+        }
+    };
     const [isNewModalOpen, setIsNewModalOpen] = useState(false);
     const [actionModal, setActionModal] = useState({ open: false, type: '', id: null });
     const [actionNote, setActionNote] = useState('');
@@ -113,20 +127,6 @@ export const useRequirementManagerController = (user) => {
     }, [fetchRequests]);
 
     const loading = requestsLoading;
-
-    useEffect(() => {
-        if (selectedRequest) {
-            const { meds, notes } = extractMedicationDetails(selectedRequest);
-            dispatch({
-                type: 'RESET',
-                payload: {
-                    editMeds: meds,
-                    editNotes: notes,
-                    editDoctorNote: selectedRequest.doctor_note || ''
-                }
-            });
-        }
-    }, [selectedRequest]);
 
     const handleTabChange = (newTab) => {
         if (newTab === 'new') {

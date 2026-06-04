@@ -1,19 +1,21 @@
+---
+source_file: "client/src/components/molecules/ErrorBoundary.jsx"
+type: "code"
+community: "Community 73"
+location: "L6"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_73
+---
+
 # ErrorBoundary
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/ErrorBoundary.jsx
-- **Comunidad:** [[_COMMUNITY_Community 68]]
+## Connections
+- [[.componentDidCatch()]] - `method` [EXTRACTED]
+- [[.constructor()_12]] - `method` [EXTRACTED]
+- [[.getDerivedStateFromError()]] - `method` [EXTRACTED]
+- [[.render()]] - `method` [EXTRACTED]
+- [[ErrorBoundary.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ErrorBoundary.jsx|ErrorBoundary.jsx]] (contains)
-- --> [[.constructor()|.constructor()]] (method)
-- --> [[.getDerivedStateFromError()|.getDerivedStateFromError()]] (method)
-- --> [[.componentDidCatch()|.componentDidCatch()]] (method)
-- --> [[.render()|.render()]] (method)
-
-## Miembros de la misma Comunidad
-- [[ErrorBoundary.jsx|ErrorBoundary.jsx]]
-- [[.constructor()|.constructor()]]
-- [[.getDerivedStateFromError()|.getDerivedStateFromError()]]
-- [[.componentDidCatch()|.componentDidCatch()]]
-- [[.render()|.render()]]
+#graphify/code #graphify/EXTRACTED #community/Community_73

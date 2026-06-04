@@ -1,17 +1,20 @@
+---
+source_file: "server/repositories/system/auditRepository.js"
+type: "code"
+community: "Community 83"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_83
+---
+
 # AuditRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/auditRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 78]]
+## Connections
+- [[.create()_16]] - `method` [EXTRACTED]
+- [[.findRecentLogs()]] - `method` [EXTRACTED]
+- [[.findRecycleBin()]] - `method` [EXTRACTED]
+- [[auditRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[auditRepository.js|auditRepository.js]] (contains)
-- --> [[.create()|.create()]] (method)
-- --> [[.findRecentLogs()|.findRecentLogs()]] (method)
-- --> [[.findRecycleBin()|.findRecycleBin()]] (method)
-
-## Miembros de la misma Comunidad
-- [[auditRepository.js|auditRepository.js]]
-- [[.create()|.create()]]
-- [[.findRecentLogs()|.findRecentLogs()]]
-- [[.findRecycleBin()|.findRecycleBin()]]
+#graphify/code #graphify/EXTRACTED #community/Community_83

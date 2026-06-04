@@ -1,50 +1,46 @@
+---
+source_file: "client/src/context/MessageContext.jsx"
+type: "code"
+community: "Medical Requests & History"
+location: "L6"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Medical_Requests_&_History
+---
+
 # useMessage()
 
-- **Tipo:** code
-- **Archivo:** client/src/context/MessageContext.jsx
-- **Comunidad:** [[_COMMUNITY_Community 3]]
+## Connections
+- [[AppointmentAdminPanel()]] - `calls` [INFERRED]
+- [[BillingSettings()]] - `calls` [INFERRED]
+- [[FloatingChat()]] - `calls` [INFERRED]
+- [[MedicalRequestForm()]] - `calls` [INFERRED]
+- [[MessageContext.jsx]] - `contains` [EXTRACTED]
+- [[PatientMedications()]] - `calls` [INFERRED]
+- [[PrescriptionModal()]] - `calls` [INFERRED]
+- [[WhatsAppModal()]] - `calls` [INFERRED]
+- [[WhatsappChatHistory()]] - `calls` [INFERRED]
+- [[useAppointmentBooking()]] - `calls` [INFERRED]
+- [[useAppointmentsPageController()]] - `calls` [INFERRED]
+- [[useDashboardController()]] - `calls` [INFERRED]
+- [[useDoctorsPageController()]] - `calls` [INFERRED]
+- [[useFinancesPageController()]] - `calls` [INFERRED]
+- [[useGoogleSync()]] - `calls` [INFERRED]
+- [[useHolidays()]] - `calls` [INFERRED]
+- [[useInstitutionFinances()]] - `calls` [INFERRED]
+- [[useInstitutionsController()]] - `calls` [INFERRED]
+- [[useInsurancesController()]] - `calls` [INFERRED]
+- [[useMedicalDocumentsController()]] - `calls` [INFERRED]
+- [[useMessagesPageController()]] - `calls` [INFERRED]
+- [[useNextFreeSlot()]] - `calls` [INFERRED]
+- [[usePatientFormController()]] - `calls` [INFERRED]
+- [[usePatientsPageController()]] - `calls` [INFERRED]
+- [[useProfileController()]] - `calls` [INFERRED]
+- [[useRentalsController()]] - `calls` [INFERRED]
+- [[useRequirementManagerController()]] - `calls` [INFERRED]
+- [[useSystemConfigController()]] - `calls` [INFERRED]
+- [[useUsers()]] - `calls` [INFERRED]
+- [[useWhatsAppUniversal()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[MessageContext.jsx|MessageContext.jsx]] (contains)
-- <-- [[useInstitutionsController()|useInstitutionsController()]] (calls)
-- <-- [[useDashboardController()|useDashboardController()]] (calls)
-- <-- [[useRequirementManagerController()|useRequirementManagerController()]] (calls)
-- <-- [[useMedicalDocumentsController()|useMedicalDocumentsController()]] (calls)
-- <-- [[PrescriptionModal()|PrescriptionModal()]] (calls)
-- <-- [[MedicalRequestForm()|MedicalRequestForm()]] (calls)
-- <-- [[useInsurancesController()|useInsurancesController()]] (calls)
-- <-- [[useGoogleEvents()|useGoogleEvents()]] (calls)
-- <-- [[useWhatsAppUniversal()|useWhatsAppUniversal()]] (calls)
-- <-- [[useAppointmentsPageController()|useAppointmentsPageController()]] (calls)
-- <-- [[useAppointmentBooking()|useAppointmentBooking()]] (calls)
-- <-- [[useNextFreeSlot()|useNextFreeSlot()]] (calls)
-- <-- [[useHolidays()|useHolidays()]] (calls)
-- <-- [[useAppointments()|useAppointments()]] (calls)
-- <-- [[AppointmentAdminPanel()|AppointmentAdminPanel()]] (calls)
-- <-- [[useSystemConfigController()|useSystemConfigController()]] (calls)
-- <-- [[BillingSettings()|BillingSettings()]] (calls)
-- <-- [[useMessagesPageController()|useMessagesPageController()]] (calls)
-- <-- [[WhatsAppModal()|WhatsAppModal()]] (calls)
-- <-- [[FloatingChat()|FloatingChat()]] (calls)
-- <-- [[useProfileController()|useProfileController()]] (calls)
-- <-- [[useFinancesPageController()|useFinancesPageController()]] (calls)
-- <-- [[useInstitutionFinances()|useInstitutionFinances()]] (calls)
-- <-- [[useUsers()|useUsers()]] (calls)
-- <-- [[useRentalsController()|useRentalsController()]] (calls)
-- <-- [[useDoctorsPageController()|useDoctorsPageController()]] (calls)
-- <-- [[usePatientsPageController()|usePatientsPageController()]] (calls)
-- <-- [[usePatientFormController()|usePatientFormController()]] (calls)
-- <-- [[PatientMedications()|PatientMedications()]] (calls)
-- <-- [[WhatsappChatHistory()|WhatsappChatHistory()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useConfig()|useConfig()]]
-- [[DashboardPage.jsx|DashboardPage.jsx]]
-- [[DashboardPage()|DashboardPage()]]
-- [[useDashboardController.js|useDashboardController.js]]
-- [[useDashboardController()|useDashboardController()]]
-- [[useDashboardModals.js|useDashboardModals.js]]
-- [[useDashboardModals()|useDashboardModals()]]
-- [[useDashboardWhatsApp.js|useDashboardWhatsApp.js]]
-- [[useDashboardWhatsApp()|useDashboardWhatsApp()]]
-- [[PrescriptionModal.jsx|PrescriptionModal.jsx]]
+#graphify/code #graphify/INFERRED #community/Medical_Requests_&_History

@@ -1,15 +1,19 @@
+---
+source_file: "client/src/features/finances/hooks/useInstitutionFinances.js"
+type: "code"
+community: "Community 105"
+location: "L5"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_105
+---
+
 # useInstitutionFinances()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/hooks/useInstitutionFinances.js
-- **Comunidad:** [[_COMMUNITY_Community 102]]
+## Connections
+- [[InstitutionFinances()]] - `calls` [INFERRED]
+- [[useInstitutionFinances.js]] - `contains` [EXTRACTED]
+- [[useMessage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useMessage()|useMessage()]] (calls)
-- <-- [[useInstitutionFinances.js|useInstitutionFinances.js]] (contains)
-- <-- [[InstitutionFinances()|InstitutionFinances()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useInstitutionFinances.js|useInstitutionFinances.js]]
-- [[InstitutionFinances.jsx|InstitutionFinances.jsx]]
-- [[InstitutionFinances()|InstitutionFinances()]]
+#graphify/code #graphify/INFERRED #community/Community_105

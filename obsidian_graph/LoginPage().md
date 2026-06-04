@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/auth/LoginPage.jsx"
+type: "code"
+community: "Community 212"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_212
+---
+
 # LoginPage()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/LoginPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 205]]
+## Connections
+- [[LoginPage.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[LoginPage.jsx|LoginPage.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[LoginPage.jsx|LoginPage.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_212

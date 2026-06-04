@@ -5,7 +5,7 @@ import Card from '@/components/atoms/Card';
 import Badge from '@/components/atoms/Badge';
 import CashBoxSummary from '@/features/finances/components/sections/CashBoxSummary';
 import FinanceFilters from '@/features/finances/components/ui/FinanceFilters';
-import './FinanceSidebar.css';
+import styles from './FinanceSidebar.module.css';
 
 /**
  * FinanceSidebar Organism.
@@ -13,7 +13,6 @@ import './FinanceSidebar.css';
  * Refactored to follow BEM and Atomic Design standards.
  */
 const FinanceSidebar = ({
-    isAdminOrSecretary,
     user,
     doctors,
     selectedDoctorFilter,
@@ -29,17 +28,17 @@ const FinanceSidebar = ({
     t
 }) => {
     return (
-        <aside className="finance-sidebar dashboard-layout__sidebar">
+        <aside className={`${styles.root} dashboard-layout__sidebar`}>
             {/* Main Action & Doctor Filter Card */}
-            <Card className="finance-sidebar__card">
-                <div className="finance-sidebar__stack">
+            <Card className={`${styles.card}`}>
+                <div className={`${styles.stack}`}>
                     {user.role !== 'patient' && (
-                        <div className="finance-sidebar__section">
-                            <div className="finance-sidebar__actions">
+                        <div className={`${styles.section}`}>
+                            <div className={`${styles.actions}`}>
                                 <Button
                                     variant="primary"
                                     size="sm"
-                                    className="finance-sidebar__action-btn"
+                                    className={`${styles.actionBtn}`}
                                     onClick={onOpenNewTransaction}
                                     icon={<Icon name="add" size="1.1rem" />}
                                 >
@@ -49,7 +48,7 @@ const FinanceSidebar = ({
                                 <Button
                                     variant="secondary"
                                     size="sm"
-                                    className="finance-sidebar__action-btn finance-sidebar__action-btn--badge"
+                                    className={`${styles.actionBtn} ${styles.actionBtnBadge}`}
                                     onClick={onOpenPendingClosures}
                                     icon={<Icon name="calendar_view_week" size="1.1rem" />}
                                 >
@@ -69,11 +68,11 @@ const FinanceSidebar = ({
                         const balances = calculateBalanceByMethod(selectedDoctorFilter);
                         if (d && balances.cash > 0) {
                             return (
-                                <div className="finance-sidebar__section">
+                                <div className={`${styles.section}`}>
                                     <Button
                                         variant="secondary"
                                         size="sm"
-                                        className="finance-sidebar__action-btn"
+                                        className={`${styles.actionBtn}`}
                                         onClick={() => onOpenCloseBox(d, balances.cash)}
                                         icon={<Icon name="payments" size="1rem" />}
                                     >
@@ -90,7 +89,7 @@ const FinanceSidebar = ({
             {/* Cash Summary Card (Only for Secretary) */}
             {
                 user.role === 'secretary' && (
-                    <Card className="finance-sidebar__card">
+                    <Card className={`${styles.card}`}>
                         <CashBoxSummary
                             doctors={doctors}
                             selectedDoctorFilter={selectedDoctorFilter}
@@ -105,7 +104,7 @@ const FinanceSidebar = ({
             }
 
             {/* Filters Card */}
-            <Card className="finance-sidebar__card">
+            <Card className={`${styles.card}`}>
                 <FinanceFilters
                     filters={filters}
                     handlers={handlers}

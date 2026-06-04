@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/sections/DocumentsSidebar.jsx"
+type: "code"
+community: "Community 183"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_183
+---
+
 # DocumentsSidebar.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/DocumentsSidebar.jsx
-- **Comunidad:** [[_COMMUNITY_Community 176]]
+## Connections
+- [[DocumentsSidebar()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[DocumentsSidebar()|DocumentsSidebar()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DocumentsSidebar()|DocumentsSidebar()]]
+#graphify/code #graphify/EXTRACTED #community/Community_183

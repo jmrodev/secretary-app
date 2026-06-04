@@ -1,13 +1,12 @@
 
 import React, { useState, useMemo } from 'react';
-import { getNow } from '@/utils/core/dateUtils';
+import { getNow, formatDate } from '@/utils/core/dateUtils';
 
 // Molecules
 import PrescriptionHabitualMeds from '@/features/medical_documents/components/sections/PrescriptionHabitualMeds';
-import PrescriptionFormFields from '@/features/medical_documents/components/forms/PrescriptionFormFields';
 import PrescriptionItemsList from '@/features/medical_documents/components/lists/PrescriptionItemsList';
 
-import '../modals/PrescriptionModal.css';
+import styles from '../modals/PrescriptionModal.module.css';
 
 const FREQ_PRESETS = [
     { label: '1/día', unitsPerDay: 1, text: 'cada 24hs' },
@@ -29,7 +28,6 @@ const PrescriptionForm = ({
     patientMeds,
     medicationItems,
     setMedicationItems,
-    baseClass,
     // Prop-drilled state from useMedicalRequest
     tempMed, setTempMed,
     tempDose, setTempDose,
@@ -42,37 +40,75 @@ const PrescriptionForm = ({
     const [tempFreqPreset, setTempFreqPreset] = useState(null);
 
     // ── Live days-supply calculation ─────────────────────────────────────────
+    const [tempDays, setTempDays] = useState('');
+
     const daysSupply = useMemo(() => {
-        const upb = parseFloat(tempUnitsPerBox);
-        const boxes = parseFloat(tempQty);
+        const upb = parseFloat(tempUnitsPerBox) || 30;
+        const qty = parseFloat(tempQty);
         const daily = parseFloat(tempDailyUnits);
-        if (!upb || !boxes || !daily || daily <= 0) return null;
-        return Math.floor((upb * boxes) / daily);
+        if (!qty || !daily || daily <= 0) return null;
+        return Math.floor((upb * qty) / daily);
     }, [tempUnitsPerBox, tempQty, tempDailyUnits]);
 
-    const [clientRefillDate, setClientRefillDate] = useState(null);
-
-    React.useEffect(() => {
-        if (!daysSupply) {
-            setClientRefillDate(null);
-            return;
-        }
+    const clientRefillDate = useMemo(() => {
+        const supply = tempDays ? parseFloat(tempDays) : daysSupply;
+        if (!supply) return null;
         const d = getNow();
-        d.setDate(d.getDate() + daysSupply);
-        setClientRefillDate(d.toLocaleDateString('es-AR', { day: '2-digit', month: 'short' }));
-    }, [daysSupply]);
+        d.setDate(d.getDate() + supply);
+        return formatDate(d, { monthName: true, hideYear: true });
+    }, [daysSupply, tempDays]);
+
+    const handleQuantityChange = (field, value) => {
+        const upb = parseFloat(tempUnitsPerBox) || 30;
+        const daily = parseFloat(tempDailyUnits) || 0;
+
+        if (field === 'boxes') {
+            setTempQty(value);
+            if (value && daily) {
+                const days = Math.floor((upb * parseFloat(value)) / daily);
+                setTempDays(String(days));
+            } else {
+                setTempDays('');
+            }
+        } else if (field === 'days') {
+            setTempDays(value);
+            if (value && daily) {
+                const boxes = Math.ceil((parseFloat(value) * daily) / upb);
+                setTempQty(String(boxes));
+            } else {
+                setTempQty('');
+            }
+        } else if (field === 'units_per_box') {
+            setTempUnitsPerBox(value);
+            const newUpb = parseFloat(value) || 30;
+            const boxes = parseFloat(tempQty);
+            if (boxes && daily) {
+                const days = Math.floor((newUpb * boxes) / daily);
+                setTempDays(String(days));
+            }
+        }
+    };
 
     // ── Handlers ─────────────────────────────────────────────────────────────
     const handleFreqPreset = (idx) => {
         setTempFreqPreset(idx);
         const preset = FREQ_PRESETS[idx];
-        if (preset.unitsPerDay !== null) {
-            const val = String(preset.unitsPerDay);
+        const daily = preset.unitsPerDay;
+        
+        if (daily !== null) {
+            const val = String(daily);
             setTempDailyUnits(val);
             setTempFreq(preset.text);
+            
+            const upb = parseFloat(tempUnitsPerBox) || 30;
+            const boxes = parseFloat(tempQty);
+            if (boxes) {
+                setTempDays(String(Math.floor((upb * boxes) / daily)));
+            }
         } else {
             setTempDailyUnits('');
             setTempFreq('según necesidad');
+            setTempDays('');
         }
     };
 
@@ -98,6 +134,13 @@ const PrescriptionForm = ({
         setTempUnitsPerBox(String(upb));
         setTempDailyUnits(String(daily));
         setTempQty(String(boxes));
+
+        const calcUpb = parseFloat(upb) || 30;
+        if (daily && boxes) {
+            setTempDays(String(Math.floor((calcUpb * boxes) / daily)));
+        } else {
+            setTempDays('');
+        }
 
         if (daily) {
             const num = parseFloat(daily);
@@ -150,7 +193,7 @@ const PrescriptionForm = ({
     };
 
     return (
-        <div className="prescription-modal">
+        <div className={styles.group}>
             <PrescriptionHabitualMeds
                 patientMeds={patientMeds}
                 items={medicationItems}
@@ -158,25 +201,22 @@ const PrescriptionForm = ({
                 t={t}
             />
 
-            <PrescriptionFormFields
+            <PrescriptionItemsList
+                items={medicationItems}
+                handleRemoveItem={handleRemoveItem}
                 tempMed={tempMed} setTempMed={setTempMed}
                 tempDose={tempDose} setTempDose={setTempDose}
                 tempFreqPreset={tempFreqPreset} handleFreqPreset={handleFreqPreset}
                 tempUnitsPerBox={tempUnitsPerBox} setTempUnitsPerBox={setTempUnitsPerBox}
                 tempDailyUnits={tempDailyUnits} setTempDailyUnits={setTempDailyUnits}
                 tempBoxes={tempQty} setTempBoxes={setTempQty}
+                tempDays={tempDays} handleQuantityChange={handleQuantityChange}
                 handleAddItem={handleAddItem}
                 handleSelectMedication={handleSelectMedication}
-                canAdd={tempMed.trim().length > 0}
+                canAdd={tempMed && tempMed.trim().length > 0}
                 daysSupply={daysSupply}
                 refillDateStr={clientRefillDate}
                 freqPresets={FREQ_PRESETS}
-                t={t}
-            />
-
-            <PrescriptionItemsList
-                items={medicationItems}
-                handleRemoveItem={handleRemoveItem}
                 t={t}
             />
         </div>

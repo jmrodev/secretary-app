@@ -1,35 +1,32 @@
+---
+source_file: "server/repositories/user/doctorRepository.js"
+type: "code"
+community: "Community 15"
+location: "L46"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_15
+---
+
 # DoctorRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/doctorRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 18]]
+## Connections
+- [[.create()_13]] - `method` [EXTRACTED]
+- [[.findAfipSettings()]] - `method` [EXTRACTED]
+- [[.findAll()_7]] - `method` [EXTRACTED]
+- [[.findById()_11]] - `method` [EXTRACTED]
+- [[.findByUserId()]] - `method` [EXTRACTED]
+- [[.findDniByAppointmentId()]] - `method` [EXTRACTED]
+- [[.findFirst()]] - `method` [EXTRACTED]
+- [[.findPrices()]] - `method` [EXTRACTED]
+- [[.getDoctorConfig()_1]] - `method` [EXTRACTED]
+- [[.getDoctorConfigByUserId()]] - `method` [EXTRACTED]
+- [[.getDoctorScheduleForDay()]] - `method` [EXTRACTED]
+- [[.getDoctorSchedules()]] - `method` [EXTRACTED]
+- [[.updateAfipSettings()]] - `method` [EXTRACTED]
+- [[.updateById()]] - `method` [EXTRACTED]
+- [[.updateByUserId()]] - `method` [EXTRACTED]
+- [[doctorRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[doctorRepository.js|doctorRepository.js]] (contains)
-- --> [[.findAll()|.findAll()]] (method)
-- --> [[.findFirst()|.findFirst()]] (method)
-- --> [[.findById()|.findById()]] (method)
-- --> [[.findByUserId()|.findByUserId()]] (method)
-- --> [[.create()|.create()]] (method)
-- --> [[.updateById()|.updateById()]] (method)
-- --> [[.updateByUserId()|.updateByUserId()]] (method)
-- --> [[.getDoctorConfig()|.getDoctorConfig()]] (method)
-- --> [[.getDoctorConfigByUserId()|.getDoctorConfigByUserId()]] (method)
-- --> [[.findPrices()|.findPrices()]] (method)
-- --> [[.getDoctorSchedules()|.getDoctorSchedules()]] (method)
-- --> [[.getDoctorScheduleForDay()|.getDoctorScheduleForDay()]] (method)
-- --> [[.findAfipSettings()|.findAfipSettings()]] (method)
-- --> [[.findDniByAppointmentId()|.findDniByAppointmentId()]] (method)
-- --> [[.updateAfipSettings()|.updateAfipSettings()]] (method)
-
-## Miembros de la misma Comunidad
-- [[doctorRepository.js|doctorRepository.js]]
-- [[.findAll()|.findAll()]]
-- [[.findFirst()|.findFirst()]]
-- [[.findById()|.findById()]]
-- [[.findByUserId()|.findByUserId()]]
-- [[.create()|.create()]]
-- [[.updateById()|.updateById()]]
-- [[.updateByUserId()|.updateByUserId()]]
-- [[.getDoctorConfig()|.getDoctorConfig()]]
-- [[.getDoctorConfigByUserId()|.getDoctorConfigByUserId()]]
+#graphify/code #graphify/EXTRACTED #community/Community_15

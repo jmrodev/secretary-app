@@ -6,7 +6,7 @@ import MedicationAutocomplete from '@/features/medical_documents/components/ui/M
 import { getNow, addMonths, toInputDate } from '@/utils/core/dateUtils';
 
 // Local CSS
-import './AddMedicationForm.css';
+import styles from './AddMedicationForm.module.css';
 
 // Local Feature Components
 import MedicationPendingList from '@/features/patients/components/medications/MedicationPendingList';
@@ -157,10 +157,10 @@ const AddMedicationForm = ({
     };
 
     return (
-        <div className="add-medication-form">
-            <div className="add-medication-form__card">
-                <div className="add-medication-form__search-group">
-                    <label className="add-medication-form__label">{t('search_medication') || 'Buscar Medicamento'}</label>
+        <div className={`${styles.root}`}>
+            <div className={`${styles.card}`}>
+                <div className={`${styles.searchGroup}`}>
+                    <label className={`${styles.label}`}>{t('search_medication') || 'Buscar Medicamento'}</label>
                     <MedicationAutocomplete
                         value={currentMed.medication_name}
                         onChange={(val) => setCurrentMed(prev => ({ ...prev, medication_name: val }))}
@@ -190,7 +190,7 @@ const AddMedicationForm = ({
                 />
             )}
 
-            <div className="add-medication-form__actions">
+            <div className={`${styles.actions}`}>
                 <Button variant="ghost" onClick={onCancel} icon={<Icon name="close" />}>
                     {t('cancel')}
                 </Button>

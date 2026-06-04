@@ -1,17 +1,17 @@
+---
+source_file: "server/services/appointments/availabilitySearchService.js"
+type: "code"
+community: "Community 89"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_89
+---
+
 # availabilitySearchService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/availabilitySearchService.js
-- **Comunidad:** [[_COMMUNITY_Community 42]]
+## Connections
+- [[AvailabilitySearchService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AvailabilitySearchService|AvailabilitySearchService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AvailabilitySearchService|AvailabilitySearchService]]
-- [[._getDateStr()|._getDateStr()]]
-- [[._parseLocalDate()|._parseLocalDate()]]
-- [[.getNextFreeSlot()|.getNextFreeSlot()]]
-- [[.getFreeSlotsBatch()|.getFreeSlotsBatch()]]
-- [[._isBusy()|._isBusy()]]
-- [[._injectOutOfHoursGaps()|._injectOutOfHoursGaps()]]
+#graphify/code #graphify/EXTRACTED #community/Community_89

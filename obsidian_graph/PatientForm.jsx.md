@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/forms/PatientForm.jsx"
+type: "code"
+community: "Community 244"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_244
+---
+
 # PatientForm.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientForm.jsx
-- **Comunidad:** [[_COMMUNITY_Community 234]]
+## Connections
+- [[PatientForm()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PatientForm()|PatientForm()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientForm()|PatientForm()]]
+#graphify/code #graphify/EXTRACTED #community/Community_244

@@ -1,14 +1,17 @@
+---
+source_file: "server/services/appointments/availabilityService.js"
+type: "code"
+community: "Community 75"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_75
+---
+
 # availabilityService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/availabilityService.js
-- **Comunidad:** [[_COMMUNITY_Community 74]]
+## Connections
+- [[AvailabilityService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AvailabilityService|AvailabilityService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AvailabilityService|AvailabilityService]]
-- [[.getNextFreeSlot()|.getNextFreeSlot()]]
-- [[.getFreeSlotsBatch()|.getFreeSlotsBatch()]]
-- [[.getCalendarStats()|.getCalendarStats()]]
+#graphify/code #graphify/EXTRACTED #community/Community_75

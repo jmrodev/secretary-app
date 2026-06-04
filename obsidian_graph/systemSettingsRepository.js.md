@@ -1,16 +1,17 @@
+---
+source_file: "server/repositories/system/systemSettingsRepository.js"
+type: "code"
+community: "Community 62"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_62
+---
+
 # systemSettingsRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/systemSettingsRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 52]]
+## Connections
+- [[SystemSettingsRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[SystemSettingsRepository|SystemSettingsRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[SystemSettingsRepository|SystemSettingsRepository]]
-- [[.findAll()|.findAll()]]
-- [[.findByKey()|.findByKey()]]
-- [[.upsert()|.upsert()]]
-- [[.updateDoctorRentalLogic()|.updateDoctorRentalLogic()]]
-- [[.findManyByKeys()|.findManyByKeys()]]
+#graphify/code #graphify/EXTRACTED #community/Community_62

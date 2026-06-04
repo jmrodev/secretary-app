@@ -1,12 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/utils/NetworkErrorMapper.kt"
+type: "code"
+community: "Community 119"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_119
+---
+
 # NetworkErrorMapper.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/utils/NetworkErrorMapper.kt
-- **Comunidad:** [[_COMMUNITY_Community 113]]
+## Connections
+- [[NetworkErrorMapper]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[NetworkErrorMapper|NetworkErrorMapper]] (contains)
-
-## Miembros de la misma Comunidad
-- [[NetworkErrorMapper|NetworkErrorMapper]]
-- [[.getUserFriendlyMessage()|.getUserFriendlyMessage()]]
+#graphify/code #graphify/EXTRACTED #community/Community_119

@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/appointments/hooks/useDayScheduleHandlers.js"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Agenda_&_Slot_Management
+---
+
 # useDayScheduleHandlers.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/hooks/useDayScheduleHandlers.js
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[useDayScheduleHandlers()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useDayScheduleHandlers()|useDayScheduleHandlers()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
-- [[DaySchedule()|DaySchedule()]]
+#graphify/code #graphify/EXTRACTED #community/Agenda_&_Slot_Management

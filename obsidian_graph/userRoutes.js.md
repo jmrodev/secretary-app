@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/user/userRoutes.js"
+type: "code"
+community: "Community 347"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_347
+---
+
 # userRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/userRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 353]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_347

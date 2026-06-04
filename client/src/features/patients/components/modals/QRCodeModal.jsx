@@ -9,7 +9,7 @@ import { useConfig } from '@/context/ConfigContext';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { formatTime } from '@/utils/core/dateUtils';
 
-import './QRCodeModal.css';
+import styles from './QRCodeModal.module.css';
 
 const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhone, type }) => {
     const { t } = useLanguage();
@@ -41,14 +41,14 @@ const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhon
             title={title}
             size="sm"
             footer={
-                <div className="qr-modal-footer">
+                <div className={`${styles.qrModalFooter}`}>
                     <Button variant="secondary" onClick={onClose}>{t('close')}</Button>
                     {patientPhone && (
                         <a
                             href={`https://wa.me/${patientPhone.replace(/\D/g, '')}?text=${encodeURIComponent(waMessage)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="qr-modal-footer__whatsapp"
+                            className={`${styles.whatsapp}`}
                         >
                             <Icon name="smartphone" size="1.1rem" />
                             WhatsApp
@@ -58,13 +58,13 @@ const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhon
                 </div>
             }
         >
-            <div className="qr-modal-content">
-                <p className="qr-modal-content__text">
+            <div className={`${styles.root}`}>
+                <p className={`${styles.text}`}>
                     {isPrescription
                         ? t('send_link_instruction')
                         : t('show_qr_instruction')}
                 </p>
-                <div className="qr-modal-content__wrapper" id="qr-wrapper">
+                <div className={`${styles.wrapper}`} id="qr-wrapper">
                     <QRCodeSVG
                         id="qr-code-svg"
                         value={url}
@@ -74,7 +74,7 @@ const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhon
                     />
                 </div>
                 {expiresAt && (
-                    <p className="qr-modal-content__expiry" suppressHydrationWarning>
+                    <p className={`${styles.expiry}`} suppressHydrationWarning>
                         {t('expires_label')}: {formatTime(expiresAt)}
                     </p>
                 )}

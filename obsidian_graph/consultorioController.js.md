@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/core/consultorioController.js"
+type: "code"
+community: "Community 305"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_305
+---
+
 # consultorioController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/consultorioController.js
-- **Comunidad:** [[_COMMUNITY_Community 305]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_305

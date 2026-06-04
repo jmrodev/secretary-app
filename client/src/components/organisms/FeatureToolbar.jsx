@@ -2,7 +2,7 @@ import React from 'react';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
-import './FeatureToolbar.css';
+import styles from './FeatureToolbar.module.css';
 
 const EMPTY_ARRAY = [];
 
@@ -19,8 +19,8 @@ const FeatureToolbar = ({
     className = ''
 }) => {
     return (
-        <div className={`feature-toolbar ${className} animate-fade-in no-print`}>
-            <div className="feature-toolbar__content">
+        <div className={`${styles.root} ${className} animate-fade-in no-print`}>
+            <div className={`${styles.content}`}>
                 {tabs.length > 0 && (
                     <TabNav className="feature-toolbar__tabs tab-nav--no-margin">
                         {tabs.map(tab => (
@@ -39,7 +39,7 @@ const FeatureToolbar = ({
                 )}
 
                 {actions && (
-                    <div className="feature-toolbar__actions">
+                    <div className={`${styles.actions}`}>
                         {actions}
                     </div>
                 )}

@@ -1,17 +1,17 @@
+---
+source_file: "server/services/integrations/googleSyncImport.js"
+type: "code"
+community: "Community 140"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_140
+---
+
 # googleSyncImport.js
 
-- **Tipo:** code
-- **Archivo:** server/services/googleSyncImport.js
-- **Comunidad:** [[_COMMUNITY_Community 72]]
+## Connections
+- [[importFromGoogle()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[importFromGoogle()|importFromGoogle()]] (contains)
-- --> [[importDoctorEvents()|importDoctorEvents()]] (contains)
-- --> [[importEvent()|importEvent()]] (contains)
-- --> [[parseEventDescription()|parseEventDescription()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[importFromGoogle()|importFromGoogle()]]
-- [[importDoctorEvents()|importDoctorEvents()]]
-- [[importEvent()|importEvent()]]
-- [[parseEventDescription()|parseEventDescription()]]
+#graphify/code #graphify/EXTRACTED #community/Community_140

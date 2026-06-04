@@ -4,10 +4,10 @@ import Pagination from '@/components/atoms/Pagination';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { isToday, formatDate } from '@/utils/core/dateUtils';
-import { formatPrice } from '@/utils/core/format';
+import { formatCurrency } from '@/utils/core/format';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './MedicalRequestList.css';
+import styles from './MedicalRequestList.module.css';
 
 /**
  * MedicalRequestList Organism (Feature-based).
@@ -31,47 +31,45 @@ const MedicalRequestList = ({
 
     if (!loading && (!requests || requests.length === 0)) {
         return (
-            <section className="medical-requests__empty animate-fade-in">
+            <section className={`${styles.empty} animate-fade-in`}>
                 <h2 className="visually-hidden">{t('no_requests')}</h2>
-                <Icon name="description" size="3rem" className="medical-requests__empty-icon" />
+                <Icon name="description" size="3rem" className={`${styles.emptyIcon}`} />
                 {t('no_requests')}
             </section>
         );
     }
 
     return (
-        <section className={`medical-requests ${loading ? 'medical-requests--loading' : 'animate-fade-in'}`}>
+        <section className={`${styles.root} ${loading ? 'medical-requests--loading' : 'animate-fade-in'}`}>
             <h2 className="visually-hidden">{t('medical_requests')}</h2>
-            <article className="medical-requests__container">
+            <article className={`${styles.container}`}>
                 <h3 className="visually-hidden">{t('requests_list')}</h3>
-                <table className="medical-requests__table table-base">
+                <table className={`${styles.table} table-base`}>
                     <thead>
                         <tr>
-                            <th className="medical-requests__th medical-requests__th--type">{t('type')}</th>
-                            <th className="medical-requests__th">{t('date') || 'Fecha'}</th>
-                            <th className="medical-requests__th">{t('patient')}</th>
-                            <th className="medical-requests__th">{t('doctor')}</th>
-                            <th className="medical-requests__th medical-requests__th--status">{t('status')}</th>
-                            <th className="medical-requests__th medical-requests__th--payment">{t('payment')}</th>
-                            <th className="medical-requests__th medical-requests__th--actions">{t('actions')}</th>
+                            <th className={`${styles.th} ${styles.thType}`}>{t('type')}</th>
+                            <th className={`${styles.th}`}>{t('date') || 'Fecha'}</th>
+                            <th className={`${styles.th}`}>{t('patient')}</th>
+                            <th className={`${styles.th}`}>{t('doctor')}</th>
+                            <th className={`${styles.th} ${styles.thStatus}`}>{t('status')}</th>
+                            <th className={`${styles.th} ${styles.thPayment}`}>{t('payment')}</th>
+                            <th className={`${styles.th} ${styles.thActions}`}>{t('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {requests.map(r => {
                             const isPending = r.status === 'pending';
-                            const isCompleted = r.status === 'completed';
-                            const isRejected = r.status === 'rejected';
 
                             const paymentStatusClass = r.payment_status === 'paid' ? 'paid' :
                                 r.payment_status === 'debt' || r.payment_status === 'partial' ? 'debt' :
                                     r.payment_status === 'bonified' ? 'bonified' : 'pending';
 
                             return (
-                                <tr key={r.id} className={`medical-requests__row ${!isPending ? 'medical-requests__row--completed' : ''}`}>
-                                    <td className="medical-requests__td medical-requests__td--type">
-                                        <div className="medical-requests__type-cell">
+                                <tr key={r.id} className={`${styles.row} ${!isPending ? styles.rowCompleted : ''}`}>
+                                    <td className={`${styles.td} medical-requests__td--type`}>
+                                        <div className={`${styles.typeCell}`}>
                                             <span
-                                                className={`medical-requests__type-tag medical-requests__type-tag--${r.type} medical-requests__type-tag--clickable`}
+                                                className={`${styles.typeTag} ${styles.typeTagClickable} medical-requests__type-tag--${r.type}`}
                                                 onClick={() => handleEditRequest({ ...r, _origin: 'request', _readOnly: true })}
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter' || e.key === ' ') {
@@ -86,48 +84,48 @@ const MedicalRequestList = ({
                                                 {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : (r.type === 'certificate' ? t('certificate') : r.type))}
                                             </span>
                                             {!!r.is_patient_submitted && (
-                                                <span className="medical-requests__source-tag">
+                                                <span className={`${styles.sourceTag}`}>
                                                     <Icon name="smartphone" size="1rem" /> App
                                                 </span>
                                             )}
                                         </div>
                                     </td>
-                                    <td className="medical-requests__td">
-                                        <div className="medical-requests__date" title={formatDate(r.created_at, { time: true })}>
+                                    <td className={`${styles.td}`}>
+                                        <div className={`${styles.date}`} title={formatDate(r.created_at, { time: true })}>
                                             {formatDate(r.created_at)}
                                         </div>
                                     </td>
-                                    <td className="medical-requests__td">
-                                        <div className="medical-requests__patient-name">{r.patient_name}</div>
+                                    <td className={`${styles.td}`}>
+                                        <div className={`${styles.patientName}`}>{r.patient_name}</div>
                                     </td>
-                                    <td className="medical-requests__td">
-                                        <div className="medical-requests__doctor-name">
+                                    <td className={`${styles.td}`}>
+                                        <div className={`${styles.doctorName}`}>
                                             Dr. {r.doctor_name ? r.doctor_name.split(' ').pop() : '---'}
                                         </div>
                                     </td>
-                                    <td className="medical-requests__td">
-                                        <div className="medical-requests__status-cell">
-                                            <span className={`medical-requests__status-tag medical-requests__status-tag--${r.status}`}>
+                                    <td className={`${styles.td}`}>
+                                        <div className={`${styles.statusCell}`}>
+                                            <span className={`${styles.statusTag} medical-requests__status-tag--${r.status}`}>
                                                 {t(r.status) || r.status}
                                             </span>
                                             {r.doctor_note && (
-                                                <div className="medical-requests__reply" title={r.doctor_note}>
+                                                <div className={`${styles.reply}`} title={r.doctor_note}>
                                                     <b>{t('reply')}:</b> {r.doctor_note}
                                                 </div>
                                             )}
                                         </div>
                                     </td>
-                                    <td className="medical-requests__td">
-                                        <div className="medical-requests__payment-info">
-                                            <div className={`medical-requests__payment-badge medical-requests__payment-badge--${paymentStatusClass}`}>
-                                                <span className="medical-requests__payment-dot"></span>
+                                    <td className={`${styles.td}`}>
+                                        <div className={`${styles.paymentInfo}`}>
+                                            <div className={`${styles.paymentBadge} medical-requests__payment-badge--${paymentStatusClass}`}>
+                                                <span className={`${styles.paymentDot}`}></span>
                                                 {r.payment_status === 'paid' ? t('paid') :
-                                                    ((r.payment_status === 'debt' || r.payment_status === 'partial') ? `${t(r.payment_status) || (r.payment_status === 'partial' ? 'Parcial' : 'Deuda')} ${formatPrice(r.debt_amount)}` :
+                                                    ((r.payment_status === 'debt' || r.payment_status === 'partial') ? `${t(r.payment_status) || (r.payment_status === 'partial' ? 'Parcial' : 'Deuda')} ${formatCurrency(r.debt_amount)}` :
                                                         (r.payment_status === 'bonified' ? (t('bonified') || 'Bonificado') : t('pending')))}
                                             </div>
 
                                             {r.payment_method && (
-                                                <div className="medical-requests__payment-method">
+                                                <div className={`${styles.paymentMethod}`}>
                                                     <Icon
                                                         name={r.payment_method === 'cash' ? 'payments' : r.payment_method === 'transfer' ? 'account_balance' : 'credit_card'}
                                                         size="1rem"
@@ -138,8 +136,8 @@ const MedicalRequestList = ({
                                             )}
                                         </div>
                                     </td>
-                                    <td className="medical-requests__td medical-requests__td--actions">
-                                        <div className="medical-requests__actions">
+                                    <td className={`${styles.td} medical-requests__td--actions`}>
+                                        <div className={`${styles.actions}`}>
                                             {(r.payment_status !== 'paid' && r.payment_status !== 'bonified') && (user?.role === 'secretary' || user?.role === 'doctor') && (
                                                 <>
                                                     <Button

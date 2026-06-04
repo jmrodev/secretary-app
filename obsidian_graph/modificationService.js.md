@@ -1,19 +1,17 @@
+---
+source_file: "server/services/appointments/modificationService.js"
+type: "code"
+community: "Community 36"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_36
+---
+
 # modificationService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/modificationService.js
-- **Comunidad:** [[_COMMUNITY_Community 33]]
+## Connections
+- [[ModificationService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ModificationService|ModificationService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ModificationService|ModificationService]]
-- [[.deleteAppointment()|.deleteAppointment()]]
-- [[.updateStatus()|.updateStatus()]]
-- [[.updateAppointment()|.updateAppointment()]]
-- [[.bulkUpdateType()|.bulkUpdateType()]]
-- [[._handleCompletion()|._handleCompletion()]]
-- [[._handleCancellation()|._handleCancellation()]]
-- [[._syncStatusToGoogle()|._syncStatusToGoogle()]]
-- [[._syncUpdateToGoogle()|._syncUpdateToGoogle()]]
+#graphify/code #graphify/EXTRACTED #community/Community_36

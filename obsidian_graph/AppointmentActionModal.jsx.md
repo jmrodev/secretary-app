@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/modals/AppointmentActionModal.jsx"
+type: "code"
+community: "Community 13"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_13
+---
+
 # AppointmentActionModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/AppointmentActionModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 15]]
+## Connections
+- [[AppointmentActionModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AppointmentActionModal()|AppointmentActionModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DoctorContext.jsx|DoctorContext.jsx]]
-- [[DoctorProvider()|DoctorProvider()]]
-- [[MedicalDocumentsPage.jsx|MedicalDocumentsPage.jsx]]
-- [[MedicalDocumentsPage()|MedicalDocumentsPage()]]
-- [[useRequirementManagerController.js|useRequirementManagerController.js]]
-- [[useRequirementManagerController()|useRequirementManagerController()]]
-- [[useMedicalDocumentsHandlers.js|useMedicalDocumentsHandlers.js]]
-- [[useMedicalDocumentsHandlers()|useMedicalDocumentsHandlers()]]
-- [[useMedicalDocumentsController.js|useMedicalDocumentsController.js]]
-- [[useMedicalDocumentsController()|useMedicalDocumentsController()]]
+#graphify/code #graphify/EXTRACTED #community/Community_13

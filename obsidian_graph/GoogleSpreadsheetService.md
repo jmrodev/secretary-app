@@ -1,29 +1,26 @@
+---
+source_file: "server/services/google/GoogleSpreadsheetService.js"
+type: "code"
+community: "Community 33"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_33
+---
+
 # GoogleSpreadsheetService
 
-- **Tipo:** code
-- **Archivo:** server/services/google/GoogleSpreadsheetService.js
-- **Comunidad:** [[_COMMUNITY_Community 32]]
+## Connections
+- [[.bulkSync()]] - `method` [EXTRACTED]
+- [[.clearSheet()]] - `method` [EXTRACTED]
+- [[.constructor()_10]] - `method` [EXTRACTED]
+- [[.ensureSheet()]] - `method` [EXTRACTED]
+- [[.formatRow()]] - `method` [EXTRACTED]
+- [[.getSheetName()]] - `method` [EXTRACTED]
+- [[.getWeekNumber()]] - `method` [EXTRACTED]
+- [[.resetSpreadsheetId()]] - `method` [EXTRACTED]
+- [[.syncToSpreadsheet()]] - `method` [EXTRACTED]
+- [[GoogleSpreadsheetService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[GoogleSpreadsheetService.js|GoogleSpreadsheetService.js]] (contains)
-- --> [[.constructor()|.constructor()]] (method)
-- --> [[.getSheetName()|.getSheetName()]] (method)
-- --> [[.ensureSheet()|.ensureSheet()]] (method)
-- --> [[.clearSheet()|.clearSheet()]] (method)
-- --> [[.formatRow()|.formatRow()]] (method)
-- --> [[.syncToSpreadsheet()|.syncToSpreadsheet()]] (method)
-- --> [[.bulkSync()|.bulkSync()]] (method)
-- --> [[.resetSpreadsheetId()|.resetSpreadsheetId()]] (method)
-- --> [[.getWeekNumber()|.getWeekNumber()]] (method)
-
-## Miembros de la misma Comunidad
-- [[GoogleSpreadsheetService.js|GoogleSpreadsheetService.js]]
-- [[.constructor()|.constructor()]]
-- [[.getSheetName()|.getSheetName()]]
-- [[.ensureSheet()|.ensureSheet()]]
-- [[.clearSheet()|.clearSheet()]]
-- [[.formatRow()|.formatRow()]]
-- [[.syncToSpreadsheet()|.syncToSpreadsheet()]]
-- [[.bulkSync()|.bulkSync()]]
-- [[.resetSpreadsheetId()|.resetSpreadsheetId()]]
-- [[.getWeekNumber()|.getWeekNumber()]]
+#graphify/code #graphify/EXTRACTED #community/Community_33

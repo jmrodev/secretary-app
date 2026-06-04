@@ -1,25 +1,22 @@
+---
+source_file: "client/src/features/reports/hooks/useReportsController.js"
+type: "code"
+community: "Community 12"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_12
+---
+
 # useReportsController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/hooks/useReportsController.js
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[ReportsPage()]] - `calls` [INFERRED]
+- [[ReportsSection()]] - `calls` [INFERRED]
+- [[useAppointments()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
+- [[useReportsController.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- --> [[useAppointments()|useAppointments()]] (calls)
-- <-- [[ReportsSection()|ReportsSection()]] (calls)
-- <-- [[ReportsPage()|ReportsPage()]] (calls)
-- <-- [[useReportsController.js|useReportsController.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/INFERRED #community/Community_12

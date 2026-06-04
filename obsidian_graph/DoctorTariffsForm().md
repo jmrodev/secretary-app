@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/doctors/components/sections/DoctorTariffsForm.jsx"
+type: "code"
+community: "Community 235"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_235
+---
+
 # DoctorTariffsForm()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/doctors/components/DoctorTariffsForm.jsx
-- **Comunidad:** [[_COMMUNITY_Community 228]]
+## Connections
+- [[DoctorTariffsForm.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[DoctorTariffsForm.jsx|DoctorTariffsForm.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DoctorTariffsForm.jsx|DoctorTariffsForm.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_235

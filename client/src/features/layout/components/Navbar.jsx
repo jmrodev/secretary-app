@@ -4,7 +4,7 @@ import { useLayoutController } from '@/features/layout/hooks/useLayoutController
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import LanguageSelector from '@/components/atoms/LanguageSelector';
-import './Navbar.css';
+import styles from './Navbar.module.css';
 
 /**
  * Navbar Organism (Feature Component).
@@ -14,6 +14,7 @@ const Navbar = () => {
     const {
         user, logout, t, settings,
         location, doctors,
+        language, toggleLanguage,
         isStaff, isAdmin, isSecretary, isPatient, isDoctor
     } = useLayoutController();
 
@@ -23,7 +24,7 @@ const Navbar = () => {
     if (!user) return null;
 
     const getLinkClass = (path) => 
-        `navbar__link ${location.pathname === path ? 'navbar__link--active' : ''}`;
+        `navbar__link ${location.pathname === path ? styles.linkActive : ''}`;
 
     const toggleAdmin = () => {
         setIsAdminOpen(!isAdminOpen);
@@ -43,18 +44,18 @@ const Navbar = () => {
     };
 
     return (
-        <header className="navbar">
-            <div className="navbar__container">
-                <div className="navbar__left">
-                    <Link to="/dashboard" className="navbar__logo">
-                        <div className="navbar__logo-icon">
+        <header className={`${styles.root}`}>
+            <div className={`${styles.container}`}>
+                <div className={`${styles.left}`}>
+                    <Link to="/dashboard" className={`${styles.logo}`}>
+                        <div className={`${styles.logoIcon}`}>
                             <Icon name="DASHBOARD" size="1.5rem" color="var(--primary-color)" />
                         </div>
-                        <span className="navbar__logo-text">{t('app_name')}</span>
+                        <span className={`${styles.logoText}`}>{t('app_name')}</span>
                     </Link>
                 </div>
 
-                <nav className="navbar__nav">
+                <nav className={`${styles.nav}`}>
                     <Link to="/dashboard" className={getLinkClass('/dashboard')}>
                         {t('dashboard')}
                     </Link>
@@ -97,9 +98,9 @@ const Navbar = () => {
 
                     {/* Spreadsheets Dropdown */}
                     {doctors.length > 0 && (
-                        <div className={`navbar__dropdown ${isSpreadsheetsOpen ? 'navbar__dropdown--open' : ''}`}>
+                        <div className={`${styles.dropdown} ${isSpreadsheetsOpen ? 'navbar__dropdown--open' : ''}`}>
                             <div 
-                                className="navbar__dropdown-trigger" 
+                                className={`${styles.dropdownTrigger}`} 
                                 onClick={toggleSpreadsheets}
                                 onKeyDown={(e) => handleKeyDown(e, toggleSpreadsheets)}
                                 role="button"
@@ -109,7 +110,7 @@ const Navbar = () => {
                                 <Icon name={isSpreadsheetsOpen ? 'EXPAND_LESS' : 'EXPAND_MORE'} size="1rem" />
                             </div>
                             {isSpreadsheetsOpen && (
-                                <div className="navbar__dropdown-content">
+                                <div className={`${styles.dropdownContent}`}>
                                     {isDoctor ? (
                                         doctors.reduce((acc, d) => {
                                             if (d.user_id === (user.user_id || user.id) && d.spreadsheet_id) {
@@ -119,7 +120,7 @@ const Navbar = () => {
                                                         href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="navbar__link"
+                                                        className={`${styles.link}`}
                                                     >
                                                         <Icon name="SPREADSHEETS" className="navbar__link-icon" />
                                                         {t('my_spreadsheet') || 'Mi Planilla'}
@@ -137,7 +138,7 @@ const Navbar = () => {
                                                         href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
-                                                        className="navbar__link"
+                                                        className={`${styles.link}`}
                                                         title={`Planilla de ${d.full_name}`}
                                                     >
                                                         <Icon name="SPREADSHEETS" className="navbar__link-icon" />
@@ -155,9 +156,9 @@ const Navbar = () => {
 
                     {/* Admin Dropdown */}
                     {isStaff && (
-                        <div className={`navbar__dropdown ${isAdminOpen ? 'navbar__dropdown--open' : ''}`}>
+                        <div className={`${styles.dropdown} ${isAdminOpen ? 'navbar__dropdown--open' : ''}`}>
                             <div 
-                                className="navbar__dropdown-trigger" 
+                                className={`${styles.dropdownTrigger}`} 
                                 onClick={toggleAdmin}
                                 onKeyDown={(e) => handleKeyDown(e, toggleAdmin)}
                                 role="button"
@@ -167,7 +168,7 @@ const Navbar = () => {
                                 <Icon name={isAdminOpen ? 'EXPAND_LESS' : 'EXPAND_MORE'} size="1rem" />
                             </div>
                             {isAdminOpen && (
-                                <div className="navbar__dropdown-content">
+                                <div className={`${styles.dropdownContent}`}>
                                     <Link to="/profile" className={getLinkClass('/profile')} onClick={() => setIsAdminOpen(false)}>
                                         <Icon name="PROFILE" className="navbar__link-icon" />
                                         {t('profile')}
@@ -183,6 +184,10 @@ const Navbar = () => {
                                     <Link to="/institutions" className={getLinkClass('/institutions')} onClick={() => setIsAdminOpen(false)}>
                                         <Icon name="INSTITUTIONS" className="navbar__link-icon" />
                                         {t('institutions')}
+                                    </Link>
+                                    <Link to="/holidays" className={getLinkClass('/holidays')} onClick={() => setIsAdminOpen(false)}>
+                                        <Icon name="beach_access" className="navbar__link-icon" />
+                                        Feriados
                                     </Link>
                                     {isAdmin && (
                                         <>
@@ -206,22 +211,26 @@ const Navbar = () => {
                     )}
                 </nav>
 
-                <div className="navbar__right">
-                    <div className="navbar__actions">
-                        <div className="navbar__action-icon">
+                <div className={`${styles.right}`}>
+                    <div className={`${styles.actions}`}>
+                        <div className={`${styles.actionIcon}`}>
                             <Icon name="NOTIFICATIONS" size="1.2rem" />
-                            <span className="navbar__badge"></span>
+                            <span className={`${styles.badge}`}></span>
                         </div>
-                        <LanguageSelector />
+                        <LanguageSelector 
+                            currentLanguage={language} 
+                            onToggleLanguage={toggleLanguage} 
+                            switchTitle={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}
+                        />
                     </div>
                     
-                    <div className="navbar-user">
-                        <div className="navbar-user__avatar">
+                    <div className={`${styles.navbarUser}`}>
+                        <div className={`${styles.avatar}`}>
                             {user?.username?.charAt(0)?.toUpperCase() || 'U'}
                         </div>
-                        <div className="navbar-user__info">
-                            <span className="navbar-user__name">{user?.full_name || user?.username}</span>
-                            <span className="navbar-user__role">{user?.role}</span>
+                        <div className={`${styles.info}`}>
+                            <span className={`${styles.name}`}>{user?.full_name || user?.username}</span>
+                            <span className={`${styles.role}`}>{user?.role}</span>
                         </div>
                     </div>
 

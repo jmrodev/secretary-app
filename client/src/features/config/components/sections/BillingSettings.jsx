@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ConfigField from '@/features/config/components/ui/ConfigField';
 import Input from '@/components/atoms/Input';
 import Button from '@/components/atoms/Button';

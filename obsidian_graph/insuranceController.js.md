@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/core/insuranceController.js"
+type: "code"
+community: "Community 304"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_304
+---
+
 # insuranceController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/insuranceController.js
-- **Comunidad:** [[_COMMUNITY_Community 303]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_304

@@ -1,21 +1,22 @@
+---
+source_file: "server/repositories/system/systemSettingsRepository.js"
+type: "code"
+community: "Community 62"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_62
+---
+
 # SystemSettingsRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/systemSettingsRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 52]]
+## Connections
+- [[.findAll()_8]] - `method` [EXTRACTED]
+- [[.findByKey()]] - `method` [EXTRACTED]
+- [[.findManyByKeys()]] - `method` [EXTRACTED]
+- [[.updateDoctorRentalLogic()]] - `method` [EXTRACTED]
+- [[.upsert()_1]] - `method` [EXTRACTED]
+- [[systemSettingsRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[systemSettingsRepository.js|systemSettingsRepository.js]] (contains)
-- --> [[.findAll()|.findAll()]] (method)
-- --> [[.findByKey()|.findByKey()]] (method)
-- --> [[.upsert()|.upsert()]] (method)
-- --> [[.updateDoctorRentalLogic()|.updateDoctorRentalLogic()]] (method)
-- --> [[.findManyByKeys()|.findManyByKeys()]] (method)
-
-## Miembros de la misma Comunidad
-- [[systemSettingsRepository.js|systemSettingsRepository.js]]
-- [[.findAll()|.findAll()]]
-- [[.findByKey()|.findByKey()]]
-- [[.upsert()|.upsert()]]
-- [[.updateDoctorRentalLogic()|.updateDoctorRentalLogic()]]
-- [[.findManyByKeys()|.findManyByKeys()]]
+#graphify/code #graphify/EXTRACTED #community/Community_62

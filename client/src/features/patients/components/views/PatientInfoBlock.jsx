@@ -5,7 +5,7 @@ import Button from '@/components/atoms/Button';
 import { formatDate, calculateAge } from '@/utils/core/dateUtils';
 
 // Local Styles
-import './PatientInfoBlock.css';
+import styles from './PatientInfoBlock.module.css';
 
 /**
  * PatientInfoBlock (Executor).
@@ -22,50 +22,50 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
             </header>
 
             <div className="patient-details__block-content">
-                <table className="patient-details__info-table">
+                <table className={`${styles.infoTable}`}>
                     <tbody>
-                        <tr className="patient-details__info-row">
-                            <th className="patient-details__info-label">{t('full_name')}</th>
-                            <td className="patient-details__info-value">
+                        <tr className={`${styles.infoRow}`}>
+                            <th className={`${styles.infoLabel}`}>{t('full_name')}</th>
+                            <td className={`${styles.infoValue}`}>
                                 <span className="patient-details__table-cell-bold">
                                     {details.full_name || `${details.first_name || ''} ${details.last_name || ''}`.trim() || 'N/A'}
                                 </span>
                             </td>
                         </tr>
-                        <tr className="patient-details__info-row">
-                            <th className="patient-details__info-label">{t('dni')}</th>
-                            <td className="patient-details__info-value">{details.dni || 'N/A'}</td>
+                        <tr className={`${styles.infoRow}`}>
+                            <th className={`${styles.infoLabel}`}>{t('dni')}</th>
+                            <td className={`${styles.infoValue}`}>{details.dni || 'N/A'}</td>
                         </tr>
 
-                        <tr className="patient-details__info-row">
-                            <th className="patient-details__info-label">{t('insurance_short')}</th>
-                            <td className="patient-details__info-value">
+                        <tr className={`${styles.infoRow}`}>
+                            <th className={`${styles.infoLabel}`}>{t('insurance_short')}</th>
+                            <td className={`${styles.infoValue}`}>
                                 {details.insurance_name || t('particular')}
-                                {details.affiliate_number && <span className="patient-details__info-hint">({details.affiliate_number})</span>}
+                                {details.affiliate_number && <span className={`${styles.infoHint}`}>({details.affiliate_number})</span>}
                             </td>
                         </tr>
-                        <tr className="patient-details__info-row">
-                            <th className="patient-details__info-label">{t('dob') || 'Fecha Nac.'}</th>
-                            <td className="patient-details__info-value">
+                        <tr className={`${styles.infoRow}`}>
+                            <th className={`${styles.infoLabel}`}>{t('dob') || 'Fecha Nac.'}</th>
+                            <td className={`${styles.infoValue}`}>
                                 {formatDate(details.dob)}
                                 {details.dob && (
-                                    <span className="patient-details__info-hint">
+                                    <span className={`${styles.infoHint}`}>
                                         ({calculateAge(details.dob)} {t('years')})
                                     </span>
                                 )}
                             </td>
                         </tr>
-                        <tr className="patient-details__info-row">
-                            <th className="patient-details__info-label">{t('address') || 'Dirección'}</th>
-                            <td className="patient-details__info-value">
-                                <div className="patient-details__address-box">
+                        <tr className={`${styles.infoRow}`}>
+                            <th className={`${styles.infoLabel}`}>{t('address') || 'Dirección'}</th>
+                            <td className={`${styles.infoValue}`}>
+                                <div className={`${styles.addressBox}`}>
                                     {[
                                         details.street_name && `${details.street_name} ${details.street_number || ''}`,
                                         details.floor && `Piso ${details.floor}`,
                                         details.apartment && `Depto ${details.apartment}`,
                                         details.city,
                                         details.province,
-                                    ].filter(Boolean).join(', ') || <span className="patient-details__text-empty">{t('no_address_loaded')}</span>}
+                                    ].filter(Boolean).join(', ') || <span className={`${styles.textEmpty}`}>{t('no_address_loaded')}</span>}
                                 </div>
                                 {details.street_name && (
                                     <Button
@@ -74,7 +74,7 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                                         )}`}
                                         variant="link"
                                         size="sm"
-                                        className="patient-details__map-link"
+                                        className={`${styles.mapLink}`}
                                         icon={<Icon name="map" size="0.9rem" />}
                                     >
                                         {t('view_on_map')}
@@ -82,24 +82,24 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                                 )}
                             </td>
                         </tr>
-                        <tr className="patient-details__info-row">
-                            <th className="patient-details__info-label">{t('contact')}</th>
-                            <td className="patient-details__info-value">
-                                <div className="patient-details__contact-list">
+                        <tr className={`${styles.infoRow}`}>
+                            <th className={`${styles.infoLabel}`}>{t('contact')}</th>
+                            <td className={`${styles.infoValue}`}>
+                                <div className={`${styles.contactList}`}>
                                     {details.phoneNumbers && details.phoneNumbers.length > 0 ? (
                                         details.phoneNumbers.map((p) => (
-                                            <div key={p.phone_number} className="patient-details__contact-item">
-                                                <span className={`patient-details__contact-indicator ${p.is_primary ? 'patient-details__contact-indicator--primary' : ''}`}></span>
+                                            <div key={p.phone_number} className={`${styles.contactItem}`}>
+                                                <span className={`${styles.contactIndicator} ${p.is_primary ? styles.contactIndicatorPrimary : ''}`}></span>
                                                 <Button
                                                     to={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`}
                                                     variant="phone"
                                                     size="sm"
-                                                    className="patient-details__contact-link"
+                                                    className={`${styles.contactLink}`}
                                                     icon={<Icon name="call" size="0.9rem" />}
                                                 >
                                                     {p.phone_number}
                                                 </Button>
-                                                {p.label && <span className="patient-details__info-hint">({p.label})</span>}
+                                                {p.label && <span className={`${styles.infoHint}`}>({p.label})</span>}
                                             </div>
                                         ))
                                     ) : (
@@ -108,7 +108,7 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                                                 to={`tel:${details.phone.replace(/[^0-9+]/g, '')}`}
                                                 variant="phone"
                                                 size="sm"
-                                                className="patient-details__contact-link"
+                                                className={`${styles.contactLink}`}
                                                 icon={<Icon name="call" size="0.9rem" />}
                                             >
                                                 {details.phone}
@@ -116,12 +116,12 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                                         ) : <span>N/A</span>
                                     )}
                                     {details.email && (
-                                        <div className="patient-details__contact-item patient-details__contact-item--email">
+                                        <div className={`${styles.contactItem} patient-details__contact-item--email`}>
                                             <Button
                                                 to={`mailto:${details.email}`}
                                                 variant="link"
                                                 size="sm"
-                                                className="patient-details__contact-link patient-details__contact-link--email"
+                                                className={`${styles.contactLink} ${styles.contactLinkEmail}`}
                                                 icon={<Icon name="mail" size="0.9rem" />}
                                             >
                                                 {details.email}
@@ -131,12 +131,12 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
                                 </div>
                             </td>
                         </tr>
-                        <tr className="patient-details__info-row">
-                            <th className="patient-details__info-label">{t('assigned_doctors')}</th>
-                            <td className="patient-details__info-value">
+                        <tr className={`${styles.infoRow}`}>
+                            <th className={`${styles.infoLabel}`}>{t('assigned_doctors')}</th>
+                            <td className={`${styles.infoValue}`}>
                                 {details.assignedDoctors && details.assignedDoctors.length > 0
                                     ? details.assignedDoctors.map(d => d.full_name).join(', ')
-                                    : <span className="patient-details__text-empty">{t('none')}</span>}
+                                    : <span className={`${styles.textEmpty}`}>{t('none')}</span>}
                             </td>
                         </tr>
                     </tbody>

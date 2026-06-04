@@ -8,7 +8,7 @@ import api from '@/api/axios';
  * @param {Object} doctors - List of doctors for validation or context (optional).
  * @returns {Object} { syncDayToGoogle }
  */
-export const useGoogleSync = (doctors) => {
+export const useGoogleSync = () => {
     const { showMessage } = useMessage();
 
     const syncDayToGoogle = async (doctorId, date) => {

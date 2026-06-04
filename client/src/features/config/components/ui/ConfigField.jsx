@@ -1,7 +1,7 @@
 import React from 'react';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
-import './ConfigField.css';
+import styles from './ConfigField.module.css';
 
 /**
  * ConfigField Molecule (Feature Component).
@@ -29,7 +29,7 @@ const ConfigField = ({
 
     return (
         <div className={rootClass}>
-            <label className="config-field__label" htmlFor={id}>
+            <label className={`${styles.label}`} htmlFor={id}>
                 {label}
             </label>
             
@@ -55,7 +55,7 @@ const ConfigField = ({
             )}
 
             {hint && (
-                <span className="config-field__hint">{hint}</span>
+                <span className={`${styles.hint}`}>{hint}</span>
             )}
         </div>
     );

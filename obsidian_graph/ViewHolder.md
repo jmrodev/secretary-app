@@ -1,21 +1,19 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/ui/AppointmentAdapter.kt"
+type: "code"
+community: "Community 18"
+location: "L33"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_18
+---
+
 # ViewHolder
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/ui/ReminderAdapter.kt
-- **Comunidad:** [[_COMMUNITY_Community 30]]
+## Connections
+- [[.bind()]] - `method` [EXTRACTED]
+- [[.onCreateViewHolder()]] - `calls` [EXTRACTED]
+- [[AppointmentAdapter.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ReminderAdapter.kt|ReminderAdapter.kt]] (contains)
-- <-- [[.onCreateViewHolder()|.onCreateViewHolder()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[RemindersActivity.kt|RemindersActivity.kt]]
-- [[RemindersActivity|RemindersActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.loadReminders()|.loadReminders()]]
-- [[ReminderAdapter.kt|ReminderAdapter.kt]]
-- [[ReminderAdapter|ReminderAdapter]]
-- [[.onCreateViewHolder()|.onCreateViewHolder()]]
-- [[.onBindViewHolder()|.onBindViewHolder()]]
-- [[.safeParse()|.safeParse()]]
-- [[.getItemCount()|.getItemCount()]]
+#graphify/code #graphify/EXTRACTED #community/Community_18

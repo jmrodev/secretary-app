@@ -1,11 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/model/Appointment.kt"
+type: "code"
+community: "Community 142"
+location: "L3"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_142
+---
+
 # Appointment
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/model/Appointment.kt
-- **Comunidad:** [[_COMMUNITY_Community 133]]
+## Connections
+- [[Appointment.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[Appointment.kt|Appointment.kt]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Appointment.kt|Appointment.kt]]
+#graphify/code #graphify/EXTRACTED #community/Community_142

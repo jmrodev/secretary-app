@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/patients/components/modals/DebtPaymentModal.jsx"
+type: "code"
+community: "Community 21"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_21
+---
+
 # DebtPaymentModal()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/DebtPaymentModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 27]]
+## Connections
+- [[DebtPaymentModal.jsx]] - `contains` [EXTRACTED]
+- [[getPaymentMethods()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[DebtPaymentModal.jsx|DebtPaymentModal.jsx]] (contains)
-- --> [[getPaymentMethods()|getPaymentMethods()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[TransactionModal.jsx|TransactionModal.jsx]]
-- [[TransactionModal()|TransactionModal()]]
-- [[DoctorCard.jsx|DoctorCard.jsx]]
-- [[DoctorCard()|DoctorCard()]]
-- [[DebtPaymentModal.jsx|DebtPaymentModal.jsx]]
-- [[transactionOptions.js|transactionOptions.js]]
-- [[getTransactionTypes()|getTransactionTypes()]]
-- [[getPaymentMethods()|getPaymentMethods()]]
-- [[getStatusOptions()|getStatusOptions()]]
-- [[getServiceTypes()|getServiceTypes()]]
+#graphify/code #graphify/EXTRACTED #community/Community_21

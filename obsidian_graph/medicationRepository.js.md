@@ -1,18 +1,17 @@
+---
+source_file: "server/repositories/medical/medicationRepository.js"
+type: "code"
+community: "Community 42"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_42
+---
+
 # medicationRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/medicationRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 38]]
+## Connections
+- [[MedicationRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicationRepository|MedicationRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicationRepository|MedicationRepository]]
-- [[.findById()|.findById()]]
-- [[.findByPatientId()|.findByPatientId()]]
-- [[.findActiveByName()|.findActiveByName()]]
-- [[.create()|.create()]]
-- [[.update()|.update()]]
-- [[.deleteByRequestId()|.deleteByRequestId()]]
-- [[.createRequestMedication()|.createRequestMedication()]]
+#graphify/code #graphify/EXTRACTED #community/Community_42

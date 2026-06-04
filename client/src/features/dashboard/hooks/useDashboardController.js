@@ -114,13 +114,15 @@ export const useDashboardController = () => {
         }
     };
 
-    const handlePrescriptionSubmit = async ({ medications, instructions, bonified }) => {
+    const handlePrescriptionSubmit = async ({ medications, instructions, items, bonified }) => {
         setIsSubmitting(true);
         try {
             await savePrescription({
                 apptId: modalsHook.prescribeModal.apptId,
+                patientId: modalsHook.prescribeModal.patientId,
                 medications,
                 instructions,
+                items,
                 bonified
             }, () => {
                 modalsHook.setPrescribeModal({ ...modalsHook.prescribeModal, open: false });
@@ -158,6 +160,8 @@ export const useDashboardController = () => {
         setHistoryModal: modalsHook.setHistoryModal,
         setPrescribeModal: modalsHook.setPrescribeModal,
         setPaymentModal: modalsHook.setPaymentModal,
+        setNewRequestModal: modalsHook.setNewRequestModal,
+        handleOpenNewRequest: modalsHook.handleOpenNewRequest,
         navigate: modalsHook.navigate
     };
 
@@ -185,6 +189,7 @@ export const useDashboardController = () => {
         historyModal: modalsHook.historyModal,
         prescribeModal: modalsHook.prescribeModal,
         paymentModal: modalsHook.paymentModal,
+        newRequestModal: modalsHook.newRequestModal,
         fetched: statsHook.fetchedDoctors,
 
         isSubmitting,

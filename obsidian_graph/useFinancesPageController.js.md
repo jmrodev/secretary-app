@@ -1,20 +1,18 @@
+---
+source_file: "client/src/features/finances/hooks/useFinancesPageController.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Modals_&_Prescriptions
+---
+
 # useFinancesPageController.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/hooks/useFinancesPageController.js
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[financesReducer()]] - `contains` [EXTRACTED]
+- [[useFinancesPageController()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useFinancesPageController()|useFinancesPageController()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats.js|useDashboardStats.js]]
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
+#graphify/code #graphify/EXTRACTED #community/Modals_&_Prescriptions

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Select.jsx"
+type: "code"
+community: "Community 276"
+location: "L6"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_276
+---
+
 # Select()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/Select.jsx
-- **Comunidad:** [[_COMMUNITY_Community 273]]
+## Connections
+- [[Select.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[Select.jsx|Select.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Select.jsx|Select.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_276

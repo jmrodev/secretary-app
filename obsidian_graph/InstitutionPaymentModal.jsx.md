@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/modals/InstitutionPaymentModal.jsx"
+type: "code"
+community: "Community 220"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_220
+---
+
 # InstitutionPaymentModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/InstitutionPaymentModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 217]]
+## Connections
+- [[InstitutionPaymentModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[InstitutionPaymentModal()|InstitutionPaymentModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InstitutionPaymentModal()|InstitutionPaymentModal()]]
+#graphify/code #graphify/EXTRACTED #community/Community_220

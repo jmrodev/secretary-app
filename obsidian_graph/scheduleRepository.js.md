@@ -1,14 +1,17 @@
+---
+source_file: "server/repositories/appointments/scheduleRepository.js"
+type: "code"
+community: "Community 81"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_81
+---
+
 # scheduleRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/scheduleRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 76]]
+## Connections
+- [[ScheduleRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ScheduleRepository|ScheduleRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ScheduleRepository|ScheduleRepository]]
-- [[.findByDoctor()|.findByDoctor()]]
-- [[.deleteByDoctor()|.deleteByDoctor()]]
-- [[.create()|.create()]]
+#graphify/code #graphify/EXTRACTED #community/Community_81

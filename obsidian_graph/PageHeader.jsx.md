@@ -1,16 +1,17 @@
+---
+source_file: "client/src/components/organisms/PageHeader.jsx"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Agenda_&_Slot_Management
+---
+
 # PageHeader.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/organisms/PageHeader.jsx
-- **Comunidad:** [[_COMMUNITY_Community 58]]
+## Connections
+- [[PageHeader()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PageHeader()|PageHeader()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[SearchContext.jsx|SearchContext.jsx]]
-- [[SearchProvider()|SearchProvider()]]
-- [[useSearch()|useSearch()]]
-- [[usePatientSearch.js|usePatientSearch.js]]
-- [[usePatientSearch()|usePatientSearch()]]
-- [[PageHeader()|PageHeader()]]
+#graphify/code #graphify/EXTRACTED #community/Agenda_&_Slot_Management

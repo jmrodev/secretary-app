@@ -12,7 +12,7 @@ import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import Badge from '@/components/atoms/Badge';
 import { formatDate } from '@/utils/core/dateUtils';
-import './MedicalRequestForm.css';
+import styles from './MedicalRequestForm.module.css';
 
 // Hooks
 import { useMedicalRequest } from '@/features/medical_documents/hooks/useMedicalRequest';
@@ -56,67 +56,64 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
 
     if (user?.role !== 'secretary' && user?.role !== 'doctor') return null;
 
-    const baseClass = 'medical-request-form';
+    const baseClass = styles.root;
 
     const formContent = (
-        <form onSubmit={handleSubmit} className={baseClass}>
-            <div className={`${baseClass}__row ${baseClass}__row--2`}>
-                <FormGroup label={t('request_type')} required>
-                    <Select
-                        value={reqType}
-                        onChange={e => setReqType(e.target.value)}
-                        options={[
-                            { value: 'prescription', label: t('prescription') },
-                            { value: 'license', label: t('medical_license') },
-                            { value: 'certificate', label: t('certificate') || 'Certificado' }
-                        ]}
-                    />
-                </FormGroup>
-
-                <FormGroup label={t('doctor_label')} required>
-                    {user?.role === 'doctor' ? (
-                        <div className={`${baseClass}__readonly-value`}>
-                            Dr. {user.full_name || user.username}
-                        </div>
-                    ) : (
-                        <Select
-                            value={selectedDoctor}
-                            onChange={e => setSelectedDoctor(e.target.value)}
-                            required
-                            options={[
-                                { value: '', label: t('select_doctor') },
-                                ...doctors.map(d => ({ value: d.id, label: `${d.full_name} - ${d.specialty}` }))
-                            ]}
-                        />
-                    )}
-                </FormGroup>
-            </div>
-
-            <FormGroup label={t('patient_label')} required>
-                <PatientSearchSelect
-                    value={selectedPatient}
-                    selectedData={patientData}
-                    onChange={(val, patient) => {
-                        setSelectedPatient(val);
-                        setPatientData(patient);
-                    }}
-                    placeholder={t('select_patient')}
+        <form onSubmit={handleSubmit} className={styles.root}>
+            <div className={`${styles.row} ${styles.row3}`}>
+                <Select
+                    value={reqType}
+                    onChange={e => setReqType(e.target.value)}
+                    options={[
+                        { value: '', label: t('request_type') || 'Tipo de solicitud' },
+                        { value: 'prescription', label: t('prescription') },
+                        { value: 'license', label: t('medical_license') },
+                        { value: 'certificate', label: t('certificate') || 'Certificado' }
+                    ]}
                 />
 
-                {isExpired && reqType === 'prescription' && (
-                    <div className={`${baseClass}__badge-wrapper`}>
-                        <Badge variant="warning">
-                            <Icon name="warning" size="1rem" />
-                            {t('patient_has_valid_until') || 'Cobertura sugerida hasta'}: {formatDate(patientData.next_suggested_prescription_date)}
-                        </Badge>
+                {user?.role === 'doctor' ? (
+                    <div className={styles.readonlyValue}>
+                        Dr. {user.full_name || user.username}
                     </div>
+                ) : (
+                    <Select
+                        value={selectedDoctor}
+                        onChange={e => setSelectedDoctor(e.target.value)}
+                        required
+                        options={[
+                            { value: '', label: t('select_doctor') },
+                            ...doctors.map(d => ({ 
+                                value: d.id, 
+                                label: `${d.full_name}${d.specialty ? ` - ${d.specialty}` : ''}` 
+                            }))
+                        ]}
+                    />
                 )}
-            </FormGroup>
 
-            <FormGroup
-                label={reqType === 'prescription' ? t('medication') : (reqType === 'license' ? t('diagnosis') : t('motive'))}
-                required
-            >
+                <div>
+                    <PatientSearchSelect
+                        value={selectedPatient}
+                        selectedData={patientData}
+                        onChange={(val, patient) => {
+                            setSelectedPatient(val);
+                            setPatientData(patient);
+                        }}
+                        placeholder={t('select_patient')}
+                    />
+
+                    {isExpired && reqType === 'prescription' && (
+                        <div className={styles.badgeWrapper}>
+                            <Badge variant="warning">
+                                <Icon name="warning" size="1rem" />
+                                {t('patient_has_valid_until') || 'Cobertura sugerida hasta'}: {formatDate(patientData.next_suggested_prescription_date)}
+                            </Badge>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className={styles.subFormWrapper}>
                 {reqType === 'prescription' ? (
                     <PrescriptionForm
                         t={t}
@@ -132,40 +129,40 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                         reqNote={reqNote}
                         setReqNote={setReqNote}
                         t={t}
-                        baseClass={baseClass}
+                        baseClass={styles.root}
                     />
                 )}
-            </FormGroup>
+            </div>
 
-            <div className={`${baseClass}__panel`}>
-                <div className={`${baseClass}__panel-item`}>
+            <div className={styles.panel}>
+                <div className={styles.panelItem}>
                     <input
                         type="checkbox"
-                        className={`${baseClass}__checkbox`}
                         id="req-forward"
+                        className={styles.checkbox}
                         checked={sendToDoctor}
                         onChange={e => setSendToDoctor(e.target.checked)}
                     />
-                    <label htmlFor="req-forward" className={`${baseClass}__panel-label`}>
-                        {t('send_to_doctor') || 'Enviar a revisión médica'}
+                    <label htmlFor="req-forward" className={styles.panelLabel}>
+                        {t('send_to_doctor') === 'send_to_doctor' ? 'Enviar a revisión médica' : t('send_to_doctor')}
                     </label>
                 </div>
 
-                <div className={`${baseClass}__panel-item`}>
+                <div className={styles.panelItem}>
                     <input
                         type="checkbox"
-                        className={`${baseClass}__checkbox`}
                         id="bonified-req"
+                        className={styles.checkbox}
                         checked={bonified}
                         onChange={e => setBonified(e.target.checked)}
                     />
-                    <label htmlFor="bonified-req" className={`${baseClass}__panel-label`}>
-                        {t('bonified') || 'Bonificado (Sin costo)'}
+                    <label htmlFor="bonified-req" className={styles.panelLabel}>
+                        {t('bonified_request') === 'bonified_request' ? 'Solicitud Bonificada' : t('bonified_request')}
                     </label>
                 </div>
             </div>
 
-            <footer className={`${baseClass}__footer`}>
+            <footer className={styles.footer}>
                 <Button
                     type="submit"
                     disabled={isSubmitting}
@@ -181,7 +178,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     if (noCard) return formContent;
 
     return (
-        <Card title={t('new_request')} className="medical-request-card">
+        <Card title={t('new_request')} className={`${styles.medicalRequestCard}`}>
             {formContent}
         </Card>
     );

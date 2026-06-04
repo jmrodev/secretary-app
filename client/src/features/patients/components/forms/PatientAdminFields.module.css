@@ -1,0 +1,123 @@
+.root {
+    --card-padding: 1.5rem;
+    
+    background-color: var(--white);
+    border-radius: var(--radius); /* XL 1.5rem */
+    padding: var(--card-padding);
+    box-shadow: var(--shadow-premium);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    grid-column: span 12;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary-color);
+}
+
+.title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.25rem;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.groupSpan12 { grid-column: span 12; }
+.groupSpan6 { grid-column: span 6; }
+.groupSpan4 { grid-column: span 4; }
+
+.label {
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: var(--gray-950);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.miniHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-400);
+    margin-bottom: 0.25rem;
+}
+
+.miniTitle {
+    font-size: 0.625rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.count {
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    background-color: var(--blue-50);
+    padding: 0 0.375rem;
+    border-radius: 1rem;
+}
+
+.doctorScroller {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.75rem;
+    padding: 0.25rem 0;
+    scrollbar-width: none;
+}
+
+.doctorScroller::-webkit-scrollbar {
+    display: none;
+}
+
+.doctorTextTag {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-400);
+    white-space: nowrap;
+}
+
+.doctorTextTag:hover {
+    color: var(--text-main);
+}
+
+.doctorTextTagActive {
+    color: var(--primary-color);
+}
+
+.doctorCheckbox {
+    display: none;
+}
+
+@media (width <= 48rem) {
+    .group {
+        grid-column: span 12 !important;
+    }
+}

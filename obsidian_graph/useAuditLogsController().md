@@ -1,25 +1,22 @@
+---
+source_file: "client/src/features/reports/hooks/useAuditLogsController.js"
+type: "code"
+community: "Community 12"
+location: "L6"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_12
+---
+
 # useAuditLogsController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/hooks/useAuditLogsController.js
-- **Comunidad:** [[_COMMUNITY_Community 12]]
+## Connections
+- [[AuditLogsPage()]] - `calls` [INFERRED]
+- [[AuditLogsSection()]] - `calls` [INFERRED]
+- [[useAuditLogsController.js]] - `contains` [EXTRACTED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[AuditLogsSection()|AuditLogsSection()]] (calls)
-- --> [[useAuth()|useAuth()]] (calls)
-- <-- [[AuditLogsPage()|AuditLogsPage()]] (calls)
-- <-- [[useAuditLogsController.js|useAuditLogsController.js]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[InstitutionsPage.jsx|InstitutionsPage.jsx]]
-- [[InstitutionsPage()|InstitutionsPage()]]
-- [[useInstitutionsController.js|useInstitutionsController.js]]
-- [[createInitialFormState()|createInitialFormState()]]
-- [[useInstitutionsController()|useInstitutionsController()]]
-- [[SystemConfigPage.jsx|SystemConfigPage.jsx]]
-- [[ProfileSection()|ProfileSection()]]
-- [[InstitutionsSection()|InstitutionsSection()]]
-- [[AuditLogsSection()|AuditLogsSection()]]
-- [[UserSection()|UserSection()]]
+#graphify/code #graphify/INFERRED #community/Community_12

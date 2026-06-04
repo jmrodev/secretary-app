@@ -4,7 +4,7 @@ import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import Loading from '@/components/atoms/Loading';
-import './PatientRecycleBin.css';
+import styles from './PatientRecycleBin.module.css';
 
 const EMPTY_ARRAY = [];
 
@@ -21,7 +21,7 @@ const PatientRecycleBin = ({
 
     if (loading) {
         return (
-            <div className="patient-recycle-bin__loading">
+            <div className={`${styles.loading}`}>
                 <Loading text={t('loading')} />
             </div>
         );
@@ -29,18 +29,18 @@ const PatientRecycleBin = ({
 
     if (!recycleItems || recycleItems.length === 0) {
         return (
-            <div className="patient-recycle-bin__empty-state">
-                <div className="patient-recycle-bin__empty-icon"><Icon name="delete" size="2rem" /></div>
-                <p className="patient-recycle-bin__empty-title">{t('recycle_bin_empty') || 'La papelera está vacía.'}</p>
-                <p className="patient-recycle-bin__empty-text">Los pacientes eliminados aparecerán aquí por 30 días.</p>
+            <div className={`${styles.emptyState}`}>
+                <div className={`${styles.emptyIcon}`}><Icon name="delete" size="2rem" /></div>
+                <p className={`${styles.emptyTitle}`}>{t('recycle_bin_empty') || 'La papelera está vacía.'}</p>
+                <p className={`${styles.emptyText}`}>Los pacientes eliminados aparecerán aquí por 30 días.</p>
             </div>
         );
     }
 
     return (
-        <div className="patient-recycle-bin animate-fade-in">
-            <div className="patient-recycle-bin__container">
-                <table className="patient-recycle-bin__table">
+        <div className={`${styles.root} animate-fade-in`}>
+            <div className={`${styles.container}`}>
+                <table className={`${styles.table}`}>
                     <thead>
                         <tr>
                             <th className="w-1/3">{t('patient') || 'Paciente'}</th>
@@ -51,53 +51,53 @@ const PatientRecycleBin = ({
                     </thead>
                     <tbody>
                         {recycleItems.map((item) => (
-                            <tr key={item.id} className="patient-recycle-bin__row">
+                            <tr key={item.id} className={`${styles.row}`}>
                                 <td>
-                                    <div className="patient-recycle-bin__patient-wrapper">
-                                        <span className="patient-recycle-bin__patient-name">
+                                    <div className={`${styles.patientWrapper}`}>
+                                        <span className={`${styles.patientName}`}>
                                             {item.last_name && item.first_name
                                                 ? `${item.last_name}, ${item.first_name}`
                                                 : (item.entity_name || item.full_name || item.username || 'Sin Nombre')}
                                         </span>
                                         {item.dni && (
-                                            <span className="patient-recycle-bin__patient-dni">
+                                            <span className={`${styles.patientDni}`}>
                                                 DNI: {item.dni}
                                             </span>
                                         )}
                                     </div>
                                 </td>
                                 <td>
-                                    <div className="patient-recycle-bin__contact-info">
+                                    <div className={`${styles.contactInfo}`}>
                                         {item.phone ? (
-                                            <div className="patient-recycle-bin__contact-item">
+                                            <div className={`${styles.contactItem}`}>
                                                 <span className="opacity-70"><Icon name="phone" size="1rem" /></span> {item.phone}
                                             </div>
                                         ) : (
-                                            <span className="patient-recycle-bin__contact-missing">Sin teléfono</span>
+                                            <span className={`${styles.contactMissing}`}>Sin teléfono</span>
                                         )}
                                         {item.email ? (
-                                            <div className="patient-recycle-bin__contact-item">
+                                            <div className={`${styles.contactItem}`}>
                                                 <span className="opacity-70"><Icon name="mail" size="1rem" /></span> {item.email}
                                             </div>
                                         ) : null}
                                     </div>
                                 </td>
                                 <td>
-                                    <div className="patient-recycle-bin__date-wrapper">
-                                        <span className="patient-recycle-bin__date">
+                                    <div className={`${styles.dateWrapper}`}>
+                                        <span className={`${styles.date}`}>
                                             {formatDate(item.deleted_at || item.created_at)}
                                         </span>
-                                        <span className="patient-recycle-bin__time">
+                                        <span className={`${styles.time}`}>
                                             {formatTime(item.deleted_at || item.created_at)}
                                         </span>
                                     </div>
                                 </td>
                                 <td className="text-right">
-                                    <div className="patient-recycle-bin__actions">
+                                    <div className={`${styles.actions}`}>
                                         <Button
                                             size="sm"
                                             variant="outline"
-                                            className="patient-recycle-bin__action-btn--restore"
+                                            className={`${styles.actionBtnRestore}`}
                                             onClick={() => onRestore && onRestore(item.id)}
                                             title={t('restore') || 'Restaurar'}
                                             icon={<Icon name="restore" />}
@@ -111,7 +111,7 @@ const PatientRecycleBin = ({
                     </tbody>
                 </table>
             </div>
-            <div className="patient-recycle-bin__footer-hint">
+            <div className={`${styles.footerHint}`}>
                 <p><Icon name="warning" size="1rem" className="mr-1" />Los pacientes eliminados permanentemente no se pueden recuperar.</p>
             </div>
         </div>

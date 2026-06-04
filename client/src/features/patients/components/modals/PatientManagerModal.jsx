@@ -5,7 +5,7 @@ import PatientForm from '@/features/patients/components/forms/PatientForm';
 import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import { usePatientFormController } from '@/features/patients/hooks/usePatientFormController';
-import './PatientManagerModal.css';
+import styles from './PatientManagerModal.module.css';
 
 const EMPTY_ARRAY = [];
 
@@ -39,7 +39,7 @@ const PatientManagerModal = ({
     } = controller;
 
     const title = isEdit ? t('edit_patient') : t('register_new_patient');
-    const baseClass = 'patient-manager-modal';
+    const baseClass = styles.root;
 
     return (
         <Modal

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/CurrencyInput.jsx"
+type: "code"
+community: "Community 271"
+location: "L13"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_271
+---
+
 # CurrencyInput()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/CurrencyInput.jsx
-- **Comunidad:** [[_COMMUNITY_Community 268]]
+## Connections
+- [[CurrencyInput.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[CurrencyInput.jsx|CurrencyInput.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[CurrencyInput.jsx|CurrencyInput.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_271

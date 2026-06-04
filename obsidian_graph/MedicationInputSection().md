@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/forms/MedicationInputSection.jsx"
+type: "code"
+community: "Community 165"
+location: "L16"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_165
+---
+
 # MedicationInputSection()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicationInputSection.jsx
-- **Comunidad:** [[_COMMUNITY_Community 158]]
+## Connections
+- [[MedicationInputSection.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicationInputSection.jsx|MedicationInputSection.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicationInputSection.jsx|MedicationInputSection.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_165

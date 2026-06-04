@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/reports/components/ui/ReportTabs.jsx"
+type: "code"
+community: "Community 260"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_260
+---
+
 # ReportTabs()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/components/ReportTabs.jsx
-- **Comunidad:** [[_COMMUNITY_Community 257]]
+## Connections
+- [[ReportTabs.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ReportTabs.jsx|ReportTabs.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[ReportTabs.jsx|ReportTabs.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_260

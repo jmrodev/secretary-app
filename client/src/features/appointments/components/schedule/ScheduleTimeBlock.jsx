@@ -3,7 +3,7 @@ import Button from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
 import Icon from '@/components/atoms/Icon';
 import Select from '@/components/atoms/Select';
-import './ScheduleTimeBlock.css';
+import styles from './ScheduleTimeBlock.module.css';
 
 /**
  * ScheduleTimeBlock Feature Molecule.
@@ -18,8 +18,8 @@ const ScheduleTimeBlock = ({
     ];
 
     return (
-        <div className="schedule-time-block__container">
-            <div className="schedule-time-block__inputs">
+        <div className={`${styles.container}`}>
+            <div className={`${styles.inputs}`}>
                 <Input
                     type="time"
                     size="sm"
@@ -28,7 +28,7 @@ const ScheduleTimeBlock = ({
                     onBlur={onBlur}
                     onChange={(e) => onChange(block.originalIndex, 'start_time', e.target.value)}
                 />
-                <span className="schedule-time-block__connector">{t('to_label') || 'a'}</span>
+                <span className={`${styles.connector}`}>{t('to_label') || 'a'}</span>
                 <Input
                     type="time"
                     size="sm"
@@ -39,27 +39,27 @@ const ScheduleTimeBlock = ({
                 />
             </div>
 
-            <div className="schedule-time-block__divider" />
+            <div className={`${styles.divider}`} />
 
-            <div className="schedule-time-block__type">
+            <div className={styles.typeContainer}>
                 <Select
                     size="sm"
-                    className={block.default_type === 'virtual' ? 'schedule-time-block__type-select--virtual' : ''}
+                    className={block.default_type === 'virtual' ? styles.typeSelectVirtual : ''}
                     value={block.default_type || 'consultation'}
                     onChange={(e) => onChange(block.originalIndex, 'default_type', e.target.value)}
                     options={typeOptions}
                 />
             </div>
 
-            <div className="schedule-time-block__options">
-                <label className="schedule-time-block__alignment">
+            <div className={`${styles.options}`}>
+                <label className={`${styles.alignment}`}>
                     <input
                         type="checkbox"
-                        className="schedule-time-block__checkbox"
+                        className={`${styles.checkbox}`}
                         checked={block.force_hour_alignment === 1}
                         onChange={(e) => onChange(block.originalIndex, 'force_hour_alignment', e.target.checked ? 1 : 0)}
                     />
-                    <span className="schedule-time-block__alignment-text">
+                    <span className={`${styles.alignmentText}`}>
                         <Icon name="schedule" size="1rem" />
                         Coord. :00
                     </span>
@@ -69,7 +69,7 @@ const ScheduleTimeBlock = ({
                     variant="ghost"
                     size="sm-compact"
                     onClick={onRemove}
-                    className="schedule-time-block__remove"
+                    className={`${styles.remove}`}
                     title="Eliminar franja"
                     icon={<Icon name="delete" />}
                 />

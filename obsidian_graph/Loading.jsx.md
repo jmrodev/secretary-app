@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Loading.jsx"
+type: "code"
+community: "Community 274"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_274
+---
+
 # Loading.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/Loading.jsx
-- **Comunidad:** [[_COMMUNITY_Community 271]]
+## Connections
+- [[Loading()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[Loading()|Loading()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Loading()|Loading()]]
+#graphify/code #graphify/EXTRACTED #community/Community_274

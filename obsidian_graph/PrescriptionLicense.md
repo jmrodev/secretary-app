@@ -1,12 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/model/PatientDetailsResponse.kt"
+type: "code"
+community: "Community 121"
+location: "L24"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_121
+---
+
 # PrescriptionLicense
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/model/PatientDetailsResponse.kt
-- **Comunidad:** [[_COMMUNITY_Community 115]]
+## Connections
+- [[PatientDetailsResponse.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientDetailsResponse.kt|PatientDetailsResponse.kt]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientDetailsResponse.kt|PatientDetailsResponse.kt]]
-- [[PatientDetailsResponse|PatientDetailsResponse]]
+#graphify/code #graphify/EXTRACTED #community/Community_121

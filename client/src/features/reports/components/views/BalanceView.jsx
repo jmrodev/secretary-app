@@ -4,7 +4,7 @@ import { formatDate } from '@/utils/core/dateUtils';
 // Molecules
 import { BalanceFinancialSummary, BalanceCashFlowTable, BalanceDebtsTable } from '@/features/finances';
 
-import './BalanceView.css';
+import styles from './BalanceView.module.css';
 
 /**
  * BalanceView Organism.
@@ -79,12 +79,12 @@ const BalanceView = ({ reportData, month, year, t }) => {
     const totalDebt = allDebts.reduce((a, b) => a + b.amount, 0);
 
     return (
-        <div className="balance-view">
-            <h2 className="balance-view__title">
+        <div className={`${styles.root}`}>
+            <h2 className={`${styles.title}`}>
                 Balance General - {t('months_array')[month - 1]} {year}
             </h2>
 
-            <div className="balance-view__grid">
+            <div className={`${styles.grid}`}>
                 <BalanceFinancialSummary
                     totalAppts={totalAppts}
                     totalPres={totalPres}

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/calendar/CalendarDayCell.jsx"
+type: "code"
+community: "Community 197"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_197
+---
+
 # CalendarDayCell.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/CalendarDayCell.jsx
-- **Comunidad:** [[_COMMUNITY_Community 180]]
+## Connections
+- [[CalendarDayCell()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[CalendarDayCell()|CalendarDayCell()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[CalendarDayCell()|CalendarDayCell()]]
+#graphify/code #graphify/EXTRACTED #community/Community_197

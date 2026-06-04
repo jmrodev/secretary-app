@@ -1,24 +1,21 @@
+---
+source_file: "client/src/features/chat/hooks/useMessagesPageController.js"
+type: "code"
+community: "Android Messaging"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Android_Messaging
+---
+
 # useMessagesPageController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/chat/hooks/useMessagesPageController.js
-- **Comunidad:** [[_COMMUNITY_Community 6]]
+## Connections
+- [[ChatPage()]] - `calls` [INFERRED]
+- [[useAuth()]] - `calls` [INFERRED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[useMessagesPageController.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useMessage()|useMessage()]] (calls)
-- <-- [[ChatPage()|ChatPage()]] (calls)
-- <-- [[useMessagesPageController.js|useMessagesPageController.js]] (contains)
-- --> [[useAuth()|useAuth()]] (calls)
-- --> [[useFetch()|useFetch()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[RequestsPage.jsx|RequestsPage.jsx]]
-- [[RequestsPage()|RequestsPage()]]
-- [[useMedicalRequest.js|useMedicalRequest.js]]
-- [[useMedicalRequest()|useMedicalRequest()]]
-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]]
-- [[MedicalRequestForm()|MedicalRequestForm()]]
-- [[MedicalRequestList.jsx|MedicalRequestList.jsx]]
-- [[MedicalRequestList()|MedicalRequestList()]]
-- [[MedicalHistoryTable.jsx|MedicalHistoryTable.jsx]]
-- [[MedicalHistoryTable()|MedicalHistoryTable()]]
+#graphify/code #graphify/INFERRED #community/Android_Messaging

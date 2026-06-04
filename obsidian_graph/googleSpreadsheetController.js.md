@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/google/googleSpreadsheetController.js"
+type: "code"
+community: "Community 320"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_320
+---
+
 # googleSpreadsheetController.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/google/googleSpreadsheetController.js
-- **Comunidad:** [[_COMMUNITY_Community 328]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_320

@@ -1,13 +1,18 @@
+---
+source_file: "client/src/features/medical_documents/hooks/usePublicPrescriptionRequestController.js"
+type: "code"
+community: "Community 86"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_86
+---
+
 # usePublicPrescriptionRequestController.js
 
-- **Tipo:** code
-- **Archivo:** client/src/controllers/usePublicPrescriptionRequestController.js
-- **Comunidad:** [[_COMMUNITY_Community 99]]
+## Connections
+- [[reducer()]] - `contains` [EXTRACTED]
+- [[usePublicPrescriptionRequestController()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[usePublicPrescriptionRequestController()|usePublicPrescriptionRequestController()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[usePublicPrescriptionRequestController()|usePublicPrescriptionRequestController()]]
-- [[PublicRequestPage.jsx|PublicRequestPage.jsx]]
-- [[PublicRequestPage()|PublicRequestPage()]]
+#graphify/code #graphify/EXTRACTED #community/Community_86

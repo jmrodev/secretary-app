@@ -1,21 +1,18 @@
+---
+source_file: "server/utils/core/dateUtils.js"
+type: "code"
+community: "Community 44"
+location: "L57"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_44
+---
+
 # formatDateOnlySQL()
 
-- **Tipo:** code
-- **Archivo:** server/utils/dateUtils.js
-- **Comunidad:** [[_COMMUNITY_Community 8]]
+## Connections
+- [[.updatePatientDetails()]] - `calls` [INFERRED]
+- [[dateUtils.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[dateUtils.js|dateUtils.js]] (contains)
-- <-- [[.updatePatientDetails()|.updatePatientDetails()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[dateUtils.js|dateUtils.js]]
-- [[formatLocalSQL()|formatLocalSQL()]]
-- [[nowLocalSQL()|nowLocalSQL()]]
-- [[restoreService.js|restoreService.js]]
-- [[RestoreService|RestoreService]]
-- [[.restoreItem()|.restoreItem()]]
-- [[._restorePatient()|._restorePatient()]]
-- [[._restoreDoctor()|._restoreDoctor()]]
-- [[._restoreSecretary()|._restoreSecretary()]]
-- [[._restoreMedicalRequest()|._restoreMedicalRequest()]]
+#graphify/code #graphify/EXTRACTED #community/Community_44

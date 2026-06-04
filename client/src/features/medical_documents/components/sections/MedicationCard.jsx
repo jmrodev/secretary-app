@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './MedicationCard.css';
+import styles from './MedicationCard.module.css';
 
 /**
  * MedicationCard Feature Molecule.
@@ -19,7 +19,7 @@ const MedicationCard = ({
     canEdit,
     t
 }) => {
-    const baseClass = 'medication-card';
+    const baseClass = styles.root;
     const variantClass = isKnown ? `${baseClass}--known` : `${baseClass}--unknown`;
 
     return (

@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './InstitutionSelector.css';
+import styles from './InstitutionSelector.module.css';
 
 /**
  * InstitutionSelector Feature Molecule.
@@ -17,14 +17,14 @@ const InstitutionSelector = ({
     t
 }) => {
     return (
-        <div className="institution-selector animate-fade-in">
-            <div className="institution-selector__group">
-                <label className="institution-selector__label">
+        <div className={`${styles.root} animate-fade-in`}>
+            <div className={`${styles.group}`}>
+                <label className={`${styles.label}`}>
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />
                     {t('institutions') || 'Instituciones'}:
                 </label>
                 <select
-                    className="institution-selector__select"
+                    className={`${styles.select}`}
                     value={selectedInstId}
                     onChange={e => setSelectedInstId(e.target.value)}
                 >
@@ -36,13 +36,9 @@ const InstitutionSelector = ({
             </div>
 
             {selectedInstId && (
-                <div className="institution-selector__view-toggle">
+                <div className={`${styles.viewToggle}`}>
                     <Button
-                        className={`institution-selector__toggle-btn ${
-                            viewMode === 'transactions' 
-                            ? 'institution-selector__toggle-btn--active' 
-                            : ''
-                        }`}
+                        className={`${styles.toggleBtn} ${ viewMode === 'transactions' ? styles.toggleBtnActive : '' }`}
                         onClick={() => setViewMode('transactions')}
                         unstyled
                     >
@@ -50,11 +46,7 @@ const InstitutionSelector = ({
                         {t('finances')}
                     </Button>
                     <Button
-                        className={`institution-selector__toggle-btn ${
-                            viewMode === 'patients' 
-                            ? 'institution-selector__toggle-btn--active' 
-                            : ''
-                        }`}
+                        className={`${styles.toggleBtn} ${ viewMode === 'patients' ? styles.toggleBtnActive : '' }`}
                         onClick={() => setViewMode('patients')}
                         unstyled
                     >

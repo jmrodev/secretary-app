@@ -1,16 +1,17 @@
+---
+source_file: "client/src/context/SearchProvider.jsx"
+type: "code"
+community: "Community 148"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_148
+---
+
 # SearchProvider()
 
-- **Tipo:** code
-- **Archivo:** client/src/context/SearchContext.jsx
-- **Comunidad:** [[_COMMUNITY_Community 58]]
+## Connections
+- [[SearchProvider.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[SearchContext.jsx|SearchContext.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[SearchContext.jsx|SearchContext.jsx]]
-- [[useSearch()|useSearch()]]
-- [[usePatientSearch.js|usePatientSearch.js]]
-- [[usePatientSearch()|usePatientSearch()]]
-- [[PageHeader.jsx|PageHeader.jsx]]
-- [[PageHeader()|PageHeader()]]
+#graphify/code #graphify/EXTRACTED #community/Community_148

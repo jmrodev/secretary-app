@@ -1,13 +1,18 @@
+---
+source_file: "server/services/appointments/providers/busyProvider.js"
+type: "code"
+community: "Community 114"
+location: "L4"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_114
+---
+
 # BusyProvider
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/providers/busyProvider.js
-- **Comunidad:** [[_COMMUNITY_Community 111]]
+## Connections
+- [[.getBusyIntervals()]] - `method` [EXTRACTED]
+- [[busyProvider.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[busyProvider.js|busyProvider.js]] (contains)
-- --> [[.getBusyIntervals()|.getBusyIntervals()]] (method)
-
-## Miembros de la misma Comunidad
-- [[busyProvider.js|busyProvider.js]]
-- [[.getBusyIntervals()|.getBusyIntervals()]]
+#graphify/code #graphify/EXTRACTED #community/Community_114

@@ -1,10 +1,14 @@
+---
+source_file: "server/services/core/insuranceService.test.js"
+type: "code"
+community: "Community 361"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_361
+---
+
 # insuranceService.test.js
 
-- **Tipo:** code
-- **Archivo:** server/services/insuranceService.test.js
-- **Comunidad:** [[_COMMUNITY_Community 366]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_361

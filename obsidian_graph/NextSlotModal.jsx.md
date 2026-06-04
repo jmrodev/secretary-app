@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/modals/NextSlotModal.jsx"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # NextSlotModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/NextSlotModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[NextSlotModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[NextSlotModal()|NextSlotModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

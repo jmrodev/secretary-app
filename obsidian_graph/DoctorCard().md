@@ -1,21 +1,17 @@
+---
+source_file: "client/src/features/finances/components/sections/CashBoxSummary.jsx"
+type: "code"
+community: "Community 124"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_124
+---
+
 # DoctorCard()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/doctors/components/DoctorCard.jsx
-- **Comunidad:** [[_COMMUNITY_Community 27]]
+## Connections
+- [[CashBoxSummary.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[DoctorCard.jsx|DoctorCard.jsx]] (contains)
-- --> [[formatPrice()|formatPrice()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[TransactionModal.jsx|TransactionModal.jsx]]
-- [[TransactionModal()|TransactionModal()]]
-- [[DoctorCard.jsx|DoctorCard.jsx]]
-- [[DebtPaymentModal.jsx|DebtPaymentModal.jsx]]
-- [[DebtPaymentModal()|DebtPaymentModal()]]
-- [[transactionOptions.js|transactionOptions.js]]
-- [[getTransactionTypes()|getTransactionTypes()]]
-- [[getPaymentMethods()|getPaymentMethods()]]
-- [[getStatusOptions()|getStatusOptions()]]
-- [[getServiceTypes()|getServiceTypes()]]
+#graphify/code #graphify/EXTRACTED #community/Community_124

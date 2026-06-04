@@ -5,7 +5,7 @@ import Card from '@/components/atoms/Card';
 import Icon from '@/components/atoms/Icon';
 import { useInsurancesController, InsuranceList, InsuranceFormModal } from '@/features/insurances/index';
 import MainLayout from '@/components/templates/MainLayout';
-import './InsurancesPage.css';
+import styles from './InsurancesPage.module.css';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
@@ -21,7 +21,6 @@ const InsurancesPage = () => {
         modalOpen,
         editingId,
         formData,
-        setSearchTerm,
         setModalOpen,
         setFormData,
         handlers,
@@ -37,7 +36,7 @@ const InsurancesPage = () => {
 
     return (
         <MainLayout wide flush title={t('insurances') || 'Obras Sociales'}>
-            <div className="insurances-page-orchestrator layout-content-area animate-fade-in">
+            <div className={`${styles.root} layout-content-area animate-fade-in`}>
                 <FeatureToolbar
                     className="insurances-page-orchestrator__toolbar"
                     actions={
@@ -52,12 +51,12 @@ const InsurancesPage = () => {
                     }
                 />
 
-                <main className="insurances-page-orchestrator__main">
+                <main className={`${styles.main}`}>
                     {loading && filteredInsurances.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
                         <Card noPadding>
-                            <div className="insurances__content animate-fade-in">
+                            <div className={`${styles.content} animate-fade-in`}>
                                 <InsuranceList
                                     insurances={filteredInsurances}
                                     onEdit={handleOpenEdit}

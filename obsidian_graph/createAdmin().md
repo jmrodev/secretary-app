@@ -1,11 +1,17 @@
+---
+source_file: "server/scripts/create-admin.js"
+type: "code"
+community: "Community 135"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_135
+---
+
 # createAdmin()
 
-- **Tipo:** code
-- **Archivo:** server/scripts/create-admin.js
-- **Comunidad:** [[_COMMUNITY_Community 126]]
+## Connections
+- [[create-admin.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[create-admin.js|create-admin.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[create-admin.js|create-admin.js]]
+#graphify/code #graphify/EXTRACTED #community/Community_135

@@ -1,19 +1,20 @@
+---
+source_file: "server/services/appointments/appointmentHelper.js"
+type: "code"
+community: "Community 52"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_52
+---
+
 # appointmentHelper.js
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/appointmentHelper.js
-- **Comunidad:** [[_COMMUNITY_Community 48]]
+## Connections
+- [[checkModificationPermissions()]] - `contains` [EXTRACTED]
+- [[formatDateForDB()]] - `contains` [EXTRACTED]
+- [[freeSlot()]] - `contains` [EXTRACTED]
+- [[occupySlot()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[formatDateForDB()|formatDateForDB()]] (contains)
-- --> [[freeSlot()|freeSlot()]] (contains)
-- --> [[occupySlot()|occupySlot()]] (contains)
-- --> [[checkModificationPermissions()|checkModificationPermissions()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[utils.js|utils.js]]
-- [[validateAdminPassword()|validateAdminPassword()]]
-- [[formatDateForDB()|formatDateForDB()]]
-- [[freeSlot()|freeSlot()]]
-- [[occupySlot()|occupySlot()]]
-- [[checkModificationPermissions()|checkModificationPermissions()]]
+#graphify/code #graphify/EXTRACTED #community/Community_52

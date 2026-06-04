@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Pagination.jsx"
+type: "code"
+community: "Community 269"
+location: "L17"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_269
+---
+
 # Pagination()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/Pagination.jsx
-- **Comunidad:** [[_COMMUNITY_Community 286]]
+## Connections
+- [[Pagination.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[Pagination.jsx|Pagination.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Pagination.jsx|Pagination.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_269

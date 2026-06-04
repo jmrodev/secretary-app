@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/finances/hooks/useTransactionForm.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Modals_&_Prescriptions
+---
+
 # useTransactionForm.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/hooks/useTransactionForm.js
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[useTransactionForm()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useTransactionForm()|useTransactionForm()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Modals_&_Prescriptions

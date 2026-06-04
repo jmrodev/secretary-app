@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/dashboard/hooks/useDashboardStats.js"
+type: "code"
+community: "Community 29"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_29
+---
+
 # useDashboardStats.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/dashboard/hooks/useDashboardStats.js
-- **Comunidad:** [[_COMMUNITY_Community 7]]
+## Connections
+- [[useDashboardStats()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useDashboardStats()|useDashboardStats()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useDashboardStats()|useDashboardStats()]]
-- [[useDashboardReminders.js|useDashboardReminders.js]]
-- [[useDashboardReminders()|useDashboardReminders()]]
-- [[useMedicationAutocomplete.js|useMedicationAutocomplete.js]]
-- [[useMedicationAutocomplete()|useMedicationAutocomplete()]]
-- [[MedicationAutocomplete.jsx|MedicationAutocomplete.jsx]]
-- [[MedicationAutocomplete()|MedicationAutocomplete()]]
-- [[useFloatingChatController.js|useFloatingChatController.js]]
-- [[useFloatingChatController()|useFloatingChatController()]]
-- [[FloatingChat.jsx|FloatingChat.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_29

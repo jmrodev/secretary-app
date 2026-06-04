@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/sections/MedicationItemsSummary.jsx"
+type: "code"
+community: "Community 180"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_180
+---
+
 # MedicationItemsSummary.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicationItemsSummary.jsx
-- **Comunidad:** [[_COMMUNITY_Community 165]]
+## Connections
+- [[MedicationItemsSummary()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicationItemsSummary()|MedicationItemsSummary()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicationItemsSummary()|MedicationItemsSummary()]]
+#graphify/code #graphify/EXTRACTED #community/Community_180

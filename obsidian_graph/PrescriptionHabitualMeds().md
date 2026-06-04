@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/sections/PrescriptionHabitualMeds.jsx"
+type: "code"
+community: "Community 122"
+location: "L51"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_122
+---
+
 # PrescriptionHabitualMeds()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/PrescriptionHabitualMeds.jsx
-- **Comunidad:** [[_COMMUNITY_Community 155]]
+## Connections
+- [[PrescriptionHabitualMeds.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PrescriptionHabitualMeds.jsx|PrescriptionHabitualMeds.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PrescriptionHabitualMeds.jsx|PrescriptionHabitualMeds.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_122

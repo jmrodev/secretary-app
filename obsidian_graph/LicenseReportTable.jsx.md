@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/reports/components/tables/LicenseReportTable.jsx"
+type: "code"
+community: "Community 258"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_258
+---
+
 # LicenseReportTable.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/components/LicenseReportTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 258]]
+## Connections
+- [[LicenseReportTable()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[LicenseReportTable()|LicenseReportTable()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[LicenseReportTable()|LicenseReportTable()]]
+#graphify/code #graphify/EXTRACTED #community/Community_258

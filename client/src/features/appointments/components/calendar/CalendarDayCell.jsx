@@ -1,6 +1,7 @@
 import React from 'react';
 import CalendarDayIndicator from './CalendarDayIndicator';
-import './CalendarDayCell.css';
+import Icon from '@/components/atoms/Icon';
+import styles from './CalendarDayCell.module.css';
 
 const EMPTY_OBJECT = {};
 
@@ -33,12 +34,12 @@ const CalendarDayCell = ({
   const handleSelectDay = () => { if (!disabled && onClick) onClick(day); };
 
   const cellClasses = [
-    'calendar-day-cell',
-    isSelected && 'calendar-day-cell--selected',
-    isToday && 'calendar-day-cell--today',
-    isHoliday && 'calendar-day-cell--holiday',
-    isPast && 'calendar-day-cell--past',
-    compact && 'calendar-day-cell--compact'
+    styles.root,
+    isSelected && styles.selected,
+    isToday && styles.today,
+    isHoliday && styles.holiday,
+    isPast && styles.past,
+    compact && styles.compact
   ].filter(Boolean).join(' ');
 
   const handleKeyDown = (e) => {
@@ -46,6 +47,18 @@ const CalendarDayCell = ({
       e.preventDefault();
       onClick(day);
     }
+  };
+
+  const normalTotal = bookedInCount + freeInCount;
+  const normalOccupancy = normalTotal > 0 ? (bookedInCount / normalTotal) * 100 : 0;
+  
+  const extraTotal = bookedOutCount + freeOutCount;
+  const extraOccupancy = extraTotal > 0 ? (bookedOutCount / extraTotal) * 100 : 0;
+
+  const ringStyles = {
+    '--occupancy-normal': `${normalOccupancy}%`,
+    '--occupancy-extra': `${extraOccupancy}%`,
+    '--extra-opacity': (showOutOfHours && extraTotal > 0) ? '1' : '0'
   };
 
   return (
@@ -58,24 +71,26 @@ const CalendarDayCell = ({
       tabIndex={disabled ? -1 : 0}
       aria-label={`${t('day')} ${day}${isHoliday ? `, ${holidayDescription}` : ''}`}
     >
-      <div className="calendar-day-cell__content">
-        <div className="calendar-day-cell__date">
-          <span className="calendar-day-cell__number">{day}</span>
-          <div className="calendar-day-cell__markers">
-            {isHoliday && <span className="calendar-day-cell__holiday-marker" title={holidayDescription}>H</span>}
-            {isToday && <span className="calendar-day-cell__today-marker">HOY</span>}
-          </div>
+      <div className={`${styles.content}`}>
+        <div className={styles.numberWrapper} style={ringStyles}>
+          <span className={`${styles.number}`}>{day}</span>
         </div>
-
-        <CalendarDayIndicator
-          count={appointmentCount} bookedInCount={bookedInCount} bookedOutCount={bookedOutCount}
-          freeInCount={freeInCount} freeOutCount={freeOutCount} isHoliday={isHoliday}
-          holidayDescription={holidayDescription} variant={appointmentCount > 5 ? 'high' : 'normal'}
-          showOutOfHours={showOutOfHours} t={t} isSelected={isSelected}
-        />
+        <div className={styles.markers}>
+          {isHoliday && (
+            <span className={`${styles.holidayMarker}`} title={holidayDescription}>
+              <Icon name="event_busy" size="0.7rem" />
+            </span>
+          )}
+          {isToday && (
+            <span className={`${styles.todayMarker}`}>
+              {t('today') || 'Hoy'}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
 export default CalendarDayCell;
+

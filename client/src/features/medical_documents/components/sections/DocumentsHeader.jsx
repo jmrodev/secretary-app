@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './DocumentsHeader.module.css';
 
 /**
  * DocumentsHeader Feature Molecule.
@@ -8,7 +9,7 @@ import React from 'react';
 const DocumentsHeader = ({ t }) => {
     return (
         <header className="dashboard-header animate-fade-in">
-            <h1 className="dashboard-header__title">{t('medical_documents') || 'Documentos Médicos'}</h1>
+            <h1 className={`${styles.title}`}>{t('medical_documents') || 'Documentos Médicos'}</h1>
             <p className="dashboard-header__subtitle">
                 {t('medical_docs_subtitle') || 'Orqueste requerimientos, centralice archivos clínicos y gestione el historial documental de sus pacientes en un único entorno modular.'}
             </p>

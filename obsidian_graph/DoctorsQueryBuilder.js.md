@@ -1,20 +1,17 @@
+---
+source_file: "server/utils/database/queryBuilders/DoctorsQueryBuilder.js"
+type: "code"
+community: "Community 26"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_26
+---
+
 # DoctorsQueryBuilder.js
 
-- **Tipo:** code
-- **Archivo:** server/utils/queryBuilders/DoctorsQueryBuilder.js
-- **Comunidad:** [[_COMMUNITY_Community 25]]
+## Connections
+- [[DoctorsQueryBuilder]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[DoctorsQueryBuilder|DoctorsQueryBuilder]] (contains)
-
-## Miembros de la misma Comunidad
-- [[DoctorsQueryBuilder|DoctorsQueryBuilder]]
-- [[.constructor()|.constructor()]]
-- [[.includeUserInfo()|.includeUserInfo()]]
-- [[.includeAppointmentStats()|.includeAppointmentStats()]]
-- [[.includePatientCount()|.includePatientCount()]]
-- [[.includeRevenue()|.includeRevenue()]]
-- [[.filterBySpecialty()|.filterBySpecialty()]]
-- [[.filterByOffice()|.filterByOffice()]]
-- [[.applySearch()|.applySearch()]]
-- [[.applyRoleFilter()|.applyRoleFilter()]]
+#graphify/code #graphify/EXTRACTED #community/Community_26

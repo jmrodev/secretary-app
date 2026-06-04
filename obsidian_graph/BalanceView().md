@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/reports/components/views/BalanceView.jsx"
+type: "code"
+community: "Community 263"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_263
+---
+
 # BalanceView()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/components/BalanceView.jsx
-- **Comunidad:** [[_COMMUNITY_Community 259]]
+## Connections
+- [[BalanceView.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[BalanceView.jsx|BalanceView.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[BalanceView.jsx|BalanceView.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_263

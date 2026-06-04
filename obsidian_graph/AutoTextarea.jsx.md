@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/AutoTextarea.jsx"
+type: "code"
+community: "Community 273"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_273
+---
+
 # AutoTextarea.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/AutoTextarea.jsx
-- **Comunidad:** [[_COMMUNITY_Community 270]]
+## Connections
+- [[AutoTextarea()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AutoTextarea()|AutoTextarea()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AutoTextarea()|AutoTextarea()]]
+#graphify/code #graphify/EXTRACTED #community/Community_273

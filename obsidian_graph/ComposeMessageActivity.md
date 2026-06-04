@@ -1,25 +1,22 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/ComposeMessageActivity.kt"
+type: "code"
+community: "Android Main Activity"
+location: "L17"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Android_Main_Activity
+---
+
 # ComposeMessageActivity
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/ComposeMessageActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 5]]
+## Connections
+- [[.loadRecipients()]] - `method` [EXTRACTED]
+- [[.onCreate()_1]] - `method` [EXTRACTED]
+- [[.sendBroadcast()]] - `method` [EXTRACTED]
+- [[.setupListeners()_1]] - `method` [EXTRACTED]
+- [[.setupRecipientTypeSpinner()]] - `method` [EXTRACTED]
+- [[ComposeMessageActivity.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ComposeMessageActivity.kt|ComposeMessageActivity.kt]] (contains)
-- --> [[.onCreate()|.onCreate()]] (method)
-- --> [[.setupRecipientTypeSpinner()|.setupRecipientTypeSpinner()]] (method)
-- --> [[.loadRecipients()|.loadRecipients()]] (method)
-- --> [[.setupListeners()|.setupListeners()]] (method)
-- --> [[.sendBroadcast()|.sendBroadcast()]] (method)
-
-## Miembros de la misma Comunidad
-- [[ComposeMessageActivity.kt|ComposeMessageActivity.kt]]
-- [[.onCreate()|.onCreate()]]
-- [[.setupRecipientTypeSpinner()|.setupRecipientTypeSpinner()]]
-- [[.loadRecipients()|.loadRecipients()]]
-- [[.setupListeners()|.setupListeners()]]
-- [[.sendBroadcast()|.sendBroadcast()]]
-- [[MessagesActivity.kt|MessagesActivity.kt]]
-- [[MessagesActivity|MessagesActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.setupRecyclerView()|.setupRecyclerView()]]
+#graphify/code #graphify/EXTRACTED #community/Android_Main_Activity

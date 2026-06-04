@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/Card.jsx"
+type: "code"
+community: "Community 280"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_280
+---
+
 # Card.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/Card.jsx
-- **Comunidad:** [[_COMMUNITY_Community 277]]
+## Connections
+- [[Card()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[Card()|Card()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Card()|Card()]]
+#graphify/code #graphify/EXTRACTED #community/Community_280

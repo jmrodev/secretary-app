@@ -1,25 +1,23 @@
+---
+source_file: "client/src/features/insurances/hooks/useInsurancesController.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Modals_&_Prescriptions
+---
+
 # useInsurancesController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/insurances/hooks/useInsurancesController.js
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[InsurancesPage()]] - `calls` [INFERRED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useInsurancesController.js]] - `contains` [EXTRACTED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
+- [[useSearch()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[InsurancesPage()|InsurancesPage()]] (calls)
-- <-- [[useInsurancesController.js|useInsurancesController.js]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
-- [[DaySchedule()|DaySchedule()]]
+#graphify/code #graphify/INFERRED #community/Modals_&_Prescriptions

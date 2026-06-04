@@ -6,7 +6,7 @@ import Alert from '@/components/atoms/Alert';
 import FormGroup from '@/components/molecules/FormGroup';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
-import './InstitutionPaymentModal.css';
+import styles from './InstitutionPaymentModal.module.css';
 
 /**
  * InstitutionPaymentModal Molecule.
@@ -36,7 +36,7 @@ const InstitutionPaymentModal = ({
             onClose={onClose}
             title={t('register_inst_payment')}
         >
-            <div className="institution-payment">
+            <div className={`${styles.root}`}>
                 <Alert
                     variant={hasTransactions ? 'success' : 'info'}
                     message={
@@ -63,7 +63,7 @@ const InstitutionPaymentModal = ({
                     />
                 </FormGroup>
 
-                <div className="institution-payment__footer">
+                <div className={`${styles.footer}`}>
                     <Button variant="secondary" onClick={onClose}>
                         {t('cancel')}
                     </Button>

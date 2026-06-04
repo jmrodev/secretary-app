@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/modals/EditPrescriptionModal.jsx"
+type: "code"
+community: "Community 161"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_161
+---
+
 # EditPrescriptionModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/EditPrescriptionModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 167]]
+## Connections
+- [[EditPrescriptionModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[EditPrescriptionModal()|EditPrescriptionModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[EditPrescriptionModal()|EditPrescriptionModal()]]
+#graphify/code #graphify/EXTRACTED #community/Community_161

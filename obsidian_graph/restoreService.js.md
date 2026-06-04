@@ -1,20 +1,17 @@
+---
+source_file: "server/services/system/restoreService.js"
+type: "code"
+community: "Community 49"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_49
+---
+
 # restoreService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/restoreService.js
-- **Comunidad:** [[_COMMUNITY_Community 8]]
+## Connections
+- [[RestoreService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[RestoreService|RestoreService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[dateUtils.js|dateUtils.js]]
-- [[formatLocalSQL()|formatLocalSQL()]]
-- [[nowLocalSQL()|nowLocalSQL()]]
-- [[formatDateOnlySQL()|formatDateOnlySQL()]]
-- [[RestoreService|RestoreService]]
-- [[.restoreItem()|.restoreItem()]]
-- [[._restorePatient()|._restorePatient()]]
-- [[._restoreDoctor()|._restoreDoctor()]]
-- [[._restoreSecretary()|._restoreSecretary()]]
-- [[._restoreMedicalRequest()|._restoreMedicalRequest()]]
+#graphify/code #graphify/EXTRACTED #community/Community_49

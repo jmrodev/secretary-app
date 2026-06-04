@@ -1,15 +1,17 @@
+---
+source_file: "server/services/communication/whatsappBridgeService.js"
+type: "code"
+community: "Community 65"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_65
+---
+
 # whatsappBridgeService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/whatsappBridgeService.js
-- **Comunidad:** [[_COMMUNITY_Community 61]]
+## Connections
+- [[WhatsAppBridgeService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[WhatsAppBridgeService|WhatsAppBridgeService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[WhatsAppBridgeService|WhatsAppBridgeService]]
-- [[.constructor()|.constructor()]]
-- [[.isBridgeRunning()|.isBridgeRunning()]]
-- [[.startBridge()|.startBridge()]]
-- [[.stopBridge()|.stopBridge()]]
+#graphify/code #graphify/EXTRACTED #community/Community_65

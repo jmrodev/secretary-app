@@ -1,16 +1,18 @@
+---
+source_file: "client/src/features/layout/components/Navbar.jsx"
+type: "code"
+community: "Community 20"
+location: "L13"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_20
+---
+
 # Navbar()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/layout/components/Navbar.jsx
-- **Comunidad:** [[_COMMUNITY_Community 67]]
+## Connections
+- [[Navbar.jsx]] - `contains` [EXTRACTED]
+- [[useLayoutController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useSidebarController()|useSidebarController()]] (calls)
-- <-- [[Navbar.jsx|Navbar.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useSidebarController.js|useSidebarController.js]]
-- [[useSidebarController()|useSidebarController()]]
-- [[Navbar.jsx|Navbar.jsx]]
-- [[Sidebar.jsx|Sidebar.jsx]]
-- [[Sidebar()|Sidebar()]]
+#graphify/code #graphify/EXTRACTED #community/Community_20

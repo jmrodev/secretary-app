@@ -1,20 +1,17 @@
+---
+source_file: "server/services/google/GoogleSpreadsheetService.js"
+type: "code"
+community: "Community 33"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_33
+---
+
 # GoogleSpreadsheetService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/google/GoogleSpreadsheetService.js
-- **Comunidad:** [[_COMMUNITY_Community 32]]
+## Connections
+- [[GoogleSpreadsheetService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[GoogleSpreadsheetService|GoogleSpreadsheetService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[GoogleSpreadsheetService|GoogleSpreadsheetService]]
-- [[.constructor()|.constructor()]]
-- [[.getSheetName()|.getSheetName()]]
-- [[.ensureSheet()|.ensureSheet()]]
-- [[.clearSheet()|.clearSheet()]]
-- [[.formatRow()|.formatRow()]]
-- [[.syncToSpreadsheet()|.syncToSpreadsheet()]]
-- [[.bulkSync()|.bulkSync()]]
-- [[.resetSpreadsheetId()|.resetSpreadsheetId()]]
-- [[.getWeekNumber()|.getWeekNumber()]]
+#graphify/code #graphify/EXTRACTED #community/Community_33

@@ -31,12 +31,6 @@ export const useMedicalDocumentsHandlers = ({
     selectedPrescription,
     selectedLicense,
     selectedRequest,
-    actionModal,
-    actionNote,
-    paymentModal,
-    searchTerm,
-    activeTab,
-    requestsSubTab,
 
     // Setters
     setReqNote,
@@ -101,7 +95,7 @@ export const useMedicalDocumentsHandlers = ({
             setIsEditing(false);
             fetchRequests();
             showMessage(t('status_updated'), 'success');
-        } catch (err) {
+        } catch {
             showMessage(t('update_failed'), 'error');
         }
     }, [t, showMessage, fetchRequests, setActionModal, setSelectedRequest, setIsEditing]);
@@ -121,7 +115,7 @@ export const useMedicalDocumentsHandlers = ({
             setFileDesc('');
             setSelectedFile(null);
             fetchFiles();
-        } catch (err) {
+        } catch {
             showMessage(t('upload_failed'), 'error');
         }
     }, [selectedFile, filePatient, fileDesc, t, showMessage, fetchFiles, setFileDesc, setSelectedFile]);
@@ -249,7 +243,7 @@ export const useMedicalDocumentsHandlers = ({
             link.click();
             link.remove();
             showMessage(t('export_success') || 'Exportación exitosa', 'success');
-        } catch (err) {
+        } catch {
             showMessage(t('export_failed') || 'Error al exportar', 'error');
         }
     }, [t, showMessage]);
@@ -261,7 +255,7 @@ export const useMedicalDocumentsHandlers = ({
             setTimeout(() => {
                 window.print();
             }, 500);
-        } catch (err) {
+        } catch {
             showMessage(t('print_error') || 'Error al preparar impresión', 'error');
         }
     }, [t, showMessage]);

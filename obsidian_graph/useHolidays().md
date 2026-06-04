@@ -1,23 +1,21 @@
+---
+source_file: "client/src/features/appointments/hooks/useHolidays.js"
+type: "code"
+community: "Medical Requests & History"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Medical_Requests_&_History
+---
+
 # useHolidays()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/hooks/useHolidays.js
-- **Comunidad:** [[_COMMUNITY_Community 3]]
+## Connections
+- [[useAppointmentsPageController()]] - `calls` [INFERRED]
+- [[useAppointmentsPageController.js]] - `imports` [EXTRACTED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useHolidays.js]] - `contains` [EXTRACTED]
+- [[useMessage()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useMessage()|useMessage()]] (calls)
-- <-- [[useAppointmentsPageController()|useAppointmentsPageController()]] (calls)
-- <-- [[useHolidays.js|useHolidays.js]] (contains)
-- --> [[useFetch()|useFetch()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useMessage()|useMessage()]]
-- [[useConfig()|useConfig()]]
-- [[DashboardPage.jsx|DashboardPage.jsx]]
-- [[DashboardPage()|DashboardPage()]]
-- [[useDashboardController.js|useDashboardController.js]]
-- [[useDashboardController()|useDashboardController()]]
-- [[useDashboardModals.js|useDashboardModals.js]]
-- [[useDashboardModals()|useDashboardModals()]]
-- [[useDashboardWhatsApp.js|useDashboardWhatsApp.js]]
-- [[useDashboardWhatsApp()|useDashboardWhatsApp()]]
+#graphify/code #graphify/INFERRED #community/Medical_Requests_&_History

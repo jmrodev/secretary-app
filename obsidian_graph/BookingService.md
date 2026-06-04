@@ -1,23 +1,19 @@
+---
+source_file: "server/services/appointments/bookingService.js"
+type: "code"
+community: "Community 90"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_90
+---
+
 # BookingService
 
-- **Tipo:** code
-- **Archivo:** server/services/appointments/bookingService.js
-- **Comunidad:** [[_COMMUNITY_Community 2]]
+## Connections
+- [[.createAppointment()]] - `method` [EXTRACTED]
+- [[.handleOverwrite()]] - `method` [EXTRACTED]
+- [[bookingService.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[bookingService.js|bookingService.js]] (contains)
-- --> [[.createAppointment()|.createAppointment()]] (method)
-- --> [[.handleOverwrite()|.handleOverwrite()]] (method)
-- --> [[.generateDebt()|.generateDebt()]] (method)
-
-## Miembros de la misma Comunidad
-- [[priceCalculator.js|priceCalculator.js]]
-- [[calculatePrice()|calculatePrice()]]
-- [[.getPricing()|.getPricing()]]
-- [[bookingService.js|bookingService.js]]
-- [[.createAppointment()|.createAppointment()]]
-- [[.handleOverwrite()|.handleOverwrite()]]
-- [[.generateDebt()|.generateDebt()]]
-- [[LicenseService.js|LicenseService.js]]
-- [[LicenseService|LicenseService]]
-- [[.createLicense()|.createLicense()]]
+#graphify/code #graphify/EXTRACTED #community/Community_90

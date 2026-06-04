@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/patients/hooks/usePatientsHandlers.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Modals_&_Prescriptions
+---
+
 # usePatientsHandlers()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/hooks/usePatientsHandlers.js
-- **Comunidad:** [[_COMMUNITY_Community 3]]
+## Connections
+- [[usePatientsHandlers.js]] - `contains` [EXTRACTED]
+- [[usePatientsPageController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[usePatientsHandlers.js|usePatientsHandlers.js]] (contains)
-- <-- [[usePatientsPageController()|usePatientsPageController()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useMessage()|useMessage()]]
-- [[useConfig()|useConfig()]]
-- [[DashboardPage.jsx|DashboardPage.jsx]]
-- [[DashboardPage()|DashboardPage()]]
-- [[useDashboardController.js|useDashboardController.js]]
-- [[useDashboardController()|useDashboardController()]]
-- [[useDashboardModals.js|useDashboardModals.js]]
-- [[useDashboardModals()|useDashboardModals()]]
-- [[useDashboardWhatsApp.js|useDashboardWhatsApp.js]]
-- [[useDashboardWhatsApp()|useDashboardWhatsApp()]]
+#graphify/code #graphify/EXTRACTED #community/Modals_&_Prescriptions

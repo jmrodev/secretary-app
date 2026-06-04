@@ -72,7 +72,7 @@ CREATE TABLE `appointments` (
   CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`),
   CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`),
   CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`consultorio_id`) REFERENCES `consultorios` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1210 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1214 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `audit_logs` (
   KEY `idx_audit_created` (`created_at`),
   KEY `idx_audit_action` (`action`),
   CONSTRAINT `audit_logs_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=9370 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9414 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -261,7 +261,7 @@ CREATE TABLE `google_sync_queue` (
   PRIMARY KEY (`id`),
   KEY `idx_gsq_status` (`status`),
   KEY `idx_gsq_doctor` (`doctor_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=218 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=222 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -417,7 +417,7 @@ CREATE TABLE `medical_requests` (
   CONSTRAINT `medical_requests_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`),
   CONSTRAINT `medical_requests_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`),
   CONSTRAINT `medical_requests_ibfk_3` FOREIGN KEY (`secretary_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=233 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=236 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -662,6 +662,9 @@ CREATE TABLE `patients` (
   KEY `fk_patient_insurance` (`insurance_id`),
   KEY `fk_patient_institution` (`institution_id`),
   KEY `idx_patients_full_name` (`full_name`),
+  KEY `idx_patients_dni` (`dni`),
+  KEY `idx_patients_phone` (`phone`),
+  FULLTEXT KEY `ft_idx_patient_search` (`full_name`,`dni`,`phone`),
   CONSTRAINT `fk_patient_institution` FOREIGN KEY (`institution_id`) REFERENCES `institutions` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_patient_insurance` FOREIGN KEY (`insurance_id`) REFERENCES `insurances` (`id`) ON DELETE SET NULL,
   CONSTRAINT `patients_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
@@ -685,7 +688,7 @@ CREATE TABLE `phone_numbers` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `idx_entity` (`entity_type`,`entity_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4613 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4618 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -777,7 +780,7 @@ CREATE TABLE `recently_freed_slots` (
   PRIMARY KEY (`id`),
   KEY `doctor_id` (`doctor_id`),
   CONSTRAINT `fk_freed_doctor` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=454 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=463 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -798,7 +801,7 @@ CREATE TABLE `recycle_bin` (
   `deleted_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `expires_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -836,6 +839,27 @@ CREATE TABLE `system_settings` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `transaction_audits`
+--
+
+DROP TABLE IF EXISTS `transaction_audits`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `transaction_audits` (
+  `audit_id` int(11) NOT NULL AUTO_INCREMENT,
+  `transaction_id` int(11) DEFAULT NULL,
+  `action` enum('INSERT','UPDATE','DELETE') DEFAULT NULL,
+  `old_amount` decimal(15,2) DEFAULT NULL,
+  `new_amount` decimal(15,2) DEFAULT NULL,
+  `old_status` varchar(20) DEFAULT NULL,
+  `new_status` varchar(20) DEFAULT NULL,
+  `changed_by_user_id` int(11) DEFAULT NULL,
+  `changed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`audit_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `transactions`
 --
 
@@ -866,13 +890,81 @@ CREATE TABLE `transactions` (
   KEY `idx_tx_status` (`status`),
   KEY `idx_tx_type` (`type`),
   KEY `idx_tx_date` (`transaction_date`),
+  KEY `idx_finance_reconcile` (`transaction_date`,`status`,`doctor_id`,`method`),
+  KEY `idx_patient_debt` (`related_user_id`,`status`,`amount`),
+  KEY `idx_transactions_request_status_amount` (`request_id`,`status`,`amount`),
   CONSTRAINT `fk_trans_doctor` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_transaction_institution` FOREIGN KEY (`institution_id`) REFERENCES `institutions` (`id`),
   CONSTRAINT `fk_transactions_appointment` FOREIGN KEY (`appointment_id`) REFERENCES `appointments` (`id`) ON DELETE SET NULL,
   CONSTRAINT `fk_transactions_request` FOREIGN KEY (`request_id`) REFERENCES `medical_requests` (`id`) ON DELETE SET NULL,
   CONSTRAINT `transactions_ibfk_1` FOREIGN KEY (`related_user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2601 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2608 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8mb3_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trg_audit_transaction_insert
+AFTER INSERT ON transactions
+FOR EACH ROW
+BEGIN
+    INSERT INTO transaction_audits (transaction_id, action, new_amount, new_status, changed_at)
+    VALUES (NEW.id, 'INSERT', NEW.amount, NEW.status, NOW());
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8mb3_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trg_audit_transaction_update
+AFTER UPDATE ON transactions
+FOR EACH ROW
+BEGIN
+    IF OLD.amount != NEW.amount OR OLD.status != NEW.status THEN
+        INSERT INTO transaction_audits (transaction_id, action, old_amount, new_amount, old_status, new_status, changed_at)
+        VALUES (NEW.id, 'UPDATE', OLD.amount, NEW.amount, OLD.status, NEW.status, NOW());
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb3 */ ;
+/*!50003 SET character_set_results = utf8mb3 */ ;
+/*!50003 SET collation_connection  = utf8mb3_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'STRICT_TRANS_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER trg_audit_transaction_delete
+AFTER DELETE ON transactions
+FOR EACH ROW
+BEGIN
+    INSERT INTO transaction_audits (transaction_id, action, old_amount, old_status, changed_at)
+    VALUES (OLD.id, 'DELETE', OLD.amount, OLD.status, NOW());
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `user_typing_status`
@@ -912,6 +1004,92 @@ CREATE TABLE `users` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Temporary table structure for view `v_appointment_details`
+--
+
+DROP TABLE IF EXISTS `v_appointment_details`;
+/*!50001 DROP VIEW IF EXISTS `v_appointment_details`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `v_appointment_details` AS SELECT
+ 1 AS `id`,
+  1 AS `patient_id`,
+  1 AS `doctor_id`,
+  1 AS `consultorio_id`,
+  1 AS `appointment_date`,
+  1 AS `reason`,
+  1 AS `status`,
+  1 AS `cancellation_reason`,
+  1 AS `cost`,
+  1 AS `is_paid`,
+  1 AS `payment_status`,
+  1 AS `google_event_id`,
+  1 AS `is_out_of_hours`,
+  1 AS `type`,
+  1 AS `institution_id`,
+  1 AS `duration`,
+  1 AS `bonified`,
+  1 AS `rescheduled_from_date`,
+  1 AS `patient_name`,
+  1 AS `patient_phone`,
+  1 AS `patient_dni`,
+  1 AS `doctor_name`,
+  1 AS `institution_name`,
+  1 AS `insurance_name`,
+  1 AS `paid_amount`,
+  1 AS `pending_amount` */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `v_daily_financial_summary`
+--
+
+DROP TABLE IF EXISTS `v_daily_financial_summary`;
+/*!50001 DROP VIEW IF EXISTS `v_daily_financial_summary`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `v_daily_financial_summary` AS SELECT
+ 1 AS `date`,
+  1 AS `total_income`,
+  1 AS `total_expense`,
+  1 AS `total_pending_debt` */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `v_medical_request_details`
+--
+
+DROP TABLE IF EXISTS `v_medical_request_details`;
+/*!50001 DROP VIEW IF EXISTS `v_medical_request_details`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `v_medical_request_details` AS SELECT
+ 1 AS `id`,
+  1 AS `type`,
+  1 AS `patient_id`,
+  1 AS `patient_name`,
+  1 AS `patient_user_id`,
+  1 AS `doctor_id`,
+  1 AS `doctor_name`,
+  1 AS `doctor_user_id`,
+  1 AS `secretary_id`,
+  1 AS `status`,
+  1 AS `request_note`,
+  1 AS `doctor_note`,
+  1 AS `created_at`,
+  1 AS `updated_at`,
+  1 AS `payment_status`,
+  1 AS `payment_method`,
+  1 AS `debt_amount`,
+  1 AS `completed_at`,
+  1 AS `raw_medication_data`,
+  1 AS `is_patient_submitted`,
+  1 AS `resolved_debt_amount`,
+  1 AS `paid_amount`,
+  1 AS `pending_amount` */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `vademecum`
 --
 
@@ -934,6 +1112,159 @@ CREATE TABLE `vademecum` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Temporary table structure for view `view_daily_balances`
+--
+
+DROP TABLE IF EXISTS `view_daily_balances`;
+/*!50001 DROP VIEW IF EXISTS `view_daily_balances`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `view_daily_balances` AS SELECT
+ 1 AS `transaction_date`,
+  1 AS `doctor_id`,
+  1 AS `doctor_name`,
+  1 AS `cash_balance`,
+  1 AS `transfer_balance`,
+  1 AS `last_activity` */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `view_daily_cash_reconciliation`
+--
+
+DROP TABLE IF EXISTS `view_daily_cash_reconciliation`;
+/*!50001 DROP VIEW IF EXISTS `view_daily_cash_reconciliation`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `view_daily_cash_reconciliation` AS SELECT
+ 1 AS `payment_method`,
+  1 AS `total_income`,
+  1 AS `total_withdrawal`,
+  1 AS `net_balance` */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `view_daily_financial_summary`
+--
+
+DROP TABLE IF EXISTS `view_daily_financial_summary`;
+/*!50001 DROP VIEW IF EXISTS `view_daily_financial_summary`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `view_daily_financial_summary` AS SELECT
+ 1 AS `report_date`,
+  1 AS `doctor_id`,
+  1 AS `total_income`,
+  1 AS `total_cash`,
+  1 AS `total_withdrawal` */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `view_doctor_financial_health`
+--
+
+DROP TABLE IF EXISTS `view_doctor_financial_health`;
+/*!50001 DROP VIEW IF EXISTS `view_doctor_financial_health`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `view_doctor_financial_health` AS SELECT
+ 1 AS `doctor_id`,
+  1 AS `doctor_name`,
+  1 AS `total_collected`,
+  1 AS `total_debt`,
+  1 AS `collection_rate_percent`,
+  1 AS `avg_days_to_collect` */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `view_patient_balances`
+--
+
+DROP TABLE IF EXISTS `view_patient_balances`;
+/*!50001 DROP VIEW IF EXISTS `view_patient_balances`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `view_patient_balances` AS SELECT
+ 1 AS `patient_id`,
+  1 AS `full_name`,
+  1 AS `user_id`,
+  1 AS `total_debt_calculated`,
+  1 AS `debt_status`,
+  1 AS `oldest_debt_days` */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `view_patients_extended`
+--
+
+DROP TABLE IF EXISTS `view_patients_extended`;
+/*!50001 DROP VIEW IF EXISTS `view_patients_extended`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `view_patients_extended` AS SELECT
+ 1 AS `id`,
+  1 AS `user_id`,
+  1 AS `first_name`,
+  1 AS `last_name`,
+  1 AS `full_name`,
+  1 AS `dob`,
+  1 AS `phone`,
+  1 AS `email`,
+  1 AS `medical_history`,
+  1 AS `dni`,
+  1 AS `affiliate_number`,
+  1 AS `insurance_id`,
+  1 AS `tariff_percent`,
+  1 AS `tariff_override`,
+  1 AS `behavior_rating`,
+  1 AS `is_new_patient`,
+  1 AS `marked_new_at`,
+  1 AS `visit_interval_days`,
+  1 AS `prescription_interval_days`,
+  1 AS `next_suggested_visit_date`,
+  1 AS `next_suggested_prescription_date`,
+  1 AS `license_expiry_date`,
+  1 AS `institution_id`,
+  1 AS `street_name`,
+  1 AS `street_number`,
+  1 AS `floor`,
+  1 AS `apartment`,
+  1 AS `city`,
+  1 AS `province`,
+  1 AS `country`,
+  1 AS `visit_notified`,
+  1 AS `prescription_notified`,
+  1 AS `license_notified`,
+  1 AS `username`,
+  1 AS `role`,
+  1 AS `total_appointments`,
+  1 AS `attended_appointments`,
+  1 AS `missed_appointments`,
+  1 AS `last_visit`,
+  1 AS `total_debt_calculated`,
+  1 AS `financial_rating`,
+  1 AS `attendance_rating` */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `view_recent_patients`
+--
+
+DROP TABLE IF EXISTS `view_recent_patients`;
+/*!50001 DROP VIEW IF EXISTS `view_recent_patients`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8mb4;
+/*!50001 CREATE VIEW `view_recent_patients` AS SELECT
+ 1 AS `id`,
+  1 AS `full_name`,
+  1 AS `dni`,
+  1 AS `phone`,
+  1 AS `total_debt_calculated`,
+  1 AS `financial_rating`,
+  1 AS `last_activity` */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `whatsapp_messages`
 --
 
@@ -954,8 +1285,188 @@ CREATE TABLE `whatsapp_messages` (
   KEY `idx_wa_created` (`created_at`),
   KEY `idx_wa_status` (`status`),
   CONSTRAINT `whatsapp_messages_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=729 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Final view structure for view `v_appointment_details`
+--
+
+/*!50001 DROP VIEW IF EXISTS `v_appointment_details`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb3 */;
+/*!50001 SET character_set_results     = utf8mb3 */;
+/*!50001 SET collation_connection      = utf8mb3_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `v_appointment_details` AS select `a`.`id` AS `id`,`a`.`patient_id` AS `patient_id`,`a`.`doctor_id` AS `doctor_id`,`a`.`consultorio_id` AS `consultorio_id`,`a`.`appointment_date` AS `appointment_date`,`a`.`reason` AS `reason`,`a`.`status` AS `status`,`a`.`cancellation_reason` AS `cancellation_reason`,`a`.`cost` AS `cost`,`a`.`is_paid` AS `is_paid`,`a`.`payment_status` AS `payment_status`,`a`.`google_event_id` AS `google_event_id`,`a`.`is_out_of_hours` AS `is_out_of_hours`,`a`.`type` AS `type`,`a`.`institution_id` AS `institution_id`,`a`.`duration` AS `duration`,`a`.`bonified` AS `bonified`,`a`.`rescheduled_from_date` AS `rescheduled_from_date`,`p`.`full_name` AS `patient_name`,`p`.`phone` AS `patient_phone`,`p`.`dni` AS `patient_dni`,`d`.`full_name` AS `doctor_name`,`i`.`name` AS `institution_name`,coalesce(`ins`.`name`,'Particular') AS `insurance_name`,(select coalesce(sum(`transactions`.`amount`),0) from `transactions` where `transactions`.`appointment_id` = `a`.`id` and `transactions`.`status` = 'paid') AS `paid_amount`,(select coalesce(sum(`transactions`.`amount`),0) from `transactions` where `transactions`.`appointment_id` = `a`.`id` and `transactions`.`status` = 'pending') AS `pending_amount` from ((((`appointments` `a` left join `patients` `p` on(`a`.`patient_id` = `p`.`id`)) left join `doctors` `d` on(`a`.`doctor_id` = `d`.`id`)) left join `institutions` `i` on(`a`.`institution_id` = `i`.`id`)) left join `insurances` `ins` on(`p`.`insurance_id` = `ins`.`id`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `v_daily_financial_summary`
+--
+
+/*!50001 DROP VIEW IF EXISTS `v_daily_financial_summary`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb3 */;
+/*!50001 SET character_set_results     = utf8mb3 */;
+/*!50001 SET collation_connection      = utf8mb3_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `v_daily_financial_summary` AS select cast(`transactions`.`transaction_date` as date) AS `date`,sum(case when `transactions`.`type` = 'income' and `transactions`.`status` = 'paid' then `transactions`.`amount` else 0 end) AS `total_income`,sum(case when `transactions`.`type` = 'expense' then `transactions`.`amount` else 0 end) AS `total_expense`,sum(case when `transactions`.`status` = 'pending' then `transactions`.`amount` else 0 end) AS `total_pending_debt` from `transactions` group by cast(`transactions`.`transaction_date` as date) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `v_medical_request_details`
+--
+
+/*!50001 DROP VIEW IF EXISTS `v_medical_request_details`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb3 */;
+/*!50001 SET character_set_results     = utf8mb3 */;
+/*!50001 SET collation_connection      = utf8mb3_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `v_medical_request_details` AS select `r`.`id` AS `id`,`r`.`type` AS `type`,`r`.`patient_id` AS `patient_id`,`p`.`full_name` AS `patient_name`,`p`.`user_id` AS `patient_user_id`,`r`.`doctor_id` AS `doctor_id`,`d`.`full_name` AS `doctor_name`,`d`.`user_id` AS `doctor_user_id`,`r`.`secretary_id` AS `secretary_id`,`r`.`status` AS `status`,`r`.`request_note` AS `request_note`,`r`.`doctor_note` AS `doctor_note`,`r`.`created_at` AS `created_at`,`r`.`updated_at` AS `updated_at`,`r`.`payment_status` AS `payment_status`,`r`.`payment_method` AS `payment_method`,`r`.`debt_amount` AS `debt_amount`,`r`.`completed_at` AS `completed_at`,`r`.`raw_medication_data` AS `raw_medication_data`,`r`.`is_patient_submitted` AS `is_patient_submitted`,coalesce(nullif(`r`.`debt_amount`,0),0) AS `resolved_debt_amount`,coalesce(`tx`.`paid_amount`,0) AS `paid_amount`,coalesce(`tx`.`pending_amount`,0) AS `pending_amount` from (((`medical_requests` `r` left join `patients` `p` on(`r`.`patient_id` = `p`.`id`)) left join `doctors` `d` on(`r`.`doctor_id` = `d`.`id`)) left join (select `transactions`.`request_id` AS `request_id`,sum(case when `transactions`.`status` = 'paid' then `transactions`.`amount` else 0 end) AS `paid_amount`,sum(case when `transactions`.`status` = 'pending' then `transactions`.`amount` else 0 end) AS `pending_amount` from `transactions` where `transactions`.`is_withdrawal` = 0 and `transactions`.`request_id` is not null group by `transactions`.`request_id`) `tx` on(`tx`.`request_id` = `r`.`id`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_daily_balances`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_daily_balances`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb3 */;
+/*!50001 SET character_set_results     = utf8mb3 */;
+/*!50001 SET collation_connection      = utf8mb3_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_daily_balances` AS select cast(`t`.`transaction_date` as date) AS `transaction_date`,`t`.`doctor_id` AS `doctor_id`,`d`.`full_name` AS `doctor_name`,sum(case when `t`.`method` = 'cash' then case when `t`.`is_withdrawal` = 1 then -`t`.`amount` when `t`.`type` like 'income%' or `t`.`type` = 'income' then `t`.`amount` when `t`.`type` like 'expense%' or `t`.`type` = 'expense' then -`t`.`amount` else 0 end else 0 end) AS `cash_balance`,sum(case when `t`.`method` <> 'cash' then case when `t`.`is_withdrawal` = 1 then -`t`.`amount` when `t`.`type` like 'income%' or `t`.`type` = 'income' then `t`.`amount` when `t`.`type` like 'expense%' or `t`.`type` = 'expense' then -`t`.`amount` else 0 end else 0 end) AS `transfer_balance`,max(`t`.`transaction_date`) AS `last_activity` from (`transactions` `t` left join `doctors` `d` on(`t`.`doctor_id` = `d`.`id`)) where `t`.`status` = 'paid' group by cast(`t`.`transaction_date` as date),`t`.`doctor_id` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_daily_cash_reconciliation`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_daily_cash_reconciliation`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb3 */;
+/*!50001 SET character_set_results     = utf8mb3 */;
+/*!50001 SET collation_connection      = utf8mb3_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_daily_cash_reconciliation` AS select coalesce(`method`,'TOTAL') AS `payment_method`,sum(case when `t`.`is_withdrawal` = 0 then `t`.`amount` else 0 end) AS `total_income`,sum(case when `t`.`is_withdrawal` = 1 then `t`.`amount` else 0 end) AS `total_withdrawal`,sum(case when `t`.`is_withdrawal` = 0 then `t`.`amount` else 0 end) - sum(case when `t`.`is_withdrawal` = 1 then `t`.`amount` else 0 end) AS `net_balance` from `transactions` `t` where cast(`t`.`transaction_date` as date) = curdate() and `t`.`status` = 'paid' group by `t`.`method` with rollup */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_daily_financial_summary`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_daily_financial_summary`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb3 */;
+/*!50001 SET character_set_results     = utf8mb3 */;
+/*!50001 SET collation_connection      = utf8mb3_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_daily_financial_summary` AS select cast(`transactions`.`transaction_date` as date) AS `report_date`,`transactions`.`doctor_id` AS `doctor_id`,sum(case when `transactions`.`type` = 'income' and `transactions`.`status` = 'paid' then `transactions`.`amount` else 0 end) AS `total_income`,sum(case when `transactions`.`type` = 'income' and `transactions`.`status` = 'paid' and `transactions`.`method` = 'cash' then `transactions`.`amount` else 0 end) AS `total_cash`,sum(case when `transactions`.`type` in ('withdrawal','expense') then `transactions`.`amount` else 0 end) AS `total_withdrawal` from `transactions` group by cast(`transactions`.`transaction_date` as date),`transactions`.`doctor_id` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_doctor_financial_health`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_doctor_financial_health`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb3 */;
+/*!50001 SET character_set_results     = utf8mb3 */;
+/*!50001 SET collation_connection      = utf8mb3_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_doctor_financial_health` AS select `d`.`id` AS `doctor_id`,`d`.`full_name` AS `doctor_name`,coalesce(sum(case when `t`.`status` = 'paid' and `t`.`is_withdrawal` = 0 then `t`.`amount` else 0 end),0) AS `total_collected`,coalesce(sum(case when `t`.`status` = 'pending' then `t`.`amount` else 0 end),0) AS `total_debt`,case when sum(case when `t`.`is_withdrawal` = 0 then `t`.`amount` else 0 end) = 0 then 100 else sum(case when `t`.`status` = 'paid' and `t`.`is_withdrawal` = 0 then `t`.`amount` else 0 end) / sum(case when `t`.`is_withdrawal` = 0 then `t`.`amount` else 0 end) * 100 end AS `collection_rate_percent`,(select avg(to_days(`ta`.`changed_at`) - to_days(`t2`.`transaction_date`)) from (`transaction_audits` `ta` join `transactions` `t2` on(`ta`.`transaction_id` = `t2`.`id`)) where `t2`.`doctor_id` = `d`.`id` and `ta`.`new_status` = 'paid' and `ta`.`old_status` = 'pending') AS `avg_days_to_collect` from (`doctors` `d` left join `transactions` `t` on(`d`.`id` = `t`.`doctor_id`)) group by `d`.`id` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_patient_balances`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_patient_balances`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb3 */;
+/*!50001 SET character_set_results     = utf8mb3 */;
+/*!50001 SET collation_connection      = utf8mb3_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_patient_balances` AS select `p`.`id` AS `patient_id`,`p`.`full_name` AS `full_name`,`p`.`user_id` AS `user_id`,coalesce(sum(case when `t`.`status` = 'pending' then `t`.`amount` else 0 end),0) AS `total_debt_calculated`,case when coalesce(sum(case when `t`.`status` = 'pending' then `t`.`amount` else 0 end),0) <= 0 then 'green' when max(case when `t`.`status` = 'pending' then to_days(current_timestamp()) - to_days(`t`.`transaction_date`) else 0 end) > 30 then 'red' when sum(case when `t`.`status` = 'pending' then `t`.`amount` else 0 end) > 20000 then 'red' else 'yellow' end AS `debt_status`,max(case when `t`.`status` = 'pending' then to_days(current_timestamp()) - to_days(`t`.`transaction_date`) else 0 end) AS `oldest_debt_days` from (`patients` `p` left join `transactions` `t` on(`p`.`user_id` = `t`.`related_user_id`)) group by `p`.`id` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_patients_extended`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_patients_extended`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_unicode_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_patients_extended` AS select `p`.`id` AS `id`,`p`.`user_id` AS `user_id`,`p`.`first_name` AS `first_name`,`p`.`last_name` AS `last_name`,`p`.`full_name` AS `full_name`,`p`.`dob` AS `dob`,`p`.`phone` AS `phone`,`p`.`email` AS `email`,`p`.`medical_history` AS `medical_history`,`p`.`dni` AS `dni`,`p`.`affiliate_number` AS `affiliate_number`,`p`.`insurance_id` AS `insurance_id`,`p`.`tariff_percent` AS `tariff_percent`,`p`.`tariff_override` AS `tariff_override`,`p`.`behavior_rating` AS `behavior_rating`,`p`.`is_new_patient` AS `is_new_patient`,`p`.`marked_new_at` AS `marked_new_at`,`p`.`visit_interval_days` AS `visit_interval_days`,`p`.`prescription_interval_days` AS `prescription_interval_days`,`p`.`next_suggested_visit_date` AS `next_suggested_visit_date`,`p`.`next_suggested_prescription_date` AS `next_suggested_prescription_date`,`p`.`license_expiry_date` AS `license_expiry_date`,`p`.`institution_id` AS `institution_id`,`p`.`street_name` AS `street_name`,`p`.`street_number` AS `street_number`,`p`.`floor` AS `floor`,`p`.`apartment` AS `apartment`,`p`.`city` AS `city`,`p`.`province` AS `province`,`p`.`country` AS `country`,`p`.`visit_notified` AS `visit_notified`,`p`.`prescription_notified` AS `prescription_notified`,`p`.`license_notified` AS `license_notified`,`u`.`username` AS `username`,`u`.`role` AS `role`,coalesce(`appt_stats`.`total_appointments`,0) AS `total_appointments`,coalesce(`appt_stats`.`attended_appointments`,0) AS `attended_appointments`,coalesce(`appt_stats`.`missed_appointments`,0) AS `missed_appointments`,`appt_stats`.`last_visit` AS `last_visit`,coalesce(`tx_stats`.`total_debt_calculated`,0) AS `total_debt_calculated`,case when coalesce(`tx_stats`.`total_debt_calculated`,0) <= 0 then 5 when `tx_stats`.`total_debt_calculated` < 1000 then 4 when `tx_stats`.`total_debt_calculated` < 5000 then 3 when `tx_stats`.`total_debt_calculated` < 10000 then 2 else 1 end AS `financial_rating`,case when coalesce(`appt_stats`.`total_appointments`,0) = 0 then 5 when (`appt_stats`.`total_appointments` - `appt_stats`.`missed_appointments`) / `appt_stats`.`total_appointments` >= 0.95 then 5 when (`appt_stats`.`total_appointments` - `appt_stats`.`missed_appointments`) / `appt_stats`.`total_appointments` >= 0.85 then 4 when (`appt_stats`.`total_appointments` - `appt_stats`.`missed_appointments`) / `appt_stats`.`total_appointments` >= 0.70 then 3 when (`appt_stats`.`total_appointments` - `appt_stats`.`missed_appointments`) / `appt_stats`.`total_appointments` >= 0.50 then 2 else 1 end AS `attendance_rating` from (((`patients` `p` join `users` `u` on(`p`.`user_id` = `u`.`id`)) left join (select `appointments`.`patient_id` AS `patient_id`,count(0) AS `total_appointments`,count(case when `appointments`.`status` in ('attended','completed') then 1 end) AS `attended_appointments`,count(case when `appointments`.`status` = 'absent' or `appointments`.`status` = 'cancelled' and coalesce(`appointments`.`cancellation_reason`,'')  not like '%error%' then 1 end) AS `missed_appointments`,max(`appointments`.`appointment_date`) AS `last_visit` from `appointments` group by `appointments`.`patient_id`) `appt_stats` on(`appt_stats`.`patient_id` = `p`.`id`)) left join (select `t`.`related_user_id` AS `related_user_id`,sum(`t`.`amount`) AS `total_debt_calculated` from (`transactions` `t` left join `appointments` `a` on(`t`.`appointment_id` = `a`.`id`)) where `t`.`status` = 'pending' and (`t`.`appointment_id` is null or `a`.`status` in ('completed','attended','arrived','absent')) group by `t`.`related_user_id`) `tx_stats` on(`tx_stats`.`related_user_id` = `p`.`user_id`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_recent_patients`
+--
+
+/*!50001 DROP VIEW IF EXISTS `view_recent_patients`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb3 */;
+/*!50001 SET character_set_results     = utf8mb3 */;
+/*!50001 SET collation_connection      = utf8mb3_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_recent_patients` AS select `p`.`id` AS `id`,`p`.`full_name` AS `full_name`,`p`.`dni` AS `dni`,`p`.`phone` AS `phone`,`p`.`total_debt_calculated` AS `total_debt_calculated`,`p`.`financial_rating` AS `financial_rating`,greatest(coalesce((select max(`a`.`appointment_date`) from `appointments` `a` where `a`.`patient_id` = `p`.`id`),'1970-01-01'),coalesce(`p`.`marked_new_at`,'1970-01-01')) AS `last_activity` from `view_patients_extended` `p` order by greatest(coalesce((select max(`a`.`appointment_date`) from `appointments` `a` where `a`.`patient_id` = `p`.`id`),'1970-01-01'),coalesce(`p`.`marked_new_at`,'1970-01-01')) desc limit 10 */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -966,4 +1477,4 @@ CREATE TABLE `whatsapp_messages` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-05-03  1:35:09
+-- Dump completed on 2026-05-18  7:29:46

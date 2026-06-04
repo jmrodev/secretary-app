@@ -5,7 +5,7 @@ import Button from '@/components/atoms/Button';
 import { formatDate, isDueSoon } from '@/utils/core/dateUtils';
 
 // Local Styles
-import './ActiveMedicationsList.css';
+import styles from './ActiveMedicationsList.module.css';
 
 /**
  * ActiveMedicationsList (Executor).
@@ -13,53 +13,53 @@ import './ActiveMedicationsList.css';
  */
 const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemindRefill, settings, user, patientName }) => {
     if (loading) {
-        return <div className="patient-medications__loading">Cargando…</div>;
+        return <div className={`${styles.loading}`}>Cargando…</div>;
     }
 
     if (!medications || medications.length === 0) {
         return (
-            <div className="patient-medications__empty-state">
+            <div className={`${styles.emptyState}`}>
                 <p>{t('no_current_medications') || 'No hay medicación habitual registrada.'}</p>
             </div>
         );
     }
 
     return (
-        <div className="patient-medications__history-container">
-            <table className="patient-medications__table">
-                <thead className="patient-medications__table-header">
+        <div className={`${styles.historyContainer}`}>
+            <table className={`${styles.table}`}>
+                <thead className={`${styles.tableHeader}`}>
                     <tr>
                         <th>{t('medication')}</th>
                         <th>{t('dose')}</th>
                         <th>{t('frequency')}</th>
-                        <th className="patient-medications__table-header--right">{t('actions')}</th>
+                        <th className={`${styles.tableHeaderRight}`}>{t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>
                     {medications.map(med => {
                         const urgent = isDueSoon(med.next_refill_date);
                         return (
-                            <tr key={med.id} className="patient-medications__table-row">
-                                <td className="patient-medications__table-cell">
-                                    <div className="patient-medications__medication-name-box">
+                            <tr key={med.id} className={`${styles.tableRow}`}>
+                                <td className={`${styles.tableCell}`}>
+                                    <div className={`${styles.medicationNameBox}`}>
                                         {med.medication_name}
                                         {med.is_chronic && (
-                                            <span className="patient-medications__status-badge patient-medications__status-badge--chronic">
+                                            <span className={`${styles.statusBadge} ${styles.statusBadgeChronic}`}>
                                                 {t('chronic') || 'CRÓNICO'}
                                             </span>
                                         )}
                                     </div>
-                                    <div className="patient-medications__medication-subtext">
+                                    <div className={`${styles.medicationSubtext}`}>
                                         {med.presentation} - {med.monodroga}
                                     </div>
                                     {med.next_refill_date && (
                                         <div 
-                                            className={`patient-medications__refill-info ${urgent ? 'patient-medications__refill-info--urgent' : ''}`}
+                                            className={`${styles.refillInfo} ${urgent ? styles.refillInfoUrgent : ''}`}
                                             suppressHydrationWarning
                                         >
                                             <Icon name="today" size="0.8rem" />
                                             {t('next_refill_date')}: {formatDate(med.next_refill_date)}
-                                            <span className="patient-medications__mode-badge">
+                                            <span className={`${styles.modeBadge}`}>
                                                 ({med.reminder_mode === 'calculation' ? t('by_calculation') || 'Cálculo' :
                                                     med.reminder_mode === 'fixed_day' ? `${t('day') || 'Día'} ${med.reminder_day}` :
                                                         t('fixed') || 'Fijo'})
@@ -67,9 +67,9 @@ const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemin
                                         </div>
                                     )}
                                 </td>
-                                <td className="patient-medications__table-cell">{med.dose}</td>
-                                <td className="patient-medications__table-cell">{med.frequency}</td>
-                                <td className="patient-medications__table-cell patient-medications__table-cell--right">
+                                <td className={`${styles.tableCell}`}>{med.dose}</td>
+                                <td className={`${styles.tableCell}`}>{med.frequency}</td>
+                                <td className={`${styles.tableCell} ${styles.tableCellRight}`}>
                                     <div className="config-flex config-flex--justify-end config-flex--gap-2">
                                         {med.next_refill_date && (
                                             <Button
@@ -83,7 +83,7 @@ const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemin
                                         <Button
                                             variant="ghost"
                                             size="sm-compact"
-                                            className="hover-danger"
+                                            className={`${styles.hoverDanger}`}
                                             onClick={() => onDiscontinue(med.id)}
                                             title={t('discontinue')}
                                             icon={<Icon name="close" size="1.1rem" />}

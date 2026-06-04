@@ -1,29 +1,26 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/MessagesActivity.kt"
+type: "code"
+community: "Android Main Activity"
+location: "L28"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Android_Main_Activity
+---
+
 # MessagesActivity
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/MessagesActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 5]]
+## Connections
+- [[.filterItems()]] - `method` [EXTRACTED]
+- [[.loadConversations()]] - `method` [EXTRACTED]
+- [[.onCreate()_5]] - `method` [EXTRACTED]
+- [[.onResume()]] - `method` [EXTRACTED]
+- [[.openChatThread()]] - `method` [EXTRACTED]
+- [[.setupListeners()_2]] - `method` [EXTRACTED]
+- [[.setupRecyclerView()_1]] - `method` [EXTRACTED]
+- [[.showErrorDialog()_1]] - `method` [EXTRACTED]
+- [[.updateEmptyState()]] - `method` [EXTRACTED]
+- [[MessagesActivity.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MessagesActivity.kt|MessagesActivity.kt]] (contains)
-- --> [[.onCreate()|.onCreate()]] (method)
-- --> [[.setupRecyclerView()|.setupRecyclerView()]] (method)
-- --> [[.setupListeners()|.setupListeners()]] (method)
-- --> [[.filterItems()|.filterItems()]] (method)
-- --> [[.updateEmptyState()|.updateEmptyState()]] (method)
-- --> [[.loadConversations()|.loadConversations()]] (method)
-- --> [[.openChatThread()|.openChatThread()]] (method)
-- --> [[.showErrorDialog()|.showErrorDialog()]] (method)
-- --> [[.onResume()|.onResume()]] (method)
-
-## Miembros de la misma Comunidad
-- [[ComposeMessageActivity.kt|ComposeMessageActivity.kt]]
-- [[ComposeMessageActivity|ComposeMessageActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.setupRecipientTypeSpinner()|.setupRecipientTypeSpinner()]]
-- [[.loadRecipients()|.loadRecipients()]]
-- [[.setupListeners()|.setupListeners()]]
-- [[.sendBroadcast()|.sendBroadcast()]]
-- [[MessagesActivity.kt|MessagesActivity.kt]]
-- [[.onCreate()|.onCreate()]]
-- [[.setupRecyclerView()|.setupRecyclerView()]]
+#graphify/code #graphify/EXTRACTED #community/Android_Main_Activity

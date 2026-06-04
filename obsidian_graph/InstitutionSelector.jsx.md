@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/institutions/components/ui/InstitutionSelector.jsx"
+type: "code"
+community: "Community 151"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_151
+---
+
 # InstitutionSelector.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/institutions/components/InstitutionSelector.jsx
-- **Comunidad:** [[_COMMUNITY_Community 141]]
+## Connections
+- [[InstitutionSelector()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[InstitutionSelector()|InstitutionSelector()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InstitutionSelector()|InstitutionSelector()]]
+#graphify/code #graphify/EXTRACTED #community/Community_151

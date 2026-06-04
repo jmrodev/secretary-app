@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/calendar/CalendarHeader.jsx"
+type: "code"
+community: "Community 196"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_196
+---
+
 # CalendarHeader.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/CalendarHeader.jsx
-- **Comunidad:** [[_COMMUNITY_Community 179]]
+## Connections
+- [[CalendarHeader()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[CalendarHeader()|CalendarHeader()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[CalendarHeader()|CalendarHeader()]]
+#graphify/code #graphify/EXTRACTED #community/Community_196

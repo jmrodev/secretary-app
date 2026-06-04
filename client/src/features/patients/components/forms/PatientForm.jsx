@@ -12,9 +12,7 @@ import PatientAddressFields from '@/features/patients/components/forms/PatientAd
 import PatientInstitutionFields from '@/features/patients/components/forms/PatientInstitutionFields';
 import PatientAdminFields from '@/features/patients/components/forms/PatientAdminFields';
 import PatientMedicalNotes from '@/features/patients/components/forms/PatientMedicalNotes';
-import { use } from 'react';
-import { LanguageContext } from '@/context/LanguageContext';
-import './PatientForm.css';
+import styles from './PatientForm.module.css';
 
 
 
@@ -76,28 +74,28 @@ const PatientForm = ({
     // --- Steps Mapping ---
     const stepContents = {
         personal: (
-            <section className="patient-form__step-content">
+            <section className={`${styles.stepContent}`}>
                 <PatientIdentityFields formData={formData} handleChange={updatePatientData} t={t} />
                 {!isEdit && <PatientAccountFields formData={formData} handleChange={updatePatientData} t={t} />}
             </section>
         ),
         insurance: (
-            <section className="patient-form__step-content">
+            <section className={`${styles.stepContent}`}>
                 <PatientInsuranceFields formData={formData} handleChange={updatePatientData} insurances={insurances} t={t} />
             </section>
         ),
         address: (
-            <section className="patient-form__step-content">
+            <section className={`${styles.stepContent}`}>
                 <PatientAddressFields formData={formData} handleChange={updatePatientData} t={t} />
             </section>
         ),
         contact: (
-            <section className="patient-form__step-content">
+            <section className={`${styles.stepContent}`}>
                 <PatientContactFields formData={formData} handleChange={updatePatientData} handlePhoneChange={updatePhoneNumbers} t={t} />
             </section>
         ),
         medical: (
-            <section className="patient-form__step-content">
+            <section className={`${styles.stepContent}`}>
                 <PatientInstitutionFields
                     coveredByInstitution={coveredByInstitution}
                     handleInstitutionToggle={toggleInstitutionCoverage}
@@ -110,7 +108,7 @@ const PatientForm = ({
             </section>
         ),
         admin: (
-            <section className="patient-form__step-content">
+            <section className={`${styles.stepContent}`}>
                 <PatientAdminFields
                     formData={formData}
                     doctors={doctors}
@@ -124,16 +122,16 @@ const PatientForm = ({
     };
 
     return (
-        <form onSubmit={savePatient} className="patient-form" autoComplete="off">
+        <form onSubmit={savePatient} className={`${styles.root}`} autoComplete="off">
             {/* 1. HEADER: Stepper Indicator (Fixed) */}
-            <header className="patient-form__header">
-                <nav className="patient-form__stepper">
+            <header className={`${styles.header}`}>
+                <nav className={`${styles.stepper}`}>
                     {activeSteps.map((step, index) => {
                         const isClickable = index < currentStep;
                         return (
                             <div 
                                 key={step.id} 
-                                className={`patient-form__step ${index === currentStep ? 'patient-form__step--active' : ''} ${isClickable ? 'patient-form__step--completed' : ''}`}
+                                className={`${styles.step} ${index === currentStep ? styles.stepActive : ''} ${isClickable ? styles.stepCompleted : ''}`}
                                 onClick={() => isClickable && setCurrentStep(index)}
                                 onKeyDown={(e) => {
                                     if (isClickable && (e.key === 'Enter' || e.key === ' ')) {
@@ -145,10 +143,10 @@ const PatientForm = ({
                                 tabIndex={isClickable ? 0 : -1}
                                 aria-current={index === currentStep ? 'step' : undefined}
                             >
-                                <div className="patient-form__step-icon">
+                                <div className={`${styles.stepIcon}`}>
                                     <Icon name={index < currentStep ? 'check' : step.icon} size="1.2rem" />
                                 </div>
-                                <span className="patient-form__step-label">{t(step.labelKey)}</span>
+                                <span className={`${styles.stepLabel}`}>{t(step.labelKey)}</span>
                             </div>
                         );
                     })}
@@ -156,14 +154,14 @@ const PatientForm = ({
             </header>
 
             {/* 2. MAIN: Form Content (Scrollable) */}
-            <main className="patient-form__main">
+            <main className={`${styles.main}`}>
                 {stepContents[stepId] || null}
             </main>
 
             {/* 3. FOOTER: Navigation Actions (Fixed) */}
-            <footer className="patient-form__footer">
-                <div className="patient-form__actions">
-                    <div className="patient-form__actions-left">
+            <footer className={`${styles.footer}`}>
+                <div className={`${styles.actions}`}>
+                    <div className={`${styles.actionsLeft}`}>
                         {currentStep > 0 && (
                             <Button
                                 variant="secondary"
@@ -185,7 +183,7 @@ const PatientForm = ({
                         )}
                     </div>
 
-                    <div className="patient-form__actions-right">
+                    <div className={`${styles.actionsRight}`}>
                         {currentStep < activeSteps.length - 1 ? (
                             <Button
                                 variant="primary"

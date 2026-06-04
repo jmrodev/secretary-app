@@ -1,34 +1,30 @@
+---
+source_file: "client/src/context/ConfigContext.jsx"
+type: "code"
+community: "Community 20"
+location: "L14"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Community_20
+---
+
 # useConfig()
 
-- **Tipo:** code
-- **Archivo:** client/src/context/ConfigContext.jsx
-- **Comunidad:** [[_COMMUNITY_Community 3]]
+## Connections
+- [[AppointmentActionModal()]] - `calls` [INFERRED]
+- [[ConfigContext.jsx]] - `contains` [EXTRACTED]
+- [[PatientMedications()]] - `calls` [INFERRED]
+- [[QRCodeModal()]] - `calls` [INFERRED]
+- [[TransactionModal()]] - `calls` [INFERRED]
+- [[useAppointmentBooking()]] - `calls` [INFERRED]
+- [[useAppointmentsPageController()]] - `calls` [INFERRED]
+- [[useDashboardController()]] - `calls` [INFERRED]
+- [[useFinancesPageController()]] - `calls` [INFERRED]
+- [[useLayoutController()]] - `calls` [INFERRED]
+- [[usePatientFormController()]] - `calls` [INFERRED]
+- [[usePatientsPageController()]] - `calls` [INFERRED]
+- [[useSystemConfigController()]] - `calls` [INFERRED]
+- [[useWhatsAppUniversal()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[ConfigContext.jsx|ConfigContext.jsx]] (contains)
-- <-- [[useDashboardController()|useDashboardController()]] (calls)
-- <-- [[useWhatsAppUniversal()|useWhatsAppUniversal()]] (calls)
-- <-- [[useAppointmentsPageController()|useAppointmentsPageController()]] (calls)
-- <-- [[useAppointmentBooking()|useAppointmentBooking()]] (calls)
-- <-- [[useAppointments()|useAppointments()]] (calls)
-- <-- [[AppointmentActionModal()|AppointmentActionModal()]] (calls)
-- <-- [[useSystemConfigController()|useSystemConfigController()]] (calls)
-- <-- [[useFinancesPageController()|useFinancesPageController()]] (calls)
-- <-- [[TransactionModal()|TransactionModal()]] (calls)
-- <-- [[useSidebarController()|useSidebarController()]] (calls)
-- <-- [[usePatientsPageController()|usePatientsPageController()]] (calls)
-- <-- [[usePatientFormController()|usePatientFormController()]] (calls)
-- <-- [[PatientMedications()|PatientMedications()]] (calls)
-- <-- [[QRCodeModal()|QRCodeModal()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[useMessage()|useMessage()]]
-- [[DashboardPage.jsx|DashboardPage.jsx]]
-- [[DashboardPage()|DashboardPage()]]
-- [[useDashboardController.js|useDashboardController.js]]
-- [[useDashboardController()|useDashboardController()]]
-- [[useDashboardModals.js|useDashboardModals.js]]
-- [[useDashboardModals()|useDashboardModals()]]
-- [[useDashboardWhatsApp.js|useDashboardWhatsApp.js]]
-- [[useDashboardWhatsApp()|useDashboardWhatsApp()]]
-- [[PrescriptionModal.jsx|PrescriptionModal.jsx]]
+#graphify/code #graphify/INFERRED #community/Community_20

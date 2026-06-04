@@ -1,21 +1,18 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/ui/ChatAdapter.kt"
+type: "code"
+community: "Community 11"
+location: "L23"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_11
+---
+
 # SentViewHolder
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/ui/ChatAdapter.kt
-- **Comunidad:** [[_COMMUNITY_Community 13]]
+## Connections
+- [[.onCreateViewHolder()_4]] - `calls` [EXTRACTED]
+- [[ChatAdapter.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[ChatAdapter.kt|ChatAdapter.kt]] (contains)
-- <-- [[.onCreateViewHolder()|.onCreateViewHolder()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[MessageDetailActivity.kt|MessageDetailActivity.kt]]
-- [[MessageDetailActivity|MessageDetailActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.setupRecyclerView()|.setupRecyclerView()]]
-- [[.setupListeners()|.setupListeners()]]
-- [[.notifyTyping()|.notifyTyping()]]
-- [[.startTypingLogic()|.startTypingLogic()]]
-- [[.checkOtherTypingStatus()|.checkOtherTypingStatus()]]
-- [[.startAutoRefresh()|.startAutoRefresh()]]
-- [[.loadThread()|.loadThread()]]
+#graphify/code #graphify/EXTRACTED #community/Community_11

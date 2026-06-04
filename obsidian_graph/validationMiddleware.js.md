@@ -1,11 +1,17 @@
+---
+source_file: "server/middleware/validationMiddleware.js"
+type: "code"
+community: "Community 133"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_133
+---
+
 # validationMiddleware.js
 
-- **Tipo:** code
-- **Archivo:** server/middleware/validationMiddleware.js
-- **Comunidad:** [[_COMMUNITY_Community 123]]
+## Connections
+- [[validate()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[validate()|validate()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[validate()|validate()]]
+#graphify/code #graphify/EXTRACTED #community/Community_133

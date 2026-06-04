@@ -1,20 +1,17 @@
+---
+source_file: "server/repositories/communication/messageRepository.js"
+type: "code"
+community: "Community 17"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_17
+---
+
 # messageRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/messageRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 20]]
+## Connections
+- [[MessageRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MessageRepository|MessageRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MessageRepository|MessageRepository]]
-- [[.create()|.create()]]
-- [[.findInbox()|.findInbox()]]
-- [[.findSent()|.findSent()]]
-- [[.findById()|.findById()]]
-- [[.markAsRead()|.markAsRead()]]
-- [[.delete()|.delete()]]
-- [[.getUnreadCount()|.getUnreadCount()]]
-- [[.getConversations()|.getConversations()]]
-- [[.markDelivered()|.markDelivered()]]
+#graphify/code #graphify/EXTRACTED #community/Community_17

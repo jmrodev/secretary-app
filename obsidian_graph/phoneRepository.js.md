@@ -1,14 +1,17 @@
+---
+source_file: "server/repositories/system/phoneRepository.js"
+type: "code"
+community: "Community 82"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_82
+---
+
 # phoneRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/phoneRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 77]]
+## Connections
+- [[PhoneRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PhoneRepository|PhoneRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PhoneRepository|PhoneRepository]]
-- [[.findByEntity()|.findByEntity()]]
-- [[.findByEntities()|.findByEntities()]]
-- [[.syncPhones()|.syncPhones()]]
+#graphify/code #graphify/EXTRACTED #community/Community_82

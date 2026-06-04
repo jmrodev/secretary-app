@@ -3,7 +3,7 @@ import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
-import './PatientContactFields.css';
+import styles from './PatientContactFields.module.css';
 
 /**
  * PatientContactFields Molecule (Sub-Executor).
@@ -12,16 +12,16 @@ import './PatientContactFields.css';
  */
 const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers, t }) => {
     return (
-        <article className="patient-contact-fields">
-            <header className="patient-contact-fields__header">
+        <article className={`${styles.root}`}>
+            <header className={`${styles.header}`}>
                 <Icon name="smartphone" size="1.25rem" />
-                <h3 className="patient-contact-fields__title">{t('contact_phones')}</h3>
+                <h3 className={`${styles.title}`}>{t('contact_phones')}</h3>
             </header>
 
-            <div className="patient-contact-fields__bento">
-                <div className="patient-contact-fields__group patient-contact-fields__group--span-12">
-                    <label className="patient-contact-fields__label">{t('primary_email')}</label>
-                    <div className="patient-contact-fields__input-with-action">
+            <div className={`${styles.bento}`}>
+                <div className={`${styles.group} ${styles.groupSpan12}`}>
+                    <label className={`${styles.label}`}>{t('primary_email')}</label>
+                    <div className={`${styles.inputWithAction}`}>
                         <Input
                             type="email"
                             name="email"
@@ -42,7 +42,7 @@ const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers,
                     </div>
                 </div>
 
-                <div className="patient-contact-fields__phones patient-contact-fields__group--span-12">
+                <div className={`${styles.phones} ${styles.groupSpan12}`}>
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
                         onChange={updatePhoneNumbers}

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/molecules/Modal.jsx"
+type: "code"
+community: "Community 285"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_285
+---
+
 # Modal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/molecules/Modal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 284]]
+## Connections
+- [[Modal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[Modal()|Modal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[Modal()|Modal()]]
+#graphify/code #graphify/EXTRACTED #community/Community_285

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/institutions/components/views/InstitutionList.jsx"
+type: "code"
+community: "Community 154"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_154
+---
+
 # InstitutionList()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/institutions/components/InstitutionList.jsx
-- **Comunidad:** [[_COMMUNITY_Community 143]]
+## Connections
+- [[InstitutionList.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[InstitutionList.jsx|InstitutionList.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InstitutionList.jsx|InstitutionList.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_154

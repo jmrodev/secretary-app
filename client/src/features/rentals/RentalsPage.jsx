@@ -3,9 +3,10 @@ import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import { formatPrice } from '@/utils/core/format';
+import { formatCurrency } from '@/utils/core/format';
 import { formatDate } from '@/utils/core/dateUtils';
 import { useRentalsController } from '@/features/rentals/hooks/useRentalsController';
+import styles from './RentalsPage.module.css';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
@@ -100,14 +101,14 @@ const RentalsPage = () => {
                                             </h3>
                                             <div className="rentals-page__offices-list">
                                                 {consultorios.map(c => (
-                                                    <div key={c.id} className="rentals-page__office-item">
+                                                    <div key={c.id} className={`${styles.officeItem}`}>
                                                         <div className="rentals-page__office-header">
-                                                            <strong className="rentals-page__office-name">{c.name}</strong>
+                                                            <strong className={`${styles.officeName}`}>{c.name}</strong>
                                                             <span className={`rentals-page__status-badge rentals-page__status-badge--${c.status}`}>
                                                                 {t(c.status) || c.status}
                                                             </span>
                                                         </div>
-                                                        <p className="rentals-page__office-desc">{c.description || 'Sin descripción'}</p>
+                                                        <p className={`${styles.officeDesc}`}>{c.description || 'Sin descripción'}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -142,7 +143,7 @@ const RentalsPage = () => {
                                                                 <td className="font-bold">{r.consultorio_name}</td>
                                                                 <td>{formatDate(r.rental_date)}</td>
                                                                 <td>{r.start_time} - {r.end_time}</td>
-                                                                <td className="text-right font-mono font-bold text-success">{formatPrice(r.cost)}</td>
+                                                                <td className="text-right font-mono font-bold text-success">{formatCurrency(r.cost)}</td>
                                                             </tr>
                                                         ))}
                                                     </tbody>

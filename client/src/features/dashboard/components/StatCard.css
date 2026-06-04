@@ -8,12 +8,13 @@
     --card-icon-color: var(--gray-600);
     --trend-color: var(--emerald-600);
     --trend-bg: var(--emerald-50);
+
     /* ------------------------------ */
 
     background-color: var(--card-bg);
     padding: 1rem;
     border-radius: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Sombra casi imperceptible */
+    box-shadow: 0 1px 3px rgb(0 0 0 / 5%); /* Sombra casi imperceptible */
     border: 1px solid var(--card-border);
     display: flex;
     flex-direction: column;
@@ -121,6 +122,7 @@
     --card-icon-bg: var(--indigo-50);
     --card-icon-color: var(--indigo-600);
     --card-border: var(--indigo-100);
+
     background: linear-gradient(135deg, var(--white) 60%, var(--indigo-50) 100%);
 }
 
@@ -128,6 +130,7 @@
     --card-icon-bg: var(--emerald-50);
     --card-icon-color: var(--emerald-600);
     --card-border: var(--emerald-100);
+
     background: linear-gradient(135deg, var(--white) 60%, var(--emerald-50) 100%);
 }
 
@@ -135,6 +138,7 @@
     --card-icon-bg: var(--amber-50);
     --card-icon-color: var(--amber-600);
     --card-border: var(--amber-100);
+
     background: linear-gradient(135deg, var(--white) 60%, var(--amber-50) 100%);
 }
 
@@ -143,8 +147,9 @@
     --card-border: var(--gray-800);
     --card-label-color: var(--gray-400);
     --card-value-color: var(--white);
-    --card-icon-bg: rgba(255, 255, 255, 0.1);
+    --card-icon-bg: rgb(255 255 255 / 10%);
     --card-icon-color: var(--white);
+
     background: linear-gradient(135deg, var(--gray-900) 0%, #1a1b1e 100%);
 }
 

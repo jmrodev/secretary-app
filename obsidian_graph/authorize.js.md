@@ -1,11 +1,17 @@
+---
+source_file: "server/middleware/authorize.js"
+type: "code"
+community: "Community 131"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_131
+---
+
 # authorize.js
 
-- **Tipo:** code
-- **Archivo:** server/middleware/authorize.js
-- **Comunidad:** [[_COMMUNITY_Community 121]]
+## Connections
+- [[authorize()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[authorize()|authorize()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[authorize()|authorize()]]
+#graphify/code #graphify/EXTRACTED #community/Community_131

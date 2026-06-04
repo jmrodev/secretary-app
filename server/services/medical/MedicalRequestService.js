@@ -7,7 +7,8 @@ const patientRepository = require('../../repositories/user/patientRepository');
 const medicationRepository = require('../../repositories/medical/medicationRepository');
 const doctorRepository = require('../../repositories/user/doctorRepository');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
-const transactionRepository = require('../../repositories/finance/transactionRepository');
+const eventBus = require('../../events/eventBus');
+const EVENTS = require('../../events/eventConstants');
 const financeService = require('../finance/financeService');
 const { ROLES } = require('../../constants/roles');
 
@@ -17,10 +18,11 @@ const { ROLES } = require('../../constants/roles');
  */
 class MedicalRequestService {
     async createRequest(req, data) {
-        const { patient_id, doctor_id, request_note, type, bonified, raw_medication_data, status } = data;
+        const { patient_id, patientId, doctor_id, request_note, type, bonified, raw_medication_data, status } = data;
+        const finalPatientId = patient_id || patientId;
         const initialStatus = status || (req.user.role === ROLES.DOCTOR ? 'completed' : 'pending');
 
-        const pat = await patientRepository.findById(patient_id);
+        const pat = await patientRepository.findById(finalPatientId);
         if (!pat) throw new Error("Patient not found");
 
         const conn = await pool.getConnection();
@@ -29,7 +31,7 @@ class MedicalRequestService {
 
             const requestId = await medicalRequestRepository.create({
                 type,
-                patient_id,
+                patient_id: finalPatientId,
                 doctor_id,
                 request_note,
                 status: initialStatus,
@@ -157,15 +159,17 @@ class MedicalRequestService {
                 await this._processRequestItems(conn, id, reqInfo.patient_id, raw_medication_data);
             }
 
-            if (debt_amount !== undefined) {
-                await transactionRepository.updateByRequestId(id, { amount: debt_amount }, conn);
-            }
-            if (payment_method) {
-                await transactionRepository.updateByRequestId(id, { method: payment_method }, conn);
+            if (debt_amount !== undefined || payment_method) {
+                eventBus.emit(EVENTS.MEDICAL_REQUEST_UPDATED, {
+                    id,
+                    amount: debt_amount,
+                    paymentMethod: payment_method,
+                    conn
+                });
             }
 
             if (regenerate_debt) {
-                await transactionRepository.deletePendingByRequestId(id, conn);
+                eventBus.emit(EVENTS.MEDICAL_REQUEST_DELETED, { id, conn });
                 await this.generateRequestDebt(conn, id, user_id);
             }
 
@@ -194,7 +198,7 @@ class MedicalRequestService {
 
             await saveToRecycleBin(req, 'medical_requests', id, `Request #${id}`, reqInfo);
             await medicationRepository.deleteByRequestId(id, conn);
-            await transactionRepository.deletePendingByRequestId(id, conn);
+            eventBus.emit(EVENTS.MEDICAL_REQUEST_DELETED, { id, conn });
             await medicalRequestRepository.delete(id, conn);
 
             await conn.commit();
@@ -232,11 +236,14 @@ class MedicalRequestService {
         if (!Array.isArray(items)) return;
 
         for (const item of items) {
-            if (item.medication_id) {
+            // Support both naming conventions (medication_id from old code or vademecum_id from frontend)
+            const vId = item.vademecum_id || item.medication_id;
+            if (vId || item.name) {
                 await medicationRepository.createRequestMedication({
                     request_id: requestId,
-                    medication_id: item.medication_id,
-                    dosage: item.dosage,
+                    vademecum_id: vId || null,
+                    medication_name: item.name || 'Medicamento',
+                    dose: item.dose || item.dosage,
                     quantity: item.quantity || 1
                 }, conn);
             }

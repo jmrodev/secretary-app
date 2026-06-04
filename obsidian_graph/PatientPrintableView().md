@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/views/PatientPrintableView.jsx"
+type: "code"
+community: "Community 126"
+location: "L49"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_126
+---
+
 # PatientPrintableView()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientPrintableView.jsx
-- **Comunidad:** [[_COMMUNITY_Community 238]]
+## Connections
+- [[PatientPrintableView.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientPrintableView.jsx|PatientPrintableView.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientPrintableView.jsx|PatientPrintableView.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_126

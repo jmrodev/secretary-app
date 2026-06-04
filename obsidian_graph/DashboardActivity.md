@@ -1,15 +1,19 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/DashboardActivity.kt"
+type: "code"
+community: "Community 100"
+location: "L15"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_100
+---
+
 # DashboardActivity
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/DashboardActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 96]]
+## Connections
+- [[.fetchStats()]] - `method` [EXTRACTED]
+- [[.onCreate()_11]] - `method` [EXTRACTED]
+- [[DashboardActivity.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[DashboardActivity.kt|DashboardActivity.kt]] (contains)
-- --> [[.onCreate()|.onCreate()]] (method)
-- --> [[.fetchStats()|.fetchStats()]] (method)
-
-## Miembros de la misma Comunidad
-- [[DashboardActivity.kt|DashboardActivity.kt]]
-- [[.onCreate()|.onCreate()]]
-- [[.fetchStats()|.fetchStats()]]
+#graphify/code #graphify/EXTRACTED #community/Community_100

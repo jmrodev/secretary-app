@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/reports/components/ui/ReportFilters.jsx"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L9"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # ReportFilters()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/components/ReportFilters.jsx
-- **Comunidad:** [[_COMMUNITY_Community 17]]
+## Connections
+- [[ReportFilters.jsx]] - `contains` [EXTRACTED]
+- [[getMonthsOptions()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[ReportFilters.jsx|ReportFilters.jsx]] (contains)
-- --> [[getMonthsOptions()|getMonthsOptions()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[FinanceFilters.jsx|FinanceFilters.jsx]]
-- [[FinanceFilters()|FinanceFilters()]]
-- [[ReportFilters.jsx|ReportFilters.jsx]]
-- [[dateUtils.js|dateUtils.js]]
-- [[parseDate()|parseDate()]]
-- [[formatDate()|formatDate()]]
-- [[getMonthName()|getMonthName()]]
-- [[getMonthsOptions()|getMonthsOptions()]]
-- [[formatTime()|formatTime()]]
-- [[toInputDateTime()|toInputDateTime()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

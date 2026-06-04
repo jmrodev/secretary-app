@@ -47,11 +47,6 @@ export const useSystemConfigController = () => {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const status = urlParams.get('status');
-        const tab = urlParams.get('tab');
-
-        if (tab && tab !== activeTab) {
-            setActiveTab(tab);
-        }
 
         if (status === 'success') {
             showMessage('Cuenta de Google Conectada con Éxito', 'success');

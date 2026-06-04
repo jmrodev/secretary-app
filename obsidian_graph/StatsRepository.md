@@ -1,15 +1,29 @@
+---
+source_file: "server/repositories/system/statsRepository.js"
+type: "code"
+community: "Community 28"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_28
+---
+
 # StatsRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/statsRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 92]]
+## Connections
+- [[.countAppointments()]] - `method` [EXTRACTED]
+- [[.countPatients()]] - `method` [EXTRACTED]
+- [[.getAggregatedFinancialStats()]] - `method` [EXTRACTED]
+- [[.getAllTypesRequestAggregates()]] - `method` [EXTRACTED]
+- [[.getAppointmentDebt()]] - `method` [EXTRACTED]
+- [[.getAppointmentSummaryStats()]] - `method` [EXTRACTED]
+- [[.getExpenseAggregates()]] - `method` [EXTRACTED]
+- [[.getNewPatientStats()_1]] - `method` [EXTRACTED]
+- [[.getPatientAppointmentStats()]] - `method` [EXTRACTED]
+- [[.getPatientDebt()]] - `method` [EXTRACTED]
+- [[.getRequestAggregates()]] - `method` [EXTRACTED]
+- [[.getTotalDebt()]] - `method` [EXTRACTED]
+- [[statsRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[statsRepository.js|statsRepository.js]] (contains)
-- --> [[.countAppointments()|.countAppointments()]] (method)
-- --> [[.countPatients()|.countPatients()]] (method)
-
-## Miembros de la misma Comunidad
-- [[statsRepository.js|statsRepository.js]]
-- [[.countAppointments()|.countAppointments()]]
-- [[.countPatients()|.countPatients()]]
+#graphify/code #graphify/EXTRACTED #community/Community_28

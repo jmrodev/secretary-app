@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/dashboard/hooks/useDashboardModals.js"
+type: "code"
+community: "Community 29"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_29
+---
+
 # useDashboardModals.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/dashboard/hooks/useDashboardModals.js
-- **Comunidad:** [[_COMMUNITY_Community 3]]
+## Connections
+- [[useDashboardModals()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useDashboardModals()|useDashboardModals()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useMessage()|useMessage()]]
-- [[useConfig()|useConfig()]]
-- [[DashboardPage.jsx|DashboardPage.jsx]]
-- [[DashboardPage()|DashboardPage()]]
-- [[useDashboardController.js|useDashboardController.js]]
-- [[useDashboardController()|useDashboardController()]]
-- [[useDashboardModals()|useDashboardModals()]]
-- [[useDashboardWhatsApp.js|useDashboardWhatsApp.js]]
-- [[useDashboardWhatsApp()|useDashboardWhatsApp()]]
-- [[PrescriptionModal.jsx|PrescriptionModal.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_29

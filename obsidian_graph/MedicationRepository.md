@@ -1,25 +1,24 @@
+---
+source_file: "server/repositories/medical/medicationRepository.js"
+type: "code"
+community: "Community 42"
+location: "L3"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_42
+---
+
 # MedicationRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/medicationRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 38]]
+## Connections
+- [[.create()_9]] - `method` [EXTRACTED]
+- [[.createRequestMedication()]] - `method` [EXTRACTED]
+- [[.deleteByRequestId()]] - `method` [EXTRACTED]
+- [[.findActiveByName()]] - `method` [EXTRACTED]
+- [[.findById()_6]] - `method` [EXTRACTED]
+- [[.findByPatientId()_1]] - `method` [EXTRACTED]
+- [[.update()_5]] - `method` [EXTRACTED]
+- [[medicationRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[medicationRepository.js|medicationRepository.js]] (contains)
-- --> [[.findById()|.findById()]] (method)
-- --> [[.findByPatientId()|.findByPatientId()]] (method)
-- --> [[.findActiveByName()|.findActiveByName()]] (method)
-- --> [[.create()|.create()]] (method)
-- --> [[.update()|.update()]] (method)
-- --> [[.deleteByRequestId()|.deleteByRequestId()]] (method)
-- --> [[.createRequestMedication()|.createRequestMedication()]] (method)
-
-## Miembros de la misma Comunidad
-- [[medicationRepository.js|medicationRepository.js]]
-- [[.findById()|.findById()]]
-- [[.findByPatientId()|.findByPatientId()]]
-- [[.findActiveByName()|.findActiveByName()]]
-- [[.create()|.create()]]
-- [[.update()|.update()]]
-- [[.deleteByRequestId()|.deleteByRequestId()]]
-- [[.createRequestMedication()|.createRequestMedication()]]
+#graphify/code #graphify/EXTRACTED #community/Community_42

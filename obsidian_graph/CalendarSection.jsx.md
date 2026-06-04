@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/calendar/CalendarSection.jsx"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Agenda_&_Slot_Management
+---
+
 # CalendarSection.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/CalendarSection.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[CalendarSection()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[CalendarSection()|CalendarSection()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList.jsx|InsuranceList.jsx]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection()|CalendarSection()]]
+#graphify/code #graphify/EXTRACTED #community/Agenda_&_Slot_Management

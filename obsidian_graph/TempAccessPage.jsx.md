@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/auth/TempAccessPage.jsx"
+type: "code"
+community: "Community 43"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_43
+---
+
 # TempAccessPage.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/TempAccessPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[TempAccessFormWrapper()]] - `contains` [EXTRACTED]
+- [[TempAccessPage()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[TempAccessFormWrapper()|TempAccessFormWrapper()]] (contains)
-- --> [[TempAccessPage()|TempAccessPage()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule.jsx|DaySchedule.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_43

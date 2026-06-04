@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/modals/MedicalRequirementActionModal.jsx"
+type: "code"
+community: "Community 160"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_160
+---
+
 # MedicalRequirementActionModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicalRequirementActionModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 162]]
+## Connections
+- [[MedicalRequirementActionModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicalRequirementActionModal()|MedicalRequirementActionModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicalRequirementActionModal()|MedicalRequirementActionModal()]]
+#graphify/code #graphify/EXTRACTED #community/Community_160

@@ -37,7 +37,7 @@ export const useFinanceHandlers = ({
             await api.delete(`/finances/transactions/${id}`);
             showMessage(t('transaction_symbol_deleted') || "Operación eliminada", 'success');
             fetchData();
-        } catch (err) {
+        } catch {
             alert(t('failed_delete_transaction'));
         }
     }, [confirm, t, showMessage, fetchData, alert]);
@@ -49,7 +49,7 @@ export const useFinanceHandlers = ({
             showMessage(t('transaction_updated') || "Transacción actualizada", 'success');
             setEditingTx(null);
             fetchData();
-        } catch (err) {
+        } catch {
             alert(t('failed_update_transaction'));
         }
     }, [editingTx, t, showMessage, setEditingTx, fetchData, alert]);
@@ -66,7 +66,7 @@ export const useFinanceHandlers = ({
             setCloseBoxModal(prev => ({ ...prev, open: false }));
             setCloseAmount('');
             fetchData();
-        } catch (err) {
+        } catch {
             alert(t('failed_close_box'));
         }
     }, [closeBoxModal, closeAmount, t, showMessage, setCloseBoxModal, setCloseAmount, fetchData, alert, user]);

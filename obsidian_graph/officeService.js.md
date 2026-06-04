@@ -1,15 +1,17 @@
+---
+source_file: "server/services/core/officeService.js"
+type: "code"
+community: "Community 64"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_64
+---
+
 # officeService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/officeService.js
-- **Comunidad:** [[_COMMUNITY_Community 59]]
+## Connections
+- [[OfficeService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[OfficeService|OfficeService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[OfficeService|OfficeService]]
-- [[.getAllOffices()|.getAllOffices()]]
-- [[.createOffice()|.createOffice()]]
-- [[.createRental()|.createRental()]]
-- [[.getMyRentals()|.getMyRentals()]]
+#graphify/code #graphify/EXTRACTED #community/Community_64

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/sections/BalanceFinancialSummary.jsx"
+type: "code"
+community: "Community 232"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_232
+---
+
 # BalanceFinancialSummary()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/BalanceFinancialSummary.jsx
-- **Comunidad:** [[_COMMUNITY_Community 226]]
+## Connections
+- [[BalanceFinancialSummary.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[BalanceFinancialSummary.jsx|BalanceFinancialSummary.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[BalanceFinancialSummary.jsx|BalanceFinancialSummary.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_232

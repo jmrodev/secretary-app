@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatDate } from '@/utils/core/dateUtils';
-import './MedicalReportTable.css';
+import './MedicalReportTable.module.css';
 
 const CertificateReportTable = ({ data, t }) => {
     const list = Array.isArray(data?.certificates) ? data.certificates : [];

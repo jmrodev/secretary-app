@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/TabButton.jsx"
+type: "code"
+community: "Community 275"
+location: "L5"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_275
+---
+
 # TabButton()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/TabButton.jsx
-- **Comunidad:** [[_COMMUNITY_Community 272]]
+## Connections
+- [[TabButton.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[TabButton.jsx|TabButton.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[TabButton.jsx|TabButton.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_275

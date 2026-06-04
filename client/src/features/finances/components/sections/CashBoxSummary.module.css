@@ -1,0 +1,169 @@
+/* CashBoxSummary Component Styles (BEM) */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.compact {
+    background-color: var(--gray-50);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--gray-200);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.headerCompact {
+    font-size: 0.65rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+}
+
+.card {
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.itemCompact {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed var(--gray-200);
+}
+
+.itemCompact:last-of-type {
+    border-bottom: none;
+}
+
+.doctorName {
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+    color: var(--blue-700);
+}
+
+.nameCompact {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.valuesCompact {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.25rem 0;
+}
+
+.label {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.hint {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.amount {
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.amountCash {
+    color: var(--success);
+}
+
+.amountTransfer {
+    color: var(--blue-600);
+}
+
+.amountNegative {
+    color: var(--error);
+}
+
+.methodCompact {
+    font-weight: 800;
+    font-size: 0.8125rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.methodCompactCash {
+    color: var(--success);
+}
+
+.methodCompactTransfer {
+    color: var(--blue-600);
+}
+
+.iconCompact {
+    opacity: 0.8;
+}
+
+.iconCash {
+    color: var(--success);
+}
+
+.iconTransfer {
+    color: var(--blue-500);
+}
+
+.separatorCompact {
+    color: var(--gray-300);
+    font-size: 0.75rem;
+}
+
+.viewAllBtn {
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: center;
+}
+

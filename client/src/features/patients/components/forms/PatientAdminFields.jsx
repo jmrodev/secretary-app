@@ -2,7 +2,7 @@ import React from 'react';
 import Input from '@/components/atoms/Input';
 import CurrencyInput from '@/components/atoms/CurrencyInput';
 import Icon from '@/components/atoms/Icon';
-import './PatientAdminFields.css';
+import styles from './PatientAdminFields.module.css';
 
 const EMPTY_ARRAY = [];
 
@@ -13,28 +13,28 @@ const EMPTY_ARRAY = [];
  */
 const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggle, handleManualValueChange, updateAdminFields, t }) => {
     return (
-        <article className="patient-admin-fields">
-            <header className="patient-admin-fields__header">
+        <article className={`${styles.root}`}>
+            <header className={`${styles.header}`}>
                 <Icon name="admin_panel_settings" size="1.25rem" />
-                <h3 className="patient-admin-fields__title">{t('administrative_control')}</h3>
+                <h3 className={`${styles.title}`}>{t('administrative_control')}</h3>
             </header>
 
-            <div className="patient-admin-fields__bento">
+            <div className={`${styles.bento}`}>
                 {/* Compact Doctor Section */}
-                <section className="patient-admin-fields__section patient-admin-fields__group--span-12">
-                    <header className="patient-admin-fields__mini-header">
+                <section className={`${styles.section} ${styles.groupSpan12}`}>
+                    <header className={`${styles.miniHeader}`}>
                         <Icon name="medical_services" size="1.1rem" />
-                        <h4 className="patient-admin-fields__mini-title">{t('medical_staff_assignment')}</h4>
-                        <span className="patient-admin-fields__count">{formData.assignedDoctors?.length || 0}</span>
+                        <h4 className={`${styles.miniTitle}`}>{t('medical_staff_assignment')}</h4>
+                        <span className={`${styles.count}`}>{formData.assignedDoctors?.length || 0}</span>
                     </header>
-                    <div className="patient-admin-fields__doctor-scroller">
+                    <div className={`${styles.doctorScroller}`}>
                         {doctors.map(doc => {
                             const isSelected = formData.assignedDoctors?.includes(doc.id);
                             return (
-                                <label key={doc.id} className={`patient-admin-fields__doctor-text-tag ${isSelected ? 'patient-admin-fields__doctor-text-tag--active' : ''}`}>
+                                <label key={doc.id} className={`${styles.doctorTextTag} ${isSelected ? styles.doctorTextTagActive : ''}`}>
                                     <input
                                         type="checkbox"
-                                        className="patient-admin-fields__doctor-checkbox"
+                                        className={`${styles.doctorCheckbox}`}
                                         checked={isSelected}
                                         onChange={() => handleDoctorToggle(doc.id)}
                                     />
@@ -47,8 +47,8 @@ const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggl
                 </section>
 
                 {/* Tariff Section */}
-                <div className="patient-admin-fields__group patient-admin-fields__group--span-6">
-                    <label className="patient-admin-fields__label">{t('tariff_adjustment_percent')}</label>
+                <div className={`${styles.group} ${styles.groupSpan6}`}>
+                    <label className={`${styles.label}`}>{t('tariff_adjustment_percent')}</label>
                     <Input
                         type="number"
                         name="tariff_percent"
@@ -57,8 +57,8 @@ const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggl
                         placeholder="10%"
                     />
                 </div>
-                <div className="patient-admin-fields__group patient-admin-fields__group--span-6">
-                    <label className="patient-admin-fields__label">{t('fixed_tariff_override')}</label>
+                <div className={`${styles.group} ${styles.groupSpan6}`}>
+                    <label className={`${styles.label}`}>{t('fixed_tariff_override')}</label>
                     <CurrencyInput
                         value={formData.tariff_override || ''}
                         onChange={(e) => handleManualValueChange('tariff_override', e.target.value)}
@@ -67,8 +67,8 @@ const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggl
                 </div>
 
                 {/* Intervals Section */}
-                <div className="patient-admin-fields__group patient-admin-fields__group--span-6">
-                    <label className="patient-admin-fields__label">{t('visit_interval')}</label>
+                <div className={`${styles.group} ${styles.groupSpan6}`}>
+                    <label className={`${styles.label}`}>{t('visit_interval')}</label>
                     <Input 
                         type="number" 
                         name="visit_interval_days" 
@@ -77,8 +77,8 @@ const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggl
                         placeholder="30 days"
                     />
                 </div>
-                <div className="patient-admin-fields__group patient-admin-fields__group--span-6">
-                    <label className="patient-admin-fields__label">{t('prescription_interval')}</label>
+                <div className={`${styles.group} ${styles.groupSpan6}`}>
+                    <label className={`${styles.label}`}>{t('prescription_interval')}</label>
                     <Input 
                         type="number" 
                         name="prescription_interval_days" 
@@ -89,8 +89,8 @@ const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggl
                 </div>
 
                 {/* Dates Section */}
-                <div className="patient-admin-fields__group patient-admin-fields__group--span-4">
-                    <label className="patient-admin-fields__label">{t('next_visit')}</label>
+                <div className={`${styles.group} ${styles.groupSpan4}`}>
+                    <label className={`${styles.label}`}>{t('next_visit')}</label>
                     <Input 
                         type="date" 
                         name="next_suggested_visit_date" 
@@ -98,8 +98,8 @@ const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggl
                         onChange={updateAdminFields} 
                     />
                 </div>
-                <div className="patient-admin-fields__group patient-admin-fields__group--span-4">
-                    <label className="patient-admin-fields__label">{t('next_prescription')}</label>
+                <div className={`${styles.group} ${styles.groupSpan4}`}>
+                    <label className={`${styles.label}`}>{t('next_prescription')}</label>
                     <Input 
                         type="date" 
                         name="next_suggested_prescription_date" 
@@ -107,8 +107,8 @@ const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggl
                         onChange={updateAdminFields} 
                     />
                 </div>
-                <div className="patient-admin-fields__group patient-admin-fields__group--span-4">
-                    <label className="patient-admin-fields__label">{t('license_expiry')}</label>
+                <div className={`${styles.group} ${styles.groupSpan4}`}>
+                    <label className={`${styles.label}`}>{t('license_expiry')}</label>
                     <Input 
                         type="date" 
                         name="license_expiry_date" 

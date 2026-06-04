@@ -1,7 +1,7 @@
 import React from 'react';
 import Input from '@/components/atoms/Input';
 import Icon from '@/components/atoms/Icon';
-import './PatientMedicalNotes.css';
+import styles from './PatientMedicalNotes.module.css';
 
 /**
  * PatientMedicalNotes Molecule.
@@ -9,15 +9,15 @@ import './PatientMedicalNotes.css';
  */
 const PatientMedicalNotes = ({ formData, updatePatientData, t }) => {
     return (
-        <article className="patient-medical-notes">
-            <header className="patient-medical-notes__header">
+        <article className={`${styles.root}`}>
+            <header className={`${styles.header}`}>
                 <Icon name="history_edu" size="1.25rem" />
-                <h3 className="patient-medical-notes__title">{t('clinical_history')}</h3>
+                <h3 className={`${styles.title}`}>{t('clinical_history')}</h3>
             </header>
 
-            <div className="patient-medical-notes__content">
-                <div className="patient-medical-notes__group">
-                    <label className="patient-medical-notes__label">{t('medical_history_notes')}</label>
+            <div className={`${styles.content}`}>
+                <div className={`${styles.group}`}>
+                    <label className={`${styles.label}`}>{t('medical_history_notes')}</label>
                     <Input
                         type="textarea"
                         name="medical_history"
@@ -25,12 +25,12 @@ const PatientMedicalNotes = ({ formData, updatePatientData, t }) => {
                         value={formData.medical_history || ''}
                         onChange={updatePatientData}
                         placeholder={t('medical_history_placeholder')}
-                        className="patient-medical-notes__textarea"
+                        className={`${styles.textarea}`}
                     />
                 </div>
             </div>
 
-            <footer className="patient-medical-notes__footer">
+            <footer className={`${styles.footer}`}>
                 <Icon name="lock" size="0.9rem" />
                 <span>{t('clinical_data_encrypted_notice')}</span>
             </footer>

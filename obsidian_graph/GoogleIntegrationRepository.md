@@ -1,35 +1,32 @@
+---
+source_file: "server/repositories/user/googleIntegrationRepository.js"
+type: "code"
+community: "Community 16"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_16
+---
+
 # GoogleIntegrationRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/googleIntegrationRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 19]]
+## Connections
+- [[.deleteDoctorIntegration()]] - `method` [EXTRACTED]
+- [[.deleteGlobalTokens()]] - `method` [EXTRACTED]
+- [[.deleteSyncItem()]] - `method` [EXTRACTED]
+- [[.enqueueSync()]] - `method` [EXTRACTED]
+- [[.findAfipEnvironment()]] - `method` [EXTRACTED]
+- [[.findAllDoctorIds()]] - `method` [EXTRACTED]
+- [[.findDoctorIntegration()]] - `method` [EXTRACTED]
+- [[.findGlobalToken()]] - `method` [EXTRACTED]
+- [[.findPendingSyncItems()]] - `method` [EXTRACTED]
+- [[.findTokensByDoctorId()]] - `method` [EXTRACTED]
+- [[.resetSpreadsheetId()_1]] - `method` [EXTRACTED]
+- [[.resetSyncQueue()]] - `method` [EXTRACTED]
+- [[.updateSpreadsheetId()]] - `method` [EXTRACTED]
+- [[.updateSyncItemError()]] - `method` [EXTRACTED]
+- [[.upsertTokens()]] - `method` [EXTRACTED]
+- [[googleIntegrationRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[googleIntegrationRepository.js|googleIntegrationRepository.js]] (contains)
-- --> [[.findDoctorIntegration()|.findDoctorIntegration()]] (method)
-- --> [[.findAllDoctorIds()|.findAllDoctorIds()]] (method)
-- --> [[.deleteDoctorIntegration()|.deleteDoctorIntegration()]] (method)
-- --> [[.findGlobalToken()|.findGlobalToken()]] (method)
-- --> [[.deleteGlobalTokens()|.deleteGlobalTokens()]] (method)
-- --> [[.findAfipEnvironment()|.findAfipEnvironment()]] (method)
-- --> [[.resetSyncQueue()|.resetSyncQueue()]] (method)
-- --> [[.resetSpreadsheetId()|.resetSpreadsheetId()]] (method)
-- --> [[.updateSpreadsheetId()|.updateSpreadsheetId()]] (method)
-- --> [[.enqueueSync()|.enqueueSync()]] (method)
-- --> [[.findTokensByDoctorId()|.findTokensByDoctorId()]] (method)
-- --> [[.upsertTokens()|.upsertTokens()]] (method)
-- --> [[.findPendingSyncItems()|.findPendingSyncItems()]] (method)
-- --> [[.updateSyncItemError()|.updateSyncItemError()]] (method)
-- --> [[.deleteSyncItem()|.deleteSyncItem()]] (method)
-
-## Miembros de la misma Comunidad
-- [[googleIntegrationRepository.js|googleIntegrationRepository.js]]
-- [[.findDoctorIntegration()|.findDoctorIntegration()]]
-- [[.findAllDoctorIds()|.findAllDoctorIds()]]
-- [[.deleteDoctorIntegration()|.deleteDoctorIntegration()]]
-- [[.findGlobalToken()|.findGlobalToken()]]
-- [[.deleteGlobalTokens()|.deleteGlobalTokens()]]
-- [[.findAfipEnvironment()|.findAfipEnvironment()]]
-- [[.resetSyncQueue()|.resetSyncQueue()]]
-- [[.resetSpreadsheetId()|.resetSpreadsheetId()]]
-- [[.updateSpreadsheetId()|.updateSpreadsheetId()]]
+#graphify/code #graphify/EXTRACTED #community/Community_16

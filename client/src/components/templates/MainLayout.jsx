@@ -1,7 +1,11 @@
 import React from 'react';
 import { Navbar } from '@/features/layout';
-import PageHeader from '@/components/organisms/PageHeader';
-import './MainLayout.css';
+import PageHeader from '@/components/ui/PageHeader';
+import { useSearch } from '@/hooks/useSearch';
+import { useLanguage } from '@/hooks/useLanguage';
+import { DoctorSelector } from '@/features/doctors';
+import CompactHeaderStats from '@/components/molecules/CompactHeaderStats';
+import styles from './MainLayout.module.css';
 
 /**
  * MainLayout Template.
@@ -15,24 +19,43 @@ const MainLayout = ({
     variant = 'premium',
     backgroundUrl,
     hideDoctorSelector = false,
+    doctorSelectorActions = null,
     actionSlot,
+    hideClock = false,
     hideTitle = (variant === 'premium')
 }) => {
+    const { searchTerm, setSearchTerm } = useSearch();
+    const { t } = useLanguage();
+
     return (
-        <div className="app-layout">
+        <div className={`${styles.appLayout}`}>
             <Navbar />
-            <main className={`main-content ${wide ? 'dashboard-wide' : ''} ${flush ? 'main-content--flush' : ''}`}>
+            <main className={`${styles.root} ${wide ? styles.dashboardWide : ''} ${flush ? styles.flush : ''}`}>
                 {title && (
                     <PageHeader 
                         title={title}
                         variant={variant}
                         backgroundUrl={backgroundUrl}
-                        hideDoctorSelector={hideDoctorSelector}
                         actionSlot={actionSlot}
                         hideTitle={hideTitle}
+                        hideClock={hideClock}
+                        searchTerm={searchTerm}
+                        onSearchChange={setSearchTerm}
+                        statsSlot={<CompactHeaderStats />}
+                        doctorSelectorSlot={
+                            !hideDoctorSelector ? (
+                                <>
+                                    <DoctorSelector />
+                                    {doctorSelectorActions}
+                                </>
+                            ) : null
+                        }
+                        labels={{
+                            searchPlaceholder: t('search_placeholder') || 'Search...'
+                        }}
                     />
                 )}
-                <div className="main-content__inner">
+                <div className={`${styles.inner}`}>
                     {children}
                 </div>
             </main>

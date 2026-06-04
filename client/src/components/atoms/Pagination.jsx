@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './Pagination.css';
+import styles from './Pagination.module.css';
 
 /**
  * Pagination atom.
@@ -31,7 +31,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, t, totalCount, item
     }
 
     return (
-        <div className="pagination">
+        <div className={`${styles.root}`}>
             {(totalCount !== undefined && itemsShowing !== undefined) && (
                 <span className="pagination__info">
                     {t?.('showing') ?? 'Showing'} {itemsShowing} {t?.('of') ?? 'of'} {totalCount}
@@ -52,20 +52,20 @@ const Pagination = ({ currentPage, totalPages, onPageChange, t, totalCount, item
                 icon={<Icon name="CHEVRON_LEFT" size="1.2rem" />}
             />
             
-            <div className="pagination__pages">
-                {start > 1 && <span className="pagination__ellipsis">…</span>}
+            <div className={`${styles.pages}`}>
+                {start > 1 && <span className={`${styles.ellipsis}`}>…</span>}
                 {pages.map(p => (
                     <Button
                         key={p}
                         variant={p === currentPage ? 'primary' : 'ghost'}
                         size="sm-compact"
                         onClick={() => onPageChange(p)}
-                        className="pagination__page-btn"
+                        className={`${styles.pageBtn}`}
                     >
                         {p}
                     </Button>
                 ))}
-                {end < totalPages && <span className="pagination__ellipsis">…</span>}
+                {end < totalPages && <span className={`${styles.ellipsis}`}>…</span>}
             </div>
 
             <Button

@@ -1,11 +1,19 @@
+---
+source_file: "client/src/utils/printing/printInvoice.js"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L4"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # printInvoice()
 
-- **Tipo:** code
-- **Archivo:** client/src/utils/printInvoice.js
-- **Comunidad:** [[_COMMUNITY_Community 291]]
+## Connections
+- [[getArgentineNowISO()]] - `calls` [INFERRED]
+- [[getNow()]] - `calls` [INFERRED]
+- [[printInvoice.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[printInvoice.js|printInvoice.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[printInvoice.js|printInvoice.js]]
+#graphify/code #graphify/INFERRED #community/Institutions_&_Medical_Requirements

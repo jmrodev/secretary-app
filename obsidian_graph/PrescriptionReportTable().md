@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/reports/components/tables/PrescriptionReportTable.jsx"
+type: "code"
+community: "Community 256"
+location: "L5"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_256
+---
+
 # PrescriptionReportTable()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/components/PrescriptionReportTable.jsx
-- **Comunidad:** [[_COMMUNITY_Community 253]]
+## Connections
+- [[PrescriptionReportTable.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PrescriptionReportTable.jsx|PrescriptionReportTable.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PrescriptionReportTable.jsx|PrescriptionReportTable.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_256

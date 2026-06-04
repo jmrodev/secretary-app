@@ -1,15 +1,13 @@
 import React from 'react';
-import ReportTabs from '@/features/reports/components/ui/ReportTabs';
 import ReportFilters from '@/features/reports/components/ui/ReportFilters';
 import AppointmentReportTable from '@/features/reports/components/tables/AppointmentReportTable';
 import PrescriptionReportTable from '@/features/reports/components/tables/PrescriptionReportTable';
 import LicenseReportTable from '@/features/reports/components/tables/LicenseReportTable';
 import CertificateReportTable from '@/features/reports/components/tables/CertificateReportTable';
 import BalanceView from '@/features/reports/components/views/BalanceView';
-import PageHeader from '@/components/organisms/PageHeader';
+import PageHeader from '@/components/ui/PageHeader';
 
-import Icon from '@/components/atoms/Icon';
-import './ReportsDashboard.css';
+import styles from './ReportsDashboard.module.css';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
@@ -70,7 +68,7 @@ const ReportsDashboard = ({
             <div className="dashboard-layout__grid animate-fade-in">
                 <main className="dashboard-layout__main dashboard-layout__main--full">
                     <div className="dashboard-card no-padding">
-                        <div className="reports-page__results">
+                        <div className={`${styles.results}`}>
                             {activeTab === 'appointments' && (
                                 <AppointmentReportTable data={reportData} t={t} />
                             )}

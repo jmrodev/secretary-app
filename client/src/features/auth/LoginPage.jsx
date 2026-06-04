@@ -1,6 +1,6 @@
 import React from 'react';
 import { LoginForm } from '@/features/auth/index';
-import './LoginPage.css';
+import styles from './LoginPage.module.css';
 
 /**
  * LoginPage (Orchestrator).
@@ -8,13 +8,13 @@ import './LoginPage.css';
  */
 const LoginPage = () => {
     return (
-        <main className="login-page login-page--hero animate-fade-in">
-            <div className="login-page__background-blobs">
-                <div className="login-page__blob login-page__blob--primary"></div>
-                <div className="login-page__blob login-page__blob--secondary"></div>
+        <main className={`${styles.root} ${styles.hero} animate-fade-in`}>
+            <div className={`${styles.backgroundBlobs}`}>
+                <div className={`${styles.blob} ${styles.blobPrimary}`}></div>
+                <div className={`${styles.blob} ${styles.blobSecondary}`}></div>
             </div>
-            <div className="login-page__overlay" aria-hidden="true"></div>
-            <section className="login-page__content">
+            <div className={`${styles.overlay}`} aria-hidden="true"></div>
+            <section className={`${styles.content}`}>
                 <LoginForm />
             </section>
         </main>

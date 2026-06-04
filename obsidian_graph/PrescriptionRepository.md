@@ -1,27 +1,24 @@
+---
+source_file: "server/repositories/medical/prescriptionRepository.js"
+type: "code"
+community: "Database Utils & Repositories"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Database_Utils_&_Repositories
+---
+
 # PrescriptionRepository
 
-- **Tipo:** code
-- **Archivo:** server/repositories/prescriptionRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 1]]
+## Connections
+- [[.addItem()_1]] - `method` [EXTRACTED]
+- [[.countAll()_2]] - `method` [EXTRACTED]
+- [[.create()_12]] - `method` [EXTRACTED]
+- [[.delete()_9]] - `method` [EXTRACTED]
+- [[.findAll()_6]] - `method` [EXTRACTED]
+- [[.findById()_10]] - `method` [EXTRACTED]
+- [[.update()_7]] - `method` [EXTRACTED]
+- [[prescriptionRepository.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[prescriptionRepository.js|prescriptionRepository.js]] (contains)
-- --> [[.findById()|.findById()]] (method)
-- --> [[.findAll()|.findAll()]] (method)
-- --> [[.countAll()|.countAll()]] (method)
-- --> [[.create()|.create()]] (method)
-- --> [[.addItem()|.addItem()]] (method)
-- --> [[.update()|.update()]] (method)
-- --> [[.delete()|.delete()]] (method)
-
-## Miembros de la misma Comunidad
-- [[sqlUtils.js|sqlUtils.js]]
-- [[filterValidColumns()|filterValidColumns()]]
-- [[buildUpdateQuery()|buildUpdateQuery()]]
-- [[buildInsertQuery()|buildInsertQuery()]]
-- [[licenseRepository.js|licenseRepository.js]]
-- [[LicenseRepository|LicenseRepository]]
-- [[.findById()|.findById()]]
-- [[.findAll()|.findAll()]]
-- [[.countAll()|.countAll()]]
-- [[.create()|.create()]]
+#graphify/code #graphify/EXTRACTED #community/Database_Utils_&_Repositories

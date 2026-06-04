@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import { PatientSearchSelect } from '@/features/patients';
 import { capitalizeWords } from '@/utils/core/stringUtils';
-import './AppointmentPatientSection.css';
+import styles from './AppointmentPatientSection.module.css';
 
 /**
  * AppointmentPatientSection Molecule (Internal to feature).
@@ -12,9 +12,9 @@ const AppointmentPatientSection = ({
     selectedPatient, selectedPatientData, missingData, handlePatientChange, handlePhoneChange, onOpenEditPatient, t
 }) => {
     return (
-        <div className="appointment-patient-section">
-            <div className="appointment-patient-section__search-group">
-                <label className="appointment-patient-section__group-label">{t('patients') || 'Paciente'}</label>
+        <div className={`${styles.root}`}>
+            <div className={styles.searchGroup}>
+                <label className={styles.groupLabel}>{t('patients') || 'Paciente'}</label>
                 <PatientSearchSelect
                     value={selectedPatient}
                     selectedData={selectedPatientData}
@@ -28,14 +28,14 @@ const AppointmentPatientSection = ({
             </div>
 
             {missingData.length > 0 && (
-                <div className="appointment-patient-section__missing-alert">
-                    <span className="appointment-patient-section__missing-text">
+                <div className={`${styles.missingAlert}`}>
+                    <span className={`${styles.missingText}`}>
                         <Icon name="warning" size="1rem" />
                         <strong>Datos incompletos:</strong> {missingData.join(', ')}.
                     </span>
                     <button
                         type="button"
-                        className="appointment-patient-section__missing-action"
+                        className={`${styles.missingAction}`}
                         onClick={onOpenEditPatient}
                     >
                         Completar
@@ -44,15 +44,15 @@ const AppointmentPatientSection = ({
             )}
 
             {selectedPatient && (
-                <div className="appointment-patient-section__quick-info">
-                    <div className="appointment-patient-section__field">
-                        <span className="appointment-patient-section__label">
+                <div className={`${styles.quickInfo}`}>
+                    <div className={`${styles.field}`}>
+                        <span className={`${styles.label}`}>
                             <Icon name="phone" size="1rem" />
                             Teléfono
                         </span>
                         <input
                             type="text"
-                            className="appointment-patient-section__input"
+                            className={`${styles.input}`}
                             value={selectedPatientData?.phone || ''}
                             onChange={e => handlePhoneChange(e.target.value)}
                             placeholder="Sin teléfono"

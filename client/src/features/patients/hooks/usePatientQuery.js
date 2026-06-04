@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { useSearch } from '@/hooks/useSearch';
 
@@ -18,21 +18,30 @@ export const usePatientQuery = (options = {}) => {
 
     const { searchTerm: globalSearch, setSearchTerm: setGlobalSearch } = useSearch();
     const [localSearch, setLocalSearch] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    
     const searchTerm = useGlobalSearch ? globalSearch : localSearch;
     const setSearchTerm = useGlobalSearch ? setGlobalSearch : setLocalSearch;
 
-    const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+    // Atomic state management for search and pagination
+    const [queryState, dispatchQuery] = React.useReducer((s, a) => ({ ...s, ...a }), {
+        debouncedSearch: searchTerm,
+        currentPage: 1
+    });
 
-    // Debounce searchTerm
     useEffect(() => {
         const timer = setTimeout(() => {
-            setDebouncedSearch(searchTerm);
-            setCurrentPage(1);
+            dispatchQuery({
+                debouncedSearch: searchTerm,
+                currentPage: 1
+            });
         }, debounceMs);
         return () => clearTimeout(timer);
     }, [searchTerm, debounceMs]);
+
+    const { debouncedSearch } = queryState;
+
+    // Synchronize currentPage with handlePageChange
+    const setCurrentPage = (newPage) => dispatchQuery({ currentPage: newPage });
+    const currentPage = queryState.currentPage;
 
     const shouldSearch = debouncedSearch.length >= minChars || debouncedSearch.length === 0;
 

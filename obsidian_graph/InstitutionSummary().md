@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/finances/components/sections/InstitutionSummary.jsx"
+type: "code"
+community: "Community 229"
+location: "L8"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_229
+---
+
 # InstitutionSummary()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/InstitutionSummary.jsx
-- **Comunidad:** [[_COMMUNITY_Community 210]]
+## Connections
+- [[InstitutionSummary.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[InstitutionSummary.jsx|InstitutionSummary.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[InstitutionSummary.jsx|InstitutionSummary.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_229

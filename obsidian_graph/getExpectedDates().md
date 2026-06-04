@@ -1,12 +1,17 @@
+---
+source_file: "server/tests/services/userStatsService.test.js"
+type: "code"
+community: "Community 112"
+location: "L55"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_112
+---
+
 # getExpectedDates()
 
-- **Tipo:** code
-- **Archivo:** server/tests/services/userStatsService.test.js
-- **Comunidad:** [[_COMMUNITY_Community 106]]
+## Connections
+- [[userStatsService.test.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[userStatsService.test.js|userStatsService.test.js]] (contains)
-
-## Miembros de la misma Comunidad
-- [[userStatsService.test.js|userStatsService.test.js]]
-- [[constructor()|constructor()]]
+#graphify/code #graphify/EXTRACTED #community/Community_112

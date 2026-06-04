@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/lists/MedicalRequirementRecycleBin.jsx"
+type: "code"
+community: "Community 176"
+location: "L6"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_176
+---
+
 # MedicalRequirementRecycleBin()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicalRequirementRecycleBin.jsx
-- **Comunidad:** [[_COMMUNITY_Community 174]]
+## Connections
+- [[MedicalRequirementRecycleBin.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicalRequirementRecycleBin.jsx|MedicalRequirementRecycleBin.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicalRequirementRecycleBin.jsx|MedicalRequirementRecycleBin.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_176

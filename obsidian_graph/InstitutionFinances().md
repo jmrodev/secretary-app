@@ -1,14 +1,18 @@
+---
+source_file: "client/src/features/finances/components/sections/InstitutionFinances.jsx"
+type: "code"
+community: "Community 105"
+location: "L22"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_105
+---
+
 # InstitutionFinances()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/components/InstitutionFinances.jsx
-- **Comunidad:** [[_COMMUNITY_Community 102]]
+## Connections
+- [[InstitutionFinances.jsx]] - `contains` [EXTRACTED]
+- [[useInstitutionFinances()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useInstitutionFinances()|useInstitutionFinances()]] (calls)
-- <-- [[InstitutionFinances.jsx|InstitutionFinances.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useInstitutionFinances.js|useInstitutionFinances.js]]
-- [[useInstitutionFinances()|useInstitutionFinances()]]
-- [[InstitutionFinances.jsx|InstitutionFinances.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_105

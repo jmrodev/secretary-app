@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import styles from './ScheduleBulkActions.module.css';
 
 /**
  * ScheduleBulkActions Feature Molecule.
@@ -9,41 +10,41 @@ import Icon from '@/components/atoms/Icon';
  */
 const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkEnd, onApplyBulk, t }) => {
     return (
-        <div className="schedule-bulk">
-            <h4 className="schedule-bulk__title">
-                <Icon name="calendar_month" size="1.2rem" className="schedule-bulk__title-icon" />
+        <div className={`${styles.root}`}>
+            <h4 className={`${styles.title}`}>
+                <Icon name="calendar_month" size="1.2rem" className={`${styles.titleIcon}`} />
                 {t('apply_to_multiple_days') || 'Aplicar a múltiples días (Sobrescribe horarios)'}
             </h4>
-            <div className="schedule-bulk__actions">
-                <div className="schedule-bulk__time-inputs">
+            <div className={`${styles.actions}`}>
+                <div className={`${styles.timeInputs}`}>
                     <input
                         type="time"
-                        className="input-field schedule-bulk__time-input"
+                        className={`input-field ${styles.timeInput}`}
                         value={bulkStart}
                         onChange={(e) => setBulkStart(e.target.value)}
                     />
-                    <span className="schedule-bulk__separator">{t('to_label') || 'a'}</span>
+                    <span className={`${styles.separator}`}>{t('to_label') || 'a'}</span>
                     <input
                         type="time"
-                        className="input-field schedule-bulk__time-input"
+                        className={`input-field ${styles.timeInput}`}
                         value={bulkEnd}
                         onChange={(e) => setBulkEnd(e.target.value)}
                     />
                 </div>
-                <div className="schedule-bulk__buttons">
+                <div className={`${styles.buttons}`}>
                     <Button
                         variant="secondary"
                         size="sm"
                         onClick={() => onApplyBulk([1, 2, 3, 4, 5])}
                     >
-                        <span className="schedule-bulk__btn-label">{t('mon_to_fri') || 'Lunes a Viernes'}</span>
+                        <span className={`${styles.btnLabel}`}>{t('mon_to_fri') || 'Lunes a Viernes'}</span>
                     </Button>
                     <Button
                         variant="secondary"
                         size="sm"
                         onClick={() => onApplyBulk([1, 2, 3, 4, 5, 6])}
                     >
-                        <span className="schedule-bulk__btn-label">{t('mon_to_sat') || 'Lunes a Sábado'}</span>
+                        <span className={`${styles.btnLabel}`}>{t('mon_to_sat') || 'Lunes a Sábado'}</span>
                     </Button>
                 </div>
             </div>

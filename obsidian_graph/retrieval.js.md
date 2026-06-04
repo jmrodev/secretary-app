@@ -1,10 +1,14 @@
+---
+source_file: "server/controllers/appointments/retrieval.js"
+type: "code"
+community: "Community 309"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_309
+---
+
 # retrieval.js
 
-- **Tipo:** code
-- **Archivo:** server/controllers/appointments/retrieval.js
-- **Comunidad:** [[_COMMUNITY_Community 317]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_309

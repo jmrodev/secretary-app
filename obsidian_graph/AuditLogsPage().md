@@ -1,21 +1,18 @@
+---
+source_file: "client/src/features/reports/AuditLogsPage.jsx"
+type: "code"
+community: "Community 12"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_12
+---
+
 # AuditLogsPage()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/reports/AuditLogsPage.jsx
-- **Comunidad:** [[_COMMUNITY_Community 12]]
+## Connections
+- [[AuditLogsPage.jsx]] - `contains` [EXTRACTED]
+- [[useAuditLogsController()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- <-- [[AuditLogsPage.jsx|AuditLogsPage.jsx]] (contains)
-- --> [[useAuditLogsController()|useAuditLogsController()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[InstitutionsPage.jsx|InstitutionsPage.jsx]]
-- [[InstitutionsPage()|InstitutionsPage()]]
-- [[useInstitutionsController.js|useInstitutionsController.js]]
-- [[createInitialFormState()|createInitialFormState()]]
-- [[useInstitutionsController()|useInstitutionsController()]]
-- [[SystemConfigPage.jsx|SystemConfigPage.jsx]]
-- [[ProfileSection()|ProfileSection()]]
-- [[InstitutionsSection()|InstitutionsSection()]]
-- [[AuditLogsSection()|AuditLogsSection()]]
-- [[UserSection()|UserSection()]]
+#graphify/code #graphify/EXTRACTED #community/Community_12

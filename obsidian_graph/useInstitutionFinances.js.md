@@ -1,13 +1,17 @@
+---
+source_file: "client/src/features/finances/hooks/useInstitutionFinances.js"
+type: "code"
+community: "Community 105"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_105
+---
+
 # useInstitutionFinances.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/finances/hooks/useInstitutionFinances.js
-- **Comunidad:** [[_COMMUNITY_Community 102]]
+## Connections
+- [[useInstitutionFinances()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useInstitutionFinances()|useInstitutionFinances()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useInstitutionFinances()|useInstitutionFinances()]]
-- [[InstitutionFinances.jsx|InstitutionFinances.jsx]]
-- [[InstitutionFinances()|InstitutionFinances()]]
+#graphify/code #graphify/EXTRACTED #community/Community_105

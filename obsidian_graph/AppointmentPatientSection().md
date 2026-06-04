@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/sections/AppointmentPatientSection.jsx"
+type: "code"
+community: "Community 199"
+location: "L11"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_199
+---
+
 # AppointmentPatientSection()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/AppointmentPatientSection.jsx
-- **Comunidad:** [[_COMMUNITY_Community 182]]
+## Connections
+- [[AppointmentPatientSection.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[AppointmentPatientSection.jsx|AppointmentPatientSection.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AppointmentPatientSection.jsx|AppointmentPatientSection.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_199

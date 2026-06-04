@@ -1,10 +1,17 @@
+---
+source_file: "server/services/user/authService.js"
+type: "code"
+community: "Community 46"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_46
+---
+
 # authService.js
 
-- **Tipo:** code
-- **Archivo:** client/src/features/auth/authService.js
-- **Comunidad:** [[_COMMUNITY_Community 384]]
+## Connections
+- [[AuthService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_46

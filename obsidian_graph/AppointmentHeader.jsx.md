@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/sections/AppointmentHeader.jsx"
+type: "code"
+community: "Community 200"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_200
+---
+
 # AppointmentHeader.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/AppointmentHeader.jsx
-- **Comunidad:** [[_COMMUNITY_Community 185]]
+## Connections
+- [[AppointmentHeader()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[AppointmentHeader()|AppointmentHeader()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[AppointmentHeader()|AppointmentHeader()]]
+#graphify/code #graphify/EXTRACTED #community/Community_200

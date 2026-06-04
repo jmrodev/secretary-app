@@ -1,26 +1,22 @@
+---
+source_file: "server/utils/finance/priceCalculator.js"
+type: "code"
+community: "Institutions Feature"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Institutions_Feature
+---
+
 # calculatePrice()
 
-- **Tipo:** code
-- **Archivo:** server/utils/priceCalculator.js
-- **Comunidad:** [[_COMMUNITY_Community 2]]
+## Connections
+- [[._handleFinancials()]] - `calls` [INFERRED]
+- [[._handleFinancialsAndReminders()]] - `calls` [INFERRED]
+- [[.generateRequestDebt()]] - `calls` [INFERRED]
+- [[.getPricing()]] - `calls` [INFERRED]
+- [[.submitPublicPrescriptionRequest()]] - `calls` [INFERRED]
+- [[priceCalculator.js]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[priceCalculator.js|priceCalculator.js]] (contains)
-- <-- [[.getPricing()|.getPricing()]] (calls)
-- <-- [[.generateDebt()|.generateDebt()]] (calls)
-- <-- [[._handleFinancials()|._handleFinancials()]] (calls)
-- <-- [[._handleFinancialsAndReminders()|._handleFinancialsAndReminders()]] (calls)
-- <-- [[.submitPublicPrescriptionRequest()|.submitPublicPrescriptionRequest()]] (calls)
-- <-- [[.generateRequestDebt()|.generateRequestDebt()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[priceCalculator.js|priceCalculator.js]]
-- [[.getPricing()|.getPricing()]]
-- [[bookingService.js|bookingService.js]]
-- [[BookingService|BookingService]]
-- [[.createAppointment()|.createAppointment()]]
-- [[.handleOverwrite()|.handleOverwrite()]]
-- [[.generateDebt()|.generateDebt()]]
-- [[LicenseService.js|LicenseService.js]]
-- [[LicenseService|LicenseService]]
-- [[.createLicense()|.createLicense()]]
+#graphify/code #graphify/INFERRED #community/Institutions_Feature

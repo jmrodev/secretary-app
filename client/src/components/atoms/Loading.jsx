@@ -1,5 +1,5 @@
 import React from 'react';
-import './Loading.css';
+import styles from './Loading.module.css';
 
 /**
  * Loading Atom.
@@ -16,7 +16,7 @@ const Loading = ({
     text,
     className = ''
 }) => {
-    const baseClass = 'loading';
+    const baseClass = styles.root;
     const variantClass = `${baseClass}--${variant}`;
     const sizeClass = `${baseClass}__spinner--${size}`;
 

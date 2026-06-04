@@ -5,7 +5,7 @@ import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import Switch from '@/components/atoms/Switch';
-import './MedicationConfigFields.css';
+import styles from './MedicationConfigFields.module.css';
 
 /**
  * MedicationConfigFields Molecule.
@@ -36,10 +36,10 @@ const MedicationConfigFields = ({
     ];
 
     return (
-        <div className="medication-config-fields animate-fade-in">
-            <div className="medication-config-fields__mode-selector">
-                <label className="medication-config-fields__label">{t('reminder_mode')}</label>
-                <div className="medication-config-fields__btn-group">
+        <div className={`${styles.root} animate-fade-in`}>
+            <div className={`${styles.modeSelector}`}>
+                <label className={`${styles.label}`}>{t('reminder_mode')}</label>
+                <div className={`${styles.btnGroup}`}>
                     <Button
                         size="sm-compact"
                         type="button"
@@ -68,17 +68,17 @@ const MedicationConfigFields = ({
             </div>
 
             {currentMed.reminder_mode === 'calculation' && (
-                <div className="medication-config-fields__grid animate-fade-in">
-                    <div className="medication-config-fields__group">
-                        <label className="medication-config-fields__label">{t('units_per_box')}</label>
+                <div className={`${styles.grid} animate-fade-in`}>
+                    <div className={`${styles.group}`}>
+                        <label className={`${styles.label}`}>{t('units_per_box')}</label>
                         <Select
                             value={currentMed.units_per_box}
                             options={unitsOptions}
                             onChange={e => handleUnitsChange(e.target.value)}
                         />
                     </div>
-                    <div className="medication-config-fields__group">
-                        <label className="medication-config-fields__label">{t('boxes_count')}</label>
+                    <div className={`${styles.group}`}>
+                        <label className={`${styles.label}`}>{t('boxes_count')}</label>
                         <Input
                             type="number"
                             min="1"
@@ -86,8 +86,8 @@ const MedicationConfigFields = ({
                             onChange={e => handleBoxesChange(e.target.value)}
                         />
                     </div>
-                    <div className="medication-config-fields__group">
-                        <label className="medication-config-fields__label">{t('daily_intake')}</label>
+                    <div className={`${styles.group}`}>
+                        <label className={`${styles.label}`}>{t('daily_intake')}</label>
                         <Select
                             value={currentMed.daily_intake}
                             options={dailyIntakeOptions}
@@ -98,8 +98,8 @@ const MedicationConfigFields = ({
             )}
 
             {currentMed.reminder_mode === 'fixed_day' && (
-                <div className="medication-config-fields__group animate-fade-in">
-                    <label className="medication-config-fields__label">{t('reminder_day_of_month')}</label>
+                <div className={`${styles.group} animate-fade-in`}>
+                    <label className={`${styles.label}`}>{t('reminder_day_of_month')}</label>
                     <Input
                         type="number"
                         min="1"
@@ -111,17 +111,17 @@ const MedicationConfigFields = ({
                 </div>
             )}
 
-            <div className="medication-config-fields__row">
-                <div className="medication-config-fields__group">
-                    <label className="medication-config-fields__label">{t('frequency')}</label>
+            <div className={`${styles.row}`}>
+                <div className={`${styles.group}`}>
+                    <label className={`${styles.label}`}>{t('frequency')}</label>
                     <Input
                         value={currentMed.frequency}
                         onChange={e => setCurrentMed(prev => ({ ...prev, frequency: e.target.value }))}
                         placeholder={t('frequency_placeholder') || "Cada 24hs..."}
                     />
                 </div>
-                <div className="medication-config-fields__group">
-                    <label className="medication-config-fields__label">{t('next_refill_date')}</label>
+                <div className={`${styles.group}`}>
+                    <label className={`${styles.label}`}>{t('next_refill_date')}</label>
                     <Input
                         type="date"
                         value={currentMed.next_refill_date}
@@ -129,15 +129,15 @@ const MedicationConfigFields = ({
                         disabled={currentMed.reminder_mode !== 'fixed_date'}
                     />
                     {currentMed.reminder_mode !== 'fixed_date' && (
-                        <div className="medication-config-fields__hint">
+                        <div className={`${styles.hint}`}>
                             {t('auto_calculated_date')}
                         </div>
                     )}
                 </div>
             </div>
 
-            <div className="medication-config-fields__footer">
-                <div className="medication-config-fields__notes">
+            <div className={`${styles.footer}`}>
+                <div className={`${styles.notes}`}>
                     <Input
                         value={currentMed.notes}
                         onChange={e => setCurrentMed(prev => ({ ...prev, notes: e.target.value }))}

@@ -27,7 +27,7 @@
     grid-template-columns: repeat(3, 1fr);
 }
 
-@media (max-width: 768px) {
+@media (width <= 768px) {
     .config-grid--3col {
         grid-template-columns: 1fr;
     }

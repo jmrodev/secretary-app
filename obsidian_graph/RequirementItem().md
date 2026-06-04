@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/sections/RequirementItem.jsx"
+type: "code"
+community: "Community 184"
+location: "L13"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_184
+---
+
 # RequirementItem()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/RequirementItem.jsx
-- **Comunidad:** [[_COMMUNITY_Community 177]]
+## Connections
+- [[RequirementItem.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[RequirementItem.jsx|RequirementItem.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RequirementItem.jsx|RequirementItem.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_184

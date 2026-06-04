@@ -9,7 +9,7 @@ import { formatTime } from '@/utils/core/dateUtils';
 import ChatThread from '@/features/chat/components/sections/ChatThread';
 import ChatList from '@/features/chat/components/ui/ChatList';
 
-import './FloatingChat.css';
+import styles from './FloatingChat.module.css';
 
 /**
  * FloatingChat Organism.
@@ -49,18 +49,18 @@ const FloatingChat = () => {
      */
     const renderTicks = (status) => {
         if (status === 0) return (
-            <div className="floating-chat__ticks">
-                <Icon name="check" size="0.75rem" className="floating-chat__tick--grey" />
+            <div className={`${styles.ticks}`}>
+                <Icon name="check" size="0.75rem" className={`${styles.tickGrey}`} />
             </div>
         );
         if (status === 1) return (
-            <div className="floating-chat__ticks">
-                <Icon name="done_all" size="0.75rem" className="floating-chat__tick--grey" />
+            <div className={`${styles.ticks}`}>
+                <Icon name="done_all" size="0.75rem" className={`${styles.tickGrey}`} />
             </div>
         );
         if (status === 2) return (
-            <div className="floating-chat__ticks">
-                <Icon name="done_all" size="0.75rem" className="floating-chat__tick--blue" />
+            <div className={`${styles.ticks}`}>
+                <Icon name="done_all" size="0.75rem" className={`${styles.tickBlue}`} />
             </div>
         );
         return null;
@@ -68,7 +68,7 @@ const FloatingChat = () => {
 
     if (!user || user.role === 'patient') return null;
 
-    const baseClass = 'floating-chat';
+    const baseClass = styles.root;
 
     return (
         <div className={baseClass}>

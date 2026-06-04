@@ -1,10 +1,14 @@
+---
+source_file: "server/routes/user/authRoutes.js"
+type: "code"
+community: "Community 346"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_346
+---
+
 # authRoutes.js
 
-- **Tipo:** code
-- **Archivo:** server/routes/authRoutes.js
-- **Comunidad:** [[_COMMUNITY_Community 352]]
-
-## Conexiones Directas
-_No se detectaron conexiones automáticas._
-
-## Miembros de la misma Comunidad
+#graphify/code #graphify/EXTRACTED #community/Community_346

@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '@/features/auth';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './PatientBlocker.css';
+import styles from './PatientBlocker.module.css';
 
 const PatientBlocker = () => {
     const { logout } = useAuth();
@@ -13,20 +13,20 @@ const PatientBlocker = () => {
     };
 
     return (
-        <div className="patient-blocker">
-            <div className="patient-blocker__card">
-                <div className="patient-blocker__icon-container">
-                    <Icon name="check_circle" size="4rem" className="patient-blocker__icon--success" />
+        <div className={`${styles.root}`}>
+            <div className={`${styles.card}`}>
+                <div className={`${styles.iconContainer}`}>
+                    <Icon name="check_circle" size="4rem" className={`${styles.iconSuccess}`} />
                 </div>
-                <h2 className="patient-blocker__title">Registro Completado</h2>
-                <p className="patient-blocker__message">
+                <h2 className={`${styles.title}`}>Registro Completado</h2>
+                <p className={`${styles.message}`}>
                     Tu información ha sido recibida correctamente.
                     <br /><br />
                     Esta sección es de uso administrativo. Si necesitas realizar otra gestión, por favor utiliza el enlace enviado a tu dispositivo o escanea el QR en el consultorio.
                 </p>
                 <Button
                     variant="secondary"
-                    className="patient-blocker__button"
+                    className={`${styles.button}`}
                     onClick={handleLogout}
                 >
                     Cerrar Sesión

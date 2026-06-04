@@ -1,20 +1,17 @@
+---
+source_file: "client/src/components/atoms/ProtectedRoute.jsx"
+type: "code"
+community: "Android Messaging"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Android_Messaging
+---
+
 # ProtectedRoute.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/ProtectedRoute.jsx
-- **Comunidad:** [[_COMMUNITY_Community 6]]
+## Connections
+- [[ProtectedRoute()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[ProtectedRoute()|ProtectedRoute()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[RequestsPage.jsx|RequestsPage.jsx]]
-- [[RequestsPage()|RequestsPage()]]
-- [[useMedicalRequest.js|useMedicalRequest.js]]
-- [[useMedicalRequest()|useMedicalRequest()]]
-- [[MedicalRequestForm.jsx|MedicalRequestForm.jsx]]
-- [[MedicalRequestForm()|MedicalRequestForm()]]
-- [[MedicalRequestList.jsx|MedicalRequestList.jsx]]
-- [[MedicalRequestList()|MedicalRequestList()]]
-- [[MedicalHistoryTable.jsx|MedicalHistoryTable.jsx]]
-- [[MedicalHistoryTable()|MedicalHistoryTable()]]
+#graphify/code #graphify/EXTRACTED #community/Android_Messaging

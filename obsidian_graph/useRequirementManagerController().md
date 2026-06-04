@@ -1,26 +1,24 @@
+---
+source_file: "client/src/features/medical_documents/hooks/useRequirementManagerController.js"
+type: "code"
+community: "Modals & Prescriptions"
+location: "L15"
+tags:
+  - graphify/code
+  - graphify/INFERRED
+  - community/Modals_&_Prescriptions
+---
+
 # useRequirementManagerController()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/hooks/useRequirementManagerController.js
-- **Comunidad:** [[_COMMUNITY_Community 15]]
+## Connections
+- [[MedicalRequirementManager()]] - `calls` [INFERRED]
+- [[useFetch()]] - `calls` [INFERRED]
+- [[useLanguage()]] - `calls` [INFERRED]
+- [[useMessage()]] - `calls` [INFERRED]
+- [[useModal()]] - `calls` [INFERRED]
+- [[usePermissions()]] - `calls` [INFERRED]
+- [[useRequirementManagerController.js]] - `contains` [EXTRACTED]
+- [[useSearch()]] - `calls` [INFERRED]
 
-## Conexiones Directas
-- --> [[useModal()|useModal()]] (calls)
-- --> [[useMessage()|useMessage()]] (calls)
-- --> [[useLanguage()|useLanguage()]] (calls)
-- <-- [[useRequirementManagerController.js|useRequirementManagerController.js]] (contains)
-- --> [[usePermissions()|usePermissions()]] (calls)
-- --> [[useFetch()|useFetch()]] (calls)
-- <-- [[MedicalRequirementManager()|MedicalRequirementManager()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[DoctorContext.jsx|DoctorContext.jsx]]
-- [[DoctorProvider()|DoctorProvider()]]
-- [[MedicalDocumentsPage.jsx|MedicalDocumentsPage.jsx]]
-- [[MedicalDocumentsPage()|MedicalDocumentsPage()]]
-- [[useRequirementManagerController.js|useRequirementManagerController.js]]
-- [[useMedicalDocumentsHandlers.js|useMedicalDocumentsHandlers.js]]
-- [[useMedicalDocumentsHandlers()|useMedicalDocumentsHandlers()]]
-- [[useMedicalDocumentsController.js|useMedicalDocumentsController.js]]
-- [[useMedicalDocumentsController()|useMedicalDocumentsController()]]
-- [[MedicalRequirementManager.jsx|MedicalRequirementManager.jsx]]
+#graphify/code #graphify/INFERRED #community/Modals_&_Prescriptions

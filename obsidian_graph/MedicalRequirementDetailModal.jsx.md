@@ -1,14 +1,17 @@
+---
+source_file: "client/src/features/medical_documents/components/modals/MedicalRequirementDetailModal.jsx"
+type: "code"
+community: "Community 87"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_87
+---
+
 # MedicalRequirementDetailModal.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/medical_documents/components/MedicalRequirementDetailModal.jsx
-- **Comunidad:** [[_COMMUNITY_Community 82]]
+## Connections
+- [[MedicalRequirementDetailModal()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicalRequirementDetailModal()|MedicalRequirementDetailModal()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicalRequirementDetailModal()|MedicalRequirementDetailModal()]]
-- [[medicationHelpers.js|medicationHelpers.js]]
-- [[extractMedicationDetails()|extractMedicationDetails()]]
-- [[calculateDuration()|calculateDuration()]]
+#graphify/code #graphify/EXTRACTED #community/Community_87

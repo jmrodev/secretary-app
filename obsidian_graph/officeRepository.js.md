@@ -1,15 +1,17 @@
+---
+source_file: "server/repositories/core/officeRepository.js"
+type: "code"
+community: "Community 67"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_67
+---
+
 # officeRepository.js
 
-- **Tipo:** code
-- **Archivo:** server/repositories/officeRepository.js
-- **Comunidad:** [[_COMMUNITY_Community 62]]
+## Connections
+- [[OfficeRepository]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[OfficeRepository|OfficeRepository]] (contains)
-
-## Miembros de la misma Comunidad
-- [[OfficeRepository|OfficeRepository]]
-- [[.findAllOffices()|.findAllOffices()]]
-- [[.createOffice()|.createOffice()]]
-- [[.createRental()|.createRental()]]
-- [[.findRentalsByDoctor()|.findRentalsByDoctor()]]
+#graphify/code #graphify/EXTRACTED #community/Community_67

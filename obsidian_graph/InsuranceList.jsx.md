@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/insurances/components/InsuranceList.jsx"
+type: "code"
+community: "Agenda & Slot Management"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Agenda_&_Slot_Management
+---
+
 # InsuranceList.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/insurances/components/InsuranceList.jsx
-- **Comunidad:** [[_COMMUNITY_Community 0]]
+## Connections
+- [[InsuranceList()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[InsuranceList()|InsuranceList()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useLanguage()|useLanguage()]]
-- [[InstitutionForm.jsx|InstitutionForm.jsx]]
-- [[InstitutionForm()|InstitutionForm()]]
-- [[InsuranceList()|InsuranceList()]]
-- [[InsuranceFormModal.jsx|InsuranceFormModal.jsx]]
-- [[InsuranceFormModal()|InsuranceFormModal()]]
-- [[AppointmentCard.jsx|AppointmentCard.jsx]]
-- [[AppointmentCard()|AppointmentCard()]]
-- [[CalendarSection.jsx|CalendarSection.jsx]]
-- [[CalendarSection()|CalendarSection()]]
+#graphify/code #graphify/EXTRACTED #community/Agenda_&_Slot_Management

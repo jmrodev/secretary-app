@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/templates/MainLayout.jsx"
+type: "code"
+community: "Community 264"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_264
+---
+
 # MainLayout()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/templates/MainLayout.jsx
-- **Comunidad:** [[_COMMUNITY_Community 261]]
+## Connections
+- [[MainLayout.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MainLayout.jsx|MainLayout.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MainLayout.jsx|MainLayout.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_264

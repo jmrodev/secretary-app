@@ -1,21 +1,18 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/ui/PatientAdapter.kt"
+type: "code"
+community: "Community 19"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_19
+---
+
 # PatientAdapter.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/ui/PatientAdapter.kt
-- **Comunidad:** [[_COMMUNITY_Community 22]]
+## Connections
+- [[PatientAdapter]] - `contains` [EXTRACTED]
+- [[PatientViewHolder]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[PatientAdapter|PatientAdapter]] (contains)
-- --> [[PatientViewHolder|PatientViewHolder]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientsActivity.kt|PatientsActivity.kt]]
-- [[PatientsActivity|PatientsActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.handleIntent()|.handleIntent()]]
-- [[.handlePatientClick()|.handlePatientClick()]]
-- [[.uploadSharedFile()|.uploadSharedFile()]]
-- [[.loadPatients()|.loadPatients()]]
-- [[.filter()|.filter()]]
-- [[PatientAdapter|PatientAdapter]]
-- [[PatientViewHolder|PatientViewHolder]]
+#graphify/code #graphify/EXTRACTED #community/Community_19

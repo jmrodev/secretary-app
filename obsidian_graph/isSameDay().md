@@ -1,21 +1,20 @@
+---
+source_file: "client/src/utils/core/dateUtils.js"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L77"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # isSameDay()
 
-- **Tipo:** code
-- **Archivo:** client/src/utils/dateUtils.js
-- **Comunidad:** [[_COMMUNITY_Community 17]]
+## Connections
+- [[CalendarGrid()]] - `calls` [INFERRED]
+- [[dateUtils.js_1]] - `contains` [EXTRACTED]
+- [[isToday()]] - `calls` [EXTRACTED]
+- [[parseDate()]] - `calls` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[dateUtils.js|dateUtils.js]] (contains)
-- --> [[parseDate()|parseDate()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[FinanceFilters.jsx|FinanceFilters.jsx]]
-- [[FinanceFilters()|FinanceFilters()]]
-- [[ReportFilters.jsx|ReportFilters.jsx]]
-- [[ReportFilters()|ReportFilters()]]
-- [[dateUtils.js|dateUtils.js]]
-- [[parseDate()|parseDate()]]
-- [[formatDate()|formatDate()]]
-- [[getMonthName()|getMonthName()]]
-- [[getMonthsOptions()|getMonthsOptions()]]
-- [[formatTime()|formatTime()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

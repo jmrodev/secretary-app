@@ -1,13 +1,17 @@
+---
+source_file: "client/src/context/useModalLogic.js"
+type: "code"
+community: "Community 101"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_101
+---
+
 # useModalLogic.js
 
-- **Tipo:** code
-- **Archivo:** client/src/context/useModalLogic.js
-- **Comunidad:** [[_COMMUNITY_Community 97]]
+## Connections
+- [[useModalLogic()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[useModalLogic()|useModalLogic()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModalLogic()|useModalLogic()]]
-- [[ModalContext.jsx|ModalContext.jsx]]
-- [[ModalProvider()|ModalProvider()]]
+#graphify/code #graphify/EXTRACTED #community/Community_101

@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/forms/PatientMedicalNotes.jsx"
+type: "code"
+community: "Community 246"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_246
+---
+
 # PatientMedicalNotes()
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/PatientMedicalNotes.jsx
-- **Comunidad:** [[_COMMUNITY_Community 241]]
+## Connections
+- [[PatientMedicalNotes.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[PatientMedicalNotes.jsx|PatientMedicalNotes.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[PatientMedicalNotes.jsx|PatientMedicalNotes.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_246

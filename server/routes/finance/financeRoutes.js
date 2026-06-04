@@ -1,6 +1,6 @@
 const express = require('express');
-const router = express.Router();
-const financeController = require('../../controllers/finance/financeController');
+module.exports = (financeController) => {
+    const router = express.Router();
 const { verifyToken } = require('../../middleware/authMiddleware');
 const { authorize } = require('../../middleware/authorize');
 const { ACCESS_LEVELS } = require('../../constants/roles');
@@ -32,4 +32,6 @@ router.get('/pending-closures', verifyToken, financeController.getPendingClosure
 router.get('/stats', verifyToken, authorize(ACCESS_LEVELS.MANAGE_FINANCE), financeController.getStats);
 router.get('/transactions/audits', verifyToken, authorize(ACCESS_LEVELS.MANAGE_FINANCE), financeController.getTransactionAudits);
 
-module.exports = router;
+return router;
+};
+

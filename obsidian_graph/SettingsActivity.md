@@ -1,21 +1,22 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/SettingsActivity.kt"
+type: "code"
+community: "Community 63"
+location: "L21"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_63
+---
+
 # SettingsActivity
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/SettingsActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 57]]
+## Connections
+- [[.loadConfiguration()]] - `method` [EXTRACTED]
+- [[.onCreate()_8]] - `method` [EXTRACTED]
+- [[.parseScannedUrl()]] - `method` [EXTRACTED]
+- [[.saveConfiguration()]] - `method` [EXTRACTED]
+- [[.testConnection()]] - `method` [EXTRACTED]
+- [[SettingsActivity.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[SettingsActivity.kt|SettingsActivity.kt]] (contains)
-- --> [[.onCreate()|.onCreate()]] (method)
-- --> [[.loadConfiguration()|.loadConfiguration()]] (method)
-- --> [[.testConnection()|.testConnection()]] (method)
-- --> [[.saveConfiguration()|.saveConfiguration()]] (method)
-- --> [[.parseScannedUrl()|.parseScannedUrl()]] (method)
-
-## Miembros de la misma Comunidad
-- [[SettingsActivity.kt|SettingsActivity.kt]]
-- [[.onCreate()|.onCreate()]]
-- [[.loadConfiguration()|.loadConfiguration()]]
-- [[.testConnection()|.testConnection()]]
-- [[.saveConfiguration()|.saveConfiguration()]]
-- [[.parseScannedUrl()|.parseScannedUrl()]]
+#graphify/code #graphify/EXTRACTED #community/Community_63

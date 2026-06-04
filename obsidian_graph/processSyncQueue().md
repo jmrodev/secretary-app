@@ -1,13 +1,18 @@
+---
+source_file: "server/services/integrations/googleSyncService.js"
+type: "code"
+community: "Community 116"
+location: "L10"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_116
+---
+
 # processSyncQueue()
 
-- **Tipo:** code
-- **Archivo:** server/services/googleSyncService.js
-- **Comunidad:** [[_COMMUNITY_Community 108]]
+## Connections
+- [[googleSyncService.js_1]] - `contains` [EXTRACTED]
+- [[startSyncWorker()]] - `calls` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[googleSyncService.js|googleSyncService.js]] (contains)
-- <-- [[startSyncWorker()|startSyncWorker()]] (calls)
-
-## Miembros de la misma Comunidad
-- [[googleSyncService.js|googleSyncService.js]]
-- [[startSyncWorker()|startSyncWorker()]]
+#graphify/code #graphify/EXTRACTED #community/Community_116

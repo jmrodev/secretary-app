@@ -1,11 +1,17 @@
+---
+source_file: "client/src/features/patients/components/medications/MedicationHistory.jsx"
+type: "code"
+community: "Community 241"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_241
+---
+
 # MedicationHistory.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/patients/components/MedicationHistory.jsx
-- **Comunidad:** [[_COMMUNITY_Community 245]]
+## Connections
+- [[MedicationHistory()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[MedicationHistory()|MedicationHistory()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicationHistory()|MedicationHistory()]]
+#graphify/code #graphify/EXTRACTED #community/Community_241

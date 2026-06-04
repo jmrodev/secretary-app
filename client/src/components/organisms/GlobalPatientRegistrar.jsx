@@ -33,15 +33,18 @@ const GlobalPatientRegistrar = () => {
     };
 
     return (
-        <PatientManagerModal
-            isOpen={modalState.isOpen}
-            onClose={handleClose}
-            patient={modalState.initialData}
-            onUpdate={() => {
-                // Optional: handle post-registration logic (like refreshing lists)
-                handleClose();
-            }}
-        />
+        <>
+            {modalState.isOpen && (
+                <PatientManagerModal
+                    isOpen={modalState.isOpen}
+                    onClose={handleClose}
+                    patient={modalState.initialData}
+                    onUpdate={() => {
+                        handleClose();
+                    }}
+                />
+            )}
+        </>
     );
 };
 

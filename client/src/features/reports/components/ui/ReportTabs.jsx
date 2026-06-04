@@ -2,11 +2,11 @@ import React from 'react';
 import TabButton from '@/components/atoms/TabButton';
 import TabNav from '@/components/molecules/TabNav';
 import Icon from '@/components/atoms/Icon';
-import './ReportTabs.css';
+import styles from './ReportTabs.module.css';
 
 const ReportTabs = ({ activeTab, onTabChange, t }) => {
     return (
-        <TabNav className="report-tabs">
+        <TabNav className={`${styles.reportTabs}`}>
             <TabButton
                 isActive={activeTab === 'appointments'}
                 onClick={() => onTabChange('appointments')}

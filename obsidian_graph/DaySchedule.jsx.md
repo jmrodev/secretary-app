@@ -1,20 +1,17 @@
+---
+source_file: "client/src/features/appointments/components/schedule/DaySchedule.jsx"
+type: "code"
+community: "Institutions & Medical Requirements"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Institutions_&_Medical_Requirements
+---
+
 # DaySchedule.jsx
 
-- **Tipo:** code
-- **Archivo:** client/src/features/appointments/components/DaySchedule.jsx
-- **Comunidad:** [[_COMMUNITY_Community 11]]
+## Connections
+- [[DaySchedule()]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[DaySchedule()|DaySchedule()]] (contains)
-
-## Miembros de la misma Comunidad
-- [[useModal()|useModal()]]
-- [[useTempAccessController.js|useTempAccessController.js]]
-- [[useTempAccessController()|useTempAccessController()]]
-- [[InsurancesPage.jsx|InsurancesPage.jsx]]
-- [[InsurancesPage()|InsurancesPage()]]
-- [[useInsurancesController.js|useInsurancesController.js]]
-- [[useInsurancesController()|useInsurancesController()]]
-- [[useDayScheduleHandlers.js|useDayScheduleHandlers.js]]
-- [[useDayScheduleHandlers()|useDayScheduleHandlers()]]
-- [[DaySchedule()|DaySchedule()]]
+#graphify/code #graphify/EXTRACTED #community/Institutions_&_Medical_Requirements

@@ -4,7 +4,7 @@ import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import PrescriptionItemsList from '@/features/medical_documents/components/lists/PrescriptionItemsList';
-import './EditRequestModal.css';
+import styles from './EditRequestModal.module.css';
 
 /**
  * EditRequestModal Molecule.
@@ -27,8 +27,9 @@ const EditRequestModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
+            size="xl"
             title={
-                <div className="modal-header__title-flex">
+                <div className={`${styles.titleFlex}`}>
                     <Icon name="edit_note" size="1.5rem" color="var(--accent-color)" />
                     {t('edit_request')}
                 </div>
@@ -52,10 +53,10 @@ const EditRequestModal = ({
                 )
             }
         >
-            <div className="edit-request-modal__body">
+            <div className={`${styles.body}`}>
                 {request.type === 'prescription' && editData.items && editData.items.length > 0 && (
-                    <div className="edit-request-modal__section">
-                        <div className="edit-request-modal__prescriptions">
+                    <div className={`${styles.section}`}>
+                        <div className={`${styles.prescriptions}`}>
                             <PrescriptionItemsList
                                 items={editData.items}
                                 handleRemoveItem={() => { }}
@@ -102,8 +103,8 @@ const EditRequestModal = ({
                             <Icon name="payments" size="1rem" />
                             {t('appointment_payment')}
                         </label>
-                        <div className="edit-request-modal__payment-status">
-                            <label className="checkbox-container">
+                        <div className={`${styles.paymentStatus}`}>
+                            <label className={`${styles.checkboxContainer}`}>
                                 <input
                                     type="checkbox"
                                     checked={editData.payment_status === 'bonified'}

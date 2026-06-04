@@ -1,0 +1,150 @@
+/* BalanceView Component Styles (BEM) */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+}
+
+.cardSummary {
+    grid-column: span 1;
+}
+
+.cardTitle {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.summaryItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.amountPositive {
+    color: var(--success);
+    font-weight: 700;
+}
+
+.summaryItemSubtotal {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--gray-200);
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.summaryItemWithdrawals {
+    color: var(--error);
+}
+
+.summaryItemNet {
+    margin-top: 1rem;
+    padding: 1.25rem;
+    background: var(--gray-900);
+    color: white;
+    border-radius: var(--radius-sm);
+    font-size: 1.25rem;
+    font-weight: 900;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    text-align: left;
+    padding: 0.75rem;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 800;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table td {
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--gray-50);
+}
+
+.tableFooter {
+    background: var(--gray-50);
+    font-weight: 800;
+}
+
+.cellRight {
+    text-align: right;
+}
+
+.cellBold {
+    font-weight: 800;
+}
+
+.emptyState {
+    padding: 3rem 1rem;
+    text-align: center;
+    border: 2px dashed var(--gray-100);
+    border-radius: var(--radius);
+    background: var(--gray-50);
+}
+
+.emptyMsg {
+    font-style: italic;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin: 0;
+}
+
+.debtTotal {
+    margin-top: 2rem;
+    padding: 1.25rem;
+    background: var(--red-50);
+    color: var(--red-800);
+    text-align: right;
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--error);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.amountBold {
+    font-size: 1.25rem;
+    font-weight: 900;
+}
+
+@media (width <= 1200px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}

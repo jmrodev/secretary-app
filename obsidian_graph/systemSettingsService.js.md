@@ -1,14 +1,17 @@
+---
+source_file: "server/services/system/systemSettingsService.js"
+type: "code"
+community: "Community 80"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_80
+---
+
 # systemSettingsService.js
 
-- **Tipo:** code
-- **Archivo:** server/services/systemSettingsService.js
-- **Comunidad:** [[_COMMUNITY_Community 73]]
+## Connections
+- [[SystemSettingsService]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[SystemSettingsService|SystemSettingsService]] (contains)
-
-## Miembros de la misma Comunidad
-- [[SystemSettingsService|SystemSettingsService]]
-- [[.getPublicSettings()|.getPublicSettings()]]
-- [[.updateSetting()|.updateSetting()]]
-- [[.refreshTunnel()|.refreshTunnel()]]
+#graphify/code #graphify/EXTRACTED #community/Community_80

@@ -1,12 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/workers/UploadWorker.kt"
+type: "code"
+community: "Community 118"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_118
+---
+
 # UploadWorker.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/workers/UploadWorker.kt
-- **Comunidad:** [[_COMMUNITY_Community 112]]
+## Connections
+- [[UploadWorker]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[UploadWorker|UploadWorker]] (contains)
-
-## Miembros de la misma Comunidad
-- [[UploadWorker|UploadWorker]]
-- [[.doWork()|.doWork()]]
+#graphify/code #graphify/EXTRACTED #community/Community_118

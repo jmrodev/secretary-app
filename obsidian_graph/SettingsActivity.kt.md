@@ -1,16 +1,17 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/SettingsActivity.kt"
+type: "code"
+community: "Community 63"
+location: "L1"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_63
+---
+
 # SettingsActivity.kt
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/SettingsActivity.kt
-- **Comunidad:** [[_COMMUNITY_Community 57]]
+## Connections
+- [[SettingsActivity]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- --> [[SettingsActivity|SettingsActivity]] (contains)
-
-## Miembros de la misma Comunidad
-- [[SettingsActivity|SettingsActivity]]
-- [[.onCreate()|.onCreate()]]
-- [[.loadConfiguration()|.loadConfiguration()]]
-- [[.testConnection()|.testConnection()]]
-- [[.saveConfiguration()|.saveConfiguration()]]
-- [[.parseScannedUrl()|.parseScannedUrl()]]
+#graphify/code #graphify/EXTRACTED #community/Community_63

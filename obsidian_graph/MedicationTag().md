@@ -1,11 +1,17 @@
+---
+source_file: "client/src/components/atoms/MedicationTag.jsx"
+type: "code"
+community: "Community 266"
+location: "L13"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_266
+---
+
 # MedicationTag()
 
-- **Tipo:** code
-- **Archivo:** client/src/components/atoms/MedicationTag.jsx
-- **Comunidad:** [[_COMMUNITY_Community 263]]
+## Connections
+- [[MedicationTag.jsx]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[MedicationTag.jsx|MedicationTag.jsx]] (contains)
-
-## Miembros de la misma Comunidad
-- [[MedicationTag.jsx|MedicationTag.jsx]]
+#graphify/code #graphify/EXTRACTED #community/Community_266

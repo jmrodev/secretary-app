@@ -23,6 +23,9 @@ class UserStatsService {
         const monthStart = pad(new Date(now.getFullYear(), now.getMonth(), 1));
         const monthEnd = pad(new Date(now.getFullYear(), now.getMonth() + 1, 1));
 
+        const yearStart = pad(new Date(now.getFullYear(), 0, 1));
+        const yearEnd = pad(new Date(now.getFullYear() + 1, 0, 1));
+
         let doctorId = requestedDoctorId;
         if (role === 'doctor') {
             const doc = await doctorRepository.getDoctorConfigByUserId(user_id);
@@ -30,10 +33,11 @@ class UserStatsService {
             doctorId = doc.id;
         }
 
-        const [today, week, month, total, patients, contacts] = await Promise.all([
+        const [today, week, month, year, total, patients, contacts] = await Promise.all([
             statsRepository.countAppointments({ doctorId, from: todayStart, to: todayEnd }),
             statsRepository.countAppointments({ doctorId, from: weekStart, to: weekEnd }),
             statsRepository.countAppointments({ doctorId, from: monthStart, to: monthEnd }),
+            statsRepository.countAppointments({ doctorId, from: yearStart, to: yearEnd }),
             statsRepository.countAppointments({ doctorId }),
             statsRepository.countPatients(doctorId),
             statsRepository.countPatients(),
@@ -43,6 +47,7 @@ class UserStatsService {
             appointments_today: today,
             appointments_week: week,
             appointments_month: month,
+            appointments_year: year,
             total_appointments: total,
             total_patients: patients,
             total_contacts: contacts,

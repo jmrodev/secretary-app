@@ -1,19 +1,21 @@
+---
+source_file: "android_native/app/src/main/java/com/secretaryapp/api/RetrofitClient.kt"
+type: "code"
+community: "Community 71"
+location: "L7"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/Community_71
+---
+
 # RetrofitClient
 
-- **Tipo:** code
-- **Archivo:** android_native/app/src/main/java/com/secretaryapp/api/RetrofitClient.kt
-- **Comunidad:** [[_COMMUNITY_Community 66]]
+## Connections
+- [[.getBaseUrl()]] - `method` [EXTRACTED]
+- [[.initialize()]] - `method` [EXTRACTED]
+- [[.loadBaseUrlFromPreferences()]] - `method` [EXTRACTED]
+- [[.updateBaseUrl()]] - `method` [EXTRACTED]
+- [[RetrofitClient.kt]] - `contains` [EXTRACTED]
 
-## Conexiones Directas
-- <-- [[RetrofitClient.kt|RetrofitClient.kt]] (contains)
-- --> [[.initialize()|.initialize()]] (method)
-- --> [[.loadBaseUrlFromPreferences()|.loadBaseUrlFromPreferences()]] (method)
-- --> [[.getBaseUrl()|.getBaseUrl()]] (method)
-- --> [[.updateBaseUrl()|.updateBaseUrl()]] (method)
-
-## Miembros de la misma Comunidad
-- [[RetrofitClient.kt|RetrofitClient.kt]]
-- [[.initialize()|.initialize()]]
-- [[.loadBaseUrlFromPreferences()|.loadBaseUrlFromPreferences()]]
-- [[.getBaseUrl()|.getBaseUrl()]]
-- [[.updateBaseUrl()|.updateBaseUrl()]]
+#graphify/code #graphify/EXTRACTED #community/Community_71

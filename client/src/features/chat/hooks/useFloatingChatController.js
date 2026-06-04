@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import api from '@/api/axios';
 import { useFetch } from '@/hooks/useFetch';
 import { getNow } from '@/utils/core/dateUtils';
@@ -12,10 +12,11 @@ export const useFloatingChatController = (user, showMessage) => {
     const [selectedConvo, setSelectedConvo] = useState(null);
 
     // Refs to track state inside callbacks without adding dependencies
-    const selectedConvoRef = useRef(null);
-    useEffect(() => { selectedConvoRef.current = selectedConvo; }, [selectedConvo]);
+    const selectedConvoRef = useRef(selectedConvo);
+    useEffect(() => {
+        selectedConvoRef.current = selectedConvo;
+    }, [selectedConvo]);
 
-    const [unreadCountState, setUnreadCountState] = useState(0);
     const [messageText, setMessageText] = useState('');
     const [sending, setSending] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -62,13 +63,13 @@ export const useFloatingChatController = (user, showMessage) => {
 
     // Unread Count
     const { 
+        data: unreadData,
         refetch: fetchUnreadCount
     } = useFetch('/messages/unread-count', {
         initialData: { unread_count: 0 },
-        immediate: !!user && user.role !== 'patient',
-        onSuccess: (data) => setUnreadCountState(data.unread_count || 0)
+        immediate: !!user && user.role !== 'patient'
     });
-    const unreadCount = unreadCountState;
+    const unreadCount = unreadData?.unread_count || 0;
 
     // Recipients
     const { data: recipients = [] } = useFetch('/messages/recipients', {
@@ -104,6 +105,19 @@ export const useFloatingChatController = (user, showMessage) => {
         }
     }, [selectedConvo]);
 
+    // React 19 useEffectEvent for stable polling callbacks
+    const onPollGeneral = React.useEffectEvent(() => {
+        fetchConversations();
+        fetchUnreadCount();
+    });
+
+    const onPollThread = React.useEffectEvent(() => {
+        if (selectedConvo) {
+            fetchThread();
+            checkTypingStatus(selectedConvo.other_user_id);
+        }
+    });
+
     useEffect(() => {
         if (!user || user.role === 'patient') return;
 
@@ -111,23 +125,19 @@ export const useFloatingChatController = (user, showMessage) => {
             Notification.requestPermission();
         }
 
-        const interval = setInterval(() => {
-            fetchConversations();
-            fetchUnreadCount();
-        }, 15000);
-
+        const interval = setInterval(onPollGeneral, 15000);
         return () => clearInterval(interval);
-    }, [user, fetchConversations, fetchUnreadCount]);
+    }, [user]);
+
+    const activeConvoId = selectedConvo?.other_user_id;
 
     useEffect(() => {
-        if (selectedConvo) {
-            const threadInterval = setInterval(() => {
-                fetchThread();
-                checkTypingStatus(selectedConvo.other_user_id);
-            }, 5000);
-            return () => clearInterval(threadInterval);
-        }
-    }, [selectedConvo, fetchThread, checkTypingStatus]);
+        if (!activeConvoId) return;
+        
+        onPollThread();
+        const threadInterval = setInterval(onPollThread, 5000);
+        return () => clearInterval(threadInterval);
+    }, [activeConvoId]);
 
     useEffect(() => {
         if (scrollRef.current) {

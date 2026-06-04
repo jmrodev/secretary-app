@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import './AutoTextarea.css';
+import styles from './AutoTextarea.module.css';
 
 /**
  * AutoTextarea Atom follows Atomic Design & BEM.
