@@ -1,0 +1,86 @@
+.tabBtn {
+    /* --- Local Component Tokens --- */
+    --tab-bg: transparent;
+    --tab-color: var(--text-muted);
+    --tab-hover-bg: var(--gray-800);
+    --tab-hover-color: var(--text-main);
+    --tab-active-bg: var(--dashboard-card-bg);
+    --tab-active-color: var(--primary-color);
+    --tab-active-border: var(--dashboard-card-border);
+    --tab-active-shadow: var(--shadow-sm);
+
+    /* ------------------------------ */
+
+    padding: 0.625rem 1.25rem;
+    background-color: var(--tab-bg);
+    border: none;
+    cursor: pointer;
+    font-size: 0.9375rem;
+    color: var(--tab-color);
+    transition: all 0.2s ease;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tabBtn:hover:not(.tabBtnActive) {
+    background-color: var(--tab-hover-bg);
+    color: var(--tab-hover-color);
+}
+
+.tabBtnActive {
+    background-color: var(--tab-active-bg);
+    color: var(--tab-active-color);
+    font-weight: 600;
+    box-shadow: var(--tab-active-shadow);
+    border: 1px solid var(--tab-active-border);
+}
+
+.tabBtnUnderline {
+    border-radius: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid transparent;
+}
+
+.tabBtnUnderline.tabBtnActive {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    border-bottom: 2px solid var(--tab-active-color);
+}
+
+/* Color Modifiers for active states */
+.tabBtnGreen.tabBtnActive {
+    --tab-active-color: var(--green-600);
+}
+
+.tabBtnAmber.tabBtnActive {
+    --tab-active-color: var(--amber-600);
+}
+
+.tabBtnPurple.tabBtnActive {
+    --tab-active-color: var(--purple-600);
+}
+
+.tabBtnRed.tabBtnActive {
+    --tab-active-color: var(--red-600);
+}
+
+/* Underline Color Modifiers */
+.tabBtnUnderline.tabBtnGreen.tabBtnActive {
+    border-bottom-color: var(--green-600);
+}
+
+.tabBtnUnderline.tabBtnAmber.tabBtnActive {
+    border-bottom-color: var(--amber-600);
+}
+
+.tabBtnUnderline.tabBtnPurple.tabBtnActive {
+    border-bottom-color: var(--purple-600);
+}
+
+.tabBtnUnderline.tabBtnRed.tabBtnActive {
+    border-bottom-color: var(--red-600);
+}

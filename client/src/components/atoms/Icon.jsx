@@ -1,6 +1,6 @@
 import React from 'react';
 import { ICONS } from '@/constants/icons';
-import './Icon.css';
+import styles from './Icon.module.css';
 
 /**
  * Icon Atom component.
@@ -24,8 +24,8 @@ const Icon = ({
 
     const combinedClasses = [
         'material-symbols-outlined',
-        'icon',
-        onIconClick ? 'icon--clickable' : '',
+        styles.root,
+        onIconClick ? styles.clickable : '',
         className
     ].filter(Boolean).join(' ');
 
@@ -44,7 +44,7 @@ const Icon = ({
                 style={{ ...style, background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                 onClick={onIconClick}
                 onKeyDown={handleKeyDown}
-                aria-label={typeof name === 'string' ? name.toLowerCase().replace(/_/g, ' ') : 'icon'}
+                aria-label={typeof name === 'string' ? name.toLowerCase().replace(/_/g, ' ') : styles.root}
             >
                 {symbol}
             </button>

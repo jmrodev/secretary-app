@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
 import { formatDateTimeLong } from '@/utils/core/dateUtils';
-import './AuditLogTable.css';
+import styles from './AuditLogTable.module.css';
 
 const AuditLogTable = ({ logs, onSelectLog, t }) => {
 
@@ -19,34 +19,34 @@ const AuditLogTable = ({ logs, onSelectLog, t }) => {
     };
 
     return (
-        <div className="audit-log-table-container">
-            <table className="audit-log-table">
-                <thead className="audit-log-table__thead">
+        <div className={`${styles.auditLogTableContainer}`}>
+            <table className={`${styles.root}`}>
+                <thead className={`${styles.thead}`}>
                     <tr>
-                        <th className="audit-log-table__th">{t('time_header')}</th>
-                        <th className="audit-log-table__th">{t('user_header')}</th>
-                        <th className="audit-log-table__th">{t('action_header')}</th>
-                        <th className="audit-log-table__th audit-log-table__th--details">{t('details_header')}</th>
-                        <th className="audit-log-table__th">{t('ip_header')}</th>
+                        <th className={`${styles.th}`}>{t('time_header')}</th>
+                        <th className={`${styles.th}`}>{t('user_header')}</th>
+                        <th className={`${styles.th}`}>{t('action_header')}</th>
+                        <th className={`${styles.th} ${styles.thDetails}`}>{t('details_header')}</th>
+                        <th className={`${styles.th}`}>{t('ip_header')}</th>
                     </tr>
                 </thead>
                 <tbody className="audit-log-table__tbody">
                     {logs.map(log => (
-                        <tr key={log.id} className="audit-log-table__row">
-                            <td className="audit-log-table__cell audit-log-table__cell--time">
+                        <tr key={log.id} className={`${styles.row}`}>
+                            <td className={`${styles.cell} ${styles.cellTime}`}>
                                 {formatDateTimeLong(log.created_at)}
                             </td>
-                            <td className="audit-log-table__cell audit-log-table__cell--user">
+                            <td className={`${styles.cell} ${styles.cellUser}`}>
                                 {log.username}
                             </td>
-                            <td className="audit-log-table__cell">
+                            <td className={`${styles.cell}`}>
                                 {formatAction(log.action)}
                             </td>
-                            <td className="audit-log-table__cell audit-log-table__cell--details" title={log.details}>
+                            <td className={`${styles.cell} ${styles.cellDetails}`} title={log.details}>
                                 {log.details ? (
                                     log.details.length > 60 ? (
-                                        <div className="audit-log-table__details-wrapper">
-                                            <span className="audit-log-table__details-text">{log.details}</span>
+                                        <div className={`${styles.detailsWrapper}`}>
+                                            <span className={`${styles.detailsText}`}>{log.details}</span>
                                             <Button
                                                 variant="link"
                                                 size="sm-compact"
@@ -55,17 +55,17 @@ const AuditLogTable = ({ logs, onSelectLog, t }) => {
                                                 {t('view_more')}
                                             </Button>
                                         </div>
-                                    ) : <span className="audit-log-table__details-text">{log.details}</span>
-                                ) : <span className="audit-log-table__details-text">-</span>}
+                                    ) : <span className={`${styles.detailsText}`}>{log.details}</span>
+                                ) : <span className={`${styles.detailsText}`}>-</span>}
                             </td>
-                            <td className="audit-log-table__cell audit-log-table__cell--ip">
+                            <td className={`${styles.cell} ${styles.cellIp}`}>
                                 {log.ip_address}
                             </td>
                         </tr>
                     ))}
                     {logs.length === 0 && (
                         <tr>
-                            <td colSpan="5" className="audit-log-table__empty">{t('no_logs_found')}</td>
+                            <td colSpan="5" className={`${styles.empty}`}>{t('no_logs_found')}</td>
                         </tr>
                     )}
                 </tbody>

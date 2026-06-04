@@ -5,7 +5,7 @@ import Button from '@/components/atoms/Button';
 import CurrencyInput from '@/components/atoms/CurrencyInput';
 import Select from '@/components/atoms/Select';
 import { getPaymentMethods } from '@/constants/transactionOptions';
-import './DebtPaymentModal.css';
+import styles from './DebtPaymentModal.module.css';
 
 /**
  * DebtPaymentModal Molecule (Executor).
@@ -35,16 +35,16 @@ const DebtPaymentModal = ({
                 </>
             }
         >
-            <div className="debt-payment-modal">
-                <div className="debt-payment-modal__field">
-                    <label className="debt-payment-modal__label">{t('amount')} ($)</label>
+            <div className={`${styles.root}`}>
+                <div className={`${styles.field}`}>
+                    <label className={`${styles.label}`}>{t('amount')} ($)</label>
                     <CurrencyInput
                         value={amount}
                         onChange={(e) => onAmountChange(e.target.value)}
                     />
                 </div>
-                <div className="debt-payment-modal__field">
-                    <label className="debt-payment-modal__label">{t('payment_method')}</label>
+                <div className={`${styles.field}`}>
+                    <label className={`${styles.label}`}>{t('payment_method')}</label>
                     <Select
                         value={method}
                         onChange={(e) => onMethodChange(e.target.value)}

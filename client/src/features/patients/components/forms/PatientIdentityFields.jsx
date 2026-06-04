@@ -1,7 +1,7 @@
 import React from 'react';
 import Input from '@/components/atoms/Input';
 import Icon from '@/components/atoms/Icon';
-import './PatientIdentityFields.css';
+import styles from './PatientIdentityFields.module.css';
 
 /**
  * PatientIdentityFields Molecule (Sub-Executor).
@@ -10,15 +10,15 @@ import './PatientIdentityFields.css';
  */
 const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
     return (
-        <article className="patient-identity-fields">
-            <header className="patient-identity-fields__header">
+        <article className={`${styles.root}`}>
+            <header className={`${styles.header}`}>
                 <Icon name="person_outline" size="1.25rem" />
-                <h3 className="patient-identity-fields__title">{t('legal_identity')}</h3>
+                <h3 className={`${styles.title}`}>{t('legal_identity')}</h3>
             </header>
 
-            <div className="patient-identity-fields__bento">
-                <div className="patient-identity-fields__group patient-identity-fields__group--span-6">
-                    <label className="patient-identity-fields__label">{t('first_name')}</label>
+            <div className={`${styles.bento}`}>
+                <div className={`${styles.group} ${styles.groupSpan6}`}>
+                    <label className={`${styles.label}`}>{t('first_name')}</label>
                     <Input
                         name="first_name"
                         className="patient-identity-fields__field"
@@ -28,8 +28,8 @@ const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                         placeholder={t('first_name_placeholder')}
                     />
                 </div>
-                <div className="patient-identity-fields__group patient-identity-fields__group--span-6">
-                    <label className="patient-identity-fields__label">{t('last_name')}</label>
+                <div className={`${styles.group} ${styles.groupSpan6}`}>
+                    <label className={`${styles.label}`}>{t('last_name')}</label>
                     <Input
                         name="last_name"
                         className="patient-identity-fields__field"
@@ -39,8 +39,8 @@ const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                         placeholder={t('last_name_placeholder')}
                     />
                 </div>
-                <div className="patient-identity-fields__group patient-identity-fields__group--span-4">
-                    <label className="patient-identity-fields__label">{t('dni')}</label>
+                <div className={`${styles.group} ${styles.groupSpan4}`}>
+                    <label className={`${styles.label}`}>{t('dni')}</label>
                     <Input
                         name="dni"
                         className="patient-identity-fields__field"
@@ -50,8 +50,8 @@ const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                         placeholder="12.345.678"
                     />
                 </div>
-                <div className="patient-identity-fields__group patient-identity-fields__group--span-8">
-                    <label className="patient-identity-fields__label">{t('dob')}</label>
+                <div className={`${styles.group} ${styles.groupSpan8}`}>
+                    <label className={`${styles.label}`}>{t('dob')}</label>
                     <Input
                         type="date"
                         name="dob"
@@ -62,7 +62,7 @@ const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                 </div>
             </div>
 
-            <footer className="patient-identity-fields__note">
+            <footer className={`${styles.note}`}>
                 <Icon name="info" size="1rem" />
                 <p>{t('identity_verification_note')}</p>
             </footer>

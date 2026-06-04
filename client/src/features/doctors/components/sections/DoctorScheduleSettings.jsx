@@ -6,7 +6,7 @@ import Button from '@/components/atoms/Button';
 import ScheduleBulkActions from '@/features/appointments/components/schedule/ScheduleBulkActions';
 import ScheduleTimeBlock from '@/features/appointments/components/schedule/ScheduleTimeBlock';
 
-import './DoctorScheduleSettings.css';
+import styles from './DoctorScheduleSettings.module.css';
 
 const EMPTY_SCHEDULE = [];
 const DAYS = [
@@ -101,13 +101,13 @@ const DoctorScheduleSettings = ({ doctorId, schedule = EMPTY_SCHEDULE, setSchedu
         });
     };
 
-    if (loading) return <div className="schedule-settings__loading">Cargando horarios…</div>;
+    if (loading) return <div className={`${styles.loading}`}>Cargando horarios…</div>;
 
     return (
-        <section className="schedule-settings">
+        <section className={`${styles.scheduleSettings}`}>
             <header className="schedule-settings__header">
-                <h3 className="schedule-settings__title">Configuración de Horarios de Atención</h3>
-                <p className="schedule-settings__desc">Defina los días y franjas horarias en las que este médico atiende.</p>
+                <h3 className={`${styles.title}`}>Configuración de Horarios de Atención</h3>
+                <p className={`${styles.desc}`}>Defina los días y franjas horarias en las que este médico atiende.</p>
             </header>
 
             <ScheduleBulkActions
@@ -119,7 +119,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = EMPTY_SCHEDULE, setSchedu
                 t={t}
             />
 
-            <div className="schedule-settings__days">
+            <div className={`${styles.days}`}>
                 {DAYS.map(day => {
                     const dayBlocks = (Array.isArray(schedule) ? schedule : []).reduce((acc, s, idx) => {
                         if (s.day_of_week === day.id) {
@@ -139,24 +139,24 @@ const DoctorScheduleSettings = ({ doctorId, schedule = EMPTY_SCHEDULE, setSchedu
                     const isActive = dayBlocks.length > 0;
 
                     return (
-                        <article key={day.id} className={`schedule-day ${isActive ? 'schedule-day--active' : ''}`}>
-                            <div className="schedule-day__header">
-                                <header className="schedule-day__toggle">
+                        <article key={day.id} className={`${styles.scheduleDay} ${isActive ? styles.scheduleDayActive : ''}`}>
+                            <div className={`${styles.header}`}>
+                                <header className={`${styles.toggle}`}>
                                     <input
                                         type="checkbox"
                                         id={`day-${day.id}`}
                                         checked={isActive}
                                         onChange={() => toggleDay(day.id)}
-                                        className="schedule-day__checkbox"
+                                        className={`${styles.checkbox}`}
                                     />
                                 </header>
-                                <div className="schedule-day__content">
-                                    <label htmlFor={`day-${day.id}`} className="schedule-day__name">
+                                <div className={`${styles.content}`}>
+                                    <label htmlFor={`day-${day.id}`} className={`${styles.name}`}>
                                         {day.name}
                                     </label>
 
                                     {isActive && (
-                                        <div className="schedule-blocks">
+                                        <div className={`${styles.scheduleBlocks}`}>
                                             {dayBlocks.map((block) => (
                                                 <ScheduleTimeBlock
                                                     key={block._key || block.originalIndex}
@@ -173,7 +173,7 @@ const DoctorScheduleSettings = ({ doctorId, schedule = EMPTY_SCHEDULE, setSchedu
                                                 variant="ghost"
                                                 size="sm"
                                                 onClick={() => handleAddBlock(day.id)}
-                                                className="schedule-blocks__add-btn"
+                                                className={`${styles.addBtn}`}
                                                 icon="+"
                                             >
                                                 {t('add_extra_block') || 'Agregar Turno Cortado / Extra'}

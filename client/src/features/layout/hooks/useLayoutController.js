@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
-import { useLanguage } from '@/hooks/useLanguage';
+import { useLanguage, useLanguageActions } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useFetch } from '@/hooks/useFetch';
 
@@ -11,7 +11,8 @@ import { useFetch } from '@/hooks/useFetch';
  */
 export const useLayoutController = () => {
     const { user, logout, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = usePermissions();
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
+    const { toggleLanguage } = useLanguageActions();
     const { settings } = useConfig();
     const location = useLocation();
 
@@ -53,6 +54,8 @@ export const useLayoutController = () => {
         user,
         logout,
         t,
+        language,
+        toggleLanguage,
         settings,
         location,
         doctors,

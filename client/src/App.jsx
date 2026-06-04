@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { useLanguage } from '@/hooks/useLanguage';
 import './App.css';
 
 // Routing Orchestrator
@@ -15,6 +16,8 @@ import ErrorBoundary from '@/components/molecules/ErrorBoundary';
  * Pure orchestrator component that coordinates global UI and routing.
  */
 function App() {
+  const { t } = useLanguage();
+
   useEffect(() => {
     // Visual indicator for Development Mode
     if (import.meta.env.DEV) {
@@ -30,7 +33,7 @@ function App() {
       <AppRouter />
       
       {/* WHATSAPP PATIENT MESSENGER */}
-      <GlobalWhatsappMessenger />
+      <GlobalWhatsappMessenger t={t} />
       <GlobalPatientRegistrar />
     </ErrorBoundary>
   );

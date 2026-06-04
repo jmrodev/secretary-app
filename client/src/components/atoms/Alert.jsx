@@ -1,5 +1,5 @@
 import React from 'react';
-import './Alert.css';
+import styles from './Alert.module.css';
 
 /**
  * Alert Atom follows Atomic Design & BEM.
@@ -11,7 +11,7 @@ const Alert = ({
     children,
     className = ''
 }) => {
-    const baseClass = 'alert';
+    const baseClass = styles.root;
     const variantClass = `${baseClass}--${variant}`;
 
     return (

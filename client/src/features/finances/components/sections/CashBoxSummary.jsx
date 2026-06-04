@@ -2,7 +2,7 @@ import React from 'react';
 import Card from '@/components/atoms/Card';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './CashBoxSummary.css';
+import styles from './CashBoxSummary.module.css';
 
 /**
  * CashBoxSummary Feature Molecule.
@@ -14,16 +14,16 @@ const DoctorCard = ({ id, name, balances, compact, t }) => {
 
     if (compact) {
         return (
-            <div className="cash-box__item-compact animate-fade-in">
-                <span className="cash-box__name-compact">{name?.split(' ')[0] || t('general_clinic')}</span>
-                <div className="cash-box__values-compact">
-                    <span className="cash-box__method-compact cash-box__method-compact--cash">
-                        <Icon name="PAYMENTS" size="0.8rem" className="cash-box__icon-compact" />
+            <div className={`${styles.itemCompact} animate-fade-in`}>
+                <span className={`${styles.nameCompact}`}>{name?.split(' ')[0] || t('general_clinic')}</span>
+                <div className={`${styles.valuesCompact}`}>
+                    <span className={`${styles.methodCompact} ${styles.methodCompactCash}`}>
+                        <Icon name="PAYMENTS" size="0.8rem" className={`${styles.iconCompact}`} />
                         ${balances.cash.toLocaleString()}
                     </span>
-                    <span className="cash-box__separator-compact">|</span>
-                    <span className="cash-box__method-compact cash-box__method-compact--transfer">
-                        <Icon name="ACCOUNT_BALANCE" size="0.8rem" className="cash-box__icon-compact" />
+                    <span className={`${styles.separatorCompact}`}>|</span>
+                    <span className={`${styles.methodCompact} ${styles.methodCompactTransfer}`}>
+                        <Icon name="ACCOUNT_BALANCE" size="0.8rem" className={`${styles.iconCompact}`} />
                         ${balances.transfer.toLocaleString()}
                     </span>
                 </div>
@@ -32,26 +32,26 @@ const DoctorCard = ({ id, name, balances, compact, t }) => {
     }
 
     return (
-        <Card className="cash-box__card animate-fade-in">
-            <h4 className="cash-box__doctor-name">{name || t('general_clinic')}</h4>
-            <div className="cash-box__details">
-                <div className="cash-box__row">
-                    <span className="cash-box__label">
-                        <Icon name="PAYMENTS" size="1.1rem" className="cash-box__icon cash-box__icon--cash" />
+        <Card className={`${styles.card} animate-fade-in`}>
+            <h4 className={`${styles.doctorName}`}>{name || t('general_clinic')}</h4>
+            <div className={`${styles.details}`}>
+                <div className={`${styles.row}`}>
+                    <span className={`${styles.label}`}>
+                        <Icon name="PAYMENTS" size="1.1rem" className={`${styles.iconCash} cash-box__icon`} />
                         {t('cash')}
-                        <span className="cash-box__hint">(Rendible)</span>
+                        <span className={`${styles.hint}`}>(Rendible)</span>
                     </span>
-                    <span className={`cash-box__amount ${balances.cash < 0 ? 'cash-box__amount--negative' : 'cash-box__amount--cash'}`}>
+                    <span className={`${styles.amount} ${balances.cash < 0 ? styles.amountNegative : styles.amountCash}`}>
                         ${balances.cash.toLocaleString()}
                     </span>
                 </div>
-                <div className="cash-box__row">
-                    <span className="cash-box__label">
-                        <Icon name="ACCOUNT_BALANCE" size="1.1rem" className="cash-box__icon cash-box__icon--transfer" />
+                <div className={`${styles.row}`}>
+                    <span className={`${styles.label}`}>
+                        <Icon name="ACCOUNT_BALANCE" size="1.1rem" className={`${styles.iconTransfer} cash-box__icon`} />
                         {t('transfer')}
-                        <span className="cash-box__hint">({t('stats')})</span>
+                        <span className={`${styles.hint}`}>({t('stats')})</span>
                     </span>
-                    <span className={`cash-box__amount ${balances.transfer < 0 ? 'cash-box__amount--negative' : 'cash-box__amount--transfer'}`}>
+                    <span className={`${styles.amount} ${balances.transfer < 0 ? styles.amountNegative : styles.amountTransfer}`}>
                         ${balances.transfer.toLocaleString()}
                     </span>
                 </div>
@@ -79,8 +79,8 @@ const CashBoxSummary = ({
 
     if (compact) {
         return (
-            <div className="cash-box cash-box--compact animate-fade-in">
-                <h3 className="cash-box__header-compact">{t('cash_boxes')}:</h3>
+            <div className={`${styles.root} ${styles.compact} animate-fade-in`}>
+                <h3 className={`${styles.headerCompact}`}>{t('cash_boxes')}:</h3>
                 <DoctorCard id={null} name={t('general_clinic')} balances={getBalances(null)} compact={compact} t={t} />
                 {filteredDoctors.map(d => (
                     <DoctorCard key={d.id} id={d.id} name={d.full_name} balances={getBalances(d.id)} compact={compact} t={t} />
@@ -90,7 +90,7 @@ const CashBoxSummary = ({
                         variant="ghost" 
                         size="sm-compact" 
                         onClick={() => onSelectDoctor('')} 
-                        className="cash-box__view-all-btn"
+                        className={`${styles.viewAllBtn}`}
                     >
                         {t('view_all')}
                     </Button>
@@ -100,16 +100,16 @@ const CashBoxSummary = ({
     }
 
     return (
-        <div className="cash-box animate-fade-in">
-            <header className="cash-box__header">
-                <h3 className="cash-box__title">{t('cash_boxes')}</h3>
+        <div className={`${styles.root} animate-fade-in`}>
+            <header className={`${styles.header}`}>
+                <h3 className={`${styles.title}`}>{t('cash_boxes')}</h3>
                 {selectedDoctorFilter && (
                     <Button variant="ghost" size="sm" onClick={() => onSelectDoctor('')}>
                         {t('view_all')}
                     </Button>
                 )}
             </header>
-            <div className="cash-box__grid">
+            <div className={`${styles.grid}`}>
                 <DoctorCard id={null} name={t('general_clinic')} balances={getBalances(null)} compact={compact} t={t} />
                 {filteredDoctors.map(d => (
                     <DoctorCard key={d.id} id={d.id} name={d.full_name} balances={getBalances(d.id)} compact={compact} t={t} />

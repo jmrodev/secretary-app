@@ -1,0 +1,91 @@
+/* MedicalRequirementManager.css (Migrated from RequirementsList.css) */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0;
+}
+
+.tabs {
+    display: flex;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--dashboard-card-border);
+}
+
+.tabWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: var(--error);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+}
+
+.filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.content {
+    min-height: 200px;
+}
+
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--dashboard-card-bg);
+    border: 2px dashed var(--dashboard-card-border);
+    border-radius: 1.25rem;
+    color: var(--text-muted);
+    gap: 1rem;
+}
+
+.empty p {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0;
+}
+
+.tableContainer {
+    background: var(--dashboard-card-bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--dashboard-card-border);
+    overflow: hidden;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tableHeader {
+    background-color: var(--gray-800);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--dashboard-card-border);
+}
+
+

@@ -13,7 +13,7 @@ import MedicalRequirementActionModal from '@/features/medical_documents/componen
 import MedicalRequestModal from '@/features/medical_documents/components/modals/MedicalRequestModal';
 
 // Styles
-import './MedicalRequirementManager.css';
+import styles from './MedicalRequirementManager.module.css';
 
 /**
  * MedicalRequirementManager Organism (Feature-based).
@@ -22,12 +22,14 @@ import './MedicalRequirementManager.css';
  */
 const MedicalRequirementManager = ({ 
     user, 
-    hideNew = false, 
-    hideRecycle = false, 
-    hideTabs = false, 
-    hideFilters = false, 
+    variant = 'full', // 'full' | 'compact'
     setPaymentModal 
 }) => {
+    const isCompact = variant === 'compact';
+    const hideNew = isCompact;
+    const hideRecycle = isCompact;
+    const hideTabs = isCompact;
+    const hideFilters = isCompact;
     const { t } = useLanguage();
     const controller = useRequirementManagerController(user);
     
@@ -77,7 +79,7 @@ const MedicalRequirementManager = ({
     const isAdminOrSecretary = ['admin', 'secretary'].includes(user?.role);
     const canEdit = user?.role === 'admin' || user?.role === 'secretary' || user?.role === 'doctor';
 
-    const baseClass = 'medical-requirement-manager';
+    const baseClass = styles.root;
 
     return (
         <section className={baseClass}>

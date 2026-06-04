@@ -1,0 +1,41 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.hint {
+    color: var(--slate-600);
+    padding: 12px;
+    background: var(--slate-50);
+    border-radius: 8px;
+}
+
+.hintDanger {
+    color: var(--danger-600);
+    font-size: 0.8rem;
+}
+
+.alert {
+    padding: 1.5rem;
+    background-color: var(--amber-50);
+    border-left: 4px solid var(--amber-400);
+    border-radius: 4px;
+}
+
+.alertText {
+    color: var(--amber-800);
+    margin: 0;
+}
+
+.divider {
+    border-top: 1px dashed var(--slate-200);
+    padding-top: 1rem;
+    margin-top: 0.5rem;
+}

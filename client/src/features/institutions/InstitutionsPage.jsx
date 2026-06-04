@@ -5,7 +5,7 @@ import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import { InstitutionFinances } from '@/features/finances';
 import { useInstitutionsController, InstitutionFormModal } from '@/features/institutions/index';
-import './InstitutionsPage.css';
+import styles from './InstitutionsPage.module.css';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
@@ -38,7 +38,7 @@ const InstitutionsPage = () => {
 
     return (
         <MainLayout wide flush title={t('institutions') || 'Instituciones'}>
-            <div className="institutions-page-orchestrator">
+            <div className={`${styles.institutionsPageOrchestrator}`}>
                 <div className="layout-content-area animate-fade-in">
                     {loading && institutions.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />

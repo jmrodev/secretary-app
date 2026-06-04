@@ -8,15 +8,15 @@
 - **Centralizar configuraciones**: Variables, constantes y configuraciones en un solo lugar.
 - **Reutilizar componentes**: Crear componentes genéricos y parametrizables.
 
-### 2. BEM CSS (Block Element Modifier)
-- **Nomenclatura estricta**: `block__element--modifier`
+### 2. CSS Modules (Estándar Moderno)
+- **Archivos**: Cada componente JSX debe estar acompañado de su archivo `.module.css`.
+- **Nomenclatura local**: Usar camelCase o nombres descriptivos cortos (ej: `.container`, `.title`, `.active`).
 - **Ejemplos**:
-  ```css
-  .appointment-report { }                    /* Block */
-  .appointment-report__table { }             /* Element */
-  .appointment-report__row--weekend { }      /* Modifier */
+  ```jsx
+  import styles from './Button.module.css';
+  <button className={styles.container}>...</button>
   ```
-- **NO usar**: camelCase, PascalCase, o nombres genéricos en CSS
+- **NO usar**: TailwindCSS, CSS-in-JS, ni selectores globales que contaminen el scope. BEM Estricto ha sido deprecado en favor del auto-scoping de CSS Modules.
 
 ### 3. Atomic Design
 - **Estructura de componentes**:
@@ -397,7 +397,7 @@ Para garantizar la correcta traducción de mensajes:
 ### Variables y Funciones
 - **JavaScript**: `camelCase` (ej: `handleGenerateReport`, `reportData`)
 - **Constantes**: `UPPER_SNAKE_CASE` (ej: `MAX_RETRIES`, `API_BASE_URL`)
-- **CSS Classes**: `kebab-case` con BEM (ej: `appointment-report__table`)
+- **CSS Classes**: Uso de CSS Modules con `camelCase` (ej: `styles.tableWrapper`)
 
 ### Base de Datos
 - **Tablas**: `snake_case` plural (ej: `appointments`, `medical_requests`)
@@ -455,7 +455,7 @@ Todos los reportes siguen la misma estructura:
 
 Antes de hacer commit, verificar:
 
-- [ ] ¿Sigue BEM CSS?
+- [ ] ¿Sigue el estándar CSS Modules en lugar de BEM global?
 - [ ] ¿Cada componente tiene su CSS?
 - [ ] ¿Usa los átomos `<Button />` e `<Icon />` en lugar de elementos nativos o emojis?
 - [ ] ¿No usa Tailwind?

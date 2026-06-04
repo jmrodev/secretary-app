@@ -1,0 +1,33 @@
+/* DaySchedule Styles (BEM Orchestrator) */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    min-height: 0;
+    flex: 1;
+    overflow: auto hidden; /* Scroll container para la timeline */
+    gap: 0.5rem;
+    background-color: transparent;
+}
+
+/* 
+   Note: Header styles are in DayScheduleHeader.css 
+   Timeline styles are in ScheduleTimeline.css
+*/
+
+/* Table view overrides within DaySchedule context */
+.tableEmpty {
+    padding: 4rem 2rem;
+}
+
+.tableContainer {
+    margin-top: 0.5rem;
+}
+
+
+@media (width <= 600px) {
+    .root {
+        gap: 1rem;
+    }
+}

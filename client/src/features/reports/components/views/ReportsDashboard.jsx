@@ -7,7 +7,7 @@ import CertificateReportTable from '@/features/reports/components/tables/Certifi
 import BalanceView from '@/features/reports/components/views/BalanceView';
 import PageHeader from '@/components/ui/PageHeader';
 
-import './ReportsDashboard.css';
+import styles from './ReportsDashboard.module.css';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
@@ -68,7 +68,7 @@ const ReportsDashboard = ({
             <div className="dashboard-layout__grid animate-fade-in">
                 <main className="dashboard-layout__main dashboard-layout__main--full">
                     <div className="dashboard-card no-padding">
-                        <div className="reports-page__results">
+                        <div className={`${styles.results}`}>
                             {activeTab === 'appointments' && (
                                 <AppointmentReportTable data={reportData} t={t} />
                             )}

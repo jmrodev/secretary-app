@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
-import './AppointmentSyncAlert.css';
+import styles from './AppointmentSyncAlert.module.css';
 
 /**
  * AppointmentSyncAlert Molecule (Internal to feature).
@@ -9,11 +9,11 @@ import './AppointmentSyncAlert.css';
 const AppointmentSyncAlert = ({ info }) => {
     if (!info) return null;
     return (
-        <div className="appointment-sync-alert">
-            <Icon name="auto_awesome" size="1.2rem" className="appointment-sync-alert__icon" />
-            <div className="appointment-sync-alert__content">
-                <span className="appointment-sync-alert__title">Ajuste de Calendario Google</span>
-                <p className="appointment-sync-alert__text">Completando turno para: <em>{info}</em></p>
+        <div className={`${styles.root}`}>
+            <Icon name="auto_awesome" size="1.2rem" className={`${styles.icon}`} />
+            <div className={`${styles.content}`}>
+                <span className={`${styles.title}`}>Ajuste de Calendario Google</span>
+                <p className={`${styles.text}`}>Completando turno para: <em>{info}</em></p>
             </div>
         </div>
     );

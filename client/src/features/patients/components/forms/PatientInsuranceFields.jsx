@@ -1,7 +1,7 @@
 import React from 'react';
 import Input from '@/components/atoms/Input';
 import Icon from '@/components/atoms/Icon';
-import './PatientInsuranceFields.css';
+import styles from './PatientInsuranceFields.module.css';
 
 /**
  * PatientInsuranceFields Molecule (Sub-Executor).
@@ -12,18 +12,18 @@ const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) 
     const selectedInsurance = insurances.find(i => i.id === parseInt(formData.insurance_id));
 
     return (
-        <article className="patient-insurance-fields">
-            <header className="patient-insurance-fields__header">
+        <article className={`${styles.root}`}>
+            <header className={`${styles.header}`}>
                 <Icon name="verified_user" size="1.25rem" />
-                <h3 className="patient-insurance-fields__title">{t('health_coverage')}</h3>
+                <h3 className={`${styles.title}`}>{t('health_coverage')}</h3>
             </header>
 
-            <div className="patient-insurance-fields__bento">
-                <div className="patient-insurance-fields__group patient-insurance-fields__group--span-7">
-                    <label className="patient-insurance-fields__label">{t('insurance_entities')}</label>
+            <div className={`${styles.bento}`}>
+                <div className={`${styles.group} ${styles.groupSpan7}`}>
+                    <label className={`${styles.label}`}>{t('insurance_entities')}</label>
                     <select
                         name="insurance_id"
-                        className="patient-insurance-fields__select"
+                        className={`${styles.select}`}
                         value={formData.insurance_id || ''}
                         onChange={updatePatientData}
                     >
@@ -36,8 +36,8 @@ const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) 
                     </select>
                 </div>
 
-                <div className="patient-insurance-fields__group patient-insurance-fields__group--span-5">
-                    <label className="patient-insurance-fields__label">{t('affiliate_number')}</label>
+                <div className={`${styles.group} ${styles.groupSpan5}`}>
+                    <label className={`${styles.label}`}>{t('affiliate_number')}</label>
                     <Input
                         name="affiliate_number"
                         className="patient-insurance-fields__field"
@@ -49,12 +49,12 @@ const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) 
             </div>
 
             {formData.insurance_id && (
-                <div className="patient-insurance-fields__status-card">
-                    <div className="patient-insurance-fields__status-info">
+                <div className={`${styles.statusCard}`}>
+                    <div className={`${styles.statusInfo}`}>
                         <Icon name="info" size="1.1rem" />
                         <div>
-                            <span className="patient-insurance-fields__status-label">{t('coverage_active')}</span>
-                            <p className="patient-insurance-fields__status-detail">
+                            <span className={`${styles.statusLabel}`}>{t('coverage_active')}</span>
+                            <p className={`${styles.statusDetail}`}>
                                 {selectedInsurance?.name} - {t('requires_order_verification')}
                             </p>
                         </div>

@@ -3,7 +3,7 @@ import AsyncSelect from 'react-select/async';
 import { patientService } from '@/features/patients/services/patientService';
 import Button from '@/components/atoms/Button';
 import { useLanguage } from '@/hooks/useLanguage';
-import './PatientSearchSelect.css';
+import styles from './PatientSearchSelect.module.css';
 
 const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false, selectedData }) => {
     const { t } = useLanguage();
@@ -38,13 +38,13 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
         <AsyncSelect
             value={selectedOption}
             classNames={{
-                control: ({ isFocused }) => `patients-search-select__control ${isFocused ? 'patients-search-select__control--focused' : ''}`,
-                input: () => 'patients-search-select__input',
-                menu: () => 'patients-search-select__menu',
-                option: ({ isFocused, isSelected }) => `patients-search-select__option ${isFocused ? 'patients-search-select__option--focused' : ''} ${isSelected ? 'patients-search-select__option--selected' : ''}`,
-                placeholder: () => 'patients-search-select__placeholder',
-                singleValue: () => 'patients-search-select__single-value',
-                valueContainer: () => 'patients-search-select__value-container'
+                control: ({ isFocused }) => `${styles.control} ${isFocused ? styles.controlFocused : ''}`,
+                input: () => styles.input,
+                menu: () => styles.menu,
+                option: ({ isFocused, isSelected }) => `${styles.option} ${isFocused ? styles.optionFocused : ''} ${isSelected ? styles.optionSelected : ''}`,
+                placeholder: () => styles.placeholder,
+                singleValue: () => styles.singleValue,
+                valueContainer: () => styles.valueContainer
             }}
             cacheOptions
             defaultOptions
@@ -53,7 +53,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             placeholder={finalPlaceholder}
             isClearable={true}
             noOptionsMessage={({ inputValue }) => (
-                <div className="form-select-no-results">
+                <div className={`${styles.formSelectNoResults}`}>
                     <p>
                         {t('no_results_for')} "{inputValue}"
                     </p>

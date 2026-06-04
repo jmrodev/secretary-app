@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import CalendarDayCell from './CalendarDayCell.jsx';
 import CalendarHeader from './CalendarHeader.jsx';
 import DayHeaders from '../schedule/DayHeaders.jsx';
 import { useLanguage } from '@/hooks/useLanguage';
 import { isPastDay, isSameDay, getNow, parseDate, createDate, getDaysInMonth } from '@/utils/core/dateUtils';
-import './Calendar.css';
+import styles from './Calendar.module.css';
 
 /**
  * Calendar (Executor Component).
@@ -27,18 +27,10 @@ const Calendar = ({
     showOutOfHours = false, 
     compact = false 
 }) => {
-    const [viewDate, setViewDate] = useState(() => parseDate(selectedDate || getNow()));
-    const [prevSelectedDate, setPrevSelectedDate] = useState(selectedDate);
     const { t } = useLanguage();
 
-    // React 19 best practice: Sync state from props during render using state, not refs
-    const parsedSelected = parseDate(selectedDate || getNow());
-    if (selectedDate !== prevSelectedDate) {
-        setPrevSelectedDate(selectedDate);
-        if (!isSameDay(viewDate, parsedSelected)) {
-            setViewDate(parsedSelected);
-        }
-    }
+    // React 19 best practice: derived state during render
+    const viewDate = parseDate(selectedDate || getNow());
 
 
     const days = getDaysInMonth(viewDate);
@@ -70,18 +62,16 @@ const Calendar = ({
 
     const handlePrevMonth = () => {
         const newDate = createDate(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
-        setViewDate(newDate);
         onDateSelect(newDate);
     };
 
     const handleNextMonth = () => {
         const newDate = createDate(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
-        setViewDate(newDate);
         onDateSelect(newDate);
     };
 
     return (
-        <div className="calendar">
+        <div className={`${styles.root}`}>
             {!hideNavigation && (
                 <CalendarHeader
                     month={months[viewDate.getMonth()]} year={viewDate.getFullYear()}
@@ -89,13 +79,13 @@ const Calendar = ({
                 />
             )}
             {hideNavigation && (
-                <div className="calendar__simple-title">
+                <div className={`${styles.simpleTitle}`}>
                     {months[viewDate.getMonth()]} {viewDate.getFullYear()}
                 </div>
             )}
-            <div className="calendar__main-container">
+            <div className={`${styles.mainContainer}`}>
                 <DayHeaders daysOfWeek={daysOfWeek} />
-                <div className="calendar__body">
+                <div className={`${styles.body}`}>
                     <CalendarGrid 
                         viewDate={viewDate}
                         selectedDate={selectedDate}
@@ -125,7 +115,7 @@ const CalendarGrid = ({
     const year = viewDate.getFullYear();
     const month = viewDate.getMonth();
     for (let cellIdx = 0; cellIdx < firstDay; cellIdx++) {
-        dayElements.push(<div key={`pre-pad-${year}-${month}-${cellIdx}`} className="calendar__cell calendar__cell--empty"></div>);
+        dayElements.push(<div key={`pre-pad-${year}-${month}-${cellIdx}`} className={`${styles.cellEmpty}`}></div>);
     }
 
     // Days of the month
@@ -171,7 +161,7 @@ const CalendarGrid = ({
     const totalCells = 42;
     const currentCount = dayElements.length;
     for (let postIdx = 0; postIdx < (totalCells - currentCount); postIdx++) {
-        dayElements.push(<div key={`post-pad-${year}-${month}-${postIdx}`} className="calendar__cell calendar__cell--empty"></div>);
+        dayElements.push(<div key={`post-pad-${year}-${month}-${postIdx}`} className={`${styles.cellEmpty}`}></div>);
     }
 
     return <>{dayElements}</>;

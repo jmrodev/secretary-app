@@ -1,21 +1,18 @@
 import React from 'react';
-import './FormGroup.css';
+import styles from './FormGroup.module.css';
 
 const FormGroup = ({ label, children, error, required = false, className = '' }) => {
-    const baseClass = 'form-group';
-    const requiredClass = required ? `${baseClass}--required` : '';
-
     return (
-        <div className={`${baseClass} ${requiredClass} ${className}`}>
+        <div className={`${styles.root} ${required ? styles.required : ''} ${className}`.trim()}>
             {label && (
-                <label className={`${baseClass}__label`}>
+                <label className={styles.label}>
                     {label}
                 </label>
             )}
-            <div className={`${baseClass}__content`}>
+            <div className={styles.content}>
                 {children}
             </div>
-            {error && <p className={`${baseClass}__error`}>{error}</p>}
+            {error && <p className={styles.error}>{error}</p>}
         </div>
     );
 };

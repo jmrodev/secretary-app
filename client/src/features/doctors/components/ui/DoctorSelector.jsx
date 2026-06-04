@@ -3,7 +3,7 @@ import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useDoctors } from '@/context/DoctorContextDefinition';
-import './DoctorSelector.css';
+import styles from './DoctorSelector.module.css';
 
 /**
  * DoctorSelector (Organism).
@@ -17,14 +17,14 @@ const DoctorSelector = () => {
 
     if (!isStaff) {
         return doctorDisplayName ? (
-            <strong className="doctor-selector-display-name">
+            <strong className={`${styles.doctorSelectorDisplayName}`}>
                 ({t('doctor')}: {doctorDisplayName})
             </strong>
         ) : null;
     }
 
     return (
-        <span className="doctor-selector">
+        <span className={`${styles.root}`}>
             <Icon name="medical_services" size="1rem" />
             <Select
                 variant="ghost"
@@ -35,7 +35,7 @@ const DoctorSelector = () => {
                     { value: '', label: t('all_doctors') },
                     ...doctors.map(d => ({ value: d.id, label: d.full_name }))
                 ]}
-                className="doctor-selector__select"
+                className={`${styles.select}`}
             />
         </span>
     );

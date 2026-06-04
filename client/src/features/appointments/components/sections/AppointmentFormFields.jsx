@@ -4,6 +4,7 @@ import Input from '@/components/atoms/Input';
 import Icon from '@/components/atoms/Icon';
 import AppointmentTypeSelector from '../forms/AppointmentTypeSelector';
 import AppointmentPatientSection from './AppointmentPatientSection';
+import styles from '../modals/AppointmentFormModal.module.css';
 
 export const AppointmentFormFields = ({
     user, doctors, selectedDoctor, handleDoctorChange,
@@ -17,11 +18,11 @@ export const AppointmentFormFields = ({
     t
 }) => {
     return (
-        <div className="appointment-form-modal__grid">
-            <div className="appointment-form-modal__field">
-                <label className="appointment-form-modal__label" htmlFor="doctor-select">{t('doctors') || 'Doctor'}</label>
+        <div className={styles.grid}>
+            <div className={styles.field}>
+                <label className={styles.label} htmlFor="doctor-select">{t('doctors') || 'Doctor'}</label>
                 {user?.role === 'doctor' ? (
-                    <div className="appointment-form-modal__read-only-field">
+                    <div className={styles.readOnlyField}>
                         {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'Usted'}
                     </div>
                 ) : (
@@ -39,8 +40,8 @@ export const AppointmentFormFields = ({
                 )}
             </div>
 
-            <div className="appointment-form-modal__field">
-                <label className="appointment-form-modal__label">{t('appointment_type') || 'Tipo de Turno'}</label>
+            <div className={styles.field}>
+                <label className={styles.label}>{t('appointment_type') || 'Tipo de Turno'}</label>
                 <AppointmentTypeSelector type={type} onChange={handleTypeChange} t={t} />
             </div>
 
@@ -54,8 +55,8 @@ export const AppointmentFormFields = ({
                 t={t}
             />
 
-            <div className="appointment-form-modal__field">
-                <label className="appointment-form-modal__label" htmlFor="appointment-date">{t('date_time') || 'Fecha y Hora'}</label>
+            <div className={styles.field}>
+                <label className={styles.label} htmlFor="appointment-date">{t('date_time') || 'Fecha y Hora'}</label>
                 <Input
                     id="appointment-date"
                     type="datetime-local"
@@ -64,15 +65,15 @@ export const AppointmentFormFields = ({
                     required
                 />
                 {isOutOfHours && (
-                    <div className="appointment-form-modal__extra-badge appointment-form-modal__extra-badge--pulse">
+                    <div className={`${styles.extraBadge} ${styles.extraBadgePulse}`}>
                         <Icon name="warning" size="1rem" />
                         Turno Fuera de Horario (Extra)
                     </div>
                 )}
             </div>
 
-            <div className="appointment-form-modal__field">
-                <label className="appointment-form-modal__label" htmlFor="institution-select">Obra Social / Institución</label>
+            <div className={styles.field}>
+                <label className={styles.label} htmlFor="institution-select">Obra Social / Institución</label>
                 <Select
                     id="institution-select"
                     value={selectedInstitution}
@@ -81,8 +82,8 @@ export const AppointmentFormFields = ({
                 />
             </div>
 
-            <div className="appointment-form-modal__field appointment-form-modal__field--full">
-                <label className="appointment-form-modal__label" htmlFor="reason-textarea">{t('reason') || 'Motivo de Consulta'}</label>
+            <div className={`${styles.field} ${styles.fieldFull}`}>
+                <label className={styles.label} htmlFor="reason-textarea">{t('reason') || 'Motivo de Consulta'}</label>
                 <Input
                     id="reason-textarea"
                     type="textarea"
@@ -94,16 +95,16 @@ export const AppointmentFormFields = ({
                 />
             </div>
 
-            <div className="appointment-form-modal__field appointment-form-modal__field--full">
-                <div className="appointment-form-modal__checkbox-container">
+            <div className={`${styles.field} ${styles.fieldFull}`}>
+                <div className={styles.checkboxContainer}>
                     <input
                         type="checkbox"
                         id="bonified"
                         checked={bonified}
                         onChange={e => handleBonifiedChange(e.target.checked)}
-                        className="appointment-form-modal__checkbox"
+                        className={styles.checkbox}
                     />
-                    <label htmlFor="bonified" className="appointment-form-modal__checkbox-label">
+                    <label htmlFor="bonified" className={styles.checkboxLabel}>
                         {t('bonified_label') || 'Bonificado (Sin Costo)'}
                     </label>
                 </div>

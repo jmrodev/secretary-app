@@ -5,7 +5,7 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import FormGroup from '@/components/molecules/FormGroup';
 import { getMonthsOptions } from '@/utils/core/dateUtils';
-import './FinanceFilters.css';
+import styles from './FinanceFilters.module.css';
 
 /**
  * FinanceFilters Molecule.
@@ -71,20 +71,20 @@ const FinanceFilters = ({
                              monthFilter !== 'all' || yearFilter !== 'all' || paymentMethodFilter !== 'all';
 
     return (
-        <div className="finance-filters">
-            <div className="finance-filters__search-wrapper">
-                <Icon name="SEARCH" className="finance-filters__search-icon" size="1.2rem" />
+        <div className={`${styles.root}`}>
+            <div className={`${styles.searchWrapper}`}>
+                <Icon name="SEARCH" className={`${styles.searchIcon}`} size="1.2rem" />
                 <Input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={t('search_placeholder') || "Buscar por paciente, descripción o monto..."}
-                    className="finance-filters__search-input"
+                    className={`${styles.searchInput}`}
                     size="sm"
                 />
             </div>
 
-            <div className="finance-filters__groups">
-                <FormGroup label={t('status')} className="finance-filters__group">
+            <div className={`${styles.groups}`}>
+                <FormGroup label={t('status')} className={`${styles.group}`}>
                     <Select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
@@ -93,7 +93,7 @@ const FinanceFilters = ({
                     />
                 </FormGroup>
 
-                <FormGroup label={t('type')} className="finance-filters__group">
+                <FormGroup label={t('type')} className={`${styles.group}`}>
                     <Select
                         value={typeFilter}
                         onChange={(e) => setTypeFilter(e.target.value)}
@@ -102,7 +102,7 @@ const FinanceFilters = ({
                     />
                 </FormGroup>
 
-                <FormGroup label={t('month')} className="finance-filters__group">
+                <FormGroup label={t('month')} className={`${styles.group}`}>
                     <Select
                         value={monthFilter}
                         onChange={(e) => setMonthFilter(e.target.value)}
@@ -111,7 +111,7 @@ const FinanceFilters = ({
                     />
                 </FormGroup>
 
-                <FormGroup label={t('year')} className="finance-filters__group">
+                <FormGroup label={t('year')} className={`${styles.group}`}>
                     <Select
                         value={yearFilter}
                         onChange={(e) => setYearFilter(e.target.value)}
@@ -120,7 +120,7 @@ const FinanceFilters = ({
                     />
                 </FormGroup>
 
-                <FormGroup label={t('payment_method') || 'Método de pago'} className="finance-filters__group">
+                <FormGroup label={t('payment_method') || 'Método de pago'} className={`${styles.group}`}>
                     <Select
                         value={paymentMethodFilter}
                         onChange={(e) => setPaymentMethodFilter(e.target.value)}
@@ -130,11 +130,11 @@ const FinanceFilters = ({
                 </FormGroup>
 
                 {hasActiveFilters && (
-                    <div className="finance-filters__group finance-filters__group--actions">
+                    <div className={`${styles.group} ${styles.groupActions}`}>
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="finance-filters__clear"
+                            className={`${styles.clear}`}
                             onClick={() => {
                                 setSearchQuery('');
                                 setStatusFilter('all');

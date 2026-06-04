@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
-import './Tooltip.css';
+import styles from './Tooltip.module.css';
 
 /**
  * Tooltip Atom.
@@ -10,9 +10,9 @@ const Tooltip = ({ text, position = 'top' }) => {
     if (!text) return null;
 
     return (
-        <div className={`tooltip tooltip--${position}`}>
-            <Icon name="INFO" size="1.1rem" className="tooltip__icon" />
-            <div className="tooltip__content">
+        <div className={`${styles.root} tooltip--${position}`}>
+            <Icon name="INFO" size="1.1rem" className={`${styles.icon}`} />
+            <div className={`${styles.content}`}>
                 {text}
             </div>
         </div>

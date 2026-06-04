@@ -6,7 +6,7 @@ import FormGroup from '@/components/molecules/FormGroup';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import api from '@/api/axios';
-import './WhatsAppModal.css';
+import styles from './WhatsAppModal.module.css';
 
 /**
  * WhatsAppModal Feature Molecule.
@@ -71,19 +71,19 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
             isOpen={isOpen}
             onClose={onClose}
             title={
-                <div className="whatsapp-modal__title">
+                <div className={`${styles.title}`}>
                     <Icon name="chat" size="1.2rem" />
                     {t('whatsapp_confirmation') || "Confirmación por WhatsApp"}
                 </div>
             }
             footer={
-                <div className="whatsapp-modal__footer">
+                <div className={`${styles.footer}`}>
                     <Button variant="ghost" onClick={onClose}>
                         {t('cancel')}
                     </Button>
                     <Button
                         variant="accent"
-                        className="whatsapp-modal__send-btn"
+                        className={`${styles.sendBtn}`}
                         onClick={handleAutoSend}
                     >
                         <Icon name="bolt" size="1.1rem" className="mr-1" />
@@ -91,7 +91,7 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
                     </Button>
                     <Button
                         variant="primary"
-                        className="whatsapp-modal__send-btn"
+                        className={`${styles.sendBtn}`}
                         onClick={handleSend}
                     >
                         {t('send_via_whatsapp') || 'Enviar Manual (Copiar)'}
@@ -99,20 +99,20 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
                 </div>
             }
         >
-            <div className="whatsapp-modal animate-fade-in">
-                <div className="whatsapp-modal__info">
-                    <div className="whatsapp-modal__icon">
+            <div className={`${styles.root} animate-fade-in`}>
+                <div className={`${styles.info}`}>
+                    <div className={`${styles.icon}`}>
                         <Icon name="smartphone" size="1.2rem" />
                     </div>
                     <div>
-                        <p className="whatsapp-modal__recipient">{t('sending_to') || 'Enviar a'}: {phone}</p>
-                        <p className="whatsapp-modal__help">{t('wa_help_text') || 'El mensaje se abrirá en WhatsApp Desktop/Web.'}</p>
+                        <p className={`${styles.recipient}`}>{t('sending_to') || 'Enviar a'}: {phone}</p>
+                        <p className={`${styles.help}`}>{t('wa_help_text') || 'El mensaje se abrirá en WhatsApp Desktop/Web.'}</p>
                     </div>
                 </div>
 
                 <FormGroup label={t('message_to_send') || "Mensaje a enviar"}>
                     <textarea
-                        className="whatsapp-modal__textarea"
+                        className={`${styles.textarea}`}
                         value={message}
                         onChange={(e) => onMessageChange(e.target.value)}
                     />

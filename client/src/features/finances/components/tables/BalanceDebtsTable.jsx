@@ -1,4 +1,4 @@
-import './BalanceDebtsTable.css';
+import styles from './BalanceDebtsTable.module.css';
 
 /**
  * BalanceDebtsTable Feature Molecule.
@@ -8,31 +8,31 @@ const EMPTY_DEBTS = [];
 
 const BalanceDebtsTable = ({ debts = EMPTY_DEBTS, totalDebt, t }) => {
     return (
-        <section className="balance-debts animate-fade-in">
-            <h3 className="balance-debts__title">Deudas Pendientes</h3>
+        <section className={`${styles.root} animate-fade-in`}>
+            <h3 className={`${styles.title}`}>Deudas Pendientes</h3>
 
             {debts.length === 0 ? (
-                <div className="balance-debts__empty">
+                <div className={`${styles.empty}`}>
                     <p>{t('no_debts_period') || 'No hay deudas registradas en este período.'}</p>
                 </div>
             ) : (
-                <div className="balance-debts__table-wrapper">
-                    <table className="balance-debts__table">
+                <div className={`${styles.tableWrapper}`}>
+                    <table className={`${styles.table}`}>
                         <thead>
                             <tr>
                                 <th>Fecha</th>
                                 <th>Paciente</th>
                                 <th>Origen</th>
-                                <th className="balance-debts__cell--right">Monto</th>
+                                <th className={`${styles.cellRight}`}>Monto</th>
                             </tr>
                         </thead>
                         <tbody>
                             {debts.map((d) => (
                                 <tr key={d.transaction_id || d.id || `${d.date}-${d.patient}`}>
                                     <td>{d.date}</td>
-                                    <td className="balance-debts__cell--bold">{d.patient}</td>
+                                    <td className={`${styles.cellBold}`}>{d.patient}</td>
                                     <td>{d.type}</td>
-                                    <td className="balance-debts__cell--right">
+                                    <td className={`${styles.cellRight}`}>
                                         {d.amount > 0 ? `$${d.amount.toLocaleString()}` : '-'}
                                     </td>
                                 </tr>
@@ -42,8 +42,8 @@ const BalanceDebtsTable = ({ debts = EMPTY_DEBTS, totalDebt, t }) => {
                 </div>
             )}
 
-            <footer className="balance-debts__total">
-                Total Deuda Detectada: <span className="balance-debts__total-amount">$ {totalDebt.toLocaleString()}</span>
+            <footer className={`${styles.total}`}>
+                Total Deuda Detectada: <span className={`${styles.totalAmount}`}>$ {totalDebt.toLocaleString()}</span>
             </footer>
         </section>
     );

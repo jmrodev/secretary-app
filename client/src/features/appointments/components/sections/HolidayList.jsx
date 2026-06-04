@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { formatDate, compareDates } from '@/utils/core/dateUtils';
-import './HolidayList.css';
+import styles from './HolidayList.module.css';
 
 /**
  * HolidayList (Internal to feature).
@@ -15,26 +15,26 @@ const HolidayList = ({ holidays, onDelete }) => {
 
     if (!sortedHolidays || sortedHolidays.length === 0) {
         return (
-            <div className="holiday-list__empty">
-                <Icon name="beach_access" size="3rem" className="holiday-list__empty-icon" />
+            <div className={`${styles.empty}`}>
+                <Icon name="beach_access" size="3rem" className={`${styles.emptyIcon}`} />
                 No hay feriados configurados.
             </div>
         );
     }
 
     return (
-        <div className="holiday-list">
+        <div className={`${styles.root}`}>
             {sortedHolidays.map(h => (
-                <div key={h.id} className="holiday-list__item animate-fade-in">
-                    <div className="holiday-list__info">
-                        <span className="holiday-list__date">
+                <div key={h.id} className={`${styles.item} animate-fade-in`}>
+                    <div className={`${styles.info}`}>
+                        <span className={`${styles.date}`}>
                             <Icon name="calendar_today" size="0.9rem" />
                             {formatDate(h.date, { monthName: true })}
                         </span>
-                        <div className="holiday-list__description">{h.description}</div>
+                        <div className={`${styles.description}`}>{h.description}</div>
                     </div>
                     <Button
-                        variant="ghost" size="sm-compact" className="holiday-list__delete-btn"
+                        variant="ghost" size="sm-compact" className={`${styles.deleteBtn}`}
                         onClick={() => onDelete(h.id)} icon={<Icon name="DELETE" size="1rem" />}
                     />
                 </div>

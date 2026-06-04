@@ -1,0 +1,134 @@
+/* MedicationAutocomplete Feature Styles */
+.root {
+    position: relative;
+    width: 100%;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.actions {
+    position: absolute;
+    right: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actions button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.actions button:hover {
+    color: var(--text-main);
+}
+
+.actions button:hover {
+    color: var(--text-main);
+}
+
+.list {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 50;
+    background: var(--dashboard-card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--dashboard-card-border);
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 4px;
+    list-style: none;
+    margin: 0;
+}
+
+.item {
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.item:hover,
+.itemActive {
+    background-color: var(--gray-800);
+}
+
+.itemTitle {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.itemSubtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.highlight {
+    color: var(--accent-color);
+    font-weight: 800;
+    background: transparent;
+}
+
+.footer {
+    padding: 8px 12px;
+    border-top: 1px solid var(--dashboard-card-border);
+    margin-top: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--dashboard-card-bg);
+}
+
+.footerBrand {
+    font-weight: 800;
+    color: var(--text-secondary);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animateFadeIn {
+    animation: fade-in 0.2s ease-out;
+}

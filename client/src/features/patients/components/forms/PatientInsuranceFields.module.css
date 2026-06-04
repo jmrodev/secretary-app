@@ -1,0 +1,100 @@
+.root {
+    --card-padding: 1.5rem;
+    
+    background-color: var(--white);
+    border-radius: var(--radius); /* XL 1.5rem */
+    padding: var(--card-padding);
+    box-shadow: var(--shadow-premium);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    grid-column: span 12;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary-color);
+}
+
+.title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.groupSpan7 { grid-column: span 7; }
+.groupSpan5 { grid-column: span 5; }
+
+.label {
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: var(--gray-950);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.select {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 0.0625rem solid var(--gray-200);
+    background-color: var(--gray-50);
+    color: var(--text-main);
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.select:focus {
+    border-color: var(--primary-color);
+    background-color: var(--white);
+    box-shadow: 0 0 0 0.125rem rgb(0 61 155 / 10%);
+}
+
+.statusCard {
+    margin-top: 0.5rem;
+    padding: 1rem;
+    background-color: var(--blue-50);
+    border-radius: var(--radius-md);
+    border-left: 0.25rem solid var(--primary-color);
+}
+
+.statusInfo {
+    display: flex;
+    gap: 0.75rem;
+    color: var(--primary-color);
+}
+
+.statusLabel {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 0.125rem;
+}
+
+.statusDetail {
+    font-size: 0.8125rem;
+    margin: 0;
+    color: var(--gray-700);
+}
+
+@media (width <= 48rem) {
+    .group {
+        grid-column: span 12 !important;
+    }
+}

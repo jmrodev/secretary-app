@@ -1,0 +1,97 @@
+.appLayout {
+    /* --- Local Component Tokens --- */
+    --layout-bg: var(--background-bg);
+
+    /* ------------------------------ */
+
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;      /* Ocupa exactamente la pantalla */
+    max-height: 100dvh;
+    overflow: hidden;    /* Evita que nada salga del viewport */
+    background-color: var(--layout-bg);
+    color: var(--text-main);
+    position: relative;
+}
+
+/* Global Glassmorphism Background Orbs */
+.appLayout::before,
+.appLayout::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.18; /* Muy sutil — pasa desapercibido */
+    z-index: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.appLayout::before {
+    top: -5vw;
+    right: -5vw;
+    width: 45vw;
+    height: 45vw;
+    background: radial-gradient(circle, rgb(138 43 226) 0%, transparent 70%);
+}
+
+.appLayout::after {
+    bottom: -5vw;
+    left: -5vw;
+    width: 50vw;
+    height: 50vw;
+    background: radial-gradient(circle, rgb(0 206 209) 0%, transparent 70%);
+}
+
+/* Ensure content stays above orbs globally */
+.appLayout > * {
+    z-index: 10;
+    position: relative;
+}
+
+.root {
+    /* --- Local Component Tokens --- */
+    --content-padding: clamp(0.75rem, 2vh, 1.25rem) clamp(1rem, 3vw, 2.5rem);
+
+    /* ------------------------------ */
+
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: auto hidden; /* Scroll vertical interno, sin scroll horizontal */
+    min-height: 0;         /* Necesario para que flex+overflow funcionen correctamente */
+}
+
+.inner {
+    padding: var(--content-padding);
+    width: 100%;
+    max-width: var(--layout-max-width, 1600px);
+    margin: 0 auto;
+    flex: 1;
+    display: flex;           /* Propaga la altura a hijos */
+    flex-direction: column;
+    min-height: 0;           /* Clave para flex+overflow en hijos */
+}
+
+/* PageHeader specific overrides for horizontal layout */
+.root > .pageHeaderPremium,
+.root > .pageHeader {
+    width: 100%;
+}
+
+.root.dashboardWide .inner {
+    padding: 0.5rem;
+    max-width: 1920px;
+}
+
+.flush .inner {
+    padding: 0 !important;
+    max-width: 100% !important;
+}
+
+@media screen and (width <= 1024px) {
+    .inner {
+        padding: 1rem;
+    }
+}

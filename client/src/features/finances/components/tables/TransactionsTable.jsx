@@ -6,7 +6,7 @@ import Pagination from '@/components/atoms/Pagination';
 // Local Feature Components
 import TransactionRow from '@/features/finances/components/tables/TransactionRow';
 
-import './TransactionsTable.css';
+import styles from './TransactionsTable.module.css';
 
 /**
  * TransactionsTable Feature Organism.
@@ -95,7 +95,7 @@ const TransactionsTable = ({
         return parts.map((part, i) => {
             const partKey = `part-${i}-${part.length}`;
             return part.toLowerCase() === patientName.toLowerCase()
-                ? <strong key={partKey} className="transactions-table__highlight">{part}</strong>
+                ? <strong key={partKey} className={`${styles.highlight}`}>{part}</strong>
                 : part;
         });
     };
@@ -129,27 +129,27 @@ const TransactionsTable = ({
     const canManagerFinance = user && (user.role === 'admin' || settings.enable_secretary_finance_crud === 'true');
 
     return (
-        <Card className="transactions-table__container" noPadding as="article" title={t('transaction_log')}>
-            <div className="transactions-table__wrapper">
-                <table className="transactions-table__table table-base">
+        <Card className={`${styles.container}`} noPadding as="article" title={t('transaction_log')}>
+            <div className={`${styles.wrapper}`}>
+                <table className={`${styles.table} table-base`}>
                     <thead>
                         <tr>
-                            <th className="transactions-table__cell--first">{t('date_label')}</th>
+                            <th className={`${styles.cellFirst}`}>{t('date_label')}</th>
                             <th className="transactions-table__header-cell--description">{t('description')}</th>
                             <th>{t('beneficiary')}</th>
                             <th>{t('payment_method')}</th>
                             <th>{t('status') || 'Estado'}</th>
-                            <th className="transactions-table__cell--right">{t('amount')}</th>
-                            <th className="transactions-table__cell--center">{t('proof')}</th>
+                            <th className={`${styles.cellRight}`}>{t('amount')}</th>
+                            <th className={`${styles.cellCenter}`}>{t('proof')}</th>
                             {canManagerFinance && (
-                                <th className="transactions-table__cell--right transactions-table__cell--last">{t('actions')}</th>
+                                <th className={`${styles.cellRight} ${styles.cellLast}`}>{t('actions')}</th>
                             )}
                         </tr>
                     </thead>
                     <tbody>
                         {groupedTransactions.length === 0 ? (
                             <tr>
-                                <td colSpan={canManagerFinance ? 8 : 7} className="transactions-table__cell--center transactions-table__cell--empty-state">
+                                <td colSpan={canManagerFinance ? 8 : 7} className={`${styles.cellCenter} ${styles.cellEmptyState}`}>
                                     {t('no_transactions_found') || 'No hay transacciones registradas.'}
                                 </td>
                             </tr>
@@ -182,8 +182,8 @@ const TransactionsTable = ({
                                         />
                                     ))}
                                     {group.length > 1 && (
-                                        <tr className="transactions-table__group-footer">
-                                            <td colSpan={canManagerFinance ? 8 : 7} className="transactions-table__group-total">
+                                        <tr className={`${styles.groupFooter}`}>
+                                            <td colSpan={canManagerFinance ? 8 : 7} className={`${styles.groupTotal}`}>
                                                 {t('group_total')}: ${group.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0).toLocaleString()}
                                             </td>
                                         </tr>

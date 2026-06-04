@@ -1,11 +1,11 @@
 import React from 'react';
 import { useLiveClock } from '@/hooks/useLiveClock';
-import './LiveClock.css';
+import styles from './LiveClock.module.css';
 
 /**
  * LiveClock - Atom component to display real-time date and time.
  */
-const LiveClock = ({ className = '' }) => {
+const LiveClock = ({ className = '', hideDate = false }) => {
     const time = useLiveClock();
 
     const dateLabel = time.toLocaleDateString('es-AR', {
@@ -23,10 +23,10 @@ const LiveClock = ({ className = '' }) => {
     });
 
     return (
-        <div className={`live-clock ${className}`}>
-            <span className="live-clock__date">{dateLabel}</span>
-            <span className="live-clock__separator">·</span>
-            <span className="live-clock__time">{timeLabel}</span>
+        <div className={`${styles.root} ${className}`}>
+            {!hideDate && <span className={`${styles.date}`}>{dateLabel}</span>}
+            {!hideDate && <span className={`${styles.separator}`}>·</span>}
+            <span className={`${styles.time}`}>{timeLabel}</span>
         </div>
     );
 };

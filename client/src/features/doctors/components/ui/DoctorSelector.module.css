@@ -1,0 +1,51 @@
+/* DoctorSelector Organism Styles */
+
+.root {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    background-color: rgb(255 255 255 / 8%);
+    backdrop-filter: blur(16px);
+    border-radius: 100px;
+    border: none; /* No border as requested */
+    transition: background-color 0.3s ease;
+    vertical-align: middle;
+    color: #fff;
+}
+
+.root:hover {
+    background-color: rgb(255 255 255 / 15%);
+}
+
+.select {
+    border: none;
+    background: transparent;
+    padding: 0 1.25rem 0 0;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: inherit;
+    cursor: pointer;
+    width: auto;
+    outline: none;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+/* Ensure options are always readable */
+.select option {
+    background-color: #fff;
+    color: #1e293b;
+    font-weight: 400;
+}
+
+.doctorSelectorDisplayName {
+    color: inherit;
+    font-size: 0.85rem;
+    margin-left: 0.5rem;
+    font-weight: 700;
+    background: rgb(255 255 255 / 10%);
+    padding: 0.2rem 0.6rem;
+    border-radius: 1rem;
+    border: none;
+}

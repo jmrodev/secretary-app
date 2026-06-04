@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import AppointmentCard from '../cards/AppointmentCard';
 import Icon from '@/components/atoms/Icon';
 import { formatTime, isPast as checkIsPast } from '@/utils/core/dateUtils';
-import './ScheduleTimeline.css';
+import styles from './ScheduleTimeline.module.css';
 
 /**
  * ScheduleTimeline (Executor Component).
@@ -12,15 +12,41 @@ const ScheduleTimeline = ({
     timeSlots, showOutOfHours, showCancelled, onSlotClick, onSlotAction, getAppointmentsForSlot, t,
     isLoading = false
 }) => {
-    return (
-        <div className="schedule-timeline">
-            {timeSlots.reduce((acc, slot) => {
+    let timeMarkerRendered = false;
+    const now = new Date();
+    const markerRef = useRef(null);
+
+    // Check if the current visible schedule is for today
+    const isTodaySchedule = timeSlots.length > 0 &&
+        timeSlots[0].time.getDate() === now.getDate() &&
+        timeSlots[0].time.getMonth() === now.getMonth() &&
+        timeSlots[0].time.getFullYear() === now.getFullYear();
+
+    useEffect(() => {
+        if (markerRef.current && isTodaySchedule) {
+            const container = markerRef.current.closest('[data-scroll-container]');
+            if (container) {
+                const markerTop = markerRef.current.offsetTop;
+                container.scrollTop = Math.max(0, markerTop - 80);
+            } else {
+                markerRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+    }, [timeSlots, isTodaySchedule]);
+
+    const filteredSlots = timeSlots.reduce((acc, slot) => {
                 const slotApps = getAppointmentsForSlot(slot.time);
-                if (showOutOfHours || slot.type !== 'closed' || slotApps.length > 0) {
-                    acc.push({ ...slot, slotApps });
-                }
-                return acc;
-            }, []).map((slot) => {
+        if (showOutOfHours || slot.type !== 'closed' || slotApps.length > 0) {
+            acc.push({ ...slot, slotApps });
+        }
+        return acc;
+    }, []);
+
+
+
+    return (
+        <div className={`${styles.root}`}>
+            {filteredSlots.map((slot, index) => {
                 const { slotApps, type, isBlockedByGoogle, time } = slot;
                 const isSlotClosed = type === 'closed';
                 const isBlocked = isBlockedByGoogle || slotApps.some(a => !['cancelled', 'suspended', 'absent'].includes(a.status));
@@ -34,60 +60,79 @@ const ScheduleTimeline = ({
                     }
                 };
 
-                return (
-                    <div key={timeKey} className={`schedule-timeline__slot ${isSlotClosed ? 'schedule-timeline__slot--closed' : ''} ${isPast ? 'schedule-timeline__slot--past' : ''}`}>
-                        <div className="schedule-timeline__slot-content">
-                            
-                            {isBlockedByGoogle ? (
-                                <div className="schedule-timeline__google-blocked">
-                                    <Icon name="lock" size="1.2rem" />
-                                    <span>Bloqueado (Google Calendar)</span>
-                                </div>
-                            ) : (
-                                <div className={`schedule-timeline__apps-grid ${slotApps.length > 1 ? 'schedule-timeline__apps-grid--multiple' : ''}`}>
-                                    {isLoading && slotApps.length === 0 ? (
-                                        <AppointmentCard isLoading={true} />
-                                    ) : (
-                                        slotApps.reduce((acc, appt) => {
-                                            if (showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status)) {
-                                                acc.push(
-                                                    <AppointmentCard
-                                                        key={appt.id} appt={appt}
-                                                        onClick={() => onSlotClick(time.getHours(), appt)}
-                                                        isLoading={isLoading}
-                                                    />
-                                                );
-                                            }
-                                            return acc;
-                                        }, [])
-                                    )}
-                                </div>
-                            )}
+                let isCurrentSlot = false;
+                let progressPercent = 0;
+                
+                if (isTodaySchedule && !timeMarkerRendered) {
+                    const nextTime = index < filteredSlots.length - 1 ? filteredSlots[index+1].time : new Date(time.getTime() + 60*60*1000);
+                    if (now >= time && now < nextTime) {
+                        isCurrentSlot = true;
+                        timeMarkerRendered = true;
+                        const totalDuration = nextTime.getTime() - time.getTime();
+                        const elapsed = now.getTime() - time.getTime();
+                        progressPercent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+                    }
+                }
 
-                            {!isBlocked && (
-                                <div
-                                    className={`schedule-timeline__available ${isSlotClosed ? 'schedule-timeline__available--closed' : ''}`}
-                                    onClick={() => onSlotAction(slot)}
-                                    onKeyDown={handleKeyDown}
-                                    role="button"
-                                    tabIndex={0}
-                                    aria-label={`${t('available')} ${formatTime(time)}`}
-                                >
-                                    <span className="schedule-timeline__available-icon">
-                                        <Icon name={isSlotClosed ? 'lock' : 'add'} size="1rem" />
-                                    </span>
-                                    <div className="schedule-timeline__available-info">
-                                        <span className="schedule-timeline__available-time">{formatTime(time)}</span>
-                                        <span className="schedule-timeline__available-label">
-                                            {isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
-                                        </span>
-                                    </div>
+                return (
+                    <div key={timeKey} style={{ position: 'relative', display: 'flex', gap: '0.75rem', flex: '0 0 auto' }}>
+                        {isCurrentSlot && (
+                            <div ref={markerRef} className={styles.currentTimeLine} style={{ left: `${progressPercent}%` }}>
+                                <div className={styles.currentTimeLineLabel}>AHORA</div>
+                                <div className={styles.currentTimeLineBar}></div>
+                            </div>
+                        )}
+                        {isBlockedByGoogle ? (
+                            <div className={`${styles.googleBlocked}`}>
+                                <Icon name="lock" size="1.2rem" />
+                                <span>Bloqueado</span>
+                            </div>
+                        ) : slotApps.length > 0 ? (
+                            slotApps.map(appt => {
+                                if (showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status)) {
+                                    return (
+                                        <AppointmentCard
+                                            key={appt.id} appt={appt}
+                                            onClick={() => onSlotClick(time.getHours(), appt)}
+                                            isLoading={isLoading}
+                                        />
+                                    );
+                                }
+                                return null;
+                            })
+                        ) : !isBlocked && (
+                            <div
+                                className={`${styles.availableCard} ${isSlotClosed ? styles.availableClosed : ''}`}
+                                onClick={() => onSlotAction(slot)}
+                                onKeyDown={handleKeyDown}
+                                role="button"
+                                tabIndex={0}
+                                aria-label={`${t('available')} ${formatTime(time)}`}
+                            >
+                                <div className={styles.availableTimeTop}>
+                                    {formatTime(time)}
                                 </div>
-                            )}
-                        </div>
+                                <div className={styles.availableBody}>
+                                    <span className={`${styles.availableIcon}`}>
+                                        <Icon name={isSlotClosed ? 'lock' : 'add'} size="1.5rem" />
+                                    </span>
+                                    <span className={`${styles.availableLabel}`}>
+                                        {isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
+                                    </span>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 );
             })}
+            
+            {/* If it's today and marker was never rendered, it means all slots are in the past. Render at the very end. */}
+            {isTodaySchedule && !timeMarkerRendered && (
+                <div ref={markerRef} className={styles.currentTimeLine}>
+                    <div className={styles.currentTimeLineLabel}>AHORA</div>
+                    <div className={styles.currentTimeLineBar}></div>
+                </div>
+            )}
         </div>
     );
 };

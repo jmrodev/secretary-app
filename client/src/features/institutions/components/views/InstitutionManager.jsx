@@ -6,7 +6,7 @@ import Icon from '@/components/atoms/Icon';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
 import Button from '@/components/atoms/Button';
-import './InstitutionManager.css';
+import styles from './InstitutionManager.module.css';
 
 const InstitutionManager = ({
     institutions,
@@ -27,13 +27,13 @@ const InstitutionManager = ({
     } = handlers;
 
     return (
-        <div className="institution-manager">
-            <header className="institution-manager__header">
-                <h2 className="institution-manager__title">{t('institutions') || 'Instituciones'}</h2>
-                <p className="institution-manager__subtitle">{t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}</p>
+        <div className={`${styles.root}`}>
+            <header className={`${styles.header}`}>
+                <h2 className={`${styles.title}`}>{t('institutions') || 'Instituciones'}</h2>
+                <p className={`${styles.subtitle}`}>{t('institutions_subtitle') || 'Gestiona instituciones pagadoras y convenios.'}</p>
             </header>
 
-            <div className="institution-manager__nav">
+            <div className={`${styles.nav}`}>
                 <TabNav className="institution-manager__tab-nav">
                     <TabButton
                         isActive={activeTab === 'list'}
@@ -52,14 +52,14 @@ const InstitutionManager = ({
                 </TabNav>
             </div>
 
-            <div className="dashboard-card institution-manager__card">
+            <div className={`${styles.card} dashboard-card`}>
                 {/* Actions Header inside card */}
                 {activeTab === 'list' && (
-                    <div className="institution-manager__actions">
+                    <div className={`${styles.actions}`}>
                         <Button
                             variant="primary"
                             size="sm"
-                            className="institution-manager__action-btn"
+                            className={`${styles.actionBtn}`}
                             onClick={() => handleOpenFormModal()}
                             icon={<Icon name="add" size="1.1rem" />}
                         >
@@ -68,7 +68,7 @@ const InstitutionManager = ({
                     </div>
                 )}
 
-                <div className="institution-manager__list-container">
+                <div className={`${styles.listContainer}`}>
                     {activeTab === 'list' ? (
 
                         <InstitutionList

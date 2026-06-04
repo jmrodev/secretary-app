@@ -3,7 +3,7 @@ import { useAuditLogsController } from '@/features/reports/hooks/useAuditLogsCon
 import AuditLogManager from '@/features/reports/components/views/AuditLogManager';
 
 import MainLayout from '@/components/templates/MainLayout';
-import './AuditLogsPage.css';
+import styles from './AuditLogsPage.module.css';
 
 /**
  * AuditLogsPage (Orchestrator).
@@ -14,7 +14,7 @@ const AuditLogsPage = () => {
     
     return (
         <MainLayout wide>
-            <main className="audit-logs-page-orchestrator animate-fade-in">
+            <main className={`${styles.auditLogsPageOrchestrator} animate-fade-in`}>
                 <AuditLogManager {...controller} />
             </main>
         </MainLayout>

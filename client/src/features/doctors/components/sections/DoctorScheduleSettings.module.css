@@ -1,0 +1,240 @@
+/* DoctorScheduleSettings Styles (BEM) */
+
+.scheduleSettings {
+    /* --- Local Component Tokens --- */
+    --schedule-container-bg: var(--white);
+    --schedule-container-border: var(--gray-300);
+    --schedule-day-inactive-bg: var(--gray-50);
+    --schedule-day-active-bg: var(--white);
+    --schedule-day-border: var(--gray-200);
+    --schedule-day-active-border: var(--blue-500);
+
+    /* ------------------------------ */
+
+    background-color: var(--schedule-container-bg);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--schedule-container-border);
+}
+
+.title {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.loading {
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.days {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Bulk Actions area */
+.scheduleBulk {
+    margin-bottom: 2rem;
+    padding: 1.25rem;
+    background-color: var(--schedule-day-inactive-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--schedule-day-border);
+}
+
+.title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.timeInputs {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.timeInput {
+    width: 6.5rem;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.separator {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.buttons {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Day Block */
+.scheduleDay {
+    padding: 1.25rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--schedule-day-border);
+    transition: all 0.2s ease;
+    background-color: var(--schedule-day-inactive-bg);
+    opacity: 0.75;
+}
+
+.scheduleDayActive {
+    background-color: var(--schedule-day-active-bg);
+    border-color: var(--schedule-day-active-border);
+    box-shadow: var(--shadow-md);
+    opacity: 1;
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+}
+
+.toggle {
+    padding-top: 0.25rem;
+}
+
+.checkbox {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+.content {
+    flex: 1;
+}
+
+.name {
+    display: block;
+    font-size: 1.125rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    color: var(--text-muted);
+}
+
+.scheduleDayActive .name {
+    color: var(--text-main);
+}
+
+/* Time Blocks */
+.scheduleBlocks {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.addBtn {
+    align-self: flex-start;
+    font-size: 0.875rem;
+    color: var(--accent-color);
+}
+
+.root {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    background-color: var(--gray-50);
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.connector {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+}
+
+.divider {
+    height: 1.5rem;
+    width: 1px;
+    background-color: var(--border-color);
+}
+
+@media (width <= 640px) {
+    .divider {
+        display: none;
+    }
+}
+
+.typeSelect {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    background-color: white;
+    cursor: pointer;
+}
+
+.typeSelectVirtual {
+    color: var(--accent-color);
+    font-weight: 700;
+    background-color: var(--blue-50);
+    border-color: var(--blue-200);
+}
+
+.options {
+    display: flex;
+    align-items: center;
+}
+
+.alignment {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+}
+
+.alignmentText {
+    font-size: 0.625rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.remove {
+    margin-left: auto;
+    color: var(--text-muted);
+}
+
+.remove:hover {
+    color: var(--error);
+    background-color: var(--red-50);
+}

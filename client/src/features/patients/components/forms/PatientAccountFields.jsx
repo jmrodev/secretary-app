@@ -1,7 +1,7 @@
 import React from 'react';
 import Input from '@/components/atoms/Input';
 import Icon from '@/components/atoms/Icon';
-import './PatientAccountFields.css';
+import styles from './PatientAccountFields.module.css';
 
 /**
  * PatientAccountFields Molecule (Sub-Executor).
@@ -10,15 +10,15 @@ import './PatientAccountFields.css';
  */
 const PatientAccountFields = ({ formData, updatePatientData, t }) => {
     return (
-        <article className="patient-account-fields">
-            <header className="patient-account-fields__header">
+        <article className={`${styles.root}`}>
+            <header className={`${styles.header}`}>
                 <Icon name="vpn_key" size="1.25rem" />
-                <h3 className="patient-account-fields__title">{t('access_credentials')}</h3>
+                <h3 className={`${styles.title}`}>{t('access_credentials')}</h3>
             </header>
 
-            <div className="patient-account-fields__bento">
-                <div className="patient-account-fields__group patient-account-fields__group--span-6">
-                    <label className="patient-account-fields__label">{t('username')}</label>
+            <div className={`${styles.bento}`}>
+                <div className={`${styles.group} ${styles.groupSpan6}`}>
+                    <label className={`${styles.label}`}>{t('username')}</label>
                     <Input
                         type="text"
                         name="username"
@@ -30,8 +30,8 @@ const PatientAccountFields = ({ formData, updatePatientData, t }) => {
                         placeholder={t('username_placeholder')}
                     />
                 </div>
-                <div className="patient-account-fields__group patient-account-fields__group--span-6">
-                    <label className="patient-account-fields__label">{t('password')}</label>
+                <div className={`${styles.group} ${styles.groupSpan6}`}>
+                    <label className={`${styles.label}`}>{t('password')}</label>
                     <Input
                         type="password"
                         name="password"
@@ -45,7 +45,7 @@ const PatientAccountFields = ({ formData, updatePatientData, t }) => {
                 </div>
             </div>
 
-            <footer className="patient-account-fields__security-note">
+            <footer className={`${styles.securityNote}`}>
                 <Icon name="security" size="1rem" />
                 <p>{t('account_security_note')}</p>
             </footer>

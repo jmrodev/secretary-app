@@ -21,11 +21,7 @@ const HabitualMedicationsGrid = ({ patientMeds, medicationItems, onSelect, baseC
                         <Button
                             key={m.id}
                             type="button"
-                            className={`${baseClass}__habitual-btn p-3 rounded-sm border transition-all text-left flex flex-col ${
-                                isSelected 
-                                ? 'bg-accent text-white border-accent shadow-md transform scale-[1.02]' 
-                                : 'bg-white border-gray-100 hover:border-accent hover:bg-gray-50 text-gray-800'
-                            }`}
+                            className={`${baseClass}__habitual-btn p-3 rounded-sm border transition-all text-left flex flex-col ${ isSelected ? 'bg-accent text-white border-accent shadow-md transform scale-[1.02]' : 'bg-white border-gray-100 hover:border-accent hover:bg-gray-50 text-gray-800' }`}
                             onClick={() => onSelect(m)}
                             unstyled
                         >

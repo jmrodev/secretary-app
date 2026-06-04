@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import MedicationAutocomplete from '@/features/medical_documents/components/ui/MedicationAutocomplete';
 import MedicationList from '@/features/medical_documents/components/lists/MedicationList';
-import './MedicationInput.css';
+import styles from './MedicationInput.module.css';
 
 const EMPTY_ARRAY = [];
 
@@ -27,12 +27,12 @@ const MedicationInput = ({
     };
 
     return (
-        <div className={`medication-input ${className} animate-fade-in`}>
-            <div className="medication-input__header">
-                <label className="medication-input__label">
+        <div className={`${styles.root} ${className} animate-fade-in`}>
+            <div className={`${styles.header}`}>
+                <label className={`${styles.label}`}>
                     {label}
                     {optional && (
-                        <span className="medication-input__optional-badge">Optional</span>
+                        <span className={`${styles.optionalBadge}`}>Optional</span>
                     )}
                 </label>
             </div>
@@ -42,13 +42,13 @@ const MedicationInput = ({
                 onChange={setSearchValue}
                 onSelectMedication={handleSelectMedication}
                 placeholder={placeholder}
-                className="medication-input__autocomplete"
+                className={`${styles.autocomplete}`}
             />
 
             <MedicationList
                 medications={medications}
                 onRemove={onRemove}
-                className="medication-input__list"
+                className={`${styles.list}`}
             />
         </div>
     );

@@ -4,7 +4,7 @@ import Select from '@/components/atoms/Select';
 import Input from '@/components/atoms/Input';
 import Icon from '@/components/atoms/Icon';
 import { getMonthsOptions } from '@/utils/core/dateUtils';
-import './ReportFilters.css';
+import styles from './ReportFilters.module.css';
 
 const ReportFilters = ({
     month,
@@ -27,7 +27,7 @@ const ReportFilters = ({
     }));
 
     return (
-        <div className="report-filters report-filters--horizontal">
+        <div className={`${styles.root} report-filters--horizontal`}>
             <div className="report-filters__controls">
                 <div className="report-filters__field">
                     <Button
@@ -41,7 +41,7 @@ const ReportFilters = ({
                         value={month}
                         onChange={(e) => onMonthChange(Number(e.target.value))}
                         options={monthOptions}
-                        className="report-filters__select report-filters__select--month"
+                        className={`${styles.select} report-filters__select--month`}
                     />
                     <Button
                         variant="ghost"
@@ -66,7 +66,7 @@ const ReportFilters = ({
                         onChange={(e) => onYearChange(Number(e.target.value))}
                         min="2020"
                         max="2035"
-                        className="report-filters__input"
+                        className={`${styles.input}`}
                     />
                     <Button
                         variant="ghost"
@@ -78,7 +78,7 @@ const ReportFilters = ({
                 </div>
             </div>
 
-            <div className="report-filters__actions">
+            <div className={`${styles.actions}`}>
                 <Button
                     onClick={onGenerate}
                     disabled={isSubmitting}

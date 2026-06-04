@@ -4,7 +4,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
 import Input from '@/components/atoms/Input';
-import './ProfileEditor.css';
+import styles from './ProfileEditor.module.css';
 
 /**
  * ProfileEditor Feature Component.
@@ -20,13 +20,13 @@ const ProfileEditor = ({
     isAdmin, isDoctor, isPatient
 }) => {
     const { handleProfileChange, handleUpdate } = handlers;
-    if (loading || !user) return <div className="profile-editor__loading">{t('loading') || 'Cargando...'}</div>;
+    if (loading || !user) return <div className={`${styles.loading}`}>{t('loading') || 'Cargando...'}</div>;
 
     if (isAdmin) {
         return (
-            <div className="profile-editor animate-fade-in">
-                <div className="profile-editor__card">
-                    <div className="profile-editor__section-title">
+            <div className={`${styles.root} animate-fade-in`}>
+                <div className={`${styles.card}`}>
+                    <div className={`${styles.sectionTitle}`}>
                         <Icon name="USERS" size="1.2rem" />
                         {t('admin_account_msg')}
                     </div>
@@ -38,13 +38,13 @@ const ProfileEditor = ({
     }
 
     return (
-        <div className="profile-editor animate-fade-in">
+        <div className={`${styles.root} animate-fade-in`}>
 
             <form onSubmit={handleUpdate}>
-                <div className="profile-editor__grid">
+                <div className={`${styles.grid}`}>
                     {/* PERSONAL INFORMATION SECTION */}
-                    <div className="profile-editor__card">
-                        <div className="profile-editor__section-title">
+                    <div className={`${styles.card}`}>
+                        <div className={`${styles.sectionTitle}`}>
                             <Icon name="PROFILE" size="1.2rem" />
                             {t('personal_information')}
                         </div>
@@ -70,7 +70,7 @@ const ProfileEditor = ({
                             />
                         </FormGroup>
 
-                        <div className="profile-editor__phone-section">
+                        <div className={`${styles.phoneSection}`}>
                             <PhoneNumbersManager
                                 phoneNumbers={formData.phoneNumbers}
                                 onChange={(val) => handleProfileChange('phoneNumbers', val)}
@@ -79,8 +79,8 @@ const ProfileEditor = ({
                     </div>
 
                     {/* ROLE-SPECIFIC INFORMATION SECTION */}
-                    <div className="profile-editor__card">
-                        <div className="profile-editor__section-title">
+                    <div className={`${styles.card}`}>
+                        <div className={`${styles.sectionTitle}`}>
                             <Icon name={isDoctor ? 'DOCTORS' : 'DOCUMENTS'} size="1.2rem" />
                             {isDoctor ? t('professional_details') : t('medical_data')}
                         </div>
@@ -105,7 +105,7 @@ const ProfileEditor = ({
                     </div>
                 </div>
 
-                <div className="profile-editor__actions">
+                <div className={`${styles.actions}`}>
                     <Button type="submit" variant="primary" size="lg" icon={<Icon name="SAVE" />}>
                         {t('save_changes')}
                     </Button>

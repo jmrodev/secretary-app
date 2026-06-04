@@ -6,7 +6,7 @@ import FormGroup from '@/components/molecules/FormGroup';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
 import Card from '@/components/atoms/Card';
-import './LoginForm.css';
+import styles from './LoginForm.module.css';
 
 /**
  * LoginForm - Executor Component.
@@ -30,33 +30,33 @@ const LoginForm = () => {
         <Card
             className="login-form animate-fade-in"
             header={
-                <div className="auth-card__header">
-                    <h1 className="auth-card__title">{t('welcome_back')}</h1>
-                    <p className="auth-card__subtitle">{t('sign_in_subtitle')}</p>
+                <div className={`${styles.header}`}>
+                    <h1 className={`${styles.title}`}>{t('welcome_back')}</h1>
+                    <p className={`${styles.subtitle}`}>{t('sign_in_subtitle')}</p>
                 </div>
             }
             footer={
-                <div className="auth-card__footer">
-                    <div className="auth-card__download">
+                <div className={`${styles.footer}`}>
+                    <div className={`${styles.download}`}>
                         <Button
                             variant="outline"
                             size="sm"
-                            className="auth-card__download-btn"
+                            className={`${styles.downloadBtn}`}
                             icon={<Icon name="DOWNLOAD" size="1.1rem" />}
                             onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
                         >
                             {t('download_apk')}
                         </Button>
                     </div>
-                    <p className="auth-card__footer-text" suppressHydrationWarning>
+                    <p className={`${styles.footerText}`} suppressHydrationWarning>
                         © {CURRENT_YEAR} {t('app_name')}
                     </p>
                 </div>
             }
         >
-            {error && <div className="auth-card__error">{error}</div>}
+            {error && <div className={`${styles.error}`}>{error}</div>}
 
-            <form className="auth-card__form" onSubmit={handlers.handleSubmit}>
+            <form className={`${styles.form}`} onSubmit={handlers.handleSubmit}>
                 <FormGroup label={t('username')}>
                     <Input
                         type="text"
@@ -82,7 +82,7 @@ const LoginForm = () => {
                 <Button
                     type="submit"
                     variant="primary"
-                    className="auth-card__button--submit"
+                    className={`${styles.buttonSubmit}`}
                 >
                     {loading ? (
                         <Loading variant="inline" size="sm" text={t('signing_in')} />

@@ -1,0 +1,145 @@
+/* --- Search Box Block --- */
+.root {
+    margin-bottom: 2rem;
+}
+
+.wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    position: absolute;
+    left: 1rem;
+    color: var(--gray-400);
+    font-size: 1.25rem;
+}
+
+.input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    background: white;
+    box-shadow: var(--shadow-sm);
+    font-size: 1.1rem;
+}
+
+.input:focus {
+    border-color: var(--blue-500);
+    box-shadow: 0 0 0 4px rgb(59 130 246 / 10%);
+}
+
+.actions {
+    position: absolute;
+    right: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* --- Suggestions Dropdown --- */
+.suggestions {
+    position: absolute;
+    top: calc(100% - 1.5rem);
+    left: 0;
+    right: 0;
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: 0 0 var(--radius) var(--radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    padding: 0.5rem 0;
+    animation: fade-in 0.2s ease-out;
+}
+
+.suggestionsHeader {
+    padding: 0.75rem 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--gray-100);
+    background: var(--gray-50);
+}
+
+.suggestionsList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.suggestionItem {
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.suggestionItem:hover {
+    background: var(--blue-50);
+    border-left-color: var(--blue-500);
+    padding-left: 1.5rem;
+}
+
+.suggestionInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.suggestionName {
+    font-weight: 600;
+    color: var(--gray-800);
+    font-size: 1rem;
+}
+
+.suggestionDni {
+    font-size: 0.8rem;
+    color: var(--gray-500);
+    font-family: var(--font-mono, monospace);
+}
+
+/* --- Status Indicators (Semáforo) --- */
+.suggestionStatus {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 0 0 3px var(--white);
+}
+
+.suggestionStatusGreen {
+    background-color: var(--green-500);
+    box-shadow: 0 0 8px var(--green-200);
+}
+
+.suggestionStatusYellow {
+    background-color: var(--yellow-500);
+    box-shadow: 0 0 8px var(--yellow-200);
+}
+
+.suggestionStatusRed {
+    background-color: var(--red-500);
+    box-shadow: 0 0 8px var(--red-200);
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

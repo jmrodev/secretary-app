@@ -1,4 +1,4 @@
-import './BalanceFinancialSummary.css';
+import styles from './BalanceFinancialSummary.module.css';
 
 /**
  * BalanceFinancialSummary Molecule.
@@ -16,57 +16,57 @@ const BalanceFinancialSummary = ({
     t
 }) => {
     return (
-        <section className="balance-summary animate-fade-in">
-            <h3 className="balance-summary__title">Resumen Financiero</h3>
+        <section className={`${styles.root} animate-fade-in`}>
+            <h3 className={`${styles.title}`}>Resumen Financiero</h3>
 
-            <div className="balance-summary__item">
+            <div className={`${styles.item}`}>
                 <span>Total Turnos:</span>
-                <span className="balance-summary__amount balance-summary__amount--positive">
+                <span className={`${styles.amount} ${styles.amountPositive}`}>
                     $ {totalAppts.toLocaleString()}
                 </span>
             </div>
 
-            <div className="balance-summary__item">
+            <div className={`${styles.item}`}>
                 <span>Total Recetas:</span>
-                <span className="balance-summary__amount balance-summary__amount--positive">
+                <span className={`${styles.amount} ${styles.amountPositive}`}>
                     $ {totalPres.toLocaleString()}
                 </span>
             </div>
 
-            <div className="balance-summary__item">
+            <div className={`${styles.item}`}>
                 <span>Total Licencias:</span>
-                <span className="balance-summary__amount balance-summary__amount--positive">
+                <span className={`${styles.amount} ${styles.amountPositive}`}>
                     $ {totalLicenses.toLocaleString()}
                 </span>
             </div>
 
-            <div className="balance-summary__item">
+            <div className={`${styles.item}`}>
                 <span>Total Certificados:</span>
-                <span className="balance-summary__amount balance-summary__amount--positive">
+                <span className={`${styles.amount} ${styles.amountPositive}`}>
                     $ {totalCertificates.toLocaleString()}
                 </span>
             </div>
 
             {otherOrPastIncome > 0 && (
-                <div className="balance-summary__item">
+                <div className={`${styles.item}`}>
                     <span>Otros Ingresos / Cobro Deudas:</span>
-                    <span className="balance-summary__amount balance-summary__amount--positive">
+                    <span className={`${styles.amount} ${styles.amountPositive}`}>
                         $ {otherOrPastIncome.toLocaleString()}
                     </span>
                 </div>
             )}
 
-            <div className="balance-summary__item balance-summary__item--subtotal">
+            <div className={`${styles.item} ${styles.itemSubtotal}`}>
                 <span>{t("subtotal_income")}:</span>
                 <span>$ {totalIncome.toLocaleString()}</span>
             </div>
 
-            <div className="balance-summary__item balance-summary__item--withdrawals">
+            <div className={`${styles.item} ${styles.itemWithdrawals}`}>
                 <span>{t('doctor_withdrawals')}:</span>
                 <span>$ {totalWithdrawals.toLocaleString()}</span>
             </div>
 
-            <div className="balance-summary__item balance-summary__item--net">
+            <div className={`${styles.item} ${styles.itemNet}`}>
                 <span>{t("result_neto")}:</span>
                 <span>$ {netTotal.toLocaleString()}</span>
             </div>

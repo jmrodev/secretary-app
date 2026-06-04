@@ -9,6 +9,9 @@ export const useDashboardModals = () => {
     const [historyModal, setHistoryModal] = useState({ open: false, patientId: null, patientName: '' });
     const [prescribeModal, setPrescribeModal] = useState({ open: false, apptId: null, patientId: null, patientName: '', medications: '', instructions: '' });
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {}, apptId: null });
+    const [newRequestModal, setNewRequestModal] = useState({ open: false });
+
+    const handleOpenNewRequest = useCallback(() => setNewRequestModal({ open: true }), []);
 
     const handleOpenPayment = useCallback((appt) => {
         setPaymentModal({
@@ -67,16 +70,18 @@ export const useDashboardModals = () => {
         historyModal, setHistoryModal,
         prescribeModal, setPrescribeModal,
         paymentModal, setPaymentModal,
+        newRequestModal, setNewRequestModal,
         handleOpenPayment,
         handleOpenHistory,
         handleOpenPrescribe,
         handleOpenReschedule,
         handleOpenSync,
         handleHardEdit,
+        handleOpenNewRequest,
         navigate
     }), [
-        actionModal, historyModal, prescribeModal, paymentModal,
+        actionModal, historyModal, prescribeModal, paymentModal, newRequestModal,
         handleOpenPayment, handleOpenHistory, handleOpenPrescribe,
-        handleOpenReschedule, handleOpenSync, handleHardEdit, navigate
+        handleOpenReschedule, handleOpenSync, handleHardEdit, handleOpenNewRequest, navigate
     ]);
 };

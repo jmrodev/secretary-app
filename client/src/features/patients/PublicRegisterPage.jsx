@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useFetch } from '@/hooks/useFetch';
-import './PublicRegisterPage.css';
+import styles from './PublicRegisterPage.module.css';
 
 /**
  * PublicRegisterPage (Orchestrator).
@@ -12,12 +12,12 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
     switch(step) {
         case 1:
             return (
-                <div className="step-field animate-fade-in">
-                    <label htmlFor="firstName" className="accessible-label">¿Cuál es tu NOMBRE?</label>
+                <div className={`${styles.stepField} animate-fade-in`}>
+                    <label htmlFor="firstName" className={`${styles.accessibleLabel}`}>¿Cuál es tu NOMBRE?</label>
                     <input
                         id="firstName"
                         name="firstName"
-                        className="accessible-input"
+                        className={`${styles.accessibleInput}`}
                         value={formData.firstName}
                         onChange={onChange}
                         placeholder="Escribí tu nombre..."
@@ -28,12 +28,12 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 2:
             return (
-                <div className="step-field animate-fade-in">
-                    <label htmlFor="lastName" className="accessible-label">¿Cuál es tu APELLIDO?</label>
+                <div className={`${styles.stepField} animate-fade-in`}>
+                    <label htmlFor="lastName" className={`${styles.accessibleLabel}`}>¿Cuál es tu APELLIDO?</label>
                     <input
                         id="lastName"
                         name="lastName"
-                        className="accessible-input"
+                        className={`${styles.accessibleInput}`}
                         value={formData.lastName}
                         onChange={onChange}
                         placeholder="Escribí tu apellido..."
@@ -44,12 +44,12 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 3:
             return (
-                <div className="step-field animate-fade-in">
-                    <label htmlFor="address" className="accessible-label">¿Cuál es tu DIRECCIÓN?</label>
+                <div className={`${styles.stepField} animate-fade-in`}>
+                    <label htmlFor="address" className={`${styles.accessibleLabel}`}>¿Cuál es tu DIRECCIÓN?</label>
                     <input
                         id="address"
                         name="address"
-                        className="accessible-input"
+                        className={`${styles.accessibleInput}`}
                         value={formData.address}
                         onChange={onChange}
                         placeholder="Calle y número..."
@@ -60,14 +60,14 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 4:
             return (
-                <div className="step-field animate-fade-in">
-                    <label htmlFor="dni" className="accessible-label">¿Cuál es tu DNI?</label>
+                <div className={`${styles.stepField} animate-fade-in`}>
+                    <label htmlFor="dni" className={`${styles.accessibleLabel}`}>¿Cuál es tu DNI?</label>
                     <input
                         id="dni"
                         name="dni"
                         type="number"
                         inputMode="numeric"
-                        className="accessible-input"
+                        className={`${styles.accessibleInput}`}
                         value={formData.dni}
                         onChange={onChange}
                         placeholder="Sólo números..."
@@ -78,12 +78,12 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 5:
             return (
-                <div className="step-field animate-fade-in">
-                    <label htmlFor="phone" className="accessible-label">Tu TELÉFONO es:</label>
+                <div className={`${styles.stepField} animate-fade-in`}>
+                    <label htmlFor="phone" className={`${styles.accessibleLabel}`}>Tu TELÉFONO es:</label>
                     <input
                         id="phone"
                         name="phone"
-                        className="accessible-input accessible-input--disabled"
+                        className={`${styles.accessibleInput} ${styles.accessibleInputDisabled}`}
                         value={formData.phone}
                         readOnly
                         disabled
@@ -158,41 +158,41 @@ const PublicRegisterPage = () => {
     };
 
     return (
-        <div className="public-register-paginated">
+        <div className={`${styles.publicRegisterPaginated}`}>
             {success ? (
-                <div className="step-card success-card animate-fade-in">
-                    <span className="success-emoji">✅</span>
-                    <h1 className="accessible-title">¡Todo Listo!</h1>
-                    <p className="accessible-text">Tus datos se guardaron correctamente.</p>
-                    <p className="accessible-subtext">Ya podés cerrar esta página y volver al WhatsApp.</p>
+                <div className={`${styles.successCard} step-card animate-fade-in`}>
+                    <span className={`${styles.successEmoji}`}>✅</span>
+                    <h1 className={`${styles.accessibleTitle}`}>¡Todo Listo!</h1>
+                    <p className={`${styles.accessibleText}`}>Tus datos se guardaron correctamente.</p>
+                    <p className={`${styles.accessibleSubtext}`}>Ya podés cerrar esta página y volver al WhatsApp.</p>
                 </div>
             ) : (
                 <>
-                    <div className="step-header">
-                        <div className="progress-text">Paso {step} de {totalSteps}</div>
-                        <div className="progress-bar">
-                            <div className="progress-fill" style={{ width: `${(step / totalSteps) * 100}%` }}></div>
+                    <div className={`${styles.stepHeader}`}>
+                        <div className={`${styles.progressText}`}>Paso {step} de {totalSteps}</div>
+                        <div className={`${styles.progressBar}`}>
+                            <div className={`${styles.progressFill}`} style={{ width: `${(step / totalSteps) * 100}%` }}></div>
                         </div>
                     </div>
 
-                    <main className="step-container">
-                        {error && <div className="accessible-error">{error}</div>}
+                    <main className={`${styles.stepContainer}`}>
+                        {error && <div className={`${styles.accessibleError}`}>{error}</div>}
                         
                         <StepField step={step} formData={formData} onChange={updateRegisterData} inputRef={inputRef} />
 
-                        <footer className="step-footer">
+                        <footer className={`${styles.stepFooter}`}>
                             {step > 1 && (
-                                <button className="btn-huge btn-huge--secondary" onClick={prevStep} disabled={loading}>
+                                <button className={`${styles.btnHuge} ${styles.btnHugeSecondary}`} onClick={prevStep} disabled={loading}>
                                     ATRÁS
                                 </button>
                             )}
                             
                             {step < totalSteps ? (
-                                <button className="btn-huge btn-huge--primary" onClick={nextStep}>
+                                <button className={`${styles.btnHuge} ${styles.btnHugePrimary}`} onClick={nextStep}>
                                     SIGUIENTE
                                 </button>
                             ) : (
-                                <button className="btn-huge btn-huge--success" onClick={handleSubmit} disabled={loading}>
+                                <button className={`${styles.btnHuge} ${styles.btnHugeSuccess}`} onClick={handleSubmit} disabled={loading}>
                                     {loading ? 'GUARDANDO...' : 'FINALIZAR'}
                                 </button>
                             )}

@@ -3,7 +3,7 @@ import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
-import './PendingClosuresModal.css';
+import styles from './PendingClosuresModal.module.css';
 
 /**
  * PendingClosuresModal Feature Molecule.
@@ -39,21 +39,21 @@ const PendingClosuresModal = ({
             title={t('pending_closures_title').replace('{count}', pendingClosures.length)}
             size="lg"
             footer={
-                <div className="pending-closures-footer">
+                <div className={`${styles.pendingClosuresFooter}`}>
                     <Button variant="secondary" onClick={onClose}>
                         {t('close_action')}
                     </Button>
                 </div>
             }
         >
-            <div className="pending-closures-container animate-fade-in">
+            <div className={`${styles.pendingClosuresContainer} animate-fade-in`}>
                 {duplicateClosures && duplicateClosures.length > 0 && (
-                    <div className="pending-closures-alert">
-                        <div className="pending-closures-alert__title">
+                    <div className={`${styles.pendingClosuresAlert}`}>
+                        <div className={`${styles.title}`}>
                             <Icon name="WARNING" size="1.2rem" />
                             {t('duplicate_closures_alert').replace('{count}', duplicateClosures.length)}
                         </div>
-                        <p className="pending-closures-alert__description">{t('fix_duplicates_desc')}</p>
+                        <p className={`${styles.description}`}>{t('fix_duplicates_desc')}</p>
                         <Button
                             size="sm"
                             variant="danger"
@@ -64,8 +64,8 @@ const PendingClosuresModal = ({
                     </div>
                 )}
 
-                <div className="pending-closures-header-actions">
-                    <p className="pending-closures-description">
+                <div className={`${styles.pendingClosuresHeaderActions}`}>
+                    <p className={`${styles.pendingClosuresDescription}`}>
                         {t('pending_closures_desc')}
                     </p>
                     {pendingClosures.length > 1 && (
@@ -81,20 +81,20 @@ const PendingClosuresModal = ({
                     )}
                 </div>
 
-                <div className="pending-closures-table-container">
-                    <table className="pending-closures-table">
+                <div className={`${styles.pendingClosuresTableContainer}`}>
+                    <table className={`${styles.root}`}>
                         <thead>
                             <tr>
                                 <th>{t('date_label')}</th>
-                                <th className="pending-closures-table__cell--right">{t('cash_balance')}</th>
-                                <th className="pending-closures-table__cell--right">{t('virtual_balance')}</th>
-                                <th className="pending-closures-table__cell--center">{t('actions')}</th>
+                                <th className={`${styles.cellRight}`}>{t('cash_balance')}</th>
+                                <th className={`${styles.cellRight}`}>{t('virtual_balance')}</th>
+                                <th className={`${styles.cellCenter}`}>{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {pendingClosures.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className="pending-closures-table__empty">
+                                    <td colSpan="4" className={`${styles.empty}`}>
                                         {t('all_caught_up')} {t('no_closures_pending')}
                                     </td>
                                 </tr>
@@ -106,18 +106,18 @@ const PendingClosuresModal = ({
                                     return (
                                         <tr key={itemKey}>
                                             <td className="pending-closures-table__date">
-                                                <div className="pending-closures-table__date-group">
-                                                    <span className="pending-closures-table__date-text">{day.date}</span>
-                                                    <span className="pending-closures-table__doctor-text">{day.doctor_name || 'General'}</span>
+                                                <div className={`${styles.dateGroup}`}>
+                                                    <span className={`${styles.dateText}`}>{day.date}</span>
+                                                    <span className={`${styles.doctorText}`}>{day.doctor_name || 'General'}</span>
                                                 </div>
                                             </td>
-                                            <td className="pending-closures-table__balance--cash pending-closures-table__cell--right">
+                                            <td className={`${styles.balanceCash} ${styles.cellRight}`}>
                                                 ${day.balance.toLocaleString()}
                                             </td>
-                                            <td className="pending-closures-table__balance--virtual pending-closures-table__cell--right">
+                                            <td className={`${styles.balanceVirtual} ${styles.cellRight}`}>
                                                 ${(day.transferBalance || 0).toLocaleString()}
                                             </td>
-                                            <td className="pending-closures-table__actions">
+                                            <td className={`${styles.actions}`}>
                                                 <Button
                                                     size="sm-compact"
                                                     variant={isProcessing ? "ghost" : "primary"}

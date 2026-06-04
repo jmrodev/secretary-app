@@ -17,7 +17,7 @@ Una solución integral para la gestión de consultorios médicos. El sistema opt
 
 ### 1. Frontend (React 19)
 - **Atomic Design**: Clasificar componentes en `atoms`, `molecules`, `organisms`, `templates` y `pages`.
-- **BEM CSS**: Estricto uso de `block__element--modifier`. Prohibido Tailwind o CSS-in-JS.
+- **CSS Modules Obligatorio**: Estricto uso de CSS Modules (`.module.css`). Prohibido Tailwind o CSS-in-JS.
 - **Modularidad por Características**: Lógica de dominio encapsulada en `src/features/{feature_name}/`.
 - **Controllers (Custom Hooks)**: La lógica de orquestación reside en `useFeatureController.js`.
 - **React 19 Ready**: Priorizar `use(Context)` y evitar "Render-in-Render".
@@ -60,7 +60,6 @@ Este proyecto utiliza `react-doctor` y `oxlint` para garantizar la excelencia t�
 ---
 
 ## 🤖 Reglas para Agentes de IA
-- **No Browser Tool**: Prohibido usar `browser_subagent` o `read_url` sobre `localhost`. Solicitar descripción o capturas al usuario.
 - **Validación Post-Cambio**: Ejecutar siempre el linter del proyecto después de modificar código.
 - **Surgicall Edits**: Realizar cambios precisos siguiendo la arquitectura de "Feature-Based Modularization".
 

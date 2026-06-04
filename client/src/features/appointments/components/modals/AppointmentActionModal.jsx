@@ -10,7 +10,7 @@ import { usePermissions } from '@/hooks/usePermissions';
 import AppointmentHeader from '../sections/AppointmentHeader.jsx';
 import AppointmentMedicalPanel from '../sections/AppointmentMedicalPanel.jsx';
 import AppointmentAdminPanel from '../sections/AppointmentAdminPanel.jsx';
-import './AppointmentActionModal.css';
+import styles from './AppointmentActionModal.module.css';
 
 /**
  * Executor component that renders the action modal for a specific appointment.
@@ -44,14 +44,13 @@ const AppointmentActionModal = ({
             onClose={onClose}
             title={`${t('appointment_details') || 'Detalles del Turno'}: ${appt.patient_name || appt.reason || t('sync_required')}`}
             size="lg"
-            className="appointment-modal"
         >
-            <div className="appointment-modal__content">
+            <div className={`${styles.content}`}>
                 <AppointmentHeader appt={appt} t={t} />
 
-                <div className="appointment-modal__reason">
-                    <p className="appointment-modal__text">
-                        <strong className="appointment-modal__strong">{t('reason')}:</strong> {appt.reason || t('no_description')}
+                <div className={`${styles.reason}`}>
+                    <p className={`${styles.text}`}>
+                        <strong className={`${styles.strong}`}>{t('reason')}:</strong> {appt.reason || t('no_description')}
                     </p>
                 </div>
 
@@ -67,7 +66,7 @@ const AppointmentActionModal = ({
                 {isGoogle && (
                     <Button
                         variant="accent"
-                        className="appointment-modal__sync-btn"
+                        className={`${styles.syncBtn}`}
                         onClick={() => onSync(appt)}
                         icon={<Icon name="auto_awesome" size="1.1rem" />}
                     >

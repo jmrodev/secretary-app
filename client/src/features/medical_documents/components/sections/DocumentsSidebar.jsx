@@ -6,7 +6,7 @@ import SearchBar from '@/components/ui/SearchBar';
 import Button from '@/components/atoms/Button';
 import { useFetch } from '@/hooks/useFetch';
 import { DoctorSelector } from '@/features/doctors';
-import './DocumentsSidebar.css';
+import styles from './DocumentsSidebar.module.css';
 
 /**
  * DocumentsSidebar Feature Organism.
@@ -52,12 +52,12 @@ const DocumentsSidebar = ({
                             key={tab.id}
                             isActive={activeTab === tab.id}
                             onClick={() => handleTabChange(tab.id)}
-                            className="medical-documents__tab-button"
+                            className={`${styles.tabButton}`}
                         >
-                            <span className="medical-documents__tab-icon">
+                            <span className={`${styles.tabIcon}`}>
                                 <Icon name={tab.icon} size="1.2rem" />
                             </span>
-                            <span className="medical-documents__tab-label">{tab.label}</span>
+                            <span className={`${styles.tabLabel}`}>{tab.label}</span>
                         </TabButton>
                     ))}
                 </TabNav>
@@ -71,7 +71,7 @@ const DocumentsSidebar = ({
                 <DoctorSelector />
             </div>
 
-            <div className="dashboard-card medical-documents__search-card">
+            <div className={`${styles.searchCard} dashboard-card`}>
                 <h3 className="dashboard-card__title">
                     <Icon name="search" size="1.2rem" color="var(--accent-color)" />
                     {t('search')}
@@ -103,18 +103,18 @@ const DocumentsSidebar = ({
             </div>
 
             {activeTab === 'requests' && requestsSubTab === 'list' && (
-                <div className="dashboard-card medical-documents__action-card">
-                    <h3 className="dashboard-card__title medical-documents__action-title">
+                <div className={`${styles.actionCard} dashboard-card`}>
+                    <h3 className={`${styles.actionTitle} dashboard-card__title`}>
                         <Icon name="settings" size="1.1rem" color="var(--blue-600)" />
                         {t('actions')}
                     </h3>
-                    <div className="medical-documents__action-list">
+                    <div className={`${styles.actionList}`}>
                         <Button
                             variant="secondary"
                             size="sm"
                             onClick={handleExportJSON}
                             icon={<Icon name="save" size="1rem" />}
-                            className="medical-documents__action-btn"
+                            className={`${styles.actionBtn}`}
                         >
                             {t('export_json')}
                         </Button>
@@ -123,7 +123,7 @@ const DocumentsSidebar = ({
                             size="sm"
                             onClick={handlePrintPrescriptions}
                             icon={<Icon name="print" size="1rem" />}
-                            className="medical-documents__action-btn"
+                            className={`${styles.actionBtn}`}
                         >
                             {t('print_backup')}
                         </Button>
@@ -132,19 +132,19 @@ const DocumentsSidebar = ({
             )}
 
             {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
-                <div className="dashboard-card medical-documents__action-card">
-                    <h3 className="dashboard-card__title medical-documents__action-title">
+                <div className={`${styles.actionCard} dashboard-card`}>
+                    <h3 className={`${styles.actionTitle} dashboard-card__title`}>
                         <Icon name="settings" size="1.1rem" color="var(--blue-600)" />
                         {t('actions')}
                     </h3>
-                    <div className="medical-documents__action-list">
+                    <div className={`${styles.actionList}`}>
                         {activeTab === 'prescriptions' && (
                             <Button
                                 variant="secondary"
                                 size="sm"
                                 onClick={handleExportJSON}
                                 icon={<Icon name="save" size="1rem" />}
-                                className="medical-documents__action-btn"
+                                className={`${styles.actionBtn}`}
                             >
                                 {t('export_json')}
                             </Button>
@@ -154,7 +154,7 @@ const DocumentsSidebar = ({
                             size="sm"
                             onClick={handlePrintPrescriptions}
                             icon={<Icon name="print" size="1rem" />}
-                            className="medical-documents__action-btn"
+                            className={`${styles.actionBtn}`}
                         >
                             {t('print_backup')}
                         </Button>

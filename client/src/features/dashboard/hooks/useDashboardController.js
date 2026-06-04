@@ -160,6 +160,8 @@ export const useDashboardController = () => {
         setHistoryModal: modalsHook.setHistoryModal,
         setPrescribeModal: modalsHook.setPrescribeModal,
         setPaymentModal: modalsHook.setPaymentModal,
+        setNewRequestModal: modalsHook.setNewRequestModal,
+        handleOpenNewRequest: modalsHook.handleOpenNewRequest,
         navigate: modalsHook.navigate
     };
 
@@ -187,6 +189,7 @@ export const useDashboardController = () => {
         historyModal: modalsHook.historyModal,
         prescribeModal: modalsHook.prescribeModal,
         paymentModal: modalsHook.paymentModal,
+        newRequestModal: modalsHook.newRequestModal,
         fetched: statsHook.fetchedDoctors,
 
         isSubmitting,

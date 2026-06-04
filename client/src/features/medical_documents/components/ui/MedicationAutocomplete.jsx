@@ -6,7 +6,7 @@ import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import Badge from '@/components/atoms/Badge';
 import Loading from '@/components/atoms/Loading';
-import './MedicationAutocomplete.css';
+import styles from './MedicationAutocomplete.module.css';
 
 /**
  * MedicationAutocomplete Feature Molecule.
@@ -38,7 +38,7 @@ const MedicationAutocomplete = ({
         setCursor
     } = useMedicationAutocomplete(value, onChange, onSelectMedication);
 
-    const baseClass = 'medication-autocomplete';
+    const baseClass = styles.root;
 
     // Handle clicks outside to close suggestions
     useEffect(() => {
@@ -78,18 +78,20 @@ const MedicationAutocomplete = ({
     };
 
     return (
-        <div className={`${baseClass} ${className} animate-fade-in`} ref={wrapperRef}>
-            <div className={`${baseClass}__input-wrapper`}>
+        <div className={`${styles.animateFadeIn} ${styles.root} ${className}`} ref={wrapperRef}>
+            <div className={styles.inputWrapper}>
                 <Input
-                    className={`${baseClass}__input`}
+                    className={styles.input}
                     value={searchTerm}
                     onChange={(e) => handleSearch(e.target.value)}
                     onFocus={() => searchTerm.length >= 2 && setShowSuggestions(true)}
                     onKeyDown={handleKeyDown}
                     placeholder={placeholder || t('search_medication')}
                     autoComplete="off"
+                    size="sm"
+                    style={{ minHeight: '30px' }}
                 />
-                <div className={`${baseClass}__actions`}>
+                <div className={styles.actions}>
                     {loading ? (
                         <Loading size="sm" variant="inline" />
                     ) : searchTerm ? (
@@ -103,7 +105,7 @@ const MedicationAutocomplete = ({
                         >
                         </Button>
                     ) : (
-                        <span className="medication-autocomplete__icon">
+                        <span className={styles.icon}>
                             <Icon name="search" />
                         </span>
                     )}
@@ -111,7 +113,7 @@ const MedicationAutocomplete = ({
             </div>
 
             {showSuggestions && suggestions.length > 0 && (
-                <ul ref={listRef} className={`${baseClass}__list animate-fade-in`} role="listbox">
+                <ul ref={listRef} className={`${styles.animateFadeIn} ${baseClass}__list`} role="listbox">
                     {suggestions.map((med, idx) => (
                         <li
                             key={med.id || `med-suggestion-${idx}`}
@@ -133,9 +135,9 @@ const MedicationAutocomplete = ({
                             </div>
                             <div className={`${baseClass}__item-subtitle`}>
                                 {med.presentation && (
-                                    <Badge variant="gray" className="badge--sm">
+                                    <span style={{ color: 'rgb(255 255 255 / 70%)', fontStyle: 'italic', marginRight: '0.25rem' }}>
                                         {med.presentation}
-                                    </Badge>
+                                    </span>
                                 )}
                                 <span>{highlightMatch(med.drug, searchTerm)}</span>
                                 {med.lab && (

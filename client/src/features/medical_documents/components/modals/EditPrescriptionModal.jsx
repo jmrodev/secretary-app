@@ -25,6 +25,7 @@ const EditPrescriptionModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
+            size="xl"
             title={`${t('prescription_for')} ${prescription.patient_name}`}
             footer={
                 editData._readOnly ? (

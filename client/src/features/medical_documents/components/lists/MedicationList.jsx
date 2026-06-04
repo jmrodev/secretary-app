@@ -1,6 +1,6 @@
 import React from 'react';
 import MedicationTag from '@/components/atoms/MedicationTag';
-import './MedicationList.css';
+import styles from './MedicationList.module.css';
 
 /**
  * MedicationList Feature Molecule.
@@ -19,8 +19,8 @@ const MedicationList = ({
     }
 
     return (
-        <div className={`medication-list ${className} animate-fade-in`}>
-            <div className="medication-list__items">
+        <div className={`${styles.root} ${className} animate-fade-in`}>
+            <div className={`${styles.items}`}>
                 {medications.map((med, index) => (
                     <MedicationTag
                         key={med.id || med.medication_id || `med-${index}`}

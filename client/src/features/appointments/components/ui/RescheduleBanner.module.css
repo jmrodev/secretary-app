@@ -1,0 +1,64 @@
+/* RescheduleBanner Molecule Styles (BEM) - Dark Premium Theme */
+
+.root {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 0.75rem 1.5rem;
+    background: rgb(30 41 59 / 85%);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgb(59 130 246 / 30%);
+    border-radius: var(--radius-sm, 0.35rem);
+    box-shadow: 0 10px 25px -5px rgb(0 0 0 / 40%);
+    color: var(--text-main);
+    animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    min-width: 400px;
+}
+
+.content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.icon {
+    color: var(--primary-color);
+}
+
+.patient {
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.instruction {
+    opacity: 0.8;
+}
+
+.exitBtn {
+    font-weight: 800;
+    color: var(--danger);
+}
+
+@keyframes slide-up {
+    from { transform: translate(-50%, 100%); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+@media (width <= 600px) {
+    .root {
+        min-width: 90%;
+        bottom: 1rem;
+        flex-direction: column;
+        gap: 0.75rem;
+        border-radius: var(--radius-lg);
+        text-align: center;
+    }
+}

@@ -6,7 +6,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { usePatientHistoryController } from '@/features/patients/hooks/usePatientHistoryController';
 import Icon from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
-import './PatientHistoryModal.css';
+import styles from './PatientHistoryModal.module.css';
 
 /**
  * PatientHistoryModal Molecule (Executor).
@@ -20,7 +20,7 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     const [activeTab, setActiveTab] = useState('appointments');
     const { history, loading } = usePatientHistoryController(patientId, isOpen);
 
-    const baseClass = 'patient-history';
+    const baseClass = styles.root;
 
     return (
         <Modal

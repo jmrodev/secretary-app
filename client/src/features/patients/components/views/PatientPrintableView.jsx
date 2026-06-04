@@ -2,7 +2,7 @@ import React, { useReducer, useMemo, useCallback } from 'react';
 import { parseDate } from '@/utils/core/dateUtils';
 import { PatientPrintableFilters } from '../sections/PatientPrintableFilters';
 import { PatientPrintableContent } from '../sections/PatientPrintableContent';
-import './PatientPrintableView.css';
+import styles from './PatientPrintableView.module.css';
 
 const initialState = {
     fromDate: '',
@@ -114,7 +114,7 @@ const PatientPrintableView = ({
                 const parsed = JSON.parse(cleanStr);
                 if (Array.isArray(parsed)) {
                     return (
-                        <ul className="printable-sublist">
+                        <ul className={`${styles.printableSublist}`}>
                             {parsed.map((m) => <li key={m.name}>{m.name}</li>)}
                         </ul>
                     );
@@ -125,16 +125,16 @@ const PatientPrintableView = ({
         const lines = cleanStr.split(/[\r\n]+/).filter(l => l.trim().length > 0);
         if (lines.length > 1) {
             return (
-                <ul className="printable-sublist">
+                <ul className={`${styles.printableSublist}`}>
                     {lines.map((line) => <li key={line}>{line.trim()}</li>)}
                 </ul>
             );
         }
-        return <p className="printable-text text-preline">{cleanStr}</p>;
+        return <p className={`${styles.printableText} text-preline`}>{cleanStr}</p>;
     };
 
     return (
-        <div className="printable-patient-sheet printable-patient-sheet--fullscreen animate-fade-in">
+        <div className={`${styles.fullscreen} printable-patient-sheet animate-fade-in`}>
             <PatientPrintableFilters
                 printOptions={printOptions}
                 fromDate={fromDate}

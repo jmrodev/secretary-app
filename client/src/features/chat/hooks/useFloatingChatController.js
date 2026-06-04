@@ -12,10 +12,9 @@ export const useFloatingChatController = (user, showMessage) => {
     const [selectedConvo, setSelectedConvo] = useState(null);
 
     // Refs to track state inside callbacks without adding dependencies
-    const selectedConvoRef = useRef(null);
-    useEffect(() => { selectedConvoRef.current = selectedConvo; }, [selectedConvo]);
+    const selectedConvoRef = useRef(selectedConvo);
+    selectedConvoRef.current = selectedConvo;
 
-    const [unreadCountState, setUnreadCountState] = useState(0);
     const [messageText, setMessageText] = useState('');
     const [sending, setSending] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
@@ -62,13 +61,13 @@ export const useFloatingChatController = (user, showMessage) => {
 
     // Unread Count
     const { 
+        data: unreadData,
         refetch: fetchUnreadCount
     } = useFetch('/messages/unread-count', {
         initialData: { unread_count: 0 },
-        immediate: !!user && user.role !== 'patient',
-        onSuccess: (data) => setUnreadCountState(data.unread_count || 0)
+        immediate: !!user && user.role !== 'patient'
     });
-    const unreadCount = unreadCountState;
+    const unreadCount = unreadData?.unread_count || 0;
 
     // Recipients
     const { data: recipients = [] } = useFetch('/messages/recipients', {

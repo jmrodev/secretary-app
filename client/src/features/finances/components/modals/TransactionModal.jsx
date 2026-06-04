@@ -19,7 +19,7 @@ import Icon from '@/components/atoms/Icon';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
 import FormGroup from '@/components/molecules/FormGroup';
 import { MedicationInput } from '@/features/medical_documents';
-import './TransactionModal.css';
+import styles from './TransactionModal.module.css';
 
 import { TransactionSummaryHeader } from '../sections/TransactionSummaryHeader';
 import { TransactionPaymentsSection } from '../sections/TransactionPaymentsSection';
@@ -79,7 +79,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 </div>
             }
         >
-            <div className="transaction-modal">
+            <div className={`${styles.root}`}>
                 <TransactionSummaryHeader 
                     requestId={requestId} 
                     patientSearch={patientSearch} 
@@ -101,7 +101,7 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
 
                 {!requestId && formData.type === 'income_patient' && (
                     <FormGroup label={t('patient')}>
-                        <div className="transaction-modal__autocomplete">
+                        <div className={`${styles.autocomplete}`}>
                             <Input
                                 value={patientSearch}
                                 onChange={e => { setPatientSearch(e.target.value); setShowPatientList(true); updateField('related_user_id', ''); }}
@@ -110,15 +110,15 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                                 icon={<Icon name="search" size="1.1rem" />} className="transaction-modal__input"
                             />
                             {showPatientList && patientSearch && !formData.related_user_id && (
-                                <ul className="transaction-modal__results" role="listbox">
+                                <ul className={`${styles.results}`} role="listbox">
                                     {filteredPatients.map(p => (
                                         <li
                                             key={p.id} onClick={() => selectPatient(p)}
                                             onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectPatient(p); } }}
-                                            className="transaction-modal__item" role="option" aria-selected={false} tabIndex={0}
+                                            className={`${styles.item}`} role="option" aria-selected={false} tabIndex={0}
                                         >
                                             <span className="transaction-modal__item-name">{p.full_name}</span>
-                                            <span className="transaction-modal__hint">{p.dni}</span>
+                                            <span className={`${styles.hint}`}>{p.dni}</span>
                                         </li>
                                     ))}
                                 </ul>

@@ -3,7 +3,7 @@ import ConfigField from '@/features/config/components/ui/ConfigField';
 import Icon from '@/components/atoms/Icon';
 import MessageTemplateEditor from '@/features/config/components/forms/MessageTemplateEditor';
 import { useLanguage } from '@/hooks/useLanguage';
-import './CommunicationSettings.css';
+import styles from './CommunicationSettings.module.css';
 
 /**
  * CommunicationSettings Feature Component.
@@ -19,7 +19,7 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
     ], []);
 
     return (
-        <div className="tab-panel animate-fade-in communication-settings">
+        <div className={`${styles.root} tab-panel animate-fade-in`}>
             {/* Clinic Address */}
             <div className="config-section">
                 <div className="config-section__header">
@@ -52,8 +52,8 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                     <MessageTemplateEditor
                         id="reminder-template"
                         label={
-                            <span className="communication-settings__label-with-icon">
-                                <Icon name="history" size="1rem" className="communication-settings__label-icon" /> 
+                            <span className={`${styles.labelWithIcon}`}>
+                                <Icon name="history" size="1rem" className={`${styles.labelIcon}`} /> 
                                 {t('presential_reminder_label')}
                             </span>
                         }
@@ -73,8 +73,8 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                     <MessageTemplateEditor
                         id="reminder-virtual-template"
                         label={
-                            <span className="communication-settings__label-with-icon">
-                                <Icon name="video_chat" size="1rem" className="communication-settings__label-icon" /> 
+                            <span className={`${styles.labelWithIcon}`}>
+                                <Icon name="video_chat" size="1rem" className={`${styles.labelIcon}`} /> 
                                 {t('virtual_reminder_label')}
                             </span>
                         }
@@ -100,8 +100,8 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                     <MessageTemplateEditor
                         id="confirmation-template"
                         label={
-                            <span className="communication-settings__label-with-icon">
-                                <Icon name="check" size="1rem" className="communication-settings__label-icon" /> 
+                            <span className={`${styles.labelWithIcon}`}>
+                                <Icon name="check" size="1rem" className={`${styles.labelIcon}`} /> 
                                 {t('presential_confirmation_label')}
                             </span>
                         }
@@ -122,8 +122,8 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                     <MessageTemplateEditor
                         id="confirmation-virtual-template"
                         label={
-                            <span className="communication-settings__label-with-icon">
-                                <Icon name="video_chat" size="1rem" className="communication-settings__label-icon" /> 
+                            <span className={`${styles.labelWithIcon}`}>
+                                <Icon name="video_chat" size="1rem" className={`${styles.labelIcon}`} /> 
                                 {t('virtual_confirmation_label')}
                             </span>
                         }
@@ -149,8 +149,8 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                     <ConfigField
                         id="google-review-link"
                         label={
-                            <span className="communication-settings__label-with-icon">
-                                <Icon name="star" size="1rem" className="communication-settings__label-icon" /> 
+                            <span className={`${styles.labelWithIcon}`}>
+                                <Icon name="star" size="1rem" className={`${styles.labelIcon}`} /> 
                                 {t('google_review_link_label') || 'Enlace de Reseñas de Google'}
                             </span>
                         }
@@ -168,8 +168,8 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                     <MessageTemplateEditor
                         id="whatsapp-prescription-template"
                         label={
-                            <span className="communication-settings__label-with-icon">
-                                <Icon name="medication" size="1rem" className="communication-settings__label-icon" /> 
+                            <span className={`${styles.labelWithIcon}`}>
+                                <Icon name="medication" size="1rem" className={`${styles.labelIcon}`} /> 
                                 {t('prescription_request_whatsapp')}
                             </span>
                         }
@@ -189,8 +189,8 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                     <MessageTemplateEditor
                         id="whatsapp-patient-data-template"
                         label={
-                            <span className="communication-settings__label-with-icon">
-                                <Icon name="account_circle" size="1rem" className="communication-settings__label-icon" /> 
+                            <span className={`${styles.labelWithIcon}`}>
+                                <Icon name="account_circle" size="1rem" className={`${styles.labelIcon}`} /> 
                                 {t('data_update_whatsapp')}
                             </span>
                         }
@@ -210,8 +210,8 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
                     <MessageTemplateEditor
                         id="medication-refill-template"
                         label={
-                            <span className="communication-settings__label-with-icon">
-                                <Icon name="medication" size="1rem" className="communication-settings__label-icon" /> 
+                            <span className={`${styles.labelWithIcon}`}>
+                                <Icon name="medication" size="1rem" className={`${styles.labelIcon}`} /> 
                                 {t('medication_refill_reminder_label') || 'Recordatorio de Renovación de Medicación'}
                             </span>
                         }

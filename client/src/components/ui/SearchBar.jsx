@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
-import './SearchBar.css';
+import styles from './SearchBar.module.css';
 
 /**
  * SearchBar UI Component
@@ -52,22 +52,22 @@ const SearchBar = ({
     };
 
     return (
-        <div className={`search-box ${className}`} ref={wrapperRef}>
-            <div className="search-box__wrapper">
-                <span className="search-box__icon">
+        <div className={`${styles.root} ${className}`} ref={wrapperRef}>
+            <div className={`${styles.wrapper}`}>
+                <span className={`${styles.icon}`}>
                     <Icon name="search" />
                 </span>
                 <input
                     type="text"
                     placeholder={placeholder || labels.placeholder}
-                    className="search-box__input"
+                    className={`${styles.input}`}
                     value={value}
                     onChange={onChange}
                     onFocus={onFocus}
                     autoComplete="off"
                 />
                 {value && (
-                    <div className="search-box__actions">
+                    <div className={`${styles.actions}`}>
                         <Button 
                             variant="ghost" 
                             size="sm-compact"
@@ -80,11 +80,11 @@ const SearchBar = ({
             </div>
 
             {showSuggestions && suggestions.length > 0 && !value && (
-                <div className="search-box__suggestions">
-                    <header className="search-box__suggestions-header">
+                <div className={`${styles.suggestions}`}>
+                    <header className={`${styles.suggestionsHeader}`}>
                         <Icon name="history" /> {labels.recentActivity}
                     </header>
-                    <ul className="search-box__suggestions-list" role="listbox">
+                    <ul className={`${styles.suggestionsList}`} role="listbox">
                         {suggestions.map((item) => {
                             const itemKey = `${item.type}-${item.id}`;
                             const handleKeyDown = (e) => {
@@ -97,7 +97,7 @@ const SearchBar = ({
                             return (
                                 <li 
                                     key={itemKey} 
-                                    className="search-box__suggestion-item"
+                                    className={`${styles.suggestionItem}`}
                                     onClick={() => handleSelectSuggestion(item)}
                                     onKeyDown={handleKeyDown}
                                     role="option"
@@ -107,18 +107,18 @@ const SearchBar = ({
                                     <div className="search-box__suggestion-icon">
                                         <Icon name={item.type === 'patient' ? 'person' : 'calendar_today'} />
                                     </div>
-                                    <div className="search-box__suggestion-info">
-                                        <span className="search-box__suggestion-name">
+                                    <div className={`${styles.suggestionInfo}`}>
+                                        <span className={`${styles.suggestionName}`}>
                                             {item.label}
                                         </span>
-                                        <span className="search-box__suggestion-dni">
+                                        <span className={`${styles.suggestionDni}`}>
                                             {item.sublabel}
                                         </span>
                                     </div>
                                     
                                     {item.debt_status && (
                                         <div 
-                                            className={`search-box__suggestion-status search-box__suggestion-status--${item.debt_status}`}
+                                            className={`${styles.suggestionStatus} search-box__suggestion-status--${item.debt_status}`}
                                             title={`${labels.debtStatusPrefix} ${item.debt_status}`}
                                             role="status"
                                             aria-label={`${labels.debtStatusPrefix} ${item.debt_status}`}

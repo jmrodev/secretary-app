@@ -5,7 +5,7 @@ import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { useMessage } from '@/context/MessageContext';
-import './AppointmentAdminPanel.css';
+import styles from './AppointmentAdminPanel.module.css';
 
 /**
  * AppointmentAdminPanel Molecule (Internal to feature).
@@ -33,7 +33,7 @@ const AppointmentAdminPanel = ({
 
     if (!showAdminPanel && !isPendingPayment) return null;
 
-    const baseClass = 'appointment-admin-panel';
+    const baseClass = styles.root;
 
     return (
         <section className={baseClass}>

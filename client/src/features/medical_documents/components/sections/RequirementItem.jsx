@@ -3,7 +3,7 @@ import Badge from '@/components/atoms/Badge';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
-import './RequirementItem.css';
+import styles from './RequirementItem.module.css';
 
 /**
  * RequirementItem Feature Molecule.
@@ -24,23 +24,23 @@ const RequirementItem = ({
     const { id, type, created_at, patient_name, status, payment_status, debt_amount, payment_method, patient_id, patient_user_id, doctor_id } = request;
 
     return (
-        <tr className="requirement-item animate-fade-in">
-            <td className="requirement-item__cell">
+        <tr className={`${styles.root} animate-fade-in`}>
+            <td className={`${styles.cell}`}>
                 <Badge
                     variant={type === 'prescription' ? 'blue' : 'green'}
-                    className="requirement-item__badge-clickable"
+                    className={`${styles.badgeClickable}`}
                     onClick={() => onSelect(request)}
                     title={t('view_detail') || "Ver detalle"}
                 >
                     {typeLabel}
                 </Badge>
             </td>
-            <td className="requirement-item__cell">{formatDate(created_at)}</td>
-            <td className="requirement-item__cell requirement-item__patient-name">
+            <td className={`${styles.cell}`}>{formatDate(created_at)}</td>
+            <td className={`${styles.cell} ${styles.patientName}`}>
                 {patient_name}
             </td>
-            <td className="requirement-item__cell">
-                <div className="requirement-item__status-group">
+            <td className={`${styles.cell}`}>
+                <div className={`${styles.statusGroup}`}>
                     <Badge variant={status}>
                         {t(status) || status}
                     </Badge>
@@ -51,8 +51,8 @@ const RequirementItem = ({
                     )}
                 </div>
             </td>
-            <td className="requirement-item__cell">
-                <div className="requirement-item__actions">
+            <td className={`${styles.cell}`}>
+                <div className={`${styles.actions}`}>
                     <Button
                         variant="ghost"
                         size="sm-compact"

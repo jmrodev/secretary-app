@@ -6,7 +6,6 @@ import { formatCurrency } from '@/utils/core/format';
 // Feature internal hooks
 import { useAppointmentActions } from './useAppointmentActions';
 import { useAppointmentUIHandlers } from './useAppointmentUIHandlers';
-import { useHolidayHandlers } from './useHolidayHandlers';
 
 /**
  * High-level handlers for the appointments feature.
@@ -20,7 +19,7 @@ export const useAppointmentsHandlers = ({
     setActionModal, setPrescribeModal, setAuthModalOpen, setRetryAction, setShowNextSlotModal, setWhatsappModal,
     setEditPatientModalOpen, setPaymentModal, setHistoryModal, setSelectedPatient, exitRescheduleMode,
     updateStatus, updateAppointment, fetchAppointments, savePrescription, deleteAppointment, rescheduleAppointment, bookAppointment,
-    setIsOutOfHours, fetchNextFreeSlots, addHoliday: addHolidayAction, deleteHoliday: deleteHolidayAction,
+    setIsOutOfHours, fetchNextFreeSlots, 
     selectedPatientData, copyToClipboard, booking, setSlotHistory
 }) => {
 
@@ -35,10 +34,6 @@ export const useAppointmentsHandlers = ({
         setReason, setSyncReferenceInfo, setSyncingZombieId, setActionModal, setPrescribeModal, setAuthModalOpen,
         setRetryAction, setShowNextSlotModal, setWhatsappModal, setEditPatientModalOpen, setPaymentModal, setHistoryModal,
         exitRescheduleMode, viewDoctorId, rescheduleAppt, holidays, user, confirm, showMessage, t, doctors
-    });
-
-    const holidayHandlers = useHolidayHandlers({
-        addHoliday: addHolidayAction, deleteHoliday: deleteHolidayAction, confirm, showMessage, t
     });
 
     const handleDateSelect = useCallback((date) => setSelectedDate(date), [setSelectedDate]);
@@ -235,7 +230,6 @@ export const useAppointmentsHandlers = ({
         handleOpenPayment: uiHandlers.handleOpenPayment,
         handleOpenHistory: uiHandlers.handleOpenHistory,
         handleOpenPrescribe: uiHandlers.handleOpenPrescribe,
-        handleDeleteHoliday: holidayHandlers.handleDeleteHoliday,
         handleOpenReschedule: (appt) => navigate('/appointments', { state: { rescheduleAppt: appt } }),
         handleOpenSync: (appt) => navigate('/appointments', { state: { syncAppt: appt } }),
         handleSelectMedication: (med) => setPrescribeModal(prev => ({ ...prev, medications: (prev.medications || '').trim() ? `${prev.medications}\n${med.full_label}` : med.full_label })),
@@ -248,7 +242,7 @@ export const useAppointmentsHandlers = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }), [
         handleSlotClick, handleDateSelect, handleUpdateStatus, handleSavePrescription, handleDelete, handleReschedule,
-        appointmentActions, uiHandlers, holidayHandlers, booking,
+        appointmentActions, uiHandlers, booking,
         navigate, fetchNextFreeSlots
     ]);
 };

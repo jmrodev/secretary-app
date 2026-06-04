@@ -4,7 +4,7 @@ import ConfigField from '@/features/config/components/ui/ConfigField';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
-import './GeneralSettings.css';
+import styles from './GeneralSettings.module.css';
 
 /**
  * GeneralSettings Feature Component.
@@ -80,11 +80,11 @@ const UrlConfiguration = ({ settings, updateSetting, isAdmin, onShowQr }) => {
                 <label className="config-field__label" htmlFor="staff-base-url">
                     URL Local (Red Clínica)
                 </label>
-                <div className="general-settings__url-group">
+                <div className={`${styles.urlGroup}`}>
                     <Input
                         type="text"
                         id="staff-base-url"
-                        className="general-settings__url-input"
+                        className={`${styles.urlInput}`}
                         placeholder="http://192.168.0.x:5173"
                         value={settings.staff_base_url || ''}
                         onChange={(e) => updateSetting('staff_base_url', e.target.value)}
@@ -111,7 +111,7 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
     const isAdmin = user?.role === 'admin';
 
     return (
-        <div className="tab-panel animate-fade-in general-settings">
+        <div className={`${styles.root} tab-panel animate-fade-in`}>
             {/* Functionalities and Permissions */}
             <article className="config-section">
                 <header className="config-section__header">
@@ -176,10 +176,10 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
                 </header>
 
                 <div className="config-section__body">
-                    <article className="general-settings__app-card">
-                        <header className="general-settings__app-info">
-                            <h4 className="general-settings__app-title">Descargar APK para Android</h4>
-                            <p className="general-settings__app-description">Instala la aplicación nativa para una gestión más rápida desde el celular.</p>
+                    <article className={`${styles.appCard}`}>
+                        <header className={`${styles.appInfo}`}>
+                            <h4 className={`${styles.appTitle}`}>Descargar APK para Android</h4>
+                            <p className={`${styles.appDescription}`}>Instala la aplicación nativa para una gestión más rápida desde el celular.</p>
                         </header>
                         <Button
                             variant="primary"

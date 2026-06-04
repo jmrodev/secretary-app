@@ -5,7 +5,7 @@ import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import Loading from '@/components/atoms/Loading';
 import { formatDate, toInputDate, getNow, parseDate } from '@/utils/core/dateUtils';
-import './NextSlotCalendarModal.css';
+import styles from './NextSlotCalendarModal.module.css';
 
 /**
  * NextSlotCalendarModal (Executor Component).
@@ -29,19 +29,20 @@ const NextSlotCalendarModal = ({
     const { t } = useLanguage();
     const [step, setStep] = React.useState('days');          // 'days' | 'slots'
     const [selectedDate, setSelectedDate] = React.useState(null);
+    const [prevIsOpen, setPrevIsOpen] = React.useState(isOpen);
     const listBottomRef = useRef(null);
     const onLoadMoreRef = useRef(onLoadMore);
     const todayIso = toInputDate(getNow());
 
-    useEffect(() => { onLoadMoreRef.current = onLoadMore; }, [onLoadMore]);
-
-    // Reset on close
-    useEffect(() => {
+    if (isOpen !== prevIsOpen) {
+        setPrevIsOpen(isOpen);
         if (!isOpen) {
             setStep('days');
             setSelectedDate(null);
         }
-    }, [isOpen]);
+    }
+
+    useEffect(() => { onLoadMoreRef.current = onLoadMore; }, [onLoadMore]);
 
     /* Build structured day rows from backend results */
     const dayRows = useMemo(() => {
@@ -108,26 +109,26 @@ const NextSlotCalendarModal = ({
             isOpen={isOpen}
             onClose={onClose}
             title={(
-                <div className="calendar-slot-modal__title-group">
+                <div className={`${styles.titleGroup}`}>
                     <Icon name="search" size="1.2rem" />
                     {t('search_free_slots')}
                 </div>
             )}
             size="md"
-            className="calendar-slot-modal-container"
+            className={`${styles.calendarSlotModalContainer}`}
         >
-            <div className="calendar-slot-modal">
+            <div className={`${styles.calendarSlotModal}`}>
 
                 {/* ── Controls bar ── */}
-                <div className="calendar-slot-controls">
-                    <label className="calendar-slot-controls__checkbox">
+                <div className={`${styles.calendarSlotControls}`}>
+                    <label className={`${styles.checkbox}`}>
                         <input
                             type="checkbox"
-                            className="calendar-slot-controls__input"
+                            className={`${styles.input}`}
                             checked={includeOutOfHours}
                             onChange={(e) => onToggleOutOfHours(e.target.checked)}
                         />
-                        <span className="calendar-slot-controls__label">
+                        <span className={`${styles.label}`}>
                             <Icon name="lock_open" size="1rem" />
                             {t('include_overtime')}
                         </span>
@@ -135,20 +136,20 @@ const NextSlotCalendarModal = ({
                 </div>
 
                 {/* ── Content ── */}
-                <div className="calendar-slot-modal__content">
+                <div className={`${styles.content}`}>
                     {loading && !nextSlotData ? (
                         <Loading text={t('exploring_schedule')} />
                     ) : !dayRows.length ? (
-                        <div className="calendar-empty">
-                            <Icon name="event_busy" size="2.5rem" className="calendar-empty__icon" />
-                            <p className="calendar-empty__text">
+                        <div className={`${styles.calendarEmpty}`}>
+                            <Icon name="event_busy" size="2.5rem" className={`${styles.icon}`} />
+                            <p className={`${styles.text}`}>
                                 {includeOutOfHours ? t('no_slots_available') : t('no_slots_try_overtime')}
                             </p>
                         </div>
                     ) : step === 'days' ? (
 
                         /* ── Step 1: Day list ── */
-                        <div className="day-list">
+                        <div className={`${styles.dayList}`}>
                             {dayRows.map(row => (
                                 <DayListItem
                                     key={row.date}
@@ -163,7 +164,7 @@ const NextSlotCalendarModal = ({
                                 />
                             ))}
                             {/* Sentinel for infinite scroll */}
-                            <div ref={listBottomRef} className="day-list__sentinel">
+                            <div ref={listBottomRef} className={`${styles.sentinel}`}>
                                 {loading && <Loading text={t('loading')} />}
                             </div>
                         </div>
@@ -171,11 +172,11 @@ const NextSlotCalendarModal = ({
                     ) : (
 
                         /* ── Step 2: Slots for selected day ── */
-                        <div className="slots-list">
-                            <div className="slots-list__header">
-                                <h3 className="slots-list__title">
+                        <div className={`${styles.root}`}>
+                            <div className={`${styles.header}`}>
+                                <h3 className={`${styles.title}`}>
                                     {selectedDayRow?.dayName || ''}
-                                    {selectedDateLabel ? <span className="slots-list__title-date"> — {selectedDateLabel}</span> : ''}
+                                    {selectedDateLabel ? <span className={`${styles.titleDate}`}> — {selectedDateLabel}</span> : ''}
                                 </h3>
                                 <Button
                                     onClick={handleBack}
@@ -186,7 +187,7 @@ const NextSlotCalendarModal = ({
                                     {t('back')}
                                 </Button>
                             </div>
-                            <div className="slots-list__body">
+                            <div className={`${styles.body}`}>
                                 <SlotSection
                                     title={<><Icon name="lock_open" /> {t('before_hours_extra')}</>}
                                     slots={beforeSlots}
@@ -225,7 +226,7 @@ const NextSlotCalendarModal = ({
                 </div>
 
                 {/* ── Footer ── */}
-                <div className="calendar-slot-modal__footer">
+                <div className={`${styles.footer}`}>
                     {step === 'slots' && (
                         <Button variant="ghost" size="sm" onClick={handleBack} icon={<Icon name="arrow_back" />}>
                             {t('back')}

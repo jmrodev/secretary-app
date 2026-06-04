@@ -1,0 +1,201 @@
+/* AppointmentCard - High Contrast Production Design */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(135deg, rgb(59, 130, 246, 0.8), rgb(139, 92, 246, 0.5));
+    backdrop-filter: blur(16px);
+    border: 1px solid rgb(255, 255, 255, 0.2);
+    border-radius: 0.75rem;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    width: 200px;
+    min-height: 185px;
+    padding: 0.75rem;
+    color: #fff;
+    box-shadow: 0 4px 10px rgb(0, 0, 0, 0.15);
+    flex: 0 0 auto;
+}
+
+.root:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 25px rgb(0, 0, 0, 0.4);
+    filter: brightness(1.1);
+    border-color: rgb(255, 255, 255, 0.4);
+}
+
+/* --- Status Modifiers (Vibrant Multi-Color Glass Blocks) --- */
+.completed  { background: linear-gradient(135deg, rgb(34, 197, 94, 0.8), rgb(20, 184, 166, 0.5)) !important; border-color: rgb(34, 197, 94, 0.6) !important; }
+.attended   { background: linear-gradient(135deg, rgb(16, 185, 129, 0.8), rgb(6, 182, 212, 0.5)) !important; border-color: rgb(16, 185, 129, 0.6) !important; }
+.cancelled  { background: linear-gradient(135deg, rgb(239, 68, 68, 0.8), rgb(249, 115, 22, 0.5)) !important; border-color: rgb(239, 68, 68, 0.6) !important; }
+.suspended  { background: linear-gradient(135deg, rgb(220, 38, 38, 0.8), rgb(225, 29, 72, 0.5)) !important; border-color: rgb(220, 38, 38, 0.6) !important; }
+.absent     { background: linear-gradient(135deg, rgb(245, 158, 11, 0.8), rgb(234, 179, 8, 0.5)) !important; border-color: rgb(245, 158, 11, 0.6) !important; }
+.rescheduled{ background: linear-gradient(135deg, rgb(217, 119, 6, 0.8), rgb(180, 83, 9, 0.5)) !important; border-color: rgb(217, 119, 6, 0.6) !important; }
+.pending    { background: linear-gradient(135deg, rgb(59, 130, 246, 0.8), rgb(139, 92, 246, 0.5)) !important; border-color: rgb(59, 130, 246, 0.6) !important; }
+.confirmed  { background: linear-gradient(135deg, rgb(6, 182, 212, 0.8), rgb(59, 130, 246, 0.5)) !important; border-color: rgb(6, 182, 212, 0.6) !important; }
+.arrived    { background: linear-gradient(135deg, rgb(14, 165, 233, 0.8), rgb(99, 102, 241, 0.5)) !important; border-color: rgb(14, 165, 233, 0.6) !important; }
+.virtual    { background: linear-gradient(135deg, rgb(168, 85, 247, 0.8), rgb(236, 72, 153, 0.5)) !important; border-color: rgb(168, 85, 247, 0.6) !important; }
+
+/* --- Sub-elements --- */
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    min-width: 0;
+}
+
+.patientName {
+    color: #fff !important;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    min-width: 0;
+}
+
+.patientNameText {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    overflow: hidden;
+}
+
+.surname {
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.1;
+    text-transform: uppercase;
+}
+
+.givenName {
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.1;
+    opacity: 0.9;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    color: rgb(255, 255, 255, 0.9);
+    min-width: 0;
+}
+
+.timeLineTop {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid rgb(255, 255, 255, 0.15);
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.doctor {
+    font-weight: 600;
+    color: rgb(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.reason {
+    color: rgb(255, 255, 255, 0.8);
+    overflow-wrap: break-word;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.25rem;
+}
+
+.reasonText {
+    margin-top: 0.1rem;
+}
+
+/* --- Status Area (Payment & Chips) --- */
+.status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.45rem;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.statusChip {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.35rem; /* Removed pill style, made it slightly rounded square */
+    background: rgb(255, 255, 255, 0.2);
+    color: #fff;
+    border: none;
+    backdrop-filter: blur(5px);
+}
+
+.statusChipCompleted { background: rgb(255, 255, 255, 0.25); }
+.statusChipCancelled { background: rgb(255, 255, 255, 0.25); }
+.statusChipPending   { background: rgb(255, 255, 255, 0.25); }
+.statusChipConfirmed { background: rgb(255, 255, 255, 0.25); }
+.statusChipArrived   { background: rgb(255, 255, 255, 0.25); }
+.statusChipAbsent    { background: rgb(255, 255, 255, 0.25); }
+.statusChipSuspended { background: rgb(255, 255, 255, 0.25); }
+.statusChipRescheduled { background: rgb(255, 255, 255, 0.25); }
+
+/* --- Payment Amount Indicators --- */
+.paymentInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 900;
+    font-size: 1rem;
+}
+
+.paymentInfoPaid { color: #fff; }
+.paymentInfoPending { color: rgb(255, 255, 255, 0.8); }
+.paymentInfoDebt { color: rgb(255, 255, 255, 0.9); }
+.paymentInfoBonified { color: #fff; }
+
+/* --- Skeleton Loading State --- */
+.skeleton {
+    cursor: default;
+    pointer-events: none;
+    border-color: #334155;
+    background-color: #0f172a;
+}
+
+.skeleton .timeBox,
+.skeleton .patientName,
+.skeleton .details,
+.skeleton .statusChip {
+    position: relative;
+    overflow: hidden;
+    background: #1e293b;
+    border-radius: 4px;
+    color: transparent !important;
+    border: none;
+}
+
+.skeleton *::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgb(255 255 255 / 5%),
+        transparent
+    );
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+    100% { transform: translateX(100%); }
+}

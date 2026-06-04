@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
-import './AppointmentMedicalPanel.css';
+import styles from './AppointmentMedicalPanel.module.css';
 
 /**
  * AppointmentMedicalPanel Molecule (Internal to feature).
@@ -15,7 +15,7 @@ const AppointmentMedicalPanel = ({
     const showPrescribe = user.role === 'doctor' || user.role === 'admin' || canDeletePrescription;
     const isDoctorOrAdmin = user.role === 'doctor' || user.role === 'admin';
 
-    const baseClass = 'appointment-medical-panel';
+    const baseClass = styles.root;
 
     return (
         <section className={baseClass}>

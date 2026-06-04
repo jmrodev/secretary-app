@@ -1,0 +1,42 @@
+/* HolidayList.css */
+.root { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.empty {
+    text-align: center; padding: 2rem; color: var(--text-muted); font-style: italic;
+    background: rgb(255, 255, 255, 0.02); border-radius: var(--radius-md); border: 1px dashed rgb(255, 255, 255, 0.1);
+}
+
+.item {
+    display: flex; justify-content: space-between; align-items: center; 
+    background: rgb(255, 255, 255, 0.05);
+    padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid rgb(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgb(0,0,0,0.2); transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.item:hover { transform: translateX(4px); border-color: rgb(239, 68, 68, 0.4); background: rgb(239, 68, 68, 0.1); }
+
+.info { display: flex; flex-direction: column; gap: 0.25rem; }
+
+.date {
+    font-size: 0.75rem; font-weight: 800; color: var(--red-400); text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.5rem;
+}
+.description { font-size: 0.9375rem; font-weight: 600; color: var(--text-main); }
+
+.emptyIcon {
+    color: var(--slate-300);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.deleteBtn {
+    color: var(--red-400, #f87171);
+    background: rgb(255, 255, 255, 0.05);
+    border: 1px solid rgb(255, 255, 255, 0.05);
+}
+
+.deleteBtn:hover {
+    background-color: rgb(239, 68, 68, 0.2);
+    color: white;
+}

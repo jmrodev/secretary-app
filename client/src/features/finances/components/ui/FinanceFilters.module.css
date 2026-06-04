@@ -1,0 +1,54 @@
+/* FinanceFilters Component Styles (BEM) */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.searchWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-400);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.searchInput {
+    padding-left: 2.75rem;
+    background-color: var(--gray-50);
+}
+
+.groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.group {
+    width: 100%;
+}
+
+/* Modifier for the actions container within the filter groups */
+.groupActions {
+    margin-top: 0.25rem;
+}
+
+.clear {
+    width: 100%;
+    justify-content: center;
+    border: 1px solid var(--gray-200);
+    font-weight: 700;
+}
+
+.clear:hover {
+    background: var(--gray-100);
+    border-color: var(--gray-300);
+}

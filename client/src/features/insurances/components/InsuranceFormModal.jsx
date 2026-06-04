@@ -8,7 +8,7 @@ import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import { useLanguage } from '@/hooks/useLanguage';
 import FormGroup from '@/components/molecules/FormGroup';
-import './InsuranceFormModal.css';
+import styles from './InsuranceFormModal.module.css';
 
 const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, isEditing }) => {
     const { t } = useLanguage();
@@ -24,7 +24,7 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                 </>
             }
         >
-            <div className="insurance-modal__form">
+            <div className={`${styles.form}`}>
                 <FormGroup label={`${t('name')} *`}>
                     <Input value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: capitalizeWords(e.target.value) }))} />
                 </FormGroup>
@@ -37,7 +37,7 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                     <Input value={formData.website} onChange={e => setFormData(prev => ({ ...prev, website: e.target.value }))} placeholder="e.g. www.osde.com.ar" />
                 </FormGroup>
 
-                <div className="insurance-modal__manager-wrapper">
+                <div className={`${styles.managerWrapper}`}>
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
                         onChange={(newPhones) => setFormData(prev => ({ ...prev, phoneNumbers: newPhones }))}
@@ -47,24 +47,24 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                 <FormGroup label="Email">
                     <Input value={formData.email} onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))} />
                     {formData.email && (
-                        <a href={`mailto:${formData.email}`} className="insurance-modal__link">
+                        <a href={`mailto:${formData.email}`} className={`${styles.link}`}>
                             {t('send_email')} <Icon name="OPEN_IN_NEW" size="sm" />
                         </a>
                     )}
                 </FormGroup>
 
-                <div className="insurance-modal__section-title">{t('address_details') || 'Dirección'}</div>
+                <div className={`${styles.sectionTitle}`}>{t('address_details') || 'Dirección'}</div>
                 
-                <div className="insurance-modal__row">
-                    <FormGroup label={t('street_name') || 'Calle'} className="insurance-modal__column--flex-3">
+                <div className={`${styles.row}`}>
+                    <FormGroup label={t('street_name') || 'Calle'} className={`${styles.columnFlex3}`}>
                         <Input value={formData.street_name || ''} onChange={e => setFormData(prev => ({ ...prev, street_name: capitalizeWords(e.target.value) }))} placeholder="Ej: Av. Rivadavia" />
                     </FormGroup>
-                    <FormGroup label={t('number_short') || 'Nro'} className="insurance-modal__column--flex-1">
+                    <FormGroup label={t('number_short') || 'Nro'} className={`${styles.columnFlex1}`}>
                         <Input value={formData.street_number || ''} onChange={e => setFormData(prev => ({ ...prev, street_number: e.target.value }))} placeholder="123" />
                     </FormGroup>
                 </div>
 
-                <div className="insurance-modal__row">
+                <div className={`${styles.row}`}>
                     <FormGroup label={t('floor') || 'Piso'}>
                         <Input value={formData.floor || ''} onChange={e => setFormData(prev => ({ ...prev, floor: e.target.value }))} />
                     </FormGroup>
@@ -73,7 +73,7 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                     </FormGroup>
                 </div>
 
-                <div className="insurance-modal__row">
+                <div className={`${styles.row}`}>
                     <FormGroup label={t('city') || 'Ciudad'}>
                         <Input value={formData.city || ''} onChange={e => setFormData(prev => ({ ...prev, city: capitalizeWords(e.target.value) }))} />
                     </FormGroup>
@@ -91,7 +91,7 @@ const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, 
                             )}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="insurance-modal__link"
+                            className={`${styles.link}`}
                         >
                             {t('view_on_map')} <Icon name="OPEN_IN_NEW" size="sm" />
                         </a>

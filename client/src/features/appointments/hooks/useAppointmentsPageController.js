@@ -43,7 +43,7 @@ export const useAppointmentsPageController = () => {
     const agendaModals = useAgendaModals();
 
     const { 
-        selectedDate, setSelectedDate, activeTab, setActiveTab, 
+        selectedDate, setSelectedDate, 
         showOutOfHours, setShowOutOfHours, rescheduleAppt, exitRescheduleMode 
     } = agendaState;
 
@@ -89,7 +89,7 @@ export const useAppointmentsPageController = () => {
 
     // --- 4. Logic & Handler Hooks ---
     const { updateStatus, updateAppointment, cancelAppointment, deleteAppointment, rescheduleAppointment, savePrescription } = useAppointments();
-    const { holidays, addHoliday, deleteHoliday } = useHolidays();
+    const { holidays } = useHolidays();
     const { doctorSchedule } = useDoctorSchedules(viewDoctorId);
     const { syncDayToGoogle } = useGoogleSync();
     const { handleWhatsAppUniversal } = useWhatsAppUniversal(doctors);
@@ -141,7 +141,7 @@ export const useAppointmentsPageController = () => {
         setRetryAction, setShowNextSlotModal: nextSlot.setShowModal, booking,
         setWhatsappModal: booking.setWhatsappModal, setEditPatientModalOpen, setSelectedPatient: booking.setSelectedPatient,
         updateStatus, updateAppointment, fetchAppointments, savePrescription, deleteAppointment, rescheduleAppointment, bookAppointment: booking.bookAppointment,
-        fetchNextFreeSlots: nextSlot.fetchNextFreeSlots, setSlotHistory: nextSlot.setSlotHistory, addHoliday, deleteHoliday, copyToClipboard
+        fetchNextFreeSlots: nextSlot.fetchNextFreeSlots, setSlotHistory: nextSlot.setSlotHistory, copyToClipboard
     });
 
     const handlers = useMemo(() => ({
@@ -150,12 +150,13 @@ export const useAppointmentsPageController = () => {
         handleWhatsAppUniversal, syncDayToGoogle, cancelAppointment, fetchAppointments,
         handleCancel: (id, reason) => cancelAppointment(id, fetchAppointments, reason),
         exitRescheduleMode, rescheduleAppt,
-        setActiveTab, setShowOutOfHours, setViewDoctorId, setSelectedDate,
+        setShowOutOfHours,
+        setViewDoctorId, setSelectedDate,
         setEditPatientModalOpen, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setAuthModalOpen, setSearchPatientId, setSearchTerm
     }), [
         hookHandlers, retryAction, handleWhatsAppUniversal, syncDayToGoogle, cancelAppointment, fetchAppointments,
-        exitRescheduleMode, rescheduleAppt, setActiveTab, setShowOutOfHours, setViewDoctorId, setSelectedDate,
+        exitRescheduleMode, rescheduleAppt, setShowOutOfHours, setViewDoctorId, setSelectedDate,
         setEditPatientModalOpen, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setAuthModalOpen, setSearchPatientId, setSearchTerm
     ]);
@@ -166,7 +167,7 @@ export const useAppointmentsPageController = () => {
         agendaLoading: agendaLoading, 
         selectedDate,
         institutionsLoading, 
-        activeTab, showOutOfHours, t, language, user,
+        showOutOfHours, t, language, user,
         editPatientModalOpen, paymentModal,
         actionModal, historyModal, prescribeModal,
         authModalOpen, whatsappModal: booking.whatsappModal, setWhatsappModal: booking.setWhatsappModal,

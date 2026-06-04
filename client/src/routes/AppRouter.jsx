@@ -18,6 +18,7 @@ const InstitutionsPage = lazy(() => import('@/features/institutions').then(m => 
 const InsurancesPage = lazy(() => import('@/features/insurances').then(m => ({ default: m.InsurancesPage })));
 const AdminUsersPage = lazy(() => import('@/features/users').then(m => ({ default: m.AdminUsersPage })));
 const AuditLogsPage = lazy(() => import('@/features/reports').then(m => ({ default: m.AuditLogsPage })));
+const HolidaysPage = lazy(() => import('@/features/holidays').then(m => ({ default: m.HolidaysPage })));
 const RentalsPage = lazy(() => import('@/features/rentals').then(m => ({ default: m.RentalsPage })));
 const RequestsPage = lazy(() => import('@/features/medical_documents').then(m => ({ default: m.RequestsPage })));
 const PublicRequestPage = lazy(() => import('@/features/medical_documents').then(m => ({ default: m.PublicRequestPage })));
@@ -96,6 +97,11 @@ const AppRouter = () => {
                 <Route path="/documents" element={<MedicalDocumentsPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/doctors" element={<DoctorsPage />} />
+                <Route path="/holidays" element={
+                    <RoleGuard allowedRoles={['admin', 'secretary']}>
+                        <HolidaysPage />
+                    </RoleGuard>
+                } />
                 <Route path="/institutions" element={<InstitutionsPage />} />
                 <Route path="/reports" element={<ReportsPage />} />
                 <Route path="/requests" element={<RequestsPage />} />

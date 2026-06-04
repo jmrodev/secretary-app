@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
-import './PatientInstitutionFields.css';
+import styles from './PatientInstitutionFields.module.css';
 
 /**
  * PatientInstitutionFields Molecule (Sub-Executor).
@@ -23,38 +23,38 @@ const PatientInstitutionFields = ({ coveredByInstitution, toggleInstitutionCover
     }, [institutions, t]);
 
     return (
-        <article className="patient-institution-fields">
-            <header className="patient-institution-fields__header">
+        <article className={`${styles.root}`}>
+            <header className={`${styles.header}`}>
                 <Icon name="corporate_fare" size="1.25rem" />
-                <h3 className="patient-institution-fields__title">{t('institutional_coverage')}</h3>
+                <h3 className={`${styles.title}`}>{t('institutional_coverage')}</h3>
             </header>
 
-            <div className="patient-institution-fields__bento">
-                <div className="patient-institution-fields__toggle-row patient-institution-fields__group--span-12">
-                    <div className="patient-institution-fields__toggle-info">
-                        <span className="patient-institution-fields__toggle-label">{t('institutional_agreement')}</span>
-                        <p className="patient-institution-fields__toggle-description">{t('institutional_agreement_desc')}</p>
+            <div className={`${styles.bento}`}>
+                <div className={`${styles.toggleRow} ${styles.groupSpan12}`}>
+                    <div className={`${styles.toggleInfo}`}>
+                        <span className={`${styles.toggleLabel}`}>{t('institutional_agreement')}</span>
+                        <p className={`${styles.toggleDescription}`}>{t('institutional_agreement_desc')}</p>
                     </div>
-                    <div className="patient-institution-fields__switch">
+                    <div className={`${styles.switch}`}>
                         <input
                             type="checkbox"
                             checked={coveredByInstitution}
                             onChange={(e) => toggleInstitutionCoverage(e.target.checked)}
                             id="pf_institution"
-                            className="patient-institution-fields__switch-input"
+                            className={`${styles.switchInput}`}
                         />
-                        <label htmlFor="pf_institution" className="patient-institution-fields__switch-slider">
+                        <label htmlFor="pf_institution" className={`${styles.switchSlider}`}>
                             <span className="sr-only">{t('toggle_institution')}</span>
                         </label>
                     </div>
                 </div>
 
                 {coveredByInstitution && (
-                    <div className="patient-institution-fields__group patient-institution-fields__group--span-12">
-                        <label className="patient-institution-fields__label">{t('paying_institution')}</label>
+                    <div className={`${styles.group} ${styles.groupSpan12}`}>
+                        <label className={`${styles.label}`}>{t('paying_institution')}</label>
                         <Select
                             name="institution_id"
-                            className="patient-institution-fields__field"
+                            className={`${styles.field}`}
                             value={formData.institution_id || ''}
                             options={institutionOptions}
                             onChange={updatePatientData}

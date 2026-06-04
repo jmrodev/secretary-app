@@ -1,20 +1,23 @@
 :root {
-    /* Core Semantic Colors - CIMA CLINICAL (Stitch Optimized) */
-    --primary-color: #4880FF; /* DashStack Blue */
-    --primary-hover: #3D6EEB; 
-    --secondary-color: #273142; /* DashStack Sidebar/Card Dark Bg */
-    --accent-color: #4880FF; 
-    --accent-hover: #3D6EEB; 
-    --background-bg: #1B2431; /* DashStack Page Bg */
-    --bg-gradient-blue: linear-gradient(135deg, #1B2431 0%, #273142 100%);
-    --dashboard-card-bg: #273142; 
-    --dashboard-card-border: #323d4e;
-    --modal-bg: #1e293b;
-    --modal-bg-dark: #1e293b;
-    --text-main: #f8fafc; /* Slate 50 for dark background */
-    --text-muted: #94a3b8; /* Slate 400 */
-    --text-secondary: #cbd5e1; /* Slate 300 */
-    --border-color: #64748b; /* Slate 500 - Stronger borders for Slate-400 bg */
+    /* Core Semantic Colors - Premium Mockup Palette (Cyan/Purple Glassmorphism) */
+    --primary-color: #00ced1; /* Turquesa Médico */
+    --primary-rgb: 0, 206, 209;
+    --primary-hover: #0891b2; 
+    --secondary-color: #1e293b; /* Dark Slate */
+    --accent-color: #8a2be2; /* Púrpura Neón */
+    --accent-rgb: 138, 43, 226;
+    --danger-rgb: 239, 68, 68;
+    --accent-hover: #9333ea; 
+    --background-bg: #0b0c10; /* Fondo Oscuro Profundo */
+    --bg-gradient-blue: linear-gradient(135deg, #0b0c10 0%, #1e293b 100%);
+    --dashboard-card-bg: #1e293b; 
+    --dashboard-card-border: rgb(255,255,255,0.08);
+    --modal-bg: #0f172a;
+    --modal-bg-dark: #0b0c10;
+    --text-main: #f8fafc; /* Blanco tiza */
+    --text-muted: #64748b; /* Slate 500 */
+    --text-secondary: #334155; /* Slate 700 */
+    --border-color: #cbd5e1; /* Slate 300 */
     --error: #ef4444; 
     --success: #10b981;
     --warning: #f59e0b;

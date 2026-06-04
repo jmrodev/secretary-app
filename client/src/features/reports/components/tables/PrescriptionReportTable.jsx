@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatDate, parseDate } from '@/utils/core/dateUtils';
-import './PrescriptionReportTable.css';
+import styles from './PrescriptionReportTable.module.css';
 
 const PrescriptionReportTable = ({ data, t }) => {
     const list = Array.isArray(data?.prescriptions) ? data.prescriptions : [];
@@ -53,11 +53,11 @@ const PrescriptionReportTable = ({ data, t }) => {
     };
 
     return (
-        <div className="prescription-report">
+        <div className={`${styles.root}`}>
             {/* Summary Table */}
-            <div className="prescription-report__summary">
-                <h3 className="prescription-report__summary-title">{t('daily_summary')}</h3>
-                <table className="prescription-report__table prescription-report__table--summary">
+            <div className={`${styles.summary}`}>
+                <h3 className={`${styles.summaryTitle}`}>{t('daily_summary')}</h3>
+                <table className={`${styles.table} prescription-report__table--summary`}>
                     <thead>
                         <tr>
                             <th>{t('date_label')}</th>
@@ -68,7 +68,7 @@ const PrescriptionReportTable = ({ data, t }) => {
                     </thead>
                     <tbody>
                         {dailySummary.map((day) => (
-                            <tr key={day.date} className="prescription-report__row">
+                            <tr key={day.date} className={`${styles.row}`}>
                                 <td>
                                     {day.date}
                                     <span className="prescription-report__day-name"> {getDayOfWeek(day.date)}</span>
@@ -107,11 +107,11 @@ const PrescriptionReportTable = ({ data, t }) => {
             {/* Detailed Daily Breakdown */}
             {dailySummary.map((day) => (
                 <div key={day.date} className="prescription-report__group">
-                    <h3 className="prescription-report__date-header">
+                    <h3 className={`${styles.dateHeader}`}>
                         {day.date} - {t('total_day')}: ${day.total.toLocaleString()}
                     </h3>
                     <div className="table-responsive">
-                        <table className="prescription-report__table">
+                        <table className={`${styles.table}`}>
                             <thead>
                                 <tr>
                                     <th>{t('type')}</th>
@@ -124,16 +124,16 @@ const PrescriptionReportTable = ({ data, t }) => {
                             </thead>
                             <tbody>
                                 {day.items.map((item) => (
-                                    <tr key={item.id || `${item.date}-${item.patient_name}-${item.medications}`} className="prescription-report__row">
+                                    <tr key={item.id || `${item.date}-${item.patient_name}-${item.medications}`} className={`${styles.row}`}>
                                         <td>{item.source_type === 'direct' ? t('direct') : t('request')}</td>
                                         <td>
                                             <div className="prescription-report__patient-info">
-                                                <span className="prescription-report__patient-name">{item.patient_name}</span>
+                                                <span className={`${styles.patientName}`}>{item.patient_name}</span>
                                                 <span className="prescription-report__patient-dni">{item.patient_dni}</span>
                                             </div>
                                         </td>
                                         <td>
-                                            <div className="prescription-report__meds" title={item.medications}>
+                                            <div className={`${styles.meds}`} title={item.medications}>
                                                 {item.medications}
                                             </div>
                                         </td>
@@ -145,7 +145,7 @@ const PrescriptionReportTable = ({ data, t }) => {
                                             </span>
                                         </td>
                                         <td>
-                                            <span className={`prescription-report__badge prescription-report__badge--${item.payment_status}`}>
+                                            <span className={`${styles.badge} prescription-report__badge--${item.payment_status}`}>
                                                 {item.payment_status === 'paid' ? t('paid') :
                                                     item.payment_status === 'debt' ? `${t('debt')} ($${item.debt_amount || 0})` :
                                                         item.payment_status === 'partial' ? `${t('partial')} ($${item.debt_amount || 0})` :

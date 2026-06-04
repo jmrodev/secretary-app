@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './MedicationItemsSummary.css';
+import styles from './MedicationItemsSummary.module.css';
 
 /**
  * MedicationItemsSummary Feature Molecule.
@@ -12,7 +12,7 @@ const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
     if (!items || items.length === 0) return null;
 
     return (
-        <ul className={`${baseClass ? `${baseClass}__med-list` : 'medication-items-summary'} animate-fade-in`}>
+        <ul className={`${baseClass ? `${baseClass}__med-list` : styles.root} animate-fade-in`}>
             {items.map((item, idx) => (
                 <li key={item.id || `${item.name}-${idx}`} className={`${baseClass ? `${baseClass}__med-item` : ''} medication-items-summary__item`}>
                     <div className={`${baseClass ? `${baseClass}__med-info` : ''} medication-items-summary__info`}>
@@ -26,7 +26,7 @@ const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
                         size="sm-compact"
                         onClick={() => onRemove(idx)}
                         icon={<Icon name="close" size="1.1rem" color="var(--error)" />}
-                        className="medication-items-summary__remove-btn"
+                        className={`${styles.removeBtn}`}
                     />
                 </li>
             ))}

@@ -1,0 +1,197 @@
+/* PageHeader Organism Styles */
+
+.root {
+    --header-title-color: var(--text-main);
+    --header-subtitle-color: var(--text-muted);
+    --header-divider-color: var(--border-color);
+
+    margin-bottom: clamp(1rem, 2vh, 1.5rem);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.titleContainer {
+    flex: 1;
+    min-width: 0;
+}
+
+.title {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 800;
+    color: var(--header-title-color);
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.divider {
+    border-bottom: 1px solid var(--header-divider-color);
+    padding-bottom: 1.25rem;
+}
+
+/* =============================================
+   PREMIUM VARIANT — Clinical Curator Header
+   ============================================= */
+.premium {
+    position: relative;
+    height: auto;
+    min-height: 60px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.25rem;
+    padding: 0;
+}
+
+
+.background {
+    display: none; /* Sin imagen de fondo — fondo unificado del app */
+}
+
+/* Modifier Context for Content */
+.premium .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.4rem 1.5rem;
+    gap: 0.5rem;
+}
+
+
+.utilities {
+    display: grid;
+    grid-template-columns: 320px 1fr 450px;
+    align-items: center;
+    width: 100%;
+    gap: 2rem;
+}
+
+/* Centering helper */
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.inlineSelectors {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.statsContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.5rem;
+}
+
+.selectors {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgb(255 255 255 / 5%);
+}
+
+/* Search Bar — Premium Glass (No Border) */
+.searchContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgb(255 255 255 / 6%);
+    border: none; /* No border as requested */
+    border-radius: 10px;
+    padding: 0 1rem;
+    width: 320px; 
+    height: 38px;
+    backdrop-filter: blur(20px);
+    transition: none !important;
+}
+
+.searchContainer:focus-within {
+    background: rgb(255 255 255 / 10%);
+    box-shadow: none; /* No shadow/ring */
+}
+
+.searchIcon {
+    color: rgb(255 255 255 / 30%);
+    margin-right: 0.6rem;
+}
+
+/* Override Input atom styles for the header search */
+.searchInput.input {
+    --input-bg: transparent;
+    --input-border: transparent;
+    --input-text: var(--white);
+    --input-focus-ring: transparent;
+
+    padding: 0;
+    height: 100%;
+    box-shadow: none;
+    font-size: 0.9rem;
+    width: 100% !important; /* Force width */
+}
+
+.searchInput.input:focus {
+    transform: none;
+    box-shadow: none;
+}
+
+.searchInput.input::placeholder {
+    color: rgb(255 255 255 / 35%);
+    font-weight: 400;
+}
+
+/* Responsive */
+@media (width <= 1200px) {
+    .premium .utilities {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .searchContainer {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .statsContainer {
+        justify-content: center;
+    }
+}
+
+/* Animations */
+@keyframes header-slow-zoom {
+    from { transform: scale(1.02); }
+    to { transform: scale(1.08); }
+}

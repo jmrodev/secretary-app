@@ -17,7 +17,7 @@ import { useMedicalDocumentsDerivedData } from './hooks/useMedicalDocumentsDeriv
 import { MedicalDocumentsToolbar } from './components/sections/MedicalDocumentsToolbar';
 
 // Styles
-import './MedicalDocumentsPage.css';
+import styles from './MedicalDocumentsPage.module.css';
 
 /**
  * MedicalDocumentsPage (Orchestrator).
@@ -68,7 +68,7 @@ const MedicalDocumentsPage = () => {
 
     return (
         <MainLayout wide flush title={t('medical_documents')}>
-            <div className="medical-documents-page-orchestrator layout-content-area">
+            <div className={`${styles.medicalDocumentsPageOrchestrator} layout-content-area`}>
                 <MedicalDocumentsToolbar 
                     activeTab={activeTab}
                     requestsSubTab={requestsSubTab}
@@ -78,8 +78,8 @@ const MedicalDocumentsPage = () => {
                     t={t}
                 />
 
-                <main className="medical-documents-page-orchestrator__main animate-fade-in no-print">
-                    <div className="medical-documents__tabs-content">
+                <main className={`${styles.main} ${styles.animateFadeIn} ${styles.noPrint}`}>
+                    <div className={`${styles.tabsContent}`}>
                         {activeTab === 'requests' && (
                             <article className="medical-documents__requests-layout">
                                 <TabNav className="tab-nav--sub">

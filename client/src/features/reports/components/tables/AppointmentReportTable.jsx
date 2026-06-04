@@ -1,13 +1,13 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import { parseDate } from '@/utils/core/dateUtils';
-import './AppointmentReportTable.css';
+import styles from './AppointmentReportTable.module.css';
 
 const AppointmentReportTable = ({ data, t }) => {
     const list = Array.isArray(data?.appointments) ? data.appointments : (Array.isArray(data) ? data : []);
 
     if (!list || list.length === 0) {
-        return <div className="report-table-empty">{t('no_data_to_display')}</div>;
+        return <div className={`${styles.reportTableEmpty}`}>{t('no_data_to_display')}</div>;
     }
 
     // Calculate summary by day and payment method
@@ -57,13 +57,13 @@ const AppointmentReportTable = ({ data, t }) => {
     };
 
     return (
-        <section className="appointment-report">
+        <section className={`${styles.root}`}>
             {/* Summary Table */}
-            <article className="appointment-report__summary">
+            <article className={`${styles.summary}`}>
                 <header className="appointment-report__summary-header">
-                    <h3 className="appointment-report__summary-title">{t('daily_summary')}</h3>
+                    <h3 className={`${styles.summaryTitle}`}>{t('daily_summary')}</h3>
                 </header>
-                <table className="appointment-report__table appointment-report__table--summary">
+                <table className={`${styles.table} appointment-report__table--summary`}>
                     <thead>
                         <tr>
                             <th>{t('date_label')}</th>
@@ -74,7 +74,7 @@ const AppointmentReportTable = ({ data, t }) => {
                     </thead>
                     <tbody>
                         {dailySummary.map((day) => (
-                            <tr key={day.date} className={`appointment-report__row ${day.is_weekend ? 'appointment-report__row--weekend' : ''} ${day.is_holiday ? 'appointment-report__row--holiday' : ''}`}>
+                            <tr key={day.date} className={`${styles.row} ${day.is_weekend ? 'appointment-report__row--weekend' : ''} ${day.is_holiday ? 'appointment-report__row--holiday' : ''}`}>
                                 <td>
                                     {day.date}
                                     {day.is_holiday && <span className="appointment-report__tag-small"><Icon name="celebration" size="1rem" /></span>}
@@ -91,19 +91,19 @@ const AppointmentReportTable = ({ data, t }) => {
                         ))}
                     </tbody>
                     <tfoot>
-                        <tr className="appointment-report__footer-subtotal">
+                        <tr className={`${styles.footerSubtotal}`}>
                             <td>{t('monthly_cash_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {monthlyTotalCash.toLocaleString()}
                             </td>
                         </tr>
-                        <tr className="appointment-report__footer-subtotal">
+                        <tr className={`${styles.footerSubtotal}`}>
                             <td>{t('monthly_others_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {monthlyTotalOthers.toLocaleString()}
                             </td>
                         </tr>
-                        <tr className="appointment-report__footer">
+                        <tr className={`${styles.footer}`}>
                             <td>{t('monthly_accumulated_total')}</td>
                             <td colSpan="3" className="text-right">
                                 $ {monthlyTotal.toLocaleString()}
@@ -115,7 +115,7 @@ const AppointmentReportTable = ({ data, t }) => {
 
             {/* Detailed Daily Breakdown */}
             <div className="table-responsive">
-                <table className="appointment-report__table">
+                <table className={`${styles.table}`}>
                     <thead>
                         <tr>
                             <th>{t('date_label')}</th>
@@ -130,7 +130,7 @@ const AppointmentReportTable = ({ data, t }) => {
                     <tbody>
                         {list.map((dayGroup) => (
                             <React.Fragment key={dayGroup.date}>
-                                <tr className={`appointment-report__day-header ${dayGroup.is_weekend ? 'appointment-report__day-header--weekend' : ''} ${dayGroup.is_holiday ? 'appointment-report__day-header--holiday' : ''}`}>
+                                <tr className={`${styles.dayHeader} ${dayGroup.is_weekend ? styles.dayHeaderWeekend : ''} ${dayGroup.is_holiday ? styles.dayHeaderHoliday : ''}`}>
                                     <td colSpan="7">
                                         <Icon name="calendar_today" size="1rem" className="mr-1" /> {dayGroup.date}
                                         {dayGroup.is_holiday && <span className="appointment-report__holiday-tag"><Icon name="celebration" size="1rem" className="mr-1" />{dayGroup.holiday_description}</span>}
@@ -139,22 +139,22 @@ const AppointmentReportTable = ({ data, t }) => {
                                     </td>
                                 </tr>
                                 {dayGroup.appointments.map((appt) => (
-                                    <tr key={appt.id || `${dayGroup.date}-${appt.hora}-${appt.nombre}`} className={`appointment-report__row ${appt.is_overturn ? 'appointment-report__row--overturn' : ''}`}>
+                                    <tr key={appt.id || `${dayGroup.date}-${appt.hora}-${appt.nombre}`} className={`${styles.row} ${appt.is_overturn ? 'appointment-report__row--overturn' : ''}`}>
                                         <td className="appointment-report__cell-day">{appt.dia}</td>
                                         <td>
                                             {appt.info}
-                                            {appt.is_overturn && <span className="appointment-report__overturn-badge">{t('overturn') || 'Sobreturno'}</span>}
+                                            {appt.is_overturn && <span className={`${styles.overturnBadge}`}>{t('overturn') || 'Sobreturno'}</span>}
                                         </td>
-                                        <td className="appointment-report__cell-patient">{appt.nombre}</td>
-                                        <td className="appointment-report__cell-time">{appt.hora}</td>
+                                        <td className={`${styles.cellPatient}`}>{appt.nombre}</td>
+                                        <td className={`${styles.cellTime}`}>{appt.hora}</td>
                                         <td>
-                                            <span className={`appointment-report__badge appointment-report__badge--status-${appt.asistencia}`}>
+                                            <span className={`${styles.badge} appointment-report__badge--status-${appt.asistencia}`}>
                                                 {t(appt.asistencia) || appt.asistencia}
                                             </span>
                                         </td>
                                         <td>
                                             <div className="appointment-report__payment-info">
-                                                <span className={`appointment-report__badge appointment-report__badge--payment-${appt.pago}`}>
+                                                <span className={`${styles.badge} appointment-report__badge--payment-${appt.pago}`}>
                                                     {t(appt.pago) || appt.pago}
                                                 </span>
                                                 {appt.metodos_pago && (
@@ -164,7 +164,7 @@ const AppointmentReportTable = ({ data, t }) => {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="appointment-report__cell-amount">
+                                        <td className={`${styles.cellAmount}`}>
                                             {Number(appt.monto_pagado) > 0 ? `$${appt.monto_pagado}` : '-'}
                                         </td>
                                     </tr>

@@ -4,7 +4,7 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
-import './DoctorMessagesForm.css';
+import styles from './DoctorMessagesForm.module.css';
 
 /**
  * DoctorMessagesForm Molecule
@@ -99,8 +99,8 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
     };
 
     return (
-        <div className="doctor-messages-form animate-fade-in">
-            <TabNav className="doctor-messages-form__subtabs">
+        <div className={`${styles.root} animate-fade-in`}>
+            <TabNav className={`${styles.subtabs}`}>
                 {[
                     { id: 'templates', label: t('reminders_tab'), icon: 'history' },
                     { id: 'confirmation', label: t('confirmations_tab'), icon: 'check_circle' },
@@ -110,17 +110,17 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                         key={tab.id}
                         isActive={activeSubTab === tab.id} 
                         onClick={() => setActiveSubTab(tab.id)}
-                        className="doctor-messages-form__tab-button"
+                        className={`${styles.tabButton}`}
                     >
-                        <Icon name={tab.icon} size="0.9rem" className="doctor-messages-form__tab-icon" />
+                        <Icon name={tab.icon} size="0.9rem" className={`${styles.tabIcon}`} />
                         {tab.label}
                     </TabButton>
                 ))}
             </TabNav>
 
-            <div className="doctor-messages-form__content">
+            <div className={`${styles.content}`}>
                 {activeSubTab === 'templates' && (
-                    <section className="doctor-messages-form__section animate-fade-in">
+                    <section className={`${styles.section} animate-fade-in`}>
                         <MessageTemplateEditor
                             id="doctor-reminder-template"
                             label={t('presential_reminder_label')}
@@ -132,7 +132,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                             t={t}
                         />
 
-                        <div className="doctor-messages-form__divider"></div>
+                        <div className={`${styles.divider}`}></div>
 
                         <MessageTemplateEditor
                             id="doctor-reminder-virtual-template"
@@ -148,7 +148,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                 )}
 
                 {activeSubTab === 'confirmation' && (
-                    <section className="doctor-messages-form__section animate-fade-in">
+                    <section className={`${styles.section} animate-fade-in`}>
                         <MessageTemplateEditor
                             id="doctor-confirmation-template"
                             label={t('presential_confirmation_label')}
@@ -160,7 +160,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                             t={t}
                         />
 
-                        <div className="doctor-messages-form__divider"></div>
+                        <div className={`${styles.divider}`}></div>
 
                         <MessageTemplateEditor
                             id="doctor-confirmation-virtual-template"
@@ -176,11 +176,11 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                 )}
 
                 {activeSubTab === 'ai' && (
-                    <section className="doctor-messages-form__section doctor-messages-form__section--ai animate-fade-in">
-                        <header className="doctor-messages-form__ai-header">
-                            <div className="doctor-messages-form__ai-title-group">
-                                <Icon name="psychology" size="1.2rem" className="doctor-messages-form__ai-icon" />
-                                <h4 className="doctor-messages-form__ai-title">{t('gemini_config_title') || 'Configuración IA Gemini'}</h4>
+                    <section className={`${styles.section} ${styles.sectionAi} animate-fade-in`}>
+                        <header className={`${styles.aiHeader}`}>
+                            <div className={`${styles.aiTitleGroup}`}>
+                                <Icon name="psychology" size="1.2rem" className={`${styles.aiIcon}`} />
+                                <h4 className={`${styles.aiTitle}`}>{t('gemini_config_title') || 'Configuración IA Gemini'}</h4>
                             </div>
                             <Button
                                 size="sm"
@@ -193,18 +193,18 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                             </Button>
                         </header>
 
-                        <div className="doctor-messages-form__ai-grid">
-                            <div className="doctor-messages-form__field doctor-messages-form__field--main">
-                                <label className="doctor-messages-form__label">
+                        <div className={`${styles.aiGrid}`}>
+                            <div className={`${styles.field} doctor-messages-form__field--main`}>
+                                <label className={`${styles.label}`}>
                                     {t('gemini_context_label')}
                                 </label>
                                 
-                                <div className="doctor-messages-form__vars">
+                                <div className={`${styles.vars}`}>
                                     {commonVars.map(variable => (
                                         <button
                                             key={variable}
                                             type="button"
-                                            className="doctor-messages-form__var-btn"
+                                            className={`${styles.varBtn}`}
                                             onClick={() => insertVariable('gemini-context-textarea', variable, 'gemini_context')}
                                             title={t('insert_variable_title').replace('{variable}', variable)}
                                         >
@@ -215,7 +215,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
 
                                 <textarea
                                     id="gemini-context-textarea"
-                                    className="doctor-messages-form__textarea"
+                                    className={`${styles.textarea}`}
                                     value={data.gemini_context || ''}
                                     onChange={(e) => updateField('gemini_context', e.target.value)}
                                     placeholder={t('gemini_context_placeholder')}
@@ -226,13 +226,13 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                                 </span>
                             </div>
 
-                            <aside className="doctor-messages-form__ai-sidebar">
-                                <div className="doctor-messages-form__field">
-                                    <label className="doctor-messages-form__label">
+                            <aside className={`${styles.aiSidebar}`}>
+                                <div className={`${styles.field}`}>
+                                    <label className={`${styles.label}`}>
                                         {t('gemini_api_version_label')}
                                     </label>
                                     <select
-                                        className="doctor-messages-form__input"
+                                        className={`${styles.input}`}
                                         value={data.gemini_api_version || 'v1beta'}
                                         onChange={(e) => updateField('gemini_api_version', e.target.value)}
                                     >
@@ -241,12 +241,12 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                                     </select>
                                 </div>
 
-                                <div className="doctor-messages-form__field">
-                                    <label className="doctor-messages-form__label">
+                                <div className={`${styles.field}`}>
+                                    <label className={`${styles.label}`}>
                                         {t('gemini_model_label')}
                                     </label>
                                     <select
-                                        className="doctor-messages-form__input"
+                                        className={`${styles.input}`}
                                         value={data.gemini_model || 'gemini-2.5-flash'}
                                         onChange={(e) => updateField('gemini_model', e.target.value)}
                                     >
@@ -256,15 +256,15 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                                     </select>
                                 </div>
 
-                                <div className="doctor-messages-form__field">
-                                    <label className="doctor-messages-form__label">
+                                <div className={`${styles.field}`}>
+                                    <label className={`${styles.label}`}>
                                         {t('gemini_history_limit_label')}
                                     </label>
                                     <input
                                         type="number"
                                         min="1"
                                         max="20"
-                                        className="doctor-messages-form__input"
+                                        className={`${styles.input}`}
                                         value={data.gemini_history_limit || 3}
                                         onChange={(e) => updateField('gemini_history_limit', parseInt(e.target.value) || 3)}
                                     />
@@ -278,9 +278,9 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                 )}
             </div>
 
-            <footer className="doctor-messages-form__footer">
-                <Icon name="info" size="1rem" className="doctor-messages-form__info-icon" />
-                <p className="doctor-messages-form__footer-text">
+            <footer className={`${styles.footer}`}>
+                <Icon name="info" size="1rem" className={`${styles.infoIcon}`} />
+                <p className={`${styles.footerText}`}>
                     {t('doctor_messages_hint')}
                 </p>
             </footer>

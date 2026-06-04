@@ -1,5 +1,5 @@
 import Icon from '@/components/atoms/Icon';
-import './InstitutionPatientsTable.css';
+import styles from './InstitutionPatientsTable.module.css';
 
 /**
  * InstitutionPatientsTable Molecule.
@@ -11,46 +11,46 @@ const InstitutionPatientsTable = ({
     t
 }) => {
     return (
-        <section className="institution-patients animate-fade-in">
-            <header className="institution-patients__header">
-                <h3 className="institution-patients__title">
+        <section className={`${styles.root} animate-fade-in`}>
+            <header className={`${styles.header}`}>
+                <h3 className={`${styles.title}`}>
                     <Icon name="PATIENTS" size="1.2rem" /> {t('patient_list_padron')}
-                    <span className="institution-patients__badge">{patients.length}</span>
+                    <span className={`${styles.badge}`}>{patients.length}</span>
                 </h3>
             </header>
 
-            <div className="institution-patients__wrapper">
-                <table className="institution-patients__table">
+            <div className={`${styles.wrapper}`}>
+                <table className={`${styles.table}`}>
                     <thead>
                         <tr>
                             <th>{t('full_name')}</th>
                             <th>{t('dni')}</th>
-                            <th className="institution-patients__cell--center">{t('last_visit')}</th>
-                            <th className="institution-patients__cell--right">{t('tariff_copay')}</th>
+                            <th className={`${styles.cellCenter}`}>{t('last_visit')}</th>
+                            <th className={`${styles.cellRight}`}>{t('tariff_copay')}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {Array.isArray(patients) && patients.map(p => (
                             <tr key={p.id}>
                                 <td>
-                                    <a href={`/patients?search=${p.dni}`} className="institution-patients__patient-link">
+                                    <a href={`/patients?search=${p.dni}`} className={`${styles.patientLink}`}>
                                         {p.full_name}
                                     </a>
                                 </td>
                                 <td>{p.dni}</td>
-                                <td className="institution-patients__cell--center">{formatDate(p.last_visit_date)}</td>
-                                <td className="institution-patients__cell--right">
+                                <td className={`${styles.cellCenter}`}>{formatDate(p.last_visit_date)}</td>
+                                <td className={`${styles.cellRight}`}>
                                     {p.tariff_override ? (
-                                        <span className="institution-patients__amount-bold">${p.tariff_override}</span>
+                                        <span className={`${styles.amountBold}`}>${p.tariff_override}</span>
                                     ) : (
-                                        <span className="institution-patients__text-muted">{p.tariff_percent || 0}%</span>
+                                        <span className={`${styles.textMuted}`}>{p.tariff_percent || 0}%</span>
                                     )}
                                 </td>
                             </tr>
                         ))}
                         {patients.length === 0 && (
                             <tr>
-                                <td colSpan="4" className="institution-patients__empty">
+                                <td colSpan="4" className={`${styles.empty}`}>
                                     {t('no_patients_found')}
                                 </td>
                             </tr>

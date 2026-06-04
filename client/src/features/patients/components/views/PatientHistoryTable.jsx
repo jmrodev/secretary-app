@@ -5,7 +5,7 @@ import Button from '@/components/atoms/Button';
 import { formatDate, formatTime, formatDateTimeLong } from '@/utils/core/dateUtils';
 
 // Local Styles
-import './PatientHistoryTable.css';
+import styles from './PatientHistoryTable.module.css';
 
 /**
  * PatientHistoryTable (Executor).
@@ -22,9 +22,9 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
             </header>
             <div className="patient-details__block-content">
                 {details.appointments && details.appointments.length > 0 ? (
-                    <div className="patient-details__history-container">
-                        <table className="patient-details__history-table">
-                            <thead className="patient-details__history-header">
+                    <div className={`${styles.historyContainer}`}>
+                        <table className={`${styles.historyTable}`}>
+                            <thead className={`${styles.historyHeader}`}>
                                 <tr>
                                     <th className="patient-details__history-th">{t('appointment_date')}</th>
                                     <th className="patient-details__history-th">{t('appointment_doctor')}</th>
@@ -36,33 +36,33 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                             </thead>
                             <tbody>
                                 {details.appointments.map(app => (
-                                    <tr key={app.id} className="patient-details__history-row">
-                                        <td className="patient-details__history-cell">
-                                            <div className="patient-details__table-cell-date-box">
-                                                <div className="patient-details__table-cell-date-main">{formatDate(app.appointment_date)}</div>
-                                                <div className="patient-details__table-cell-date-sub">
+                                    <tr key={app.id} className={`${styles.historyRow}`}>
+                                        <td className={`${styles.historyCell}`}>
+                                            <div className={`${styles.tableCellDateBox}`}>
+                                                <div className={`${styles.tableCellDateMain}`}>{formatDate(app.appointment_date)}</div>
+                                                <div className={`${styles.tableCellDateSub}`}>
                                                     {formatTime(app.appointment_date)}
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="patient-details__history-cell">{app.doctor_name}</td>
-                                        <td className="patient-details__history-cell">
-                                            <span className={`patient-details__status-tag status-${app.status}`}>
+                                        <td className={`${styles.historyCell}`}>{app.doctor_name}</td>
+                                        <td className={`${styles.historyCell}`}>
+                                            <span className={`${styles.statusTag} status-${app.status}`}>
                                                 {t(app.status) || app.status}
                                             </span>
                                         </td>
-                                        <td className="patient-details__history-cell patient-details__history-cell--success patient-details__table-cell-bold">
+                                        <td className={`${styles.historyCell} ${styles.historyCellSuccess} ${styles.tableCellBold}`}>
                                             {Number(app.paid_amount) > 0 ? `$${app.paid_amount}` : '-'}
                                         </td>
-                                        <td className="patient-details__history-cell">
-                                            <div className={`patient-details__table-cell-bold ${Number(app.pending_amount) > 0 ? 'patient-details__table-cell-bold--danger' : 'patient-details__table-cell-bold--muted'}`}>
+                                        <td className={`${styles.historyCell}`}>
+                                            <div className={`${styles.tableCellBold} ${Number(app.pending_amount) > 0 ? styles.tableCellBoldDanger : styles.tableCellBoldMuted}`}>
                                                 {Number(app.pending_amount) > 0 ? `$${app.pending_amount}` : '$0'}
                                                 {Number(app.pending_amount) > 0 && (
-                                                    <div className="patient-details__pay-action">
+                                                    <div className={`${styles.payAction}`}>
                                                         <Button
                                                             size="sm-compact"
                                                             variant="ghost"
-                                                            className="patient-details__pay-btn-mini"
+                                                            className={`${styles.payBtnMini}`}
                                                             onClick={() => onPayDebt(null, details.id, app.pending_amount)}
                                                             icon={<Icon name="payments" size="0.8rem" />}
                                                         >
@@ -72,18 +72,18 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="patient-details__history-cell">
-                                            <div className="patient-details__table-cell-reason">
+                                        <td className={`${styles.historyCell}`}>
+                                            <div className={`${styles.tableCellReason}`}>
                                                 {app.reason}
                                                 {app.cancellation_reason && (
-                                                    <div className="patient-details__cancel-reason">
+                                                    <div className={`${styles.cancelReason}`}>
                                                         <Icon name="block" size="0.8rem" />
                                                         {app.cancellation_reason}
                                                     </div>
                                                 )}
                                                 {app.rescheduled_from_date && (
                                                     <div 
-                                                        className="patient-details__reschedule-info" 
+                                                        className={`${styles.rescheduleInfo}`} 
                                                         title={`${t('originally_for') || 'Originalmente para'} ${formatDateTimeLong(app.rescheduled_from_date)}`}
                                                         suppressHydrationWarning
                                                     >
@@ -99,7 +99,7 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                         </table>
                     </div>
                 ) : (
-                    <div className="history-empty-state">
+                    <div className={`${styles.historyEmptyState}`}>
                         {t('no_history')}
                     </div>
                 )}

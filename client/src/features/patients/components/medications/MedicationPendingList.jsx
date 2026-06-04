@@ -3,7 +3,7 @@ import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
-import './MedicationPendingList.css';
+import styles from './MedicationPendingList.module.css';
 
 /**
  * MedicationPendingList Molecule (Sub-Executor).
@@ -13,15 +13,15 @@ const MedicationPendingList = ({ pendingMedications, onRemovePending, t }) => {
     if (pendingMedications.length === 0) return null;
 
     return (
-        <div className="medication-pending-list">
-            <label className="medication-pending-list__title">
+        <div className={`${styles.root}`}>
+            <label className={`${styles.title}`}>
                 {t('medications_to_add') || 'Lista a Guardar'} ({pendingMedications.length})
             </label>
             {pendingMedications.map((med, idx) => (
-                <div key={med._tempId || idx} className="medication-pending-list__item">
-                    <div className="medication-pending-list__info">
-                        <div className="medication-pending-list__name">{med.medication_name}</div>
-                        <div className="medication-pending-list__details">
+                <div key={med._tempId || idx} className={`${styles.item}`}>
+                    <div className={`${styles.info}`}>
+                        <div className={`${styles.name}`}>{med.medication_name}</div>
+                        <div className={`${styles.details}`}>
                             {med.daily_intake && `${med.daily_intake} u/día`}
                             {med.frequency && ` • ${med.frequency}`}
                         </div>
@@ -30,7 +30,7 @@ const MedicationPendingList = ({ pendingMedications, onRemovePending, t }) => {
                         variant="ghost"
                         size="sm-compact"
                         onClick={() => onRemovePending(idx)}
-                        className="medication-pending-list__remove"
+                        className={`${styles.remove}`}
                         icon={<Icon name="close" size="1rem" />}
                     />
                 </div>

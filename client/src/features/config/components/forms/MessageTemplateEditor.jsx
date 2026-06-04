@@ -2,7 +2,7 @@ import React from 'react';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
 import Button from '@/components/atoms/Button';
 import ConfigField from '@/features/config/components/ui/ConfigField';
-import './MessageTemplateEditor.css';
+import styles from './MessageTemplateEditor.module.css';
 
 /**
  * MessageTemplateEditor Molecule (Feature Component).
@@ -45,26 +45,26 @@ const MessageTemplateEditor = ({
     t
 }) => {
     return (
-        <div className="message-template-editor animate-fade-in">
-            <label className="message-template-editor__label" htmlFor={id}>{label}</label>
+        <div className={`${styles.root} animate-fade-in`}>
+            <label className={`${styles.label}`} htmlFor={id}>{label}</label>
 
             <AutoTextarea
                 id={id}
-                className="message-template-editor__textarea"
+                className={`${styles.textarea}`}
                 placeholder={placeholder}
                 value={value || ''}
                 onChange={(e) => updateSetting(settingKey, e.target.value)}
                 disabled={disabled}
             />
 
-            <div className="message-template-editor__variables">
-                <p className="message-template-editor__variables-label">{t('available_variables')}</p>
-                <div className="message-template-editor__buttons">
+            <div className={`${styles.variables}`}>
+                <p className={`${styles.variablesLabel}`}>{t('available_variables')}</p>
+                <div className={`${styles.buttons}`}>
                     {variables.map(v => (
                         <Button
                             key={v}
                             type="button"
-                            className="message-template-editor__variable-btn"
+                            className={`${styles.variableBtn}`}
                             onClick={() => insertVariable(id, v, settingKey)}
                             title={t('insert_variable_title').replace('{variable}', v)}
                             disabled={disabled}
@@ -77,7 +77,7 @@ const MessageTemplateEditor = ({
             </div>
 
             {(metaTemplateName !== undefined) && (
-                <div className="message-template-editor__meta-grid">
+                <div className={`${styles.metaGrid}`}>
                     <ConfigField
                         label={t('meta_template_name')}
                         type="text"
@@ -110,7 +110,7 @@ const MessageTemplateEditor = ({
             )}
 
             {description && (
-                <span className="message-template-editor__hint">{description}</span>
+                <span className={`${styles.hint}`}>{description}</span>
             )}
         </div>
     );

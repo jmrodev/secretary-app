@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
+import styles from '../modals/NextSlotCalendarModal.module.css';
 
 export const DayListItem = ({ dayName, dateStr, dateLabel, isToday, inCount, outCount, includeOutOfHours, onClick }) => {
     const chipCount  = includeOutOfHours ? inCount + outCount : inCount;
@@ -14,19 +15,19 @@ export const DayListItem = ({ dayName, dateStr, dateLabel, isToday, inCount, out
         <div
             role="button"
             tabIndex={0}
-            className={`day-list__item${isToday ? ' day-list__item--today' : ''}${isOutOnly ? ' day-list__item--out-only' : ''}`}
+            className={`${styles.item} ${isToday ? styles.itemToday : ''} ${isOutOnly ? styles.itemOutOnly : ''}`}
             onClick={onClick}
             onKeyDown={handleKeyDown}
             aria-label={`${dayName} ${dateLabel} — ${chipCount} turnos libres`}
         >
-            <div className="day-list__date-info">
-                <span className="day-list__day-name">{dayName}</span>
-                <span className="day-list__date-label">{dateLabel}</span>
-                {isToday && <span className="day-list__today-badge">HOY</span>}
+            <div className={styles.dateInfo}>
+                <span className={styles.dayName}>{dayName}</span>
+                <span className={styles.dateLabel}>{dateLabel}</span>
+                {isToday && <span className={styles.todayBadge}>HOY</span>}
             </div>
-            <div className="day-list__chip-group">
-                {isOutOnly && <Icon name="lock_open" size="0.85rem" className="day-list__out-icon" />}
-                <span className={`day-list__chip day-list__chip--${chipVariant}`}>{chipCount}</span>
+            <div className={styles.chipGroup}>
+                {isOutOnly && <Icon name="lock_open" size="0.85rem" className={styles.outIcon} />}
+                <span className={`${styles.chip} ${styles[chipVariant === 'amber' ? 'chipAmber' : 'chipGreen']}`}>{chipCount}</span>
             </div>
         </div>
     );

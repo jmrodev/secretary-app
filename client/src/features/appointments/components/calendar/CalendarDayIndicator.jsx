@@ -1,5 +1,5 @@
 import React from 'react';
-import './CalendarDayIndicator.css';
+import styles from './CalendarDayIndicator.module.css';
 
 /**
  * CalendarDayIndicator (Internal to feature).
@@ -13,27 +13,27 @@ const CalendarDayIndicator = ({
   const translate = (key, fallback) => (t && t(key)) || fallback;
 
   return (
-    <div className={`calendar-day-indicator ${isSelected ? 'calendar-day-indicator--selected' : ''}`}>
-      <div className="calendar-day-indicator__grid">
-        <div className="calendar-day-indicator__row calendar-day-indicator__row--in-hours">
-          <div className={`calendar-day-indicator__appointment-badge calendar-day-indicator__appointment-badge--free-normal ${freeInCount === 0 ? 'calendar-day-indicator__appointment-badge--zero' : ''}`}
+    <div className={`${styles.root} ${isSelected ? styles.selected : ''}`}>
+      <div className={`${styles.grid}`}>
+        <div className={`${styles.row}`}>
+          <div className={`${styles.appointmentBadge} ${styles.appointmentBadgeFreeNormal} ${freeInCount === 0 ? styles.appointmentBadgeZero : ''}`}
             title={`${freeInCount} ${translate('free_slots_label', 'Libres')} (${translate('regular_schedule', 'Horario')})`}>
-            <span className="calendar-day-indicator__count">{freeInCount || 0}</span>
+            <span>{freeInCount || 0}</span>
           </div>
-          <div className={`calendar-day-indicator__appointment-badge calendar-day-indicator__appointment-badge--booked-normal ${bookedInCount === 0 ? 'calendar-day-indicator__appointment-badge--zero' : ''}`}
+          <div className={`${styles.appointmentBadge} ${styles.appointmentBadgeBookedNormal} ${bookedInCount === 0 ? styles.appointmentBadgeZero : ''}`}
             title={`${bookedInCount} ${translate('booked_slots_label', 'Ocupados')} (${translate('regular_schedule', 'Horario')})`}>
-            <span className="calendar-day-indicator__count">{bookedInCount || 0}</span>
+            <span>{bookedInCount || 0}</span>
           </div>
         </div>
 
-        <div className={`calendar-day-indicator__row calendar-day-indicator__row--out-hours ${!showOutOfHours ? 'calendar-day-indicator__row--hidden' : ''}`}>
-          <div className={`calendar-day-indicator__appointment-badge calendar-day-indicator__appointment-badge--free-extra ${freeOutCount === 0 ? 'calendar-day-indicator__appointment-badge--zero' : ''}`}
+        <div className={`${styles.row} ${!showOutOfHours ? styles.rowHidden : ''}`}>
+          <div className={`${styles.appointmentBadge} ${styles.appointmentBadgeFreeExtra} ${freeOutCount === 0 ? styles.appointmentBadgeZero : ''}`}
             title={`${freeOutCount} ${translate('free_slots_label', 'Libres')} (${translate('extra_schedule', 'Extra')})`}>
-            <span className="calendar-day-indicator__count">{freeOutCount || 0}</span>
+            <span>{freeOutCount || 0}</span>
           </div>
-          <div className={`calendar-day-indicator__appointment-badge calendar-day-indicator__appointment-badge--booked-extra ${bookedOutCount === 0 ? 'calendar-day-indicator__appointment-badge--zero' : ''}`}
+          <div className={`${styles.appointmentBadge} ${styles.appointmentBadgeBookedExtra} ${bookedOutCount === 0 ? styles.appointmentBadgeZero : ''}`}
             title={`${bookedOutCount} ${translate('booked_slots_label', 'Ocupados')} (${translate('extra_schedule', 'Extra')})`}>
-            <span className="calendar-day-indicator__count">{bookedOutCount || 0}</span>
+            <span>{bookedOutCount || 0}</span>
           </div>
         </div>
       </div>

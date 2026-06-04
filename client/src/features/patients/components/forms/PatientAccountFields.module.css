@@ -1,0 +1,71 @@
+.root {
+    --card-padding: 1.5rem;
+    
+    background-color: var(--white);
+    border-radius: var(--radius); /* XL 1.5rem */
+    padding: var(--card-padding);
+    box-shadow: var(--shadow-premium);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    grid-column: span 5;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary-color);
+}
+
+.title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.25rem;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.groupSpan6 { grid-column: span 6; }
+
+.label {
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: var(--gray-950);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.securityNote {
+    margin-top: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: var(--gray-50);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--gray-600);
+}
+
+.securityNote p {
+    font-size: 0.75rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+@media (width <= 48rem) {
+    .group {
+        grid-column: span 12 !important;
+    }
+}

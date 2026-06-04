@@ -2,7 +2,7 @@ import React from 'react';
 import Input from '@/components/atoms/Input';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './MedicationEditor.css';
+import styles from './MedicationEditor.module.css';
 
 /**
  * MedicationEditor Feature Molecule.
@@ -18,7 +18,7 @@ const MedicationEditor = ({
     onAddMed,
     t
 }) => {
-    const baseClass = 'medication-editor';
+    const baseClass = styles.root;
 
     return (
         <div className={`${baseClass} animate-fade-in`}>

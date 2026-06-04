@@ -2,8 +2,7 @@ import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import LiveClock from '@/components/atoms/LiveClock';
-import defaultHeroBg from '@/features/dashboard/assets/dashboard_hero.png';
-import './PageHeader.css';
+import styles from './PageHeader.module.css';
 
 /**
  * PageHeader Organism.
@@ -17,6 +16,7 @@ const PageHeader = ({
     variant = 'standard',
     backgroundUrl,
     hideTitle = false,
+    hideClock = false,
     searchTerm = '',
     onSearchChange = () => {},
     statsSlot = null,
@@ -30,13 +30,13 @@ const PageHeader = ({
     // Standard variant
     if (!isPremium) {
         return (
-            <header className={`page-header ${divider ? 'page-header--divider' : ''} ${className} animate-fade-in`}>
-                <div className="page-header__content">
-                    <div className="page-header__title-container">
-                        {!hideTitle && <h1 className="page-header__title">{title}</h1>}
+            <header className={`${styles.root} ${divider ? styles.divider : ''} ${className} animate-fade-in`}>
+                <div className={`${styles.content}`}>
+                    <div className={`${styles.titleContainer}`}>
+                        {!hideTitle && <h1 className={`${styles.title}`}>{title}</h1>}
                     </div>
                     {actionSlot && (
-                        <div className="page-header__actions">
+                        <div className={`${styles.actions}`}>
                             {actionSlot}
                         </div>
                     )}
@@ -45,48 +45,40 @@ const PageHeader = ({
         );
     }
 
-    const resolvedBg = backgroundUrl || defaultHeroBg;
-
     // Premium variant
     return (
-        <header className={`page-header page-header--premium ${className} animate-fade-in`}>
-            <img
-                src={resolvedBg}
-                alt=""
-                className="page-header__background"
-                aria-hidden="true"
-            />
+        <header className={`${styles.root} ${styles.premium} ${className} animate-fade-in`}>
 
-            <div className="page-header__content">
+
+            <div className={`${styles.content}`}>
                 {/* UTILITIES ROW: Search + Clock + Stats + Actions */}
-                <div className="page-header__utilities">
-                    <div className="page-header__search-container">
-                        <Icon name="SEARCH" size="1rem" className="page-header__search-icon" />
+                <div className={`${styles.utilities}`}>
+                    <div className={`${styles.searchContainer}`}>
+                        <Icon name="SEARCH" size="1rem" className={`${styles.searchIcon}`} />
                         <Input
                             type="text"
-                            className="page-header__search-input"
+                            className={`${styles.searchInput}`}
                             placeholder={labels.searchPlaceholder}
                             value={searchTerm}
                             onChange={(e) => onSearchChange(e.target.value)}
                         />
                     </div>
 
-                    <div className="page-header__center">
-                        <LiveClock className="live-clock--premium" />
+                    <div className={`${styles.center}`}>
+                        {doctorSelectorSlot && (
+                            <div className={`${styles.inlineSelectors}`}>
+                                {doctorSelectorSlot}
+                            </div>
+                        )}
+                        {!hideClock && <LiveClock hideDate={!!doctorSelectorSlot} className="live-clock--premium" />}
                     </div>
 
-                    <div className="page-header__stats-container">
+                    <div className={`${styles.statsContainer}`}>
                         {statsSlot}
                         {actionSlot && <div className="page-header__extra-actions">{actionSlot}</div>}
                     </div>
                 </div>
 
-                {/* SELECTOR ROW: Dedicated row for Doctor context */}
-                {doctorSelectorSlot && (
-                    <div className="page-header__selectors">
-                        {doctorSelectorSlot}
-                    </div>
-                )}
             </div>
         </header>
     );

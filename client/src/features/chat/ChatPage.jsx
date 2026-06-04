@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMessagesPageController, ChatSidebar, ChatWindow } from '@/features/chat/index';
 import MainLayout from '@/components/templates/MainLayout';
-import './ChatPage.css';
+import styles from './ChatPage.module.css';
 
 
 /**
@@ -27,11 +27,11 @@ const ChatPage = () => {
 
     return (
         <MainLayout wide flush>
-            <main className={`chat-page-orchestrator ${selectedConvo ? 'chat-page-orchestrator--convo-selected' : ''} animate-fade-in`}>
+            <main className={`${styles.chatPageOrchestrator} ${selectedConvo ? styles.chatPageOrchestratorConvoSelected : ''} animate-fade-in`}>
                 <div className="layout-content-area">
                     <div className="chat-page-container">
                         <ChatSidebar
-                            className="chat-sidebar"
+                            className={`${styles.chatSidebar}`}
                             conversations={conversations}
                             selectedConvo={selectedConvo}
                             onSelectConvo={setSelectedConvo}
@@ -43,7 +43,7 @@ const ChatPage = () => {
                         />
 
                         <ChatWindow
-                            className="chat-window"
+                            className={`${styles.chatWindow}`}
                             selectedConvo={selectedConvo}
                             thread={thread}
                             user={user}

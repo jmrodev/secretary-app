@@ -7,7 +7,7 @@ import { useAuth } from '@/features/auth'; // Assuming auth is a sibling feature
 import api from '@/api/axios';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
-import './PatientMedications.css';
+import styles from './PatientMedications.module.css';
 
 // Local Feature Hooks
 import { useMedicalRecords } from '@/features/patients/hooks/useMedicalRecords';
@@ -63,7 +63,7 @@ const PatientMedications = ({ patientId, patientName }) => {
     };
 
     return (
-        <div className="patient-medications">
+        <div className={`${styles.root}`}>
             {/* Block 3: Prescription History */}
             <MedicationHistory
                 recentRequests={recentRequests}
@@ -72,9 +72,9 @@ const PatientMedications = ({ patientId, patientName }) => {
             />
 
             {/* Block 4: Active/Chronic Medications */}
-            <section className="patient-medications__section">
-                <header className="patient-medications__header">
-                    <h3 className="patient-medications__title">
+            <section className={`${styles.section}`}>
+                <header className={`${styles.header}`}>
+                    <h3 className={`${styles.title}`}>
                         <Icon name="medication" size="1.2rem" />
                         {t('patient_current_meds')}
                     </h3>
@@ -90,7 +90,7 @@ const PatientMedications = ({ patientId, patientName }) => {
                     )}
                 </header>
 
-                <div className="patient-medications__content">
+                <div className={`${styles.content}`}>
                     {/* Adding Form */}
                     {isAdding && (
                         <AddMedicationForm

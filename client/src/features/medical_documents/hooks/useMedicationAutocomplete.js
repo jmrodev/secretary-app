@@ -6,17 +6,16 @@ import { useFetch } from '@/hooks/useFetch';
  * Logic for fetching and managing medication suggestions from the vademecum.
  */
 export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectMedication) => {
-    const [searchTerm, setSearchTerm] = useState(initialValue);
+    const [searchTerm, setSearchTerm] = useState(initialValue || '');
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [cursor, setCursor] = useState(-1);
     const debounceTimer = useRef(null);
 
-    // --- Data Fetching ---
     const { 
         data: suggestions = [], 
         loading, 
         refetch: fetchSuggestions 
-    } = useFetch(searchTerm.length >= 2 ? `/medical/vademecum/search?q=${encodeURIComponent(searchTerm)}` : null, {
+    } = useFetch((searchTerm && searchTerm.length >= 2) ? `/medical/vademecum/search?q=${encodeURIComponent(searchTerm)}` : null, {
         initialData: [],
         immediate: false // We control it with debounce
     });
@@ -33,7 +32,7 @@ export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectM
 
         if (debounceTimer.current) clearTimeout(debounceTimer.current);
         debounceTimer.current = setTimeout(async () => {
-            if (text.length >= 2) {
+            if (text && text.length >= 2) {
                 try {
                     const data = await fetchSuggestions(`/medical/vademecum/search?q=${encodeURIComponent(text)}`);
                     if (data && data.length > 0) {

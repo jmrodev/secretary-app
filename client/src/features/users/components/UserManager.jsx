@@ -2,17 +2,17 @@ import React from 'react';
 import UserManagement from '@/features/users/components/UserManagement';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './UserManager.css';
+import styles from './UserManager.module.css';
 
 const UserManager = ({ t }) => {
     return (
-        <div className="user-manager">
-            <header className="user-manager__header">
-                <h2 className="user-manager__title">{t('user_management')}</h2>
-                <p className="user-manager__subtitle">{t('manage_users_subtitle')}</p>
+        <div className={`${styles.root}`}>
+            <header className={`${styles.header}`}>
+                <h2 className={`${styles.title}`}>{t('user_management')}</h2>
+                <p className={`${styles.subtitle}`}>{t('manage_users_subtitle')}</p>
             </header>
 
-            <div className="user-manager__actions">
+            <div className={`${styles.actions}`}>
                 <Button
                     variant="primary"
                     onClick={() => window.dispatchEvent(new CustomEvent('OPEN_USER_MODAL', { detail: 'CREATE' }))}
@@ -29,8 +29,8 @@ const UserManager = ({ t }) => {
                 </Button>
             </div>
 
-            <div className="user-manager__content dashboard-card dashboard-card--highlighted">
-                <div className="user-manager__scrollable">
+            <div className={`${styles.content} dashboard-card dashboard-card--highlighted`}>
+                <div className={`${styles.scrollable}`}>
                     <UserManagement excludeRoles={['patient']} />
                 </div>
             </div>

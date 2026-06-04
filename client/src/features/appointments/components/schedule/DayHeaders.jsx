@@ -1,5 +1,5 @@
 import React from 'react';
-import './DayHeaders.css';
+import styles from './DayHeaders.module.css';
 
 /**
  * DayHeaders (Internal to feature).
@@ -7,9 +7,9 @@ import './DayHeaders.css';
  */
 const DayHeaders = ({ daysOfWeek }) => {
   return (
-    <div className="day-headers">
+    <div className={`${styles.root}`}>
       {daysOfWeek.map((day) => (
-        <div key={day} className="day-headers__day">{day}</div>
+        <div key={day} className={`${styles.day}`}>{day}</div>
       ))}
     </div>
   );

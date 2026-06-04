@@ -5,16 +5,14 @@ import { useDayScheduleController } from '@/features/appointments/hooks/useDaySc
 
 import DayScheduleHeader from './DayScheduleHeader.jsx';
 import ScheduleTimeline from './ScheduleTimeline.jsx';
-import { DayScheduleTable } from '../sections/DayScheduleTable.jsx';
 
-import './DaySchedule.css';
+import styles from './DaySchedule.module.css';
 
 const EMPTY_ARRAY = [];
 
 /**
  * DaySchedule (Executor Component).
  * Orchestrates the display of daily appointments, time slots, and schedule navigation.
- * Now features a native toggle between timeline slots and interactive operative table.
  */
 const DaySchedule = ({
     date, appointments, onSlotClick, doctor, schedule, onDateSelect,
@@ -23,7 +21,6 @@ const DaySchedule = ({
 }) => {
     const { t } = useLanguage();
     const [showCancelled, setShowCancelled] = React.useState(false);
-    const [viewMode, setViewMode] = React.useState('timeline'); // 'timeline' | 'table'
 
     const { handlePrint, handlePrevDay, handleNextDay, handleToday, handleSlotAction } = useDayScheduleHandlers({
         date, appointments, doctor, onDateSelect, onSlotClick, showCancelled
@@ -33,18 +30,6 @@ const DaySchedule = ({
 
     const isAppLoading = isLoading || loading;
 
-    // Flatten appointments for the daily table view
-    const dayAppointmentsFlat = React.useMemo(() => {
-        return timeSlots.reduce((acc, slot) => {
-            slot.slotApps.forEach(appt => {
-                if (showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status)) {
-                    acc.push({ ...appt, time: slot.time });
-                }
-            });
-            return acc;
-        }, []).sort((a, b) => a.time.getTime() - b.time.getTime());
-    }, [timeSlots, showCancelled]);
-
     // Provide the pre-grouped appointments to ScheduleTimeline
     const getAppointmentsForSlot = (slotTime) => {
         const timeStr = slotTime.toTimeString().split(' ')[0]; // "08:00:00"
@@ -53,25 +38,20 @@ const DaySchedule = ({
     };
 
     return (
-        <div className="day-schedule">
+        <div className={`${styles.root}`} data-scroll-container>
             <DayScheduleHeader
                 date={date} holiday={null} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
                 showCancelled={showCancelled} setShowCancelled={setShowCancelled}
                 onPrevDay={handlePrevDay} onToday={handleToday} onNextDay={handleNextDay} onPrint={handlePrint}
                 onNextFreeSlot={onNextFreeSlot}
-                viewMode={viewMode} setViewMode={setViewMode}
                 t={t}
             />
 
-            {viewMode === 'table' ? (
-                <DayScheduleTable dayAppointmentsFlat={dayAppointmentsFlat} t={t} onSlotClick={onSlotClick} />
-            ) : (
-                <ScheduleTimeline
-                    timeSlots={timeSlots} showOutOfHours={showOutOfHours} showCancelled={showCancelled}
-                    onSlotClick={onSlotClick} onSlotAction={handleSlotAction} getAppointmentsForSlot={getAppointmentsForSlot} t={t}
-                    isLoading={isAppLoading}
-                />
-            )}
+            <ScheduleTimeline
+                timeSlots={timeSlots} showOutOfHours={showOutOfHours} showCancelled={showCancelled}
+                onSlotClick={onSlotClick} onSlotAction={handleSlotAction} getAppointmentsForSlot={getAppointmentsForSlot} t={t}
+                isLoading={isAppLoading}
+            />
         </div>
     );
 };

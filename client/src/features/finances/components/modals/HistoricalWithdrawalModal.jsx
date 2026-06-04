@@ -6,7 +6,7 @@ import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
 import { getNow, toInputDate } from '@/utils/core/dateUtils';
-import './HistoricalWithdrawalModal.css';
+import styles from './HistoricalWithdrawalModal.module.css';
 
 /**
  * HistoricalWithdrawalModal Feature Molecule.
@@ -54,7 +54,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
             onClose={onClose}
             title={t('manual_withdrawal') || "Registro de Retiro Manual / Pasado"}
             footer={
-                <div className="historical-withdrawal-modal__footer">
+                <div className={`${styles.footer}`}>
                     <Button variant="secondary" onClick={onClose}>
                         {t('cancel')}
                     </Button>
@@ -64,7 +64,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                 </div>
             }
         >
-            <div className="historical-withdrawal-modal">
+            <div className={`${styles.root}`}>
                 <FormGroup label={t('doctor') || 'Doctor'}>
                     <Select
                         value={doctorId}
@@ -87,7 +87,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                     />
                 </FormGroup>
 
-                <div className="historical-withdrawal-modal__grid">
+                <div className={`${styles.grid}`}>
                     <FormGroup label={t('date') || 'Fecha'}>
                         <Input
                             type="date"

@@ -1,0 +1,50 @@
+/* AppointmentSyncAlert Molecule Styles (BEM) - Dark Mode Standard */
+
+.root {
+    grid-column: 1 / -1;
+    margin-bottom: 1.5rem;
+    padding: 1.25rem;
+    background-color: rgb(245 158 11 / 5%); /* Amber with low opacity */
+    border: 1px solid rgb(245 158 11 / 20%);
+    border-left: 4px solid var(--warning);
+    border-radius: var(--radius-md);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    animation: fade-in 0.3s ease-out;
+}
+
+.icon { 
+    color: var(--warning); 
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.title { 
+    font-size: 0.7rem; 
+    font-weight: 900; 
+    color: var(--warning); 
+    text-transform: uppercase; 
+    letter-spacing: 0.05em;
+}
+
+.text { 
+    font-size: 0.9rem; 
+    margin: 0; 
+    color: var(--text-main); 
+}
+
+.text em {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}

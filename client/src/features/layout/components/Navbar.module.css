@@ -1,0 +1,306 @@
+.root {
+    /* --- Local Component Tokens --- */
+    --navbar-bg: transparent;
+    --navbar-height: 64px;
+    --navbar-border: rgb(255 255 255 / 0%);
+    --navbar-link-color: rgb(255 255 255 / 55%);
+    --navbar-link-active: #fff;
+    --navbar-link-bg-hover: rgb(255 255 255 / 6%);
+
+    /* ------------------------------ */
+
+    width: 100%;
+    height: var(--navbar-height);
+    background: var(--navbar-bg);
+    border-bottom: 1px solid rgb(255 255 255 / 5%);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+}
+
+.container {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+}
+
+.logo {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logoIcon {
+    width: 38px;
+    height: 38px;
+    background: rgb(72 128 255 / 10%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgb(72 128 255 / 20%);
+}
+
+.logoText {
+    font-family: var(--font-manrope);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.03em;
+}
+
+/* Search Bar Styling */
+.search {
+    position: relative;
+    width: 320px;
+    display: flex;
+    align-items: center;
+}
+
+.searchIcon {
+    position: absolute;
+    left: 1rem;
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 1.1rem;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 0.65rem 1rem 0.65rem 2.8rem;
+    background: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.searchInput:focus {
+    background: rgb(255 255 255 / 8%);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgb(72 128 255 / 15%);
+}
+
+.nav {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+
+    /* Contenedor pill para las tabs */
+    background: rgb(255 255 255 / 3%);
+    border-radius: 12px;
+    padding: 4px;
+    margin: 0 1.5rem;
+    border: 1px solid rgb(255 255 255 / 5%);
+    max-width: fit-content;
+    margin-inline: auto;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    color: var(--navbar-link-color);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.82rem;
+    border-radius: 8px;
+    transition: all 0.18s ease;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+    position: relative;
+}
+
+.link:hover {
+    background-color: rgb(255 255 255 / 7%);
+    color: rgb(255 255 255 / 90%);
+}
+
+.linkActive {
+    color: #0b0c10;
+    background: linear-gradient(135deg, var(--primary-color) 0%, rgb(0 180 190) 100%);
+    box-shadow: 0 2px 12px rgb(0 206 209 / 35%), inset 0 1px 0 rgb(255 255 255 / 20%);
+    font-weight: 700;
+}
+
+.linkActive:hover {
+    background: linear-gradient(135deg, var(--primary-color) 0%, rgb(0 200 210) 100%);
+    color: #0b0c10;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-right: 1.25rem;
+    border-right: 1px solid rgb(255 255 255 / 10%);
+}
+
+.actionIcon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.actionIcon:hover {
+    background: rgb(255 255 255 / 5%);
+    color: #fff;
+}
+
+.badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 8px;
+    height: 8px;
+    background: #ff4d4f;
+    border-radius: 50%;
+    border: 2px solid var(--secondary-color);
+}
+
+.navbarUser {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    cursor: pointer;
+    padding: 0.4rem;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.navbarUser:hover {
+    background: rgb(255 255 255 / 5%);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary-color), #6366f1);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgb(72 128 255 / 30%);
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #fff;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+}
+
+.role {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+}
+
+/* Dropdown Styles */
+.dropdown {
+    position: relative;
+}
+
+.dropdownTrigger {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    color: var(--navbar-link-color);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.82rem;
+    border-radius: 8px;
+    transition: all 0.18s ease;
+    letter-spacing: 0.01em;
+}
+
+.dropdownTrigger:hover {
+    background-color: rgb(255 255 255 / 7%);
+    color: rgb(255 255 255 / 90%);
+}
+
+.dropdownContent {
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    background-color: #2b3648;
+    border: 1px solid var(--navbar-border);
+    border-radius: 14px;
+    box-shadow: 0 10px 40px rgb(0 0 0 / 30%);
+    padding: 0.6rem;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1001;
+}
+
+@keyframes slide-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media screen and (width <= 1300px) {
+    .search {
+        width: 200px;
+    }
+
+    .left {
+        gap: 1.5rem;
+    }
+}
+
+@media screen and (width <= 1100px) {
+    .nav {
+        display: none; 
+    }
+
+    .search {
+        display: none;
+    }
+}
+

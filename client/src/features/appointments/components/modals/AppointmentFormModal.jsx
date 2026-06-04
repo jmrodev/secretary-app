@@ -8,7 +8,7 @@ import { useAuth } from '@/features/auth';
 import AppointmentSyncAlert from '../ui/AppointmentSyncAlert.jsx';
 import { AppointmentFormFields } from '../sections/AppointmentFormFields.jsx';
 
-import './AppointmentFormModal.css';
+import styles from './AppointmentFormModal.module.css';
 
 /**
  * AppointmentFormModal (Executor Component).
@@ -41,8 +41,8 @@ const AppointmentFormModal = ({
             title={editModeId ? (t('edit_appointment') || 'Editar Turno') : t('new_appointment')}
             size="2xl"
         >
-            <form onSubmit={onSubmit} id="new-appointment-form" className="appointment-form-modal" autoComplete="off">
-                <div className="appointment-form-modal__autofill-trap">
+            <form onSubmit={onSubmit} id="new-appointment-form" className={`${styles.root}`} autoComplete="off">
+                <div className={styles.autofillTrap}>
                     <input type="text" name="fake_user_trap_appt" autoComplete="username" tabIndex={-1} readOnly />
                     <input type="password" name="fake_pass_trap_appt" autoComplete="new-password" tabIndex={-1} readOnly />
                 </div>
@@ -75,8 +75,8 @@ const AppointmentFormModal = ({
                         t={t}
                     />
 
-                <div className="appointment-form-modal__actions">
-                    <Button type="submit" variant="accent" className="appointment-form-modal__submit">
+                <div className={`${styles.actions}`}>
+                    <Button type="submit" variant="accent" className={`${styles.submit}`}>
                         {editModeId ? (t('save_changes') || 'Guardar Cambios') : t('confirm_booking')}
                     </Button>
                 </div>

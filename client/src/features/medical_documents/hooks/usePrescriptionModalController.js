@@ -63,10 +63,12 @@ export const usePrescriptionModalController = (patientId, onSubmit, showMessage,
     const setTempBoxes = (v) => dispatch({ field: 'tempBoxes', value: v });
     const setTempFreqPreset = (v) => dispatch({ field: 'tempFreqPreset', value: v });
     const setCurrentVademecumId = (v) => dispatch({ field: 'currentVademecumId', value: v });
+    const setTempDays = (v) => dispatch({ field: 'tempDays', value: v });
 
     const ds = (upb, boxes, daily) => {
-        if (!upb || !boxes || !daily || daily <= 0) return null;
-        return Math.floor((upb * boxes) / daily);
+        const u = upb || 30;
+        if (!boxes || !daily || daily <= 0) return null;
+        return Math.floor((u * boxes) / daily);
     };
 
     const resetFields = () => {
@@ -78,6 +80,7 @@ export const usePrescriptionModalController = (patientId, onSubmit, showMessage,
                 tempUnitsPerBox: '',
                 tempDailyUnits: '',
                 tempBoxes: '',
+                tempDays: '',
                 tempFreqPreset: null,
                 currentVademecumId: null,
                 bonified: false
@@ -89,12 +92,44 @@ export const usePrescriptionModalController = (patientId, onSubmit, showMessage,
 
     const daysSupply = useMemo(() => ds(parseFloat(state.tempUnitsPerBox), parseFloat(state.tempBoxes), parseFloat(state.tempDailyUnits)), [state.tempUnitsPerBox, state.tempBoxes, state.tempDailyUnits]);
 
+    const handleQuantityChange = (field, value) => {
+        const upb = parseFloat(state.tempUnitsPerBox) || 30; // Default a 30 si no hay
+        const daily = parseFloat(state.tempDailyUnits) || 0;
+
+        if (field === 'boxes') {
+            setTempBoxes(value);
+            if (value && daily) {
+                const days = Math.floor((upb * parseFloat(value)) / daily);
+                setTempDays(String(days));
+            } else {
+                setTempDays('');
+            }
+        } else if (field === 'days') {
+            setTempDays(value);
+            if (value && daily) {
+                const boxes = Math.ceil((parseFloat(value) * daily) / upb);
+                setTempBoxes(String(boxes));
+            } else {
+                setTempBoxes('');
+            }
+        } else if (field === 'units_per_box') {
+            setTempUnitsPerBox(value);
+            const newUpb = parseFloat(value) || 30;
+            const boxes = parseFloat(state.tempBoxes);
+            if (boxes && daily) {
+                const days = Math.floor((newUpb * boxes) / daily);
+                setTempDays(String(days));
+            }
+        }
+    };
+
     const refillDateStr = useMemo(() => {
-        if (!daysSupply) return null;
+        const supply = state.tempDays ? parseFloat(state.tempDays) : daysSupply;
+        if (!supply) return null;
         const d = new Date();
-        d.setDate(d.getDate() + daysSupply);
+        d.setDate(d.getDate() + supply);
         return formatDate(d, { monthName: true, hideYear: true });
-    }, [daysSupply]);
+    }, [daysSupply, state.tempDays]);
 
     const handleSelectMedication = (med) => {
         const medName = med.full_label || med.medication_name || med.name;
@@ -107,7 +142,7 @@ export const usePrescriptionModalController = (patientId, onSubmit, showMessage,
         const dose = med.dose || '';
         const upb = med.units_per_box || '';
         const daily = med.daily_units || med.daily_intake || '';
-        const boxes = med.boxes_count || med.quantity || '';
+        const boxes = med.boxes_count || med.quantity || '1';
         const vademecumId = med.vademecum_id || med.id;
 
         setTempMed(medName);
@@ -116,34 +151,38 @@ export const usePrescriptionModalController = (patientId, onSubmit, showMessage,
         setTempUnitsPerBox(String(upb));
         setTempDailyUnits(String(daily));
         setTempBoxes(String(boxes));
-
-        if (medName) {
-            const frequencyText = getFrequencyText(null, daily);
-            const calcDs = ds(parseFloat(upb), parseFloat(boxes), parseFloat(daily));
-
-            const newItem = {
-                _id: generateId(),
-                vademecum_id: vademecumId,
-                name: medName,
-                dose: dose.trim(),
-                frequency: frequencyText,
-                daily_units: parseFloat(daily) || null,
-                units_per_box: parseFloat(upb) || null,
-                quantity: String(boxes || '').trim(),
-                days_supply: calcDs
-            };
-
-            setItems(prev => [...prev, newItem]);
+        
+        const calcUpb = parseFloat(upb) || 30;
+        if (daily && boxes) {
+            setTempDays(String(Math.floor((calcUpb * boxes) / daily)));
+        } else {
+            setTempDays('');
+        }
+        
+        // Also figure out the preset index if it perfectly matches a preset
+        const presetIdx = FREQ_PRESETS.findIndex(p => p.unitsPerDay === daily);
+        if (presetIdx !== -1) {
+            setTempFreqPreset(presetIdx);
+        } else {
+            setTempFreqPreset(null);
         }
     };
 
     const handleFreqPreset = (idx) => {
         setTempFreqPreset(idx);
         const preset = FREQ_PRESETS[idx];
-        if (preset.unitsPerDay !== null) {
-            setTempDailyUnits(String(preset.unitsPerDay));
+        const daily = preset.unitsPerDay;
+        
+        if (daily !== null) {
+            setTempDailyUnits(String(daily));
+            const upb = parseFloat(state.tempUnitsPerBox) || 30;
+            const boxes = parseFloat(state.tempBoxes);
+            if (boxes) {
+                setTempDays(String(Math.floor((upb * boxes) / daily)));
+            }
         } else {
             setTempDailyUnits('');
+            setTempDays('');
         }
     };
 

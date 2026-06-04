@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './RescheduleBanner.css';
+import styles from './RescheduleBanner.module.css';
 
 /**
  * RescheduleBanner (Executor Component).
@@ -11,18 +11,18 @@ const RescheduleBanner = ({ rescheduleAppt, onExit, t }) => {
     if (!rescheduleAppt) return null;
 
     return (
-        <div className="reschedule-banner">
-            <div className="reschedule-banner__content">
-                <Icon name="rocket_launch" className="reschedule-banner__icon" />
+        <div className={`${styles.root}`}>
+            <div className={`${styles.content}`}>
+                <Icon name="rocket_launch" className={`${styles.icon}`} />
                 <span>
-                    {t('rescheduling_mode')}: <strong className="reschedule-banner__patient">{rescheduleAppt.patient_name}</strong>. 
-                    <span className="reschedule-banner__instruction"> {t('reschedule_instruction')}</span>
+                    {t('rescheduling_mode')}: <strong className={`${styles.patient}`}>{rescheduleAppt.patient_name}</strong>. 
+                    <span className={`${styles.instruction}`}> {t('reschedule_instruction')}</span>
                 </span>
             </div>
             <Button
                 variant="ghost"
                 size="sm"
-                className="reschedule-banner__exit-btn"
+                className={`${styles.exitBtn}`}
                 onClick={(e) => { e.preventDefault(); onExit(); }}
             >
                 {t('exit_reschedule')}

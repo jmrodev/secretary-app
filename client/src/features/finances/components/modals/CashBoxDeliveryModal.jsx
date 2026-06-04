@@ -4,7 +4,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import CurrencyInput from '@/components/atoms/CurrencyInput';
 import FormGroup from '@/components/molecules/FormGroup';
-import './CashBoxDeliveryModal.css';
+import styles from './CashBoxDeliveryModal.module.css';
 
 /**
  * CashBoxDeliveryModal Feature Molecule.
@@ -17,7 +17,7 @@ const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance,
             onClose={onClose}
             title={`${t('close_box')}: ${doctorName}`}
             footer={
-                <div className="cash-box-delivery__footer">
+                <div className={`${styles.footer}`}>
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
                     <Button variant="primary" onClick={onConfirm} icon={<Icon name="FINANCES" size="1.1rem" />}>
                         {t('confirm_delivery')}
@@ -25,10 +25,10 @@ const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance,
                 </div>
             }
         >
-            <div className="cash-box-delivery animate-fade-in">
-                <div className="cash-box-delivery__balance-info">
-                    <span className="cash-box-delivery__label">{t('current_system_balance')}:</span>
-                    <span className="cash-box-delivery__value">${balance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <div className={`${styles.root} animate-fade-in`}>
+                <div className={`${styles.balanceInfo}`}>
+                    <span className={`${styles.label}`}>{t('current_system_balance')}:</span>
+                    <span className={`${styles.value}`}>${balance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
 
                 <FormGroup label={t('amount_delivered')}>
@@ -39,7 +39,7 @@ const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance,
                     />
                 </FormGroup>
 
-                <div className="cash-box-delivery__warning">
+                <div className={`${styles.warning}`}>
                     <Icon name="WARNING" size="1.1rem" />
                     <span>{t('close_box_warning') || 'Esta acción registrará una salida de efectivo en la caja del profesional y ajustará el saldo.'}</span>
                 </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './MedicationTag.css';
+import styles from './MedicationTag.module.css';
 
 /**
  * MedicationTag Atom
@@ -12,13 +12,13 @@ import './MedicationTag.css';
  */
 const MedicationTag = ({ label, onRemove, className = '' }) => {
     return (
-        <span className={`medication-tag ${className}`}>
-            <span className="medication-tag__label">{label}</span>
+        <span className={`${styles.root} ${className}`}>
+            <span className={`${styles.label}`}>{label}</span>
             <Button
                 variant="ghost"
                 size="sm-compact"
                 onClick={onRemove}
-                className="medication-tag__remove-btn"
+                className={`${styles.removeBtn}`}
                 icon={<Icon name="close" size="1.1rem" />}
             />
         </span>

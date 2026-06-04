@@ -100,14 +100,14 @@ const RentalsPage = () => {
                                             </h3>
                                             <div className="rentals-page__offices-list">
                                                 {consultorios.map(c => (
-                                                    <div key={c.id} className="rentals-page__office-item">
+                                                    <div key={c.id} className={`${styles.officeItem}`}>
                                                         <div className="rentals-page__office-header">
-                                                            <strong className="rentals-page__office-name">{c.name}</strong>
+                                                            <strong className={`${styles.officeName}`}>{c.name}</strong>
                                                             <span className={`rentals-page__status-badge rentals-page__status-badge--${c.status}`}>
                                                                 {t(c.status) || c.status}
                                                             </span>
                                                         </div>
-                                                        <p className="rentals-page__office-desc">{c.description || 'Sin descripción'}</p>
+                                                        <p className={`${styles.officeDesc}`}>{c.description || 'Sin descripción'}</p>
                                                     </div>
                                                 ))}
                                             </div>

@@ -26,7 +26,7 @@ const AuditLogManager = React.lazy(() => import('@/features/reports').then(modul
 const UserManager = React.lazy(() => import('@/features/users').then(module => ({ default: module.UserManager })));
 
 import { printReport } from '@/utils/printing/reportPrintHelper';
-import './SystemConfigPage.css';
+import styles from './SystemConfigPage.module.css';
 
 // --- Sub-sections Orchestrated within the Page ---
 
@@ -146,11 +146,11 @@ const SettingsContent = ({ activeTab, controller }) => {
                         }}
                     />
                     <article className="system-config-page__documentation animate-fade-in">
-                        <header className="system-config-page__section-header">
-                            <Icon name="description" size="1.2rem" className="system-config-page__section-icon" />
-                            <h3 className="system-config-page__section-title">Documentación y Ayuda</h3>
+                        <header className={`${styles.sectionHeader}`}>
+                            <Icon name="description" size="1.2rem" className={`${styles.sectionIcon}`} />
+                            <h3 className={`${styles.sectionTitle}`}>Documentación y Ayuda</h3>
                         </header>
-                        <div className="system-config-page__actions">
+                        <div className={`${styles.actions}`}>
                             <Button
                                 variant="ghost"
                                 onClick={() => window.open('/docs/MANUAL_OPERACIONES.html', '_blank')}
@@ -215,14 +215,14 @@ const SettingsContent = ({ activeTab, controller }) => {
         case 'data':
             return wrap(
                 <div className="system-config-page__data-management animate-fade-in">
-                    <div className="system-config-page__section-header">
-                        <Icon name="payments" size="1.2rem" className="system-config-page__section-icon" />
-                        <h3 className="system-config-page__section-title">
+                    <div className={`${styles.sectionHeader}`}>
+                        <Icon name="payments" size="1.2rem" className={`${styles.sectionIcon}`} />
+                        <h3 className={`${styles.sectionTitle}`}>
                             {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
                         </h3>
                     </div>
-                    <div className="system-config-page__placeholder">
-                        <p className="system-config-page__placeholder-text">{t('coming_soon') || 'Próximamente...'}</p>
+                    <div className={`${styles.placeholder}`}>
+                        <p className={`${styles.placeholderText}`}>{t('coming_soon') || 'Próximamente...'}</p>
                     </div>
                 </div>
             );
@@ -266,7 +266,7 @@ const SystemConfigPage = () => {
                 />
 
                 <main className="system-config-page-orchestrator__main">
-                    <div className="system-config-container">
+                    <div className={`${styles.systemConfigContainer}`}>
                         <Suspense fallback={<Loading variant="centered" />}>
                             <SettingsContent activeTab={activeTab} controller={controller} />
                         </Suspense>

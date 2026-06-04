@@ -8,7 +8,7 @@ import Icon from '@/components/atoms/Icon';
  * Security barrier that requires administrator credentials for restricted actions.
  * Vital for protecting sensitive administrative operations within the auth domain.
  */
-import './AdminAuthModal.css';
+import styles from './AdminAuthModal.module.css';
 
 const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
     const [password, setPassword] = useState('');
@@ -31,28 +31,28 @@ const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
             isOpen={isOpen}
             onClose={onClose}
             title={
-                <div className="admin-auth__title">
+                <div className={`${styles.title}`}>
                     <Icon name="lock" size="1.2rem" />
                     Autorización de Administrador
                 </div>
             }
         >
-            <form onSubmit={handleSubmit} className="admin-auth__body">
-                <p className="admin-auth__instruction">
+            <form onSubmit={handleSubmit} className={`${styles.body}`}>
+                <p className={`${styles.instruction}`}>
                     <Icon name="warning" size="1.1rem" color="var(--warning)" className="inline-icon" />
                     Esta acción está restringida por seguridad. Por favor, ingrese la contraseña maestra de administrador para continuar con el proceso.
                 </p>
-                <div className="admin-auth__input-group">
+                <div className={`${styles.inputGroup}`}>
                     <input
                         type="password"
-                        className="input-field admin-auth__password-input"
+                        className={`${styles.passwordInput} input-field`}
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         ref={inputRef}
                     />
                 </div>
-                <div className="admin-auth__footer">
+                <div className={`${styles.footer}`}>
                     <Button
                         type="button" 
                         variant="ghost"

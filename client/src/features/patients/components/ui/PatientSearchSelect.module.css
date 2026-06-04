@@ -1,0 +1,96 @@
+
+/* PatientSearchSelect Styles (BEM/Custom) */
+
+.root {
+    width: 100%;
+}
+
+/* React Select Custom Class Mappings */
+
+.placeholder {
+    color: rgb(255 255 255 / 100%);
+    font-size: 0.875rem;
+}
+
+.control {
+    background-color: rgb(255 255 255 / 5%);
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 0.5rem;
+    padding: 0;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 12px 0 rgb(0 0 0 / 10%);
+    backdrop-filter: blur(8px);
+}
+
+.controlFocused {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgb(72 128 255 / 15%);
+}
+
+.menu {
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg);
+    margin-top: 0.5rem;
+    z-index: 1000;
+}
+
+.option {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--dashboard-card-border);
+}
+
+.option:last-child {
+    border-bottom: none;
+}
+
+.optionFocused {
+    background-color: var(--gray-800);
+    color: var(--text-main);
+}
+
+.optionSelected {
+    background-color: var(--gray-700);
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.singleValue {
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.valueContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.input {
+    color: var(--text-main);
+    font-size: 0.9rem;
+}
+
+/* No Results section */
+.formSelectNoResults {
+    padding: 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.formSelectNoResults p {
+    color: var(--slate-500);
+    font-size: 0.85rem;
+    font-style: italic;
+    margin: 0;
+}

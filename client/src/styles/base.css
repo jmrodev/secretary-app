@@ -20,26 +20,6 @@ body {
     line-height: 1.5;
 }
 
-body.dev-mode {
-    background-color: #0d0d0d;
-    background-image: none;
-    border: none;
-}
-
-body.dev-mode::before {
-    content: "DESARROLLO";
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-30deg);
-    font-size: 15vw;
-    font-weight: 900;
-    color: rgb(25 135 84 / 20%); /* Darker green, semi-transparent overlay */
-    -webkit-text-stroke: 1.5px rgb(150 150 150 / 40%); /* Soft grey border */
-    z-index: 999999; /* Overlays on top of cards and tables */
-    pointer-events: none;
-    white-space: nowrap;
-}
 
 /* Base Typography */
 h1,
