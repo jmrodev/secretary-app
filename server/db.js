@@ -1,19 +1,25 @@
-const mariadb = require('mariadb');
 const dotenv = require('dotenv');
-
 const path = require('path');
 dotenv.config({ path: path.join(__dirname, '.env') });
 
-const pool = mariadb.createPool({
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME || 'clinical_management',
-  port: process.env.DB_PORT || 3306,
-  connectionLimit: 50
-});
+let pool;
+
+// Dynamic import required for mariadb 3.x (ESM-only package)
+const dbReady = (async () => {
+  const { default: mariadb } = await import('mariadb');
+  pool = mariadb.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME || 'clinical_management',
+    port: process.env.DB_PORT || 3306,
+    connectionLimit: 50
+  });
+  return pool;
+})();
 
 async function getConnection() {
+  if (!pool) await dbReady;
   try {
     const conn = await pool.getConnection();
     return conn;
@@ -23,4 +29,9 @@ async function getConnection() {
   }
 }
 
-module.exports = { pool, getConnection };
+// Use getter so pool reference is always current after async init
+module.exports = {
+  get pool() { return pool; },
+  getConnection,
+  dbReady
+};

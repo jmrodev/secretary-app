@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { pool } = require('./db');
+const db = require('./db');
 const systemSettingsRepository = require('./repositories/system/systemSettingsRepository');
 
 // BigInt JSON serialization fix
@@ -125,7 +125,8 @@ app.use('/uploads', express.static('uploads'));
 const server = app.listen(PORT, '0.0.0.0', async () => {
     console.log(`Server running on port ${PORT}`);
     try {
-        const conn = await pool.getConnection();
+        await db.dbReady;
+        const conn = await db.pool.getConnection();
         console.log('Connected to MariaDB');
 
         // Debug: Identify DB
@@ -156,7 +157,7 @@ const gracefulShutdown = async (signal) => {
     console.log(`\n🛑 Received ${signal}. Shutting down gracefully...`);
     server.close(() => {
         console.log('👋 HTTP server closed.');
-        pool.end().then(() => {
+        db.pool.end().then(() => {
             console.log('💾 Database connections closed.');
             process.exit(0);
         });
