@@ -6,8 +6,10 @@ let pool;
 
 // Dynamic import required for mariadb 3.x (ESM-only package)
 const dbReady = (async () => {
-  const { default: mariadb } = await import('mariadb');
-  pool = mariadb.createPool({
+  const mariadbModule = await import('mariadb');
+  // mariadb v3 ESM: createPool may be on default or directly on the module namespace
+  const { createPool } = mariadbModule.default ?? mariadbModule;
+  pool = createPool({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD,
