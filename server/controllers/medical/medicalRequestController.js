@@ -1,19 +1,18 @@
 const medicalRequestService = require('../../services/medical/MedicalRequestService');
 
-/**
- * medicalRequestController
- * Handles HTTP requests for Medical Requests (Certificates, Requests).
- */
+const sendResponse = (res, success, data, meta = null, error = null, status = 200) => {
+    res.status(status).json({ success, data, meta, error });
+};
 
 exports.createRequest = async (req, res) => {
     try {
         const requestId = await medicalRequestService.createRequest(req, req.body);
-        res.status(201).json({ id: requestId, message: "request_created" });
+        sendResponse(res, true, { id: requestId, message: "request_created" }, null, null, 201);
     } catch (err) {
-        console.error(err);
-        if (err.message === 'Invalid type') return res.status(400).json({ error: 'invalid_type' });
-        if (err.message === 'Patient not found') return res.status(404).json({ error: 'patient_not_found' });
-        res.status(500).json({ error: 'server_error' });
+        console.error("[ECC-Medical] createRequest error:", err);
+        if (err.message === 'Invalid type') return sendResponse(res, false, null, null, 'invalid_type', 400);
+        if (err.message === 'Patient not found') return sendResponse(res, false, null, null, 'patient_not_found', 404);
+        sendResponse(res, false, null, null, 'server_error', 500);
     }
 };
 
@@ -30,10 +29,14 @@ exports.getRequests = async (req, res) => {
         };
 
         const result = await medicalRequestService.getRequests(req.user, filters);
-        res.json(result);
+        sendResponse(res, true, result.requests || result, {
+            totalCount: result.totalCount || result.length,
+            page: parseInt(page),
+            limit: parseInt(limit)
+        });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'server_error' });
+        console.error("[ECC-Medical] getRequests error:", err);
+        sendResponse(res, false, null, null, 'server_error', 500);
     }
 };
 
@@ -41,13 +44,13 @@ exports.updateRequestStatus = async (req, res) => {
     try {
         const { id } = req.params;
         await medicalRequestService.updateRequestStatus(req, id, req.body);
-        res.json({ message: "request_updated" });
+        sendResponse(res, true, { message: "request_updated" });
     } catch (err) {
-        console.error(err);
-        if (err.message === 'Note is required for this status') return res.status(400).json({ error: 'note_required' });
-        if (err.message === 'Request not found') return res.status(404).json({ error: 'request_not_found' });
-        if (err.message.includes('administrators')) return res.status(403).json({ error: 'secretary_restricted' });
-        res.status(500).json({ error: 'server_error' });
+        console.error("[ECC-Medical] updateRequestStatus error:", err);
+        if (err.message === 'Note is required for this status') return sendResponse(res, false, null, null, 'note_required', 400);
+        if (err.message === 'Request not found') return sendResponse(res, false, null, null, 'request_not_found', 404);
+        if (err.message.includes('administrators')) return sendResponse(res, false, null, null, 'secretary_restricted', 403);
+        sendResponse(res, false, null, null, 'server_error', 500);
     }
 };
 
@@ -55,13 +58,13 @@ exports.updateRequest = async (req, res) => {
     try {
         const { id } = req.params;
         await medicalRequestService.updateRequest(req, id, req.body);
-        res.json({ message: "request_updated" });
+        sendResponse(res, true, { message: "request_updated" });
     } catch (err) {
-        console.error(err);
-        if (err.message === 'Request not found') return res.status(404).json({ error: 'request_not_found' });
-        if (err.message === 'Unauthorized') return res.status(403).json({ error: 'unauthorized' });
-        if (err.message.includes('administrators')) return res.status(403).json({ error: 'secretary_restricted' });
-        res.status(500).json({ error: 'server_error' });
+        console.error("[ECC-Medical] updateRequest error:", err);
+        if (err.message === 'Request not found') return sendResponse(res, false, null, null, 'request_not_found', 404);
+        if (err.message === 'Unauthorized') return sendResponse(res, false, null, null, 'unauthorized', 403);
+        if (err.message.includes('administrators')) return sendResponse(res, false, null, null, 'secretary_restricted', 403);
+        sendResponse(res, false, null, null, 'server_error', 500);
     }
 };
 
@@ -70,10 +73,10 @@ exports.updateRequestPaymentStatus = async (req, res) => {
         const { id } = req.params;
         const { status } = req.body;
         await medicalRequestService.updateRequestPaymentStatus(id, status);
-        res.json({ message: "payment_status_updated" });
+        sendResponse(res, true, { message: "payment_status_updated" });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'server_error' });
+        console.error("[ECC-Medical] updateRequestPaymentStatus error:", err);
+        sendResponse(res, false, null, null, 'server_error', 500);
     }
 };
 
@@ -81,12 +84,11 @@ exports.deleteRequest = async (req, res) => {
     try {
         const { id } = req.params;
         await medicalRequestService.deleteRequest(req, id);
-        res.json({ message: "request_deleted" });
+        sendResponse(res, true, { message: "request_deleted" });
     } catch (err) {
-        console.error(err);
-        if (err.message === 'Request not found') return res.status(404).json({ error: 'request_not_found' });
-        if (err.message === 'Unauthorized' || err.message.includes('Only admins')) return res.status(403).json({ error: 'unauthorized' });
-        res.status(500).json({ error: 'server_error' });
+        console.error("[ECC-Medical] deleteRequest error:", err);
+        if (err.message === 'Request not found') return sendResponse(res, false, null, null, 'request_not_found', 404);
+        if (err.message === 'Unauthorized' || err.message.includes('Only admins')) return sendResponse(res, false, null, null, 'unauthorized', 403);
+        sendResponse(res, false, null, null, 'server_error', 500);
     }
 };
-

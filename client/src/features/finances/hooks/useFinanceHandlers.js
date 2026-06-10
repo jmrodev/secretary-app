@@ -1,34 +1,17 @@
 import { useCallback } from 'react';
 import api from '@/api/axios';
 
+/**
+ * ECC-Pattern: useFinanceHandlers Hook
+ * Orchestrates all financial actions (payments, closures, balancing).
+ */
 export const useFinanceHandlers = ({
-    // Contexts
-    user,
-    t,
-    showMessage,
-    confirm,
-    alert,
-
-    // Data
-    transactions,
-    pendingClosures,
-    duplicateClosures,
-
-    // UI State
-    closeBoxModal,
-    closeAmount,
-    editingTx,
-
-    // Setters / Actions
-    setLoading,
-    fetchData,
-    setEditingTx,
-    setModalOpen,
-    setHistoricalWithdrawalOpen,
-    setPendingClosuresOpen,
-    setCloseBoxModal,
-    setCloseAmount,
-    setSelectedDoctorFilter
+    user, t, showMessage, confirm, alert,
+    transactions, pendingClosures, duplicateClosures,
+    closeBoxModal, closeAmount, editingTx,
+    setLoading, fetchData, setEditingTx, setModalOpen,
+    setHistoricalWithdrawalOpen, setPendingClosuresOpen,
+    setCloseBoxModal, setCloseAmount, setSelectedDoctorFilter
 }) => {
 
     const handleDeleteTransaction = useCallback(async (id) => {
@@ -37,39 +20,42 @@ export const useFinanceHandlers = ({
             await api.delete(`/finances/transactions/${id}`);
             showMessage(t('transaction_symbol_deleted') || "Operación eliminada", 'success');
             fetchData();
-        } catch {
-            alert(t('failed_delete_transaction'));
-        }
+        } catch { alert(t('failed_delete_transaction')); }
     }, [confirm, t, showMessage, fetchData, alert]);
 
-    const handleUpdateTransaction = useCallback(async () => {
-        if (!editingTx) return;
+    /**
+     * ECC: High-Performance Auto-Balancing (Arqueo)
+     * Calls the dedicated balancing endpoint with idempotency.
+     */
+    const handleAutoClosure = useCallback(async (balancingData) => {
+        setLoading(true);
         try {
-            await api.put(`/finances/transactions/${editingTx.id}`, editingTx);
-            showMessage(t('transaction_updated') || "Transacción actualizada", 'success');
-            setEditingTx(null);
-            fetchData();
-        } catch {
-            alert(t('failed_update_transaction'));
-        }
-    }, [editingTx, t, showMessage, setEditingTx, fetchData, alert]);
+            // If called from the new balancing UI, it comes as an object
+            const payload = balancingData.doctor_id ? balancingData : {
+                doctor_id: balancingData.doctor_id,
+                balancing_date: balancingData.date,
+                theoretical_balance: balancingData.balance,
+                physical_balance: balancingData.balance, // Default to full delivery
+                notes: 'Cierre automático'
+            };
 
-    const handleCloseBox = useCallback(async () => {
-        try {
-            await api.post('/finances/transactions/close', {
-                doctor_id: closeBoxModal.doctorId,
-                amount_delivered: closeAmount,
-                description: `${t('cash_box_delivery_to')} ${closeBoxModal.doctorName} - ${user.name || user.username}`
-            });
+            const res = await api.post('/finances/cash-box/balancing', payload);
+            const { difference } = res.data.data;
 
-            showMessage(t('box_closed_successfully'), 'success');
-            setCloseBoxModal(prev => ({ ...prev, open: false }));
-            setCloseAmount('');
+            let msg = t('box_closed_success_msg') || 'Caja cerrada exitosamente';
+            if (difference !== 0) {
+                msg += `. Diferencia: $${difference.toLocaleString()}`;
+            }
+            
+            showMessage(msg, difference === 0 ? 'success' : 'warning');
             fetchData();
-        } catch {
-            alert(t('failed_close_box'));
+        } catch (err) {
+            console.error("[ECC-Finance] Balancing error:", err);
+            showMessage(t('error_processing_closure') || "Error al procesar el arqueo", 'error');
+        } finally {
+            setLoading(false);
         }
-    }, [closeBoxModal, closeAmount, t, showMessage, setCloseBoxModal, setCloseAmount, fetchData, alert, user]);
+    }, [setLoading, showMessage, fetchData, t]);
 
     const handleGenerateInvoice = useCallback(async (transactionId) => {
         if (!await confirm(t('confirm_generate_invoice') || "¿Generar factura electrónica?")) return;
@@ -84,226 +70,40 @@ export const useFinanceHandlers = ({
         }
     }, [confirm, showMessage, fetchData, t]);
 
-    const handleSyncTransaction = useCallback(async (transactionId) => {
-        try {
-            await api.post(`/google/sync-transaction/${transactionId}`);
-            showMessage(t('google_sync_success') || "Sincronizado", 'success');
-        } catch (err) {
-            console.error(err);
-            showMessage(t('google_sync_error') || "Error sync", 'error');
-        }
-    }, [showMessage, t]);
-
-    const handleBonifyTransaction = useCallback(async (tx) => {
-        if (!await confirm(t('confirm_bonify') || "¿Desea bonificar este ítem? Esto eliminará la deuda.")) return;
-        try {
-            if (tx.appointment_id) {
-                await api.put(`/appointments/${tx.appointment_id}`, { bonified: 1 });
-            } else if (tx.request_id) {
-                await api.put(`/medical/requests/${tx.request_id}`, { payment_status: 'bonified' });
-            } else {
-                // If it's a generic transaction, maybe just delete it?
-                // But usually transactions in ledger are tied to something.
-                await api.delete(`/finances/transactions/${tx.id}`);
-            }
-            showMessage(t('bonified_success') || "Bonificado correctamente", 'success');
-            fetchData();
-        } catch (err) {
-            console.error(err);
-            showMessage(t('error_bonifying') || "Error al bonificar", 'error');
-        }
-    }, [confirm, t, showMessage, fetchData]);
-
-    const handleHistoricalWithdrawal = useCallback(async (data) => {
-        try {
-            const dateTime = `${data.date} ${data.time}:00`;
-            await api.post('/finances/transactions', {
-                type: 'withdrawal',
-                amount: data.amount,
-                description: `${data.description} (${t('manual_closure')})`,
-                doctor_id: data.doctor_id,
-                transaction_date: dateTime,
-                status: 'paid',
-                method: 'cash',
-                is_withdrawal: true
-            });
-
-            showMessage(t('withdrawal_success') || "Retiro registrado exitosamente", 'success');
-            setHistoricalWithdrawalOpen(false);
-            fetchData();
-        } catch (err) {
-            console.error(err);
-            alert(t('failed_save_withdrawal') || "Error al guardar retiro");
-        }
-    }, [t, showMessage, setHistoricalWithdrawalOpen, fetchData, alert]);
-
-    const handleAutoClosure = useCallback(async (dayData) => {
-        try {
-            let [h, m] = dayData.lastTime.split(':').map(Number);
-            m += 1;
-            if (m >= 60) { h++; m = 0; }
-            const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
-            const dateTime = `${dayData.date} ${timeStr}`;
-            const docId = dayData.doctor_id;
-
-            setLoading(true);
-            if (dayData.balance > 0) {
-                await api.post('/finances/transactions', {
-                    type: 'withdrawal', amount: dayData.balance, description: `${t('auto_closure')} (${dayData.date}) - ${t('cash') || 'Efectivo'} - ${user.name || user.username}`,
-                    doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'cash', is_withdrawal: true
-                });
-            }
-            if (dayData.transferBalance > 0) {
-                await api.post('/finances/transactions', {
-                    type: 'withdrawal', amount: dayData.transferBalance, description: `${t('auto_closure')} (${dayData.date}) - ${t('transfer') || 'Transferencia'} - ${user.name || user.username}`,
-                    doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'transfer', is_withdrawal: true
-                });
-            }
-            const successMsg = t('box_closed_success_msg')
-                ?.replace('{name}', dayData.doctor_name)
-                ?.replace('{date}', dayData.date) || `Cerrada: ${dayData.doctor_name}`;
-            showMessage(successMsg, 'success');
-            fetchData();
-        } catch (err) {
-            console.error(err);
-            showMessage(t('error_processing_closure') || "Error al procesar el cierre", 'error');
-        } finally {
-            setLoading(false);
-        }
-    }, [setLoading, showMessage, fetchData, t, user]);
-
-    const handleCloseAllPending = useCallback(async () => {
-        if (!pendingClosures.length) return;
-        const confirmMsg = t('confirm_close_all_pending')?.replace('{count}', pendingClosures.length) || `¿Cerrar ${pendingClosures.length}?`;
-        if (!await confirm(confirmMsg)) return;
-
-        setLoading(true);
-        try {
-            const closurePromises = pendingClosures.map(day => {
-                let [h, m] = day.lastTime.split(':').map(Number);
-                m += 1;
-                if (m >= 60) { m = 0; h += 1; }
-                const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
-                const dateTime = `${day.date} ${timeStr}`;
-                const docId = day.doctor_id;
-
-                const dayPromises = [];
-
-                if (day.balance > 0) {
-                    dayPromises.push(api.post('/finances/transactions', {
-                        type: 'withdrawal', amount: day.balance, description: `${t('auto_closure')} (${day.date}) - ${t('cash') || 'Efectivo'} - ${user.name || user.username}`,
-                        doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'cash', is_withdrawal: true
-                    }));
-                }
-                if (day.transferBalance > 0) {
-                    dayPromises.push(api.post('/finances/transactions', {
-                        type: 'withdrawal', amount: day.transferBalance, description: `${t('auto_closure')} (${day.date}) - ${t('transfer') || 'Transferencia'} - ${user.name || user.username}`,
-                        doctor_id: docId, transaction_date: dateTime, status: 'paid', method: 'transfer', is_withdrawal: true
-                    }));
-                }
-                return Promise.all(dayPromises);
-            });
-
-            await Promise.all(closurePromises);
-            const successMsg = t('close_all_success_msg')?.replace('{count}', pendingClosures.length) || `Cerradas: ${pendingClosures.length}`;
-            showMessage(successMsg, 'success');
-            fetchData();
-        } catch (err) {
-            console.error(err);
-            showMessage(t('error_close_all') || "Error al cerrar todas", 'error');
-        } finally {
-            setLoading(false);
-        }
-    }, [pendingClosures, confirm, setLoading, showMessage, fetchData, t, user]);
-
-    const handleFixDuplicates = useCallback(async () => {
-        if (!duplicateClosures.length) return;
-
-        const confirmMsg = t('confirm_fix_duplicates')?.replace('{count}', duplicateClosures.length) || `Conflictos: ${duplicateClosures.length}. ¿Corregir?`;
-        if (!await confirm(confirmMsg)) return;
-
-        try {
-            setLoading(true);
-            const deletePromises = duplicateClosures.flatMap(day => 
-                day.ids.map(id => api.delete(`/finances/transactions/${id}`))
-            );
-            await Promise.all(deletePromises);
-            
-            const deletedCount = deletePromises.length;
-            const successMsg = t('fix_duplicates_success_msg')?.replace('{count}', deletedCount) || `Corregidos: ${deletedCount}`;
-            showMessage(successMsg, 'success');
-            fetchData();
-        } catch (err) {
-            console.error(err);
-            alert(t('error_fix_duplicates') || "Error al corregir duplicados.");
-        } finally {
-            setLoading(false);
-        }
-    }, [duplicateClosures, confirm, setLoading, showMessage, fetchData, alert, t]);
-
     const handleResetDay = useCallback(async (date, doctorId) => {
         const toDeleteIds = transactions.reduce((acc, tran) => {
             const isWithdrawal = tran.is_withdrawal === 1 || tran.is_withdrawal === true || tran.type === 'withdrawal';
-            const desc = tran.description || '';
-            const dateInDesc = desc.match(/\d{4}-\d{2}-\d{2}/);
-            const tDate = dateInDesc ? dateInDesc[0] : (tran.transaction_date && String(tran.transaction_date).split(' ')[0].split('T')[0]);
+            const matchesDate = tran.transaction_date?.split('T')[0] === date;
+            const matchesDoctor = String(tran.doctor_id) === String(doctorId);
 
-            const matchesDate = tDate === date;
-            const matchesDoctor = String(tran.doctor_id) === String(doctorId) ||
-                (tran.doctor_id === null && (doctorId === 'null' || !doctorId));
-
-            if (isWithdrawal && matchesDate && matchesDoctor) {
-                acc.push(tran.id);
-            }
+            if (isWithdrawal && matchesDate && matchesDoctor) acc.push(tran.id);
             return acc;
         }, []);
 
-        if (toDeleteIds.length === 0) {
-            showMessage(t('no_withdrawals_found') || "No hay entregas.", "info");
-            return;
-        }
+        if (toDeleteIds.length === 0) return showMessage(t('no_withdrawals_found') || "No hay entregas.", "info");
+        if (!await confirm(t('confirm_reset_day') || "¿Eliminar las entregas de este día?")) return;
 
-        const confirmMsg = t('confirm_reset_day')?.replace('{count}', toDeleteIds.length) || `Eliminar ${toDeleteIds.length} entregas?`;
-        if (!await confirm(confirmMsg)) return;
-
+        setLoading(true);
         try {
-            setLoading(true);
             await Promise.all(toDeleteIds.map(id => api.delete(`/finances/transactions/${id}`)));
-            
-            const successMsg = t('reset_day_success_msg')?.replace('{date}', date) || `Reseteado: ${date}`;
-            showMessage(successMsg, 'success');
+            showMessage(t('reset_day_success_msg') || "Día reseteado", 'success');
             fetchData();
         } catch (err) {
             console.error(err);
             showMessage(t('error_reset_day') || "Error al resetear", 'error');
-        } finally {
-            setLoading(false);
-        }
+        } finally { setLoading(false); }
     }, [transactions, showMessage, confirm, setLoading, fetchData, t]);
 
     return {
         onRefresh: fetchData,
         onDeleteTransaction: handleDeleteTransaction,
-        onUpdateTransaction: handleUpdateTransaction,
-        onCloseBox: handleCloseBox,
+        handleAutoClosure,
+        handleResetDay,
         onSelectDoctor: setSelectedDoctorFilter,
         onEditTransaction: setEditingTx,
         onOpenNewTransaction: () => setModalOpen(true),
         onCloseNewTransaction: () => setModalOpen(false),
-        onOpenCloseBox: (doctor, balance) => {
-            setCloseBoxModal({ open: true, doctorId: doctor.id, doctorName: doctor.full_name, balance: balance });
-            setCloseAmount(balance);
-        },
-        onCloseCloseBox: () => setCloseBoxModal(prev => ({ ...prev, open: false })),
         onGenerateInvoice: handleGenerateInvoice,
-        onSyncTransaction: handleSyncTransaction,
-        onBonify: handleBonifyTransaction,
-        handleHistoricalWithdrawal,
-        handleAutoClosure,
-        handleCloseAllPending,
-        handleFixDuplicates,
-        handleResetDay,
-        setCloseAmount,
         setEditingTx,
         setHistoricalWithdrawalOpen,
         setPendingClosuresOpen

@@ -111,5 +111,13 @@ export const status = {
     turnos_mes: "MES",
     total_turnos: "TOTAL TURNOS",
     pacientes_label: "PACIENTES",
-    total_contactos: "CONTACTOS",
+    total_contacts: "Contactos Totales",
+    
+    // Dashboard Labels
+    view_week: "Semana",
+    date_range: "Mes",
+    total_active_patients: "Total Activos",
+    new_patients_today: "Nuevos Hoy",
+    pending_requests: "Solicitudes Pendientes",
+    dashboard_reminders: "Recordatorios del Sistema",
 };

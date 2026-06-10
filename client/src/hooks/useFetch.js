@@ -2,66 +2,51 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import api from '@/api/axios';
 
 /**
- * Custom hook for data fetching.
- * Abstracts the boilerplate of loading, error, and data states.
- *
- * @param {string} url - The endpoint URL to fetch from.
- * @param {Object} options - Optional configurations (e.g., params, immediate execution).
- * @param {boolean} options.immediate - Whether to run the fetch immediately on mount (default: true).
- * @param {any} options.initialData - Initial value for the data state.
- * @returns {Object} { data, loading, error, refetch, setData }
+ * ECC-Pattern: Stable useFetch for React 19.
+ * Standardizes API calls and ensures hook stability.
  */
 export const useFetch = (url, options = {}) => {
-    const { immediate = true, initialData, ...apiOptions } = options;
-    const apiOptionsKey = useMemo(() => JSON.stringify(apiOptions), [apiOptions]);
-    const stableApiOptions = useMemo(() => JSON.parse(apiOptionsKey), [apiOptionsKey]);
-
+    const { immediate = true, initialData, params } = options;
+    
     const [data, setData] = useState(initialData);
     const [loading, setLoading] = useState(immediate);
     const [error, setError] = useState(null);
     const [fetched, setFetched] = useState(false);
 
+    // Memoize params to avoid infinite loops
+    const paramsKey = JSON.stringify(params || {});
+
     const execute = useCallback(async (customUrl) => {
         const finalUrl = customUrl || url;
-        if (!finalUrl) {
-            setLoading(false);
-            return;
-        }
+        if (!finalUrl) return;
 
         setLoading(true);
         setError(null);
         try {
-            const res = await api.get(finalUrl, stableApiOptions);
-            setData(res.data);
+            const res = await api.get(finalUrl, { params: JSON.parse(paramsKey) });
+            const finalData = res.data?.success !== undefined ? res.data : { success: true, data: res.data };
+            
+            setData(finalData);
             setFetched(true);
-            return res.data;
-        } catch (err) {
-            setError(err);
-            console.error(`[useFetch] Error fetching ${finalUrl}:`, err);
-            throw err;
-        } finally {
             setLoading(false);
+            return finalData;
+        } catch (err) {
+            console.error(`[useFetch] Error:`, err);
+            setError(err);
+            setLoading(false);
+            return null;
         }
-    }, [url, stableApiOptions]);
+    }, [url, paramsKey]);
 
     useEffect(() => {
         let isMounted = true;
-        if (immediate) {
-            queueMicrotask(() => {
-                execute().then(res => {
-                    if (!isMounted) return;
-                    // Side effects if needed
-                }).catch(e => {
-                    if (!isMounted) return;
-                    // Error handled in execute
-                });
-            });
+        if (immediate && url) {
+            execute();
+        } else if (!immediate && loading) {
+            setLoading(false);
         }
-        return () => {
-            isMounted = false;
-        };
-    }, [execute, immediate]);
+        return () => { isMounted = false; };
+    }, [url, paramsKey, immediate]);
 
     return { data, loading, error, fetched, refetch: execute, setData };
 };
-

@@ -3,22 +3,21 @@ import { useAppointmentsPageController } from './hooks/useAppointmentsPageContro
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
+import Button from '@/components/atoms/Button';
 
-// Feature Components (Executors)
+// Feature Components
 import CalendarSection from './components/calendar/CalendarSection';
 import ScheduleSection from './components/schedule/ScheduleSection';
 import RescheduleBanner from './components/ui/RescheduleBanner';
 import PatientHistoryView from './components/views/PatientHistoryView';
 import { AppointmentsModals } from './components/sections/AppointmentsModals';
-import Button from '@/components/atoms/Button';
+import SlotExplorerDropdown from './components/ui/SlotExplorerDropdown';
+
 import styles from './AppointmentsPage.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
-
 /**
- * AppointmentsPage (Orchestrator).
+ * AppointmentsPage (ECC-Pattern Orchestrator).
  * Main page for managing the clinic's agenda and appointments.
- * Orchestrates multiple specialized components (Executors).
  */
 const AppointmentsPage = () => {
     const controller = useAppointmentsPageController();
@@ -31,7 +30,7 @@ const AppointmentsPage = () => {
         prescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
         editPatientModalOpen, authModalOpen,
         handlers, booking, nextSlot, rescheduleAppt, exitRescheduleMode,
-        isStaff, isAdmin, isDoctor, isPatient, isMedicalStaff, fetched
+        isStaff, isAdmin, isSecretary, isPatient, isMedicalStaff, fetched
     } = controller;
 
     const {
@@ -40,14 +39,8 @@ const AppointmentsPage = () => {
         setPrescribeModal, setEditPatientModalOpen, setAuthModalOpen
     } = handlers;
 
-    // activeTab and upcoming view have been removed as per user request
-    // IMPORTANT: Conditional returns MUST happen after ALL hooks/logic that might trigger state
     if (!user) return <Loading variant="full-page" />;
-
-    // Only show global loading if we haven't fetched anything yet (initial load)
-    if (loading && !fetched) {
-        return <Loading variant="full-page" text={t('loading')} />;
-    }
+    if (loading && !fetched) return <Loading variant="full-page" text={t('loading')} />;
 
     return (
         <MainLayout 
@@ -55,14 +48,41 @@ const AppointmentsPage = () => {
             title={t('appointments_title')} 
             hideClock={true}
             doctorSelectorActions={
-                <Button 
-                    variant="accent" 
-                    size="sm" 
-                    onClick={handlers.openNextSlot}
-                    icon={<Icon name="bolt" size="1rem" />}
-                >
-                    {t('find_next_free') || 'Próximo Libre'}
-                </Button>
+                <div style={{ position: 'relative' }}>
+                    <Button 
+                        variant="accent" 
+                        size="sm" 
+                        onClick={() => {
+                            if (showNextSlotModal) setShowNextSlotModal(false);
+                            else handlers.openNextSlot();
+                        }}
+                        icon={<Icon name={showNextSlotModal ? "close" : "bolt"} size="1rem" />}
+                        active={showNextSlotModal}
+                    >
+                        {showNextSlotModal ? t('close') : (t('find_next_free') || 'Próximo Libre')}
+                    </Button>
+                    
+                    {/* ECC: Integrated Slot Explorer (No Modal) */}
+                    <SlotExplorerDropdown 
+                        isOpen={showNextSlotModal}
+                        onClose={() => setShowNextSlotModal(false)}
+                        loading={nextSlot.loading}
+                        nextSlotData={nextSlot.nextSlotData}
+                        includeOutOfHours={nextSlot.includeOutOfHours}
+                        onToggleOutOfHours={nextSlot.setIncludeOutOfHours}
+                        slotsPage={nextSlot.slotsPage}
+                        setSlotsPage={nextSlot.setSlotsPage}
+                        slotPages={nextSlot.slotPages}
+                        onSelect={(iso, extra) => {
+                            handlers.confirmNextSlot(iso, extra);
+                            setShowNextSlotModal(false);
+                        }}
+                        onWhatsApp={nextSlot.handleWhatsApp}
+                        jumpToMonth={nextSlot.jumpToMonth}
+                        fetchNextFreeSlots={nextSlot.fetchNextFreeSlots}
+                        hasNextGroup={nextSlot.hasNextGroup}
+                    />
+                </div>
             }
         >
             <div className={`${styles.root} layout-content-area animate-fade-in`}>
@@ -117,7 +137,8 @@ const AppointmentsPage = () => {
                 historyModal={historyModal} setHistoryModal={setHistoryModal}
                 prescribeModal={prescribeModal} setPrescribeModal={setPrescribeModal}
                 whatsappModal={whatsappModal} setWhatsappModal={setWhatsappModal}
-                showNextSlotModal={showNextSlotModal} setShowNextSlotModal={setShowNextSlotModal}
+                showNextSlotModal={false}
+                setShowNextSlotModal={setShowNextSlotModal}
                 editPatientModalOpen={editPatientModalOpen} setEditPatientModalOpen={setEditPatientModalOpen}
                 authModalOpen={authModalOpen} setAuthModalOpen={setAuthModalOpen}
                 handlers={handlers} loading={loading} t={t}

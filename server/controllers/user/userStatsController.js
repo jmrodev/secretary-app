@@ -1,18 +1,20 @@
 const userStatsService = require('../../services/system/userStatsService');
 
 /**
- * UserStatsController
- * Handles general system statistics.
+ * ECC-Pattern: UserStatsController
  */
+const sendResponse = (res, success, data, error = null, status = 200) => {
+    res.status(status).json({ success, data, error });
+};
 
 exports.getStats = async (req, res) => {
     try {
         const { doctor_id } = req.query;
         const stats = await userStatsService.getStats(req.user, doctor_id);
-        res.json(stats);
+        sendResponse(res, true, stats);
     } catch (err) {
-        if (err.message === "Doctor profile not found") return res.status(404).send(err.message);
-        console.error("getStats Error:", err);
-        res.status(500).json({ error: "Server Error" });
+        if (err.message === "Doctor profile not found") return sendResponse(res, false, null, err.message, 404);
+        console.error("[ECC-Controller] getStats error:", err);
+        sendResponse(res, false, null, "Server Error", 500);
     }
 };

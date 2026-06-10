@@ -4,6 +4,37 @@ const holidayRepository = require('../../repositories/appointments/holidayReposi
 const patientRepository = require('../../repositories/user/patientRepository');
 const doctorRepository = require('../../repositories/user/doctorRepository');
 
+/**
+ * ECC-Pattern: Domain Data Mapping (Immutability)
+ */
+const mapAppointment = (a) => ({
+    id: a.id,
+    appointment_date: a.appointment_date,
+    doctor_id: a.doctor_id,
+    doctor_name: a.doctor_name,
+    patient_id: a.patient_id,
+    patient_name: a.patient_name || (a.reason ? `(Sin Paciente) ${a.reason}` : 'Desconocido'),
+    patient_phone: a.patient_phone || a.phone || '-',
+    status: a.status,
+    reason: a.reason || '-',
+    type: a.type,
+    is_out_of_hours: !!a.is_out_of_hours,
+    paid_amount: Number(a.paid_amount || 0),
+    pending_amount: Number(a.pending_amount || 0),
+    cost: Number(a.cost || 0),
+    rescheduled_from_date: a.rescheduled_from_date
+});
+
+/**
+ * Specialized mapper for daily schedule slots
+ */
+const mapSlot = (s) => ({
+    ...mapAppointment(s),
+    slot_date: s.slot_date,
+    slot_time: s.slot_time,
+    slot_status: s.slot_status
+});
+
 class RetrievalService {
     async getAppointments(user, query) {
         const { role, user_id } = user;
@@ -25,38 +56,40 @@ class RetrievalService {
             if (doctor) filters.doctor_id = doctor.id;
         }
 
-        return await appointmentRepository.searchAppointments(filters);
+        const { appointments, totalCount } = await appointmentRepository.searchAppointments(filters);
+        return {
+            appointments: appointments.map(mapAppointment),
+            totalCount
+        };
     }
 
     async getDailySchedule(doctorId, dateStr) {
-        return await appointmentRepository.getDailySchedule(doctorId, dateStr);
+        const rows = await appointmentRepository.getDailySchedule(doctorId, dateStr);
+        // Use mapSlot to preserve slot_time and slot_status
+        return rows.map(mapSlot);
     }
 
     async getMonthlyReport(doctorId, month, year) {
         const targetMonth = month || new Date().getMonth() + 1;
         const targetYear = year || new Date().getFullYear();
 
-        // 0. Fetch Holidays
-        const holidays = await holidayRepository.findActiveByMonth(targetMonth, targetYear);
+        const [holidays, appointments, dailySummaries, withdrawals] = await Promise.all([
+            holidayRepository.findActiveByMonth(targetMonth, targetYear),
+            appointmentRepository.findMonthlyAppointments(targetMonth, targetYear, doctorId),
+            transactionRepository.findDailySummary(targetMonth, targetYear, doctorId),
+            transactionRepository.findMonthlyWithdrawals(targetMonth, targetYear, doctorId)
+        ]);
+
         const holidayMap = {};
         holidays.forEach(h => {
-            const dateStrRaw = h.date instanceof Date ? h.date.toISOString().split('T')[0] : String(h.date).split(' ')[0];
-            const dateObj = new Date(`${dateStrRaw}T12:00:00-03:00`); // Midday to be safe
-            const d = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+            const d = new Date(h.date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
             holidayMap[d] = h.description;
         });
 
-        // 1. Fetch Appointments for the list
-        const appointments = await appointmentRepository.findMonthlyAppointments(targetMonth, targetYear, doctorId);
-
-        // 2. Fetch Pre-calculated Daily Summaries (The real SQL-First Cash Flow)
-        const dailySummaries = await transactionRepository.findDailySummary(targetMonth, targetYear, doctorId);
         const summaryMap = {};
         dailySummaries.forEach(s => {
-            const dateStrRaw = s.report_date instanceof Date ? s.report_date.toISOString().split('T')[0] : String(s.report_date).split(' ')[0];
-            const dateObj = new Date(`${dateStrRaw}T12:00:00-03:00`);
-            const dateStr = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
-            summaryMap[dateStr] = s;
+            const d = new Date(s.report_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+            summaryMap[d] = s;
         });
 
         const report = {};
@@ -82,63 +115,11 @@ class RetrievalService {
             };
         }
 
-        // Fill Appointments list (Visual only)
         appointments.forEach(a => {
-            // Force parsing as Argentina time to avoid shifts if server is in UTC
-            // MariaDB date strings like 'YYYY-MM-DD HH:mm:ss'
-            const dateStrRaw = a.appointment_date instanceof Date 
-                ? a.appointment_date.toISOString().replace('Z', '').replace('T', ' ')
-                : String(a.appointment_date);
-                
-            // Append -03:00 to force the timezone regardless of server local time
-            const dateObj = new Date(dateStrRaw.includes('-03:00') ? dateStrRaw : `${dateStrRaw} -03:00`);
-            const dateStr = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
-
-            let finalName = a.patient_name || (a.reason ? `(Sin Paciente) ${a.reason}` : 'Desconocido');
-            const typeLabel = a.type === 'virtual' ? 'Virtual' : 'Presencial';
-            let detail = `Consulta ${typeLabel}`;
-            if (a.reason && a.reason.toLowerCase() !== 'consulta' && a.reason !== detail) {
-                detail = a.reason;
-            }
-
-            if (report[dateStr]) {
-                report[dateStr].appointments.push({
-                    id: a.id,
-                    doctor_id: a.doctor_id,
-                    appointment_date: a.appointment_date,
-                    hora: dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' }),
-                    nombre: finalName || 'Desconocido',
-                    info: detail,
-                    asistencia: a.status,
-                    pago: a.payment_status,
-                    monto_pagado: a.paid_amount,
-                    monto_efectivo: a.paid_amount, 
-                    debt_amount: a.pending_amount,
-                    metodos_pago: '', 
-                    dia: dateStr,
-                    tipo_atencion: a.type,
-                    is_overturn: !!a.is_out_of_hours,
-                    // Modern fields for standard components:
-                    patient_name: finalName || 'Desconocido',
-                    doctor_name: a.doctor_name,
-                    reason: detail,
-                    status: a.status,
-                    paid_amount: a.paid_amount,
-                    pending_amount: a.pending_amount,
-                    cost: a.cost,
-                    type: a.type,
-                    patient_id: a.patient_id,
-                    rescheduled_from_date: a.rescheduled_from_date
-                });
-            }
+            const mapped = mapAppointment(a);
+            const dateStr = new Date(mapped.appointment_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+            if (report[dateStr]) report[dateStr].appointments.push(mapped);
         });
-
-        // Other income (not linked to appointments) is now inherently included in the daily summaries
-        // If we still need to separate "Other", we can do it via a different view or query.
-        const totalOther = 0; // Simplified for now since summary includes everything
-
-        // Withdrawals
-        const withdrawals = await transactionRepository.findMonthlyWithdrawals(targetMonth, targetYear, doctorId);
 
         return {
             appointments: Object.values(report),
@@ -147,7 +128,7 @@ class RetrievalService {
                 monto: w.amount,
                 descripcion: w.description
             })),
-            other_income: Number(totalOther)
+            other_income: 0
         };
     }
 }

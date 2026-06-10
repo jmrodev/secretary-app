@@ -20,6 +20,7 @@ import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import { useAgendaState } from './useAgendaState';
 import { useAgendaModals } from './useAgendaModals';
+import { getNow, parseDate } from '@/utils/core/dateUtils';
 
 /**
  * useAppointmentsPageController (Orchestrator).
@@ -27,10 +28,7 @@ import { useAgendaModals } from './useAgendaModals';
  */
 export const useAppointmentsPageController = () => {
     // --- 1. Base Hooks ---
-    const { 
-        user, language, isAdmin, isSecretary, isDoctor, 
-        isPatient, isStaff, isMedicalStaff 
-    } = usePermissions();
+    const { user, language, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = usePermissions();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
     const { settings } = useConfig();
@@ -43,9 +41,11 @@ export const useAppointmentsPageController = () => {
     const agendaModals = useAgendaModals();
 
     const { 
-        selectedDate, setSelectedDate, 
+        selectedDate: rawSelectedDate, setSelectedDate, 
         showOutOfHours, setShowOutOfHours, rescheduleAppt, exitRescheduleMode 
     } = agendaState;
+
+    const selectedDate = useMemo(() => parseDate(rawSelectedDate) || getNow(), [rawSelectedDate]);
 
     const { 
         editPatientModalOpen, setEditPatientModalOpen, paymentModal, setPaymentModal,
@@ -54,13 +54,13 @@ export const useAppointmentsPageController = () => {
         retryAction, setRetryAction
     } = agendaModals;
 
-    // --- 3. Data Fetching Hooks (Must always run in same order) ---
+    // --- 3. Data Fetching Hooks ---
     const institutionsHook = useFetch('/institutions', { 
-        initialData: { institutions: [], totalCount: 0 } 
+        initialData: { success: true, data: { institutions: [], totalCount: 0 } } 
     });
     
-    const { data: insData } = useFetch('/insurances', { 
-        initialData: { insurances: [], totalCount: 0 } 
+    const insurancesHook = useFetch('/insurances', { 
+        initialData: { success: true, data: { insurances: [], totalCount: 0 } } 
     });
 
     const statsParams = useMemo(() => ({
@@ -69,22 +69,22 @@ export const useAppointmentsPageController = () => {
         doctor_id: viewDoctorId
     }), [selectedDate, viewDoctorId]);
 
-    const { data: calendarStats = {} } = useFetch('/appointments/stats', {
+    const calendarStatsHook = useFetch('/appointments/stats', {
         params: statsParams,
         immediate: !!viewDoctorId,
-        initialData: {}
+        initialData: { success: true, data: {} }
     });
 
-    const { data: agendaAppointments = {}, loading: agendaLoading, refetch: fetchAgenda } = useFetch('/appointments/month-report', {
+    const agendaAppointmentsHook = useFetch('/appointments/month-report', {
         params: statsParams,
         immediate: !!viewDoctorId,
-        initialData: { appointments: [] }
+        initialData: { success: true, data: { appointments: [] } }
     });
 
     const patientSearch = usePatientAppointmentSearch();
     const { 
         searchTerm, setSearchTerm, searchPatientId, setSearchPatientId, 
-        appointments: searchResults, patientAppointments, patientApptLoading, fetchAppointments: fetchSearch 
+        appointments: searchResults, patientAppointments, patientApptLoading: searchLoading, fetchAppointments: fetchSearch 
     } = patientSearch;
 
     // --- 4. Logic & Handler Hooks ---
@@ -97,37 +97,35 @@ export const useAppointmentsPageController = () => {
     const nextSlot = useNextFreeSlot(viewDoctorId || booking.selectedDoctor);
 
     // --- 5. Derived State & Callbacks ---
-    const institutions = useMemo(() => institutionsHook.data?.institutions || [], [institutionsHook.data]);
-    const institutionsLoading = institutionsHook.loading;
-    const insurances = useMemo(() => insData?.insurances || [], [insData]);
-    
-    // Memoize the flat agenda list to prevent recalculation
+    const institutions = useMemo(() => institutionsHook.data?.data?.institutions || [], [institutionsHook.data]);
+    const insurances = useMemo(() => insurancesHook.data?.data?.insurances || [], [insurancesHook.data]);
+    const calendarStats = useMemo(() => calendarStatsHook.data?.data || {}, [calendarStatsHook.data]);
+    const agendaAppointments = useMemo(() => agendaAppointmentsHook.data?.data || {}, [agendaAppointmentsHook.data]);
+    const agendaLoading = agendaAppointmentsHook.loading;
+
     const realAgendaList = useMemo(() => {
         const appts = agendaAppointments?.appointments;
         if (!appts) return [];
-        // Flattening the object { date: { appointments: [] } }
+        if (Array.isArray(appts)) {
+            if (appts.length > 0 && appts[0].appointments) {
+                return appts.flatMap(day => day.appointments || []);
+            }
+            return appts;
+        }
         return Object.values(appts).flatMap(day => day.appointments || []);
     }, [agendaAppointments?.appointments]);
 
-    // Combined loading state
-    const loading = doctorsLoading;
-    const fetched = doctorsFetched;
-    const searchLoading = patientApptLoading;
-
-    // Unified appointments list: search results if searching, otherwise the monthly agenda
     const displayedAppointments = useMemo(() => {
-        if (searchTerm && searchTerm.trim().length > 0) {
-            return searchResults || [];
-        }
+        if (searchTerm && searchTerm.trim().length > 0) return searchResults || [];
         return realAgendaList;
     }, [searchTerm, searchResults, realAgendaList]);
 
     const fetchAppointments = useCallback(async () => {
         await Promise.all([
-            fetchAgenda(),
+            agendaAppointmentsHook.refetch(),
             searchTerm ? fetchSearch() : Promise.resolve()
         ]);
-    }, [fetchAgenda, fetchSearch, searchTerm]);
+    }, [agendaAppointmentsHook, fetchSearch, searchTerm]);
 
     const hookHandlers = useAppointmentsHandlers({
         user, t, showMessage, confirm, prompt, navigate, selectedDate, setSelectedDate,
@@ -163,10 +161,7 @@ export const useAppointmentsPageController = () => {
 
     return {
         viewDoctorId, doctors, institutions, insurances, 
-        loading: loading, 
-        agendaLoading: agendaLoading, 
-        selectedDate,
-        institutionsLoading, 
+        loading: doctorsLoading, agendaLoading, selectedDate,
         showOutOfHours, t, language, user,
         editPatientModalOpen, paymentModal,
         actionModal, historyModal, prescribeModal,
@@ -174,10 +169,7 @@ export const useAppointmentsPageController = () => {
         showNextSlotModal: nextSlot.showModal, setShowNextSlotModal: nextSlot.setShowModal,
         holidays, booking, patientSearch, nextSlot, currentDoctor: viewDoctorId ? doctors.find(d => d.id === Number(viewDoctorId)) : null,
         filteredAppointments: displayedAppointments, appointments: displayedAppointments, calendarStats, 
-        doctorSchedule, // This will populate later, won't block 'loading' or 'agendaLoading'
-        searchTerm, searchPatientId, patientAppointments, patientApptLoading, searchLoading, handlers, rescheduleAppt, exitRescheduleMode,
-        isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff,
-        fetched: fetched 
+        doctorSchedule, searchTerm, searchPatientId, patientAppointments, searchLoading, handlers, rescheduleAppt, exitRescheduleMode,
+        isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff, fetched: doctorsFetched
     };
-
 };

@@ -1,22 +1,27 @@
 const retrievalService = require('../../services/appointments/retrievalService');
 
+/**
+ * ECC-Pattern: Standard API Response Envelope
+ */
+const sendResponse = (res, success, data, error = null, status = 200) => {
+    res.status(status).json({ success, data, error });
+};
+
 exports.getAppointments = async (req, res) => {
     try {
         const rawSearch = req.query.search?.trim();
         const patientId = req.body?.patientId || req.query.patientId;
 
-        // Guard: require at least a patientId OR a meaningful search term (2+ chars)
-        // to avoid accidentally dumping all appointments in the response.
         if (!patientId && (!rawSearch || rawSearch.length < 2)) {
-            return res.json([]);
+            return sendResponse(res, true, []);
         }
 
         const query = { ...(req.body || {}), search: rawSearch };
         const appointments = await retrievalService.getAppointments(req.user, query);
-        res.json(appointments);
+        sendResponse(res, true, appointments);
     } catch (err) {
-        console.error("[Controller] getAppointments error:", err);
-        res.status(500).send("Server Error");
+        console.error("[ECC-Controller] getAppointments error:", err);
+        sendResponse(res, false, null, "Internal Server Error", 500);
     }
 };
 
@@ -24,24 +29,35 @@ exports.getMonthlyReport = async (req, res) => {
     try {
         const { doctor_id, doctorId, month, year } = { ...req.query, ...req.body };
         const activeDoctorId = doctor_id || doctorId;
+        
+        if (!activeDoctorId) {
+            return sendResponse(res, false, null, "doctorId is required", 400);
+        }
+
         const report = await retrievalService.getMonthlyReport(activeDoctorId, month, year);
-        res.json(report);
+        sendResponse(res, true, report);
     } catch (err) {
-        console.error("[Controller] getMonthlyReport error:", err);
-        res.status(500).send("Server Error");
+        console.error("[ECC-Controller] getMonthlyReport error:", err);
+        sendResponse(res, false, null, "Internal Server Error", 500);
     }
 };
 
 exports.getDailySchedule = async (req, res) => {
     try {
         const { doctorId, date } = req.query;
-        if (!doctorId || !date) {
-            return res.status(400).json({ error: 'Faltan parámetros: doctorId y date son obligatorios.' });
+        
+        // ECC: Strict Validation
+        if (!doctorId) {
+            return sendResponse(res, false, null, "Falta el parámetro obligatorio: doctorId", 400);
         }
+        if (!date || isNaN(Date.parse(date))) {
+            return sendResponse(res, false, null, "Falta o es inválido el parámetro: date (formato YYYY-MM-DD)", 400);
+        }
+
         const schedule = await retrievalService.getDailySchedule(doctorId, date);
-        res.json(schedule);
+        sendResponse(res, true, schedule);
     } catch (err) {
-        console.error("[Controller] getDailySchedule error:", err);
-        res.status(500).send("Server Error");
+        console.error("[ECC-Controller] getDailySchedule error:", err);
+        sendResponse(res, false, null, "Error al recuperar la agenda diaria", 500);
     }
 };

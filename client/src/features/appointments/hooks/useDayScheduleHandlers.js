@@ -19,8 +19,7 @@ export const useDayScheduleHandlers = ({ date, appointments, doctor, onDateSelec
 
         const appsToPrint = appointments
             .filter(appt => {
-                const d = new Date(appt.appointment_date);
-                const isSameDay = d.getFullYear() === date.getFullYear() && d.getMonth() === date.getMonth() && d.getDate() === date.getDate();
+                const isSameDay = new Date(appt.appointment_date).toDateString() === date.toDateString();
                 const isVisible = showCancelled || !['cancelled', 'suspended', 'absent'].includes(appt.status);
                 return isSameDay && isVisible;
             })
@@ -38,7 +37,7 @@ export const useDayScheduleHandlers = ({ date, appointments, doctor, onDateSelec
                     ${appsToPrint.length > 0 ? appsToPrint.map(appt => `
                         <tr>
                             <td>${new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</td>
-                            <td>${appt.patient_name || 'S/N'}</td><td>${appt.patient_phone || '-'}</td><td>${appt.reason || '-'}</td><td>${translateStatus(appt.status)}</td>
+                            <td>${appt.patient_name || 'S/N'}</td><td>${appt.patient_phone || appt.phone || '-'}</td><td>${appt.reason || '-'}</td><td>${translateStatus(appt.status)}</td>
                         </tr>`).join('') : `<tr><td colspan="5">${t('no_appointments_day')}</td></tr>`}
                 </tbody></table>
                 <script>window.onload = () => { window.print(); setTimeout(() => window.close(), 500); }</script>

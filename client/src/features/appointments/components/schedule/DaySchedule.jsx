@@ -11,34 +11,44 @@ import styles from './DaySchedule.module.css';
 const EMPTY_ARRAY = [];
 
 /**
- * DaySchedule (Executor Component).
- * Orchestrates the display of daily appointments, time slots, and schedule navigation.
+ * ECC-Pattern: Optimized DaySchedule (Executor).
+ * Orchestrates the display of daily appointments using server-side fetching.
  */
 const DaySchedule = ({
-    date, appointments, onSlotClick, doctor, schedule, onDateSelect,
+    date, onSlotClick, doctor, schedule, onDateSelect,
     holidays = EMPTY_ARRAY, showOutOfHours, setShowOutOfHours, onNextFreeSlot,
     isLoading = false
 }) => {
     const { t } = useLanguage();
     const [showCancelled, setShowCancelled] = React.useState(false);
 
-    const { handlePrint, handlePrevDay, handleNextDay, handleToday, handleSlotAction } = useDayScheduleHandlers({
-        date, appointments, doctor, onDateSelect, onSlotClick, showCancelled
-    });
+    // ECC: The controller now handles its own data fetching from the optimized endpoint
+    const { timeSlots, loading } = useDayScheduleController(date, doctor, schedule, showOutOfHours);
 
-    const { timeSlots, loading } = useDayScheduleController(date, doctor, schedule, appointments, showOutOfHours);
+    // Derived list of appointments just for the current view (from the daily fetch)
+    const dailyAppointments = React.useMemo(() => 
+        timeSlots.flatMap(slot => slot.slotApps), 
+    [timeSlots]);
+
+    const { handlePrint, handlePrevDay, handleNextDay, handleToday, handleSlotAction } = useDayScheduleHandlers({
+        date, 
+        appointments: dailyAppointments, 
+        doctor, 
+        onDateSelect, 
+        onSlotClick, 
+        showCancelled
+    });
 
     const isAppLoading = isLoading || loading;
 
-    // Provide the pre-grouped appointments to ScheduleTimeline
     const getAppointmentsForSlot = (slotTime) => {
-        const timeStr = slotTime.toTimeString().split(' ')[0]; // "08:00:00"
+        const timeStr = slotTime.toTimeString().split(' ')[0];
         const found = timeSlots.find(slot => slot.time.toTimeString().split(' ')[0] === timeStr);
         return found ? found.slotApps : [];
     };
 
     return (
-        <div className={`${styles.root}`} data-scroll-container>
+        <div className="${styles.root}" data-scroll-container>
             <DayScheduleHeader
                 date={date} holiday={null} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
                 showCancelled={showCancelled} setShowCancelled={setShowCancelled}

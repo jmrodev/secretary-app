@@ -3,7 +3,6 @@ import AppointmentActionModal from '../modals/AppointmentActionModal';
 import { PrescriptionModal } from '@/features/medical_documents';
 import { PatientHistoryModal, PatientManagerModal } from '@/features/patients';
 import WhatsAppModal from '@/features/chat/components/ui/WhatsAppModal';
-import NextSlotModal from '../modals/NextSlotModal';
 import AppointmentFormModal from '../modals/AppointmentFormModal';
 import AdminAuthModal from '@/features/auth/components/modals/AdminAuthModal';
 import { TransactionModal } from '@/features/finances';
@@ -54,18 +53,7 @@ export const AppointmentsModals = ({
             />
         )}
 
-        {showNextSlotModal && (
-            <NextSlotModal
-                isOpen={showNextSlotModal} onClose={() => setShowNextSlotModal(false)}
-                loading={nextSlot.loading} nextSlotData={nextSlot.nextSlotData}
-                includeOutOfHours={nextSlot.includeOutOfHours}
-                onToggleOutOfHours={(val) => { nextSlot.setIncludeOutOfHours(val); handlers.handleNextFreeSlot(null, val); }}
-                slotsPage={nextSlot.slotsPage} setSlotsPage={nextSlot.setSlotsPage} slotPages={nextSlot.slotPages}
-                onSelect={handlers.confirmNextSlot} onWhatsApp={handlers.handleWhatsAppSlot}
-                onNextGroup={nextSlot.handleNextPage} onPrevGroup={nextSlot.handlePrevPage}
-                hasPrevGroup={nextSlot.slotHistory?.length > 0} hasNextGroup={!!nextSlot.nextSlotData?.nextStartDate}
-            />
-        )}
+        {/* ECC: NextSlotModal removed - Replaced by SlotExplorerDropdown inline in AppointmentsPage */}
 
         {editPatientModalOpen && (
             <PatientManagerModal

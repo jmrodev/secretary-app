@@ -1,35 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import CashBalancingModal from './CashBalancingModal';
 
 import styles from './PendingClosuresModal.module.css';
 
 /**
  * PendingClosuresModal Feature Molecule.
- * Displays a list of unclosed cash box days for a doctor or institution.
- * Allows quick batch closures or fixing duplicates/conflicts.
+ * Displays a list of unclosed cash box days.
+ * Integrated with the new Automatic Balancing (Arqueo) system.
  */
 const PendingClosuresModal = ({ 
     isOpen, 
     onClose, 
     pendingClosures, 
-    duplicateClosures, 
     onAutoClosure, 
-    onCloseAll, 
-    onFixDuplicates, 
     onResetDay, 
     t 
 }) => {
-    // pendingClosures is array of { date, balance, doctor_id, lastTime }
-    const [processingDate, setProcessingDate] = React.useState(null);
+    const [balancingDay, setBalancingDay] = useState(null);
 
-    const handleClosure = async (day) => {
-        if (processingDate) return;
-        const itemKey = `${day.date}_${day.doctor_id}`;
-        setProcessingDate(itemKey);
-        await onAutoClosure(day);
-        setProcessingDate(null);
+    const handleOpenBalancing = (day) => {
+        setBalancingDay(day);
     };
 
     return (
@@ -39,7 +32,7 @@ const PendingClosuresModal = ({
             title={t('pending_closures_title').replace('{count}', pendingClosures.length)}
             size="lg"
             footer={
-                <div className={`${styles.pendingClosuresFooter}`}>
+                <div className={styles.pendingClosuresFooter}>
                     <Button variant="secondary" onClick={onClose}>
                         {t('close_action')}
                     </Button>
@@ -47,68 +40,39 @@ const PendingClosuresModal = ({
             }
         >
             <div className={`${styles.pendingClosuresContainer} animate-fade-in`}>
-                {duplicateClosures && duplicateClosures.length > 0 && (
-                    <div className={`${styles.pendingClosuresAlert}`}>
-                        <div className={`${styles.title}`}>
-                            <Icon name="WARNING" size="1.2rem" />
-                            {t('duplicate_closures_alert').replace('{count}', duplicateClosures.length)}
-                        </div>
-                        <p className={`${styles.description}`}>{t('fix_duplicates_desc')}</p>
-                        <Button
-                            size="sm"
-                            variant="danger"
-                            onClick={onFixDuplicates}
-                        >
-                            {t('fix_conflicts_btn')}
-                        </Button>
-                    </div>
-                )}
-
-                <div className={`${styles.pendingClosuresHeaderActions}`}>
-                    <p className={`${styles.pendingClosuresDescription}`}>
-                        {t('pending_closures_desc')}
+                <div className={styles.pendingClosuresHeaderActions}>
+                    <p className={styles.pendingClosuresDescription}>
+                        {t('pending_closures_desc') || 'Días con movimientos de dinero que aún no han sido entregados.'}
                     </p>
-                    {pendingClosures.length > 1 && (
-                        <Button
-                            variant="primary"
-                            size="md"
-                            onClick={onCloseAll}
-                            className="pending-closures-btn-all"
-                            icon={<Icon name="CONFIRMED" size="1.1rem" />}
-                        >
-                            {t('deliver_all_month').replace('{count}', pendingClosures.length)}
-                        </Button>
-                    )}
                 </div>
 
-                <div className={`${styles.pendingClosuresTableContainer}`}>
-                    <table className={`${styles.root}`}>
+                <div className={styles.pendingClosuresTableContainer}>
+                    <table className={styles.root}>
                         <thead>
                             <tr>
                                 <th>{t('date_label')}</th>
-                                <th className={`${styles.cellRight}`}>{t('cash_balance')}</th>
-                                <th className={`${styles.cellRight}`}>{t('virtual_balance')}</th>
-                                <th className={`${styles.cellCenter}`}>{t('actions')}</th>
+                                <th className={styles.cellRight}>{t('cash_balance')}</th>
+                                <th className={styles.cellRight}>{t('virtual_balance')}</th>
+                                <th className={styles.cellCenter}>{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {pendingClosures.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className={`${styles.empty}`}>
+                                    <td colSpan="4" className={styles.empty}>
                                         {t('all_caught_up')} {t('no_closures_pending')}
                                     </td>
                                 </tr>
                             ) : (
                                 pendingClosures.map((day) => {
                                     const itemKey = `${day.date}_${day.doctor_id}`;
-                                    const isProcessing = processingDate === itemKey;
 
                                     return (
                                         <tr key={itemKey}>
                                             <td className="pending-closures-table__date">
-                                                <div className={`${styles.dateGroup}`}>
-                                                    <span className={`${styles.dateText}`}>{day.date}</span>
-                                                    <span className={`${styles.doctorText}`}>{day.doctor_name || 'General'}</span>
+                                                <div className={styles.dateGroup}>
+                                                    <span className={styles.dateText}>{day.date}</span>
+                                                    <span className={styles.doctorText}>{day.doctor_name || 'General'}</span>
                                                 </div>
                                             </td>
                                             <td className={`${styles.balanceCash} ${styles.cellRight}`}>
@@ -117,25 +81,22 @@ const PendingClosuresModal = ({
                                             <td className={`${styles.balanceVirtual} ${styles.cellRight}`}>
                                                 ${(day.transferBalance || 0).toLocaleString()}
                                             </td>
-                                            <td className={`${styles.actions}`}>
+                                            <td className={styles.actions}>
                                                 <Button
                                                     size="sm-compact"
-                                                    variant={isProcessing ? "ghost" : "primary"}
-                                                    onClick={() => handleClosure(day)}
-                                                    disabled={!!processingDate}
+                                                    variant="primary"
+                                                    onClick={() => handleOpenBalancing(day)}
+                                                    icon={<Icon name="account_balance_wallet" />}
                                                 >
-                                                    {isProcessing ? "..." : t('deliver_action')}
+                                                    {t('deliver_action') || 'Hacer Arqueo'}
                                                 </Button>
                                                 <Button
                                                     size="sm-compact"
                                                     variant="outline-danger"
                                                     onClick={() => onResetDay(day.date, day.doctor_id)}
-                                                    disabled={!!processingDate}
                                                     title={t('reset_day_title')}
                                                     icon={<Icon name="RESTORE" size="1rem" />}
-                                                >
-                                                    {t('reset_action')}
-                                                </Button>
+                                                />
                                             </td>
                                         </tr>
                                     );
@@ -145,9 +106,19 @@ const PendingClosuresModal = ({
                     </table>
                 </div>
             </div>
+
+            {/* Sub-Modal for the actual balancing process */}
+            {balancingDay && (
+                <CashBalancingModal
+                    isOpen={!!balancingDay}
+                    onClose={() => setBalancingDay(null)}
+                    day={balancingDay}
+                    onConfirm={onAutoClosure}
+                    t={t}
+                />
+            )}
         </Modal>
     );
 };
 
 export default PendingClosuresModal;
-

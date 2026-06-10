@@ -11,8 +11,8 @@ import { AppointmentFormFields } from '../sections/AppointmentFormFields.jsx';
 import styles from './AppointmentFormModal.module.css';
 
 /**
- * AppointmentFormModal (Executor Component).
- * Main form for creating and editing medical appointments.
+ * AppointmentFormModal (ECC Optimized).
+ * Minimalist version, removed redundant traps and headers.
  */
 const AppointmentFormModal = ({
     isOpen, onClose, onSubmit, selectedDoctor, doctors, type, selectedPatient, selectedPatientData,
@@ -21,64 +21,49 @@ const AppointmentFormModal = ({
 }) => {
     const { t } = useLanguage();
     const { user } = useAuth();
-    const { handleDateChange, handleDoctorChange, handlePatientChange, handleTypeChange,
-            handleInstitutionChange, handleReasonChange, handleBonifiedChange, handlePhoneChange } = handlers;
 
-    const doctorOptions = doctors.map(d => ({
-        value: d.id,
-        label: `${d.full_name} (${d.specialty})`
-    }));
-
-    const institutionOptions = [
-        { value: '', label: selectedPatientData ? `Institución del Paciente (${selectedPatientData.institution_name || 'Ninguna'})` : 'Institución del Paciente' },
-        { value: 'none', label: 'Particular / Sin Institución' },
-        ...institutions.map(inst => ({ value: inst.id, label: inst.name }))
-    ];
+    if (!isOpen) return null;
 
     return (
         <Modal
-            isOpen={isOpen} onClose={onClose}
+            isOpen={isOpen} 
+            onClose={onClose}
             title={editModeId ? (t('edit_appointment') || 'Editar Turno') : t('new_appointment')}
-            size="2xl"
+            size="lg"
+            footer={
+                <Button 
+                    type="submit" 
+                    form="new-appointment-form"
+                    variant="accent" 
+                    className={styles.submit} 
+                    icon={<Icon name="check" />}
+                >
+                    {editModeId ? (t('save_changes') || 'Guardar') : t('confirm_booking')}
+                </Button>
+            }
         >
-            <form onSubmit={onSubmit} id="new-appointment-form" className={`${styles.root}`} autoComplete="off">
-                <div className={styles.autofillTrap}>
-                    <input type="text" name="fake_user_trap_appt" autoComplete="username" tabIndex={-1} readOnly />
-                    <input type="password" name="fake_pass_trap_appt" autoComplete="new-password" tabIndex={-1} readOnly />
-                </div>
-
-                <AppointmentSyncAlert info={syncReferenceInfo} />
-
+            <form onSubmit={onSubmit} id="new-appointment-form" className={styles.root} autoComplete="off">
+                <div className={styles.content}>
+                    <AppointmentSyncAlert info={syncReferenceInfo} />
+                    
                     <AppointmentFormFields
                         user={user}
                         doctors={doctors}
                         selectedDoctor={selectedDoctor}
-                        handleDoctorChange={handleDoctorChange}
                         type={type}
-                        handleTypeChange={handleTypeChange}
                         selectedPatient={selectedPatient}
                         selectedPatientData={selectedPatientData}
                         missingData={missingData}
-                        handlePatientChange={handlePatientChange}
-                        handlePhoneChange={handlePhoneChange}
                         onOpenEditPatient={onOpenEditPatient}
                         date={date}
-                        handleDateChange={handleDateChange}
                         isOutOfHours={isOutOfHours}
                         selectedInstitution={selectedInstitution}
-                        institutionOptions={institutionOptions}
-                        handleInstitutionChange={handleInstitutionChange}
+                        institutions={institutions}
                         reason={reason}
-                        handleReasonChange={handleReasonChange}
                         bonified={bonified}
-                        handleBonifiedChange={handleBonifiedChange}
+                        handlers={handlers}
                         t={t}
                     />
-
-                <div className={`${styles.actions}`}>
-                    <Button type="submit" variant="accent" className={`${styles.submit}`}>
-                        {editModeId ? (t('save_changes') || 'Guardar Cambios') : t('confirm_booking')}
-                    </Button>
                 </div>
             </form>
         </Modal>

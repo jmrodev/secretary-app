@@ -1,196 +1,152 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import { formatDate, getNow, toInputDate } from '@/utils/core/dateUtils';
-import { useLanguage } from '@/hooks/useLanguage';
 import Loading from '@/components/atoms/Loading';
+import { useLanguage } from '@/hooks/useLanguage';
+import { formatDate, getNow } from '@/utils/core/dateUtils';
 import styles from './NextSlotModal.module.css';
 
 /**
- * NextSlotModal (Executor Component).
- * Simple list version for searching free slots.
+ * NextSlotModal (ECC Redesign).
+ * Features: Horizontal Month Navigation + Vertical Timeline.
  */
 const NextSlotModal = ({
     isOpen, onClose, loading, nextSlotData, includeOutOfHours, onToggleOutOfHours,
-    slotsPage, setSlotsPage, slotPages, onSelect, onWhatsApp, onNextGroup, onPrevGroup,
-    hasPrevGroup, hasNextGroup, fetchNextFreeSlots
+    slotsPage, setSlotsPage, slotPages, onSelect, onWhatsApp, jumpToMonth,
+    fetchNextFreeSlots, hasNextGroup
 }) => {
     const { t } = useLanguage();
-    const handleNextPage = async () => {
+    const monthNames = t('months_short_array') || ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    
+    // Generate next 6 months for navigation bar
+    const navMonths = useMemo(() => {
+        const now = getNow();
+        return Array.from({ length: 6 }).map((_, i) => {
+            const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
+            return {
+                label: monthNames[date.getMonth()],
+                month: date.getMonth(),
+                year: date.getFullYear()
+            };
+        });
+    }, [monthNames]);
+
+    const currentSlots = slotPages[slotsPage] || [];
+    const currentMonth = currentSlots.length > 0 ? new Date(currentSlots[0].dayDate + 'T12:00:00').getMonth() : null;
+
+    const handleNext = () => {
         if (slotsPage < slotPages.length - 1) {
             setSlotsPage(p => p + 1);
-        } else if (nextSlotData?.nextStartDate) {
-            await fetchNextFreeSlots(nextSlotData.nextStartDate, null, true);
+        } else if (hasNextGroup) {
+            fetchNextFreeSlots(nextSlotData.nextStartDate, null, true);
             setSlotsPage(p => p + 1);
         }
     };
 
-    useEffect(() => {
-        const handleKeyDown = (e) => {
-            if (!isOpen) return;
-            if ((e.key === 'ArrowLeft' || e.key === 'PageUp') && (slotsPage > 0)) setSlotsPage(p => p - 1);
-            else if ((e.key === 'ArrowRight' || e.key === 'PageDown') && (slotsPage < slotPages.length - 1 || nextSlotData?.nextStartDate)) handleNextPage();
-        };
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isOpen, slotsPage, slotPages.length, nextSlotData?.nextStartDate]);
-
-    const monthNames = t('months_array');
-    const todayIso = toInputDate(getNow());
-    const currentSlots = slotPages.length > 0 ? slotPages[Math.min(slotsPage, slotPages.length - 1)] : [];
-
-    const baseClass = styles.root;
-
     return (
-        <Modal 
-            isOpen={isOpen} 
-            onClose={onClose} 
-            title={
-                <div className={styles.title}>
-                    <Icon name="search" size="1.2rem" />
-                    {t('search_free_slots')}
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={t('search_free_slots') || "Explorador de Turnos Libres"}
+            size="md"
+            footer={
+                <div className={styles.footer}>
+                    <Button 
+                        variant="secondary" 
+                        onClick={() => setSlotsPage(p => Math.max(0, p - 1))}
+                        disabled={slotsPage === 0 || loading}
+                        icon={<Icon name="chevron_left" />}
+                    >
+                        {t('prev') || 'Ant.'}
+                    </Button>
+                    
+                    <div className={styles.pageInfo}>
+                        {slotsPage + 1} / {slotPages.length || 1}
+                    </div>
+
+                    <Button 
+                        variant="primary" 
+                        onClick={handleNext}
+                        disabled={loading || (slotsPage >= slotPages.length - 1 && !hasNextGroup)}
+                        iconRight={<Icon name="chevron_right" />}
+                    >
+                        {t('next') || 'Prox.'}
+                    </Button>
                 </div>
-            } 
-            size="lg"
-            className={styles.container}
+            }
         >
             <div className={styles.root}>
-                <div className={styles.controls}>
+                {/* 1. Horizontal Month Bar */}
+                <nav className={styles.monthBar}>
+                    {navMonths.map((m, idx) => (
+                        <div 
+                            key={`month-${idx}`} 
+                            className={`${styles.monthItem} ${currentMonth === m.month ? styles.monthActive : ''}`}
+                            onClick={() => jumpToMonth(m.month, m.year)}
+                        >
+                            {m.label}
+                        </div>
+                    ))}
+                </nav>
 
-
-
+                {/* 2. Extra Options */}
+                <div className={styles.options}>
+                    <label className={styles.checkboxLabel}>
+                        <input 
+                            type="checkbox" 
+                            checked={includeOutOfHours} 
+                            onChange={e => onToggleOutOfHours(e.target.checked)} 
+                        />
+                        <span>{t('include_overtime') || 'Incluir fuera de horario'}</span>
+                    </label>
                 </div>
 
-                {(!nextSlotData || loading) ? (
-                    <Loading text={t('exploring_schedule')} />
-                ) : (
-                    <div className={styles.tableWrapper}>
-                        <table className={styles.table}>
+                {/* 3. Slot Timeline List */}
+                <div className={styles.content}>
+                    {loading && <Loading variant="centered" />}
+                    {!loading && currentSlots.length === 0 && (
+                        <div className={styles.empty}>{t('no_slots_found')}</div>
+                    )}
+                    
+                    <div className={styles.timeline}>
+                        {currentSlots.map((slot, idx) => {
+                            const date = new Date(slot.dayDate + 'T12:00:00');
+                            const showDateHeader = idx === 0 || currentSlots[idx-1].dayDate !== slot.dayDate;
 
-                            <tbody className={styles.tbody}>
-                                {currentSlots.map((slot, index) => {
-                                    const [y, m] = slot.dayDate.split('-'); 
-                                    const isToday = slot.dayDate === todayIso; 
-                                    const monthLabel = `${monthNames[parseInt(m) - 1]} ${y}`;
-                                    const prevSlot = index > 0 ? currentSlots[index - 1] : null;
-                                    const showDayHeader = !prevSlot || prevSlot.dayDate !== slot.dayDate;
-                                    const showMonthHeader = !prevSlot || (monthLabel !== `${monthNames[parseInt(prevSlot.dayDate.split('-')[1]) - 1]} ${prevSlot.dayDate.split('-')[0]}`);
-                                    
-                                    return (
-                                        <Fragment key={`${slot.dayDate}-${slot.iso}`}>
-                                            {showMonthHeader && (
-                                                <tr className={styles.monthHeader}>
-                                                    <td colSpan="2" className={styles.monthCell}>
-                                                        {monthLabel}
-                                                    </td>
-                                                </tr>
-                                            )}
-                                            {showDayHeader && (
-                                                <tr className={styles.dayHeader}>
-                                                    <td colSpan="2" className={styles.dayCell}>
-                                                        <div className={styles.dayContent}>
-                                                            <Icon name="event" size="1rem" className={styles.dayIcon} />
-                                                            <span className={styles.dayName}>{slot.dayName}</span>
-                                                            {isToday && (
-                                                                <span className={styles.todayBadge}>
-                                                                    {t('today')}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            )}
-                                            <tr className={`${styles.slotRow} ${slot.is_out_of_hours ? styles.slotRowOutOfHours : ''}`}>
-                                                <td className={styles.slotCell}>
-                                                    <div className={styles.slotContent}>
-                                                        <span className={`${styles.slotTime} ${slot.is_out_of_hours ? styles.slotTimeOutOfHours : styles.slotTimeNormal}`}>
-                                                            {slot.time}
-                                                        </span>
-                                                        {slot.is_break && (
-                                                            <span className={`${styles.slotBadge} ${styles.slotBadgeExtra}`}>
-                                                                EXT
-                                                            </span>
-                                                        )}
-                                                        {slot.is_out_of_hours && (
-                                                            <span className={`${styles.slotBadge} ${styles.slotBadgeOutOfHours}`}>
-                                                                EXTRA
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className={styles.actionsCell}>
-                                                    <div className={styles.actionsContent}>
-                                                        <Button 
-                                                            variant="whatsapp"
-                                                            size="icon"
-                                                            round
-                                                            onClick={() => onWhatsApp({ ...slot, dayName: slot.dayName?.split(' ')[0] || formatDate(slot.iso, { weekday: true }), formattedDate: formatDate(slot.iso, { monthName: true }) })}
-                                                            icon={<Icon name="chat" size="1.2rem" />}
-                                                        />
-                                                        <Button 
-                                                            variant={slot.is_out_of_hours ? "accent" : "dark"}
-                                                            size="md"
-                                                            className={styles.selectBtn}
-                                                            onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}
-                                                        >
-                                                            {t('select')}
-                                                        </Button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </Fragment>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                <div className={styles.pagination}>
-                    <div className={styles.toggleRow}>
-                        <label className={styles.toggleLabel}>
-                            <input
-                                type="checkbox"
-                                className={styles.toggleCheckbox}
-                                checked={includeOutOfHours}
-                                onChange={(e) => onToggleOutOfHours(e.target.checked)}
-                            />
-                            <span className={styles.toggleText}>
-                                <Icon name="lock_open" size="1rem" />
-                                {t('include_overtime_short')}
-                            </span>
-                        </label>
-                    </div>
-
-                    <div className={styles.paginationControls}>
-                        <Button 
-                            variant="secondary" 
-                            size="sm" 
-                            onClick={() => setSlotsPage(p => Math.max(0, p - 1))} 
-                            disabled={slotsPage === 0 || loading}
-                            icon={<Icon name="chevron_left" size="1.1rem" />}
-                        >
-                            {t('previous')}
-                        </Button>
-                        <span className={styles.pageInfo}>
-                            {slotsPage + 1} / {slotPages.length}
-                        </span>
-                        <Button 
-                            variant="secondary" 
-                            size="sm" 
-                            onClick={onNextGroup} 
-                            disabled={loading || (slotsPage >= slotPages.length - 1 && !hasNextGroup)}
-                            iconRight={<Icon name={slotsPage >= slotPages.length - 1 && hasNextGroup ? "search" : "chevron_right"} size="1.1rem" />}
-                        >
-                            {slotsPage >= slotPages.length - 1 && hasNextGroup ? t('explore_more_dates') : t('next')}
-                        </Button>
+                            return (
+                                <React.Fragment key={`slot-${slot.iso}-${idx}`}>
+                                    {showDateHeader && (
+                                        <div className={styles.dateHeader}>
+                                            <span className={styles.dayNum}>{date.getDate()}</span>
+                                            <span className={styles.dayMonth}>{monthNames[date.getMonth()]}</span>
+                                            <span className={styles.dayName}>{slot.dayName}</span>
+                                        </div>
+                                    )}
+                                    <div className={`${styles.slotItem} ${slot.is_out_of_hours ? styles.slotExtra : ''}`}>
+                                        <div className={styles.slotTime}>{slot.time} hs</div>
+                                        <div className={styles.slotActions}>
+                                            <Button 
+                                                variant="whatsapp" 
+                                                size="sm" 
+                                                round 
+                                                icon={<Icon name="chat" size="1rem"/>} 
+                                                onClick={() => onWhatsApp(slot)}
+                                            />
+                                            <Button 
+                                                variant="premium" 
+                                                size="sm" 
+                                                onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}
+                                            >
+                                                {t('select')}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </React.Fragment>
+                            );
+                        })}
                     </div>
                 </div>
-
-
-
             </div>
         </Modal>
     );

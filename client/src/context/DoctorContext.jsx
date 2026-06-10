@@ -4,8 +4,7 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { DoctorContext } from './DoctorContextDefinition';
 
 /**
- * DoctorProvider
- * Manages the global state of doctors and the currently selected doctor filter.
+ * ECC-Pattern: Optimized DoctorProvider
  */
 export const DoctorProvider = ({ children }) => {
     const { user, isStaff, isDoctor } = usePermissions();
@@ -15,16 +14,18 @@ export const DoctorProvider = ({ children }) => {
         localStorage.getItem('global_selected_doctor_id') || ''
     );
 
-    // Doctors List (Cached globally)
-    const { data: doctorData, loading: doctorsLoading, fetched: doctorsFetched } = useFetch('/users/doctors', {
-        initialData: { doctors: [], totalCount: 0 },
-        immediate: !!user // Fetch only if logged in
+    // Doctors List (Cached globally) - ECC Envelope support
+    const { data: response, loading: doctorsLoading, fetched: doctorsFetched } = useFetch('/users/doctors', {
+        initialData: { success: true, data: [] },
+        immediate: !!user
     });
 
     const doctors = useMemo(() => {
-        if (Array.isArray(doctorData)) return doctorData;
-        return doctorData?.doctors || [];
-    }, [doctorData]);
+        // Handle both raw array (legacy) and ECC envelope
+        const rawData = response?.data || response;
+        if (Array.isArray(rawData)) return rawData;
+        return rawData?.doctors || [];
+    }, [response]);
 
     const setViewDoctorId = useCallback((id) => {
         const stringId = id ? String(id) : '';
@@ -35,7 +36,6 @@ export const DoctorProvider = ({ children }) => {
         });
     }, []);
 
-    // Derive viewDoctorId to eliminate render cascades from useEffect
     const viewDoctorId = useMemo(() => {
         if (viewDoctorIdInternal) return viewDoctorIdInternal;
         if (isDoctor && doctors.length > 0) {
@@ -59,7 +59,6 @@ export const DoctorProvider = ({ children }) => {
         doctorDisplayName: currentDoctor ? currentDoctor.full_name : null,
         isStaff
     }), [doctors, doctorsLoading, doctorsFetched, viewDoctorId, setViewDoctorId, currentDoctor, isStaff]);
-
 
     return (
         <DoctorContext.Provider value={value}>

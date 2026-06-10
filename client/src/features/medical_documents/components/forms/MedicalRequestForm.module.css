@@ -1,4 +1,3 @@
-
 .root {
     display: flex;
     flex-direction: column;
@@ -14,17 +13,16 @@
     gap: 1.5rem;
 }
 
+.row2 {
+    grid-template-columns: 1fr 2fr;
+}
+
 .row3 {
     grid-template-columns: 1fr 1fr 2fr;
 }
 
 .readonlyValue {
-    padding: 0.625rem 0.75rem;
-    background: var(--dashboard-card-bg);
-    border: 1px solid var(--dashboard-card-border);
-    border-radius: var(--radius-sm);
-    color: var(--text-main);
-    font-weight: 600;
+    display: none; /* Hidden just in case */
 }
 
 .badgeWrapper {
@@ -69,7 +67,7 @@
 }
 
 @media (width <= 768px) {
-    .row2 {
+    .row2, .row3 {
         grid-template-columns: 1fr;
     }
 }

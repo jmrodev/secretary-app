@@ -1,256 +1,160 @@
-import React, { useState, useEffect } from 'react';
-import api from '@/api/axios';
+import { useState, useEffect, useCallback, useMemo, useReducer } from 'react';
+import { useSearch } from '@/hooks/useSearch';
+import { useFetch } from '@/hooks/useFetch';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { usePermissions } from '@/hooks/usePermissions';
-import { useFetch } from '@/hooks/useFetch';
-import { useSearch } from '@/hooks/useSearch';
+import api from '@/api/axios';
 import { extractMedicationDetails } from '@/features/medical_documents/utils/medicationHelpers';
 
+const initialState = { isEditing: false, editMeds: [], editNotes: '', editDoctorNote: '' };
+
+function editReducer(state, action) {
+    switch (action.type) {
+        case 'RESET': return { ...state, isEditing: false, ...action.payload };
+        case 'SET_EDITING': return { ...state, isEditing: action.payload };
+        case 'UPDATE_FIELD': return { ...state, [action.field]: action.payload };
+        default: return state;
+    }
+}
+
 /**
- * Controller hook for the Medical Documents Manager.
- * Orchestrates the listed requests, history, and recycle bin.
+ * ECC-Pattern: useRequirementManagerController Hook (Global Search Integrated)
  */
 export const useRequirementManagerController = (user) => {
-    // Contexts
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { doubleConfirm, confirm } = useModal();
     const { canDeleteRequest } = usePermissions();
-    const { searchTerm } = useSearch();
+    const { searchTerm: globalSearchTerm } = useSearch();
 
-    // View State
-    const [activeTab, setActiveTab] = useState('list'); // 'new' | 'list' | 'recycle'
-    const [filter, setFilter] = useState('active'); // 'active' | 'history'
+    const [activeTab, setActiveTab] = useState('list');
+    const [filter, setFilter] = useState('active');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(25);
 
-    // --- FETCH DATA using useFetch ---
+    const unpack = (response, fallback = []) => response?.data || (Array.isArray(response) ? response : fallback);
 
-    // Requests
+    const [debouncedSearch, setDebouncedSearch] = useState(globalSearchTerm);
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedSearch(globalSearchTerm), 400);
+        return () => clearTimeout(timer);
+    }, [globalSearchTerm]);
+
+    // Hook 1: Requests
     const requestsHook = useFetch('/medical/requests', {
         params: {
             page: currentPage,
             limit: itemsPerPage,
             status: filter === 'active' ? ['pending', 'consult'] : ['completed', 'rejected'],
-            search: searchTerm || undefined
+            search: debouncedSearch || undefined
         },
-        initialData: { requests: [], totalCount: 0 }
+        initialData: { success: true, data: [], meta: { totalCount: 0 } }
     });
-    const { 
-        data: requestsData = { requests: [], totalCount: 0 }, 
-        loading: requestsLoading, 
-        refetch: fetchRequests 
-    } = requestsHook;
+    
+    // Hook 2: Doctors
+    const doctorsHook = useFetch('/users/doctors', { initialData: { success: true, data: [] } });
 
-
-    const requests = requestsData.requests || [];
-    const totalCount = requestsData.totalCount || 0;
-
-    // Doctors
-    const { data: doctorsData } = useFetch('/users/doctors', { initialData: { doctors: [], totalCount: 0 } });
-    const doctors = doctorsData?.doctors || [];
-
-    // Recycle Bin
-    const { 
-        data: recycleBinData = [], 
-        refetch: fetchRecycleBin 
-    } = useFetch('/logs/recycle-bin', {
-        initialData: [],
+    // Hook 3: Recycle Bin
+    const recycleHook = useFetch('/logs/recycle-bin', {
+        initialData: { success: true, data: [] },
         immediate: activeTab === 'recycle' && ['admin', 'secretary'].includes(user?.role)
     });
 
-    const recycleRequests = recycleBinData.filter(item => item.entity_type === 'medical_request');
+    const [selectedRequest, setSelectedRequestInternal] = useState(null);
+    const [editState, dispatch] = useReducer(editReducer, initialState);
 
-    // Selection/Edit State
-    const [selectedRequest, _setSelectedRequest] = useState(null);
-    const setSelectedRequest = (req) => {
-        _setSelectedRequest(req);
+    // Missing state restored here
+    const [newMedInput, setNewMedInput] = useState({ name: '', dose: '', frequency: '', quantity: '' });
+
+    // Hook 4: Meds
+    const medsUrl = selectedRequest?.patient_id ? `/medical/patients/${selectedRequest.patient_id}/medications` : null;
+    const medsHook = useFetch(medsUrl, { initialData: { success: true, data: [] } });
+
+    const requests = useMemo(() => unpack(requestsHook.data), [requestsHook.data]);
+    const doctors = useMemo(() => unpack(doctorsHook.data), [doctorsHook.data]);
+    const recycleBinData = useMemo(() => unpack(recycleHook.data), [recycleHook.data]);
+    const patientMeds = useMemo(() => unpack(medsHook.data), [medsHook.data]);
+
+    const totalCount = requestsHook.data?.meta?.totalCount || requests.length || 0;
+    const recycleRequests = useMemo(() => recycleBinData.filter(item => item.entity_type === 'medical_request'), [recycleBinData]);
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [debouncedSearch, filter]);
+
+    const setSelectedRequest = useCallback((req) => {
+        setSelectedRequestInternal(req);
         if (req) {
             const { meds, notes } = extractMedicationDetails(req);
             dispatch({
                 type: 'RESET',
-                payload: {
-                    editMeds: meds,
-                    editNotes: notes,
-                    editDoctorNote: req.doctor_note || ''
-                }
+                payload: { editMeds: meds, editNotes: notes, editDoctorNote: req.doctor_note || '' }
             });
         }
-    };
+    }, []);
+
     const [isNewModalOpen, setIsNewModalOpen] = useState(false);
     const [actionModal, setActionModal] = useState({ open: false, type: '', id: null });
     const [actionNote, setActionNote] = useState('');
 
-    // --- Side Effects for Medications ---
-
-    const { 
-        data: patientMeds = [], 
-        loading: fetchingMeds,
-        refetch: fetchPatientMeds 
-    } = useFetch(selectedRequest?.patient_id ? `/medical/patients/${selectedRequest.patient_id}/medications` : null, {
-        initialData: []
-    });
-
-    const [editState, dispatch] = React.useReducer((state, action) => {
-        switch (action.type) {
-            case 'RESET': return { ...state, isEditing: false, ...action.payload };
-            case 'SET_EDITING': return { ...state, isEditing: action.payload };
-            case 'UPDATE_FIELD': {
-                const newValue = typeof action.payload === 'function' 
-                    ? action.payload(state[action.field]) 
-                    : action.payload;
-                return { ...state, [action.field]: newValue };
-            }
-            default: return state;
-        }
-    }, {
-        isEditing: false,
-        editMeds: [],
-        editNotes: '',
-        editDoctorNote: ''
-    });
-
     const { isEditing, editMeds, editNotes, editDoctorNote } = editState;
-    const setIsEditing = (val) => dispatch({ type: 'SET_EDITING', payload: val });
-    const setEditMeds = (val) => dispatch({ type: 'UPDATE_FIELD', field: 'editMeds', payload: val });
-    const setEditNotes = (val) => dispatch({ type: 'UPDATE_FIELD', field: 'editNotes', payload: val });
-    const setEditDoctorNote = (val) => dispatch({ type: 'UPDATE_FIELD', field: 'editDoctorNote', payload: val });
-
-    const [newMedInput, setNewMedInput] = useState({ name: '', dose: '', frequency: '', quantity: '' });
-
-    // Polling Logic
+    
     useEffect(() => {
-        const interval = setInterval(fetchRequests, 30000);
+        const interval = setInterval(requestsHook.refetch, 30000);
         return () => clearInterval(interval);
-    }, [fetchRequests]);
-
-    const loading = requestsLoading;
+    }, [requestsHook.refetch]);
 
     const handleTabChange = (newTab) => {
-        if (newTab === 'new') {
-            setIsNewModalOpen(true);
-            return;
-        }
+        if (newTab === 'new') { setIsNewModalOpen(true); return; }
         setActiveTab(newTab);
-        if (newTab === 'list') {
-            setCurrentPage(1);
-        }
-    };
-
-    const handleFilterChange = (newFilter) => {
-        setFilter(newFilter);
-        setCurrentPage(1);
-    };
-
-    const handlePageChange = (newPage) => {
-        setCurrentPage(newPage);
-    };
-
-    const handleRestore = async (item) => {
-        if (await confirm(`¿Restaurar solicitud de ${item.entity_name}?`)) {
-            try {
-                await api.post(`/logs/restore/${item.id}`);
-                showMessage('Solicitud restaurada exitosamente', 'success');
-                fetchRecycleBin();
-                fetchRequests();
-            } catch (err) {
-                console.error("[RequirementManagerController] Restore error", err);
-                showMessage('Error al restaurar: ' + (err.response?.data?.message || err.message), 'error');
-            }
-        }
-    };
-
-    const openActionModal = (type, id) => {
-        setActionModal({ open: true, type, id });
-        setActionNote('');
+        if (newTab === 'list') setCurrentPage(1);
     };
 
     const confirmAction = async () => {
         if (['rejected', 'consult', 'reply'].includes(actionModal.type) && !actionNote.trim()) {
-            showMessage(t('note_required') || 'Note is required', 'error');
-            return;
+            showMessage(t('note_required') || 'Note is required', 'error'); return;
         }
-
         try {
             const payload = { status: actionModal.type === 'reply' ? 'consult' : actionModal.type };
             if (actionNote.trim()) {
                 if (actionModal.type === 'reply') payload.secretary_note = actionNote;
                 else payload.doctor_note = actionNote;
             }
-
             await api.patch(`/medical/requests/${actionModal.id}`, payload);
             showMessage(t('action_success') || 'Updated successfully', 'success');
             setActionModal({ open: false, type: '', id: null });
-            setSelectedRequest(null);
-            fetchRequests();
+            setSelectedRequestInternal(null);
+            requestsHook.refetch();
         } catch (err) {
             console.error("[RequirementManagerController] Action error", err);
-            showMessage(err.response?.data?.message || t('error_update') || 'Failed to update', 'error');
+            showMessage(err.response?.data?.error || t('error_update') || 'Failed to update', 'error');
         }
     };
 
     const handleDelete = async (id) => {
-        if (await doubleConfirm(
-            t('confirm_delete') || '¿Seguro que desea eliminar?',
-            t('confirm_permanent_delete') || 'Esta acción eliminará el registro permanentemente.'
-        )) {
+        if (await doubleConfirm(t('confirm_delete'), t('confirm_permanent_delete'))) {
             try {
                 await api.delete(`/medical/requests/${id}`);
                 showMessage('Solicitud eliminada correctamente', 'success');
-                fetchRequests();
+                requestsHook.refetch();
             } catch (err) {
                 console.error("[RequirementManagerController] Delete error", err);
-                showMessage("Error al eliminar: " + (err.response?.data?.message || err.message), 'error');
+                showMessage("Error al eliminar: " + (err.response?.data?.error || err.message), 'error');
             }
-        }
-    };
-
-    const addToChronic = async (medName) => {
-        if (!await confirm(`¿Desea agregar "${medName}" a la lista de medicación crónica del paciente?`)) return;
-
-        try {
-            await api.post('/medical/patients/medications', {
-                patientId: selectedRequest.patient_id,
-                medication_name: medName,
-                is_chronic: true,
-                status: 'active'
-            });
-            fetchPatientMeds();
-            showMessage('Medicación agregada exitosamente', 'success');
-        } catch (e) {
-            console.error(e);
-            showMessage("Error al agregar medicación", 'error');
         }
     };
 
     const handleSaveEdit = async () => {
         try {
-            const medsString = editMeds.map(m => {
-                let s = m.name;
-                if (m.dose) s += ` ${m.dose}`;
-                if (m.frequency) s += ` (${m.frequency})`;
-                if (m.quantity) s += ` [Qty: ${m.quantity}]`;
-                return s;
-            }).join(', ');
-
+            const medsString = editMeds.map(m => `${m.name} ${m.dose || ''}`).join(', ');
             const newRequestNote = `[Solicitud Paciente] ${medsString}\nNotas: ${editNotes}`;
-            const payload = {
-                raw_medication_data: JSON.stringify(editMeds),
-                request_note: newRequestNote,
-                doctor_note: editDoctorNote
-            };
-
+            const payload = { raw_medication_data: JSON.stringify(editMeds), request_note: newRequestNote, doctor_note: editDoctorNote };
             await api.put(`/medical/requests/${selectedRequest.id}`, payload);
-
-            setSelectedRequest(prev => ({
-                ...prev,
-                ...payload,
-                raw_medication_data: JSON.stringify(editMeds)
-            }));
-            fetchRequests();
-            setIsEditing(false);
+            setSelectedRequestInternal(prev => ({ ...prev, ...payload }));
+            requestsHook.refetch();
+            dispatch({ type: 'SET_EDITING', payload: false });
             showMessage('Cambios guardados correctamente', 'success');
         } catch (error) {
             console.error(error);
@@ -258,70 +162,19 @@ export const useRequirementManagerController = (user) => {
         }
     };
 
-    const updateEditMed = (index, field, value) => {
-        setEditMeds(prev => {
-            const newMeds = [...prev];
-            newMeds[index] = { ...newMeds[index], [field]: value };
-            return newMeds;
-        });
-    };
-
-    const handleAddMed = () => {
-        if (newMedInput.name.trim()) {
-            setEditMeds(prev => [...prev, { ...newMedInput, name: newMedInput.name.trim() }]);
-            setNewMedInput({ name: '', dose: '', frequency: '', quantity: '' });
-        }
-    };
-
-    const checkIsKnown = (medName) => {
-        if (!medName) return false;
-        return patientMeds.some(pm => {
-            const pmName = (pm.medication_name || pm.name || '').toLowerCase();
-            const reqName = medName.toLowerCase();
-            return pmName.includes(reqName) || reqName.includes(pmName);
-        });
-    };
-
     return {
-        requests,
-        loading,
-        selectedRequest,
-        setSelectedRequest,
-        actionModal,
-        setActionModal,
-        actionNote,
-        setActionNote,
-        activeTab,
-        setActiveTab: handleTabChange,
-        isNewModalOpen,
-        setIsNewModalOpen,
-        recycleRequests,
-        doctors,
-        filter,
-        setFilter: handleFilterChange,
-        canDeleteRequest,
-        handleRestore,
-        openActionModal,
-        confirmAction,
-        handleDelete,
-        fetchRequests,
-        fetched: requestsHook.fetched,
-        patientMeds, fetchingMeds,
-
-
-        isEditing, setIsEditing,
-        editMeds, setEditMeds,
-        editNotes, setEditNotes,
-        newMedInput, setNewMedInput,
-        addToChronic, handleSaveEdit,
-        updateEditMed, handleAddMed,
-        editDoctorNote, setEditDoctorNote,
-        checkIsKnown,
-        // Pagination Props
-        currentPage,
-        totalPages: Math.ceil(totalCount / itemsPerPage),
-        totalCount,
-        handlePageChange,
+        requests, loading: requestsHook.loading, selectedRequest, setSelectedRequest,
+        actionModal, setActionModal, actionNote, setActionNote,
+        activeTab, setActiveTab: handleTabChange, isNewModalOpen, setIsNewModalOpen,
+        recycleRequests, doctors, filter, setFilter: (f) => { setFilter(f); setCurrentPage(1); },
+        canDeleteRequest, confirmAction, handleDelete, fetchRequests: requestsHook.refetch, fetched: requestsHook.fetched,
+        patientMeds, isEditing, setIsEditing: (v) => dispatch({ type: 'SET_EDITING', payload: v }), 
+        editMeds, setEditMeds: (v) => dispatch({ type: 'UPDATE_FIELD', field: 'editMeds', payload: v }), 
+        editNotes, setEditNotes: (v) => dispatch({ type: 'UPDATE_FIELD', field: 'editNotes', payload: v }), 
+        newMedInput, setNewMedInput, handleSaveEdit, 
+        editDoctorNote, setEditDoctorNote: (v) => dispatch({ type: 'UPDATE_FIELD', field: 'editDoctorNote', payload: v }), 
+        checkIsKnown: (medName) => medName && patientMeds.some(pm => (pm.medication_name || pm.name || '').toLowerCase().includes(medName.toLowerCase())),
+        currentPage, totalPages: Math.ceil(totalCount / itemsPerPage), totalCount, handlePageChange: (p) => setCurrentPage(p),
         t
     };
 };

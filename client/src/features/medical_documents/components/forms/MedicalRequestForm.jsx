@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { isDueSoon } from '@/utils/core/dateUtils';
 import { useAuth } from '@/features/auth';
@@ -7,7 +6,6 @@ import { useMessage } from '@/context/MessageContext';
 import { PatientSearchSelect } from '@/features/patients';
 import Card from '@/components/atoms/Card';
 import Button from '@/components/atoms/Button';
-import FormGroup from '@/components/molecules/FormGroup';
 import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import Badge from '@/components/atoms/Badge';
@@ -23,7 +21,7 @@ import SimpleRequestForm from '@/features/medical_documents/components/forms/Sim
 
 /**
  * MedicalRequestForm Organism (Feature-based).
- * Form to create new medical requests (prescriptions, licenses, certificates).
+ * Form to create new medical requests. Doctor is derived from global context.
  */
 const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSendToDoctor, noCard = false }) => {
     const { user } = useAuth();
@@ -31,7 +29,6 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     const { showMessage } = useMessage();
 
     const {
-        selectedDoctor, setSelectedDoctor,
         selectedPatient, setSelectedPatient,
         patientData, setPatientData,
         patientMeds,
@@ -56,11 +53,9 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
 
     if (user?.role !== 'secretary' && user?.role !== 'doctor') return null;
 
-    const baseClass = styles.root;
-
     const formContent = (
         <form onSubmit={handleSubmit} className={styles.root}>
-            <div className={`${styles.row} ${styles.row3}`}>
+            <div className={`${styles.row} ${styles.row2}`}>
                 <Select
                     value={reqType}
                     onChange={e => setReqType(e.target.value)}
@@ -72,24 +67,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                     ]}
                 />
 
-                {user?.role === 'doctor' ? (
-                    <div className={styles.readonlyValue}>
-                        Dr. {user.full_name || user.username}
-                    </div>
-                ) : (
-                    <Select
-                        value={selectedDoctor}
-                        onChange={e => setSelectedDoctor(e.target.value)}
-                        required
-                        options={[
-                            { value: '', label: t('select_doctor') },
-                            ...doctors.map(d => ({ 
-                                value: d.id, 
-                                label: `${d.full_name}${d.specialty ? ` - ${d.specialty}` : ''}` 
-                            }))
-                        ]}
-                    />
-                )}
+                {/* ECC: Doctor selection removed from UI. It uses context automatically. */}
 
                 <div>
                     <PatientSearchSelect
@@ -120,7 +98,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                         patientMeds={patientMeds}
                         medicationItems={medicationItems}
                         setMedicationItems={setMedicationItems}
-                        baseClass={baseClass}
+                        baseClass={styles.root}
                         {...tempMedsProps}
                     />
                 ) : (
