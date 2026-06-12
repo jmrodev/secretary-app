@@ -2,10 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import Button from '@/components/atoms/Button';
 
-// Molecules
-import ScheduleBulkActions from '@/features/appointments/components/schedule/ScheduleBulkActions';
-import ScheduleTimeBlock from '@/features/appointments/components/schedule/ScheduleTimeBlock';
-
 import styles from './DoctorScheduleSettings.module.css';
 
 const EMPTY_SCHEDULE = [];
@@ -23,7 +19,14 @@ const DAYS = [
  * DoctorScheduleSettings Organism.
  * Provides a specialized interface for configuring a doctor's weekly work schedule.
  */
-const DoctorScheduleSettings = ({ doctorId: _doctorId, schedule = EMPTY_SCHEDULE, setSchedule, loading }) => {
+const DoctorScheduleSettings = ({
+    doctorId: _doctorId,
+    schedule = EMPTY_SCHEDULE,
+    setSchedule,
+    loading,
+    ScheduleBulkActionsComponent,
+    ScheduleTimeBlockComponent
+}) => {
     const { t } = useLanguage();
     const [focusedIndex, setFocusedIndex] = useState(null);
 
@@ -110,7 +113,7 @@ const DoctorScheduleSettings = ({ doctorId: _doctorId, schedule = EMPTY_SCHEDULE
                 <p className={`${styles.desc}`}>Defina los días y franjas horarias en las que este médico atiende.</p>
             </header>
 
-            <ScheduleBulkActions
+            <ScheduleBulkActionsComponent
                 bulkStart={bulkStart}
                 setBulkStart={setBulkStart}
                 bulkEnd={bulkEnd}
@@ -158,7 +161,7 @@ const DoctorScheduleSettings = ({ doctorId: _doctorId, schedule = EMPTY_SCHEDULE
                                     {isActive && (
                                         <div className={`${styles.scheduleBlocks}`}>
                                             {dayBlocks.map((block) => (
-                                                <ScheduleTimeBlock
+                                                <ScheduleTimeBlockComponent
                                                     key={block._key || block.originalIndex}
                                                     block={block}
                                                     onFocus={() => setFocusedIndex(block.originalIndex)}

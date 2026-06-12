@@ -17,7 +17,11 @@ const DoctorsManager = ({
     filteredDoctors,
     modalState,
     handlers,
-    settings
+    settings,
+    ScheduleBulkActionsComponent,
+    ScheduleTimeBlockComponent,
+    UserFormComponent,
+    MessageTemplateEditorComponent
 }) => {
     return (
         <section className={`${styles.root}`}>
@@ -84,6 +88,12 @@ const DoctorsManager = ({
                         schedule={modalState.schedule}
                         setSchedule={handlers.onScheduleChange}
                         loadingSchedule={modalState.loadingSchedule}
+
+                        ScheduleBulkActionsComponent={ScheduleBulkActionsComponent}
+                        ScheduleTimeBlockComponent={ScheduleTimeBlockComponent}
+
+                        UserFormComponent={UserFormComponent}
+                        MessageTemplateEditorComponent={MessageTemplateEditorComponent}
 
                         connected={modalState.connected}
                         onConnectGoogle={handlers.onConnectGoogle}
