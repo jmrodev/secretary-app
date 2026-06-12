@@ -2,12 +2,7 @@ import React from 'react';
 import { useDashboardController } from './hooks/useDashboardController';
 import DashboardReminders from '@/features/dashboard/components/DashboardReminders';
 import MedicalRequirementManager from '@/features/medical_documents/components/ui/MedicalRequirementManager';
-import AppointmentActionModal from '@/features/appointments/components/modals/AppointmentActionModal';
-import PrescriptionModal from '@/features/medical_documents/components/modals/PrescriptionModal';
-import PatientHistoryModal from '@/features/patients/components/modals/PatientHistoryModal';
-import TransactionModal from '@/features/finances/components/modals/TransactionModal';
-import MedicationInput from '@/features/medical_documents/components/forms/MedicationInput';
-import MedicalRequestModal from '@/features/medical_documents/components/modals/MedicalRequestModal';
+import DashboardModalOrchestrator from './components/DashboardModalOrchestrator';
 import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
@@ -18,6 +13,7 @@ import styles from './DashboardPage.module.css';
 /**
  * DashboardPage (Orchestrator).
  * Central hub of the application.
+ * Decoupled from specific domain modals via DashboardModalOrchestrator.
  */
 const DashboardPage = () => {
     const controller = useDashboardController();
@@ -26,13 +22,6 @@ const DashboardPage = () => {
         loading,
         error,
         reminders,
-        actionModal,
-        historyModal,
-        prescribeModal,
-        paymentModal,
-        newRequestModal,
-        isSubmitting,
-        doctors,
         handlers,
         isAdmin, isSecretary, isDoctor
     } = controller;
@@ -41,28 +30,11 @@ const DashboardPage = () => {
 
     const {
         refreshDashboard,
-        handleUpdateStatus,
-        handleDelete,
-        handleCancel,
-        handleWhatsApp,
-        handlePrescriptionSubmit,
-        handleOpenPayment,
-        handleOpenHistory,
-        handleOpenPrescribe,
-        handleOpenReschedule,
-        handleOpenSync,
         handleOpenNewRequest,
-        handleUpdateType,
-        handleHardEdit,
-        handleSaveNote,
-        handleCompleteReminder,
         handleWhatsAppReminder,
+        handleCompleteReminder,
         handleMarkNotified,
-        setActionModal,
-        setHistoryModal,
-        setPrescribeModal,
         setPaymentModal,
-        setNewRequestModal,
         navigate
     } = handlers;
 
@@ -73,8 +45,6 @@ const DashboardPage = () => {
 
     const shouldShowLoadingState = loading && !controller.fetched;
     const shouldShowErrorState = Boolean(error) && !controller.fetched;
-
-
 
     return (
         <MainLayout wide flush title={t('dashboard')}>
@@ -221,73 +191,7 @@ const DashboardPage = () => {
                 </main>
             </div>
 
-            {/* Modals */}
-            <AppointmentActionModal
-                isOpen={actionModal.open}
-                onClose={() => setActionModal(prev => ({ ...prev, open: false }))}
-                appt={actionModal.appt}
-                doctors={doctors}
-                onUpdateStatus={handleUpdateStatus}
-                onDelete={handleDelete}
-                onCancel={handleCancel}
-                onPay={handleOpenPayment}
-                onWhatsApp={handleWhatsApp}
-                onUpdateType={handleUpdateType}
-                onHardEdit={handleHardEdit}
-                onHistory={handleOpenHistory}
-                onPrescribe={handleOpenPrescribe}
-                onReschedule={handleOpenReschedule}
-                onSync={handleOpenSync}
-                onSaveNote={handleSaveNote}
-                fetchAppointments={refreshDashboard}
-            />
-
-            {prescribeModal.open && (
-                <PrescriptionModal
-                    isOpen={prescribeModal.open}
-                    onClose={() => setPrescribeModal(prev => ({ ...prev, open: false }))}
-                    patientName={prescribeModal.patientName}
-                    patientId={prescribeModal.patientId}
-                    onSubmit={handlePrescriptionSubmit}
-                    t={t}
-                    isSubmitting={isSubmitting}
-                />
-            )}
-
-            {historyModal.open && (
-                <PatientHistoryModal
-                    isOpen={historyModal.open}
-                    onClose={() => setHistoryModal(prev => ({ ...prev, open: false }))}
-                    patientId={historyModal.patientId}
-                    patientName={historyModal.patientName}
-                />
-            )}
-
-            {paymentModal.open && (
-                <TransactionModal
-                    isOpen={paymentModal.open}
-                    onClose={() => setPaymentModal(prev => ({ ...prev, open: false }))}
-                    initialData={{
-                        ...paymentModal.initialData,
-                        appointment_id: paymentModal.apptId || paymentModal.initialData?.apptId
-                    }}
-                    requestId={paymentModal.reqId || paymentModal.initialData?.reqId}
-                    onSuccess={async () => {
-                        refreshDashboard();
-                        setPaymentModal(prev => ({ ...prev, open: false }));
-                    }}
-                    t={t}
-                    MedicationInputComponent={MedicationInput}
-                />
-            )}
-
-            <MedicalRequestModal 
-                isOpen={newRequestModal.open}
-                onClose={() => setNewRequestModal({ open: false })}
-                doctors={doctors}
-                t={t}
-                onRequestCreated={refreshDashboard}
-            />
+            <DashboardModalOrchestrator controller={controller} />
         </MainLayout>
     );
 };

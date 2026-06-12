@@ -1,121 +1,30 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 import { useSystemConfigController } from '@/features/config/hooks/useSystemConfigController';
-import GeneralSettings from '@/features/config/components/sections/GeneralSettings';
-import CommunicationSettings from '@/features/config/components/sections/CommunicationSettings';
-import IntegrationSettings from '@/features/config/components/sections/IntegrationSettings';
-import BillingSettings from '@/features/config/components/sections/BillingSettings';
-import AiSettings from '@/features/config/components/sections/AiSettings';
-import { useDoctorsPageController } from '@/features/doctors';
-import { useProfileController, ProfileEditor } from '@/features/auth';
-import { useReportsController, useAuditLogsController } from '@/features/reports';
-import { QRCodeModal } from '@/features/patients'; // Fixed import from patients feature
-import { useInstitutionsController } from '@/features/institutions';
-import { InstitutionFinances } from '@/features/finances';
-import { ScheduleBulkActions, ScheduleTimeBlock } from '@/features/appointments';
-import { UserForm } from '@/features/users';
-import MessageTemplateEditor from './components/forms/MessageTemplateEditor';
+import { getConfigSections, getConfigSection } from './registry/configRegistry';
+import { loadDefaultConfigSections } from './components/ConfigRegistryLoader';
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
-import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { QRCodeModal } from '@/features/patients';
 
-// Lazy load heavy components
-const DoctorsManager = React.lazy(() => import('@/features/doctors').then(module => ({ default: module.DoctorsManager })));
-const ReportsDashboard = React.lazy(() => import('@/features/reports').then(module => ({ default: module.ReportsDashboard })));
-const InstitutionManager = React.lazy(() => import('@/features/institutions').then(module => ({ default: module.InstitutionManager })));
-const AuditLogManager = React.lazy(() => import('@/features/reports').then(module => ({ default: module.AuditLogManager })));
-const UserManager = React.lazy(() => import('@/features/users').then(module => ({ default: module.UserManager })));
-
-import { printReport } from '@/utils/printing/reportPrintHelper';
 import styles from './SystemConfigPage.module.css';
 
-// --- Sub-sections Orchestrated within the Page ---
-
-const DoctorsSection = () => {
-    const controller = useDoctorsPageController();
-    return (
-        <DoctorsManager
-            {...controller}
-            ScheduleBulkActionsComponent={ScheduleBulkActions}
-            ScheduleTimeBlockComponent={ScheduleTimeBlock}
-            UserFormComponent={UserForm}
-            MessageTemplateEditorComponent={MessageTemplateEditor}
-        />
-    );
-};
-const ProfileSection = () => {
-    const controller = useProfileController();
-    return <ProfileEditor {...controller} />;
-};
-const ReportsSection = () => {
-    const controller = useReportsController();
-    const handlePrint = () => {
-        printReport(controller.reportData, {
-            activeTab: controller.activeTab,
-            month: controller.month,
-            year: controller.year,
-            t: controller.t
-        });
-    };
-    return <ReportsDashboard {...controller} onPrint={handlePrint} />;
-};
-
-const InstitutionsSection = () => {
-    const controller = useInstitutionsController();
-    return <InstitutionManager {...controller} InstitutionFinancesComponent={InstitutionFinances} />;
-};
-const AuditLogsSection = () => {
-    const controller = useAuditLogsController();
-    return <AuditLogManager {...controller} />;
-};
-const UserSection = () => {
-    const { t } = useSystemConfigController();
-    return <UserManager t={t} />;
-};
-
-const getTabMetadata = (tab, t) => {
-    const meta = {
-        profile: { title: t('profile'), icon: 'person', desc: 'Gestiona tu información personal y profesional.' },
-        doctors: { title: t('doctors'), icon: 'medical_services', desc: 'Administra la lista de profesionales y sus consultorios.' },
-        reports: { title: t('reports'), icon: 'assessment', desc: 'Genera reportes detallados y estadísticas del sistema.' },
-        institutions: { title: t('institutions'), icon: 'business', desc: 'Configura las clínicas y centros de atención.' },
-        users: { title: t('users'), icon: 'group', desc: 'Gestiona los accesos y roles de los usuarios.' },
-        logs: { title: t('logs'), icon: 'list_alt', desc: 'Historial de auditoría y seguridad del sistema.' },
-        general: { title: t('general'), icon: 'settings', desc: 'Configuración básica y enlaces de ayuda.' },
-        communications: { title: t('communications'), icon: 'chat', desc: 'Plantillas de mensajes y automatización de WhatsApp.' },
-        integrations: { title: t('integrations'), icon: 'extension', desc: 'Conexión con Google, Meta y otros servicios.' },
-        billing: { title: t('billing'), icon: 'payments', desc: 'Configuración de facturación y ARCA (AFIP).' },
-        data: { title: t('data_management_title'), icon: 'database', desc: 'Seguridad, respaldos y gestión de base de datos.' }
-    };
-    return meta[tab] || { title: tab, icon: 'settings', desc: '' };
-};
-
+/**
+ * SettingsContent (Slot Renderer).
+ * Renders the active configuration section based on the registry.
+ */
 const SettingsContent = ({ activeTab, controller }) => {
-    const {
-        user,
-        settings,
-        loading,
-        googleUnlinked,
-        t,
-        handlers
-    } = controller;
-    const {
-        updateSetting,
-        setQrModal,
-        handleGoogleAuth,
-        handleDisconnectGoogle,
-        handleRetryGoogleFailed,
-        handleTestMeta,
-        insertVariable,
-        handleRefreshTunnel
-    } = handlers;
+    const { t } = controller;
+    const section = useMemo(() => getConfigSection(activeTab), [activeTab]);
 
-    const metadata = getTabMetadata(activeTab, t);
+    if (!section) return null;
 
-    const wrap = (content) => (
+    const { metadata, Component } = section;
+
+    return (
         <section className="settings-content-wrapper animate-fade-in-up">
             <header className="settings-content-header">
                 <div className="settings-content-header__icon">
@@ -127,151 +36,42 @@ const SettingsContent = ({ activeTab, controller }) => {
                 </div>
             </header>
             <div className="settings-content-body">
-                {content}
+                <Suspense fallback={<Loading variant="centered" />}>
+                    <Component controller={controller} />
+                </Suspense>
             </div>
         </section>
     );
-
-    switch (activeTab) {
-        case 'profile':
-            return wrap(<ProfileSection />);
-        case 'doctors':
-            return wrap(<DoctorsSection />);
-        case 'reports':
-            return wrap(<ReportsSection />);
-        case 'institutions':
-            return wrap(<InstitutionsSection />);
-        case 'users':
-            return wrap(<UserSection />);
-        case 'logs':
-            return wrap(<AuditLogsSection />);
-        case 'general':
-            return wrap(
-                <>
-                    <GeneralSettings
-                        user={user}
-                        settings={settings}
-                        updateSetting={updateSetting}
-                        onShowQr={() => {
-                            const url = settings.staff_base_url || window.location.origin;
-                            setQrModal({ open: true, url, expiry: null });
-                        }}
-                    />
-                    <article className="system-config-page__documentation animate-fade-in">
-                        <header className={`${styles.sectionHeader}`}>
-                            <Icon name="description" size="1.2rem" className={`${styles.sectionIcon}`} />
-                            <h3 className={`${styles.sectionTitle}`}>Documentación y Ayuda</h3>
-                        </header>
-                        <div className={`${styles.actions}`}>
-                            <Button
-                                variant="ghost"
-                                onClick={() => window.open('/docs/MANUAL_OPERACIONES.html', '_blank')}
-                                icon={<Icon name="assessment" size="1.1rem" />}
-                                className="system-config-page__action-btn"
-                            >
-                                Ver Manual de Operaciones
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                onClick={() => window.open('/docs/GUIA_CONFIGURACION_GENERAL.md', '_blank')}
-                                icon={<Icon name="settings" size="1.1rem" />}
-                                className="system-config-page__action-btn"
-                            >
-                                Guía de Configuración
-                            </Button>
-                        </div>
-                    </article>
-                </>
-            );
-        case 'communications':
-            return wrap(
-                <CommunicationSettings
-                    user={user}
-                    settings={settings}
-                    updateSetting={updateSetting}
-                    insertVariable={insertVariable}
-                />
-            );
-        case 'integrations':
-            return wrap(
-                <IntegrationSettings
-                    user={user}
-                    settings={settings}
-                    updateSetting={updateSetting}
-                    loading={loading}
-                    googleUnlinked={googleUnlinked}
-                    onGoogleAuth={handleGoogleAuth}
-                    onDisconnectGoogle={handleDisconnectGoogle}
-                    onRefreshToken={handleGoogleAuth}
-                    onRetryGoogle={handleRetryGoogleFailed}
-                    onRefreshTunnel={handleRefreshTunnel}
-                    onTestMeta={handleTestMeta}
-                />
-            );
-        case 'billing':
-            return wrap(
-                <BillingSettings
-                    user={user}
-                    settings={settings}
-                    updateSetting={updateSetting}
-                />
-            );
-        case 'ai':
-            return wrap(
-                <AiSettings
-                    user={user}
-                    settings={settings}
-                    updateSetting={updateSetting}
-                />
-            );
-        case 'data':
-            return wrap(
-                <div className="system-config-page__data-management animate-fade-in">
-                    <div className={`${styles.sectionHeader}`}>
-                        <Icon name="payments" size="1.2rem" className={`${styles.sectionIcon}`} />
-                        <h3 className={`${styles.sectionTitle}`}>
-                            {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
-                        </h3>
-                    </div>
-                    <div className={`${styles.placeholder}`}>
-                        <p className={`${styles.placeholderText}`}>{t('coming_soon') || 'Próximamente...'}</p>
-                    </div>
-                </div>
-            );
-        default:
-            return null;
-    }
 };
 
 /**
  * SystemConfigPage (Orchestrator).
- * Centralized settings panel for the application.
+ * Now fully decoupled using a Slot/Registry pattern.
  */
 const SystemConfigPage = () => {
     const controller = useSystemConfigController();
-    const {
-        activeTab,
-        qrModal,
-        handlers
-    } = controller;
+    const { t, activeTab, qrModal, handlers } = controller;
 
-    const { setQrModal } = handlers;
+    // Initialize the registry once. 
+    // In a larger app, this would happen at the app level.
+    useEffect(() => {
+        loadDefaultConfigSections(t);
+    }, [t]);
+
+    const tabs = useMemo(() => 
+        getConfigSections().map(s => ({
+            id: s.id,
+            label: s.metadata.title,
+            icon: s.metadata.icon
+        })), []);
 
     return (
-        <MainLayout wide flush title={controller.t('config') || 'Configuración del Sistema'}>
+        <MainLayout wide flush title={t('config') || 'Configuración del Sistema'}>
             <div className="system-config-page-orchestrator layout-content-area animate-fade-in">
                 <FeatureToolbar
                     className="system-config-page__toolbar"
-                    tabs={[
-                        { id: 'general', label: controller.t('general'), icon: 'settings' },
-                        { id: 'profile', label: controller.t('profile'), icon: 'person' },
-                        { id: 'communications', label: controller.t('communications'), icon: 'chat' },
-                        { id: 'ai', label: controller.t('ai'), icon: 'psychology' },
-                        { id: 'doctors', label: controller.t('doctors'), icon: 'medical_services' },
-                        { id: 'integrations', label: controller.t('integrations'), icon: 'extension' },
-                        { id: 'users', label: controller.t('users'), icon: 'group' },
-                        { id: 'billing', label: controller.t('billing'), icon: 'payments' },
-                        { id: 'logs', label: controller.t('logs'), icon: 'list_alt' }
+                    tabs={tabs.length > 0 ? tabs : [
+                        { id: 'general', label: t('general'), icon: 'settings' }
                     ]}
                     activeTab={activeTab}
                     onTabChange={handlers.setActiveTab}
@@ -285,7 +85,7 @@ const SystemConfigPage = () => {
 
                         <QRCodeModal
                             isOpen={qrModal.open}
-                            onClose={() => setQrModal(prev => ({ ...prev, open: false }))}
+                            onClose={() => handlers.setQrModal(prev => ({ ...prev, open: false }))}
                             url={qrModal.url}
                             expiresAt={qrModal.expiry}
                         />
