@@ -1,6 +1,5 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
-import { PatientSearchSelect } from '@/features/patients';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import styles from './AppointmentPatientSection.module.css';
 
@@ -9,13 +8,14 @@ import styles from './AppointmentPatientSection.module.css';
  * Orchestrates patient selection within the appointment form.
  */
 const AppointmentPatientSection = ({
-    selectedPatient, selectedPatientData, missingData, handlePatientChange, handlePhoneChange, onOpenEditPatient, t
+    selectedPatient, selectedPatientData, missingData, handlePatientChange, handlePhoneChange, onOpenEditPatient, t,
+    PatientSearchSelectComponent
 }) => {
     return (
         <div className={`${styles.root}`}>
             <div className={styles.searchGroup}>
                 <label className={styles.groupLabel}>{t('patients') || 'Paciente'}</label>
-                <PatientSearchSelect
+                <PatientSearchSelectComponent
                     value={selectedPatient}
                     selectedData={selectedPatientData}
                     placeholder="Buscar Paciente..."

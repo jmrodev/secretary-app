@@ -1,6 +1,5 @@
 import React from 'react';
 import InstitutionList from '@/features/institutions/components/views/InstitutionList';
-import { InstitutionFinances } from '@/features/finances';
 import InstitutionFormModal from '@/features/institutions/components/forms/InstitutionFormModal';
 import Icon from '@/components/atoms/Icon';
 import TabNav from '@/components/molecules/TabNav';
@@ -16,7 +15,8 @@ const InstitutionManager = ({
     editingInstitution,
     formData,
     handlers,
-    t
+    t,
+    InstitutionFinancesComponent
 }) => {
     const {
         handleOpenFormModal,
@@ -42,13 +42,15 @@ const InstitutionManager = ({
                     >
                         {t('list') || 'Lista'}
                     </TabButton>
-                    <TabButton
-                        isActive={activeTab === 'finances'}
-                        onClick={() => setActiveTab('finances')}
-                        icon={<Icon name="analytics" size="1rem" />}
-                    >
-                        {t('finances') || 'Finanzas'}
-                    </TabButton>
+                    {InstitutionFinancesComponent && (
+                        <TabButton
+                            isActive={activeTab === 'finances'}
+                            onClick={() => setActiveTab('finances')}
+                            icon={<Icon name="analytics" size="1rem" />}
+                        >
+                            {t('finances') || 'Finanzas'}
+                        </TabButton>
+                    )}
                 </TabNav>
             </div>
 
@@ -78,7 +80,7 @@ const InstitutionManager = ({
                             t={t}
                         />
                     ) : (
-                        <InstitutionFinances institutions={institutions} t={t} />
+                        InstitutionFinancesComponent && <InstitutionFinancesComponent institutions={institutions} t={t} />
                     )}
                 </div>
             </div>

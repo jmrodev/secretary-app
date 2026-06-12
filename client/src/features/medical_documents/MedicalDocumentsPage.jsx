@@ -7,6 +7,7 @@ import MedicalFileRepository from './components/lists/MedicalFileRepository';
 import MedicalActionModals from './components/modals/MedicalActionModals';
 import MedicalDocumentsPrintView from './components/ui/MedicalDocumentsPrintView';
 import { PatientSearchSelect } from '@/features/patients';
+import { TransactionModal } from '@/features/finances';
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
@@ -221,6 +222,7 @@ const MedicalDocumentsPage = () => {
                     requestEditData={requestEditData}
                     handleRequestEditDataChange={handleRequestEditDataChange}
                     handleUpdateRequest={handleUpdateRequest}
+                    TransactionModalComponent={TransactionModal}
                 />
 
                 <MedicalDocumentsPrintView 

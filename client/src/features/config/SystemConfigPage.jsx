@@ -10,6 +10,7 @@ import { useProfileController, ProfileEditor } from '@/features/auth';
 import { useReportsController, useAuditLogsController } from '@/features/reports';
 import { QRCodeModal } from '@/features/patients'; // Fixed import from patients feature
 import { useInstitutionsController } from '@/features/institutions';
+import { InstitutionFinances } from '@/features/finances';
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
@@ -53,7 +54,7 @@ const ReportsSection = () => {
 
 const InstitutionsSection = () => {
     const controller = useInstitutionsController();
-    return <InstitutionManager {...controller} />;
+    return <InstitutionManager {...controller} InstitutionFinancesComponent={InstitutionFinances} />;
 };
 const AuditLogsSection = () => {
     const controller = useAuditLogsController();
