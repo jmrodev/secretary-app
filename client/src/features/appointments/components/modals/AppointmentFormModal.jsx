@@ -16,7 +16,8 @@ import styles from './AppointmentFormModal.module.css';
 const AppointmentFormModal = ({
     isOpen, onClose, onSubmit, selectedDoctor, doctors, type, selectedPatient, selectedPatientData,
     date, reason, bonified, selectedInstitution, institutions, syncReferenceInfo, onOpenEditPatient,
-    missingData, editModeId, isOutOfHours, handlers
+    missingData, editModeId, isOutOfHours, handlers,
+    PatientSearchSelectComponent
 }) => {
     const { t } = useLanguage();
     const { user } = useAuth();
@@ -69,6 +70,7 @@ const AppointmentFormModal = ({
                         bonified={bonified}
                         handleBonifiedChange={handleBonifiedChange}
                         t={t}
+                        PatientSearchSelectComponent={PatientSearchSelectComponent}
                     />
 
                 <div className={`${styles.actions}`}>

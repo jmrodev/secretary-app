@@ -15,7 +15,8 @@ export const AppointmentFormFields = ({
     selectedInstitution, institutionOptions, handleInstitutionChange,
     reason, handleReasonChange,
     bonified, handleBonifiedChange,
-    t
+    t,
+    PatientSearchSelectComponent
 }) => {
     return (
         <div className={styles.grid}>
@@ -53,6 +54,7 @@ export const AppointmentFormFields = ({
                 handlePhoneChange={handlePhoneChange}
                 onOpenEditPatient={onOpenEditPatient}
                 t={t}
+                PatientSearchSelectComponent={PatientSearchSelectComponent}
             />
 
             <div className={styles.field}>

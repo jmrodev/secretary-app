@@ -12,7 +12,7 @@ import PatientHistoryView from './components/views/PatientHistoryView';
 import { AppointmentsModals } from './components/sections/AppointmentsModals';
 import Button from '@/components/atoms/Button';
 import { PrescriptionModal, MedicationInput } from '@/features/medical_documents';
-import { PatientHistoryModal, PatientManagerModal } from '@/features/patients';
+import { PatientHistoryModal, PatientManagerModal, PatientSearchSelect } from '@/features/patients';
 import WhatsAppModal from '@/features/chat/components/ui/WhatsAppModal';
 import AdminAuthModal from '@/features/auth/components/modals/AdminAuthModal';
 import { TransactionModal } from '@/features/finances';
@@ -117,6 +117,7 @@ const AppointmentsPage = () => {
             <AppointmentsModals
                 doctors={doctors} institutions={institutions} booking={booking} nextSlot={nextSlot}
                 paymentModal={paymentModal}
+                PatientSearchSelectComponent={PatientSearchSelect}
                 actionModal={actionModal} setActionModal={setActionModal}
                 historyModal={historyModal}
                 prescribeModal={prescribeModal}

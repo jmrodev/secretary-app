@@ -19,7 +19,8 @@ export const AppointmentsModals = ({
     patientManagerModalSlot,
     whatsappModalSlot,
     adminAuthModalSlot,
-    transactionModalSlot
+    transactionModalSlot,
+    PatientSearchSelectComponent
 }) => (
     <>
         <AppointmentActionModal
@@ -58,6 +59,7 @@ export const AppointmentsModals = ({
                 isOpen={booking.showForm} onClose={() => booking.setShowForm(false)}
                 {...booking} onSubmit={handlers.handleBook} doctors={doctors} institutions={institutions}
                 onOpenEditPatient={() => setEditPatientModalOpen(true)} t={t} handlers={booking.handlers}
+                PatientSearchSelectComponent={PatientSearchSelectComponent}
             />
         )}
 

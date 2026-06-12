@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { TransactionModal } from '@/features/finances';
 import MedicationInput from '@/features/medical_documents/components/forms/MedicationInput';
 
 // Local Feature Components
@@ -42,7 +41,8 @@ const MedicalActionModals = ({
     handleUpdateLicense,
     requestEditData,
     handleRequestEditDataChange,
-    handleUpdateRequest
+    handleUpdateRequest,
+    TransactionModalComponent
 }) => {
     return (
         <>
@@ -59,7 +59,7 @@ const MedicalActionModals = ({
             />
 
             {/* Payment Modal (Shared molecule) */}
-            <TransactionModal
+            <TransactionModalComponent
                 isOpen={paymentModal.open}
                 onClose={closePaymentModal}
                 initialData={paymentModal.initialData}
