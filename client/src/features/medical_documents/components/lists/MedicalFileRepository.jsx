@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { PatientSearchSelect } from '@/features/patients';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import styles from './MedicalFileRepository.module.css';
@@ -21,7 +20,8 @@ const MedicalFileRepository = ({
     handleFileUploadChange,
     handleFileUpload,
     openDeleteFileModal,
-    canDeleteFile
+    canDeleteFile,
+    PatientSearchSelectComponent
 }) => {
     return (
         <div className={`${styles.root}`}>
@@ -31,7 +31,7 @@ const MedicalFileRepository = ({
                     <form className="config-flex--column config-flex--gap-4" onSubmit={handleFileUpload}>
                         <div className="input-group">
                             <label className="input-label">{t('patient_label')}</label>
-                            <PatientSearchSelect
+                            <PatientSearchSelectComponent
                                 value={filePatient}
                                 onChange={handleFilePatientChange}
                                 placeholder={t('select_patient')}

@@ -6,6 +6,7 @@ import MedicalHistoryTable from './components/lists/MedicalHistoryTable';
 import MedicalFileRepository from './components/lists/MedicalFileRepository';
 import MedicalActionModals from './components/modals/MedicalActionModals';
 import MedicalDocumentsPrintView from './components/ui/MedicalDocumentsPrintView';
+import { PatientSearchSelect } from '@/features/patients';
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
@@ -107,6 +108,7 @@ const MedicalDocumentsPage = () => {
                                             handlers.fetchRequests();
                                             handleSubTabChange('list');
                                         }}
+                                        PatientSearchSelectComponent={PatientSearchSelect}
                                     />
                                 ) : (
                                     <MedicalRequestList
@@ -140,6 +142,7 @@ const MedicalDocumentsPage = () => {
                                 handleFileUpload={handleFileUpload}
                                 openDeleteFileModal={openDeleteFileModal}
                                 canDeleteFile={canDeleteFile}
+                                PatientSearchSelectComponent={PatientSearchSelect}
                             />
                         )}
 

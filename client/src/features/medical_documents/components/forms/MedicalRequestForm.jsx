@@ -4,7 +4,6 @@ import { isDueSoon } from '@/utils/core/dateUtils';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
-import { PatientSearchSelect } from '@/features/patients';
 import Card from '@/components/atoms/Card';
 import Button from '@/components/atoms/Button';
 import Select from '@/components/atoms/Select';
@@ -24,7 +23,7 @@ import SimpleRequestForm from '@/features/medical_documents/components/forms/Sim
  * MedicalRequestForm Organism (Feature-based).
  * Form to create new medical requests (prescriptions, licenses, certificates).
  */
-const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSendToDoctor, noCard = false }) => {
+const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSendToDoctor, noCard = false, PatientSearchSelectComponent }) => {
     const { user } = useAuth();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
@@ -91,7 +90,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 )}
 
                 <div>
-                    <PatientSearchSelect
+                    <PatientSearchSelectComponent
                         value={selectedPatient}
                         selectedData={patientData}
                         onChange={(val, patient) => {
