@@ -10,7 +10,7 @@ export const usePatientsHandlers = ({
     // Contexts/External
     t,
     showMessage,
-    confirm,
+    confirm: _confirm,
     deleteUser,
     settings,
 
@@ -143,7 +143,7 @@ export const usePatientsHandlers = ({
                 if (current === patientId) handleViewDetailsAction(patientId);
                 return current;
             });
-        } catch (err) {
+        } catch {
             showMessage(t('payment_failed'), 'error');
         }
     }, [t, showMessage, fetchPatients, setSelectedPatientId, handleViewDetailsAction, setDebtModal]);
@@ -168,7 +168,7 @@ export const usePatientsHandlers = ({
             setPatients(prev => prev.map(p => p.id === patientId ? { ...p, is_new_patient, marked_new_at } : p));
             setPatientDetails(prev => (prev?.id === patientId ? { ...prev, is_new_patient, marked_new_at } : prev));
             showMessage(is_new_patient ? 'Marcado como Nuevo' : 'Desmarcado', 'success');
-        } catch (err) { showMessage("Error updating status", 'error'); }
+        } catch { showMessage("Error updating status", 'error'); }
     }, [showMessage, setPatients, setPatientDetails]);
 
     const handleGenerateQR = useCallback(async (patientId) => {
@@ -187,7 +187,7 @@ export const usePatientsHandlers = ({
                 patientName,
                 patientPhone
             });
-        } catch (err) { showMessage('Error generating QR', 'error'); }
+        } catch { showMessage('Error generating QR', 'error'); }
     }, [settings.public_base_url, showMessage, patients, setQrModal]);
 
     const handleGeneratePrescriptionLink = useCallback(async (patientId) => {
@@ -207,7 +207,7 @@ export const usePatientsHandlers = ({
                 patientPhone,
                 type: 'prescription'
             });
-        } catch (err) { showMessage('Error generating prescription link', 'error'); }
+        } catch { showMessage('Error generating prescription link', 'error'); }
     }, [settings.public_base_url, showMessage, patients, setQrModal]);
 
     const handleRestorePatient = useCallback(async (id) => {

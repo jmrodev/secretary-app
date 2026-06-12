@@ -48,10 +48,10 @@ export const useFetch = (url, options = {}) => {
         let isMounted = true;
         if (immediate) {
             queueMicrotask(() => {
-                execute().then(res => {
+                execute().then(() => {
                     if (!isMounted) return;
                     // Side effects if needed
-                }).catch(e => {
+                }).catch(() => {
                     if (!isMounted) return;
                     // Error handled in execute
                 });

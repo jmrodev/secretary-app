@@ -16,7 +16,7 @@ const EMPTY_ARRAY = [];
  */
 const DaySchedule = ({
     date, appointments, onSlotClick, doctor, schedule, onDateSelect,
-    holidays = EMPTY_ARRAY, showOutOfHours, setShowOutOfHours, onNextFreeSlot,
+    holidays: _holidays = EMPTY_ARRAY, showOutOfHours, setShowOutOfHours, onNextFreeSlot,
     isLoading = false
 }) => {
     const { t } = useLanguage();

@@ -1,7 +1,6 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
 import Button from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/features/auth';
 
@@ -24,10 +23,7 @@ const AppointmentFormModal = ({
     const { handleDateChange, handleDoctorChange, handlePatientChange, handleTypeChange,
             handleInstitutionChange, handleReasonChange, handleBonifiedChange, handlePhoneChange } = handlers;
 
-    const doctorOptions = doctors.map(d => ({
-        value: d.id,
-        label: `${d.full_name} (${d.specialty})`
-    }));
+
 
     const institutionOptions = [
         { value: '', label: selectedPatientData ? `Institución del Paciente (${selectedPatientData.institution_name || 'Ninguna'})` : 'Institución del Paciente' },

@@ -6,12 +6,12 @@ import AppointmentActionModal from '@/features/appointments/components/modals/Ap
 import PrescriptionModal from '@/features/medical_documents/components/modals/PrescriptionModal';
 import PatientHistoryModal from '@/features/patients/components/modals/PatientHistoryModal';
 import TransactionModal from '@/features/finances/components/modals/TransactionModal';
+import MedicationInput from '@/features/medical_documents/components/forms/MedicationInput';
 import MedicalRequestModal from '@/features/medical_documents/components/modals/MedicalRequestModal';
 import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
 import styles from './DashboardPage.module.css';
 
@@ -25,7 +25,7 @@ const DashboardPage = () => {
         user, t,
         loading,
         error,
-        reminders, activeTab,
+        reminders,
         actionModal,
         historyModal,
         prescribeModal,
@@ -58,7 +58,6 @@ const DashboardPage = () => {
         handleCompleteReminder,
         handleWhatsAppReminder,
         handleMarkNotified,
-        setActiveTab,
         setActionModal,
         setHistoryModal,
         setPrescribeModal,
@@ -278,6 +277,7 @@ const DashboardPage = () => {
                         setPaymentModal(prev => ({ ...prev, open: false }));
                     }}
                     t={t}
+                    MedicationInputComponent={MedicationInput}
                 />
             )}
 

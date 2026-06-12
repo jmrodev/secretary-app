@@ -13,11 +13,11 @@ import styles from './PatientFinancialSidebar.module.css';
 const PatientFinancialSidebar = ({
     details,
     t,
-    user,
+    user: _user,
     onPayDebt,
-    onGenerateQR,
-    onGeneratePrescriptionLink,
-    onDelete
+    onGenerateQR: _onGenerateQR,
+    onGeneratePrescriptionLink: _onGeneratePrescriptionLink,
+    onDelete: _onDelete
 }) => {
     return (
         <aside className={`${styles.sidebar}`}>

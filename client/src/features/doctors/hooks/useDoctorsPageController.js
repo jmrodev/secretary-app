@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import api from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useModal } from '@/context/ModalContext';
@@ -165,7 +165,7 @@ export const useDoctorsPageController = () => {
         try {
             const res = await api.get(`/google/auth-url?doctorId=${modalState.data.id}`);
             window.location.href = res.data.url;
-        } catch (err) {
+        } catch {
             showMessage('Failed to initiate connection.', 'error');
         }
     };
@@ -211,14 +211,14 @@ export const useDoctorsPageController = () => {
             try {
                 const res = await api.get(`/google/appointments?doctorId=${modalState.data.id}`);
                 showMessage(`Encontrados ${res.data.events?.length || 0} turnos en Calendar.`, 'success');
-            } catch (e) { showMessage('Error al verificar calendar', 'error'); }
+            } catch { showMessage('Error al verificar calendar', 'error'); }
         },
         onImportContacts: async () => {
             if (!await confirm("¿Importar contactos como pacientes?")) return;
             try {
                 await api.post('/google/import', { doctorId: modalState.data.id });
                 showMessage('Importación completada con éxito', 'success');
-            } catch (e) { showMessage('Error al importar contactos', 'error'); }
+            } catch { showMessage('Error al importar contactos', 'error'); }
         },
         onResetSpreadsheet: async () => {
             if (!await confirm("¿Restablecer planilla de Finanzas? Se creará una nueva con el próximo pago.")) return;

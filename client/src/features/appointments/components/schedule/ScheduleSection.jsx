@@ -1,6 +1,5 @@
 import React from 'react';
 import DaySchedule from './DaySchedule.jsx';
-import Icon from '@/components/atoms/Icon';
 import styles from './ScheduleSection.module.css';
 
 const EMPTY_ARRAY = [];
@@ -10,7 +9,7 @@ const EMPTY_ARRAY = [];
  * Main content area for viewing the daily agenda or management lists.
  */
 const ScheduleSection = ({
-    activeTab, selectedDate, selectedDoctor, viewDoctorId, appointments = EMPTY_ARRAY,
+    activeTab: _activeTab, selectedDate, selectedDoctor, viewDoctorId, appointments = EMPTY_ARRAY,
     doctorSchedule = EMPTY_ARRAY, holidays = EMPTY_ARRAY, onSlotClick,
     onDateSelect, showOutOfHours, setShowOutOfHours, onNextFreeSlot, className,
     loading = false

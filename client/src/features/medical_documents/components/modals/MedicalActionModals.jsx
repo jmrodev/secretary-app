@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { TransactionModal } from '@/features/finances';
+import MedicationInput from '@/features/medical_documents/components/forms/MedicationInput';
 
 // Local Feature Components
 import StatusActionModal from '@/features/medical_documents/components/modals/StatusActionModal';
@@ -64,6 +65,7 @@ const MedicalActionModals = ({
                 initialData={paymentModal.initialData}
                 requestId={paymentModal.reqId}
                 onSuccess={fetchRequests}
+                MedicationInputComponent={MedicationInput}
             />
 
             {/* Delete File Modal */}

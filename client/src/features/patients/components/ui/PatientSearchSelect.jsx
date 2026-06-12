@@ -5,7 +5,7 @@ import Button from '@/components/atoms/Button';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PatientSearchSelect.module.css';
 
-const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus = false, selectedData }) => {
+const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus: _autoFocus = false, selectedData }) => {
     const { t } = useLanguage();
     const finalPlaceholder = placeholder || t('search_placeholder');
 
@@ -18,7 +18,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                 label: `${p.full_name} - DNI: ${p.dni || 'N/A'} - ${p.street_name || ''}`,
                 patient: p
             }));
-        } catch (err) {
+        } catch {
             return [];
         }
     };

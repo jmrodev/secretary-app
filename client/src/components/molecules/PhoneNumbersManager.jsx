@@ -12,7 +12,9 @@ import styles from './PhoneNumbersManager.module.css';
  * @param {Function} onChange - Callback when list changes
  * @param {Object} texts - Translations { cellPhone, label, call, markAsPrimary, deleteBtn, addAnotherPhone }
  */
-const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = {} }) => {
+const EMPTY_OBJECT = {};
+
+const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) => {
     const generateId = () => crypto.randomUUID();
 
     // Default fallbacks in case texts are not provided

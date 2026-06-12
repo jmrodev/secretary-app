@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useCallback, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '@/api/axios';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
@@ -34,9 +34,6 @@ export const usePatientFormController = ({
     const { insurances, doctors, institutions, loadingData } = dataState;
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const setInsurances = (val) => dispatchData({ insurances: val });
-    const setDoctors = (val) => dispatchData({ doctors: val });
-    const setInstitutions = (val) => dispatchData({ institutions: val });
     const setLoadingData = (val) => dispatchData({ loadingData: val });
 
     // Form State
@@ -250,12 +247,12 @@ export const usePatientFormController = ({
 
                     // Clean payload: exclude computed joins and read-only fields
                     const {
-                        insurance_name,    
-                        institution_name,  
-                        total_debt,        
-                        total_appointments,
-                        missed_appointments,
-                        role,              
+                        insurance_name: _insurance_name,    
+                        institution_name: _institution_name,  
+                        total_debt: _total_debt,        
+                        total_appointments: _total_appointments,
+                        missed_appointments: _missed_appointments,
+                        role: _role,              
                         ...updatePayload
                     } = formData;
 

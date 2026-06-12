@@ -16,8 +16,6 @@ export { default as PatientForm } from '@/features/patients/components/forms/Pat
 export { default as PatientManagerModal } from '@/features/patients/components/modals/PatientManagerModal';
 export { default as PatientHistoryModal } from '@/features/patients/components/modals/PatientHistoryModal';
 export { default as PatientDetailsView } from '@/features/patients/components/views/PatientDetailsView';
-export { default as PatientMedications } from '@/features/patients/components/medications/PatientMedications';
-export { default as AddMedicationForm } from '@/features/patients/components/medications/AddMedicationForm';
 export { default as DebtPaymentModal } from '@/features/patients/components/modals/DebtPaymentModal';
 export { default as PatientRecycleBin } from '@/features/patients/components/views/PatientRecycleBin';
 export { default as QRCodeModal } from '@/features/patients/components/modals/QRCodeModal';

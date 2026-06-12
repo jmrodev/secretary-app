@@ -10,7 +10,7 @@ import styles from './AppointmentCard.module.css';
  * AppointmentCard Molecule (Internal to feature).
  * Compact representation of an appointment for lists and timelines.
  */
-const AppointmentCard = ({ appt, onClick, showActions = false, onWhatsAppAction, isLoading = false }) => {
+const AppointmentCard = ({ appt, onClick, showActions: _showActions = false, onWhatsAppAction: _onWhatsAppAction, isLoading = false }) => {
     const { t } = useLanguage();
     
     // --- Derived State during render (No Effects needed) ---

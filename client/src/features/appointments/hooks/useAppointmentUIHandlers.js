@@ -9,18 +9,18 @@ export const useAppointmentUIHandlers = ({
     setDate,
     setSelectedDoctor,
     setShowForm,
-    setBonified,
-    setSelectedInstitution,
-    setReason,
-    setSyncReferenceInfo,
-    setSyncingZombieId,
+    setBonified: _setBonified,
+    setSelectedInstitution: _setSelectedInstitution,
+    setReason: _setReason,
+    setSyncReferenceInfo: _setSyncReferenceInfo,
+    setSyncingZombieId: _setSyncingZombieId,
     setActionModal,
     setPrescribeModal,
-    setAuthModalOpen,
-    setRetryAction,
-    setShowNextSlotModal,
-    setWhatsappModal,
-    setEditPatientModalOpen,
+    setAuthModalOpen: _setAuthModalOpen,
+    setRetryAction: _setRetryAction,
+    setShowNextSlotModal: _setShowNextSlotModal,
+    setWhatsappModal: _setWhatsappModal,
+    setEditPatientModalOpen: _setEditPatientModalOpen,
     setPaymentModal,
     setHistoryModal,
     exitRescheduleMode,
@@ -31,7 +31,7 @@ export const useAppointmentUIHandlers = ({
     confirm,
     showMessage,
     t,
-    doctors
+    doctors: _doctors
 }) => {
     const handleDateSelect = useCallback((date) => setSelectedDate(date), [setSelectedDate]);
 

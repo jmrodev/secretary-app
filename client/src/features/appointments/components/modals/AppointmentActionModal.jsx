@@ -19,7 +19,7 @@ import styles from './AppointmentActionModal.module.css';
 const AppointmentActionModal = ({
     isOpen, onClose, appt, onHistory, onPrescribe, onUpdateStatus, onReschedule,
     onCancel, onDelete, onSync, onPay, onWhatsApp, onUpdateType, onHardEdit,
-    onBonify, onSaveNote, fetchAppointments
+    onBonify, onSaveNote, fetchAppointments: _fetchAppointments
 }) => {
     const { t } = useLanguage();
     const { user } = useAuth();

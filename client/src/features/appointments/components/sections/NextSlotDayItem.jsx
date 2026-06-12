@@ -2,7 +2,7 @@ import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import styles from '../modals/NextSlotCalendarModal.module.css';
 
-export const DayListItem = ({ dayName, dateStr, dateLabel, isToday, inCount, outCount, includeOutOfHours, onClick }) => {
+export const DayListItem = ({ dayName, dateStr: _dateStr, dateLabel, isToday, inCount, outCount, includeOutOfHours, onClick }) => {
     const chipCount  = includeOutOfHours ? inCount + outCount : inCount;
     const isOutOnly  = inCount === 0 && outCount > 0;
     const chipVariant = isOutOnly ? 'amber' : 'green';

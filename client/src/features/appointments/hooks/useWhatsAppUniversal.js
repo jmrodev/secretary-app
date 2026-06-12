@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useAuth } from '@/features/auth';
@@ -118,7 +118,7 @@ export const useWhatsAppUniversal = (doctors) => {
             showMessage(`${type === 'reminder' ? 'Recordatorio' : 'Comprobante'} copiado! Abriendo WhatsApp...`, "success");
             window.location.href = `whatsapp://send?phone=${normalizedPhone}&text=${encodeURIComponent(message)}`;
             setTimeout(() => { if (!document.hasFocus()) window.open(`https://web.whatsapp.com/send?phone=${normalizedPhone}&text=${encodeURIComponent(message)}`, '_blank') }, 2500);
-        } catch (err) { showMessage("Error al procesar WhatsApp", "error"); }
+        } catch { showMessage("Error al procesar WhatsApp", "error"); }
     };
 
     return { handleWhatsAppUniversal };

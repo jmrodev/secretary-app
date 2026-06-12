@@ -12,7 +12,7 @@ import styles from './DayScheduleHeader.module.css';
  */
 const DayScheduleHeader = ({
     date, holiday, showOutOfHours, setShowOutOfHours, showCancelled, setShowCancelled,
-    onPrevDay, onToday, onNextDay, onPrint, onNextFreeSlot, t
+    onPrevDay, onToday, onNextDay, onPrint, onNextFreeSlot: _onNextFreeSlot, t
 }) => {
     return (
         <header className={`${styles.root}`}>

@@ -27,7 +27,7 @@ import DebtPaymentModal from './components/modals/DebtPaymentModal';
  * Coordinates patient listing, search, details, and recycle bin.
  */
 const PatientsPage = () => {
-    const { isStaff, isAdmin, user: authUser } = usePermissions();
+    const { isStaff, user: authUser } = usePermissions();
     const controller = usePatientsPageController();
     const {
         user, t,
@@ -35,7 +35,6 @@ const PatientsPage = () => {
         totalCount, currentPage, totalPages, handlePageChange,
         doctors, insurances, recycleItems, institutions,
         activeTab, setActiveTab,
-        setSearchTerm,
         selectedPatientId, setSelectedPatientId, patientDetails,
 
         // Modals

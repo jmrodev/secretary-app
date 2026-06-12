@@ -4,7 +4,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import Loading from '@/components/atoms/Loading';
-import { formatDate, toInputDate, getNow, parseDate } from '@/utils/core/dateUtils';
+import { formatDate, toInputDate, getNow } from '@/utils/core/dateUtils';
 import styles from './NextSlotCalendarModal.module.css';
 
 /**
@@ -29,39 +29,35 @@ const NextSlotCalendarModal = ({
     const { t } = useLanguage();
     const [step, setStep] = React.useState('days');          // 'days' | 'slots'
     const [selectedDate, setSelectedDate] = React.useState(null);
-    const [prevIsOpen, setPrevIsOpen] = React.useState(isOpen);
     const listBottomRef = useRef(null);
     const onLoadMoreRef = useRef(onLoadMore);
     const todayIso = toInputDate(getNow());
 
-    if (isOpen !== prevIsOpen) {
-        setPrevIsOpen(isOpen);
+    useEffect(() => {
         if (!isOpen) {
             setStep('days');
             setSelectedDate(null);
         }
-    }
+    }, [isOpen]);
 
     useEffect(() => { onLoadMoreRef.current = onLoadMore; }, [onLoadMore]);
 
     /* Build structured day rows from backend results */
     const dayRows = useMemo(() => {
         if (!nextSlotData?.results) return [];
-        return nextSlotData.results
-            .map(day => {
-                const inCount  = day.slots.filter(s => !s.is_out_of_hours && !s.is_break).length;
-                const outCount = day.slots.filter(s => s.is_out_of_hours || s.is_break).length;
-                // When out-of-hours is OFF, hide days with 0 in-hours slots
-                if (!includeOutOfHours && inCount === 0) return null;
-                return {
-                    date: day.date,
-                    dayName: day.dayName,
-                    slots: day.slots,
-                    inCount,
-                    outCount,
-                };
-            })
-            .filter(Boolean);
+        return nextSlotData.results.flatMap(day => {
+            const inCount  = day.slots.filter(s => !s.is_out_of_hours && !s.is_break).length;
+            const outCount = day.slots.filter(s => s.is_out_of_hours || s.is_break).length;
+            // When out-of-hours is OFF, hide days with 0 in-hours slots
+            if (!includeOutOfHours && inCount === 0) return [];
+            return [{
+                date: day.date,
+                dayName: day.dayName,
+                slots: day.slots,
+                inCount,
+                outCount,
+            }];
+        });
     }, [nextSlotData, includeOutOfHours]);
 
     /* Slots for selected day */

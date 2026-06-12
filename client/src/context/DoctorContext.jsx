@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { usePermissions } from '@/hooks/usePermissions';
 import { DoctorContext } from './DoctorContextDefinition';

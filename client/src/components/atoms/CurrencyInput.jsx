@@ -6,6 +6,11 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat('es-AR', {
     maximumFractionDigits: 0
 });
 
+const format = (val) => {
+    if (!val && val !== 0) return '';
+    return CURRENCY_FORMATTER.format(Number(val));
+};
+
 /**
  * CurrencyInput Atom follows Atomic Design & BEM.
  * Reuses the 'input' base class from design-system.
@@ -20,26 +25,26 @@ const CurrencyInput = ({
     variant = 'default',
     ...props
 }) => {
-    const [displayValue, setDisplayValue] = useState('');
+    const [prevValue, setPrevValue] = useState(value);
+    const [displayValue, setDisplayValue] = useState(() => {
+        if (value !== undefined && value !== null) return format(value);
+        return '';
+    });
+
+    if (value !== prevValue) {
+        setPrevValue(value);
+        if (value !== undefined && value !== null) {
+            setDisplayValue(format(value));
+        } else {
+            setDisplayValue('');
+        }
+    }
 
     const baseClass = 'input';
     const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
     const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
 
     const combinedClassName = `${baseClass} ${variantClass} ${sizeClass} ${className}`.trim();
-
-    const format = (val) => {
-        if (!val && val !== 0) return '';
-        return CURRENCY_FORMATTER.format(Number(val));
-    };
-
-    useEffect(() => {
-        if (value !== undefined && value !== null) {
-            setDisplayValue(format(value));
-        } else {
-            setDisplayValue('');
-        }
-    }, [value]);
 
     const handleCurrencyChange = (e) => {
         const inputVal = e.target.value;

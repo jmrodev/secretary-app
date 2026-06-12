@@ -4,12 +4,14 @@ import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats'
 import Icon from '@/components/atoms/Icon';
 import styles from './CompactHeaderStats.module.css';
 
+const EMPTY_OBJECT = {};
+
 /**
  * CompactHeaderStats - Molecule component for header metrics.
  * 
  * @param {Object} texts - Translations { today, week, month, patients, growth }
  */
-const CompactHeaderStats = ({ texts = {} }) => {
+const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
     const { isStaff, viewDoctorId } = useDoctors();
     const { stats, newPatientStats, loadingStats } = useDashboardStats(isStaff, viewDoctorId);
 

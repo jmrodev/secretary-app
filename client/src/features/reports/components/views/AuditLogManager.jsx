@@ -23,7 +23,7 @@ const AuditLogManager = ({
                 content = parsed;
                 isJson = true;
             }
-        } catch (e) { /* Not JSON */ }
+        } catch { /* Not JSON */ }
 
         if (isJson) {
             return (

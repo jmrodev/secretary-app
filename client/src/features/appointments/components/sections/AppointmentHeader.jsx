@@ -24,9 +24,6 @@ const AppointmentHeader = ({ appt, t }) => {
             default: return 'default';
         }
     };
-
-    const baseClass = styles.root;
-
     return (
         <header className={styles.root}>
             <section className={styles.patientInfo}>

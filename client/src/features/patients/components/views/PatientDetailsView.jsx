@@ -1,6 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
-import api from '@/api/axios';
+import React, { useState } from 'react';
 import { usePatientDetailsController } from '@/features/patients/hooks/usePatientDetailsController';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';

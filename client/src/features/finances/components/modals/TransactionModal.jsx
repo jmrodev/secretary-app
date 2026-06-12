@@ -6,7 +6,6 @@ import { useTransactionForm } from '@/features/finances/hooks/useTransactionForm
 import { formatCurrency } from '@/utils/core/format';
 import {
     getTransactionTypes,
-    getPaymentMethods,
     getStatusOptions,
     getServiceTypes
 } from '@/constants/transactionOptions';
@@ -18,7 +17,6 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
 import FormGroup from '@/components/molecules/FormGroup';
-import { MedicationInput } from '@/features/medical_documents';
 import styles from './TransactionModal.module.css';
 
 import { TransactionSummaryHeader } from '../sections/TransactionSummaryHeader';
@@ -28,7 +26,15 @@ import { TransactionPaymentsSection } from '../sections/TransactionPaymentsSecti
  * TransactionModal Molecule.
  * Orchestrates the creation and editing of financial records.
  */
-const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requestId }) => {
+const TransactionModal = ({
+    isOpen,
+    onClose,
+    onSuccess,
+    initialData = null,
+    requestId,
+    medicationInputSlot,
+    MedicationInputComponent
+}) => {
     const { t } = useLanguage();
     const { settings } = useConfig();
 
@@ -161,14 +167,27 @@ const TransactionModal = ({ isOpen, onClose, onSuccess, initialData = null, requ
                 )}
 
                 {!requestId && formData.type === 'income_patient' && (
-                    <MedicationInput
-                        medications={medications}
-                        onAdd={addMedication}
-                        onRemove={removeMedication}
-                        selectedPatient={selectedPatient}
-                        label={t('medications')}
-                        className="transaction-modal__medication-input"
-                    />
+                    MedicationInputComponent ? (
+                        <MedicationInputComponent
+                            medications={medications}
+                            onAdd={addMedication}
+                            onRemove={removeMedication}
+                            selectedPatient={selectedPatient}
+                            label={t('medications')}
+                            className="transaction-modal__medication-input"
+                        />
+                    ) : typeof medicationInputSlot === 'function' ? (
+                        medicationInputSlot({
+                            medications,
+                            onAdd: addMedication,
+                            onRemove: removeMedication,
+                            selectedPatient,
+                            label: t('medications'),
+                            className: "transaction-modal__medication-input"
+                        })
+                    ) : (
+                        medicationInputSlot
+                    )
                 )}
 
                 <TransactionPaymentsSection 

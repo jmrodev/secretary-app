@@ -22,7 +22,7 @@ const Button = ({
     iconRight = null,
     active = false,
     unstyled = false,
-    outline = false,
+    outline: _outline = false,
     target = '_self',
     rel = 'noopener noreferrer',
     ...rest

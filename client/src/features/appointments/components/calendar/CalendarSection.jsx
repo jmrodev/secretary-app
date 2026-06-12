@@ -1,7 +1,5 @@
 import React from 'react';
 import Calendar from './Calendar.jsx';
-import Icon from '@/components/atoms/Icon';
-import { useLanguage } from '@/hooks/useLanguage';
 import styles from './CalendarSection.module.css';
 
 const EMPTY_ARRAY = [];
@@ -13,10 +11,9 @@ const EMPTY_OBJECT = {};
  */
 const CalendarSection = ({
     selectedDate, onDateSelect, appointments = EMPTY_ARRAY, calendarStats = EMPTY_OBJECT, holidays = EMPTY_ARRAY,
-    showOutOfHours, viewDoctorId, onSearchPatientId, searchPatientId,
-    onCreatePatient, onNextFreeSlot, onSyncDayToGoogle, className = ""
+    showOutOfHours, viewDoctorId: _viewDoctorId, onSearchPatientId: _onSearchPatientId, searchPatientId: _searchPatientId,
+    onCreatePatient: _onCreatePatient, onNextFreeSlot: _onNextFreeSlot, onSyncDayToGoogle: _onSyncDayToGoogle, className = ""
 }) => {
-    const { t } = useLanguage();
 
     return (
         <div className={`${styles.root} ${className}`}>

@@ -12,7 +12,7 @@ import styles from './AppointmentAdminPanel.module.css';
  * Orchestrates administrative actions for an appointment using a tabbed interface.
  */
 const AppointmentAdminPanel = ({
-    appt, user, isGoogle, canUnrestricted, t, onPay, onUpdateStatus, onReschedule, onCancel, onDelete, onClose, onUpdateType, onHardEdit, onBonify, note, onWhatsApp
+    appt, user: _user, isGoogle, canUnrestricted, t, onPay, onUpdateStatus, onReschedule, onCancel, onDelete, onClose, onUpdateType, onHardEdit, onBonify, note, onWhatsApp
 }) => {
     const [activeTab, setActiveTab] = useState('attendance');
     const { showMessage } = useMessage();

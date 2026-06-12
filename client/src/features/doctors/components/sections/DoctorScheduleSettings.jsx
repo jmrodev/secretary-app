@@ -23,7 +23,7 @@ const DAYS = [
  * DoctorScheduleSettings Organism.
  * Provides a specialized interface for configuring a doctor's weekly work schedule.
  */
-const DoctorScheduleSettings = ({ doctorId, schedule = EMPTY_SCHEDULE, setSchedule, loading }) => {
+const DoctorScheduleSettings = ({ doctorId: _doctorId, schedule = EMPTY_SCHEDULE, setSchedule, loading }) => {
     const { t } = useLanguage();
     const [focusedIndex, setFocusedIndex] = useState(null);
 

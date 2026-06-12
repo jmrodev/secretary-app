@@ -8,6 +8,7 @@ import { useFinancesPageController } from '@/features/finances/hooks/useFinances
 import FinanceStatsCards from '@/features/finances/components/sections/FinanceStatsCards';
 import EditTransactionModal from '@/features/finances/components/modals/EditTransactionModal';
 import TransactionModal from '@/features/finances/components/modals/TransactionModal';
+import { MedicationInput } from '@/features/medical_documents';
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
@@ -117,6 +118,7 @@ const FinancesPage = () => {
                     initialData={selectedDoctorFilter && selectedDoctorFilter !== 'all' ? { doctorId: parseInt(selectedDoctorFilter) } : null}
                     onClose={handlers.onCloseNewTransaction}
                     onSuccess={handlers.onRefresh}
+                    MedicationInputComponent={MedicationInput}
                 />
 
                 <CashBoxDeliveryModal

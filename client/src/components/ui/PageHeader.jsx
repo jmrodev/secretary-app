@@ -14,7 +14,7 @@ const PageHeader = ({
     divider = false,
     className = '',
     variant = 'standard',
-    backgroundUrl,
+    backgroundUrl: _backgroundUrl,
     hideTitle = false,
     hideClock = false,
     searchTerm = '',
