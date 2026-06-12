@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import AppointmentCard from '../cards/AppointmentCard';
 import Icon from '@/components/atoms/Icon';
-import { formatTime, isPast as checkIsPast } from '@/utils/core/dateUtils';
+import { formatTime } from '@/utils/core/dateUtils';
 import styles from './ScheduleTimeline.module.css';
 
 /**
@@ -50,7 +50,6 @@ const ScheduleTimeline = ({
                 const { slotApps, type, isBlockedByGoogle, time } = slot;
                 const isSlotClosed = type === 'closed';
                 const isBlocked = isBlockedByGoogle || slotApps.some(a => !['cancelled', 'suspended', 'absent'].includes(a.status));
-                const isPast = checkIsPast(time);
                 const timeKey = time instanceof Date ? time.getTime() : time;
 
                 const handleKeyDown = (e) => {

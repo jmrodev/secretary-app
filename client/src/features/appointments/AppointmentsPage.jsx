@@ -11,9 +11,8 @@ import RescheduleBanner from './components/ui/RescheduleBanner';
 import PatientHistoryView from './components/views/PatientHistoryView';
 import { AppointmentsModals } from './components/sections/AppointmentsModals';
 import Button from '@/components/atoms/Button';
-import styles from './AppointmentsPage.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import styles from './AppointmentsPage.module.css';
 
 /**
  * AppointmentsPage (Orchestrator).
@@ -31,12 +30,12 @@ const AppointmentsPage = () => {
         prescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
         editPatientModalOpen, authModalOpen,
         handlers, booking, nextSlot, rescheduleAppt, exitRescheduleMode,
-        isStaff, isAdmin, isDoctor, isPatient, isMedicalStaff, fetched
+        fetched
     } = controller;
 
     const {
-        setShowOutOfHours, setViewDoctorId, setSelectedDate,
-        setSearchPatientId, setSearchTerm, setPaymentModal, setActionModal, setHistoryModal,
+        setShowOutOfHours,
+        setSearchPatientId, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setEditPatientModalOpen, setAuthModalOpen
     } = handlers;
 

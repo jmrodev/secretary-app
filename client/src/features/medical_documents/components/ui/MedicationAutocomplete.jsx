@@ -4,7 +4,6 @@ import { useMedicationAutocomplete } from '@/features/medical_documents/hooks/us
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
-import Badge from '@/components/atoms/Badge';
 import Loading from '@/components/atoms/Loading';
 import styles from './MedicationAutocomplete.module.css';
 

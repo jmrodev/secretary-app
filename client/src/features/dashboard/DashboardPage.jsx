@@ -11,7 +11,6 @@ import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
 import styles from './DashboardPage.module.css';
 
@@ -25,7 +24,7 @@ const DashboardPage = () => {
         user, t,
         loading,
         error,
-        reminders, activeTab,
+        reminders,
         actionModal,
         historyModal,
         prescribeModal,
@@ -58,7 +57,6 @@ const DashboardPage = () => {
         handleCompleteReminder,
         handleWhatsAppReminder,
         handleMarkNotified,
-        setActiveTab,
         setActionModal,
         setHistoryModal,
         setPrescribeModal,

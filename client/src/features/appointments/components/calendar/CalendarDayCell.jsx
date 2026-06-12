@@ -1,5 +1,4 @@
 import React from 'react';
-import CalendarDayIndicator from './CalendarDayIndicator';
 import Icon from '@/components/atoms/Icon';
 import styles from './CalendarDayCell.module.css';
 
@@ -13,7 +12,7 @@ const CalendarDayCell = ({
   day,
   status = EMPTY_OBJECT, // { isCurrentMonth, isSelected, isToday, isHoliday, isPast, disabled, compact }
   holidayDescription = '',
-  appointmentCount = 0,
+  appointmentCount: _appointmentCount = 0,
   bookedInCount = 0,
   bookedOutCount = 0,
   freeInCount = 0,

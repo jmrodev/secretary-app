@@ -47,10 +47,6 @@ const GlobalWhatsappMessenger = ({ t }) => {
 
     const setIsOpen = (val) => dispatch({ type: 'SET_OPEN', payload: val });
     const setActiveChat = (val) => dispatch({ type: 'SET_ACTIVE_CHAT', payload: val });
-    const setConversations = (val) => dispatch({ type: 'SET_CONVERSATIONS', payload: val });
-    const setLoading = (val) => dispatch({ type: 'SET_LOADING', payload: val });
-    const setBridgeStatus = (val) => dispatch({ type: 'SET_BRIDGE_STATUS', payload: val });
-    const setStatusLoading = (val) => dispatch({ type: 'SET_STATUS_LOADING', payload: val });
 
     const fetchConversations = useCallback(async (isAuto = false) => {
         if (!isAuto) dispatch({ type: 'SET_LOADING', payload: true });

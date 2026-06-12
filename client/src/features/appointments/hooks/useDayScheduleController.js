@@ -32,8 +32,6 @@ export const useDayScheduleController = (date, doctor, schedule, appointments, s
             if (bStart < startLimit) startLimit = bStart; if (bEnd > endLimit) endLimit = bEnd;
         });
     }
-
-    const duration = (doctor && doctor.appointment_duration) ? doctor.appointment_duration : 60;
     
     // Convert date to string format for fetch
     const year = date.getFullYear();

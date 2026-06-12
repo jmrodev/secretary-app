@@ -14,20 +14,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.2.2",
     "axios": "^1.16.0",
-    "clsx": "^2.1.1",
-    "lucide-react": "^1.16.0",
     "qrcode": "^1.5.4",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-hook-form": "^7.76.0",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.14.2",
-    "react-select": "^5.10.2",
-    "react-textarea-autosize": "^8.5.9",
-    "zod": "^4.4.3"
+    "react-select": "^5.10.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -7,7 +7,6 @@ import { useMessage } from '@/context/MessageContext';
 import { PatientSearchSelect } from '@/features/patients';
 import Card from '@/components/atoms/Card';
 import Button from '@/components/atoms/Button';
-import FormGroup from '@/components/molecules/FormGroup';
 import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import Badge from '@/components/atoms/Badge';

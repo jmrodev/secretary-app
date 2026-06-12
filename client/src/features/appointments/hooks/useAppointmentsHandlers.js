@@ -17,7 +17,7 @@ export const useAppointmentsHandlers = ({
     rescheduleAppt, holidays, appointments, filteredAppointments, doctors, settings,
     setDate, setShowForm, setBonified, setSelectedInstitution, setReason, setSyncReferenceInfo, setSyncingZombieId,
     setActionModal, setPrescribeModal, setAuthModalOpen, setRetryAction, setShowNextSlotModal, setWhatsappModal,
-    setEditPatientModalOpen, setPaymentModal, setHistoryModal, setSelectedPatient, exitRescheduleMode,
+    setEditPatientModalOpen, setPaymentModal, setHistoryModal, setSelectedPatient: _setSelectedPatient, exitRescheduleMode,
     updateStatus, updateAppointment, fetchAppointments, savePrescription, deleteAppointment, rescheduleAppointment, bookAppointment,
     setIsOutOfHours, fetchNextFreeSlots, 
     selectedPatientData, copyToClipboard, booking, setSlotHistory
@@ -117,7 +117,7 @@ export const useAppointmentsHandlers = ({
             });
             setPrescribeModal({ open: false, apptId: null, patientName: '', medications: '', instructions: '', items: [] });
             showMessage(t('prescription_saved') || 'Receta guardada', 'success');
-        } catch (error) {
+        } catch {
             showMessage(t('prescription_error') || 'Error al guardar receta', 'error');
         }
     };

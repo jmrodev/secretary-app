@@ -11,7 +11,7 @@ import styles from './ActiveMedicationsList.module.css';
  * ActiveMedicationsList (Executor).
  * Renders the table of active/chronic medications for a patient.
  */
-const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemindRefill, settings, user, patientName }) => {
+const ActiveMedicationsList = ({ medications, loading, t, onDiscontinue, onRemindRefill, settings: _settings, user: _user, patientName: _patientName }) => {
     if (loading) {
         return <div className={`${styles.loading}`}>Cargando…</div>;
     }

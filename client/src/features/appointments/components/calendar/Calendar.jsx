@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import CalendarDayCell from './CalendarDayCell.jsx';
 import CalendarHeader from './CalendarHeader.jsx';
 import DayHeaders from '../schedule/DayHeaders.jsx';

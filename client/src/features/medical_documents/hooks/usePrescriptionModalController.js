@@ -284,7 +284,8 @@ export const usePrescriptionModalController = (patientId, onSubmit, showMessage,
             handleFreqPreset,
             handleAddItem,
             handleRemoveItem,
-            handleSubmit
+            handleSubmit,
+            handleQuantityChange
         },
         computed: {
             daysSupply,

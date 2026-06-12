@@ -10,7 +10,7 @@ import styles from './PatientHistoryView.module.css';
  * PatientHistoryView (Executor Component).
  * Renders appointment search results as a compact, high-density list/table.
  */
-const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPatientId, handlers }) => {
+const PatientHistoryView = ({ patientAppointments, loading, onClose, t, searchPatientId: _searchPatientId, handlers }) => {
     const { t: tLocal } = useLanguage();
     const translate = t || tLocal;
 

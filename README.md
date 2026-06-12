@@ -53,7 +53,6 @@ Para detalles técnicos profundos, consulta la carpeta `docs/`:
 
 - [**Arquitectura y Estándares**](docs/ARQUITECTURA.md): Reglas de oro, BEM, Atomic Design y MVC.
 - [**Guía de Configuración**](docs/GUIA_CONFIGURACION_GENERAL.md): Pasos para la puesta en marcha inicial.
-- [**Integración WhatsApp**](docs/PLAN_INTEGRACION_WHATSAPP.md): Detalles sobre el puente de comunicación.
 
 ## 📐 Estándares de Código
 

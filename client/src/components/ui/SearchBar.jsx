@@ -3,6 +3,14 @@ import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import styles from './SearchBar.module.css';
 
+const EMPTY_ARRAY = [];
+const DEFAULT_LABELS = {
+    placeholder: 'Search...',
+    clearSearch: 'Clear search',
+    recentActivity: 'Recent activity',
+    debtStatusPrefix: 'Status:'
+};
+
 /**
  * SearchBar UI Component
  * Pure component for displaying a search bar with optional suggestions.
@@ -13,17 +21,12 @@ const SearchBar = ({
     placeholder, 
     onSelect, 
     className = '',
-    suggestions = [],
+    suggestions = EMPTY_ARRAY,
     showSuggestions = false,
     onFocus,
     onClear,
     onCloseSuggestions,
-    labels = {
-        placeholder: 'Search...',
-        clearSearch: 'Clear search',
-        recentActivity: 'Recent activity',
-        debtStatusPrefix: 'Status:'
-    }
+    labels = DEFAULT_LABELS
 }) => {
     const wrapperRef = useRef(null);
 
@@ -31,7 +34,7 @@ const SearchBar = ({
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-                onCloseSuggestions && onCloseSuggestions();
+                if (onCloseSuggestions) onCloseSuggestions();
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -47,7 +50,7 @@ const SearchBar = ({
             onSelect(item);
         } else {
             onChange({ target: { value: item.label } });
-            onCloseSuggestions && onCloseSuggestions();
+            if (onCloseSuggestions) onCloseSuggestions();
         }
     };
 

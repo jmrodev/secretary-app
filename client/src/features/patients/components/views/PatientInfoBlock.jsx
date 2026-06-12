@@ -11,7 +11,7 @@ import styles from './PatientInfoBlock.module.css';
  * PatientInfoBlock (Executor).
  * Renders the basic information table for a patient.
  */
-const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink }) => {
+const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGeneratePrescriptionLink }) => {
     return (
         <section className="patient-details__block patient-details__block--info">
             <header className="patient-details__block-header">

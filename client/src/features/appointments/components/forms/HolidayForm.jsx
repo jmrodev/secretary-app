@@ -8,7 +8,7 @@ import { capitalizeFirst } from '@/utils/core/stringUtils';
 /**
  * HolidayForm (Internal to feature).
  */
-const HolidayForm = ({ onAdd, t }) => {
+const HolidayForm = ({ onAdd, t: _t }) => {
     const [newDate, setNewDate] = useState('');
     const [newDesc, setNewDesc] = useState('');
 

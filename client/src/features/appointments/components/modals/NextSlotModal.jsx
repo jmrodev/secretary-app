@@ -13,8 +13,8 @@ import styles from './NextSlotModal.module.css';
  */
 const NextSlotModal = ({
     isOpen, onClose, loading, nextSlotData, includeOutOfHours, onToggleOutOfHours,
-    slotsPage, setSlotsPage, slotPages, onSelect, onWhatsApp, onNextGroup, onPrevGroup,
-    hasPrevGroup, hasNextGroup, fetchNextFreeSlots
+    slotsPage, setSlotsPage, slotPages, onSelect, onWhatsApp, onNextGroup, onPrevGroup: _onPrevGroup,
+    hasPrevGroup: _hasPrevGroup, hasNextGroup, fetchNextFreeSlots
 }) => {
     const { t } = useLanguage();
     const handleNextPage = async () => {
@@ -41,7 +41,7 @@ const NextSlotModal = ({
     const todayIso = toInputDate(getNow());
     const currentSlots = slotPages.length > 0 ? slotPages[Math.min(slotsPage, slotPages.length - 1)] : [];
 
-    const baseClass = styles.root;
+
 
     return (
         <Modal 

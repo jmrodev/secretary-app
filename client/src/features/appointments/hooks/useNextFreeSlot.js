@@ -69,7 +69,7 @@ export const useNextFreeSlot = (doctorId) => {
                     if (showModal) setNextSlotData({ results: [] });
                 }
             }
-        } catch (err) {
+        } catch {
             showMessage("Error buscando turnos libres.", 'error');
         } finally {
             setLoading(false);

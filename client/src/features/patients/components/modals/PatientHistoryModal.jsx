@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import Modal from '@/components/molecules/Modal';
 import TabButton from '@/components/atoms/TabButton';
 import { useLanguage } from '@/hooks/useLanguage';

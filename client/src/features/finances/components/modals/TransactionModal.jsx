@@ -6,7 +6,6 @@ import { useTransactionForm } from '@/features/finances/hooks/useTransactionForm
 import { formatCurrency } from '@/utils/core/format';
 import {
     getTransactionTypes,
-    getPaymentMethods,
     getStatusOptions,
     getServiceTypes
 } from '@/constants/transactionOptions';

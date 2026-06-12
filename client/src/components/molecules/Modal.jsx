@@ -4,7 +4,7 @@ import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import styles from './Modal.module.css';
 
-const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant = 'light', className = '' }) => {
+const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant: _variant = 'light', className = '' }) => {
     // Prevent scrolling on body when modal is open and handle global Escape key
     const onCloseRef = React.useRef(onClose);
     

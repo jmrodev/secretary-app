@@ -70,7 +70,7 @@ export const useSystemConfigController = () => {
         try {
             const { data } = await api.get('/google/auth-url');
             window.location.href = data.url;
-        } catch (error) {
+        } catch {
             showMessage('Error al iniciar autenticación con Google', 'error');
         }
     }, [showMessage]);
@@ -84,7 +84,7 @@ export const useSystemConfigController = () => {
             await api.post('/google/disconnect');
             await refreshSettings();
             showMessage('Cuenta desconectada correctamente', 'success');
-        } catch (error) {
+        } catch {
             showMessage('Error al desconectar cuenta', 'error');
         }
     }, [confirm, refreshSettings, showMessage]);
@@ -158,7 +158,7 @@ export const useSystemConfigController = () => {
             await api.post('/settings/refresh-tunnel');
             showMessage("IP de DuckDNS actualizada correctamente.", 'info');
             setTimeout(refreshSettings, 2000);
-        } catch (err) {
+        } catch {
             showMessage(t('error_saving'), 'error');
         } finally {
             setLoading(false);

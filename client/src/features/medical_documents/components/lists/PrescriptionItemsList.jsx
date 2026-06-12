@@ -12,16 +12,16 @@ import styles from './PrescriptionItemsList.module.css';
  * Displays the current medications added to the batch prescription.
  */
 const PrescriptionItemsList = ({
-    items, handleRemoveItem, t, readOnly,
+    items, handleRemoveItem, t, readOnly: _readOnly,
     tempMed, setTempMed,
     tempDose, setTempDose,
     tempFreqPreset, handleFreqPreset,
-    tempUnitsPerBox, setTempUnitsPerBox,
-    tempDailyUnits, setTempDailyUnits,
-    tempBoxes, setTempBoxes,
+    tempUnitsPerBox, setTempUnitsPerBox: _setTempUnitsPerBox,
+    tempDailyUnits: _tempDailyUnits, setTempDailyUnits: _setTempDailyUnits,
+    tempBoxes, setTempBoxes: _setTempBoxes,
     tempDays, handleQuantityChange,
     handleAddItem, handleSelectMedication,
-    canAdd, daysSupply, refillDateStr, freqPresets
+    canAdd, daysSupply: _daysSupply, refillDateStr: _refillDateStr, freqPresets
 }) => {
     return (
         <div className={styles.container}>

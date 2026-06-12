@@ -5,7 +5,6 @@ import Select from '@/components/atoms/Select';
 import Tooltip from '@/components/atoms/Tooltip';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import styles from './MedicationInputSection.module.css';
 
 
 /**
