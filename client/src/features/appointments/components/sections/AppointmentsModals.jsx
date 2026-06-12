@@ -1,24 +1,25 @@
 import React from 'react';
 import AppointmentActionModal from '../modals/AppointmentActionModal';
-import { PrescriptionModal } from '@/features/medical_documents';
-import { PatientHistoryModal, PatientManagerModal } from '@/features/patients';
-import WhatsAppModal from '@/features/chat/components/ui/WhatsAppModal';
 import NextSlotModal from '../modals/NextSlotModal';
 import AppointmentFormModal from '../modals/AppointmentFormModal';
-import AdminAuthModal from '@/features/auth/components/modals/AdminAuthModal';
-import { TransactionModal } from '@/features/finances';
 
 export const AppointmentsModals = ({
-    doctors, insurances, institutions, booking, nextSlot,
-    paymentModal, setPaymentModal,
+    doctors, institutions, booking, nextSlot,
+    paymentModal,
     actionModal, setActionModal,
-    historyModal, setHistoryModal,
-    prescribeModal, setPrescribeModal,
-    whatsappModal, setWhatsappModal,
+    historyModal,
+    prescribeModal,
+    whatsappModal,
     showNextSlotModal, setShowNextSlotModal,
     editPatientModalOpen, setEditPatientModalOpen,
-    authModalOpen, setAuthModalOpen,
-    handlers, loading, t
+    authModalOpen,
+    handlers, t,
+    prescriptionModalSlot,
+    patientHistoryModalSlot,
+    patientManagerModalSlot,
+    whatsappModalSlot,
+    adminAuthModalSlot,
+    transactionModalSlot
 }) => (
     <>
         <AppointmentActionModal
@@ -31,28 +32,11 @@ export const AppointmentsModals = ({
             onSaveNote={handlers.handleSaveNote} fetchAppointments={handlers.fetchAppointments}
         />
 
-        {prescribeModal.open && (
-            <PrescriptionModal
-                isOpen={prescribeModal.open} onClose={() => setPrescribeModal(prev => ({ ...prev, open: false }))}
-                patientName={prescribeModal.patientName} patientId={prescribeModal.patientId}
-                onSubmit={(data) => handlers.handleSavePrescription({ ...prescribeModal, ...data })} t={t} isSubmitting={loading}
-            />
-        )}
+        {prescribeModal.open && prescriptionModalSlot}
 
-        {historyModal.open && (
-            <PatientHistoryModal
-                isOpen={historyModal.open} onClose={() => setHistoryModal(prev => ({ ...prev, open: false }))}
-                patientId={historyModal.patientId} patientName={historyModal.patientName}
-            />
-        )}
+        {historyModal.open && patientHistoryModalSlot}
 
-        {whatsappModal.open && (
-            <WhatsAppModal
-                isOpen={whatsappModal.open} onClose={() => setWhatsappModal(prev => ({ ...prev, open: false }))}
-                phone={whatsappModal.phone} message={whatsappModal.message}
-                onMessageChange={(msg) => setWhatsappModal(prev => ({ ...prev, message: msg }))}
-            />
-        )}
+        {whatsappModal.open && whatsappModalSlot}
 
         {showNextSlotModal && (
             <NextSlotModal
@@ -67,15 +51,7 @@ export const AppointmentsModals = ({
             />
         )}
 
-        {editPatientModalOpen && (
-            <PatientManagerModal
-                isOpen={editPatientModalOpen} onClose={() => setEditPatientModalOpen(false)}
-                patient={booking.selectedPatientData} referenceInfo={booking.syncReferenceInfo}
-                onUpdate={(updatedData) => { booking.setSelectedPatient(updatedData.id); booking.setSelectedPatientData(updatedData); }}
-                doctors={doctors}
-                insurances={insurances}
-            />
-        )}
+        {editPatientModalOpen && patientManagerModalSlot}
 
         {booking.showForm && (
             <AppointmentFormModal
@@ -85,8 +61,8 @@ export const AppointmentsModals = ({
             />
         )}
 
-        <AdminAuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} onConfirm={handlers.handleAdminAuthConfirm} />
+        {authModalOpen && adminAuthModalSlot}
         
-        <TransactionModal isOpen={paymentModal.open} onClose={() => setPaymentModal(prev => ({ ...prev, open: false }))} initialData={paymentModal.initialData} onSuccess={() => handlers.fetchAppointments()} />
+        {paymentModal.open && transactionModalSlot}
     </>
 );

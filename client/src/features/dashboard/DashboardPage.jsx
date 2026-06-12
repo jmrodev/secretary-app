@@ -6,6 +6,7 @@ import AppointmentActionModal from '@/features/appointments/components/modals/Ap
 import PrescriptionModal from '@/features/medical_documents/components/modals/PrescriptionModal';
 import PatientHistoryModal from '@/features/patients/components/modals/PatientHistoryModal';
 import TransactionModal from '@/features/finances/components/modals/TransactionModal';
+import MedicationInput from '@/features/medical_documents/components/forms/MedicationInput';
 import MedicalRequestModal from '@/features/medical_documents/components/modals/MedicalRequestModal';
 import MainLayout from '@/components/templates/MainLayout';
 import Button from '@/components/atoms/Button';
@@ -276,6 +277,7 @@ const DashboardPage = () => {
                         setPaymentModal(prev => ({ ...prev, open: false }));
                     }}
                     t={t}
+                    MedicationInputComponent={MedicationInput}
                 />
             )}
 

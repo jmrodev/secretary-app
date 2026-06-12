@@ -11,6 +11,11 @@ import RescheduleBanner from './components/ui/RescheduleBanner';
 import PatientHistoryView from './components/views/PatientHistoryView';
 import { AppointmentsModals } from './components/sections/AppointmentsModals';
 import Button from '@/components/atoms/Button';
+import { PrescriptionModal, MedicationInput } from '@/features/medical_documents';
+import { PatientHistoryModal, PatientManagerModal } from '@/features/patients';
+import WhatsAppModal from '@/features/chat/components/ui/WhatsAppModal';
+import AdminAuthModal from '@/features/auth/components/modals/AdminAuthModal';
+import { TransactionModal } from '@/features/finances';
 
 import styles from './AppointmentsPage.module.css';
 
@@ -110,16 +115,74 @@ const AppointmentsPage = () => {
 
             {/* --- Modals --- */}
             <AppointmentsModals
-                doctors={doctors} insurances={insurances} institutions={institutions} booking={booking} nextSlot={nextSlot}
-                paymentModal={paymentModal} setPaymentModal={setPaymentModal}
+                doctors={doctors} institutions={institutions} booking={booking} nextSlot={nextSlot}
+                paymentModal={paymentModal}
                 actionModal={actionModal} setActionModal={setActionModal}
-                historyModal={historyModal} setHistoryModal={setHistoryModal}
-                prescribeModal={prescribeModal} setPrescribeModal={setPrescribeModal}
-                whatsappModal={whatsappModal} setWhatsappModal={setWhatsappModal}
+                historyModal={historyModal}
+                prescribeModal={prescribeModal}
+                whatsappModal={whatsappModal}
                 showNextSlotModal={showNextSlotModal} setShowNextSlotModal={setShowNextSlotModal}
                 editPatientModalOpen={editPatientModalOpen} setEditPatientModalOpen={setEditPatientModalOpen}
-                authModalOpen={authModalOpen} setAuthModalOpen={setAuthModalOpen}
-                handlers={handlers} loading={loading} t={t}
+                authModalOpen={authModalOpen}
+                handlers={handlers} t={t}
+                prescriptionModalSlot={
+                    <PrescriptionModal
+                        isOpen={prescribeModal.open}
+                        onClose={() => setPrescribeModal(prev => ({ ...prev, open: false }))}
+                        patientName={prescribeModal.patientName}
+                        patientId={prescribeModal.patientId}
+                        onSubmit={(data) => handlers.handleSavePrescription({ ...prescribeModal, ...data })}
+                        t={t}
+                        isSubmitting={loading}
+                    />
+                }
+                patientHistoryModalSlot={
+                    <PatientHistoryModal
+                        isOpen={historyModal.open}
+                        onClose={() => setHistoryModal(prev => ({ ...prev, open: false }))}
+                        patientId={historyModal.patientId}
+                        patientName={historyModal.patientName}
+                    />
+                }
+                patientManagerModalSlot={
+                    <PatientManagerModal
+                        isOpen={editPatientModalOpen}
+                        onClose={() => setEditPatientModalOpen(false)}
+                        patient={booking.selectedPatientData}
+                        referenceInfo={booking.syncReferenceInfo}
+                        onUpdate={(updatedData) => {
+                            booking.setSelectedPatient(updatedData.id);
+                            booking.setSelectedPatientData(updatedData);
+                        }}
+                        doctors={doctors}
+                        insurances={insurances}
+                    />
+                }
+                whatsappModalSlot={
+                    <WhatsAppModal
+                        isOpen={whatsappModal.open}
+                        onClose={() => setWhatsappModal(prev => ({ ...prev, open: false }))}
+                        phone={whatsappModal.phone}
+                        message={whatsappModal.message}
+                        onMessageChange={(msg) => setWhatsappModal(prev => ({ ...prev, message: msg }))}
+                    />
+                }
+                adminAuthModalSlot={
+                    <AdminAuthModal
+                        isOpen={authModalOpen}
+                        onClose={() => setAuthModalOpen(false)}
+                        onConfirm={handlers.handleAdminAuthConfirm}
+                    />
+                }
+                transactionModalSlot={
+                    <TransactionModal
+                        isOpen={paymentModal.open}
+                        onClose={() => setPaymentModal(prev => ({ ...prev, open: false }))}
+                        initialData={paymentModal.initialData}
+                        onSuccess={() => handlers.fetchAppointments()}
+                        MedicationInputComponent={MedicationInput}
+                    />
+                }
             />
         </MainLayout>
     );
