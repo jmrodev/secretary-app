@@ -3,17 +3,24 @@ import { useFetch } from '@/hooks/useFetch';
 import api from '@/api/axios';
 import { replaceTemplateVariables } from '@/utils/core/stringUtils';
 
+/**
+ * ECC-Pattern: useDashboardReminders Hook
+ */
 export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
+    // ECC: Fetch data with envelope support
     const remindersHook = useFetch('/users/reminders', {
-        initialData: []
+        initialData: { success: true, data: [] }
     });
+
     const { 
-        data: reminders = [], 
+        data: response, 
         loading: loadingReminders, 
         error: errorReminders,
         refetch: fetchReminders 
     } = remindersHook;
 
+    // Unpack ECC data
+    const reminders = useMemo(() => response?.data || [], [response]);
 
     const handleCompleteReminder = useCallback(async (reminder, type) => {
         try {
@@ -84,7 +91,6 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
         let normalizedPhone = cleanPhone;
         if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
 
-        // Try direct send via bridge
         const sendDirect = async () => {
             try {
                 showMessage(t('sending_whatsapp') || 'Enviando WhatsApp...', 'info');
@@ -93,12 +99,10 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
                     message: message
                 });
                 showMessage(t('whatsapp_sent') || 'Mensaje enviado!', 'success');
-                // Auto-mark as notified
                 handleMarkNotified(reminder, type, true);
             } catch (err) {
                 console.error("Direct send failed, falling back to manual", err);
                 window.open(`https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`, '_blank');
-                // Still mark as notified as we opened the link
                 handleMarkNotified(reminder, type, true);
             }
         };

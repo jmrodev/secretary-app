@@ -129,63 +129,17 @@ class StatsRepository {
         return row?.total || 0;
     }
 
-    async getPatientAppointmentStats(patientId, conn = pool) {
-        const [rows] = await conn.query(`
-            SELECT 
-                COUNT(*) as total,
-                COUNT(CASE WHEN status IN ('completed', 'attended', 'arrived') THEN 1 END) as attended,
-                COUNT(CASE WHEN status = 'absent' THEN 1 END) as absent,
-                COUNT(CASE WHEN status = 'cancelled' THEN 1 END) as cancelled
-            FROM appointments 
-            WHERE patient_id = ?`, [patientId]);
-        return rows[0] || { total: 0, attended: 0, absent: 0, cancelled: 0 };
-    }
-
     async getNewPatientStats(conn = pool) {
         const [stats] = await conn.query(`
             SELECT COUNT(*) as total_new,
-                   COUNT(CASE WHEN DATE(u.created_at) = CURDATE() THEN 1 END) as current_day,
-                   COUNT(CASE WHEN YEARWEEK(u.created_at, 1) = YEARWEEK(NOW(), 1) THEN 1 END) as current_week,
-                   COUNT(CASE WHEN MONTH(u.created_at) = MONTH(NOW()) AND YEAR(u.created_at) = YEAR(NOW()) THEN 1 END) as current_month,
-                   COUNT(CASE WHEN YEAR(u.created_at) = YEAR(NOW()) THEN 1 END) as current_year,
-                   COUNT(CASE WHEN YEAR(u.created_at) = YEAR(NOW()) - 1 THEN 1 END) as last_year
+                   COUNT(CASE WHEN DATE(u.created_at) = CURDATE() THEN 1 END) as currentDay,
+                   COUNT(CASE WHEN YEARWEEK(u.created_at, 1) = YEARWEEK(NOW(), 1) THEN 1 END) as currentWeek,
+                   COUNT(CASE WHEN MONTH(u.created_at) = MONTH(NOW()) AND YEAR(u.created_at) = YEAR(NOW()) THEN 1 END) as currentMonth,
+                   COUNT(CASE WHEN YEAR(u.created_at) = YEAR(NOW()) THEN 1 END) as currentYear,
+                   COUNT(CASE WHEN YEAR(u.created_at) = YEAR(NOW()) - 1 THEN 1 END) as lastYear
             FROM patients p JOIN users u ON p.user_id = u.id WHERE p.is_new_patient = 1
         `);
-        return stats;
-    }
-
-    async getPatientDebt(userId, conn = pool) {
-        const rows = await conn.query(`
-            SELECT COALESCE(SUM(t.amount), 0) as total_debt 
-            FROM transactions t 
-            LEFT JOIN appointments a ON t.appointment_id = a.id 
-            WHERE t.related_user_id = ? 
-            AND t.status = 'pending' 
-            AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))
-        `, [userId]);
-        return rows[0]?.total_debt || 0;
-    }
-
-    async getRequestAggregates(type, dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {
-        const doctorFilter = doctor_id ? " AND r.doctor_id = ?" : "";
-        const dateFilter = isExactDate ? `DATE(r.${dateColumn}) = ?` : `r.${dateColumn} >= ?`;
-        const query = `
-            SELECT 
-                COUNT(DISTINCT r.id) as count,
-                SUM(CASE WHEN t.status = 'paid' THEN t.amount ELSE 0 END) as paid,
-                SUM(CASE WHEN t.status = 'pending' THEN t.amount ELSE 0 END) as debt,
-                SUM(CASE WHEN r.payment_status = 'bonified' THEN 1 ELSE 0 END) as bonified
-            FROM medical_requests r
-            LEFT JOIN transactions t ON t.request_id = r.id
-            WHERE r.type = ? AND ${dateFilter}
-            AND r.status != 'rejected'
-            ${doctorFilter}
-        `;
-        const params = [type, dateValue];
-        if (doctor_id) params.push(doctor_id);
-
-        const [row] = await conn.query(query, params);
-        return row || { count: 0, paid: 0, debt: 0 };
+        return stats[0] || { currentDay: 0, currentWeek: 0, currentMonth: 0, currentYear: 0 };
     }
 
     async getAllTypesRequestAggregates(types, dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {

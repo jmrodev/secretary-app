@@ -1,19 +1,19 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import api from '@/api/axios';
 import { useFetch } from '@/hooks/useFetch';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 
 /**
- * useMedicalRequest Hook (Feature-based).
- * Centralizes logic for creating medical requests (prescriptions, licenses, certificates).
+ * ECC-Pattern: useMedicalRequest Hook
  */
 export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMessage, t, onRequestCreated) => {
-    const { doctors } = useDoctors();
-    const [selectedDoctor, _setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
-    const setSelectedDoctor = (id) => {
-        _setSelectedDoctor(id);
-        if (id) localStorage.setItem('last_selected_doctor_id', id);
-    };
+    const { doctors, viewDoctorId } = useDoctors();
+    
+    // ECC: Derive doctor directly from context (always in sync with Top Bar)
+    const selectedDoctor = useMemo(() => {
+        return viewDoctorId || (doctors.length > 0 ? String(doctors[0].id) : '');
+    }, [viewDoctorId, doctors]);
+
     const [selectedPatient, setSelectedPatient] = useState('');
     const [patientData, setPatientData] = useState(null);
     const [reqType, setReqType] = useState(initialType || 'prescription');
@@ -24,13 +24,12 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     // --- Data Fetching ---
-    const { 
-        data: patientMeds = []
-    } = useFetch(selectedPatient && reqType === 'prescription' ? `/medical/patients/${selectedPatient}/medications` : null, {
-        initialData: []
+    const { data: patientMedsResponse } = useFetch(selectedPatient && reqType === 'prescription' ? `/medical/patients/${selectedPatient}/medications` : null, {
+        initialData: { success: true, data: [] }
     });
+    const patientMeds = useMemo(() => patientMedsResponse?.data || [], [patientMedsResponse]);
 
-    // Temporary medication states (for auto-add on submit)
+    // Temporary medication states
     const [tempMed, setTempMed] = useState('');
     const [tempDose, setTempDose] = useState('');
     const [tempFreq, setTempFreq] = useState('');
@@ -43,18 +42,12 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
         if (e) e.preventDefault();
         if (isSubmitting) return;
 
-        if (!selectedPatient) {
-            showMessage(t('select_patient') || 'Seleccione un paciente', 'error');
-            return;
-        }
-        if (user?.role !== 'doctor' && !selectedDoctor) {
-            showMessage(t('select_doctor') || 'Seleccione un doctor', 'error');
-            return;
-        }
+        if (!selectedPatient) return showMessage(t('select_patient') || 'Seleccione un paciente', 'error');
+        
+        // Use derived selectedDoctor
+        if (user?.role !== 'doctor' && !selectedDoctor) return showMessage(t('select_doctor') || 'Seleccione un doctor', 'error');
 
         let finalItems = [...initialItems];
-
-        // Automatic inclusion of current form data if name is present
         if (reqType === 'prescription' && tempMed.trim()) {
             const newItem = {
                 name: tempMed.trim(),
@@ -65,20 +58,11 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
                 daily_units: parseFloat(tempDailyUnits) || null,
                 vademecum_id: tempVademecumId
             };
-            if (!finalItems.some(i => i.name === newItem.name)) {
-                finalItems.push(newItem);
-            }
+            if (!finalItems.some(i => i.name === newItem.name)) finalItems.push(newItem);
         }
 
-        if (reqType === 'prescription' && finalItems.length === 0) {
-            showMessage(t('fill_required_fields') || 'Complete los campos requeridos (Nombre del medicamento)', 'error');
-            return;
-        }
-
-        if (!initialNote && reqType !== 'prescription') {
-            showMessage(t('fill_required_fields') || 'Complete los campos requeridos', 'error');
-            return;
-        }
+        if (reqType === 'prescription' && finalItems.length === 0) return showMessage(t('fill_required_fields'), 'error');
+        if (!initialNote && reqType !== 'prescription') return showMessage(t('fill_required_fields'), 'error');
 
         let finalNote = initialNote;
         if (reqType === 'prescription') {
@@ -90,8 +74,7 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
                     const label = parseInt(i.quantity) === 1 ? (t('box') || 'caja') : (t('boxes_plural') || 'cajas');
                     str += ` - ${i.quantity} ${label}`;
                 }
-                if (i.days_supply) str += ` (~${i.days_supply}d)`;
-                return str.replace(/\s+/g, ' ').trim();
+                return str.trim();
             }).join('\n');
         }
 
@@ -109,38 +92,24 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
                 status: sendToDoctor ? 'pending' : 'completed',
                 bonified: bonified
             });
-            showMessage(sendToDoctor ? t('request_sent') : (t('request_saved_completed') || 'Guardado como Completado'), 'success');
+            showMessage(sendToDoctor ? t('request_sent') : (t('request_saved_completed')), 'success');
 
-            // Reset form
             setReqNote('');
             setMedicationItems([]);
-            setSendToDoctor(true);
-            setBonified(false);
             setSelectedPatient('');
             setPatientData(null);
-
-            // Reset temp fields
             setTempMed('');
-            setTempDose('');
-            setTempFreq('');
-            setTempDailyUnits('');
-            setTempUnitsPerBox('');
-            setTempQty('');
-            setTempVademecumId(null);
-
             if (onRequestCreated) onRequestCreated();
         } catch (err) {
             console.error("[useMedicalRequest] Error:", err);
-            const data = err.response?.data;
-            const errorMsg = (typeof data === 'object' ? (data.error || data.message) : data) || err.message || t('request_failed');
-            showMessage(`${t('request_failed')}: ${errorMsg}`, 'error');
+            showMessage(t('request_failed'), 'error');
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return {
-        selectedDoctor, setSelectedDoctor,
+        selectedDoctor,
         selectedPatient, setSelectedPatient,
         patientData, setPatientData,
         patientMeds,
@@ -152,13 +121,9 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
         isSubmitting,
         handleCreateRequest,
         tempMedsProps: {
-            tempMed, setTempMed,
-            tempDose, setTempDose,
-            tempFreq, setTempFreq,
-            tempDailyUnits, setTempDailyUnits,
-            tempUnitsPerBox, setTempUnitsPerBox,
-            tempQty, setTempQty,
-            tempVademecumId, setTempVademecumId
+            tempMed, setTempMed, tempDose, setTempDose, tempFreq, setTempFreq,
+            tempDailyUnits, setTempDailyUnits, tempUnitsPerBox, setTempUnitsPerBox,
+            tempQty, setTempQty, tempVademecumId, setTempVademecumId
         }
     };
 };

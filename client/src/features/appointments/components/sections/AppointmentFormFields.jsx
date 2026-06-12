@@ -6,108 +6,114 @@ import AppointmentTypeSelector from '../forms/AppointmentTypeSelector';
 import AppointmentPatientSection from './AppointmentPatientSection';
 import styles from '../modals/AppointmentFormModal.module.css';
 
+/**
+ * AppointmentFormFields (Minimalist ECC Version).
+ * Decoupled structure using handlers and optional slot components.
+ */
 export const AppointmentFormFields = ({
-    user, doctors, selectedDoctor, handleDoctorChange,
-    type, handleTypeChange,
-    selectedPatient, selectedPatientData, missingData,
-    handlePatientChange, handlePhoneChange, onOpenEditPatient,
-    date, handleDateChange, isOutOfHours,
-    selectedInstitution, institutionOptions, handleInstitutionChange,
-    reason, handleReasonChange,
-    bonified, handleBonifiedChange,
-    t,
+    user, doctors, selectedDoctor, type, 
+    selectedPatient, selectedPatientData, missingData, onOpenEditPatient,
+    date, isOutOfHours, selectedInstitution, institutions,
+    reason, bonified, handlers, t,
     PatientSearchSelectComponent
 }) => {
+    const { handleDateChange, handleDoctorChange, handlePatientChange, handleTypeChange,
+            handleInstitutionChange, handleReasonChange, handleBonifiedChange, handlePhoneChange } = handlers;
+
+    const institutionOptions = [
+        { value: '', label: selectedPatientData ? `Institución (${selectedPatientData.institution_name || 'Ninguna'})` : 'Institución / Obra Social' },
+        { value: 'none', label: 'Particular / Sin Institución' },
+        ...institutions.map(inst => ({ value: inst.id, label: inst.name }))
+    ];
+
     return (
         <div className={styles.grid}>
-            <div className={styles.field}>
-                <label className={styles.label} htmlFor="doctor-select">{t('doctors') || 'Doctor'}</label>
-                {user?.role === 'doctor' ? (
-                    <div className={styles.readOnlyField}>
-                        {doctors.find(d => d.id === Number(selectedDoctor))?.full_name || 'Usted'}
-                    </div>
-                ) : (
+            
+            {/* 1. Patient Section */}
+            <div className={`${styles.panel} ${styles.fieldFull}`}>
+                <AppointmentPatientSection
+                    selectedPatient={selectedPatient}
+                    selectedPatientData={selectedPatientData}
+                    missingData={missingData}
+                    handlePatientChange={handlePatientChange}
+                    handlePhoneChange={handlePhoneChange}
+                    onOpenEditPatient={onOpenEditPatient}
+                    t={t}
+                    PatientSearchSelectComponent={PatientSearchSelectComponent}
+                />
+            </div>
+
+            {/* 2. Professional & Schedule */}
+            <div className={styles.panel}>
+                <div className={styles.field}>
+                    <label className={styles.label}>{t('doctor') || 'Doctor'}</label>
+                    {user?.role === 'doctor' ? (
+                        <div className={styles.readOnlyField}>
+                            {doctors.find(d => String(d.id) === String(selectedDoctor))?.full_name || 'Usted'}
+                        </div>
+                    ) : (
+                        <Select
+                            value={selectedDoctor || ''}
+                            onChange={handleDoctorChange}
+                            options={doctors.map(d => ({ value: d.id, label: d.full_name }))}
+                            placeholder="Seleccionar Doctor"
+                            required
+                        />
+                    )}
+                </div>
+
+                <div className={styles.field}>
+                    <label className={styles.label}>{t('date_time') || 'Fecha y Hora'}</label>
+                    <Input type="datetime-local" value={date} onChange={handleDateChange} required />
+                    {isOutOfHours && (
+                        <div className={`${styles.extraBadge} ${styles.extraBadgePulse}`}>
+                            <Icon name="warning" size="1rem" />
+                            Turno Fuera de Horario
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            {/* 3. Details & Type */}
+            <div className={styles.panel}>
+                <div className={styles.field}>
+                    <label className={styles.label}>{t('appointment_type') || 'Tipo de Turno'}</label>
+                    <AppointmentTypeSelector type={type} onChange={handleTypeChange} t={t} />
+                </div>
+
+                <div className={styles.field}>
+                    <label className={styles.label}>{t('institution') || 'Obra Social / Institución'}</label>
                     <Select
-                        id="doctor-select"
-                        value={selectedDoctor || ''}
-                        onChange={handleDoctorChange}
-                        options={doctors.map(d => ({
-                            value: d.id,
-                            label: `${d.full_name} (${d.specialty})`
-                        }))}
-                        placeholder="Seleccionar Doctor"
+                        value={selectedInstitution}
+                        onChange={handleInstitutionChange}
+                        options={institutionOptions}
+                    />
+                </div>
+            </div>
+
+            {/* 4. Notes & Bonification */}
+            <div className={`${styles.panel} ${styles.fieldFull}`}>
+                <div className={styles.field}>
+                    <label className={styles.label}>{t('reason') || 'Motivo y Notas'}</label>
+                    <Input
+                        type="textarea"
+                        rows="1"
+                        value={reason}
+                        onChange={handleReasonChange}
+                        placeholder={t('reason_placeholder') || 'Ingrese el motivo...'}
                         required
                     />
-                )}
-            </div>
-
-            <div className={styles.field}>
-                <label className={styles.label}>{t('appointment_type') || 'Tipo de Turno'}</label>
-                <AppointmentTypeSelector type={type} onChange={handleTypeChange} t={t} />
-            </div>
-
-            <AppointmentPatientSection
-                selectedPatient={selectedPatient}
-                selectedPatientData={selectedPatientData}
-                missingData={missingData}
-                handlePatientChange={handlePatientChange}
-                handlePhoneChange={handlePhoneChange}
-                onOpenEditPatient={onOpenEditPatient}
-                t={t}
-                PatientSearchSelectComponent={PatientSearchSelectComponent}
-            />
-
-            <div className={styles.field}>
-                <label className={styles.label} htmlFor="appointment-date">{t('date_time') || 'Fecha y Hora'}</label>
-                <Input
-                    id="appointment-date"
-                    type="datetime-local"
-                    value={date}
-                    onChange={handleDateChange}
-                    required
-                />
-                {isOutOfHours && (
-                    <div className={`${styles.extraBadge} ${styles.extraBadgePulse}`}>
-                        <Icon name="warning" size="1rem" />
-                        Turno Fuera de Horario (Extra)
-                    </div>
-                )}
-            </div>
-
-            <div className={styles.field}>
-                <label className={styles.label} htmlFor="institution-select">Obra Social / Institución</label>
-                <Select
-                    id="institution-select"
-                    value={selectedInstitution}
-                    onChange={handleInstitutionChange}
-                    options={institutionOptions}
-                />
-            </div>
-
-            <div className={`${styles.field} ${styles.fieldFull}`}>
-                <label className={styles.label} htmlFor="reason-textarea">{t('reason') || 'Motivo de Consulta'}</label>
-                <Input
-                    id="reason-textarea"
-                    type="textarea"
-                    rows="3"
-                    value={reason}
-                    onChange={handleReasonChange}
-                    placeholder={t('reason_placeholder') || 'Ingrese el motivo...'}
-                    required
-                />
-            </div>
-
-            <div className={`${styles.field} ${styles.fieldFull}`}>
-                <div className={styles.checkboxContainer}>
+                </div>
+                
+                <div className={styles.checkboxContainer} onClick={() => handleBonifiedChange(!bonified)}>
                     <input
                         type="checkbox"
-                        id="bonified"
                         checked={bonified}
                         onChange={e => handleBonifiedChange(e.target.checked)}
                         className={styles.checkbox}
                     />
-                    <label htmlFor="bonified" className={styles.checkboxLabel}>
-                        {t('bonified_label') || 'Bonificado (Sin Costo)'}
+                    <label className={styles.checkboxLabel}>
+                        {t('bonified_label') || 'Bonificar este turno (Sin costo)'}
                     </label>
                 </div>
             </div>

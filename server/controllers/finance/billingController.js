@@ -2,9 +2,12 @@ const billingService = require('../../services/finance/billingService');
 const fs = require('fs');
 
 /**
- * Billing Controller
- * Handles HTTP requests for Electronic Invoicing.
+ * ECC-Pattern: BillingController
+ * Standards-compliant electronic invoicing management.
  */
+const sendResponse = (res, success, data, error = null, status = 200) => {
+    res.status(status).json({ success, data, error });
+};
 
 exports.getServerStatus = async (req, res) => {
     try {
@@ -18,47 +21,49 @@ exports.getServerStatus = async (req, res) => {
             billingService.getAfipEnvironment(),
         ]);
 
-        res.json({ status: 'OK', afip_status: afipStatus, environment });
+        sendResponse(res, true, { afip_status: afipStatus, environment });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
+        console.error("[ECC-Billing] getServerStatus error:", err);
+        sendResponse(res, false, null, err.message, 500);
     }
 };
 
 exports.generateCsr = async (req, res) => {
     try {
         const { doctor_id, alias_suffix } = req.body;
-        if (!doctor_id) return res.status(400).json({ error: "Doctor ID required" });
+        if (!doctor_id) return sendResponse(res, false, null, "Doctor ID required", 400);
         const result = await billingService.generateCsr(doctor_id, alias_suffix);
-        res.json(result);
+        sendResponse(res, true, result);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
+        console.error("[ECC-Billing] generateCsr error:", err);
+        sendResponse(res, false, null, err.message, 500);
     }
 };
 
 exports.uploadCert = async (req, res) => {
     try {
-        if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+        if (!req.file) return sendResponse(res, false, null, "No file uploaded", 400);
         const { doctor_id } = req.body;
-        if (!doctor_id) return res.status(400).json({ error: "Doctor ID required" });
+        if (!doctor_id) return sendResponse(res, false, null, "Doctor ID required", 400);
 
         const relativePath = await billingService.uploadCert(doctor_id, req.file);
-        res.json({ message: "Certificate uploaded successfully", path: relativePath });
+        sendResponse(res, true, { message: "Certificate uploaded successfully", path: relativePath });
     } catch (err) {
-        console.error(err);
+        console.error("[ECC-Billing] uploadCert error:", err);
         if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-        res.status(500).json({ error: err.message });
+        sendResponse(res, false, null, err.message, 500);
     }
 };
 
 exports.createInvoice = async (req, res) => {
     try {
         const { transactionId, cbteTipo } = req.body;
+        if (!transactionId) return sendResponse(res, false, null, "transactionId is required", 400);
+        
         const result = await billingService.createInvoice(transactionId, cbteTipo);
-        res.json({ message: "Invoice created successfully", invoice: result });
+        sendResponse(res, true, result);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
+        console.error("[ECC-Billing] createInvoice error:", err);
+        sendResponse(res, false, null, err.message, 500);
     }
 };
