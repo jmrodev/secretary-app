@@ -11,6 +11,9 @@ import { useReportsController, useAuditLogsController } from '@/features/reports
 import { QRCodeModal } from '@/features/patients'; // Fixed import from patients feature
 import { useInstitutionsController } from '@/features/institutions';
 import { InstitutionFinances } from '@/features/finances';
+import { ScheduleBulkActions, ScheduleTimeBlock } from '@/features/appointments';
+import { UserForm } from '@/features/users';
+import MessageTemplateEditor from './components/forms/MessageTemplateEditor';
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
@@ -33,7 +36,15 @@ import styles from './SystemConfigPage.module.css';
 
 const DoctorsSection = () => {
     const controller = useDoctorsPageController();
-    return <DoctorsManager {...controller} />;
+    return (
+        <DoctorsManager
+            {...controller}
+            ScheduleBulkActionsComponent={ScheduleBulkActions}
+            ScheduleTimeBlockComponent={ScheduleTimeBlock}
+            UserFormComponent={UserForm}
+            MessageTemplateEditorComponent={MessageTemplateEditor}
+        />
+    );
 };
 const ProfileSection = () => {
     const controller = useProfileController();

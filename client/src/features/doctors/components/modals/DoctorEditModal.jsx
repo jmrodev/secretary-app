@@ -12,7 +12,6 @@ import DoctorGoogleSettings from '@/features/doctors/components/sections/DoctorG
 import DoctorScheduleSettings from '@/features/doctors/components/sections/DoctorScheduleSettings';
 import DoctorFiscalSettings from '@/features/doctors/components/sections/DoctorFiscalSettings';
 import DoctorMessagesForm from '@/features/doctors/components/sections/DoctorMessagesForm';
-import { UserForm } from '@/features/users';
 import { useDoctorFiscalController } from '@/features/doctors/hooks/useDoctorFiscalController';
 import styles from './DoctorEditModal.module.css';
 
@@ -31,6 +30,8 @@ const DoctorEditModal = ({
     schedule,
     setSchedule,
     loadingSchedule,
+    ScheduleBulkActionsComponent,
+    ScheduleTimeBlockComponent,
 
     // Google Props
     connected,
@@ -39,6 +40,8 @@ const DoctorEditModal = ({
     onVerifyGoogleEvents,
     onImportContacts,
     onResetSpreadsheet,
+    UserFormComponent,
+    MessageTemplateEditorComponent,
     t
 }) => {
     const {
@@ -106,7 +109,7 @@ const DoctorEditModal = ({
 
             {type === 'CREATE' && (
                 <div className={`${styles.content} animate-fade-in`}>
-                    <UserForm
+                    <UserFormComponent
                         type="CREATE"
                         formData={data}
                         setFormData={onChangeData}
@@ -180,6 +183,8 @@ const DoctorEditModal = ({
                                 schedule={schedule}
                                 setSchedule={setSchedule}
                                 loading={loadingSchedule}
+                                ScheduleBulkActionsComponent={ScheduleBulkActionsComponent}
+                                ScheduleTimeBlockComponent={ScheduleTimeBlockComponent}
                             />
                         </div>
                     )}
@@ -189,6 +194,7 @@ const DoctorEditModal = ({
                             data={data}
                             onChange={onChangeData}
                             settings={settings}
+                            MessageTemplateEditorComponent={MessageTemplateEditorComponent}
                             t={t}
                         />
                     )}

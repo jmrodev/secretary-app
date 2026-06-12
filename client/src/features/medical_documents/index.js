@@ -18,8 +18,6 @@ export { default as MedicalRequestList } from '@/features/medical_documents/comp
 export { default as MedicalRequirementManager } from '@/features/medical_documents/components/ui/MedicalRequirementManager';
 export { default as MedicalFileRepository } from '@/features/medical_documents/components/lists/MedicalFileRepository';
 export { default as PrescriptionModal } from '@/features/medical_documents/components/modals/PrescriptionModal';
-export { default as DocumentsSidebar } from '@/features/medical_documents/components/sections/DocumentsSidebar';
-export { default as DocumentsHeader } from '@/features/medical_documents/components/sections/DocumentsHeader';
 
 // Molecules (if needed externally)
 export { default as StatusActionModal } from '@/features/medical_documents/components/modals/StatusActionModal';

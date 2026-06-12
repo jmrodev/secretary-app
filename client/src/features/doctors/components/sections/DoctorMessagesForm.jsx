@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react';
-import MessageTemplateEditor from '@/features/config/components/forms/MessageTemplateEditor';
 import Icon from '@/components/atoms/Icon';
 import Button from '@/components/atoms/Button';
 import TabNav from '@/components/molecules/TabNav';
@@ -11,7 +10,7 @@ import styles from './DoctorMessagesForm.module.css';
  * 
  * Allows a doctor to customize their specific message templates and AI context.
  */
-const DoctorMessagesForm = ({ data, onChange, settings, t }) => {
+const DoctorMessagesForm = ({ data, onChange, settings, t, MessageTemplateEditorComponent }) => {
     const [activeSubTab, setActiveSubTab] = useState('templates'); // 'templates', 'confirmation', 'ai'
 
     const commonVars = useMemo(() => [
@@ -121,7 +120,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
             <div className={`${styles.content}`}>
                 {activeSubTab === 'templates' && (
                     <section className={`${styles.section} animate-fade-in`}>
-                        <MessageTemplateEditor
+                        <MessageTemplateEditorComponent
                             id="doctor-reminder-template"
                             label={t('presential_reminder_label')}
                             value={data.reminder_template}
@@ -134,7 +133,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
 
                         <div className={`${styles.divider}`}></div>
 
-                        <MessageTemplateEditor
+                        <MessageTemplateEditorComponent
                             id="doctor-reminder-virtual-template"
                             label={t('virtual_reminder_label')}
                             value={data.reminder_virtual_template}
@@ -149,7 +148,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
 
                 {activeSubTab === 'confirmation' && (
                     <section className={`${styles.section} animate-fade-in`}>
-                        <MessageTemplateEditor
+                        <MessageTemplateEditorComponent
                             id="doctor-confirmation-template"
                             label={t('presential_confirmation_label')}
                             value={data.confirmation_template}
@@ -162,7 +161,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
 
                         <div className={`${styles.divider}`}></div>
 
-                        <MessageTemplateEditor
+                        <MessageTemplateEditorComponent
                             id="doctor-confirmation-virtual-template"
                             label={t('virtual_confirmation_label')}
                             value={data.confirmation_virtual_template}
