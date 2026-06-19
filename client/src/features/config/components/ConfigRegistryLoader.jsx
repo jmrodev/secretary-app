@@ -23,6 +23,11 @@ import { UserForm } from '@/features/users';
 import { InstitutionFinances } from '@/features/finances';
 import MessageTemplateEditor from './forms/MessageTemplateEditor';
 
+// Eager imports for hooks to avoid undef require at runtime/eslint
+import { useDoctorsPageController } from '@/features/doctors';
+import { useReportsController, useAuditLogsController } from '@/features/reports';
+import { useInstitutionsController } from '@/features/institutions';
+
 // --- Specialized Wrappers to map the common Controller to specific component props ---
 
 const GeneralSettingsWrapper = ({ controller }) => {
@@ -48,9 +53,6 @@ const ProfileEditorWrapper = ({ controller }) => {
 };
 
 const DoctorsManagerWrapper = ({ controller }) => {
-    // DoctorsManager usually needs a lot of props from useDoctorsPageController
-    // We can import the hook here because this is the 'un-decoupled' glue layer.
-    const { useDoctorsPageController } = require('@/features/doctors');
     const doctorsController = useDoctorsPageController();
     
     return (
@@ -65,20 +67,17 @@ const DoctorsManagerWrapper = ({ controller }) => {
 };
 
 const ReportsDashboardWrapper = ({ controller }) => {
-    const { useReportsController } = require('@/features/reports');
     const reportsController = useReportsController();
     return <ReportsDashboard {...reportsController} />;
 };
 
 const InstitutionManagerWrapper = ({ controller }) => {
-    const { useInstitutionsController } = require('@/features/institutions');
     const instController = useInstitutionsController();
     return <InstitutionManager {...instController} InstitutionFinancesComponent={InstitutionFinances} />;
 };
 
 const UserManagerWrapper = ({ controller }) => <UserManager t={controller.t} />;
 const AuditLogManagerWrapper = ({ controller }) => {
-    const { useAuditLogsController } = require('@/features/reports');
     const logsController = useAuditLogsController();
     return <AuditLogManager {...logsController} />;
 };
