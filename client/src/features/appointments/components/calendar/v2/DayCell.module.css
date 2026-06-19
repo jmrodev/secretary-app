@@ -1,0 +1,170 @@
+/* DayCell.module.css */
+
+.dayCell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 5.5rem;
+  padding: 0.6rem;
+  background: rgb(255, 255, 255, 0.03);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgb(255, 255, 255, 0.05);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  overflow: hidden;
+}
+
+/* Placeholder for empty cells at the start/end of the month */
+.placeholder {
+  min-height: 5.5rem;
+  background: transparent;
+  border: 1px solid transparent;
+  pointer-events: none;
+}
+
+/* Hover state */
+.dayCell:hover {
+  background: rgb(255, 255, 255, 0.07);
+  border-color: rgb(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgb(0, 0, 0, 0.15);
+}
+
+/* Selected state */
+.dayCell.selected {
+  background: rgb(var(--accent-rgb, 99, 102, 241), 0.15);
+  border-color: rgb(var(--accent-rgb, 99, 102, 241), 0.6);
+  box-shadow: 0 0 12px rgb(var(--accent-rgb, 99, 102, 241), 0.25);
+}
+
+.dayCell.selected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--accent, #6366f1);
+  border-radius: 3px 3px 0 0;
+}
+
+/* Today state */
+.dayCell.today {
+  border-color: var(--accent, #6366f1);
+  background: rgb(255, 255, 255, 0.05);
+}
+
+.todayIndicator {
+  width: 6px;
+  height: 6px;
+  background: var(--accent, #6366f1);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent, #6366f1);
+}
+
+/* Holiday state */
+.dayCell.holiday {
+  background: rgb(239, 68, 68, 0.03);
+  border-color: rgb(239, 68, 68, 0.2);
+}
+
+.holidayBadge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #ef4444;
+  background: rgb(239, 68, 68, 0.1);
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Inactive / Past / Outside month states */
+.dayCell.past {
+  opacity: 0.6;
+}
+
+.dayCell.outsideMonth {
+  opacity: 0.3;
+}
+
+/* Header, Content, Footer */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.number {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgb(255, 255, 255, 0.95);
+  font-family: inherit;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 0.25rem;
+  min-height: 1.25rem;
+  width: 100%;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  margin-top: 0.25rem;
+}
+
+/* Appointments Badge & Dots */
+.appointmentsBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgb(255, 255, 255, 0.04);
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(255, 255, 255, 0.05);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+/* Appointment Density Colors */
+.indicatorLow {
+  background-color: #10b981; /* Green */
+  box-shadow: 0 0 6px rgb(16, 185, 129, 0.4);
+}
+
+.indicatorMedium {
+  background-color: #f59e0b; /* Amber */
+  box-shadow: 0 0 6px rgb(245, 158, 11, 0.4);
+}
+
+.indicatorHigh {
+  background-color: #ef4444; /* Red */
+  box-shadow: 0 0 6px rgb(239, 68, 68, 0.4);
+}
+
+.countText {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgb(255, 255, 255, 0.85);
+  line-height: 1;
+}
+
+/* Keyboard focus state */
+.dayCell:focus-visible {
+  outline: 2px solid var(--accent, #6366f1);
+  outline-offset: 2px;
+}
