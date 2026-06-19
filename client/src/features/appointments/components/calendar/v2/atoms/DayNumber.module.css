@@ -1,0 +1,26 @@
+/* DayNumber.module.css */
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.number {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgb(255, 255, 255, 0.95);
+  line-height: 1;
+}
+
+.number.today {
+  color: var(--accent, #6366f1);
+}
+
+.indicator {
+  width: 6px;
+  height: 6px;
+  background: var(--accent, #6366f1);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent, #6366f1);
+}

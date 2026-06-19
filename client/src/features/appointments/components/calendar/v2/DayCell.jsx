@@ -1,10 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import DayNumber from './atoms/DayNumber';
+import HolidayBadge from './atoms/HolidayBadge';
+import AppointmentsBadge from './atoms/AppointmentsBadge';
 import styles from './DayCell.module.css';
 
 /**
- * DayCell (Atomic Component)
- * Represents a single day in the calendar grid.
+ * DayCell (Molecule Component)
+ * Represents a single day in the calendar grid, composed of atomic elements.
  */
 const DayCell = ({
   day,
@@ -18,7 +21,7 @@ const DayCell = ({
   onClick,
   className
 }) => {
-  // If no day is provided, render an empty/inactive cell placeholder to maintain the grid
+  // Render placeholder for dates not falling in the current month bounds
   if (!day) {
     return <div className={`${styles.placeholder} ${className || ''}`} />;
   }
@@ -44,14 +47,6 @@ const DayCell = ({
     className
   ].filter(Boolean).join(' ');
 
-  // Determine appointments status indicator class
-  const getIndicatorClass = () => {
-    if (appointmentsCount > 5) return styles.indicatorHigh;
-    if (appointmentsCount > 2) return styles.indicatorMedium;
-    if (appointmentsCount > 0) return styles.indicatorLow;
-    return '';
-  };
-
   return (
     <div
       className={cellClasses}
@@ -60,27 +55,18 @@ const DayCell = ({
       role="button"
       tabIndex={0}
       aria-label={`Día ${day}${isToday ? ', Hoy' : ''}${isHoliday ? `, Feriado: ${holidayName}` : ''}${appointmentsCount ? `, ${appointmentsCount} turnos` : ''}`}
-      title={isHoliday ? holidayName : undefined}
     >
       <div className={styles.header}>
-        <span className={styles.number}>{day}</span>
-        {isToday && <span className={styles.todayIndicator} aria-hidden="true" />}
+        <DayNumber day={day} isToday={isToday} />
       </div>
 
       <div className={styles.content}>
-        {isHoliday && (
-          <span className={styles.holidayBadge} title={holidayName}>
-            Feriado
-          </span>
-        )}
+        {isHoliday && <HolidayBadge title={holidayName} />}
       </div>
 
       <div className={styles.footer}>
         {appointmentsCount > 0 && (
-          <div className={styles.appointmentsBadge} title={`${appointmentsCount} turnos`}>
-            <span className={`${styles.statusDot} ${getIndicatorClass()}`} />
-            <span className={styles.countText}>{appointmentsCount}</span>
-          </div>
+          <AppointmentsBadge count={appointmentsCount} />
         )}
       </div>
     </div>
