@@ -33,6 +33,7 @@ export const useMedicalDocumentsHandlers = (props) => {
 
         // Composite / Legacy
         fetchRequests: props.fetchRequests,
+        filterItem: props.filterItem,
         handlePrintPrescriptions: navigationHandlers.handlePrintPrescriptions,
         handleSelectMedication: historyHandlers.handleSelectMedication,
     };
