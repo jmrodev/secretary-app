@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import DayNumber from './atoms/DayNumber';
 import HolidayBadge from './atoms/HolidayBadge';
 import AppointmentsBadge from './atoms/AppointmentsBadge';
@@ -11,19 +10,19 @@ import styles from './DayCell.module.css';
  */
 const DayCell = ({
   day,
-  isSelected,
-  isToday,
-  isCurrentMonth,
-  isHoliday,
-  holidayName,
-  isPast,
-  appointmentsCount,
+  isSelected = false,
+  isToday = false,
+  isCurrentMonth = true,
+  isHoliday = false,
+  holidayName = '',
+  isPast = false,
+  appointmentsCount = 0,
   onClick,
-  className
+  className = ''
 }) => {
   // Render placeholder for dates not falling in the current month bounds
   if (!day) {
-    return <div className={`${styles.placeholder} ${className || ''}`} />;
+    return <div className={`${styles.placeholder} ${className}`} />;
   }
 
   const handleSelect = () => {
@@ -71,30 +70,6 @@ const DayCell = ({
       </div>
     </div>
   );
-};
-
-DayCell.propTypes = {
-  day: PropTypes.number,
-  isSelected: PropTypes.bool,
-  isToday: PropTypes.bool,
-  isCurrentMonth: PropTypes.bool,
-  isHoliday: PropTypes.bool,
-  holidayName: PropTypes.string,
-  isPast: PropTypes.bool,
-  appointmentsCount: PropTypes.number,
-  onClick: PropTypes.func,
-  className: PropTypes.string
-};
-
-DayCell.defaultProps = {
-  isSelected: false,
-  isToday: false,
-  isCurrentMonth: true,
-  isHoliday: false,
-  holidayName: '',
-  isPast: false,
-  appointmentsCount: 0,
-  className: ''
 };
 
 export default DayCell;

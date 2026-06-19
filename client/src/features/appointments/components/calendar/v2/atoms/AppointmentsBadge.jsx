@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import StatusDot from './StatusDot';
 import styles from './AppointmentsBadge.module.css';
 
@@ -14,10 +13,6 @@ const AppointmentsBadge = ({ count }) => {
       <span className={styles.count}>{count}</span>
     </div>
   );
-};
-
-AppointmentsBadge.propTypes = {
-  count: PropTypes.number.isRequired
 };
 
 export default AppointmentsBadge;
