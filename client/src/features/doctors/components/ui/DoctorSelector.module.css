@@ -1,51 +1,137 @@
-/* DoctorSelector Organism Styles */
+.wrapper {
+    position: relative;
+    user-select: none;
+    min-width: 200px;
+}
 
-.root {
-    display: inline-flex;
+.trigger {
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.35rem 0.85rem;
-    background-color: rgb(255 255 255 / 8%);
-    backdrop-filter: blur(16px);
-    border-radius: 100px;
-    border: none; /* No border as requested */
-    transition: background-color 0.3s ease;
-    vertical-align: middle;
+    gap: 0.85rem;
+    padding: 0.5rem 1rem;
+    background: rgb(255, 255, 255, 0.04);
+    border: 1px solid rgb(255, 255, 255, 0.08);
+    border-radius: 12px; /* Rectangular-ish with soft corners (No more pill) */
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.trigger:hover {
+    background: rgb(255, 255, 255, 0.08);
+    border-color: var(--primary-color);
+}
+
+.triggerOpen {
+    background: rgb(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+}
+
+.iconContainer {
+    width: 32px;
+    height: 32px;
+    background: rgb(0, 206, 209, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.labelGroup {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: rgb(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.value {
+    font-size: 0.875rem;
+    font-weight: 750;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chevron {
+    color: rgb(255, 255, 255, 0.3);
+}
+
+/* --- Styled Cortina (Dropdown) --- */
+.dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    min-width: 240px;
+    background: #1e2533;
+    border: 1px solid rgb(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 0.6rem;
+    box-shadow: 0 15px 50px rgb(0, 0, 0, 0.5);
+    z-index: 10001; /* Above almost everything */
+    backdrop-filter: blur(24px);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    animation: slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slide-up {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.7rem 1rem;
+    border-radius: 10px;
+    color: rgb(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.option:hover {
+    background: rgb(255, 255, 255, 0.06);
     color: #fff;
 }
 
-.root:hover {
-    background-color: rgb(255 255 255 / 15%);
+.optionActive {
+    background: rgb(0, 206, 209, 0.12) !important;
+    color: var(--primary-color) !important;
 }
 
-.select {
-    border: none;
-    background: transparent;
-    padding: 0 1.25rem 0 0;
-    font-weight: 700;
+.optionAvatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: rgb(255, 255, 255, 0.1);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 0.75rem;
-    color: inherit;
-    cursor: pointer;
-    width: auto;
-    outline: none;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
+    font-weight: 800;
 }
 
-/* Ensure options are always readable */
-.select option {
-    background-color: #fff;
-    color: #1e293b;
-    font-weight: 400;
-}
-
-.doctorSelectorDisplayName {
-    color: inherit;
-    font-size: 0.85rem;
-    margin-left: 0.5rem;
+.readonly {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--primary-color);
     font-weight: 700;
-    background: rgb(255 255 255 / 10%);
-    padding: 0.2rem 0.6rem;
-    border-radius: 1rem;
-    border: none;
+    font-size: 0.9rem;
+    padding: 0.5rem;
 }

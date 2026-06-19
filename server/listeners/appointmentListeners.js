@@ -1,12 +1,52 @@
-const appointmentEvents = require('../events/appointmentEvents');
+const eventBus = require('../events/eventBus');
+const EVENTS = require('../events/eventConstants');
 const googleSyncService = require('../services/appointments/googleSyncService');
 const doctorRepository = require('../repositories/user/doctorRepository');
+const appointmentRepository = require('../repositories/appointments/appointmentRepository');
 const whatsappService = require('../services/communication/whatsappService');
 
-// 1. Google Calendar Synchronizer
-// ... existing code ...
+// 1. Google Calendar Synchronizer (Cross-domain via eventBus)
 
-// 3. WhatsApp Confirmation Notifier
+eventBus.on(EVENTS.APPOINTMENT_DELETED, async ({ id, google_event_id, doctor_id, userId }) => {
+    if (google_event_id) {
+        try {
+            await googleSyncService.syncDelete(id, doctor_id, google_event_id, userId);
+        } catch (e) { console.warn("[Listeners] Google Sync Delete Failed", e.message); }
+    }
+});
+
+eventBus.on(EVENTS.APPOINTMENT_CANCELLED, async ({ id, status, userId }) => {
+    try {
+        const appt = await appointmentRepository.findById(id);
+        if (!appt?.google_event_id) return;
+
+        if (status === 'cancelled') {
+            await googleSyncService.syncDelete(id, appt.doctor_id, appt.google_event_id, userId);
+        } else {
+            const data = { 
+                status, 
+                description: googleSyncService.buildDescription(appt, { id: appt.patient_id, full_name: appt.patient_name }, { status }) 
+            };
+            await googleSyncService.syncUpdate(id, appt.doctor_id, appt.google_event_id, data, userId);
+        }
+    } catch (e) { console.warn("[Listeners] Google Sync Status Update Failed", e.message); }
+});
+
+eventBus.on(EVENTS.APPOINTMENT_COMPLETED, async ({ id, status, userId }) => {
+    try {
+        const appt = await appointmentRepository.findById(id);
+        if (!appt?.google_event_id) return;
+        const data = { 
+            status: 'completed', 
+            description: googleSyncService.buildDescription(appt, { id: appt.patient_id, full_name: appt.patient_name }, { status: 'completed' }) 
+        };
+        await googleSyncService.syncUpdate(id, appt.doctor_id, appt.google_event_id, data, userId);
+    } catch (e) { console.warn("[Listeners] Google Sync Completion Failed", e.message); }
+});
+
+// 2. WhatsApp Confirmation Notifier (Domain-specific via appointmentEvents)
+const appointmentEvents = require('../events/appointmentEvents');
+
 appointmentEvents.on('appointmentCreated', async ({ data, patientData }) => {
     try {
         await whatsappService.sendConfirmationMessage({

@@ -153,3 +153,7 @@ scratch/
 !server/scripts/migrations/*.sql
 
 
+data/
+mysql_data_prod/
+android_sdk/
+.gradle/

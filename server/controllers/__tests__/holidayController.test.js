@@ -1,8 +1,8 @@
 const httpMocks = require('node-mocks-http');
-const holidayController = require('../../holidayController');
+const holidayController = require('../scheduling/holidayController');
 const holidayService = require('../../services/appointments/holidayService');
 
-jest.mock('../../services/holidayService');
+jest.mock('../../services/appointments/holidayService');
 jest.mock('../../db', () => ({
     pool: {
         end: jest.fn()

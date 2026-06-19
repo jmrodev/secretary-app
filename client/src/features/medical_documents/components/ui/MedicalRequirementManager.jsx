@@ -12,57 +12,34 @@ import MedicalRequirementDetailModal from '@/features/medical_documents/componen
 import MedicalRequirementActionModal from '@/features/medical_documents/components/modals/MedicalRequirementActionModal';
 import MedicalRequestModal from '@/features/medical_documents/components/modals/MedicalRequestModal';
 
-// Styles
 import styles from './MedicalRequirementManager.module.css';
 
 /**
  * MedicalRequirementManager Organism (Feature-based).
- * Central orchestrator for medical requests (prescriptions, licenses, certificates).
- * Manages the transition between list view, manual creation, and recycle bin.
+ * ECC-Pattern: Standard Orchestrator without early returns to protect Hooks.
  */
 const MedicalRequirementManager = ({ 
     user, 
-    variant = 'full', // 'full' | 'compact'
+    variant = 'full', 
     setPaymentModal 
 }) => {
-    const isCompact = variant === 'compact';
-    const hideNew = isCompact;
-    const hideRecycle = isCompact;
-    const hideTabs = isCompact;
-    const hideFilters = isCompact;
     const { t } = useLanguage();
     const controller = useRequirementManagerController(user);
     
     const {
-        requests,
-        loading,
-        selectedRequest,
-        setSelectedRequest,
-        isNewModalOpen,
-        setIsNewModalOpen,
-        actionModal,
-        setActionModal,
-        actionNote,
-        setActionNote,
-        activeTab,
-        setActiveTab,
-        recycleRequests,
-        doctors,
-        filter,
-        setFilter,
-        handleRestore,
-        openActionModal,
-        confirmAction,
-        handleDelete,
-        fetchRequests,
-        canDeleteRequest
+        requests, loading, selectedRequest, setSelectedRequest, isNewModalOpen, setIsNewModalOpen,
+        actionModal, setActionModal, actionNote, setActionNote, activeTab, setActiveTab,
+        recycleRequests, doctors, filter, setFilter, confirmAction, handleDelete, fetchRequests, canDeleteRequest,
+        fetched
     } = controller;
+
+    const isCompact = variant === 'compact';
+    const hideTabs = isCompact;
+    const hideFilters = isCompact;
 
     const handleCloseDetail = () => setSelectedRequest(null);
     const handleCloseAction = () => setActionModal({ open: false, type: '', id: null });
     const handleNewClick = () => setIsNewModalOpen(true);
-    const handleListTab = () => setActiveTab('list');
-    const handleRecycleTab = () => setActiveTab('recycle');
 
     const typeLabels = {
         'prescription': t('prescription'),
@@ -71,110 +48,56 @@ const MedicalRequirementManager = ({
         'referral': t('referral')
     };
 
-    // Only show global loading if we haven't fetched anything yet (initial load)
-    if (loading && !controller.fetched) return <Loading variant="centered" text={t('loading')} />;
-
-
-
     const isAdminOrSecretary = ['admin', 'secretary'].includes(user?.role);
     const canEdit = user?.role === 'admin' || user?.role === 'secretary' || user?.role === 'doctor';
 
-    const baseClass = styles.root;
+    // ECC: Avoid early return to keep Hooks stable. Render skeleton instead.
+    const showLoader = loading && !fetched;
 
     return (
-        <section className={baseClass}>
+        <section className={styles.root}>
             <h2 className="visually-hidden">{t('medical_requirements')}</h2>
+            
             {!hideTabs && (
-                <nav className={`${baseClass}__tabs`}>
-                    <TabButton
-                        isActive={activeTab === 'list'}
-                        onClick={handleListTab}
-                        variant="pill"
-                        icon={<Icon name="view_list" />}
-                    >
+                <nav className="${styles.root}__tabs">
+                    <TabButton isActive={activeTab === 'list'} onClick={() => setActiveTab('list')} variant="pill" icon={<Icon name="view_list" />}>
                         {t('request_status')}
                     </TabButton>
-                    {!hideNew && (
-                        <TabButton
-                            isActive={false}
-                            onClick={handleNewClick}
-                            variant="pill"
-                            icon={<Icon name="add_circle" />}
-                        >
-                            {t('new_request')}
+                    <div className="${styles.root}__tab-wrapper">
+                        <TabButton isActive={activeTab === 'recycle'} onClick={() => setActiveTab('recycle')} variant="pill" icon={<Icon name="delete" />}>
+                            {t('recycle_bin')}
                         </TabButton>
-                    )}
-                    {isAdminOrSecretary && canDeleteRequest && !hideRecycle && (
-                        <div className={`${baseClass}__tab-wrapper`}>
-                            <TabButton
-                                isActive={activeTab === 'recycle'}
-                                onClick={handleRecycleTab}
-                                variant="pill"
-                                icon={<Icon name="delete" />}
-                            >
-                                {t('recycle_bin')}
-                            </TabButton>
-                            {recycleRequests.length > 0 && (
-                                <span className={`${baseClass}__badge`}>{recycleRequests.length}</span>
-                            )}
-                        </div>
-                    )}
+                        {recycleRequests.length > 0 && <span className="${styles.root}__badge">{recycleRequests.length}</span>}
+                    </div>
                 </nav>
             )}
 
-            <article className={`${baseClass}__content animate-fade-in`}>
-                {activeTab === 'list' ? (
-                    <MedicalRequirementTable
-                        requests={requests}
-                        filter={filter}
-                        setFilter={setFilter}
-                        handleNewTab={handleNewClick}
-                        setSelectedRequest={setSelectedRequest}
-                        handleDelete={handleDelete}
-                        openActionModal={openActionModal}
-                        canDeleteRequest={canDeleteRequest}
-                        isAdminOrSecretary={isAdminOrSecretary}
-                        hideFilters={hideFilters}
-                        typeLabels={typeLabels}
-                        setPaymentModal={setPaymentModal}
-                        currentPage={controller.currentPage}
-                        totalPages={controller.totalPages}
-                        onPageChange={controller.handlePageChange}
-                        t={t}
-                    />
-                ) : (
-                    <MedicalRequirementRecycleBin
-                        recycleRequests={recycleRequests}
-                        handleRestore={handleRestore}
-                        t={t}
-                    />
+            <article className="${styles.root}__content animate-fade-in">
+                {showLoader ? <Loading variant="centered" /> : (
+                    activeTab === 'list' ? (
+                        <MedicalRequirementTable
+                            requests={requests} filter={filter} setFilter={setFilter} handleNewTab={handleNewClick}
+                            setSelectedRequest={setSelectedRequest} handleDelete={handleDelete} openActionModal={(type, id) => setActionModal({ open: true, type, id })}
+                            canDeleteRequest={canDeleteRequest} isAdminOrSecretary={isAdminOrSecretary} hideFilters={hideFilters}
+                            typeLabels={typeLabels} setPaymentModal={setPaymentModal} currentPage={controller.currentPage}
+                            totalPages={controller.totalPages} onPageChange={controller.handlePageChange} t={t}
+                        />
+                    ) : (
+                        <MedicalRequirementRecycleBin recycleRequests={recycleRequests} handleRestore={controller.handleRestore} t={t} />
+                    )
                 )}
             </article>
 
-            <MedicalRequestModal 
-                isOpen={isNewModalOpen}
-                onClose={() => setIsNewModalOpen(false)}
-                doctors={doctors}
-                t={t}
-                onRequestCreated={fetchRequests}
-            />
+            <MedicalRequestModal isOpen={isNewModalOpen} onClose={() => setIsNewModalOpen(false)} doctors={doctors} t={t} onRequestCreated={fetchRequests} />
 
             <MedicalRequirementDetailModal
-                selectedRequest={selectedRequest}
-                onClose={handleCloseDetail}
-                t={t}
-                canEdit={canEdit}
-                typeLabels={typeLabels}
-                {...controller} // Spread medication handlers/state
+                selectedRequest={selectedRequest} onClose={handleCloseDetail} t={t} canEdit={canEdit} typeLabels={typeLabels}
+                {...controller}
             />
 
             <MedicalRequirementActionModal
-                actionModal={actionModal}
-                onClose={handleCloseAction}
-                t={t}
-                confirmAction={confirmAction}
-                actionNote={actionNote}
-                setActionNote={setActionNote}
+                actionModal={actionModal} onClose={handleCloseAction} t={t} confirmAction={confirmAction}
+                actionNote={actionNote} setActionNote={setActionNote}
             />
         </section>
     );

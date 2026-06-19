@@ -4,9 +4,9 @@ const phoneRepository = require('../../repositories/system/phoneRepository');
 const { pool } = require('../../db');
 
 // Mock dependencies
-jest.mock('../repositories/insuranceRepository');
-jest.mock('../repositories/phoneRepository');
-jest.mock('../db', () => ({
+jest.mock('../../repositories/core/insuranceRepository');
+jest.mock('../../repositories/system/phoneRepository');
+jest.mock('../../db', () => ({
     pool: {
         getConnection: jest.fn()
     }

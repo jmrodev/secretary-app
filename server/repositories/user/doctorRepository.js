@@ -1,4 +1,4 @@
-const { pool } = require('../../db');
+
 
 /**
  * DoctorRepository
@@ -44,7 +44,11 @@ const ALLOWED_FIELDS = [
 ];
 
 class DoctorRepository {
-    async findAll(conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findAll(conn = this.pool) {
         return await conn.query(`
             SELECT d.*, di.spreadsheet_id
             FROM doctors d
@@ -53,23 +57,23 @@ class DoctorRepository {
         `);
     }
 
-    async findFirst(conn = pool) {
+    async findFirst(conn = this.pool) {
         const rows = await conn.query("SELECT * FROM doctors LIMIT 1");
         return rows[0] || null;
     }
 
 
-    async findById(id, conn = pool) {
+    async findById(id, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM doctors WHERE id = ?", [id]);
         return rows[0] || null;
     }
 
-    async findByUserId(userId, conn = pool) {
+    async findByUserId(userId, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM doctors WHERE user_id = ?", [userId]);
         return rows[0] || null;
     }
 
-    async create(data, conn = pool) {
+    async create(data, conn = this.pool) {
         const filteredData = {};
         for (const key of Object.keys(data)) {
             if (ALLOWED_FIELDS.includes(key)) {
@@ -86,7 +90,7 @@ class DoctorRepository {
         return Number(result.insertId);
     }
 
-    async updateById(id, updates, conn = pool) {
+    async updateById(id, updates, conn = this.pool) {
         const filteredUpdates = {};
         for (const key of Object.keys(updates)) {
             if (ALLOWED_FIELDS.includes(key)) {
@@ -101,7 +105,7 @@ class DoctorRepository {
         return await conn.query(`UPDATE doctors SET ${fields} WHERE id = ?`, values);
     }
 
-    async updateByUserId(userId, updates, conn = pool) {
+    async updateByUserId(userId, updates, conn = this.pool) {
         const filteredUpdates = {};
         for (const key of Object.keys(updates)) {
             if (ALLOWED_FIELDS.includes(key)) {
@@ -119,7 +123,7 @@ class DoctorRepository {
     /**
      * Get doctor configuration
      */
-    async getDoctorConfig(doctorId, conn = pool) {
+    async getDoctorConfig(doctorId, conn = this.pool) {
         const rows = await conn.query(
             "SELECT id, user_id, full_name, appointment_duration, overturn_start_time, overturn_end_time, force_hour_alignment, default_prescription_interval_days FROM doctors WHERE id = ?",
             [doctorId]
@@ -127,7 +131,7 @@ class DoctorRepository {
         return rows[0] || null;
     }
 
-    async getDoctorConfigByUserId(userId, conn = pool) {
+    async getDoctorConfigByUserId(userId, conn = this.pool) {
         const rows = await conn.query(
             "SELECT id, user_id, full_name, appointment_duration, overturn_start_time, overturn_end_time, force_hour_alignment, default_prescription_interval_days FROM doctors WHERE user_id = ?",
             [userId]
@@ -135,7 +139,7 @@ class DoctorRepository {
         return rows[0] || null;
     }
 
-    async findPrices(doctorId, conn = pool) {
+    async findPrices(doctorId, conn = this.pool) {
         const rows = await conn.query(
             "SELECT consultation_price, prescription_price, medical_license_price, virtual_consultation_price, certificate_price FROM doctors WHERE id = ?",
             [doctorId]
@@ -146,7 +150,7 @@ class DoctorRepository {
     /**
      * Get doctor schedules
      */
-    async getDoctorSchedules(doctorId, conn = pool) {
+    async getDoctorSchedules(doctorId, conn = this.pool) {
         return await conn.query(
             "SELECT * FROM doctor_schedules WHERE doctor_id = ?",
             [doctorId]
@@ -156,14 +160,14 @@ class DoctorRepository {
     /**
      * Get schedule for a specific day
      */
-    async getDoctorScheduleForDay(doctorId, dayOfWeek, conn = pool) {
+    async getDoctorScheduleForDay(doctorId, dayOfWeek, conn = this.pool) {
         return await conn.query(
             "SELECT * FROM doctor_schedules WHERE doctor_id = ? AND day_of_week = ?",
             [doctorId, dayOfWeek]
         );
     }
 
-    async findAfipSettings(doctorId, conn = pool) {
+    async findAfipSettings(doctorId, conn = this.pool) {
         const rows = await conn.query(
             "SELECT id, afip_cuit, afip_pto_vta, afip_enabled, afip_cert_path, afip_key_path FROM doctors WHERE id = ?",
             [doctorId]
@@ -171,7 +175,7 @@ class DoctorRepository {
         return rows[0] || null;
     }
 
-    async findDniByAppointmentId(appointmentId, conn = pool) {
+    async findDniByAppointmentId(appointmentId, conn = this.pool) {
         const rows = await conn.query(`
             SELECT p.dni FROM appointments a 
             JOIN patients p ON a.patient_id = p.id 
@@ -180,7 +184,7 @@ class DoctorRepository {
         return rows[0] || null;
     }
 
-    async updateAfipSettings(doctorId, updates, conn = pool) {
+    async updateAfipSettings(doctorId, updates, conn = this.pool) {
         const filteredUpdates = {};
         for (const key of Object.keys(updates)) {
             if (ALLOWED_FIELDS.includes(key)) {
@@ -196,4 +200,4 @@ class DoctorRepository {
     }
 }
 
-module.exports = new DoctorRepository();
+module.exports = (pool) => new DoctorRepository(pool);

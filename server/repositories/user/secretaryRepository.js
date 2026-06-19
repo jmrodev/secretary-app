@@ -1,4 +1,4 @@
-const { pool } = require('../../db');
+
 
 /**
  * SecretaryRepository
@@ -9,7 +9,11 @@ const ALLOWED_UPDATES = [
 ];
 
 class SecretaryRepository {
-    async create(data, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async create(data, conn = this.pool) {
         const { user_id, full_name, dni, phone } = data;
         const result = await conn.query(
             "INSERT INTO secretaries (user_id, full_name, dni, phone) VALUES (?, ?, ?, ?)",
@@ -18,17 +22,17 @@ class SecretaryRepository {
         return Number(result.insertId);
     }
 
-    async findById(id, conn = pool) {
+    async findById(id, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM secretaries WHERE id = ?", [id]);
         return rows[0] || null;
     }
 
-    async findByUserId(userId, conn = pool) {
+    async findByUserId(userId, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM secretaries WHERE user_id = ?", [userId]);
         return rows[0] || null;
     }
 
-    async update(id, updates, conn = pool) {
+    async update(id, updates, conn = this.pool) {
         if (!updates || Object.keys(updates).length === 0) return 0;
 
         // Filter updates to only allow whitelisted fields
@@ -46,7 +50,7 @@ class SecretaryRepository {
         return await conn.query(`UPDATE secretaries SET ${fields} WHERE id = ?`, values);
     }
 
-    async updateByUserId(userId, updates, conn = pool) {
+    async updateByUserId(userId, updates, conn = this.pool) {
         if (!updates || Object.keys(updates).length === 0) return 0;
 
         // Filter updates to only allow whitelisted fields
@@ -64,9 +68,9 @@ class SecretaryRepository {
         return await conn.query(`UPDATE secretaries SET ${fields} WHERE user_id = ?`, values);
     }
 
-    async delete(id, conn = pool) {
+    async delete(id, conn = this.pool) {
         return await conn.query("DELETE FROM secretaries WHERE id = ?", [id]);
     }
 }
 
-module.exports = new SecretaryRepository();
+module.exports = (pool) => new SecretaryRepository(pool);

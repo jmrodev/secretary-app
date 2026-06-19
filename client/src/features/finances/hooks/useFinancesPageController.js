@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useCallback } from 'react';
+import { useReducer, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
@@ -34,6 +34,9 @@ function financesReducer(state, action) {
     }
 }
 
+/**
+ * ECC-Pattern: Optimized FinancesPageController
+ */
 export const useFinancesPageController = () => {
     const { user } = useAuth();
     const { t } = useLanguage();
@@ -41,7 +44,6 @@ export const useFinancesPageController = () => {
     const { alert, confirm } = useModal();
     const { settings } = useConfig();
 
-    // --- State Management ---
     const [state, dispatch] = useReducer(financesReducer, initialState);
     const { 
         currentPage, debouncedSearch, isActionLoading, modalOpen, 
@@ -52,7 +54,6 @@ export const useFinancesPageController = () => {
     const { viewDoctorId: selectedDoctorFilter, setViewDoctorId: setSelectedDoctorFilter, doctors, doctorsLoading } = useDoctors();
     const { searchTerm: searchQuery, setSearchTerm: setSearchQuery } = useSearch();
 
-    // Debounce search
     useEffect(() => {
         const timer = setTimeout(() => {
             dispatch({ type: 'SET_SEARCH', payload: searchQuery });
@@ -60,15 +61,13 @@ export const useFinancesPageController = () => {
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
-    // --- FETCH DATA using useFetch ---
-    
-    // Transactions
+    // ECC: Fetch data with envelope support
     const { 
-        data: txData, 
+        data: txResponse, 
         loading: txLoading, 
         refetch: fetchTransactions 
     } = useFetch('/finances/transactions', {
-        initialData: { transactions: [], totalCount: 0 },
+        initialData: { success: true, data: { transactions: [], totalCount: 0 } },
         params: {
             doctor_id: selectedDoctorFilter || 'all',
             page: currentPage,
@@ -77,24 +76,26 @@ export const useFinancesPageController = () => {
         }
     });
 
-    // Stats
-    const { data: stats = [], refetch: fetchStats } = useFetch(`/finances/stats`, {
+    const { data: statsResponse, refetch: fetchStats } = useFetch(`/finances/stats`, {
         params: { doctor_id: selectedDoctorFilter || 'all' },
-        initialData: []
+        initialData: { success: true, data: [] }
     });
 
-    // Pending Closures
-    const { data: pendingClosures = [], refetch: fetchClosures } = useFetch(`/finances/pending-closures`, {
+    const { data: closuresResponse, refetch: fetchClosures } = useFetch(`/finances/pending-closures`, {
         params: { doctor_id: selectedDoctorFilter || 'all' },
-        initialData: []
+        initialData: { success: true, data: [] }
     });
 
-    const transactions = txData?.transactions || [];
-    const totalCount = txData?.totalCount || 0;
+    // ECC: Unpack data
+    const txData = txResponse?.data || {};
+    const transactions = txData.transactions || [];
+    const totalCount = txData.totalCount || 0;
+    const stats = statsResponse?.data || [];
+    const pendingClosures = closuresResponse?.data || [];
+
     const loading = txLoading || doctorsLoading || isActionLoading;
-    const fetched = txData !== undefined && !txLoading;
+    const fetched = txResponse !== undefined && !txLoading;
 
-    // --- Handlers ---
     const fetchData = useCallback(() => {
         fetchTransactions();
         fetchStats();
@@ -109,7 +110,7 @@ export const useFinancesPageController = () => {
         fetchData, 
         setEditingTx: (val) => dispatch({ type: 'SET_EDITING_TX', payload: val }), 
         setModalOpen: (val) => dispatch({ type: 'SET_MODAL_OPEN', payload: val }),
-        setHistoricalWithdrawalOpen: () => {}, // Handled elsewhere or not needed
+        setHistoricalWithdrawalOpen: () => {},
         setPendingClosuresOpen: (val) => dispatch({ type: 'SET_CLOSURES_OPEN', payload: val }),
         setCloseBoxModal: (val) => dispatch({ type: 'SET_CLOSE_BOX', payload: val }), 
         setCloseAmount: (val) => dispatch({ type: 'SET_CLOSE_AMOUNT', payload: val }), 

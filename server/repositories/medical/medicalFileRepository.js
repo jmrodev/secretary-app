@@ -1,11 +1,15 @@
-const { pool } = require('../../db');
+
 
 /**
  * MedicalFileRepository
  * Handles data access for patient files.
  */
 class MedicalFileRepository {
-    async create(data, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async create(data, conn = this.pool) {
         const { patient_id, uploaded_by, file_name, file_url, file_type, description } = data;
         return await conn.query(
             "INSERT INTO patient_files (patient_id, uploaded_by, file_name, file_url, file_type, description) VALUES (?, ?, ?, ?, ?, ?)",
@@ -13,12 +17,12 @@ class MedicalFileRepository {
         );
     }
 
-    async findById(id, conn = pool) {
+    async findById(id, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM patient_files WHERE id = ?", [id]);
         return rows[0] || null;
     }
 
-    async findAll(filters = {}, conn = pool) {
+    async findAll(filters = {}, conn = this.pool) {
         const { patient_id, doctorId } = filters;
         let query = `
             SELECT f.*, u.username as uploader_name, p.full_name as patient_name, p.dni as patient_dni,
@@ -50,9 +54,9 @@ class MedicalFileRepository {
         return await conn.query(query, params);
     }
 
-    async delete(id, conn = pool) {
+    async delete(id, conn = this.pool) {
         return await conn.query("DELETE FROM patient_files WHERE id = ?", [id]);
     }
 }
 
-module.exports = new MedicalFileRepository();
+module.exports = (pool) => new MedicalFileRepository(pool);

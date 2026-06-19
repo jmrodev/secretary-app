@@ -1,10 +1,14 @@
-const { pool } = require('../../db');
+
 
 /**
  * PatientRepository
  * Core data access for patients.
  */
 class PatientRepository {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
 static ALLOWED_FIELDS = [
     'user_id', 'first_name', 'last_name', 'full_name', 'dob', 'phone', 'email',
     'medical_history', 'dni', 'affiliate_number', 'insurance_id', 'tariff_percent',
@@ -15,9 +19,9 @@ static ALLOWED_FIELDS = [
     'country', 'visit_notified', 'prescription_notified', 'license_notified'
 ];
 
-    async findById(id, conn = pool) {
+    async findById(id, conn = this.pool) {
         if (!id) return null;
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const PatientsQueryBuilder = require('../../utils/database/queryBuilders/PatientsQueryBuilder');
             const builder = new PatientsQueryBuilder();
@@ -31,7 +35,7 @@ static ALLOWED_FIELDS = [
     }
 
 
-    async findTariffAndInstitutionPrice(patientId, appointmentInstitutionId, conn = pool) {
+    async findTariffAndInstitutionPrice(patientId, appointmentInstitutionId, conn = this.pool) {
         let query;
         let params;
 
@@ -63,27 +67,27 @@ static ALLOWED_FIELDS = [
         return rows[0] || null;
     }
 
-    async findByUserId(userId, conn = pool) {
+    async findByUserId(userId, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM patients WHERE user_id = ?", [userId]);
         return rows[0] || null;
     }
 
-    async findUserIdById(id, conn = pool) {
+    async findUserIdById(id, conn = this.pool) {
         const rows = await conn.query("SELECT user_id FROM patients WHERE id = ?", [id]);
         return rows[0]?.user_id || null;
     }
 
-    async findByFullName(fullName, conn = pool) {
+    async findByFullName(fullName, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM patients WHERE full_name = ?", [fullName]);
         return rows[0] || null;
     }
 
-    async findByDni(dni, conn = pool) {
+    async findByDni(dni, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM patients WHERE dni = ?", [dni]);
         return rows[0] || null;
     }
 
-    async findByFuzzyName(name, conn = pool) {
+    async findByFuzzyName(name, conn = this.pool) {
         const rows = await conn.query(
             "SELECT id FROM patients WHERE LOWER(TRIM(REGEXP_REPLACE(full_name, '[[:space:]]+', ' '))) = LOWER(TRIM(REGEXP_REPLACE(?, '[[:space:]]+', ' ')))",
             [name]
@@ -91,7 +95,7 @@ static ALLOWED_FIELDS = [
         return rows[0] || null;
     }
 
-    async findByNameLike(name, conn = pool) {
+    async findByNameLike(name, conn = this.pool) {
         const rows = await conn.query(
             "SELECT id FROM patients WHERE full_name LIKE ?",
             [`%${name}%`]
@@ -99,7 +103,7 @@ static ALLOWED_FIELDS = [
         return rows[0] || null;
     }
 
-    async create(data, conn = pool) {
+    async create(data, conn = this.pool) {
         const filteredData = Object.keys(data)
             .filter(key => PatientRepository.ALLOWED_FIELDS.includes(key))
             .reduce((obj, key) => {
@@ -118,7 +122,7 @@ static ALLOWED_FIELDS = [
         return Number(result.insertId);
     }
 
-    async update(id, updates, conn = pool) {
+    async update(id, updates, conn = this.pool) {
         const filteredUpdates = Object.keys(updates)
             .filter(key => PatientRepository.ALLOWED_FIELDS.includes(key))
             .reduce((obj, key) => {
@@ -135,20 +139,20 @@ static ALLOWED_FIELDS = [
         return await conn.query(`UPDATE patients SET ${fields} WHERE id = ?`, values);
     }
 
-    async updateLicenseInfo(id, expiryDate, conn = pool) {
+    async updateLicenseInfo(id, expiryDate, conn = this.pool) {
         return await conn.query("UPDATE patients SET license_expiry_date = ?, license_notified = 0 WHERE id = ?", [expiryDate, id]);
     }
 
-    async updatePrescriptionInfo(id, nextDate, conn = pool) {
+    async updatePrescriptionInfo(id, nextDate, conn = this.pool) {
         return await conn.query("UPDATE patients SET next_suggested_prescription_date = ?, prescription_notified = 0 WHERE id = ?", [nextDate, id]);
     }
 
-    async getPrescriptionInterval(patientId, doctorId, conn = pool) {
+    async getPrescriptionInterval(patientId, doctorId, conn = this.pool) {
         const rows = await conn.query("SELECT prescription_interval_days FROM patient_doctors WHERE patient_id = ? AND doctor_id = ?", [patientId, doctorId]);
         return rows[0] || null;
     }
 
-    async findRecentMedications(patientId, conn = pool) {
+    async findRecentMedications(patientId, conn = this.pool) {
         return await conn.query(`
             SELECT medications as name FROM prescriptions pr 
             JOIN appointments a ON pr.appointment_id = a.id 
@@ -159,7 +163,7 @@ static ALLOWED_FIELDS = [
         `, [patientId, patientId]);
     }
 
-    async getAssignedDoctors(patientId, conn = pool) {
+    async getAssignedDoctors(patientId, conn = this.pool) {
         return await conn.query(`
             SELECT d.id, d.full_name 
             FROM patient_doctors pd 
@@ -167,14 +171,14 @@ static ALLOWED_FIELDS = [
             WHERE pd.patient_id = ?`, [patientId]);
     }
 
-    async updateAssignedDoctors(patientId, doctorIds, conn = pool) {
+    async updateAssignedDoctors(patientId, doctorIds, conn = this.pool) {
         await conn.query("DELETE FROM patient_doctors WHERE patient_id = ?", [patientId]);
         if (doctorIds && doctorIds.length > 0) {
             const insertValues = doctorIds.map(docId => [patientId, docId]);
             await conn.batch("INSERT INTO patient_doctors (patient_id, doctor_id) VALUES (?, ?)", insertValues);
         }
     }
-    async searchPatients(filters, user, conn = pool) {
+    async searchPatients(filters, user, conn = this.pool) {
         const { search = '', page = 1, limit = 50, doctor_id = null } = filters;
         const results = await conn.query(
             "CALL sp_search_patients(?, ?, ?, ?, ?, ?, @p_total_count)",
@@ -188,4 +192,4 @@ static ALLOWED_FIELDS = [
     }
 }
 
-module.exports = new PatientRepository();
+module.exports = (pool) => new PatientRepository(pool);

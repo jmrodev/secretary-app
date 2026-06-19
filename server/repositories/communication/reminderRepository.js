@@ -1,11 +1,15 @@
-const { pool } = require('../../db');
+
 
 /**
  * ReminderRepository
  * Handles complex queries for patient reminders.
  */
 class ReminderRepository {
-    async findPendingReminders(doctorId = null, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findPendingReminders(doctorId = null, conn = this.pool) {
         let query = `
             SELECT DISTINCT p.id, p.full_name, p.phone, p.dni,
             d.full_name as doctor_name,
@@ -32,22 +36,22 @@ class ReminderRepository {
         return await conn.query(query, params);
     }
 
-    async updatePatientReminder(patientId, field, value, conn = pool) {
+    async updatePatientReminder(patientId, field, value, conn = this.pool) {
         return await conn.query(`UPDATE patients SET ${field} = ? WHERE id = ?`, [value, patientId]);
     }
 
-    async clearPatientReminder(patientId, dateField, notifiedField, conn = pool) {
+    async clearPatientReminder(patientId, dateField, notifiedField, conn = this.pool) {
         return await conn.query(`UPDATE patients SET ${dateField} = NULL, ${notifiedField} = 0 WHERE id = ?`, [patientId]);
     }
 
-    async updateMedicationReminders(medIds, notified, conn = pool) {
+    async updateMedicationReminders(medIds, notified, conn = this.pool) {
         const val = notified ? 1 : 0;
         return await conn.query("UPDATE patient_medications SET is_notified = ? WHERE id IN (?)", [val, medIds]);
     }
 
-    async clearMedicationReminders(medIds, conn = pool) {
+    async clearMedicationReminders(medIds, conn = this.pool) {
         return await conn.query("UPDATE patient_medications SET next_refill_date = NULL, is_notified = 0 WHERE id IN (?)", [medIds]);
     }
 }
 
-module.exports = new ReminderRepository();
+module.exports = (pool) => new ReminderRepository(pool);

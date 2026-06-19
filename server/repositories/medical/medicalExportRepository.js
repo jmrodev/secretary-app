@@ -1,11 +1,15 @@
-const { pool } = require('../../db');
+
 
 /**
  * MedicalExportRepository
  * Handles complex queries for medical data exports.
  */
 class MedicalExportRepository {
-    async findPrescriptionsForExport(filters, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findPrescriptionsForExport(filters, conn = this.pool) {
         let sqlPr = "SELECT 'direct' as source_type, pr.id, pr.medications, pr.instructions, a.appointment_date as date, " +
                     "d.full_name as doctor_name, p.full_name as patient_name, p.dni as patient_dni, " +
                     "CASE WHEN pr.bonified = 1 THEN 'bonified' ELSE 'paid' END as payment_status, 0 as amount, 'N/A' as payment_method, 'prescription' as request_type " +
@@ -32,7 +36,7 @@ class MedicalExportRepository {
         return await conn.query(sql, [...(filters.paramsPr || []), ...(filters.paramsReq || [])]);
     }
 
-    async findGenericRequestsForExport(type, filters, conn = pool) {
+    async findGenericRequestsForExport(type, filters, conn = this.pool) {
         let selectCols = type === 'license' 
             ? 'r.request_note as diagnosis, r.doctor_note as days_duration' 
             : 'r.type as certificate_type, r.request_note as description, r.doctor_note as additional_notes';
@@ -53,4 +57,4 @@ class MedicalExportRepository {
     }
 }
 
-module.exports = new MedicalExportRepository();
+module.exports = (pool) => new MedicalExportRepository(pool);

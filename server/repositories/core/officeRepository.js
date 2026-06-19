@@ -1,21 +1,25 @@
-const { pool } = require('../../db');
+
 
 /**
  * OfficeRepository
  * Handles data access for Consultorios (Offices) and Rentals.
  */
 class OfficeRepository {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
     // --- Consultorios ---
-    async findAllOffices(conn = pool) {
+    async findAllOffices(conn = this.pool) {
         return await conn.query("SELECT * FROM consultorios");
     }
 
-    async createOffice(data, conn = pool) {
+    async createOffice(data, conn = this.pool) {
         return await conn.query("INSERT INTO consultorios (name, description) VALUES (?, ?)", [data.name, data.description]);
     }
 
     // --- Rentals ---
-    async createRental(data, conn = pool) {
+    async createRental(data, conn = this.pool) {
         const { doctor_id, consultorio_id, rental_date, start_time, end_time, cost } = data;
         return await conn.query(
             "INSERT INTO office_rentals (doctor_id, consultorio_id, rental_date, start_time, end_time, cost) VALUES (?, ?, ?, ?, ?, ?)",
@@ -23,7 +27,7 @@ class OfficeRepository {
         );
     }
 
-    async findRentalsByDoctor(doctorId, conn = pool) {
+    async findRentalsByDoctor(doctorId, conn = this.pool) {
         return await conn.query(
             `SELECT r.*, c.name as consultorio_name 
              FROM office_rentals r 
@@ -34,4 +38,4 @@ class OfficeRepository {
     }
 }
 
-module.exports = new OfficeRepository();
+module.exports = (pool) => new OfficeRepository(pool);

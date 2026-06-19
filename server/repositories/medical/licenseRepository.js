@@ -1,4 +1,4 @@
-const { pool } = require('../../db');
+
 const { buildUpdateQuery } = require('../../utils/core/sqlUtils');
 
 /**
@@ -6,7 +6,11 @@ const { buildUpdateQuery } = require('../../utils/core/sqlUtils');
  * Handles data access for medical licenses.
  */
 class LicenseRepository {
-    async findById(id, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findById(id, conn = this.pool) {
         const rows = await conn.query(`
             SELECT ml.*, a.doctor_id, a.patient_id 
             FROM medical_licenses ml
@@ -15,7 +19,7 @@ class LicenseRepository {
         return rows[0] || null;
     }
 
-    async findAll(filters = {}, conn = pool) {
+    async findAll(filters = {}, conn = this.pool) {
         let query = `
             SELECT ml.*, a.appointment_date, d.full_name as doctor_name, 
             p.full_name as patient_name, p.dni as patient_dni,
@@ -54,7 +58,7 @@ class LicenseRepository {
         return await conn.query(query, params);
     }
 
-    async countAll(filters = {}, conn = pool) {
+    async countAll(filters = {}, conn = this.pool) {
         let query = `
             SELECT COUNT(*) as total 
             FROM medical_licenses ml
@@ -80,7 +84,7 @@ class LicenseRepository {
         return rows[0].total;
     }
 
-    async create(data, conn = pool) {
+    async create(data, conn = this.pool) {
         const result = await conn.query(
             "INSERT INTO medical_licenses (appointment_id, start_date, days_duration, diagnosis) VALUES (?, ?, ?, ?)",
             [data.appointment_id, data.start_date, data.days_duration, data.diagnosis || '']
@@ -88,16 +92,16 @@ class LicenseRepository {
         return result.insertId;
     }
 
-    async update(id, updates, conn = pool) {
+    async update(id, updates, conn = this.pool) {
         const { setClauses, values: updateValues } = buildUpdateQuery('licenses', updates);
         if (!setClauses) return 0;
         const params = [...updateValues, id];
         return await conn.query(`UPDATE medical_licenses SET ${setClauses} WHERE id = ?`, params);
     }
 
-    async delete(id, conn = pool) {
+    async delete(id, conn = this.pool) {
         return await conn.query("DELETE FROM medical_licenses WHERE id = ?", [id]);
     }
 }
 
-module.exports = new LicenseRepository();
+module.exports = (pool) => new LicenseRepository(pool);

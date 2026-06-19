@@ -1,8 +1,8 @@
 import api from '@/api/axios';
 
 /**
- * patientService
- * Unifies patient-related API calls.
+ * ECC-Pattern: patientService (Optimized)
+ * Unifies patient-related API calls with ECC envelope support.
  */
 export const patientService = {
     /**
@@ -11,15 +11,16 @@ export const patientService = {
     async search(query, doctorId = null) {
         if (!query || query.length < 2) return [];
         
-        const params = { search: query };
+        const params = { search: query, limit: 20 };
         if (doctorId) params.doctor_id = doctorId;
         
         try {
             const res = await api.get('/users/patients', { params });
-            // Backend returns { patients, totalCount } or [patients]
-            return Array.isArray(res.data) ? res.data : (res.data.patients || []);
+            // ECC Pattern: Extract data from envelope
+            const responseData = res.data?.success !== undefined ? res.data.data : res.data;
+            return Array.isArray(responseData) ? responseData : (responseData.patients || []);
         } catch (err) {
-            console.error("Error searching patients", err);
+            console.error("[ECC-Service] Error searching patients:", err);
             throw err;
         }
     },
@@ -28,14 +29,26 @@ export const patientService = {
      * Get patient details by ID
      */
     async getById(id) {
-        const res = await api.get(`/users/patients/${id}`);
-        return res.data;
+        try {
+            const res = await api.get(`/users/patients/${id}`);
+            return res.data?.success !== undefined ? res.data.data : res.data;
+        } catch (err) {
+            console.error("[ECC-Service] Error getting patient by ID:", err);
+            throw err;
+        }
     },
+
     /**
-     * Get patients with recent activity (smart suggestions)
+     * Get patients with recent activity
      */
     async getRecent() {
-        const res = await api.get('/users/patients/recent');
-        return res.data.patients || [];
+        try {
+            const res = await api.get('/users/patients/recent');
+            const responseData = res.data?.success !== undefined ? res.data.data : res.data;
+            return Array.isArray(responseData) ? responseData : (responseData.patients || []);
+        } catch (err) {
+            console.error("[ECC-Service] Error getting recent patients:", err);
+            throw err;
+        }
     }
 };

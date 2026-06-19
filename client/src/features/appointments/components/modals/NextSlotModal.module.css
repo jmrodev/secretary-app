@@ -1,205 +1,152 @@
-/* NextSlotModal.css - BEM Methodology - Dark Premium Theme */
-
 .root {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    height: 600px;
+    max-height: 80vh;
+}
+
+/* 1. Month Bar */
+.monthBar {
+    display: flex;
+    gap: 0.5rem;
     padding: 0.5rem;
+    background: rgb(255, 255, 255, 0.03);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
 }
 
-.controls {
-    display: none; /* Removed as controls moved to pagination */
-}
-
-
-.infoBox {
-    background: rgb(59 130 246 / 5%);
-    border: 1px solid rgb(59 130 246 / 20%);
-    border-radius: var(--radius-md);
-    padding: 0.75rem 1rem;
+.monthItem {
     flex: 1;
-}
-
-.infoContent {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-}
-
-.infoIcon {
-    color: var(--primary-color);
-}
-
-.infoText {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--text-main);
-}
-
-.toggleLabel {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    cursor: pointer;
-    user-select: none;
-    background: rgb(245 158 11 / 5%);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-md);
-    border: 1px solid rgb(245 158 11 / 20%);
-    transition: all 0.2s ease;
-}
-
-.toggleLabel:hover {
-    background: rgb(245 158 11 / 10%);
-}
-
-.toggleCheckbox {
-    width: 1.1rem;
-    height: 1.1rem;
-    accent-color: var(--warning);
-}
-
-.toggleText {
-    font-size: 0.85rem;
-    font-weight: 800;
-    color: var(--warning);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.tableWrapper {
-    border: 1px solid rgb(255 255 255 / 8%);
-    border-radius: var(--radius-md);
-    overflow-y: auto;
-    max-height: 50vh;
-    background: rgb(0 0 0 / 20%);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
-}
-
-.table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.thead {
-    background: rgb(255 255 255 / 5%);
-    backdrop-filter: blur(16px);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    border-bottom: 2px solid rgb(255 255 255 / 8%);
-}
-
-.th {
-    padding: 1rem 1.25rem;
-    text-align: left;
-    font-size: 0.65rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-}
-
-.monthHeader {
-    background: rgb(255 255 255 / 10%);
-    backdrop-filter: blur(16px);
-}
-
-.monthCell {
-    padding: 0.65rem 1.25rem;
     text-align: center;
-    color: var(--primary-color);
-    font-size: 0.75rem;
+    padding: 0.6rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: rgb(255, 255, 255, 0.4);
     text-transform: uppercase;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-width: 60px;
+}
+
+.monthItem:hover {
+    background: rgb(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.monthActive {
+    background: var(--primary-color) !important;
+    color: #0b0c10 !important;
+}
+
+/* 2. Options */
+.options {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgb(255, 255, 255, 0.08);
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+/* 3. Timeline List */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dateHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
+}
+
+.dayNum {
+    font-size: 1.5rem;
     font-weight: 900;
-    letter-spacing: 0.15em;
-    font-family: var(--font-newsreader);
-    font-style: italic;
+    color: var(--primary-color);
 }
 
-.dayHeader {
-    background: rgb(255 255 255 / 5%);
-    backdrop-filter: blur(16px);
-}
-
-.dayCell {
-    padding: 0.85rem 1.25rem;
-    border-top: 1px solid rgb(255 255 255 / 8%);
-    border-bottom: 1px solid rgb(255 255 255 / 8%);
+.dayMonth {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 1px;
 }
 
 .dayName {
-    font-size: 0.7rem;
-    font-weight: 900;
-    color: var(--text-main);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgb(255, 255, 255, 0.3);
+    margin-left: auto;
 }
 
-.slotRow {
-    border-bottom: 1px solid rgb(255 255 255 / 8%);
-    transition: background 0.2s;
+.slotItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: rgb(255, 255, 255, 0.04);
+    border: 1px solid rgb(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: transform 0.2s, background 0.2s;
 }
 
-.slotRow:hover {
-    background: rgb(255 255 255 / 2%);
+.slotItem:hover {
+    background: rgb(255, 255, 255, 0.07);
+    transform: translateX(4px);
 }
 
-.slotRowOutOfHours {
-    background: rgb(245 158 11 / 2%);
+.slotExtra {
+    border-left: 4px solid orange;
 }
 
 .slotTime {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 800;
-    font-variant-numeric: tabular-nums;
+    color: #fff;
 }
 
-.slotTimeNormal {
-    color: var(--text-main);
-}
-
-.slotTimeOutOfHours {
-    color: var(--warning);
-}
-
-.pagination {
+.slotActions {
     display: flex;
+    gap: 0.75rem;
+}
+
+/* 4. Footer */
+.footer {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: center;
-    background: rgb(255 255 255 / 5%);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
-    padding: 0.75rem 1.25rem;
-    border-radius: var(--radius-md);
-    border: 1px solid rgb(255 255 255 / 8%);
-    gap: 1.5rem;
-}
-
-.paginationControls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    width: 100%;
 }
 
 .pageInfo {
-    font-size: 0.75rem;
-    font-weight: 900;
+    font-size: 0.8rem;
+    font-weight: 700;
     color: var(--text-muted);
-    min-width: 4rem;
-    text-align: center;
 }
 
-
-.helpFooter {
-    margin-top: 1rem;
-    padding: 1rem 0.5rem;
-    border-top: 1px solid rgb(255 255 255 / 8%);
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.65rem;
+.empty {
+    padding: 3rem;
+    text-align: center;
     color: var(--text-muted);
-    font-weight: 800;
-    text-transform: uppercase;
 }

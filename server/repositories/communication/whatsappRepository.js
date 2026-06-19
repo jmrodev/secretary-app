@@ -1,7 +1,11 @@
-const { pool } = require('../../db');
+
 
 class WhatsappRepository {
-    async createMessage(patientId, direction, body, whatsappId = null, status = 'sent', senderPhone = null, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async createMessage(patientId, direction, body, whatsappId = null, status = 'sent', senderPhone = null, conn = this.pool) {
         const query = `
             INSERT INTO whatsapp_messages (patient_id, sender_phone, direction, body, whatsapp_id, status) 
             VALUES (?, ?, ?, ?, ?, ?)
@@ -10,7 +14,7 @@ class WhatsappRepository {
         return Number(result.insertId);
     }
 
-    async getHistoryByPatient(patientId, phone = null, conn = pool) {
+    async getHistoryByPatient(patientId, phone = null, conn = this.pool) {
         let query = `SELECT * FROM whatsapp_messages WHERE `;
         let params = [];
 
@@ -28,7 +32,7 @@ class WhatsappRepository {
         return await conn.query(query, params);
     }
 
-    async updateMessageStatus(whatsappId, status, conn = pool) {
+    async updateMessageStatus(whatsappId, status, conn = this.pool) {
         const query = `
             UPDATE whatsapp_messages 
             SET status = ? 
@@ -37,7 +41,7 @@ class WhatsappRepository {
         return await conn.query(query, [status, whatsappId]);
     }
 
-    async getRecentConversations(doctorId = null, conn = pool) {
+    async getRecentConversations(doctorId = null, conn = this.pool) {
         let query = `
             SELECT wm.*, 
                    COALESCE(p.full_name, wm.sender_phone) as patient_name, 
@@ -65,7 +69,7 @@ class WhatsappRepository {
         return await conn.query(query, params);
     }
 
-    async findPatientByPhone(phone, conn = pool) {
+    async findPatientByPhone(phone, conn = this.pool) {
         const phoneSub = phone.length > 10 ? phone.slice(-10) : phone;
         const query = `
             SELECT id FROM patients 
@@ -77,4 +81,4 @@ class WhatsappRepository {
     }
 }
 
-module.exports = new WhatsappRepository();
+module.exports = (pool) => new WhatsappRepository(pool);

@@ -1,11 +1,15 @@
-const { pool } = require('../../db');
+
 
 /**
  * PhoneRepository
  * Handles data access for the phone_numbers table across different entities.
  */
 class PhoneRepository {
-    async findByEntity(entityType, entityId, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findByEntity(entityType, entityId, conn = this.pool) {
         return await conn.query(`
             SELECT id, phone_number, is_primary, label 
             FROM phone_numbers 
@@ -14,7 +18,7 @@ class PhoneRepository {
         `, [entityType, entityId]);
     }
 
-    async findByEntities(entityType, entityIds, conn = pool) {
+    async findByEntities(entityType, entityIds, conn = this.pool) {
         if (!entityIds || entityIds.length === 0) return {};
         const rows = await conn.query(
             "SELECT * FROM phone_numbers WHERE entity_type = ? AND entity_id IN (?)",
@@ -28,7 +32,7 @@ class PhoneRepository {
         }, {});
     }
 
-    async syncPhones(entityType, entityId, phoneNumbers, conn = pool) {
+    async syncPhones(entityType, entityId, phoneNumbers, conn = this.pool) {
         if (!Array.isArray(phoneNumbers)) return null;
 
         await conn.query("DELETE FROM phone_numbers WHERE entity_type = ? AND entity_id = ?", [entityType, entityId]);
@@ -47,4 +51,4 @@ class PhoneRepository {
     }
 }
 
-module.exports = new PhoneRepository();
+module.exports = (pool) => new PhoneRepository(pool);

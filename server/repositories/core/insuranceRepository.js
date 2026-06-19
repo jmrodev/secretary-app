@@ -1,4 +1,4 @@
-const { pool } = require('../../db');
+
 
 /**
  * InsuranceRepository
@@ -11,16 +11,20 @@ const ALLOWED_UPDATES = [
 ];
 
 class InsuranceRepository {
-    async findAll(conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findAll(conn = this.pool) {
         return await conn.query("SELECT * FROM insurances ORDER BY name ASC");
     }
 
-    async findById(id, conn = pool) {
+    async findById(id, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM insurances WHERE id = ?", [id]);
         return rows[0] || null;
     }
 
-    async create(data, conn = pool) {
+    async create(data, conn = this.pool) {
         const { name, cuit, website, email, phone, address_notes, status, street_name, street_number, floor, apartment, city, province, country } = data;
         const result = await conn.query(
             `INSERT INTO insurances (name, cuit, website, email, phone, address_notes, status, street_name, street_number, floor, apartment, city, province, country)
@@ -32,7 +36,7 @@ class InsuranceRepository {
         return result.insertId;
     }
 
-    async update(id, updates, conn = pool) {
+    async update(id, updates, conn = this.pool) {
         if (!updates || Object.keys(updates).length === 0) return 0;
 
         // Filter updates to only allow whitelisted fields
@@ -50,9 +54,9 @@ class InsuranceRepository {
         return await conn.query(`UPDATE insurances SET ${fields} WHERE id = ?`, values);
     }
 
-    async delete(id, conn = pool) {
+    async delete(id, conn = this.pool) {
         return await conn.query("DELETE FROM insurances WHERE id = ?", [id]);
     }
 }
 
-module.exports = new InsuranceRepository();
+module.exports = (pool) => new InsuranceRepository(pool);

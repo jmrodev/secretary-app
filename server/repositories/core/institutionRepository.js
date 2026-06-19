@@ -1,4 +1,4 @@
-const { pool } = require('../../db');
+
 
 /**
  * InstitutionRepository
@@ -9,7 +9,11 @@ const ALLOWED_UPDATES = [
 ];
 
 class InstitutionRepository {
-    async findAll(conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findAll(conn = this.pool) {
         return await conn.query(`
             SELECT i.*, 
                    COALESCE((
@@ -39,12 +43,12 @@ class InstitutionRepository {
         `);
     }
 
-    async findById(id, conn = pool) {
+    async findById(id, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM institutions WHERE id = ?", [id]);
         return rows[0] || null;
     }
 
-    async create(data, conn = pool) {
+    async create(data, conn = this.pool) {
         const { name, description, status, base_price } = data;
         const result = await conn.query(
             "INSERT INTO institutions (name, description, status, base_price) VALUES (?, ?, ?, ?)",
@@ -53,7 +57,7 @@ class InstitutionRepository {
         return result.insertId;
     }
 
-    async update(id, updates, conn = pool) {
+    async update(id, updates, conn = this.pool) {
         if (!updates || Object.keys(updates).length === 0) return 0;
 
         // Filter updates to only allow whitelisted fields
@@ -71,11 +75,11 @@ class InstitutionRepository {
         return await conn.query(`UPDATE institutions SET ${fields} WHERE id = ?`, values);
     }
 
-    async delete(id, conn = pool) {
+    async delete(id, conn = this.pool) {
         return await conn.query("DELETE FROM institutions WHERE id = ?", [id]);
     }
 
-    async getInstitutionFinances(institutionId, conn = pool) {
+    async getInstitutionFinances(institutionId, conn = this.pool) {
         return await conn.query(`
             SELECT t.id as transaction_id, t.amount, t.description, t.transaction_date, t.status as payment_status, t.method,
                    p.full_name as patient_name, d.full_name as doctor_name, a.id as appointment_id, a.appointment_date, a.status as appointment_status
@@ -87,7 +91,7 @@ class InstitutionRepository {
         `, [institutionId]);
     }
 
-    async getPatientList(institutionId, conn = pool) {
+    async getPatientList(institutionId, conn = this.pool) {
         return await conn.query(`
             SELECT p.id, p.full_name, p.dni, p.next_suggested_visit_date, p.tariff_percent, p.tariff_override,
                    (SELECT MAX(appointment_date) FROM appointments WHERE patient_id = p.id AND status = 'completed') as last_visit_date
@@ -96,4 +100,4 @@ class InstitutionRepository {
     }
 }
 
-module.exports = new InstitutionRepository();
+module.exports = (pool) => new InstitutionRepository(pool);
