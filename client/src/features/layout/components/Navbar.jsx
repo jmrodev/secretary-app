@@ -22,18 +22,18 @@ const Navbar = () => {
 
     const [openDropdown, setOpenDropdown] = useState(null); // 'admin' | 'spreadsheets' | null
 
-    if (!user) return null;
-
     // ECC: Navigation Configuration (Computed during render)
     const navLinks = useMemo(() => [
         { path: '/dashboard', label: t('dashboard'), show: true },
         { path: '/appointments', label: t('appointments'), show: !isAdmin },
         { path: '/patients', label: t('patients'), show: !isPatient && !isAdmin },
         { path: '/insurances', label: t('insurances'), show: isSecretary },
-        { path: '/rentals', label: t('office_rentals'), show: settings.enable_office_rentals === 'true' && !isAdmin },
+        { path: '/rentals', label: t('office_rentals'), show: settings?.enable_office_rentals === 'true' && !isAdmin },
         { path: '/documents', label: t('medical_documents'), show: !isAdmin },
         { path: '/finances', label: t('finances'), show: isSecretary }
-    ].filter(l => l.show), [t, isAdmin, isPatient, isSecretary, settings.enable_office_rentals]);
+    ].filter(l => l.show), [t, isAdmin, isPatient, isSecretary, settings?.enable_office_rentals]);
+
+    if (!user) return null;
 
     const handleToggle = (key) => setOpenDropdown(prev => prev === key ? null : key);
 
