@@ -163,4 +163,8 @@ class MessageRepository {
     }
 }
 
-module.exports = (pool) => new MessageRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new MessageRepository(defaultPool);
+const factory = (customPool) => new MessageRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

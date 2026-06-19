@@ -67,4 +67,8 @@ class UserRepository {
     }
 }
 
-module.exports = (pool) => new UserRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new UserRepository(defaultPool);
+const factory = (customPool) => new UserRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

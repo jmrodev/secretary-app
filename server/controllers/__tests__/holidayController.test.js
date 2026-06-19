@@ -1,8 +1,12 @@
 const httpMocks = require('node-mocks-http');
-const holidayController = require('../scheduling/holidayController');
-const holidayService = require('../../services/appointments/holidayService');
+const mockGetHolidays = jest.fn();
 
-jest.mock('../../services/appointments/holidayService');
+jest.mock('../../services/appointments/holidayService', () => {
+    return () => ({
+        getHolidays: mockGetHolidays
+    });
+});
+const holidayController = require('../scheduling/holidayController');
 jest.mock('../../db', () => ({
     pool: {
         end: jest.fn()
@@ -28,27 +32,27 @@ describe('Holiday Controller - getHolidays', () => {
             { id: 2, date: '2024-01-01', description: 'New Year Day' }
         ];
 
-        holidayService.getHolidays.mockResolvedValue(mockHolidays);
+        mockGetHolidays.mockResolvedValue(mockHolidays);
 
         await holidayController.getHolidays(req, res);
 
         expect(res.statusCode).toBe(200);
-        expect(res._getJSONData()).toEqual(mockHolidays);
-        expect(holidayService.getHolidays).toHaveBeenCalledTimes(1);
+        expect(res._getJSONData()).toEqual({ success: true, data: mockHolidays, error: null });
+        expect(mockGetHolidays).toHaveBeenCalledTimes(1);
     });
 
     it('should return 500 and "Server Error" on failure', async () => {
         const mockError = new Error('Database connection failed');
-        holidayService.getHolidays.mockRejectedValue(mockError);
+        mockGetHolidays.mockRejectedValue(mockError);
 
         const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
         await holidayController.getHolidays(req, res);
 
         expect(res.statusCode).toBe(500);
-        expect(res._getData()).toBe('Server Error');
-        expect(holidayService.getHolidays).toHaveBeenCalledTimes(1);
-        expect(consoleSpy).toHaveBeenCalledWith(mockError);
+        expect(res._getJSONData()).toEqual({ success: false, data: null, error: 'Server Error' });
+        expect(mockGetHolidays).toHaveBeenCalledTimes(1);
+        expect(consoleSpy).toHaveBeenCalledWith("[ECC-Controller] getHolidays error:", mockError);
 
         consoleSpy.mockRestore();
     });

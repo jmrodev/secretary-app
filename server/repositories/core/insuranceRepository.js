@@ -59,4 +59,8 @@ class InsuranceRepository {
     }
 }
 
-module.exports = (pool) => new InsuranceRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new InsuranceRepository(defaultPool);
+const factory = (customPool) => new InsuranceRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

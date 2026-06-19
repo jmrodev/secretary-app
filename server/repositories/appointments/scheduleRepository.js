@@ -25,4 +25,8 @@ class ScheduleRepository {
     }
 }
 
-module.exports = (pool) => new ScheduleRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new ScheduleRepository(defaultPool);
+const factory = (customPool) => new ScheduleRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

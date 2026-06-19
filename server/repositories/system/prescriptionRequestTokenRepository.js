@@ -30,4 +30,8 @@ class PrescriptionRequestTokenRepository {
     }
 }
 
-module.exports = (pool) => new PrescriptionRequestTokenRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new PrescriptionRequestTokenRepository(defaultPool);
+const factory = (customPool) => new PrescriptionRequestTokenRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

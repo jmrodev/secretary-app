@@ -54,4 +54,8 @@ class ReminderRepository {
     }
 }
 
-module.exports = (pool) => new ReminderRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new ReminderRepository(defaultPool);
+const factory = (customPool) => new ReminderRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;
