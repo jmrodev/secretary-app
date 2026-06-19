@@ -273,4 +273,8 @@ class AppointmentRepository {
     }
 }
 
-module.exports = (pool) => new AppointmentRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new AppointmentRepository(defaultPool);
+const factory = (customPool) => new AppointmentRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

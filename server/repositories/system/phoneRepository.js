@@ -51,4 +51,8 @@ class PhoneRepository {
     }
 }
 
-module.exports = (pool) => new PhoneRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new PhoneRepository(defaultPool);
+const factory = (customPool) => new PhoneRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

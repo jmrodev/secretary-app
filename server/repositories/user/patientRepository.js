@@ -192,4 +192,8 @@ static ALLOWED_FIELDS = [
     }
 }
 
-module.exports = (pool) => new PatientRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new PatientRepository(defaultPool);
+const factory = (customPool) => new PatientRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

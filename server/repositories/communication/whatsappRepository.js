@@ -81,4 +81,8 @@ class WhatsappRepository {
     }
 }
 
-module.exports = (pool) => new WhatsappRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new WhatsappRepository(defaultPool);
+const factory = (customPool) => new WhatsappRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

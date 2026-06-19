@@ -31,4 +31,8 @@ class AuditRepository {
     }
 }
 
-module.exports = (pool) => new AuditRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new AuditRepository(defaultPool);
+const factory = (customPool) => new AuditRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

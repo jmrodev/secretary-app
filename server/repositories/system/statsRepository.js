@@ -174,4 +174,8 @@ class StatsRepository {
     }
 }
 
-module.exports = (pool) => new StatsRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new StatsRepository(defaultPool);
+const factory = (customPool) => new StatsRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

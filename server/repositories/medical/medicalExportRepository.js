@@ -57,4 +57,8 @@ class MedicalExportRepository {
     }
 }
 
-module.exports = (pool) => new MedicalExportRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new MedicalExportRepository(defaultPool);
+const factory = (customPool) => new MedicalExportRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

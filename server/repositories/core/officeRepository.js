@@ -38,4 +38,8 @@ class OfficeRepository {
     }
 }
 
-module.exports = (pool) => new OfficeRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new OfficeRepository(defaultPool);
+const factory = (customPool) => new OfficeRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

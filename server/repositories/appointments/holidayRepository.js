@@ -38,4 +38,8 @@ class HolidayRepository {
     }
 }
 
-module.exports = (pool) => new HolidayRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new HolidayRepository(defaultPool);
+const factory = (customPool) => new HolidayRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

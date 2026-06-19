@@ -73,4 +73,8 @@ class SecretaryRepository {
     }
 }
 
-module.exports = (pool) => new SecretaryRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new SecretaryRepository(defaultPool);
+const factory = (customPool) => new SecretaryRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

@@ -100,4 +100,8 @@ class InstitutionRepository {
     }
 }
 
-module.exports = (pool) => new InstitutionRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new InstitutionRepository(defaultPool);
+const factory = (customPool) => new InstitutionRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

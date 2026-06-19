@@ -36,4 +36,8 @@ class SystemSettingsRepository {
     }
 }
 
-module.exports = (pool) => new SystemSettingsRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new SystemSettingsRepository(defaultPool);
+const factory = (customPool) => new SystemSettingsRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

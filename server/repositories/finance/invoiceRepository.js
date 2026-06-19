@@ -23,4 +23,8 @@ class InvoiceRepository {
     }
 }
 
-module.exports = (pool) => new InvoiceRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new InvoiceRepository(defaultPool);
+const factory = (customPool) => new InvoiceRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

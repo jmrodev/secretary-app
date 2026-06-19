@@ -88,4 +88,8 @@ class GoogleIntegrationRepository {
     }
 }
 
-module.exports = (pool) => new GoogleIntegrationRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new GoogleIntegrationRepository(defaultPool);
+const factory = (customPool) => new GoogleIntegrationRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

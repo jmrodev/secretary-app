@@ -30,4 +30,8 @@ class PatientAccessTokenRepository {
     }
 }
 
-module.exports = (pool) => new PatientAccessTokenRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new PatientAccessTokenRepository(defaultPool);
+const factory = (customPool) => new PatientAccessTokenRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

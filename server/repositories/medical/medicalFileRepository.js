@@ -59,4 +59,8 @@ class MedicalFileRepository {
     }
 }
 
-module.exports = (pool) => new MedicalFileRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new MedicalFileRepository(defaultPool);
+const factory = (customPool) => new MedicalFileRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

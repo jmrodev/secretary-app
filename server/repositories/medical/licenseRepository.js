@@ -104,4 +104,8 @@ class LicenseRepository {
     }
 }
 
-module.exports = (pool) => new LicenseRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new LicenseRepository(defaultPool);
+const factory = (customPool) => new LicenseRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

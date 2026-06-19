@@ -45,4 +45,8 @@ class VademecumRepository {
     }
 }
 
-module.exports = (pool) => new VademecumRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new VademecumRepository(defaultPool);
+const factory = (customPool) => new VademecumRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;

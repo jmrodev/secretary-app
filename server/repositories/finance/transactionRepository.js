@@ -143,4 +143,8 @@ class TransactionRepository {
     }
 }
 
-module.exports = (pool) => new TransactionRepository(pool);
+const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;
+const instance = new TransactionRepository(defaultPool);
+const factory = (customPool) => new TransactionRepository(customPool);
+Object.setPrototypeOf(factory, instance);
+module.exports = factory;
