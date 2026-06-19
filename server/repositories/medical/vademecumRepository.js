@@ -1,11 +1,15 @@
-const { pool } = require('../../db');
+
 
 /**
  * VademecumRepository
  * Handles search operations on the vademecum table.
  */
 class VademecumRepository {
-    async findBySearchQuery(q, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findBySearchQuery(q, conn = this.pool) {
         const searchTerms = q.trim().split(/\s+/).filter(t => t.length > 0);
         const booleanSearch = searchTerms.map(t => `+${t}*`).join(' ');
 
@@ -35,10 +39,10 @@ class VademecumRepository {
         return rows;
     }
 
-    async findById(id, conn = pool) {
+    async findById(id, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM vademecum WHERE id = ?", [id]);
         return rows[0] || null;
     }
 }
 
-module.exports = new VademecumRepository();
+module.exports = (pool) => new VademecumRepository(pool);

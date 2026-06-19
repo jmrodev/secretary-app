@@ -1,4 +1,4 @@
-const { pool } = require('../../db');
+
 
 /**
  * MedicalRequestRepository
@@ -12,7 +12,11 @@ const ALLOWED_UPDATES = [
 ];
 
 class MedicalRequestRepository {
-    async findAll(filters = {}, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findAll(filters = {}, conn = this.pool) {
         let query = `
             SELECT r.*
             FROM v_medical_request_details r
@@ -53,7 +57,7 @@ class MedicalRequestRepository {
         return await conn.query(query, params);
     }
 
-    async countAll(filters = {}, conn = pool) {
+    async countAll(filters = {}, conn = this.pool) {
         let query = `SELECT COUNT(*) as total FROM medical_requests r
             LEFT JOIN patients p ON r.patient_id = p.id
             LEFT JOIN doctors d ON r.doctor_id = d.id`;
@@ -88,12 +92,12 @@ class MedicalRequestRepository {
         return row?.total || 0;
     }
 
-    async findById(id, conn = pool) {
+    async findById(id, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM medical_requests WHERE id = ?", [id]);
         return rows[0] || null;
     }
 
-    async findDetailedById(id, conn = pool) {
+    async findDetailedById(id, conn = this.pool) {
         const rows = await conn.query(`
             SELECT r.*
             FROM v_medical_request_details r
@@ -102,7 +106,7 @@ class MedicalRequestRepository {
         return rows[0] || null;
     }
 
-    async create(data, conn = pool) {
+    async create(data, conn = this.pool) {
         const fields = Object.keys(data).join(', ');
         const placeholders = Object.keys(data).map(() => '?').join(', ');
         const values = Object.values(data);
@@ -110,7 +114,7 @@ class MedicalRequestRepository {
         return result.insertId;
     }
 
-    async update(id, updates, conn = pool) {
+    async update(id, updates, conn = this.pool) {
         if (!updates || Object.keys(updates).length === 0) return 0;
 
         const validUpdates = {};
@@ -127,18 +131,18 @@ class MedicalRequestRepository {
         return await conn.query(`UPDATE medical_requests SET ${fields} WHERE id = ?`, values);
     }
 
-    async delete(id, conn = pool) {
+    async delete(id, conn = this.pool) {
         return await conn.query("DELETE FROM medical_requests WHERE id = ?", [id]);
     }
 
-    async addItem(data, conn = pool) {
+    async addItem(data, conn = this.pool) {
         const fields = Object.keys(data).join(', ');
         const placeholders = Object.keys(data).map(() => '?').join(', ');
         const values = Object.values(data);
         return await conn.query(`INSERT INTO medical_request_items (${fields}) VALUES (${placeholders})`, values);
     }
 
-    async getPatientMedicalHistory(patientId, conn = pool) {
+    async getPatientMedicalHistory(patientId, conn = this.pool) {
         return await conn.query(`
             (SELECT p.id, p.created_at, 'prescription' as type, d.full_name as doctor_name, p.medications as diagnosis, NULL as days
              FROM prescriptions p JOIN appointments a ON p.appointment_id = a.id JOIN doctors d ON a.doctor_id = d.id WHERE a.patient_id = ?)
@@ -149,4 +153,4 @@ class MedicalRequestRepository {
     }
 }
 
-module.exports = new MedicalRequestRepository();
+module.exports = (pool) => new MedicalRequestRepository(pool);

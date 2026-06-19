@@ -1,4 +1,6 @@
-const holidayService = require('../../services/appointments/holidayService');
+const { pool } = require('../../db');
+const holidayRepository = require('../../repositories/appointments/holidayRepository')(pool);
+const holidayService = require('../../services/appointments/holidayService')(holidayRepository);
 
 /**
  * ECC-Pattern: Standard API Response Envelope

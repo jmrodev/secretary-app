@@ -26,31 +26,32 @@
 
 .bentoCard {
     position: relative;
-    background: rgb(20, 22, 35, 0.4);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgb(255, 255, 255, 0.05);
-    border-top: 1px solid rgb(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 4px 20px 0 rgb(0, 0, 0, 0.25);
+    background: rgb(30, 41, 59, 0.4);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgb(255, 255, 255, 0.1);
+    border-top: 1px solid rgb(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 8px 32px 0 rgb(0, 0, 0, 0.37);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
     min-height: 0;
 }
 
 .bentoCard:hover {
-    transform: translateY(-5px) scale(1.005);
-    box-shadow: 0 15px 45px -10px rgb(0, 242, 254, 0.15);
-    border-color: rgb(0, 242, 254, 0.2);
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 20px 60px -15px rgb(0, 206, 209, 0.25);
+    border-color: rgb(0, 206, 209, 0.4);
+    background: rgb(30, 41, 59, 0.6);
 }
 
 .cashMonitorCard {
     grid-column: span 4;
     grid-row: span 1;
     order: 1;
-    background: linear-gradient(135deg, rgba(72, 128, 255, 0.08) 0%, rgba(0, 242, 254, 0.03) 100%);
+    background: linear-gradient(135deg, rgb(72, 128, 255, 0.08) 0%, rgb(0, 242, 254, 0.03) 100%);
 }
 
 .statsOverviewCard {
@@ -128,11 +129,11 @@
 }
 
 .statLabel {
-    font-size: 0.6rem;
+    font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
 .chartPlaceholder {
@@ -146,13 +147,14 @@
 
 .chartBar {
     flex: 1;
-    background: rgba(184, 43, 242, 0.5);
+    background: rgb(184, 43, 242, 0.5);
     border-radius: 4px 4px 0 0;
     min-height: 10%;
 }
 
 @media (width <= 1024px) {
     .bentoGrid { grid-template-columns: 1fr; }
+
     .cashMonitorCard, .statsOverviewCard, .patientGrowthCard, .mainContentCard, .remindersCard {
         grid-column: span 12;
     }

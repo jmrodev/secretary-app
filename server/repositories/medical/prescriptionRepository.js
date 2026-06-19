@@ -1,4 +1,4 @@
-const { pool } = require('../../db');
+
 const { buildUpdateQuery } = require('../../utils/core/sqlUtils');
 
 /**
@@ -6,7 +6,11 @@ const { buildUpdateQuery } = require('../../utils/core/sqlUtils');
  * Handles data access for medical prescriptions.
  */
 class PrescriptionRepository {
-    async findById(id, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findById(id, conn = this.pool) {
         const rows = await conn.query(`
             SELECT pr.*, a.doctor_id, a.patient_id, a.appointment_date 
             FROM prescriptions pr
@@ -15,7 +19,7 @@ class PrescriptionRepository {
         return rows.length > 0 ? rows[0] : null;
     }
 
-    async findAll(filters = {}, conn = pool) {
+    async findAll(filters = {}, conn = this.pool) {
         let query = `
             SELECT pr.*, a.appointment_date, d.full_name as doctor_name, 
             p.full_name as patient_name, p.dni as patient_dni,
@@ -55,7 +59,7 @@ class PrescriptionRepository {
         return await conn.query(query, params);
     }
 
-    async countAll(filters = {}, conn = pool) {
+    async countAll(filters = {}, conn = this.pool) {
         let query = `
             SELECT COUNT(*) as total 
             FROM prescriptions pr
@@ -81,7 +85,7 @@ class PrescriptionRepository {
         return rows[0].total;
     }
 
-    async create(data, conn = pool) {
+    async create(data, conn = this.pool) {
         const result = await conn.query(
             "INSERT INTO prescriptions (appointment_id, medications, instructions, bonified) VALUES (?, ?, ?, ?)",
             [data.appointment_id, data.medications || '', data.instructions, data.bonified || false]
@@ -89,7 +93,7 @@ class PrescriptionRepository {
         return result.insertId;
     }
 
-    async addItem(itemData, conn = pool) {
+    async addItem(itemData, conn = this.pool) {
         const query = `
             INSERT INTO prescription_items 
             (prescription_id, vademecum_id, medication_name, presentation, monodroga, dose, frequency, duration, quantity, daily_intake, units_per_box) 
@@ -104,7 +108,7 @@ class PrescriptionRepository {
         return await conn.query(query, params);
     }
 
-    async update(id, updates, conn = pool) {
+    async update(id, updates, conn = this.pool) {
         if (!updates || Object.keys(updates).length === 0) return 0;
         const { setClauses, values: updateValues } = buildUpdateQuery('prescriptions', updates);
         if (!setClauses) return 0;
@@ -113,10 +117,10 @@ class PrescriptionRepository {
         return result.affectedRows;
     }
 
-    async delete(id, conn = pool) {
+    async delete(id, conn = this.pool) {
         const result = await conn.query("DELETE FROM prescriptions WHERE id = ?", [id]);
         return result.affectedRows;
     }
 }
 
-module.exports = new PrescriptionRepository();
+module.exports = (pool) => new PrescriptionRepository(pool);

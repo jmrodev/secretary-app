@@ -1,11 +1,15 @@
-const { pool } = require('../../db');
+
 
 /**
  * MessageRepository
  * Handles data access for internal messages.
  */
 class MessageRepository {
-    async create(data, conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async create(data, conn = this.pool) {
         const query = "INSERT INTO messages (sender_id, recipient_id, recipient_type, subject, message) VALUES (?, ?, ?, ?, ?)";
         const result = await conn.query(query, [
             data.sender_id,
@@ -17,7 +21,7 @@ class MessageRepository {
         return Number(result.insertId);
     }
 
-    async findInbox(userId, conn = pool) {
+    async findInbox(userId, conn = this.pool) {
         return await conn.query(`
             SELECT m.*, u.username as sender_name
             FROM messages m
@@ -27,7 +31,7 @@ class MessageRepository {
         `, [userId]);
     }
 
-    async findSent(userId, conn = pool) {
+    async findSent(userId, conn = this.pool) {
         return await conn.query(`
             SELECT m.*, u.username as recipient_name
             FROM messages m
@@ -37,7 +41,7 @@ class MessageRepository {
         `, [userId]);
     }
 
-    async findById(id, userId, conn = pool) {
+    async findById(id, userId, conn = this.pool) {
         const rows = await conn.query(`
             SELECT m.*, 
                    sender.username as sender_name,
@@ -50,21 +54,21 @@ class MessageRepository {
         return rows.length > 0 ? rows[0] : null;
     }
 
-    async markAsRead(id, recipientId, conn = pool) {
+    async markAsRead(id, recipientId, conn = this.pool) {
         return await conn.query(
             "UPDATE messages SET read_status = 2, read_at = NOW() WHERE id = ? AND recipient_id = ?",
             [id, recipientId]
         );
     }
 
-    async delete(id, senderId, conn = pool) {
+    async delete(id, senderId, conn = this.pool) {
         return await conn.query(
             "DELETE FROM messages WHERE id = ? AND sender_id = ?",
             [id, senderId]
         );
     }
 
-    async getUnreadCount(userId, conn = pool) {
+    async getUnreadCount(userId, conn = this.pool) {
         const result = await conn.query(`
             SELECT COUNT(*) as count FROM messages 
             WHERE (recipient_id = ? OR (recipient_type = 'all_staff' AND recipient_id IS NULL))
@@ -73,7 +77,7 @@ class MessageRepository {
         return Number(result[0].count);
     }
 
-    async getConversations(userId, conn = pool) {
+    async getConversations(userId, conn = this.pool) {
         return await conn.query(`
             SELECT m.*, 
                     convo.other_user_id,
@@ -103,14 +107,14 @@ class MessageRepository {
         `, [userId, userId, userId, userId, userId]);
     }
 
-    async markDelivered(userId, conn = pool) {
+    async markDelivered(userId, conn = this.pool) {
         return await conn.query(
             "UPDATE messages SET read_status = 1, delivered_at = NOW() WHERE recipient_id = ? AND read_status = 0",
             [userId]
         );
     }
 
-    async getThread(userId, otherId, conn = pool) {
+    async getThread(userId, otherId, conn = this.pool) {
         return await conn.query(`
             SELECT m.*, 
                     sender.username as sender_name,
@@ -124,14 +128,14 @@ class MessageRepository {
         `, [userId, otherId, otherId, userId]);
     }
 
-    async markThreadRead(userId, otherId, conn = pool) {
+    async markThreadRead(userId, otherId, conn = this.pool) {
         return await conn.query(
             "UPDATE messages SET read_status = 2, read_at = COALESCE(read_at, NOW()), delivered_at = COALESCE(delivered_at, NOW()) WHERE recipient_id = ? AND sender_id = ? AND read_status < 2",
             [userId, otherId]
         );
     }
 
-    async getPossibleRecipients(userId, conn = pool) {
+    async getPossibleRecipients(userId, conn = this.pool) {
         return await conn.query(`
             SELECT u.id, u.username, u.role,
                     COALESCE(d.full_name, s.full_name, u.username) as display_name
@@ -143,14 +147,14 @@ class MessageRepository {
         `, [userId]);
     }
 
-    async updateTypingStatus(userId, targetId, conn = pool) {
+    async updateTypingStatus(userId, targetId, conn = this.pool) {
         return await conn.query(
             "INSERT INTO user_typing_status (user_id, target_id) VALUES (?, ?) ON DUPLICATE KEY UPDATE updated_at = NOW()",
             [userId, targetId]
         );
     }
 
-    async getTypingStatus(otherId, userId, conn = pool) {
+    async getTypingStatus(otherId, userId, conn = this.pool) {
         const result = await conn.query(
             "SELECT 1 FROM user_typing_status WHERE user_id = ? AND target_id = ? AND updated_at > DATE_SUB(NOW(), INTERVAL 5 SECOND)",
             [otherId, userId]
@@ -159,4 +163,4 @@ class MessageRepository {
     }
 }
 
-module.exports = new MessageRepository();
+module.exports = (pool) => new MessageRepository(pool);

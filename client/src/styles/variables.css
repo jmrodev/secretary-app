@@ -14,13 +14,13 @@
     --dashboard-card-border: rgb(255,255,255,0.08);
     --modal-bg: #0f172a;
     --modal-bg-dark: #0b0c10;
-    --text-main: #f8fafc; /* Blanco tiza */
-    --text-muted: #64748b; /* Slate 500 */
-    --text-secondary: #334155; /* Slate 700 */
-    --border-color: #cbd5e1; /* Slate 300 */
-    --error: #ef4444; 
-    --success: #10b981;
-    --warning: #f59e0b;
+    --text-main: #fff; /* Blanco Puro */
+    --text-muted: #94a3b8; /* Slate 400 - Mucho más legible */
+    --text-secondary: #cbd5e1; /* Slate 300 - Ideal para párrafos sobre oscuro */
+    --border-color: rgb(255, 255, 255, 0.1); 
+    --error: #ff4d4d; 
+    --success: #00f2fe;
+    --warning: #fc0;
 
     /* Gray Scale (Using Slate for a premium feel) */
     --white: #fff;

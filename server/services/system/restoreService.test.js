@@ -4,13 +4,13 @@ const { logAction } = require('../../utils/system/audit');
 const bcrypt = require('bcrypt');
 
 // Mock dependencies
-jest.mock('../db', () => ({
+jest.mock('../../db', () => ({
     pool: {
         getConnection: jest.fn(),
     }
 }));
 
-jest.mock('../utils/audit', () => ({
+jest.mock('../../utils/system/audit', () => ({
     logAction: jest.fn(),
 }));
 

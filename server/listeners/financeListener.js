@@ -1,6 +1,7 @@
 const eventBus = require('../events/eventBus');
 const EVENTS = require('../events/eventConstants');
 const transactionRepository = require('../repositories/finance/transactionRepository');
+const { pool } = require('../db');
 
 eventBus.on(EVENTS.MEDICAL_REQUEST_UPDATED, async (payload) => {
     try {
@@ -29,6 +30,29 @@ eventBus.on(EVENTS.MEDICAL_REQUEST_DELETED, async (payload) => {
         const { id, conn } = payload;
         await transactionRepository.deleteByRequestId(id, conn);
     } catch (error) {
-        console.error('Error en FinanceListener al borrar transacción:', error);
+        console.error('Error en FinanceListener al borrar transacción de solicitud médica:', error);
+    }
+});
+
+eventBus.on(EVENTS.APPOINTMENT_CANCELLED, async (payload) => {
+    try {
+        const { id, conn } = payload;
+        // Solo borramos deudas pendientes al cancelar/ausente
+        await pool.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id], conn);
+    } catch (error) {
+        console.error('Error en FinanceListener al cancelar transacción de turno:', error);
+    }
+});
+
+eventBus.on(EVENTS.APPOINTMENT_DELETED, async (payload) => {
+    try {
+        const { id, payment_status, conn } = payload;
+        if (payment_status === 'paid') {
+            await pool.query("UPDATE transactions SET description = CONCAT('Saldo a favor (Turno Eliminado): ', description) WHERE appointment_id = ? AND status = 'paid'", [id], conn);
+        } else {
+            await pool.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id], conn);
+        }
+    } catch (error) {
+        console.error('Error en FinanceListener al borrar transacción de turno eliminado:', error);
     }
 });

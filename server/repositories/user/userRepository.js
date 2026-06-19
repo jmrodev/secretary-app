@@ -1,11 +1,13 @@
-const { pool } = require('../../db');
-
 /**
  * UserRepository
  * Handles data access for the users table and admin-level user queries.
  */
 class UserRepository {
-    async findAllStaff(conn = pool) {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
+    async findAllStaff(conn = this.pool) {
         return await conn.query(`
             SELECT id, username, role, created_at,
             CASE 
@@ -26,7 +28,7 @@ class UserRepository {
         `);
     }
 
-    async create(data, conn = pool) {
+    async create(data, conn = this.pool) {
         const result = await conn.query(
             "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",
             [data.username, data.password_hash, data.role]
@@ -34,35 +36,35 @@ class UserRepository {
         return Number(result.insertId);
     }
 
-    async upsert(data, conn = pool) {
+    async upsert(data, conn = this.pool) {
         return await conn.query(
             "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE password_hash = VALUES(password_hash)",
             [data.username, data.password_hash, data.role]
         );
     }
 
-    async updatePassword(id, hashedPassword, conn = pool) {
+    async updatePassword(id, hashedPassword, conn = this.pool) {
         return await conn.query("UPDATE users SET password_hash = ? WHERE id = ?", [hashedPassword, id]);
     }
 
-    async update(id, updates, conn = pool) {
+    async update(id, updates, conn = this.pool) {
         const { username, role } = updates;
         return await conn.query("UPDATE users SET username = ?, role = ? WHERE id = ?", [username, role, id]);
     }
 
-    async delete(id, conn = pool) {
+    async delete(id, conn = this.pool) {
         return await conn.query("DELETE FROM users WHERE id = ?", [id]);
     }
 
-    async findByUsername(username, conn = pool) {
+    async findByUsername(username, conn = this.pool) {
         const rows = await conn.query("SELECT * FROM users WHERE username = ?", [username]);
         return rows[0] || null;
     }
 
-    async findAdminPasswordHash(conn = pool) {
+    async findAdminPasswordHash(conn = this.pool) {
         const rows = await conn.query("SELECT password_hash FROM users WHERE username = 'admin'");
         return rows[0] || null;
     }
 }
 
-module.exports = new UserRepository();
+module.exports = (pool) => new UserRepository(pool);

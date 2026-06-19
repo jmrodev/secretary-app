@@ -1,9 +1,12 @@
-const { pool } = require('../../db');
 const { buildUpdateQuery } = require('../../utils/core/sqlUtils');
 
 class AppointmentRepository {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
     async getDailySchedule(doctorId, dateStr, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const rows = await connection.query(`CALL sp_get_daily_schedule(?, ?)`, [doctorId, dateStr]);
             // Procedures return arrays of results, the first element is the rows array
@@ -13,7 +16,7 @@ class AppointmentRepository {
         }
     }
 
-    async callSpGetFreeSlots(filters, conn = pool) {
+    async callSpGetFreeSlots(filters, conn = this.pool) {
         const { doctor_id, start_date, days_to_check = 30, include_out_of_hours = 0 } = filters;
         const results = await conn.query(
             "CALL sp_get_free_slots(?, ?, ?, ?)",
@@ -23,7 +26,7 @@ class AppointmentRepository {
     }
 
     async findById(id, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const rows = await connection.query(`
                 SELECT * FROM v_appointment_details WHERE id = ?
@@ -35,7 +38,7 @@ class AppointmentRepository {
     }
 
     async findBySlot(doctorId, slotDate, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const rows = await connection.query(
                 "SELECT * FROM appointments WHERE doctor_id = ? AND appointment_date = ?",
@@ -48,7 +51,7 @@ class AppointmentRepository {
     }
 
     async create(data, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const result = await connection.query(
                 "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id, bonified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -64,7 +67,7 @@ class AppointmentRepository {
         if (!updates || Object.keys(updates).length === 0) return 0;
         const { setClauses, values: updateValues } = buildUpdateQuery('appointments', updates);
         if (!setClauses) return 0;
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const values = [...updateValues, id];
             const sql = "UPDATE appointments SET " + setClauses + " WHERE id = ?";
@@ -76,7 +79,7 @@ class AppointmentRepository {
     }
 
     async delete(id, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const result = await connection.query("DELETE FROM appointments WHERE id = ?", [id]);
             return result.affectedRows;
@@ -85,16 +88,16 @@ class AppointmentRepository {
         }
     }
 
-    async deleteFromRecentlyFreedSlots(doctorId, slotDate, conn = pool) {
+    async deleteFromRecentlyFreedSlots(doctorId, slotDate, conn = this.pool) {
         return await conn.query("DELETE FROM recently_freed_slots WHERE doctor_id = ? AND slot_date = ?", [doctorId, slotDate]);
     }
 
-    async addRecentlyFreedSlot(doctorId, slotDate, conn = pool) {
+    async addRecentlyFreedSlot(doctorId, slotDate, conn = this.pool) {
         await this.deleteFromRecentlyFreedSlots(doctorId, slotDate, conn);
         return await conn.query("INSERT INTO recently_freed_slots (doctor_id, slot_date) VALUES (?, ?)", [doctorId, slotDate]);
     }
 
-    async createOverwrittenReservation(data, conn = pool) {
+    async createOverwrittenReservation(data, conn = this.pool) {
         const { doctor_id, slot_date, patient_id, patient_name } = data;
         return await conn.query(
             "INSERT INTO overwritten_reservations (doctor_id, slot_date, patient_id, patient_name) VALUES (?, ?, ?, ?)",
@@ -102,7 +105,7 @@ class AppointmentRepository {
         );
     }
 
-    async searchAppointments(filters, conn = pool) {
+    async searchAppointments(filters, conn = this.pool) {
         const { search = '', doctor_id = null, patient_id = null, status = null, start_date = null, end_date = null, page = 1, limit = 50 } = filters;
         const results = await conn.query(
             "CALL sp_search_appointments(?, ?, ?, ?, ?, ?, ?, ?, @p_total_count)",
@@ -116,7 +119,7 @@ class AppointmentRepository {
     }
 
     async getHistory(filters, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             let query = "SELECT * FROM v_appointment_details";
             let params = [];
@@ -147,7 +150,7 @@ class AppointmentRepository {
         }
     }
 
-    async findMonthlyAppointments(month, year, doctorId, conn = pool) {
+    async findMonthlyAppointments(month, year, doctorId, conn = this.pool) {
         let query = "SELECT * FROM v_appointment_details WHERE MONTH(appointment_date) = ? AND YEAR(appointment_date) = ?";
         const params = [month, year];
         if (doctorId) {
@@ -157,7 +160,7 @@ class AppointmentRepository {
         query += " ORDER BY appointment_date ASC";
         return await conn.query(query, params);
     }
-    async findByDoctorAndDateForSync(doctorId, date, conn = pool) {
+    async findByDoctorAndDateForSync(doctorId, date, conn = this.pool) {
         return await conn.query(`
             SELECT * FROM v_appointment_details 
             WHERE doctor_id = ? AND DATE(appointment_date) = ? AND status != 'cancelled'
@@ -165,7 +168,7 @@ class AppointmentRepository {
         `, [doctorId, date]);
     }
 
-    async findLastByPatientId(patientId, conn = pool) {
+    async findLastByPatientId(patientId, conn = this.pool) {
         const rows = await conn.query(
             "SELECT * FROM appointments WHERE patient_id = ? ORDER BY appointment_date DESC LIMIT 1",
             [patientId]
@@ -173,7 +176,7 @@ class AppointmentRepository {
         return rows[0] || null;
     }
 
-    async findByGoogleEventId(googleEventId, conn = pool) {
+    async findByGoogleEventId(googleEventId, conn = this.pool) {
         const rows = await conn.query(
             "SELECT id, appointment_date, status, payment_status FROM appointments WHERE google_event_id = ?",
             [googleEventId]
@@ -181,7 +184,7 @@ class AppointmentRepository {
         return rows[0] || null;
     }
 
-    async findAllDetailed(conn = pool) {
+    async findAllDetailed(conn = this.pool) {
         return await conn.query(`
             SELECT a.id, a.doctor_id, d.full_name as doctor_name, a.patient_id, a.appointment_date, a.status 
             FROM appointments a 
@@ -190,7 +193,7 @@ class AppointmentRepository {
         `);
     }
 
-    async findForAudit(start, end, doctorId, conn = pool) {
+    async findForAudit(start, end, doctorId, conn = this.pool) {
         let sql = `
             SELECT a.id, a.appointment_date, a.reason, a.status, a.payment_status, a.type, a.google_event_id,
                    p.id as patient_id, p.full_name, p.dni, p.phone, p.email,
@@ -210,7 +213,7 @@ class AppointmentRepository {
     }
 
     async findInRange(doctorId, start, end, excludedStatuses = [], conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         let query = "SELECT appointment_date, duration, is_out_of_hours, status FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ?";
         let params = [doctorId, start, end];
         
@@ -226,7 +229,7 @@ class AppointmentRepository {
         }
     }
 
-    async findByPatientId(patientId, conn = pool) {
+    async findByPatientId(patientId, conn = this.pool) {
         return await conn.query(`
             SELECT a.*, d.full_name as doctor_name 
             FROM appointments a 
@@ -235,7 +238,7 @@ class AppointmentRepository {
             ORDER BY a.appointment_date DESC`, [patientId]);
     }
 
-    async findTomorrowAppointments(conn = pool) {
+    async findTomorrowAppointments(conn = this.pool) {
         return await conn.query(`
             SELECT a.*, p.full_name as patient_name, p.phone as patient_phone, d.full_name as doctor_name,
                    d.reminder_template, d.reminder_virtual_template
@@ -249,7 +252,7 @@ class AppointmentRepository {
     }
 
     async callSpBookAppointment(data, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             // Ejecutamos el procedimiento
             await connection.query(
@@ -270,4 +273,4 @@ class AppointmentRepository {
     }
 }
 
-module.exports = new AppointmentRepository();
+module.exports = (pool) => new AppointmentRepository(pool);

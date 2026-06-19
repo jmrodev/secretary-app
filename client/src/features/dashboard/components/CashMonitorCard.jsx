@@ -28,20 +28,20 @@ const CashMonitorCard = ({ stats, t }) => {
                     <div className={styles.statLabel}>{t('current_cash') || 'Efectivo en Caja'}</div>
                 </div>
                 
-                <div className={styles.statItem} style={{ borderLeft: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div className={styles.statValue} style={{ fontSize: '1.2rem', color: 'var(--text-muted)' }}>
+                <div className={styles.statItem} style={{ borderLeft: '1px solid var(--border-color)' }}>
+                    <div className={styles.statValue} style={{ fontSize: '1.25rem', color: 'var(--text-muted)' }}>
                         {formatAmount(stats?.todayTransfer || 0)}
                     </div>
                     <div className={styles.statLabel}>{t('transfers_today') || 'Transferencias Hoy'}</div>
                 </div>
             </div>
 
-            <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem', opacity: 0.7 }}>
-                <div style={{ fontSize: '0.7rem' }}>
-                    <span style={{ color: '#00f2fe' }}>+</span> {formatAmount(cashToday)} {t('income_short') || 'Ing.'}
+            <div style={{ marginTop: '1.25rem', display: 'flex', gap: '1.25rem', opacity: 0.9 }}>
+                <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                    <span style={{ color: 'var(--success)' }}>+</span> {formatAmount(cashToday)} {t('income_short') || 'Ing.'}
                 </div>
-                <div style={{ fontSize: '0.7rem' }}>
-                    <span style={{ color: '#ff4d4f' }}>-</span> {formatAmount(withdrawalsToday + expensesToday)} {t('out_short') || 'Egr.'}
+                <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>
+                    <span style={{ color: 'var(--error)' }}>-</span> {formatAmount(withdrawalsToday + expensesToday)} {t('out_short') || 'Egr.'}
                 </div>
             </div>
         </article>

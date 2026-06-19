@@ -1,19 +1,21 @@
-const holidayRepository = require('../../repositories/appointments/holidayRepository');
-
 /**
  * HolidayService
  * Business logic for holiday management.
  */
 class HolidayService {
+    constructor(holidayRepository) {
+        this.holidayRepository = holidayRepository;
+    }
+
     async getHolidays() {
-        return await holidayRepository.findAll();
+        return await this.holidayRepository.findAll();
     }
 
     async addHoliday(data) {
         if (!data.date || !data.description) throw new Error("Date and description required");
 
         try {
-            return await holidayRepository.create(data);
+            return await this.holidayRepository.create(data);
         } catch (err) {
             if (err.code === 'ER_DUP_ENTRY') {
                 throw new Error("Holiday already exists for this date", { cause: err });
@@ -23,8 +25,8 @@ class HolidayService {
     }
 
     async deleteHoliday(id) {
-        return await holidayRepository.delete(id);
+        return await this.holidayRepository.delete(id);
     }
 }
 
-module.exports = new HolidayService();
+module.exports = (holidayRepository) => new HolidayService(holidayRepository);

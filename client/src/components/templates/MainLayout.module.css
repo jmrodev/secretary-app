@@ -44,6 +44,7 @@
 }
 
 /* --- ECC-Pattern: Z-Index Management --- */
+
 /* The Navbar MUST have a higher stacking context than the main content */
 .appLayout > header {
     z-index: 1000; /* Higher than content */
@@ -61,6 +62,7 @@
     overflow: auto hidden;
     min-height: 0;
 }
+
 /* ---------------------------------------- */
 
 .inner {

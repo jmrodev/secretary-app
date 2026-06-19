@@ -238,6 +238,18 @@ export const formatTime = (date, options = {}) => {
 // --- 4. Input Handling (<input type="datetime-local" />) ---
 
 /**
+ * Converts a Date object to "YYYY-MM-DD" string for use as a Map key or index.
+ * Uses local time.
+ */
+export const formatKeyDate = (date) => {
+    const d = parseDate(date);
+    if (!d) return '';
+    
+    // toLocaleDateString with en-CA reliably returns YYYY-MM-DD
+    return d.toLocaleDateString('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+};
+
+/**
  * Converts a Date object to "YYYY-MM-DDTHH:mm" string for use in datetime-local inputs.
  * Uses local time.
  * @param {Date|string} date 

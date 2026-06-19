@@ -1,7 +1,7 @@
-const holidayService = require('./holidayService');
 const holidayRepository = require('../../repositories/appointments/holidayRepository');
+const holidayService = require('./holidayService')(holidayRepository);
 
-jest.mock('../repositories/holidayRepository');
+jest.mock('../../repositories/appointments/holidayRepository');
 
 describe('HolidayService.addHoliday', () => {
     afterEach(() => {

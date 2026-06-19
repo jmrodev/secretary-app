@@ -1,5 +1,3 @@
-const { pool } = require('../../db');
-
 const ALLOWED_UPDATES = [
     'type', 'amount', 'description', 'transaction_date',
     'related_user_id', 'doctor_id', 'method', 'status',
@@ -8,8 +6,12 @@ const ALLOWED_UPDATES = [
 ];
 
 class TransactionRepository {
+    constructor(pool) {
+        this.pool = pool;
+    }
+
     async findById(id, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const rows = await connection.query("SELECT * FROM transactions WHERE id = ?", [id]);
             return rows[0] || null;
@@ -19,7 +21,7 @@ class TransactionRepository {
     }
 
     async callSpCreateTransaction(data, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const query = "CALL sp_create_transaction(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @p_id)";
             await connection.query(query, [
@@ -43,20 +45,22 @@ class TransactionRepository {
         }
     }
 
-    async findDailySummary(month, year, doctorId, conn = pool) {
+    async findDailySummary(month, year, doctorId, conn) {
+        const activeConn = conn || this.pool;
         const start = `${year}-${String(month).padStart(2, '0')}-01`;
         const end = `${year}-${String(month).padStart(2, '0')}-31`;
         const query = `SELECT * FROM view_daily_balances WHERE transaction_date BETWEEN ? AND ? ${doctorId ? 'AND doctor_id = ?' : ''}`;
         const params = [start, end];
         if (doctorId) params.push(doctorId);
-        return await conn.query(query, params);
+        return await activeConn.query(query, params);
     }
 
-    async findMonthlyWithdrawals(month, year, doctorId, conn = pool) {
+    async findMonthlyWithdrawals(month, year, doctorId, conn) {
+        const activeConn = conn || this.pool;
         const query = `SELECT * FROM transactions WHERE is_withdrawal = 1 AND MONTH(transaction_date) = ? AND YEAR(transaction_date) = ? ${doctorId ? 'AND doctor_id = ?' : ''}`;
         const params = [month, year];
         if (doctorId) params.push(doctorId);
-        return await conn.query(query, params);
+        return await activeConn.query(query, params);
     }
 
     async update(id, updates, conn) {
@@ -65,7 +69,7 @@ class TransactionRepository {
         for (const key of Object.keys(updates)) {
             if (ALLOWED_UPDATES.includes(key)) validUpdates[key] = updates[key];
         }
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const setClauses = Object.keys(validUpdates).map(key => `${key} = ?`).join(', ');
             const values = [...Object.values(validUpdates), id];
@@ -77,7 +81,7 @@ class TransactionRepository {
     }
 
     async delete(id, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const result = await connection.query("DELETE FROM transactions WHERE id = ?", [id]);
             return result.affectedRows;
@@ -87,7 +91,7 @@ class TransactionRepository {
     }
 
     async findFiltered(filters, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         const limit = parseInt(filters.limit) || 50;
         const offset = parseInt(filters.offset) || 0;
         try {
@@ -113,7 +117,7 @@ class TransactionRepository {
     }
 
     async countFiltered(filters, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             let query = `SELECT COUNT(*) as count FROM transactions t `;
             let whereClauses = ["1=1"];
@@ -127,7 +131,7 @@ class TransactionRepository {
     }
 
     async findPendingClosures(doctorId, conn) {
-        const connection = conn || await pool.getConnection();
+        const connection = conn || await this.pool.getConnection();
         try {
             const doctorClause = doctorId ? "WHERE doctor_id = ?" : "";
             const query = `SELECT transaction_date as date, doctor_id, doctor_name, cash_balance as balance, transfer_balance as transferBalance
@@ -139,4 +143,4 @@ class TransactionRepository {
     }
 }
 
-module.exports = new TransactionRepository();
+module.exports = (pool) => new TransactionRepository(pool);
