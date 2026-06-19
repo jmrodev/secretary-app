@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import clsx from 'clsx';
 import styles from './Button.module.css';
 
 /**
@@ -28,10 +27,10 @@ const Button = ({
     rel = 'noopener noreferrer',
     ...rest
 }) => {
-    // ECC: Use clsx for clean CSS Module class management
+    // ECC: Use native array mapping for clean CSS Module class management
     const isIconOnly = !children && icon;
     
-    const combinedClassName = unstyled ? className : clsx(
+    const combinedClassName = unstyled ? className : [
         styles.root,
         variant && styles[variant],
         size && size !== 'md' && styles[size],
@@ -39,7 +38,7 @@ const Button = ({
         isIconOnly && styles.iconOnly,
         round && styles.round, // Support for round prop
         className
-    );
+    ].filter(Boolean).join(' ');
 
     const content = (
         <>

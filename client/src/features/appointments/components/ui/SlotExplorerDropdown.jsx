@@ -3,7 +3,6 @@ import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getNow } from '@/utils/core/dateUtils';
-import clsx from 'clsx';
 import styles from './SlotExplorerDropdown.module.css';
 
 /**
@@ -56,7 +55,7 @@ const SlotExplorerDropdown = ({
                 {navMonths.map((m, idx) => (
                     <div 
                         key={`m-${idx}`} 
-                        className={clsx(styles.monthItem, currentMonth === m.month && styles.monthActive)}
+                        className={[styles.monthItem, currentMonth === m.month && styles.monthActive].filter(Boolean).join(' ')}
                         onClick={() => jumpToMonth(m.month, m.year)}
                     >
                         {m.label}
@@ -78,7 +77,7 @@ const SlotExplorerDropdown = ({
                                                 {dateObj.getDate()} {monthNames[dateObj.getMonth()]}
                                             </div>
                                         )}
-                                        <div className={clsx(styles.slotRow, slot.is_out_of_hours && styles.slotExtra)}
+                                        <div className={[styles.slotRow, slot.is_out_of_hours && styles.slotExtra].filter(Boolean).join(' ')}
                                              onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}>
                                             <span className={styles.time}>{slot.time} hs</span>
                                             <div className={styles.actions}>
@@ -95,12 +94,12 @@ const SlotExplorerDropdown = ({
             </div>
 
             <footer className={styles.footer}>
-                <div className={clsx(styles.navBtn, slotsPage === 0 && styles.navBtnDisabled)}
+                <div className={[styles.navBtn, slotsPage === 0 && styles.navBtnDisabled].filter(Boolean).join(' ')}
                      onClick={() => slotsPage > 0 && setSlotsPage(p => p - 1)}>
                     <Icon name="arrow_back" size="1rem" />
                 </div>
                 <div className={styles.pageInfo}>{slotsPage + 1}/{slotPages.length || 1}</div>
-                <div className={clsx(styles.navBtn, !hasNextGroup && slotsPage >= slotPages.length-1 && styles.navBtnDisabled)}
+                <div className={[styles.navBtn, !hasNextGroup && slotsPage >= slotPages.length-1 && styles.navBtnDisabled].filter(Boolean).join(' ')}
                      onClick={() => {
                          if (slotsPage < slotPages.length - 1) setSlotsPage(p => p + 1);
                          else if (hasNextGroup) fetchNextFreeSlots(nextSlotData.nextStartDate, null, true);
