@@ -57,29 +57,10 @@
   background: rgb(255, 255, 255, 0.05);
 }
 
-.todayIndicator {
-  width: 6px;
-  height: 6px;
-  background: var(--accent, #6366f1);
-  border-radius: 50%;
-  box-shadow: 0 0 8px var(--accent, #6366f1);
-}
-
 /* Holiday state */
 .dayCell.holiday {
   background: rgb(239, 68, 68, 0.03);
   border-color: rgb(239, 68, 68, 0.2);
-}
-
-.holidayBadge {
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: #ef4444;
-  background: rgb(239, 68, 68, 0.1);
-  padding: 0.1rem 0.4rem;
-  border-radius: 0.25rem;
-  display: inline-block;
-  white-space: nowrap;
 }
 
 /* Inactive / Past / Outside month states */
@@ -99,13 +80,6 @@
   width: 100%;
 }
 
-.number {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: rgb(255, 255, 255, 0.95);
-  font-family: inherit;
-}
-
 .content {
   display: flex;
   align-items: center;
@@ -121,46 +95,6 @@
   align-items: center;
   width: 100%;
   margin-top: 0.25rem;
-}
-
-/* Appointments Badge & Dots */
-.appointmentsBadge {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: rgb(255, 255, 255, 0.04);
-  padding: 0.15rem 0.45rem;
-  border-radius: 0.5rem;
-  border: 1px solid rgb(255, 255, 255, 0.05);
-}
-
-.statusDot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-/* Appointment Density Colors */
-.indicatorLow {
-  background-color: #10b981; /* Green */
-  box-shadow: 0 0 6px rgb(16, 185, 129, 0.4);
-}
-
-.indicatorMedium {
-  background-color: #f59e0b; /* Amber */
-  box-shadow: 0 0 6px rgb(245, 158, 11, 0.4);
-}
-
-.indicatorHigh {
-  background-color: #ef4444; /* Red */
-  box-shadow: 0 0 6px rgb(239, 68, 68, 0.4);
-}
-
-.countText {
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: rgb(255, 255, 255, 0.85);
-  line-height: 1;
 }
 
 /* Keyboard focus state */

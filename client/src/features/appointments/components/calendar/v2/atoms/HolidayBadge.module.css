@@ -1,0 +1,12 @@
+/* HolidayBadge.module.css */
+
+.badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #ef4444;
+  background: rgb(239, 68, 68, 0.1);
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  display: inline-block;
+  white-space: nowrap;
+}
