@@ -1,0 +1,72 @@
+/* DayCellPlayground.module.css */
+
+.playground {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+  background: rgb(30, 30, 40, 0.4);
+  border: 1px solid rgb(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  backdrop-filter: blur(16px);
+  max-width: 100%;
+}
+
+.header {
+  border-bottom: 1px solid rgb(255, 255, 255, 0.08);
+  padding-bottom: 1rem;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.4rem;
+  letter-spacing: -0.01em;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: rgb(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.cellWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(255, 255, 255, 0.45);
+  text-align: center;
+}
+
+.footer {
+  border-top: 1px solid rgb(255, 255, 255, 0.08);
+  padding-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footerText {
+  font-size: 0.9rem;
+  color: rgb(255, 255, 255, 0.7);
+}
+
+.highlight {
+  color: var(--accent, #6366f1);
+  font-size: 1rem;
+}
