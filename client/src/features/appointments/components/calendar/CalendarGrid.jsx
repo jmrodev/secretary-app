@@ -50,7 +50,8 @@ const CalendarGrid = ({
                 appointmentCount={count} 
                 bookedInCount={bookedInCount} 
                 bookedOutCount={bookedOutCount}
-                onSelect={() => onDateSelect(currentDay)}
+                onClick={() => onDateSelect(currentDay)}
+                t={t}
             />
         );
     }
