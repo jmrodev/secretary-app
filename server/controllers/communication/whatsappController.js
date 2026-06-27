@@ -75,7 +75,13 @@ const receiveWebhook = async (req, res) => {
 const _handleAutoReplyUnknown = async (phone) => {
     const autoRespondSetting = await systemSettingsRepository.findByKey('whatsapp_auto_respond_unknown');
     if (autoRespondSetting?.setting_value === '1') {
-        const link = `https://jmro.duckdns.org/#/p/register?phone=${phone}`;
+        const domainSetting = await systemSettingsRepository.findByKey('duckdns_domain');
+        const domain = domainSetting?.setting_value;
+        if (!domain) {
+            console.warn('[WhatsApp]: Cannot send auto-reply, duckdns_domain is not configured in settings.');
+            return;
+        }
+        const link = `https://${domain}.duckdns.org/#/p/register?phone=${phone}`;
         const autoReply = `¡Hola! 👋 Soy la asistente virtual. No tenemos tus datos registrados.\n\nPor favor, completalos en este link:\n${link}`;
         await whatsappService.sendMessageDirect(phone, autoReply);
     }

@@ -68,8 +68,103 @@ exports.getDetailedStats = async (doctor_id) => {
         const apptDebt = await statsRepository.getAppointmentDebt(doctor_id);
 
         const totalDebtVal = await statsRepository.getTotalDebt(doctor_id);
+        const rentalDebtVal = await statsRepository.getDoctorRentalDebt(doctor_id);
 
         // Aggregate All Data into the final structure expected by the controller
+        const statsList = [
+            {
+                type: 'cash',
+                today: Number(finStats.todayCash || 0),
+                month: Number(finStats.monthCash || 0),
+                year: Number(finStats.yearCash || 0)
+            },
+            {
+                type: 'transfer',
+                today: Number(finStats.todayTransfer || 0),
+                month: Number(finStats.monthTransfer || 0),
+                year: Number(finStats.yearTransfer || 0)
+            },
+            {
+                type: 'withdrawal',
+                today: Number(finStats.todayWithdrawalCash || 0) + Number(finStats.todayWithdrawalTransfer || 0),
+                month: Number(finStats.monthCashWithdrawal || 0) + Number(finStats.monthTransferWithdrawal || 0),
+                year: Number(finStats.yearWithdrawalCash || 0) + Number(finStats.yearWithdrawalTransfer || 0)
+            },
+            {
+                type: 'expenses',
+                today: Number(expenseStats.today || 0),
+                month: Number(expenseStats.month || 0),
+                year: Number(expenseStats.year || 0)
+            },
+            {
+                type: 'cash_balance',
+                today: Number(finStats.todayCash || 0) - Number(finStats.todayWithdrawalCash || 0) - Number(finStats.todayExpenseCash || 0),
+                month: Number(finStats.monthCash || 0) - Number(finStats.monthCashWithdrawal || 0) - Number(finStats.monthExpenseCash || 0),
+                year: Number(finStats.yearCash || 0) - Number(finStats.yearWithdrawalCash || 0) - Number(finStats.yearExpenseCash || 0)
+            },
+            {
+                type: 'transfer_balance',
+                today: Number(finStats.todayTransfer || 0) - Number(finStats.todayWithdrawalTransfer || 0) - Number(finStats.todayExpenseTransfer || 0),
+                month: Number(finStats.monthTransfer || 0) - Number(finStats.monthTransferWithdrawal || 0) - Number(finStats.monthExpenseTransfer || 0),
+                year: Number(finStats.yearTransfer || 0) - Number(finStats.yearWithdrawalTransfer || 0) - Number(finStats.yearExpenseTransfer || 0)
+            },
+            {
+                type: 'total_net',
+                today: (Number(finStats.todayCash || 0) - Number(finStats.todayWithdrawalCash || 0) - Number(finStats.todayExpenseCash || 0)) +
+                       (Number(finStats.todayTransfer || 0) - Number(finStats.todayWithdrawalTransfer || 0) - Number(finStats.todayExpenseTransfer || 0)),
+                month: (Number(finStats.monthCash || 0) - Number(finStats.monthCashWithdrawal || 0) - Number(finStats.monthExpenseCash || 0)) +
+                       (Number(finStats.monthTransfer || 0) - Number(finStats.monthTransferWithdrawal || 0) - Number(finStats.monthExpenseTransfer || 0)),
+                year: (Number(finStats.yearCash || 0) - Number(finStats.yearWithdrawalCash || 0) - Number(finStats.yearExpenseCash || 0)) +
+                      (Number(finStats.yearTransfer || 0) - Number(finStats.yearWithdrawalTransfer || 0) - Number(finStats.yearExpenseTransfer || 0))
+            },
+            {
+                type: 'net_cash',
+                today: Number(finStats.todayCash || 0) - Number(finStats.todayWithdrawalCash || 0),
+                month: Number(finStats.monthCash || 0) - Number(finStats.monthCashWithdrawal || 0),
+                year: Number(finStats.yearCash || 0) - Number(finStats.yearWithdrawalCash || 0)
+            },
+            {
+                type: 'appointments',
+                today: {
+                    count: Number(apptToday.count || 0),
+                    paid: Number(apptToday.paid || 0),
+                    bonified: Number(apptToday.bonified || 0)
+                },
+                month: {
+                    count: Number(apptMonth.count || 0),
+                    paid: Number(apptMonth.paid || 0),
+                    bonified: Number(apptMonth.bonified || 0)
+                },
+                year: {
+                    count: Number(apptYear.count || 0),
+                    paid: Number(apptYear.paid || 0),
+                    bonified: Number(apptYear.bonified || 0)
+                },
+                debt: Number(apptDebt || 0)
+            },
+            {
+                type: 'prescriptions',
+                today: requestData.prescription.today,
+                month: requestData.prescription.month,
+                year: requestData.prescription.year,
+                debt: requestData.prescription.month.debt
+            },
+            {
+                type: 'licenses',
+                today: requestData.license.today,
+                month: requestData.license.month,
+                year: requestData.license.year,
+                debt: requestData.license.month.debt
+            },
+            {
+                type: 'certificates',
+                today: requestData.certificate.today,
+                month: requestData.certificate.month,
+                year: requestData.certificate.year,
+                debt: requestData.certificate.month.debt
+            }
+        ];
+
         return {
             todayCash: Number(finStats.todayCash || 0),
             todayTransfer: Number(finStats.todayTransfer || 0),
@@ -119,7 +214,9 @@ exports.getDetailedStats = async (doctor_id) => {
             prescriptions: requestData.prescription,
             licenses: requestData.license,
             certificates: requestData.certificate,
-            totalDebt: Number(totalDebtVal || 0)
+            totalDebt: Number(totalDebtVal || 0),
+            rentalDebt: Number(rentalDebtVal || 0),
+            stats: statsList
         };
 
     } catch (err) {

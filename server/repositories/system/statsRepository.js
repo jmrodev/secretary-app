@@ -126,8 +126,20 @@ class StatsRepository {
             FROM transactions t
             LEFT JOIN appointments a ON t.appointment_id = a.id
             WHERE t.status = 'pending'
+              AND t.type != 'income_rental'
               AND (t.appointment_id IS NULL OR a.status IN ('completed', 'attended', 'arrived', 'absent'))
               ${doctor_id ? " AND t.doctor_id = ?" : ""}
+        `;
+        const [row] = await conn.query(query, doctor_id ? [doctor_id] : []);
+        return row?.total || 0;
+    }
+
+    async getDoctorRentalDebt(doctor_id, conn = this.pool) {
+        const query = `
+            SELECT SUM(amount) as total 
+            FROM transactions 
+            WHERE status = 'pending' AND type = 'income_rental'
+              ${doctor_id ? " AND doctor_id = ?" : ""}
         `;
         const [row] = await conn.query(query, doctor_id ? [doctor_id] : []);
         return row?.total || 0;

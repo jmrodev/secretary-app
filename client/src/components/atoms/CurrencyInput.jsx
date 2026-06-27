@@ -7,8 +7,9 @@ const CURRENCY_FORMATTER = new Intl.NumberFormat('es-AR', {
 });
 
 const format = (val) => {
-    if (!val && val !== 0) return '';
-    return CURRENCY_FORMATTER.format(Number(val));
+    const num = Number(val);
+    if (Number.isNaN(num) || (!num && num !== 0)) return '';
+    return CURRENCY_FORMATTER.format(num);
 };
 
 /**
@@ -31,7 +32,7 @@ const CurrencyInput = ({
         return '';
     });
 
-    if (value !== prevValue) {
+    if (!Object.is(value, prevValue)) {
         setPrevValue(value);
         if (value !== undefined && value !== null) {
             setDisplayValue(format(value));

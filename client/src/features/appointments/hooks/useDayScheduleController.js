@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { createDate } from '@/utils/core/dateUtils';
 
@@ -21,6 +21,16 @@ export const useDayScheduleController = (date, doctor) => {
         immediate: !!doctor?.id,
         initialData: { success: true, data: [] }
     });
+
+    useEffect(() => {
+        const handleUpdate = () => {
+            refetch();
+        };
+        window.addEventListener('appointments-updated', handleUpdate);
+        return () => {
+            window.removeEventListener('appointments-updated', handleUpdate);
+        };
+    }, [refetch]);
 
     const rawSlots = response?.data || EMPTY_ARRAY;
 

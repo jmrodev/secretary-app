@@ -8,7 +8,7 @@ import styles from './FinanceStatsCards.module.css';
  * Displays financial breakdown by category and payment methods.
  * Refactored to follow BEM and Atomic Design standards.
  */
-const FinanceStatsCards = ({ stats, t }) => {
+const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) => {
     // Separate different types of stats
     const tableStats = stats.filter(s => ['cash', 'transfer', 'withdrawal', 'expenses'].includes(s.type));
     const financialSummary = stats.filter(s => ['cash_balance', 'transfer_balance', 'total_net', 'net_cash'].includes(s.type));
@@ -169,6 +169,34 @@ const FinanceStatsCards = ({ stats, t }) => {
                     </div>
                 </Card>
             )}
+
+            {/* Outstanding Debts Card */}
+            <Card className={`${styles.card}`}>
+                <h3 className={`${styles.title}`}>
+                    <Icon name="warning" size="0.8rem" className={`${styles.icon} finance-stats__icon--pending_debt`} />
+                    {t('outstanding_debts') || 'Resumen de Deudas'}
+                </h3>
+                <div className={`${styles.breakdown}`}>
+                    <div className={`${styles.row}`}>
+                        <span className={`${styles.label} ${styles.labelBold}`}>{t('patient_debt') || 'Deuda de Pacientes'}</span>
+                        <span className={`${styles.value} ${totalDebt > 0 ? styles.valueRed : styles.valueMuted}`}>
+                            ${Number(totalDebt).toLocaleString()}
+                        </span>
+                    </div>
+                    <div className={`${styles.row} ${styles.rowDivider}`}>
+                        <span className={`${styles.label} ${styles.labelBold}`}>{t('doctor_rental_debt') || 'Deuda de Alquiler (Médicos)'}</span>
+                        <span className={`${styles.value} ${rentalDebt > 0 ? styles.valueRed : styles.valueMuted}`}>
+                            ${Number(rentalDebt).toLocaleString()}
+                        </span>
+                    </div>
+                    <div className={`${styles.row} ${styles.rowDivider}`}>
+                        <span className={`${styles.label} ${styles.labelBold}`}>{t('total_debt') || 'Deuda Total'}</span>
+                        <span className={`${styles.value} ${totalDebt + rentalDebt > 0 ? styles.valueRed : styles.valueMuted}`} style={{ fontWeight: 'bold' }}>
+                            ${Number(totalDebt + rentalDebt).toLocaleString()}
+                        </span>
+                    </div>
+                </div>
+            </Card>
         </section>
     );
 };

@@ -24,6 +24,26 @@ const AppointmentHeader = ({ appt, t }) => {
             default: return 'default';
         }
     };
+    const getPaymentStatusVariant = (paymentStatus) => {
+        switch (paymentStatus) {
+            case 'paid': return 'success';
+            case 'pending': return 'pending';
+            case 'partial': return 'warning';
+            case 'debt': return 'danger';
+            default: return 'danger';
+        }
+    };
+
+    const getPaymentStatusLabel = (paymentStatus) => {
+        switch (paymentStatus) {
+            case 'paid': return t('paid') || 'Pagado';
+            case 'pending': return t('pending') || 'Pendiente';
+            case 'partial': return t('partial') || 'Parcial';
+            case 'debt': return t('debt') || 'Deuda';
+            default: return t(paymentStatus) || paymentStatus || 'Deuda';
+        }
+    };
+
     return (
         <header className={styles.root}>
             <section className={styles.patientInfo}>
@@ -44,12 +64,12 @@ const AppointmentHeader = ({ appt, t }) => {
                 
                 {/* Payment badge: only show if NOT bonified */}
                 {!(appt.bonified === 1 || appt.bonified === true) ? (
-                    <Badge variant={appt.payment_status === 'paid' ? 'success' : 'danger'}>
-                        {appt.payment_status === 'paid' ? t('paid') : t('debt')}
+                    <Badge variant={getPaymentStatusVariant(appt.payment_status)}>
+                        {getPaymentStatusLabel(appt.payment_status)}
                     </Badge>
                 ) : (
                     <Badge variant="accent">
-                        {t('bonified')}
+                        {t('bonified') || 'Bonificado'}
                     </Badge>
                 )}
             </aside>

@@ -129,6 +129,11 @@
     margin-top: 0.25rem;
 }
 
+.rowDivider .label,
+.rowDivider .value {
+    font-size: 10px;
+}
+
 .summaryRow {
     background-color: var(--stats-summary-bg);
 }
@@ -137,4 +142,5 @@
     padding: 0.5rem 0.25rem;
     font-weight: 800;
 }
+
 

@@ -23,4 +23,11 @@ export const finances = {
     physical_cash: "Efectivo Físico",
     balancing_notes: "Notas del Arqueo",
     confirm_balancing: "Confirmar Arqueo",
+    
+    // Outstanding Debts Summary
+    outstanding_debts: "Resumen de Deudas",
+    patient_debt: "Deuda de Pacientes",
+    doctor_rental_debt: "Deuda de Alquiler (Médicos)",
+    total_debt: "Deuda Total Pendiente",
 };
+

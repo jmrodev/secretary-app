@@ -60,7 +60,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
                     );
                     return { ...prev, payments: newPayments };
                 });
-                setTotalPrice(Number(data.price));
+                setTotalPrice(Number(data.price) || 0);
                 setPricingInfo(data.explanation);
             }
         } catch (err) {
@@ -83,7 +83,8 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             type: data.type || 'income_patient',
             payments: data.payments ? data.payments.map(p => ({ ...p, _tmpId: p._tmpId || Math.random() })) : [{ _tmpId: Date.now(), amount: data.amount !== undefined ? data.amount : '', method: data.method || 'cash' }],
             description: data.description || '',
-            related_user_id: (data.related_user_id || data.patientUserId || data.patientId) ? String(data.related_user_id || data.patientUserId || data.patientId) : '',
+            related_user_id: (data.related_user_id || data.patientUserId) ? String(data.related_user_id || data.patientUserId) : '',
+            patient_id: data.patientId || data.patient_id || '',
             doctor_id: data.doctorId ? String(data.doctorId) : '',
             status: data.status || 'paid',
             service_type: initialServiceType,
@@ -110,7 +111,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         }
 
         if (data.amount) {
-            setTotalPrice(Number(data.amount));
+            setTotalPrice(Number(data.amount) || 0);
         }
 
         if (data.doctorId && (!data.amount || Number(data.amount) === 0)) {
@@ -181,7 +182,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
     const selectPatient = (patient) => {
         const userStr = patient.user_id ? String(patient.user_id) : '';
-        setFormData(prev => ({ ...prev, related_user_id: userStr }));
+        setFormData(prev => ({ ...prev, related_user_id: userStr, patient_id: patient.id }));
         setSelectedPatient(patient);
         setPatientSearch(`${patient.full_name} (${patient.dni || 'N/A'})`);
         setShowPatientList(false);
@@ -227,7 +228,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
                 }
             });
 
-            const totalPaid = formData.payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
+            const totalPaid = formData.payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
 
             // Calculate Debt
             if (formData.type === 'income_patient' && totalPrice > 0) {

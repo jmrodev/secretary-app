@@ -12,4 +12,11 @@ export const finances = {
     proof: "Proof",
     general: "General",
     close_box: "Close Box",
+    
+    // Outstanding Debts Summary
+    outstanding_debts: "Outstanding Debts Summary",
+    patient_debt: "Patient Debts",
+    doctor_rental_debt: "Doctor Rental Debts",
+    total_debt: "Total Outstanding Debt",
 };
+

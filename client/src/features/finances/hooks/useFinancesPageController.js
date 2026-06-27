@@ -90,11 +90,14 @@ export const useFinancesPageController = () => {
     const txData = txResponse?.data || {};
     const transactions = txData.transactions || [];
     const totalCount = txData.totalCount || 0;
-    const stats = statsResponse?.data || [];
+    const stats = statsResponse?.data?.stats || statsResponse?.data || [];
+    const totalDebt = statsResponse?.data?.totalDebt || 0;
+    const rentalDebt = statsResponse?.data?.rentalDebt || 0;
     const pendingClosures = closuresResponse?.data || [];
 
     const loading = txLoading || doctorsLoading || isActionLoading;
     const fetched = txResponse !== undefined && !txLoading;
+
 
     const fetchData = useCallback(() => {
         fetchTransactions();
@@ -138,6 +141,8 @@ export const useFinancesPageController = () => {
         currentPage,
         totalPages: Math.ceil(totalCount / itemsPerPage),
         stats,
+        totalDebt,
+        rentalDebt,
         loading,
         doctors,
         selectedDoctorFilter,
