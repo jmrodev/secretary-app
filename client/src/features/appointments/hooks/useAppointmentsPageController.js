@@ -125,6 +125,7 @@ export const useAppointmentsPageController = () => {
             agendaAppointmentsHook.refetch(),
             searchTerm ? fetchSearch() : Promise.resolve()
         ]);
+        window.dispatchEvent(new CustomEvent('appointments-updated'));
     }, [agendaAppointmentsHook, fetchSearch, searchTerm]);
 
     const hookHandlers = useAppointmentsHandlers({

@@ -85,7 +85,12 @@ const FinancesPage = ({ MedicationInputComponent }) => {
                     ) : (
                         <div className="finances-page-orchestrator__content">
                             {isAdminOrSecretary && stats.length > 0 && (
-                                <FinanceStatsCards stats={stats} t={t} />
+                                <FinanceStatsCards 
+                                    stats={stats} 
+                                    totalDebt={controller.totalDebt}
+                                    rentalDebt={controller.rentalDebt}
+                                    t={t} 
+                                />
                             )}
 
                             <article className="dashboard-card no-padding">

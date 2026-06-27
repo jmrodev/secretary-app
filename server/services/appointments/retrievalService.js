@@ -22,6 +22,8 @@ const mapAppointment = (a) => ({
     paid_amount: Number(a.paid_amount || 0),
     pending_amount: Number(a.pending_amount || 0),
     cost: Number(a.cost || 0),
+    payment_status: a.payment_status,
+    is_paid: !!a.is_paid,
     rescheduled_from_date: a.rescheduled_from_date
 });
 

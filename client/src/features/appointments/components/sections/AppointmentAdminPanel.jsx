@@ -19,11 +19,12 @@ const AppointmentAdminPanel = ({
 
     const isPendingPayment = !appt.bonified && (appt.payment_status === 'pending' || appt.payment_status === 'debt' || appt.payment_status === 'partial');
     const canConfirm = ['pending', 'cancelled', 'suspended', 'absent', 'rescheduled'].includes(appt.status);
-    const canArrive = appt.status === 'confirmed' && appt.type !== 'virtual';
+    const canArrive = ['confirmed', 'pending', 'rescheduled'].includes(appt.status) && appt.type !== 'virtual';
     const canAttend = appt.status === 'arrived' || (appt.type === 'virtual' && appt.status === 'confirmed');
     const canSuspend = ['pending', 'confirmed', 'rescheduled'].includes(appt.status);
     const canMarkAbsent = ['pending', 'confirmed', 'rescheduled'].includes(appt.status);
-    const showAdminPanel = !isGoogle && (appt.status !== 'completed' || canUnrestricted);
+    const showAdminPanel = !isGoogle;
+    const hasAttendanceActions = canConfirm || canArrive || canAttend;
     const canReschedule = appt.status !== 'completed' && appt.status !== 'absent';
     const canPassToVideo = appt.status !== 'completed' && appt.status !== 'absent' && appt.type !== 'virtual';
 
@@ -31,7 +32,7 @@ const AppointmentAdminPanel = ({
         copyToClipboard(appt.patient_phone).then(() => showMessage(t('phone_copied'), "success"));
     };
 
-    if (!showAdminPanel && !isPendingPayment) return null;
+    if (isGoogle) return null;
 
     const baseClass = styles.root;
 
@@ -82,33 +83,37 @@ const AppointmentAdminPanel = ({
                 {/* ATTENDANCE TAB */}
                 {activeTab === 'attendance' && (
                     <article className={`${baseClass}__tab-pane animate-fade-in`}>
-                        {isPendingPayment && !isGoogle && (
+                        {!isGoogle && (
                             <section className={`${baseClass}__group ${baseClass}__group--highlight`}>
-                                <h4 className={`${baseClass}__group-title`}>{t('pending_payment')}</h4>
+                                <h4 className={`${baseClass}__group-title`}>
+                                    {isPendingPayment ? (t('pending_payment') || 'Pago Pendiente') : (t('record_payment') || 'Registrar Pago')}
+                                </h4>
                                 <div className={`${baseClass}__grid`}>
                                     <Button
                                         variant="success" className={`${baseClass}__action`} onClick={() => { onPay(appt); onClose(); }}
                                         icon={<Icon name="payments" size="1rem" />}
                                     >
-                                        {t('pay')}
+                                        {isPendingPayment ? (t('pay') || 'Pagar') : (t('record_payment') || 'Registrar Pago')}
                                     </Button>
-                                    <Button
-                                        variant="accent" className={`${baseClass}__action`} onClick={() => { onBonify(appt); onClose(); }}
-                                        icon={<Icon name="card_giftcard" size="1rem" />}
-                                    >
-                                        {t('bonify')}
-                                    </Button>
+                                    {isPendingPayment && (
+                                        <Button
+                                            variant="accent" className={`${baseClass}__action`} onClick={() => { onBonify(appt); onClose(); }}
+                                            icon={<Icon name="card_giftcard" size="1rem" />}
+                                        >
+                                            {t('bonify') || 'Bonificar'}
+                                        </Button>
+                                    )}
                                 </div>
                             </section>
                         )}
 
-                        {showAdminPanel && (
+                        {showAdminPanel && hasAttendanceActions && (
                             <section className={`${baseClass}__group`}>
                                 <h4 className={`${baseClass}__group-title`}>{t('attendance_flow')}</h4>
                                 <div className={`${baseClass}__grid`}>
                                     {canConfirm && (
                                         <Button
-                                            variant="success" className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'confirmed'); onClose(); }}
+                                            variant="success" className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'confirmed'); }}
                                             icon={<Icon name="check_circle" size="1rem" />}
                                         >
                                             {t('confirm')}
@@ -116,7 +121,7 @@ const AppointmentAdminPanel = ({
                                     )}
                                     {canArrive && (
                                         <Button
-                                            variant="secondary" className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'arrived'); onClose(); }}
+                                            variant="secondary" className={`${baseClass}__action`} onClick={() => { onUpdateStatus(appt.id, 'arrived'); }}
                                             icon={<Icon name="meeting_room" size="1rem" />}
                                         >
                                             {t('patient_arrived')}

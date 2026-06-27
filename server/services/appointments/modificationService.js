@@ -48,8 +48,8 @@ class ModificationService {
             if (!appt) throw new Error("Appointment not found");
 
             // Enforce strict business rules for status transitions
-            if (status === 'arrived' && appt.status !== 'confirmed') {
-                throw new Error("No se puede marcar como 'En Sala' si el turno no está en estado 'Confirmado'.");
+            if (status === 'arrived' && !['confirmed', 'pending', 'rescheduled'].includes(appt.status)) {
+                throw new Error("No se puede marcar como 'En Sala' si el turno no está en estado 'Confirmado', 'Pendiente' o 'Reprogramado'.");
             }
             if (status === 'completed') {
                 const isVirtual = appt.type === 'virtual';

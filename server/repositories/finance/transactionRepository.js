@@ -23,7 +23,7 @@ class TransactionRepository {
     async callSpCreateTransaction(data, conn) {
         const connection = conn || await this.pool.getConnection();
         try {
-            const query = "CALL sp_create_transaction(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @p_id)";
+            const query = "CALL sp_create_transaction(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, @p_id)";
             await connection.query(query, [
                 data.type,
                 data.amount,
@@ -36,10 +36,20 @@ class TransactionRepository {
                 data.transaction_date || null,
                 data.appointment_id || null,
                 data.request_id || null,
+                data.rental_id || null,
                 data.idempotency_key || null
             ]);
             const results = await connection.query("SELECT @p_id as id");
             return results[0]?.id || null;
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async callSpMarkAsBonified(id, type, conn) {
+        const connection = conn || await this.pool.getConnection();
+        try {
+            await connection.query("CALL sp_mark_as_bonified(?, ?)", [id, type]);
         } finally {
             if (!conn) connection.release();
         }

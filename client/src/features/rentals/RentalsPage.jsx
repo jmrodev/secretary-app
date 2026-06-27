@@ -3,6 +3,7 @@ import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import Badge from '@/components/atoms/Badge';
 import { formatCurrency } from '@/utils/core/format';
 import { formatDate } from '@/utils/core/dateUtils';
 import { useRentalsController } from '@/features/rentals/hooks/useRentalsController';
@@ -135,6 +136,7 @@ const RentalsPage = () => {
                                                             <th>{t('date')}</th>
                                                             <th>{t('time')}</th>
                                                             <th className="text-right">{t('cost')}</th>
+                                                            <th className="text-center">{t('status') || 'Estado'}</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -144,6 +146,11 @@ const RentalsPage = () => {
                                                                 <td>{formatDate(r.rental_date)}</td>
                                                                 <td>{r.start_time} - {r.end_time}</td>
                                                                 <td className="text-right font-mono font-bold text-success">{formatCurrency(r.cost)}</td>
+                                                                <td className="text-center">
+                                                                    <Badge variant={r.is_paid ? 'success' : 'danger'}>
+                                                                        {r.is_paid ? (t('paid') || 'Pagado') : (t('pending') || 'Impago')}
+                                                                    </Badge>
+                                                                </td>
                                                             </tr>
                                                         ))}
                                                     </tbody>

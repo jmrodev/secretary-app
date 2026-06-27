@@ -92,7 +92,7 @@ export const useAppointmentsHandlers = ({
     const handleUpdateStatus = async (id, status) => {
         await appointmentActions.handleStatusUpdate(id, status);
         fetchAppointments();
-        setActionModal(prev => (prev.open && prev.appt && prev.appt.id === id) ? { ...prev, appt: { ...prev.appt, status } } : prev);
+        setActionModal(prev => (prev.open && prev.appt && String(prev.appt.id) === String(id)) ? { ...prev, appt: { ...prev.appt, status } } : prev);
     };
 
     const handleSaveNote = async (apptId, note, date) => {

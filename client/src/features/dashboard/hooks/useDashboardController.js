@@ -52,7 +52,7 @@ export const useDashboardController = () => {
 
     const handleUpdateStatus = async (id, status) => {
         await updateStatus(id, status, (id, newStatus) => {
-            if (modalsHook.actionModal.open && modalsHook.actionModal.appt?.id === id) {
+            if (modalsHook.actionModal.open && String(modalsHook.actionModal.appt?.id) === String(id)) {
                 modalsHook.setActionModal(prev => ({
                     ...prev,
                     appt: { ...prev.appt, status: newStatus }

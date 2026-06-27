@@ -45,7 +45,7 @@ const TransactionModal = ({
         selectedPatient, addMedication, removeMedication, setTotalPrice
     } = useTransactionForm(isOpen, initialData, requestId, onSuccess, onClose);
 
-    const currentPaidTotal = formData.payments.reduce((acc, p) => acc + Number(p.amount || 0), 0);
+    const currentPaidTotal = formData.payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
     const debtAmount = Math.max(0, totalPrice - currentPaidTotal);
 
     const transactionTypes = getTransactionTypes(t);
