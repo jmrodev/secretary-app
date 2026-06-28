@@ -52,4 +52,17 @@ La lógica de tarificación y facturación está centralizada a nivel de base de
   *   **Transacción Creada**: Se crea en estado `pending` inmediatamente al agendar el turno (garantiza la integridad de datos).
   *   **Deuda Activa**: Solo se computa y muestra como deuda real si el estado del turno asociado está en **`completed`**, **`attended`**, **`arrived`** o **`absent`** (es decir, el servicio ya se prestó o el paciente se ausentó sin avisar). Los turnos en estado `pending`, `scheduled` o `reserved` no suman a los saldos deudores del paciente.
 
+---
+
+## 6. Lógica Financiera del Médico
+El sistema realiza un seguimiento contable individualizado para cada profesional médico en la tabla `transactions` y a través de vistas agregadas:
+
+- **Asignación de Ingresos**: Todas las transacciones derivadas de la actividad del consultorio (consultas, recetas, coberturas institucionales) guardan el `doctor_id` del profesional que brindó la atención.
+- **Saldos Diarios y Conciliación**: La vista `view_daily_balances` consolida los ingresos diarios agrupándolos por médico y método de pago (efectivo vs transferencia bancaria/tarjeta).
+- **Retiros de Efectivo (`is_withdrawal`)**: Cuando un médico retira efectivo de la caja del consultorio:
+  *   Se registra una transacción con `is_withdrawal = 1`.
+  *   El monto del retiro se almacena como un valor positivo, pero en los cómputos de balance y arqueo de caja se deduce automáticamente del saldo total disponible para ese médico.
+  *   Cada retiro debe quedar registrado con el `doctor_id` correspondiente para auditar el flujo de egresos.
+
+
 
