@@ -4,7 +4,7 @@ import DashboardReminders from '@/features/dashboard/components/DashboardReminde
 import MedicalRequirementManager from '@/features/medical_documents/components/ui/MedicalRequirementManager';
 import DashboardModalOrchestrator from './components/DashboardModalOrchestrator';
 import MainLayout from '@/components/templates/MainLayout';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
 import CashMonitorCard from './components/CashMonitorCard';

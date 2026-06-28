@@ -157,3 +157,11 @@ data/
 mysql_data_prod/
 android_sdk/
 .gradle/
+.atl/
+
+# OpenSpec cache
+/openspec/.cache/
+/openspec/cache/
+
+
+

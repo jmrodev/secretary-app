@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLayoutController } from '@/features/layout/hooks/useLayoutController';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import LanguageSelector from '@/components/atoms/LanguageSelector';
 import NavbarLink from './NavbarLink';

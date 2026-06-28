@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { formatDate, compareDates } from '@/utils/core/dateUtils';
 import styles from './HolidayList.module.css';

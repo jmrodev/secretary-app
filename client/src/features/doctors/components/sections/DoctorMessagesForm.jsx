@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import Icon from '@/components/atoms/Icon';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
 import styles from './DoctorMessagesForm.module.css';

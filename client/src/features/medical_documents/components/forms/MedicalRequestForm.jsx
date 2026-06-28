@@ -4,7 +4,7 @@ import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import Card from '@/components/atoms/Card';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import Badge from '@/components/atoms/Badge';

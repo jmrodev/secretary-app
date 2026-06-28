@@ -1,6 +1,6 @@
 import React from 'react';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import styles from './PatientContactFields.module.css';

@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';

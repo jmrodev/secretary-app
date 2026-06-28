@@ -9,7 +9,7 @@ import FinanceStatsCards from '@/features/finances/components/sections/FinanceSt
 import EditTransactionModal from '@/features/finances/components/modals/EditTransactionModal';
 import TransactionModal from '@/features/finances/components/modals/TransactionModal';
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Badge from '@/components/atoms/Badge';
 import TransactionsTable from '@/features/finances/components/tables/TransactionsTable';

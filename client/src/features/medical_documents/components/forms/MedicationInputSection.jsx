@@ -3,7 +3,7 @@ import MedicationAutocomplete from '@/features/medical_documents/components/ui/M
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import Tooltip from '@/components/atoms/Tooltip';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
 

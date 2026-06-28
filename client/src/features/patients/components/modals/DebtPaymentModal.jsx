@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import CurrencyInput from '@/components/atoms/CurrencyInput';
 import Select from '@/components/atoms/Select';
 import { getPaymentMethods } from '@/constants/transactionOptions';
