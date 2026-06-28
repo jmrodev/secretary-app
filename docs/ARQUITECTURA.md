@@ -35,3 +35,15 @@ El servidor Express en `server/` sigue una separación de responsabilidades estr
 ## 4. Internacionalización (i18n)
 - **Cero Texto Plano**: Todo texto visible para el usuario final en la interfaz debe pasar por el helper de traducción `t('key')`. 
 - **Estructura**: Las traducciones se organizan en archivos JSON/JS dentro de `client/src/constants/languages/`.
+
+---
+
+## 5. Motor de Precios y Finanzas
+La lógica de tarificación y facturación está centralizada a nivel de base de datos mediante la función `fn_calculate_service_price` y el procedimiento `sp_book_appointment` para asegurar consistencia absoluta:
+
+- **Tarifa Base del Médico**: Se obtiene de la tabla `doctors` según el tipo de servicio (consulta presencial, consulta virtual, receta, certificado, licencia).
+- **Tarifa de Cobertura de Obra Social (Institución)**: Si el turno tiene asociada una institución, se extrae el valor base de `institutions.base_price`, el cual reemplaza la tarifa base del médico.
+- **Descuentos y Copagos del Paciente**: Se extraen de la tabla `patients`:
+  - `tariff_override`: Un precio fijo que anula por completo el cálculo y se cobra directamente al paciente (ej: un copago fijo pre-acordado).
+  - `tariff_percent`: Ajuste porcentual (positivo o negativo) calculado sobre el precio base activo. Si el paciente tiene un copago del 30% en su obra social, se calcula ese porcentaje como deuda del paciente, y el 70% restante se asigna automáticamente como saldo a cobrar a la institución.
+
