@@ -2,6 +2,8 @@
 
 Una solución integral para la gestión de consultorios médicos, diseñada para optimizar la agenda, la comunicación con pacientes y la administración financiera.
 
+---
+
 ## 🚀 Características Principales
 
 - **Gestión de Turnos**: Agenda inteligente con estados dinámicos (completado, pendiente, ausente, etc.).
@@ -11,56 +13,36 @@ Una solución integral para la gestión de consultorios médicos, diseñada para
 - **Arquitectura Premium**: Interfaz moderna basada en *Atomic Design* y *Bento Box UI*.
 - **Internacionalización**: Soporte nativo para múltiples idiomas (i18n).
 
+---
+
 ## 🛠️ Tecnologías
 
-### Frontend
-- **React 19** (Vite)
-- **Vanilla CSS** (BEM Methodology)
-- **SPA** con React Router
-- **Context API** para estado global
+*   **Frontend**: React 19 (Vite), Vanilla CSS (BEM), Context API, React Router.
+*   **Backend**: Node.js + Express v5, Knex (MySQL / MariaDB).
+*   **WhatsApp Bridge**: Go 1.25 (whatsmeow, SQLite).
 
-### Backend
-- **Node.js** con Express
-- **MySQL / SQLite** (según entorno)
-- **Google Cloud Integration** (Calendar, Sheets, Contacts)
-- **WhatsApp Bridge** (Go/Node)
+---
 
-## 📦 Instalación y Desarrollo
+## 📖 Documentación y Guías
 
-Este proyecto utiliza **npm workspaces**.
+Toda la documentación detallada del proyecto se encuentra organizada dentro de la carpeta `docs/`:
 
-1. **Clonar el repositorio**:
-   ```bash
-   git clone https://github.com/jmrodev/secretary-app.git
-   cd secretary-app
-   ```
+*   [**Arquitectura y Estándares de Código**](docs/ARQUITECTURA.md): Reglas de oro del repositorio, Atomic Design, CSS Modules, BEM y patrones del backend.
+*   [**Guía de Configuración General**](docs/GUIA_CONFIGURACION_GENERAL.md): Pasos para la instalación inicial, variables de entorno (.env) y comandos de ejecución.
 
-2. **Instalar dependencias**:
-   ```bash
-   pnpm install
-   ```
+---
 
-3. **Configuración de entorno**:
-   - Copia `.env.example` a `.env` en la raíz y configura las variables necesarias.
+## 📦 Inicio Rápido
 
-4. **Ejecutar en desarrollo**:
-   - **Cliente**: `cd client && pnpm run dev`
-   - **Servidor**: `cd server && pnpm start` (o similar)
-
-## 📖 Documentación
-
-Para detalles técnicos profundos, consulta la carpeta `docs/`:
-
-- [**Arquitectura y Estándares**](docs/ARQUITECTURA.md): Reglas de oro, BEM, Atomic Design y MVC.
-- [**Guía de Configuración**](docs/GUIA_CONFIGURACION_GENERAL.md): Pasos para la puesta en marcha inicial.
-
-## 📐 Estándares de Código
-
-Este proyecto sigue reglas estrictas de calidad:
-- **BEM CSS**: `block__element--modifier`.
-- **Atomic Design**: Clasificación en átomos, moléculas, organismos, templates y páginas.
-- **MVC**: Clara separación entre Vista, Controlador y Modelo.
-- **i18n**: Cero texto crudo en el código; todo debe pasar por el sistema de traducciones.
+1.  **Instalar dependencias**:
+    ```bash
+    pnpm install
+    ```
+2.  **Configurar entorno**:
+    Copia `.env.example` a `.env` en la raíz y completa los valores.
+3.  **Ejecutar en desarrollo**:
+    *   Cliente: `pnpm --filter client dev`
+    *   Servidor: `pnpm --filter server start`
 
 ---
 Desarrollado con ❤️ para profesionales de la salud.
