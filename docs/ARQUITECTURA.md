@@ -47,3 +47,9 @@ La lógica de tarificación y facturación está centralizada a nivel de base de
   - `tariff_override`: Un precio fijo que anula por completo el cálculo y se cobra directamente al paciente (ej: un copago fijo pre-acordado).
   - `tariff_percent`: Ajuste porcentual (positivo o negativo) calculado sobre el precio base activo. Si el paciente tiene un copago del 30% en su obra social, se calcula ese porcentaje como deuda del paciente, y el 70% restante se asigna automáticamente como saldo a cobrar a la institución.
 
+- **Devengación de Deuda (Deuda Real vs. Deuda Futura)**:
+  Para evitar que un paciente que simplemente tiene turnos agendados en el futuro figure como "deudor" en sus balances contables o historial, el sistema implementa un filtro a nivel de consultas (`statsRepository` y `transactionRepository`):
+  *   **Transacción Creada**: Se crea en estado `pending` inmediatamente al agendar el turno (garantiza la integridad de datos).
+  *   **Deuda Activa**: Solo se computa y muestra como deuda real si el estado del turno asociado está en **`completed`**, **`attended`**, **`arrived`** o **`absent`** (es decir, el servicio ya se prestó o el paciente se ausentó sin avisar). Los turnos en estado `pending`, `scheduled` o `reserved` no suman a los saldos deudores del paciente.
+
+
