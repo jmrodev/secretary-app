@@ -64,5 +64,20 @@ El sistema realiza un seguimiento contable individualizado para cada profesional
   *   El monto del retiro se almacena como un valor positivo, pero en los cómputos de balance y arqueo de caja se deduce automáticamente del saldo total disponible para ese médico.
   *   Cada retiro debe quedar registrado con el `doctor_id` correspondiente para auditar el flujo de egresos.
 
+---
+
+## 7. Trazabilidad y Auditoría (Audit Log)
+El sistema implementa mecanismos tanto a nivel de aplicación (Node) como de base de datos (Triggers) para registrar qué persona gestionó cada acción:
+
+- **Trazabilidad de Turnos**: 
+  El procedimiento `sp_book_appointment` acepta el parámetro `p_created_by` (el identificador del usuario, sea secretaria o el propio médico). Este valor se almacena de forma inmutable en la columna `created_by` de la tabla `appointments` para auditar la creación del turno.
+- **Auditoría de Transacciones Financieras**:
+  La tabla `transaction_audits` registra automáticamente los cambios en las transacciones a través de triggers de base de datos (`trg_audit_transaction_insert`, `trg_audit_transaction_update`, `trg_audit_transaction_delete`):
+  *   **Acciones**: Registra si fue una inserción, actualización o eliminación.
+  *   **Historial de importes**: Guarda el valor anterior (`old_amount`) y el nuevo (`new_amount`).
+  *   **Historial de estados**: Guarda el estado anterior (`old_status`) y el nuevo (`new_status`).
+  *   **Usuario de cambio (`changed_by_user_id`)**: Se puede inyectar en las operaciones de actualización para registrar la trazabilidad del usuario que modificó o eliminó el registro contable.
+
+
 
 
