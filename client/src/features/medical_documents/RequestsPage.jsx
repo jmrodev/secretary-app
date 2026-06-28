@@ -4,7 +4,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import MedicalRequirementManager from './components/ui/MedicalRequirementManager';
 import MainLayout from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 
 // Local Styles
 import styles from './RequestsPage.module.css';

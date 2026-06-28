@@ -1,7 +1,7 @@
 import React from 'react';
 import { usePublicPrescriptionRequestController } from '@/features/medical_documents/hooks/usePublicPrescriptionRequestController';
 import StatusDisplay from '@/components/molecules/StatusDisplay';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
 import styles from './PublicRequestPage.module.css';

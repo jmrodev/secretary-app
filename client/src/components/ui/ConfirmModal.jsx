@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Modal from '@/components/molecules/Modal';
 import styles from './ConfirmModal.module.css';
 

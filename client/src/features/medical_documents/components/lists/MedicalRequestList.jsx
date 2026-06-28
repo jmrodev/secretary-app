@@ -5,7 +5,7 @@ import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { isToday, formatDate } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import styles from './MedicalRequestList.module.css';
 

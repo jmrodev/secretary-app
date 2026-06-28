@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import Icon from '@/components/atoms/Icon';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import styles from './SearchBar.module.css';
 
 const EMPTY_ARRAY = [];

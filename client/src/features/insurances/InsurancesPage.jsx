@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';
 import Card from '@/components/atoms/Card';
 import Icon from '@/components/atoms/Icon';

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 
 /**
  * StatusActionModal Molecule.

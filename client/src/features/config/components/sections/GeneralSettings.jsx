@@ -1,7 +1,7 @@
 import React from 'react';
 import ConfigToggle from '@/features/config/components/ui/ConfigToggle';
 import ConfigField from '@/features/config/components/ui/ConfigField';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
 import styles from './GeneralSettings.module.css';

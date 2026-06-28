@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLoginController } from '@/features/auth/hooks/useLoginController';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
 import FormGroup from '@/components/molecules/FormGroup';
 import Icon from '@/components/atoms/Icon';

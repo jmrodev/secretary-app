@@ -9,7 +9,7 @@ import InstitutionPatientsTable from '@/features/finances/components/tables/Inst
 import InstitutionPaymentModal from '@/features/finances/components/modals/InstitutionPaymentModal';
 
 // Atoms
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
 import styles from './InstitutionFinances.module.css';

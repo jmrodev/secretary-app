@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Loading from './Loading';
 import styles from './Button.module.css';
 
 /**
  * Button Atom component (ECC Refactored).
  * Follows Atomic Design and ensures prop integrity.
  */
-const Button = ({
+export const Button = React.memo(({
     children,
     onClick,
     to,
@@ -14,6 +15,7 @@ const Button = ({
     variant = 'primary', 
     size = 'md',
     disabled = false,
+    loading = false,
     className = '',
     title = '',
     tooltip = null,
@@ -37,14 +39,16 @@ const Button = ({
         active && styles.active,
         isIconOnly && styles.iconOnly,
         round && styles.round, // Support for round prop
+        loading && styles.loading,
         className
     ].filter(Boolean).join(' ');
 
     const content = (
         <>
-            {icon && <span className={styles.icon}>{icon}</span>}
+            {loading && <Loading size="sm" variant="inline" className={styles.spinner} />}
+            {!loading && icon && <span className={styles.icon}>{icon}</span>}
             {children && <span className={styles.content}>{children}</span>}
-            {iconRight && <span className={styles.icon}>{iconRight}</span>}
+            {!loading && iconRight && <span className={styles.icon}>{iconRight}</span>}
         </>
     );
 
@@ -55,7 +59,13 @@ const Button = ({
         className: combinedClassName,
         title,
         'data-tooltip': tooltip,
-        onClick,
+        onClick: (e) => {
+            if (disabled || loading) {
+                e.preventDefault();
+                return;
+            }
+            if (onClick) onClick(e);
+        },
         ...rest
     };
 
@@ -76,10 +86,10 @@ const Button = ({
     }
 
     return (
-        <button type={type} disabled={disabled} {...elementProps}>
+        <button type={type} disabled={disabled || loading} {...elementProps}>
             {content}
         </button>
     );
-};
+});
 
-export default React.memo(Button);
+
