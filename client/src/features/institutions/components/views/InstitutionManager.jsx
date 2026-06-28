@@ -4,7 +4,7 @@ import InstitutionFormModal from '@/features/institutions/components/forms/Insti
 import Icon from '@/components/atoms/Icon';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import styles from './InstitutionManager.module.css';
 
 const InstitutionManager = ({

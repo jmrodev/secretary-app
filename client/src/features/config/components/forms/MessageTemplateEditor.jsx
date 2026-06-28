@@ -1,6 +1,6 @@
 import React from 'react';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import ConfigField from '@/features/config/components/ui/ConfigField';
 import styles from './MessageTemplateEditor.module.css';
 

@@ -2,7 +2,7 @@ import React from 'react';
 import Pagination from '@/components/atoms/Pagination';
 import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import RequirementItem from '@/features/medical_documents/components/sections/RequirementItem';
 
 const MedicalRequirementTable = ({

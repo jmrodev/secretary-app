@@ -13,7 +13,7 @@ import {
 // Atomic Components
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
 import FormGroup from '@/components/molecules/FormGroup';

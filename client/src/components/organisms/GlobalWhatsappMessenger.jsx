@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import api from '@/api/axios';
 import Icon from '@/components/atoms/Icon';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import WhatsappChatHistory from '@/features/patients/components/views/WhatsappChatHistory';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import WhatsappInbox from '../molecules/WhatsappInbox';

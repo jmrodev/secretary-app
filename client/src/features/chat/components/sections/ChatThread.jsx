@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
 import ChatMessageBubble from '@/features/chat/components/ui/ChatMessageBubble';
 import { useLanguage } from '@/hooks/useLanguage';

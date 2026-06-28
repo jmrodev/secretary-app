@@ -3,7 +3,7 @@ import { useAppointmentsPageController } from './hooks/useAppointmentsPageContro
 import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 
 // Feature Components
 import CalendarSection from './components/calendar/CalendarSection';

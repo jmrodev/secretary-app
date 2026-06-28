@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import StatusIndicator from '@/components/atoms/StatusIndicator';
 import ConfigToggle from '@/features/config/components/ui/ConfigToggle';

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import MedicationAutocomplete from '@/features/medical_documents/components/ui/MedicationAutocomplete';
 import PrescriptionItemsList from '@/features/medical_documents/components/lists/PrescriptionItemsList';
 

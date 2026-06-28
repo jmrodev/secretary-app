@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Switch from '@/components/atoms/Switch';
 import { formatDate } from '@/utils/core/dateUtils';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 
 import styles from './DoctorScheduleSettings.module.css';
 

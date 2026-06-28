@@ -1,7 +1,7 @@
 import React from 'react';
 import AsyncSelect from 'react-select/async';
 import { patientService } from '@/features/patients/services/patientService';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PatientSearchSelect.module.css';
 

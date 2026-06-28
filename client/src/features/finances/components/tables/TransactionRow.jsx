@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Badge from '@/components/atoms/Badge';
 import InvoiceDetailContent from '@/features/finances/components/sections/InvoiceDetailContent';

@@ -2,7 +2,7 @@ import React from 'react';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import FormGroup from '@/components/molecules/FormGroup';
 import { getMonthsOptions } from '@/utils/core/dateUtils';
 import styles from './FinanceFilters.module.css';

@@ -1,6 +1,6 @@
 import React from 'react';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
 import Input from '@/components/atoms/Input';
