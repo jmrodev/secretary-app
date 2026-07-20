@@ -104,7 +104,7 @@
     font-size: 0.85rem;
     color: #374151;
     white-space: pre-wrap;
-    word-break: break-word;
+    overflow-wrap: anywhere;
     line-height: 1.5;
     position: relative;
 }
