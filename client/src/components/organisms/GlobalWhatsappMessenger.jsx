@@ -7,6 +7,7 @@ import { useDoctors } from '@/context/DoctorContextDefinition';
 import WhatsappInbox from '../molecules/WhatsappInbox';
 import WhatsappPairing from '../molecules/WhatsappPairing';
 import WhatsappChatPlaceholder from '../molecules/WhatsappChatPlaceholder';
+import { WhatsappBroadcast } from '../molecules/WhatsappBroadcast';
 import styles from './GlobalWhatsappMessenger.module.css';
 
 /**
@@ -20,6 +21,7 @@ import styles from './GlobalWhatsappMessenger.module.css';
  */
 const initialState = {
     isOpen: false,
+    activeTab: 'inbox',
     activeChat: null,
     conversations: [],
     loading: false,
@@ -30,6 +32,7 @@ const initialState = {
 function messengerReducer(state, action) {
     switch (action.type) {
         case 'SET_OPEN': return { ...state, isOpen: action.payload };
+        case 'SET_TAB': return { ...state, activeTab: action.payload, activeChat: null };
         case 'SET_ACTIVE_CHAT': return { ...state, activeChat: action.payload };
         case 'SET_CONVERSATIONS': return { ...state, conversations: action.payload };
         case 'SET_LOADING': return { ...state, loading: action.payload };
@@ -43,7 +46,7 @@ function messengerReducer(state, action) {
 const GlobalWhatsappMessenger = ({ t }) => {
     const { viewDoctorId, doctorDisplayName } = useDoctors();
     const [state, dispatch] = React.useReducer(messengerReducer, initialState);
-    const { isOpen, activeChat, conversations, loading, bridgeStatus, statusLoading } = state;
+    const { isOpen, activeTab, activeChat, conversations, loading, bridgeStatus, statusLoading } = state;
 
     const setIsOpen = (val) => dispatch({ type: 'SET_OPEN', payload: val });
     const setActiveChat = (val) => dispatch({ type: 'SET_ACTIVE_CHAT', payload: val });
@@ -153,6 +156,26 @@ const GlobalWhatsappMessenger = ({ t }) => {
     return (
         <aside className={`${styles.root} ${styles.animateSlideUp} ${activeChat ? styles.chatActive : ''}`}>
             {/* Sidebar: Conversations List */}
+            {/* Tab bar - Inbox / Broadcast */}
+            <div className={styles.tabBar}>
+                <button
+                    id="wa-tab-inbox"
+                    className={`${styles.tab} ${activeTab === 'inbox' ? styles.tabActive : ''}`}
+                    onClick={() => dispatch({ type: 'SET_TAB', payload: 'inbox' })}
+                >
+                    <Icon name="forum" size="1rem" />
+                    {t('inbox_tab')}
+                </button>
+                <button
+                    id="wa-tab-broadcast"
+                    className={`${styles.tab} ${activeTab === 'broadcast' ? styles.tabActive : ''}`}
+                    onClick={() => dispatch({ type: 'SET_TAB', payload: 'broadcast' })}
+                >
+                    <Icon name="campaign" size="1rem" />
+                    {t('broadcast_tab')}
+                </button>
+            </div>
+
             <WhatsappInbox 
                 conversations={conversations}
                 activeChat={activeChat}
@@ -221,19 +244,21 @@ const GlobalWhatsappMessenger = ({ t }) => {
 
                 <div className={`${styles.chatContent}`}>
                     {bridgeStatus.status !== 'connected' ? (
-                        <WhatsappPairing 
+                        <WhatsappPairing
                             bridgeStatus={bridgeStatus}
                             onRefresh={fetchStatus}
                             statusLoading={statusLoading}
                             t={t}
                         />
+                    ) : activeTab === 'broadcast' ? (
+                        <WhatsappBroadcast t={t} />
                     ) : activeChat ? (
                         <div className={`${styles.chatWrapper}`}>
-                            <WhatsappChatHistory 
-                                patientId={activeChat.patientId} 
+                            <WhatsappChatHistory
+                                patientId={activeChat.patientId}
                                 phone={activeChat.phone}
-                                t={t} 
-                                hideHeader={true} 
+                                t={t}
+                                hideHeader={true}
                             />
                         </div>
                     ) : (

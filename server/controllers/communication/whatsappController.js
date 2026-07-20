@@ -2,6 +2,7 @@ const whatsappService = require('../../services/communication/whatsappService');
 const whatsappAiService = require('../../services/communication/whatsappAiService');
 const whatsappRepository = require('../../repositories/communication/whatsappRepository');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
+const defaultPool = require('../../db').pool;
 
 /**
  * ECC-Pattern: WhatsAppController
@@ -119,7 +120,61 @@ const getBridgeStatus = async (req, res) => {
     } catch (error) { res.status(500).json({ error: error.message }); }
 };
 
+const _getPatientsForBroadcast = async (filter) => {
+    if (filter === 'all') {
+        return await defaultPool.query(
+            `SELECT id, full_name, phone FROM patients
+             WHERE phone IS NOT NULL AND phone != '' AND LENGTH(phone) >= 8`
+        );
+    }
+    // Default: last_12_months
+    return await defaultPool.query(
+        `SELECT DISTINCT p.id, p.full_name, p.phone
+         FROM patients p
+         INNER JOIN appointments a ON a.patient_id = p.id
+         WHERE a.appointment_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+           AND p.phone IS NOT NULL AND p.phone != ''
+           AND LENGTH(p.phone) >= 8`
+    );
+};
+
+const broadcastPreview = async (req, res) => {
+    try {
+        const { filter = 'last_12_months' } = req.body;
+        const patients = await _getPatientsForBroadcast(filter);
+        res.json({ success: true, count: patients.length });
+    } catch (error) {
+        console.error('[Broadcast Preview Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const broadcastDirect = async (req, res) => {
+    const { message, filter = 'last_12_months', delayMs = 4000 } = req.body;
+    if (!message?.trim()) return res.status(400).json({ error: 'Message is required' });
+
+    const patients = await _getPatientsForBroadcast(filter);
+    if (patients.length === 0) return res.json({ message: 'No patients found', results: { success: [], failed: [] } });
+
+    const results = { success: [], failed: [] };
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    for (const patient of patients) {
+        const personalizedMessage = message.replace(/\{patient_name\}/gi, patient.full_name || patient.phone);
+        try {
+            await whatsappService.sendMessageDirect(patient.phone, personalizedMessage, patient.id);
+            results.success.push({ phone: patient.phone, name: patient.full_name });
+        } catch (error) {
+            console.error(`[Broadcast] Failed for ${patient.phone}:`, error.message);
+            results.failed.push({ phone: patient.phone, name: patient.full_name, error: error.message });
+        }
+        await sleep(Number(delayMs) || 4000);
+    }
+
+    res.json({ message: 'Broadcast complete', results });
+};
+
 module.exports = {
-    sendMessage, broadcastMessage, testConnection, sendDirectMessage,
+    sendMessage, broadcastMessage, broadcastDirect, broadcastPreview, testConnection, sendDirectMessage,
     receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion
 };
