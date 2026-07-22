@@ -72,7 +72,9 @@ export const WhatsappBroadcast = ({ t }) => {
     }, []);
 
     React.useEffect(() => {
-        fetchCount(filter, month, year, maxLimit);
+        queueMicrotask(() => {
+            fetchCount(filter, month, year, maxLimit);
+        });
     }, [filter, month, year, maxLimit, fetchCount]);
 
     const handleFilterChange = (e) => {
