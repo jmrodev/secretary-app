@@ -26,7 +26,7 @@ export const LoginScreen = ({ onLoginSuccess }) => {
 
         setLoading(true);
         try {
-            const data = await apiFetch('/users/login', {
+            const data = await apiFetch('/auth/login', {
                 method: 'POST',
                 body: JSON.stringify({ username, password }),
             });

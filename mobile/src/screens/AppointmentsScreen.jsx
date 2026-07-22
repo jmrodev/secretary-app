@@ -7,26 +7,69 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     RefreshControl,
-    SafeAreaView
+    SafeAreaView,
+    Modal,
+    ScrollView,
+    Linking,
+    Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiFetch } from '../services/api';
 
 export const AppointmentsScreen = ({ onLogout }) => {
+    const [selectedDate, setSelectedDate] = useState(new Date());
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [stats, setStats] = useState({ total: 0, attended: 0, pending: 0 });
+    const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [patientDetails, setPatientDetails] = useState(null);
+    const [loadingPatientDetails, setLoadingPatientDetails] = useState(false);
 
-    const fetchDailyAppointments = async () => {
+    useEffect(() => {
+        const fetchPatientDetails = async () => {
+            if (!selectedAppointment?.patient_id) {
+                setPatientDetails(null);
+                return;
+            }
+            setLoadingPatientDetails(true);
+            try {
+                const data = await apiFetch(`/users/patients/${selectedAppointment.patient_id}`);
+                setPatientDetails(data?.data || data);
+            } catch (err) {
+                console.warn('Error fetching patient details:', err);
+                setPatientDetails(null);
+            } finally {
+                setLoadingPatientDetails(false);
+            }
+        };
+
+        fetchPatientDetails();
+    }, [selectedAppointment]);
+
+    const changeDate = (days) => {
+        const next = new Date(selectedDate);
+        next.setDate(next.getDate() + days);
+        setSelectedDate(next);
+    };
+
+    const fetchDailyAppointments = async (dateObj = selectedDate) => {
         try {
-            const today = new Date().toISOString().split('T')[0];
-            const data = await apiFetch(`/appointments?date=${today}`);
+            setLoading(true);
+            const userInfoRaw = await AsyncStorage.getItem('user_info');
+            const userInfo = userInfoRaw ? JSON.parse(userInfoRaw) : null;
+            const doctorId = userInfo?.doctor_id || userInfo?.profile_id || 10;
 
-            const list = Array.isArray(data) ? data : (data.appointments || []);
+            const formattedDate = dateObj.toISOString().split('T')[0];
+            const data = await apiFetch(`/appointments/daily-schedule?date=${formattedDate}&doctorId=${doctorId}`);
+
+            const rawList = data?.data || data?.schedule || data || [];
+            const list = Array.isArray(rawList)
+                ? rawList.filter(item => item.patient_name && item.patient_name !== 'Desconocido' && !item.patient_name.includes('(Sin Paciente)'))
+                : [];
             setAppointments(list);
 
-            const attended = list.filter(a => a.status === 'attended' || a.status === 'completado').length;
+            const attended = list.filter(a => a.status === 'attended' || a.status === 'completado' || a.status === 'completed').length;
             setStats({
                 total: list.length,
                 attended,
@@ -41,37 +84,113 @@ export const AppointmentsScreen = ({ onLogout }) => {
     };
 
     useEffect(() => {
-        fetchDailyAppointments();
-    }, []);
+        fetchDailyAppointments(selectedDate);
+    }, [selectedDate]);
 
     const onRefresh = () => {
         setRefreshing(true);
-        fetchDailyAppointments();
+        fetchDailyAppointments(selectedDate);
     };
 
     const handleLogout = async () => {
-        await AsyncStorage.removeItem('user_token');
-        await AsyncStorage.removeItem('user_info');
-        onLogout();
+        Alert.alert(
+            'Cerrar Sesión',
+            '¿Estás seguro/a de que querés salir de la aplicación?',
+            [
+                { text: 'Cancelar', style: 'cancel' },
+                {
+                    text: 'Salir',
+                    style: 'destructive',
+                    onPress: async () => {
+                        await AsyncStorage.removeItem('user_token');
+                        await AsyncStorage.removeItem('user_info');
+                        onLogout();
+                    }
+                }
+            ]
+        );
+    };
+
+    const handleConfirmCall = (phone, patientName) => {
+        Alert.alert(
+            'Confirmar Llamada',
+            `¿Querés llamar por teléfono a ${patientName || 'este paciente'} (${phone})?`,
+            [
+                { text: 'Cancelar', style: 'cancel' },
+                {
+                    text: 'Llamar',
+                    onPress: () => Linking.openURL(`tel:${phone}`)
+                }
+            ]
+        );
+    };
+
+    const handleConfirmWhatsApp = (phone, patientName) => {
+        Alert.alert(
+            'Confirmar WhatsApp',
+            `¿Querés abrir un chat de WhatsApp con ${patientName || 'este paciente'}?`,
+            [
+                { text: 'Cancelar', style: 'cancel' },
+                {
+                    text: 'Abrir WhatsApp',
+                    onPress: () => {
+                        const cleanPhone = phone.replace(/\D/g, '');
+                        Linking.openURL(`https://wa.me/${cleanPhone}`);
+                    }
+                }
+            ]
+        );
+    };
+
+    // Gestos de swipe (deslizar a izquierda / derecha)
+    let touchStartX = 0;
+
+    const handleTouchStart = (e) => {
+        touchStartX = e.nativeEvent.pageX;
+    };
+
+    const handleTouchEnd = (e) => {
+        const touchEndX = e.nativeEvent.pageX;
+        const diffX = touchEndX - touchStartX;
+
+        // Sensibilidad del swipe: más de 50px
+        if (diffX < -50) {
+            changeDate(1); // Deslizar a la izquierda -> Día Siguiente
+        } else if (diffX > 50) {
+            changeDate(-1); // Deslizar a la derecha -> Día Anterior
+        }
     };
 
     const renderAppointmentItem = ({ item }) => {
-        const isAttended = item.status === 'attended' || item.status === 'completado';
+        const isAttended = item.status === 'attended' || item.status === 'completado' || item.status === 'completed';
+
+        // Extraer hora formateada (HH:mm)
+        let formattedTime = '09:00';
+        if (item.slot_time) {
+            formattedTime = item.slot_time.substring(0, 5);
+        } else if (item.appointment_date) {
+            const d = new Date(item.appointment_date);
+            formattedTime = !isNaN(d) ? d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false }) : '09:00';
+        } else if (item.time || item.appointment_time) {
+            formattedTime = (item.time || item.appointment_time).substring(0, 5);
+        }
+
+        const displayName = item.patient_name || item.patientName;
 
         return (
-            <View style={styles.card}>
+            <TouchableOpacity style={styles.card} onPress={() => setSelectedAppointment({ ...item, formattedTime })}>
                 <View style={styles.timeBadge}>
-                    <Text style={styles.timeText}>{item.time || item.appointment_time || '09:00'}</Text>
+                    <Text style={styles.timeText}>{formattedTime}</Text>
                 </View>
 
                 <View style={styles.infoContainer}>
-                    <Text style={styles.patientName}>{item.patient_name || item.patientName || 'Paciente'}</Text>
+                    <Text style={styles.patientName}>{displayName}</Text>
                     <Text style={styles.detailText}>
-                        Obra Social: {item.health_insurance || item.healthInsurance || 'Particular'}
+                        Teléfono: {item.patient_phone || item.phone || '-'}
                     </Text>
-                    {item.notes ? (
+                    {item.reason && item.reason !== '-' ? (
                         <Text style={styles.notesText} numberOfLines={2}>
-                            Nota: {item.notes}
+                            Motivo: {item.reason}
                         </Text>
                     ) : null}
                 </View>
@@ -81,22 +200,95 @@ export const AppointmentsScreen = ({ onLogout }) => {
                         {isAttended ? 'Atendido' : 'Pendiente'}
                     </Text>
                 </View>
-            </View>
+            </TouchableOpacity>
         );
     };
 
+    // Generar días de la semana actual
+    const getWeekDays = () => {
+        const startOfWeek = new Date(selectedDate);
+        const day = startOfWeek.getDay();
+        const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Lunes como primer día
+        startOfWeek.setDate(diff);
+
+        const days = [];
+        for (let i = 0; i < 7; i++) {
+            const d = new Date(startOfWeek);
+            d.setDate(d.getDate() + i);
+            days.push(d);
+        }
+        return days;
+    };
+
+    const weekDays = getWeekDays();
+
     return (
-        <SafeAreaView style={styles.safeArea}>
+        <SafeAreaView
+            style={styles.safeArea}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+        >
             <View style={styles.header}>
-                <View>
-                    <Text style={styles.headerTitle}>Turnos de Hoy 📅</Text>
+                <TouchableOpacity style={styles.navButton} onPress={() => changeDate(-7)}>
+                    <Text style={styles.navButtonText}>◀◀</Text>
+                </TouchableOpacity>
+
+                <View style={styles.headerTitleContainer}>
+                    <Text style={styles.headerTitle}>
+                        {selectedDate.toDateString() === new Date().toDateString() ? 'Turnos de Hoy 📅' : 'Agenda Médica 📅'}
+                    </Text>
                     <Text style={styles.headerSubtitle}>
-                        {new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                        {selectedDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' })}
                     </Text>
                 </View>
+
+                <TouchableOpacity style={styles.navButton} onPress={() => changeDate(7)}>
+                    <Text style={styles.navButtonText}>▶▶</Text>
+                </TouchableOpacity>
+
                 <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
                     <Text style={styles.logoutText}>Salir</Text>
                 </TouchableOpacity>
+            </View>
+
+            {/* Barra Interactiva de Calendario Semanal */}
+            <View style={styles.calendarBar}>
+                {weekDays.map((d, idx) => {
+                    const isSelected = d.toDateString() === selectedDate.toDateString();
+                    const isToday = d.toDateString() === new Date().toDateString();
+                    const dayName = d.toLocaleDateString('es-AR', { weekday: 'narrow' });
+                    const dayNum = d.getDate();
+
+                    return (
+                        <TouchableOpacity
+                            key={idx}
+                            style={[
+                                styles.calendarDayBox,
+                                isToday && styles.calendarDayBoxToday,
+                                isSelected && styles.calendarDayBoxSelected
+                            ]}
+                            onPress={() => setSelectedDate(d)}
+                        >
+                            <Text style={[
+                                styles.calendarDayName,
+                                isToday && !isSelected && styles.calendarTextToday,
+                                isSelected && styles.calendarTextSelected
+                            ]}>
+                                {dayName}
+                            </Text>
+                            <Text style={[
+                                styles.calendarDayNum,
+                                isToday && !isSelected && styles.calendarTextToday,
+                                isSelected && styles.calendarTextSelected
+                            ]}>
+                                {dayNum}
+                            </Text>
+                            {isToday ? (
+                                <View style={[styles.todayIndicatorDot, isSelected && styles.todayIndicatorDotSelected]} />
+                            ) : null}
+                        </TouchableOpacity>
+                    );
+                })}
             </View>
 
             {/* Resumen de estadísticas */}
@@ -137,6 +329,145 @@ export const AppointmentsScreen = ({ onLogout }) => {
                     }
                 />
             )}
+
+            {/* Modal de Detalle de Turno */}
+            <Modal
+                visible={!!selectedAppointment}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setSelectedAppointment(null)}
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalHeader}>
+                            <Text style={styles.modalTitle}>Detalle del Turno</Text>
+                            <TouchableOpacity onPress={() => setSelectedAppointment(null)}>
+                                <Text style={styles.modalCloseText}>✕</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                        {selectedAppointment && (
+                            <ScrollView style={styles.modalBody}>
+                                <View style={styles.detailRow}>
+                                    <Text style={styles.detailLabel}>Paciente:</Text>
+                                    <Text style={styles.detailValueBold}>{selectedAppointment.patient_name || selectedAppointment.patientName || 'Sin Nombre'}</Text>
+                                </View>
+
+                                <View style={styles.detailRow}>
+                                    <Text style={styles.detailLabel}>Horario:</Text>
+                                    <Text style={styles.detailValue}>{selectedAppointment.formattedTime || '09:00'} hs</Text>
+                                </View>
+
+                                <View style={styles.detailRow}>
+                                    <Text style={styles.detailLabel}>Estado:</Text>
+                                    <Text style={[styles.detailValue, { textTransform: 'capitalize', fontWeight: 'bold' }]}>
+                                        {selectedAppointment.status || 'Pendiente'}
+                                    </Text>
+                                </View>
+
+                                <View style={styles.detailRow}>
+                                    <Text style={styles.detailLabel}>Teléfono:</Text>
+                                    <Text style={styles.detailValue}>{selectedAppointment.patient_phone || selectedAppointment.phone || '-'}</Text>
+                                </View>
+
+                                {selectedAppointment.reason ? (
+                                    <View style={styles.detailBlock}>
+                                        <Text style={styles.detailLabel}>Motivo de consulta:</Text>
+                                        <Text style={styles.detailBlockText}>{selectedAppointment.reason}</Text>
+                                    </View>
+                                ) : null}
+
+                                {/* Sección Finanzas y Visitas del Paciente */}
+                                <View style={styles.sectionHeader}>
+                                    <Text style={styles.sectionTitle}>💳 Estado Financiero & Visitas</Text>
+                                </View>
+
+                                <View style={styles.detailRow}>
+                                    <Text style={styles.detailLabel}>Visitas Realizadas:</Text>
+                                    <Text style={styles.detailValueBold}>
+                                        {patientDetails?.stats?.attended || patientDetails?.accumulated_days || 0} asistencias
+                                    </Text>
+                                </View>
+
+                                <View style={styles.detailRow}>
+                                    <Text style={styles.detailLabel}>Costo del Turno:</Text>
+                                    <Text style={styles.detailValue}>${Number(selectedAppointment.cost || 65000).toLocaleString('es-AR')}</Text>
+                                </View>
+
+                                <View style={styles.detailRow}>
+                                    <Text style={styles.detailLabel}>Estado de Pago:</Text>
+                                    <Text style={[styles.detailValue, { color: selectedAppointment.is_paid ? '#16a34a' : '#ea580c', fontWeight: 'bold' }]}>
+                                        {selectedAppointment.is_paid ? 'Pagado ✅' : `Pendiente (${selectedAppointment.payment_status || 'Pendiente'}) ⚠️`}
+                                    </Text>
+                                </View>
+
+                                {patientDetails?.total_debt > 0 ? (
+                                    <View style={[styles.detailRow, styles.debtHighlightRow]}>
+                                        <Text style={[styles.detailLabel, { color: '#dc2626' }]}>Deuda Total Paciente:</Text>
+                                        <Text style={[styles.detailValueBold, { color: '#dc2626' }]}>
+                                            ${Number(patientDetails.total_debt).toLocaleString('es-AR')}
+                                        </Text>
+                                    </View>
+                                ) : null}
+
+                                {/* Sección Medicación Habitual */}
+                                <View style={styles.sectionHeader}>
+                                    <Text style={styles.sectionTitle}>💊 Medicación Habitual</Text>
+                                </View>
+
+                                {loadingPatientDetails ? (
+                                    <ActivityIndicator size="small" color="#2563eb" style={{ marginVertical: 10 }} />
+                                ) : (patientDetails?.prescriptions && patientDetails.prescriptions.length > 0) ? (
+                                    <View style={styles.medicationList}>
+                                        {patientDetails.prescriptions.map((med, idx) => (
+                                            <View key={idx} style={styles.medicationCard}>
+                                                <Text style={styles.medicationName}>• {med.medication_name || med.medication || med.name || 'Medicamento'}</Text>
+                                                {med.dosage ? <Text style={styles.medicationDetail}>Dosis: {med.dosage}</Text> : null}
+                                                {med.frequency ? <Text style={styles.medicationDetail}>Frecuencia: {med.frequency}</Text> : null}
+                                            </View>
+                                        ))}
+                                    </View>
+                                ) : (
+                                    <Text style={styles.emptySubText}>No hay medicación registrada para este paciente.</Text>
+                                )}
+
+                                {(selectedAppointment.patient_phone || selectedAppointment.phone) ? (
+                                    <View style={styles.actionButtonsRow}>
+                                        <TouchableOpacity
+                                            style={styles.callButton}
+                                            onPress={() => {
+                                                const phone = selectedAppointment.patient_phone || selectedAppointment.phone;
+                                                const name = selectedAppointment.patient_name || selectedAppointment.patientName;
+                                                handleConfirmCall(phone, name);
+                                            }}
+                                        >
+                                            <Text style={styles.actionButtonText}>📞 Llamar</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={styles.wsButton}
+                                            onPress={() => {
+                                                const phone = selectedAppointment.patient_phone || selectedAppointment.phone;
+                                                const name = selectedAppointment.patient_name || selectedAppointment.patientName;
+                                                handleConfirmWhatsApp(phone, name);
+                                            }}
+                                        >
+                                            <Text style={styles.actionButtonText}>💬 WhatsApp</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ) : null}
+                            </ScrollView>
+                        )}
+
+                        <TouchableOpacity
+                            style={styles.modalCloseButton}
+                            onPress={() => setSelectedAppointment(null)}
+                        >
+                            <Text style={styles.modalCloseButtonText}>Cerrar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };
@@ -157,16 +488,87 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#e2e8f0',
     },
+    headerTitleContainer: {
+        alignItems: 'center',
+        flex: 1,
+    },
     headerTitle: {
-        fontSize: 22,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#0f172a',
     },
     headerSubtitle: {
-        fontSize: 13,
+        fontSize: 12,
         color: '#64748b',
         textTransform: 'capitalize',
         marginTop: 2,
+    },
+    navButton: {
+        paddingHorizontal: 10,
+        paddingVertical: 8,
+        backgroundColor: '#f1f5f9',
+        borderRadius: 8,
+        marginHorizontal: 4,
+    },
+    navButtonText: {
+        fontSize: 16,
+        color: '#2563eb',
+        fontWeight: 'bold',
+    },
+    calendarBar: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        backgroundColor: '#ffffff',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e2e8f0',
+    },
+    calendarDayBox: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        borderRadius: 10,
+        backgroundColor: '#f8fafc',
+        minWidth: 42,
+    },
+    calendarDayBoxSelected: {
+        backgroundColor: '#2563eb',
+    },
+    calendarDayBoxToday: {
+        backgroundColor: '#dbeafe',
+        borderWidth: 2,
+        borderColor: '#2563eb',
+    },
+    calendarTextToday: {
+        color: '#1e40af',
+        fontWeight: 'bold',
+    },
+    todayIndicatorDot: {
+        width: 6,
+        height: 6,
+        borderRadius: 3,
+        backgroundColor: '#2563eb',
+        marginTop: 4,
+    },
+    todayIndicatorDotSelected: {
+        backgroundColor: '#ffffff',
+    },
+    calendarDayName: {
+        fontSize: 12,
+        color: '#64748b',
+        fontWeight: '600',
+        textTransform: 'uppercase',
+    },
+    calendarDayNum: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#0f172a',
+        marginTop: 2,
+    },
+    calendarTextSelected: {
+        color: '#ffffff',
     },
     logoutButton: {
         paddingHorizontal: 12,
@@ -301,5 +703,152 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: '#94a3b8',
         marginTop: 4,
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(15, 23, 42, 0.6)',
+        justifyContent: 'flex-end',
+    },
+    modalContent: {
+        backgroundColor: '#ffffff',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        padding: 20,
+        maxHeight: '80%',
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e2e8f0',
+        paddingBottom: 14,
+        marginBottom: 16,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#0f172a',
+    },
+    modalCloseText: {
+        fontSize: 20,
+        color: '#64748b',
+        fontWeight: 'bold',
+        padding: 4,
+    },
+    modalBody: {
+        marginBottom: 16,
+    },
+    detailRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f1f5f9',
+    },
+    detailLabel: {
+        fontSize: 14,
+        color: '#64748b',
+        fontWeight: '600',
+    },
+    detailValue: {
+        fontSize: 14,
+        color: '#1e293b',
+    },
+    detailValueBold: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#0f172a',
+    },
+    detailBlock: {
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f1f5f9',
+    },
+    detailBlockText: {
+        fontSize: 14,
+        color: '#334155',
+        marginTop: 4,
+        fontStyle: 'italic',
+    },
+    sectionHeader: {
+        marginTop: 16,
+        marginBottom: 8,
+        paddingBottom: 4,
+        borderBottomWidth: 1,
+        borderBottomColor: '#cbd5e1',
+    },
+    sectionTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#1e293b',
+    },
+    debtHighlightRow: {
+        backgroundColor: '#fef2f2',
+        paddingHorizontal: 8,
+        borderRadius: 6,
+    },
+    medicationList: {
+        marginVertical: 6,
+        gap: 6,
+    },
+    medicationCard: {
+        backgroundColor: '#f8fafc',
+        padding: 8,
+        borderRadius: 6,
+        borderLeftWidth: 3,
+        borderLeftColor: '#2563eb',
+    },
+    medicationName: {
+        fontSize: 13,
+        fontWeight: 'bold',
+        color: '#0f172a',
+    },
+    medicationDetail: {
+        fontSize: 12,
+        color: '#64748b',
+        marginTop: 2,
+    },
+    emptySubText: {
+        fontSize: 13,
+        color: '#94a3b8',
+        fontStyle: 'italic',
+        marginVertical: 6,
+    },
+    actionButtonsRow: {
+        flexDirection: 'row',
+        gap: 12,
+        marginTop: 18,
+    },
+    callButton: {
+        flex: 1,
+        backgroundColor: '#2563eb',
+        paddingVertical: 12,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    wsButton: {
+        flex: 1,
+        backgroundColor: '#16a34a',
+        paddingVertical: 12,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    actionButtonText: {
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: 14,
+    },
+    modalCloseButton: {
+        backgroundColor: '#f1f5f9',
+        paddingVertical: 12,
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    modalCloseButtonText: {
+        color: '#475569',
+        fontWeight: 'bold',
+        fontSize: 14,
     },
 });
