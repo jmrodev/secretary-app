@@ -54,13 +54,13 @@ const PageHeader = ({
                 {/* UTILITIES ROW: Search + Clock + Stats + Actions */}
                 <div className={`${styles.utilities}`}>
                     <div className={`${styles.searchContainer}`}>
-                        <Icon name="SEARCH" size="1rem" className={`${styles.searchIcon}`} />
+                        <Icon name="search" size="1rem" className={`${styles.searchIcon}`} />
                         <Input
                             type="text"
                             className={`${styles.searchInput}`}
                             placeholder={labels.searchPlaceholder}
                             value={searchTerm}
-                            onChange={(e) => onSearchChange(e.target.value)}
+                            onChange={(e) => onSearchChange(e?.target ? e.target.value : e)}
                         />
                     </div>
 

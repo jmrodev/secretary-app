@@ -58,6 +58,7 @@
     height: auto;
     min-height: 60px;
     background: transparent;
+    z-index: 50;
     display: flex;
     align-items: center;
     margin-bottom: 0.25rem;
@@ -72,7 +73,7 @@
 /* Modifier Context for Content */
 .premium .content {
     position: relative;
-    z-index: 2;
+    z-index: 50;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

@@ -12,11 +12,5 @@ export const capitalizeFirst = (value = '') => {
 
 export const capitalizeWords = (value = '') => {
     if (!value) return '';
-    return value
-        .split(' ')
-        .reduce((acc, word) => {
-            if (!word) return acc;
-            const capitalized = capitalizeFirst(word);
-            return acc ? `${acc} ${capitalized}` : capitalized;
-        }, '');
+    return value.replace(/(^|\s)\S/g, (match) => match.toUpperCase());
 };

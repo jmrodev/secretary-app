@@ -75,36 +75,36 @@ const PatientForm = ({
     const stepContents = {
         personal: (
             <section className={`${styles.stepContent}`}>
-                <PatientIdentityFields formData={formData} handleChange={updatePatientData} t={t} />
-                {!isEdit && <PatientAccountFields formData={formData} handleChange={updatePatientData} t={t} />}
+                <PatientIdentityFields formData={formData} updatePatientData={updatePatientData} t={t} />
+                {!isEdit && <PatientAccountFields formData={formData} updatePatientData={updatePatientData} t={t} />}
             </section>
         ),
         insurance: (
             <section className={`${styles.stepContent}`}>
-                <PatientInsuranceFields formData={formData} handleChange={updatePatientData} insurances={insurances} t={t} />
+                <PatientInsuranceFields formData={formData} updatePatientData={updatePatientData} insurances={insurances} t={t} />
             </section>
         ),
         address: (
             <section className={`${styles.stepContent}`}>
-                <PatientAddressFields formData={formData} handleChange={updatePatientData} t={t} />
+                <PatientAddressFields formData={formData} updatePatientData={updatePatientData} t={t} />
             </section>
         ),
         contact: (
             <section className={`${styles.stepContent}`}>
-                <PatientContactFields formData={formData} handleChange={updatePatientData} handlePhoneChange={updatePhoneNumbers} t={t} />
+                <PatientContactFields formData={formData} updatePatientData={updatePatientData} updatePhoneNumbers={updatePhoneNumbers} t={t} />
             </section>
         ),
         medical: (
             <section className={`${styles.stepContent}`}>
                 <PatientInstitutionFields
                     coveredByInstitution={coveredByInstitution}
-                    handleInstitutionToggle={toggleInstitutionCoverage}
+                    toggleInstitutionCoverage={toggleInstitutionCoverage}
                     formData={formData}
-                    handleChange={updatePatientData}
+                    updatePatientData={updatePatientData}
                     institutions={institutions}
                     t={t}
                 />
-                <PatientMedicalNotes formData={formData} handleChange={updatePatientData} t={t} />
+                <PatientMedicalNotes formData={formData} updatePatientData={updatePatientData} t={t} />
             </section>
         ),
         admin: (
