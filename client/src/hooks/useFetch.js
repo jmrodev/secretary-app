@@ -46,7 +46,10 @@ export const useFetch = (url, options = {}) => {
                 execute();
             });
         } else if (!immediate && loading) {
-            setLoading(false);
+            queueMicrotask(() => {
+                if (!isMounted) return;
+                setLoading(false);
+            });
         }
         return () => { isMounted = false; };
     }, [url, paramsKey, immediate, execute]);
