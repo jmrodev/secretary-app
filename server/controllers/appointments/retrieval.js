@@ -10,7 +10,7 @@ const sendResponse = (res, success, data, error = null, status = 200) => {
 exports.getAppointments = async (req, res) => {
     try {
         const rawSearch = req.query.search?.trim();
-        const patientId = req.params.patientId || req.body?.patientId;
+        const patientId = req.body?.patientId;
 
         if (!patientId && (!rawSearch || rawSearch.length < 2)) {
             return sendResponse(res, true, []);

@@ -7,8 +7,8 @@ const schemas = require('../../validators/appointmentSchemas');
 
 router.get('/next-free', verifyToken, appointmentController.getNextFreeSlot);
 router.get('/next-free-batch', verifyToken, appointmentController.getFreeSlotsBatch);
-router.get('/patient/:patientId', verifyToken, appointmentController.getAppointments);
 router.get('/', verifyToken, appointmentController.getAppointments);
+router.post('/query', verifyToken, appointmentController.getAppointments);
 router.post('/', verifyToken, validate(schemas.createAppointment), appointmentController.createAppointment);
 router.put('/:id', verifyToken, appointmentController.updateAppointment);
 router.put('/:id/status', verifyToken, validate(schemas.updateStatus), appointmentController.updateStatus);
