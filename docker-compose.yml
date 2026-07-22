@@ -65,7 +65,7 @@ services:
       - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - GEMINI_CLI_TRUST_WORKSPACE=true
-      - WHATSAPP_BRIDGE_URL=http://whatsapp-bridge:8090/api/send
+      - WHATSAPP_BRIDGE_BASE_URL=http://whatsapp-bridge:8090
       - WHATSAPP_BRIDGE_STATUS_URL=http://whatsapp-bridge:8090/api/status
     volumes:
       - ./server:/app

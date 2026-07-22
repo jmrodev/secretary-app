@@ -28,20 +28,20 @@ const CashMonitorCard = ({ stats, t }) => {
                     <div className={styles.statLabel}>{t('current_cash') || 'Efectivo en Caja'}</div>
                 </div>
                 
-                <div className={styles.statItem} style={{ borderLeft: '1px solid var(--border-color)' }}>
-                    <div className={styles.statValue} style={{ fontSize: '1.25rem', color: 'var(--text-muted)' }}>
+                <div className={`${styles.statItem} ${styles.cashMonitorTransfers}`}>
+                    <div className={`${styles.statValue} ${styles.cashMonitorTransferValue}`}>
                         {formatAmount(stats?.todayTransfer || 0)}
                     </div>
                     <div className={styles.statLabel}>{t('transfers_today') || 'Transferencias Hoy'}</div>
                 </div>
             </div>
 
-            <div style={{ marginTop: '1.25rem', display: 'flex', gap: '1.25rem', opacity: 0.9 }}>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>
-                    <span style={{ color: 'var(--success)' }}>+</span> {formatAmount(cashToday)} {t('income_short') || 'Ing.'}
+            <div className={styles.cashMonitorFooter}>
+                <div className={styles.cashMonitorFooterItem}>
+                    <span className={styles.cashMonitorSuccessSign}>+</span> {formatAmount(cashToday)} {t('income_short') || 'Ing.'}
                 </div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>
-                    <span style={{ color: 'var(--error)' }}>-</span> {formatAmount(withdrawalsToday + expensesToday)} {t('out_short') || 'Egr.'}
+                <div className={styles.cashMonitorFooterItem}>
+                    <span className={styles.cashMonitorErrorSign}>-</span> {formatAmount(withdrawalsToday + expensesToday)} {t('out_short') || 'Egr.'}
                 </div>
             </div>
         </article>

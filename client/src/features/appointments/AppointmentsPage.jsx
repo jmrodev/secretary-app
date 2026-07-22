@@ -55,7 +55,7 @@ const AppointmentsPage = () => {
             title={t('appointments_title')} 
             hideClock={true}
             doctorSelectorActions={
-                <div style={{ position: 'relative' }}>
+                <div className={styles.buttonContainer}>
                     <Button 
                         variant="accent" 
                         size="sm" 

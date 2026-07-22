@@ -146,3 +146,22 @@
     font-weight: 500;
     opacity: 0.7;
 }
+
+.passwordContainer {
+    position: relative;
+}
+
+.passwordInput {
+    padding-right: 3rem !important;
+}
+
+.toggleButton {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    z-index: 10;
+}
+

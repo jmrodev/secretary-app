@@ -74,7 +74,7 @@ const ScheduleTimeline = ({
                 }
 
                 return (
-                    <div key={timeKey} style={{ position: 'relative', display: 'flex', gap: '0.75rem', flex: '0 0 auto' }}>
+                    <div key={timeKey} className={styles.slotContainer}>
                         {isCurrentSlot && (
                             <div ref={markerRef} className={styles.currentTimeLine} style={{ left: `${progressPercent}%` }}>
                                 <div className={styles.currentTimeLineLabel}>AHORA</div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import Icon from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
+import styles from './WhatsappPairing.module.css';
 
 /**
  * WhatsappPairing Molecule.
@@ -9,13 +10,13 @@ import { Button } from '@/components/atoms/Button';
  */
 const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
     return (
-        <div className="global-wa-messenger__pairing">
-            <div className="global-wa-messenger__pairing-card animate-fade-in">
-                <div className="global-wa-messenger__pairing-icon-wrapper">
-                    <div className={`global-wa-messenger__pairing-icon global-wa-messenger__pairing-icon--${bridgeStatus.status}`}>
+        <div className={styles.pairing}>
+            <div className={`${styles.pairingCard} ${styles.animateFadeIn}`}>
+                <div className={styles.pairingIconWrapper}>
+                    <div className={`${styles.pairingIcon} ${bridgeStatus.status === 'offline' ? styles.pairingIconOffline : ''}`}>
                         <Icon name={bridgeStatus.status === 'offline' ? 'cloud_off' : 'qr_code_scanner'} size="2.5rem" />
                     </div>
-                    <div className={`global-wa-messenger__pulse-ring global-wa-messenger__pulse-ring--${bridgeStatus.status}`}></div>
+                    <div className={`${styles.pulseRing} ${bridgeStatus.status === 'offline' ? styles.pulseRingOffline : ''}`}></div>
                 </div>
                 
                 <h3>{t(bridgeStatus.status === 'offline' ? 'bridge_offline_title' : 'whatsapp_pairing_required')}</h3>
@@ -26,26 +27,28 @@ const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
                 </p>
                 
                 {bridgeStatus.status !== 'offline' && (
-                    <div className="global-wa-messenger__qr-wrapper">
+                    <div className={styles.qrWrapper}>
                         {bridgeStatus.qr_code ? (
-                            <div className="global-wa-messenger__qr-container animate-zoom-in">
+                            <div className={`${styles.qrContainer} ${styles.animateZoomIn}`}>
                                 <QRCodeSVG 
                                     value={bridgeStatus.qr_code}
                                     size={240}
                                     level="H"
-                                    className="global-wa-messenger__qr-image"
+                                    bgColor="#FFFFFF"
+                                    fgColor="#000000"
+                                    className={styles.qrImage}
                                 />
                             </div>
                         ) : (
-                            <div className="global-wa-messenger__qr-placeholder">
-                                <div className="global-wa-messenger__loader"></div>
-                                <span>{t('generating_qr') || 'Generando código...'}</span>
+                            <div className={styles.qrPlaceholder}>
+                                <div className={styles.loader}></div>
+                                <span>{t('waiting_for_qr')}</span>
                             </div>
                         )}
                     </div>
                 )}
                 
-                <div className="global-wa-messenger__pairing-actions">
+                <div className={styles.pairingActions}>
                     <Button 
                         variant="secondary" 
                         size="sm" 
@@ -57,8 +60,8 @@ const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
                     </Button>
                 </div>
                 
-                <div className="global-wa-messenger__pairing-footer">
-                    <span className={`global-wa-messenger__status-indicator global-wa-messenger__status-indicator--${bridgeStatus.status}`}>
+                <div className={styles.pairingFooter}>
+                    <span className={`${styles.statusIndicator} ${styles[`statusIndicator${bridgeStatus.status.charAt(0).toUpperCase() + bridgeStatus.status.slice(1)}`] || ''}`}>
                         {bridgeStatus.status === 'offline' ? t('offline') : t('waiting_connection')}
                     </span>
                 </div>

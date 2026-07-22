@@ -23,6 +23,7 @@ const RentalsPage = lazy(() => import('@/features/rentals').then(m => ({ default
 const RequestsPage = lazy(() => import('@/features/medical_documents').then(m => ({ default: m.RequestsPage })));
 const PublicRequestPage = lazy(() => import('@/features/medical_documents').then(m => ({ default: m.PublicRequestPage })));
 const ChatPage = lazy(() => import('@/features/chat').then(m => ({ default: m.ChatPage })));
+const BroadcastPage = lazy(() => import('@/features/broadcast/BroadcastPage'));
 const TempAccessPage = lazy(() => import('@/features/auth').then(m => ({ default: m.TempAccessPage })));
 const LoginPage = lazy(() => import('@/features/auth').then(m => ({ default: m.LoginPage })));
 const RegisterPage = lazy(() => import('@/features/auth').then(m => ({ default: m.RegisterPage })));
@@ -109,6 +110,7 @@ const AppRouter = () => {
                 <Route path="/reports" element={<ReportsPage />} />
                 <Route path="/requests" element={<RequestsPage />} />
                 <Route path="/messages" element={<ChatPage />} />
+                <Route path="/broadcast" element={<BroadcastPage />} />
             </Route>
 
 

@@ -70,6 +70,8 @@ const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhon
                         value={url}
                         size={200}
                         level={"H"}
+                        bgColor={"#FFFFFF"}
+                        fgColor={"#000000"}
                         includeMargin={true}
                     />
                 </div>

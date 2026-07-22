@@ -2,6 +2,27 @@ import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { formatTime } from '@/utils/core/dateUtils';
+import styles from './WhatsappInbox.module.css';
+
+const AVATAR_COLORS = [
+    styles.avatarColor0,
+    styles.avatarColor1,
+    styles.avatarColor2,
+    styles.avatarColor3,
+    styles.avatarColor4,
+    styles.avatarColor5,
+    styles.avatarColor6,
+    styles.avatarColor7,
+];
+
+const getAvatarColor = (name) => {
+    if (!name) return AVATAR_COLORS[0];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+        hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+};
 
 /**
  * WhatsappInbox Molecule.
@@ -14,23 +35,28 @@ const WhatsappInbox = ({
     onPatientClick, 
     onRefresh, 
     onClose, 
-    viewDoctorId, 
-    doctorDisplayName, 
+    bridgeStatus,
+    onDisconnect,
+    disconnecting,
     t 
 }) => {
     return (
-        <section className="global-wa-messenger__sidebar">
-            <header className="global-wa-messenger__sidebar-header">
-                <div className="global-wa-messenger__title">
+        <section className={styles.sidebar}>
+            <header className={styles.sidebarHeader}>
+                <div className={styles.title}>
                     <h3>{t('contacts')}</h3>
                 </div>
-                {viewDoctorId && (
-                    <div className="global-wa-messenger__doctor-filter" title={t('filtering_by_doctor')}>
-                        <Icon name="person" size="0.9rem" />
-                        <span>{doctorDisplayName || t('doctor')}</span>
-                    </div>
-                )}
-                <div className="global-wa-messenger__header-actions">
+                <div className={styles.headerActions}>
+                    {bridgeStatus?.status === 'connected' && (
+                        <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={onDisconnect}
+                            loading={disconnecting}
+                            title={t('disconnect_bridge')}
+                            icon={<Icon name="link_off" size="1.1rem" />}
+                        />
+                    )}
                     <Button 
                         variant="ghost" 
                         size="sm"
@@ -41,31 +67,32 @@ const WhatsappInbox = ({
                     <Button 
                         variant="ghost"
                         size="sm"
-                        className="global-wa-messenger__close-btn" 
                         onClick={onClose}
                         icon={<Icon name="close" size="1.2rem" />}
                     />
                 </div>
             </header>
             
-            <div className="global-wa-messenger__inbox">
+            <div className={styles.inbox}>
                 {loading && conversations.length === 0 ? (
-                    <div className="global-wa-messenger__empty">{t('loading')}</div>
+                    <div className={styles.empty}>{t('loading')}</div>
                 ) : conversations.length === 0 ? (
-                    <div className="global-wa-messenger__empty">{t('no_recent_chats')}</div>
+                    <div className={styles.empty}>{t('no_recent_chats')}</div>
                 ) : (
-                    <ul className="global-wa-messenger__list">
+                    <ul className={styles.list}>
                          {conversations.map(conv => {
                              const isSelected = activeChat && 
                                 (conv.patient_id ? activeChat.patientId === conv.patient_id : activeChat.phone === conv.patient_phone);
-                             const chatKey = conv.patient_id || conv.patient_phone;
+                             const chatKey = conv.patient_id || conv.patient_phone || conv.sender_phone || `conv-${index}`;
+                             const displayName = conv.patient_name || conv.patient_phone || t('unknown');
+                             const initial = displayName.charAt(0).toUpperCase();
                              
                              return (
                                 <li 
                                     key={chatKey} 
                                     role="button"
                                     tabIndex={0}
-                                    className={`global-wa-messenger__list-item ${isSelected ? 'global-wa-messenger__list-item--active' : ''}`} 
+                                    className={`${styles.listItem} ${isSelected ? styles.listItemActive : ''}`}
                                     onClick={() => onPatientClick(conv)}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
@@ -74,24 +101,24 @@ const WhatsappInbox = ({
                                         }
                                     }}
                                 >
-                                <div className="global-wa-messenger__item-avatar">
-                                    {(conv.patient_name || 'U').charAt(0).toUpperCase()}
+                                <div className={`${styles.itemAvatar} ${getAvatarColor(displayName)}`}>
+                                    {initial}
                                 </div>
-                                <div className="global-wa-messenger__item-info">
-                                    <div className="global-wa-messenger__item-header">
-                                        <strong>{conv.patient_name || conv.patient_phone || t('unknown')}</strong>
-                                        {conv.last_message_time && (
-                                            <span className="global-wa-messenger__item-time">
-                                                {formatTime(conv.last_message_time)}
+                                <div className={styles.itemInfo}>
+                                    <div className={styles.itemHeader}>
+                                        <strong>{displayName}</strong>
+                                        {conv.created_at && (
+                                            <span className={styles.itemTime}>
+                                                {formatTime(conv.created_at)}
                                             </span>
                                         )}
                                     </div>
-                                    <p className="global-wa-messenger__item-body">
+                                    <p className={styles.itemBody}>
                                         {conv.direction === 'outbound' ? `${t('you')}: ` : ''}{conv.body}
                                     </p>
                                 </div>
                                  {conv.direction === 'inbound' && !isSelected && (
-                                     <div className="global-wa-messenger__unread-dot" title={t('unread_messages')}></div>
+                                     <div className={styles.unreadDot} title={t('unread_messages')}></div>
                                  )}
                              </li>
                              );

@@ -9,7 +9,7 @@ class AvailabilitySearchService {
     async getNextFreeSlot({ doctor_id, start_date, include_out_of_hours = 'false' }) {
         const slots = await appointmentRepository.callSpGetFreeSlots({
             doctor_id,
-            start_date: formatLocalSQL(start_date || new Date()),
+            start_date: formatLocalSQL(start_date || new Date()).slice(0, 10),
             days_to_check: 30,
             include_out_of_hours: include_out_of_hours === 'true' ? 1 : 0
         });

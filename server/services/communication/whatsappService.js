@@ -61,7 +61,7 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
  */
 const sendMessageDirect = async (to, message, patientId = null) => {
     try {
-        const bridgeUrl = process.env.WHATSAPP_BRIDGE_URL || 'http://127.0.0.1:8090/api/send';
+        const bridgeUrl = `${getBridgeBaseUrl()}/api/send`;
         console.log(`[WhatsApp Bridge] Sending to: ${to}, URL: ${bridgeUrl}`);
         
         const response = await axios.post(bridgeUrl, {
@@ -160,13 +160,27 @@ const sendTestMessage = async (to) => {
 /**
  * Get bridge status from Go service
  */
+const getBridgeBaseUrl = () => {
+    return process.env.WHATSAPP_BRIDGE_BASE_URL || 'http://127.0.0.1:8090';
+};
+
 const getBridgeStatus = async () => {
     try {
-        const bridgeUrl = process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status';
+        const bridgeUrl = process.env.WHATSAPP_BRIDGE_STATUS_URL || `${getBridgeBaseUrl()}/api/status`;
         const response = await axios.get(bridgeUrl, { timeout: 2000 });
         return response.data;
     } catch (_) {
         return { status: 'offline', qr_code: '' };
+    }
+};
+
+const disconnectBridge = async () => {
+    try {
+        const bridgeUrl = `${getBridgeBaseUrl()}/api/disconnect`;
+        const response = await axios.post(bridgeUrl, {}, { timeout: 5000 });
+        return response.data;
+    } catch (_) {
+        return { status: 'offline' };
     }
 };
 
@@ -255,5 +269,6 @@ module.exports = {
     sendConfirmationMessage,
     sendAutomatedReminders,
     sendDebtReminder,
-    getBridgeStatus
+    getBridgeStatus,
+    disconnectBridge
 };

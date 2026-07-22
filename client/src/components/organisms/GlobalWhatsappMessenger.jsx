@@ -1,9 +1,8 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import api from '@/api/axios';
 import Icon from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import WhatsappChatHistory from '@/features/patients/components/views/WhatsappChatHistory';
-import { useDoctors } from '@/context/DoctorContextDefinition';
 import WhatsappInbox from '../molecules/WhatsappInbox';
 import WhatsappPairing from '../molecules/WhatsappPairing';
 import WhatsappChatPlaceholder from '../molecules/WhatsappChatPlaceholder';
@@ -25,7 +24,7 @@ const initialState = {
     activeChat: null,
     conversations: [],
     loading: false,
-    bridgeStatus: { status: 'connected', qr_code: '' },
+    bridgeStatus: { status: 'connecting', qr_code: '' },
     statusLoading: true,
 };
 
@@ -44,19 +43,44 @@ function messengerReducer(state, action) {
 }
 
 const GlobalWhatsappMessenger = ({ t }) => {
-    const { viewDoctorId, doctorDisplayName } = useDoctors();
     const [state, dispatch] = React.useReducer(messengerReducer, initialState);
     const { isOpen, activeTab, activeChat, conversations, loading, bridgeStatus, statusLoading } = state;
+    const [disconnecting, setDisconnecting] = useState(false);
+    const [pollingPaused, setPollingPaused] = useState(false);
 
     const setIsOpen = (val) => dispatch({ type: 'SET_OPEN', payload: val });
     const setActiveChat = (val) => dispatch({ type: 'SET_ACTIVE_CHAT', payload: val });
 
+    const handleDisconnect = async () => {
+        if (!window.confirm(t('disconnect_bridge_confirm'))) return;
+        setDisconnecting(true);
+        setPollingPaused(true);
+        try {
+            await api.post('/whatsapp/disconnect');
+            dispatch({ 
+                type: 'UPDATE_MANY', 
+                payload: { 
+                    bridgeStatus: { status: 'connecting', qr_code: '' },
+                    conversations: [],
+                    activeChat: null
+                } 
+            });
+            setTimeout(() => {
+                setPollingPaused(false);
+                fetchStatus();
+            }, 5000);
+        } catch (error) {
+            console.error('[WhatsApp] Disconnect failed:', error);
+            setPollingPaused(false);
+        } finally {
+            setDisconnecting(false);
+        }
+    };
+
     const fetchConversations = useCallback(async (isAuto = false) => {
         if (!isAuto) dispatch({ type: 'SET_LOADING', payload: true });
         try {
-            const res = await api.get('/whatsapp/recent', {
-                params: { doctor_id: viewDoctorId }
-            });
+            const res = await api.get('/whatsapp/recent');
             if (res.data.success) {
                 dispatch({ 
                     type: 'UPDATE_MANY', 
@@ -69,7 +93,7 @@ const GlobalWhatsappMessenger = ({ t }) => {
             console.error("Error fetching recent conversations", error);
             if (!isAuto) dispatch({ type: 'SET_LOADING', payload: false });
         }
-    }, [viewDoctorId]);
+    }, []);
 
     const fetchStatus = useCallback(async () => {
         try {
@@ -109,13 +133,13 @@ const GlobalWhatsappMessenger = ({ t }) => {
     });
 
     const onPollConversations = React.useEffectEvent(() => {
-        if (bridgeStatus.status === 'connected' && !activeChat) {
+        if (!pollingPaused && bridgeStatus.status === 'connected' && !activeChat) {
             fetchConversations(true);
         }
     });
 
     useEffect(() => {
-        if (!isOpen) return;
+        if (!isOpen || pollingPaused) return;
 
         // Initial fetch
         onPollStatus();
@@ -127,7 +151,7 @@ const GlobalWhatsappMessenger = ({ t }) => {
             clearInterval(statusInterval);
             clearInterval(conversationsInterval);
         };
-    }, [isOpen]); // Only depends on isOpen now!
+    }, [isOpen, pollingPaused]);
 
     const handlePatientClick = (conv) => {
         setActiveChat({ patientId: conv.patientId || conv.patient_id, phone: conv.patient_phone });
@@ -154,7 +178,7 @@ const GlobalWhatsappMessenger = ({ t }) => {
     }
 
     return (
-        <aside className={`${styles.root} ${styles.animateSlideUp} ${activeChat ? styles.chatActive : ''}`}>
+        <aside className={`${styles.root} ${styles.animateSlideUp} ${(activeChat || bridgeStatus.status !== 'connected') ? styles.chatActive : ''}`}>
             {/* Sidebar: Conversations List */}
             {/* Tab bar - Inbox / Broadcast */}
             <div className={styles.tabBar}>
@@ -183,8 +207,9 @@ const GlobalWhatsappMessenger = ({ t }) => {
                 onPatientClick={handlePatientClick}
                 onRefresh={() => fetchConversations()}
                 onClose={() => setIsOpen(false)}
-                viewDoctorId={viewDoctorId}
-                doctorDisplayName={doctorDisplayName}
+                bridgeStatus={bridgeStatus}
+                onDisconnect={handleDisconnect}
+                disconnecting={disconnecting}
                 t={t}
             />
 

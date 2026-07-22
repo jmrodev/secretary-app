@@ -1,0 +1,22 @@
+/* WhatsappChatPlaceholder Molecule - CSS Module */
+
+.placeholder {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}
+
+.placeholderIcon {
+    color: #e0e0e0;
+    margin-bottom: 1.5rem;
+}
+
+.placeholder h3 {
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}

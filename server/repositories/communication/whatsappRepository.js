@@ -43,28 +43,31 @@ class WhatsappRepository {
 
     async getRecentConversations(doctorId = null, conn = this.pool) {
         let query = `
-            SELECT wm.*, 
-                   COALESCE(p.full_name, wm.sender_phone) as patient_name, 
-                   COALESCE(p.phone, wm.sender_phone) as patient_phone
-            FROM whatsapp_messages wm
-            INNER JOIN (
-                SELECT COALESCE(patient_id, sender_phone) as identifier, MAX(created_at) as max_date
-                FROM whatsapp_messages
-                GROUP BY COALESCE(patient_id, sender_phone)
-            ) latest ON (COALESCE(wm.patient_id, wm.sender_phone) = latest.identifier) AND wm.created_at = latest.max_date
-            LEFT JOIN patients p ON wm.patient_id = p.id
+            SELECT latest_msg.*, 
+                   COALESCE(p.full_name, latest_msg.sender_phone) as patient_name, 
+                   COALESCE(p.phone, latest_msg.sender_phone) as patient_phone
+            FROM (
+                SELECT wm.*
+                FROM whatsapp_messages wm
+                INNER JOIN (
+                    SELECT COALESCE(patient_id, sender_phone) as identifier, MAX(id) as max_id
+                    FROM whatsapp_messages
+                    GROUP BY COALESCE(patient_id, sender_phone)
+                ) latest ON COALESCE(wm.patient_id, wm.sender_phone) = latest.identifier AND wm.id = latest.max_id
+            ) latest_msg
+            LEFT JOIN patients p ON latest_msg.patient_id = p.id OR latest_msg.sender_phone = p.phone
         `;
 
         const params = [];
         if (doctorId) {
             query += `
                 LEFT JOIN patient_doctors pd ON p.id = pd.patient_id
-                WHERE (pd.doctor_id = ? OR wm.patient_id IS NULL)
+                WHERE (pd.doctor_id = ? OR latest_msg.patient_id IS NULL)
             `;
             params.push(doctorId);
         }
 
-        query += ` ORDER BY wm.created_at DESC`;
+        query += ` ORDER BY latest_msg.created_at DESC`;
         
         return await conn.query(query, params);
     }

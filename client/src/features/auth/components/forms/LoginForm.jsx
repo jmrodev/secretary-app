@@ -17,6 +17,7 @@ import { getNow } from '../../../../utils/core/dateUtils';
 const CURRENT_YEAR = getNow().getFullYear();
 
 const LoginForm = () => {
+    const [showPassword, setShowPassword] = React.useState(false);
     const {
         username,
         password,
@@ -69,14 +70,25 @@ const LoginForm = () => {
                 </FormGroup>
 
                 <FormGroup label={t('password')}>
-                    <Input
-                        type="password"
-                        value={password}
-                        onChange={(e) => handlers.setPassword(e.target.value)}
-                        placeholder="••••••••"
-                        disabled={loading}
-                        required
-                    />
+                    <div className={styles.passwordContainer}>
+                        <Input
+                            type={showPassword ? 'text' : 'password'}
+                            value={password}
+                            onChange={(e) => handlers.setPassword(e.target.value)}
+                            placeholder="••••••••"
+                            disabled={loading}
+                            required
+                            className={styles.passwordInput}
+                        />
+                        <div className={styles.toggleButton}>
+                            <Icon
+                                name={showPassword ? 'visibility_off' : 'visibility'}
+                                size="1.25rem"
+                                color="var(--text-muted)"
+                                onIconClick={() => setShowPassword(!showPassword)}
+                            />
+                        </div>
+                    </div>
                 </FormGroup>
 
                 <Button

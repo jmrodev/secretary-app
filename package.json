@@ -9,7 +9,8 @@
     "build": "pnpm --filter client build",
     "docs:dev": ".venv/bin/mkdocs serve",
     "docs:build": ".venv/bin/mkdocs build",
-    "test": "pnpm --filter server test"
+    "test": "pnpm --filter server test",
+    "preinstall": "npx only-allow pnpm"
   },
 
   "dependencies": {

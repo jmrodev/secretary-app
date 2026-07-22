@@ -198,3 +198,11 @@
 .slotPast .googleBlocked {
     opacity: 0.45;
 }
+
+.slotContainer {
+    position: relative;
+    display: flex;
+    gap: 0.75rem;
+    flex: 0 0 auto;
+}
+

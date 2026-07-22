@@ -1,0 +1,183 @@
+/* WhatsappPairing Molecule - CSS Module */
+
+.pairing {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #f0f2f5;
+}
+
+.pairingCard {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgb(0 0 0 / 8%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 320px;
+}
+
+.pairingIconWrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pairingIcon {
+    width: 80px;
+    height: 80px;
+    background: #f0f2f5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #075e54;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.pairingIconOffline {
+    color: #ef4444;
+}
+
+.pulseRing {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgb(37 211 102 / 20%);
+    z-index: 1;
+    animation: pulse 2s infinite;
+}
+
+.pulseRingOffline {
+    background: rgb(239 68 68 / 20%);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+.pairing h3 {
+    margin: 0 0 0.5rem;
+    color: #1f2937;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.pairing p {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.qrWrapper {
+    margin-bottom: 1.5rem;
+}
+
+.qrContainer {
+    position: relative;
+    padding: 1rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgb(0 0 0 / 5%);
+    overflow: hidden;
+}
+
+.qrImage {
+    display: block;
+    width: 200px;
+    height: 200px;
+    image-rendering: pixelated;
+}
+
+.qrPlaceholder {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #9ca3af;
+    background: #f9fafb;
+    border-radius: 8px;
+}
+
+.loader {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #25D366;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.pairingActions {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.pairingFooter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.statusIndicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: #f3f4f6;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.statusIndicator::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.statusIndicatorOffline::before { background: #ef4444; }
+.statusIndicatorDisconnected::before { background: #f59e0b; }
+.statusIndicatorConnected::before { background: #25d366; }
+.statusIndicatorConnecting::before { background: #3b82f6; }
+
+.animateFadeIn {
+    animation: fade-in 0.4s ease-out;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animateZoomIn {
+    animation: zoom-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes zoom-in {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}

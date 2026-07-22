@@ -78,6 +78,16 @@ El sistema implementa mecanismos tanto a nivel de aplicación (Node) como de bas
   *   **Historial de estados**: Guarda el estado anterior (`old_status`) y el nuevo (`new_status`).
   *   **Usuario de cambio (`changed_by_user_id`)**: Se puede inyectar en las operaciones de actualización para registrar la trazabilidad del usuario que modificó o eliminó el registro contable.
 
+---
 
+## 8. Arquitectura del WhatsApp Bridge (Go + whatsmeow)
+El puente de mensajería de WhatsApp opera como un microservicio independiente en Go (`whatsapp-bridge-go`):
 
-
+- **Motor whatsmeow & Persistencia**: Utiliza la librería de alto rendimiento `whatsmeow` con almacenamiento local SQLite (`examplestore.db`).
+- **Ciclo de Vinculación (Pairing) y Reconexión**:
+  - Genera códigos QR vía WebSocket exponiéndolos en `/api/status` en formato base/string para consumo de React.
+  - Posee resiliencia a desconexiones de red, evitando el pánico ante caídas de WebSocket o cortes de red (con reinicios controlados mediante backoff de tiempo).
+- **Integración Webhook**:
+  - Los mensajes entrantes se capturan vía eventos de `whatsmeow` y se notifican inmediatamente al Backend Express a través de la URL de webhook (`/api/whatsapp/webhook`).
+- **Control y Desconexión**:
+  - Expone endpoints HTTP `/api/send`, `/api/status` y `/api/disconnect` para que el servidor Express administre la mensajería y desconexión segura del cliente.

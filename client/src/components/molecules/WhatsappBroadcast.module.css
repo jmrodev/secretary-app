@@ -65,6 +65,33 @@
     white-space: nowrap;
 }
 
+.monthRow {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+}
+
+.monthRow .select {
+    flex: 1;
+}
+
+.yearInput {
+    width: 100px;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    background: #fff;
+    color: #1f2937;
+    text-align: center;
+}
+
+.yearInput:focus {
+    outline: none;
+    border-color: #075e54;
+    box-shadow: 0 0 0 3px rgb(7 94 84 / 10%);
+}
+
 .textarea {
     width: 100%;
     padding: 0.65rem 0.75rem;
@@ -185,4 +212,63 @@
 @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+/* Recipient List Styles */
+.recipientListWrapper {
+    width: 100%;
+    max-width: 400px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 0.75rem;
+    box-sizing: border-box;
+    margin: 0.5rem 0;
+}
+
+.recipientListTitle {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.recipientList {
+    max-height: 180px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding-right: 0.25rem;
+}
+
+.recipientItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.35rem 0.6rem;
+    background: #f9fafb;
+    border: 1px solid #f3f4f6;
+    border-radius: 6px;
+    font-size: 0.82rem;
+}
+
+.recipientName {
+    font-weight: 600;
+    color: #1f2937;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+}
+
+.recipientPhone {
+    font-size: 0.78rem;
+    color: #6b7280;
+    font-family: monospace;
 }

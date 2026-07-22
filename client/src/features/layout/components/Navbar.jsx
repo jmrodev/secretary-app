@@ -30,7 +30,8 @@ const Navbar = () => {
         { path: '/insurances', label: t('insurances'), show: isSecretary },
         { path: '/rentals', label: t('office_rentals'), show: settings?.enable_office_rentals === 'true' && !isAdmin },
         { path: '/documents', label: t('medical_documents'), show: !isAdmin },
-        { path: '/finances', label: t('finances'), show: isSecretary }
+        { path: '/finances', label: t('finances'), show: isSecretary },
+        { path: '/broadcast', label: t('broadcast_tab'), show: !isAdmin }
     ].filter(l => l.show), [t, isAdmin, isPatient, isSecretary, settings?.enable_office_rentals]);
 
     if (!user) return null;

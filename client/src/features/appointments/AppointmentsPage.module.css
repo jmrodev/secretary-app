@@ -268,3 +268,7 @@
         flex-direction: column;
     }
 }
+
+.buttonContainer {
+    position: relative;
+}

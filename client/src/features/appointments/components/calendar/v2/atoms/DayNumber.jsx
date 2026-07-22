@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './DayNumber.module.css';
 
 /**
  * DayNumber (Atom Component)
@@ -6,19 +7,13 @@ import React from 'react';
  */
 const DayNumber = ({ day, isToday = false }) => {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-      <span style={{ fontSize: '1.1rem', fontWeight: 700, color: isToday ? 'var(--accent, #6366f1)' : 'rgba(255, 255, 255, 0.95)', lineHeight: 1 }}>
+    <div className={styles.root}>
+      <span className={`${styles.number} ${isToday ? styles.todayNumber : ''}`}>
         {day}
       </span>
       {isToday && (
         <span
-          style={{
-            width: '6px',
-            height: '6px',
-            background: 'var(--accent, #6366f1)',
-            borderRadius: '50%',
-            boxShadow: '0 0 8px var(--accent, #6366f1)'
-          }}
+          className={styles.todayIndicator}
           aria-hidden="true"
         />
       )}

@@ -159,3 +159,33 @@
         grid-column: span 12;
     }
 }
+
+.cashMonitorTransfers {
+    border-left: 1px solid var(--border-color);
+}
+
+.cashMonitorTransferValue {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+}
+
+.cashMonitorFooter {
+    margin-top: 1.25rem;
+    display: flex;
+    gap: 1.25rem;
+    opacity: 0.9;
+}
+
+.cashMonitorFooterItem {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.cashMonitorSuccessSign {
+    color: var(--success);
+}
+
+.cashMonitorErrorSign {
+    color: var(--error);
+}
+

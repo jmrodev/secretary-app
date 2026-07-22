@@ -108,59 +108,160 @@ const getAiSuggestion = async (req, res) => {
 
 const getRecentConversations = async (req, res) => {
     try {
-        const conversations = await whatsappRepository.getRecentConversations(req.query.doctor_id);
+        let conversations = await whatsappRepository.getRecentConversations(req.query.doctor_id);
+        const seen = new Set();
+        conversations = conversations.filter(conv => {
+            const phone = conv.patient_phone || conv.sender_phone;
+            if (!phone || seen.has(phone)) return false;
+            seen.add(phone);
+            return true;
+        });
         res.json({ success: true, data: conversations });
     } catch (error) { res.status(500).json({ error: error.message }); }
 };
 
 const getBridgeStatus = async (req, res) => {
     try {
+        res.set('Cache-Control', 'no-store');
         const status = await whatsappService.getBridgeStatus();
         res.json({ success: true, ...status });
     } catch (error) { res.status(500).json({ error: error.message }); }
 };
 
-const _getPatientsForBroadcast = async (filter) => {
+const disconnectBridge = async (req, res) => {
+    try {
+        const result = await whatsappService.disconnectBridge();
+        res.json({ success: true, ...result });
+    } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
+const _getPatientsForBroadcast = async (filter, month, year) => {
+    const base = `SELECT DISTINCT p.id, p.full_name, p.phone FROM patients p`;
+    const phoneFilter = `p.phone IS NOT NULL AND p.phone != '' AND LENGTH(p.phone) >= 8`;
+
     if (filter === 'all') {
         return await defaultPool.query(
-            `SELECT id, full_name, phone FROM patients
-             WHERE phone IS NOT NULL AND phone != '' AND LENGTH(phone) >= 8`
+            `${base} WHERE ${phoneFilter}`
         );
     }
+
+    if (filter === 'upcoming') {
+        return await defaultPool.query(
+            `${base} INNER JOIN appointments a ON a.patient_id = p.id
+             WHERE a.appointment_date >= CURDATE() AND ${phoneFilter}`
+        );
+    }
+
+    if (filter === 'year_to_date') {
+        return await defaultPool.query(
+            `${base} INNER JOIN appointments a ON a.patient_id = p.id
+             WHERE a.appointment_date >= DATE_FORMAT(NOW(), '%Y-01-01') AND ${phoneFilter}`
+        );
+    }
+
+    if (filter === 'month') {
+        const m = month || new Date().getMonth() + 1;
+        const y = year || new Date().getFullYear();
+        return await defaultPool.query(
+            `${base} INNER JOIN appointments a ON a.patient_id = p.id
+             WHERE YEAR(a.appointment_date) = ? AND MONTH(a.appointment_date) = ? AND ${phoneFilter}`,
+            [y, m]
+        );
+    }
+
+    if (filter === 'attended') {
+        return await defaultPool.query(
+            `${base} INNER JOIN appointments a ON a.patient_id = p.id
+             WHERE a.status = 'attended' AND ${phoneFilter}`
+        );
+    }
+
+    if (filter === 'ever') {
+        return await defaultPool.query(
+            `${base} INNER JOIN appointments a ON a.patient_id = p.id
+             WHERE a.appointment_date IS NOT NULL AND ${phoneFilter}`
+        );
+    }
+
     // Default: last_12_months
     return await defaultPool.query(
-        `SELECT DISTINCT p.id, p.full_name, p.phone
-         FROM patients p
-         INNER JOIN appointments a ON a.patient_id = p.id
-         WHERE a.appointment_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-           AND p.phone IS NOT NULL AND p.phone != ''
-           AND LENGTH(p.phone) >= 8`
+        `${base} INNER JOIN appointments a ON a.patient_id = p.id
+         WHERE a.appointment_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH) AND ${phoneFilter}`
     );
 };
 
 const broadcastPreview = async (req, res) => {
     try {
-        const { filter = 'last_12_months' } = req.body;
-        const patients = await _getPatientsForBroadcast(filter);
-        res.json({ success: true, count: patients.length });
+        const { filter = 'last_12_months', month, year, limit = 0 } = req.body;
+        let patients = await _getPatientsForBroadcast(filter, month, year);
+        const totalCount = patients.length;
+        if (limit > 0 && patients.length > limit) {
+            patients = patients.slice(0, limit);
+        }
+        res.json({ 
+            success: true, 
+            count: patients.length, 
+            totalCount,
+            recipients: patients.map(p => ({ id: p.id, full_name: p.full_name, phone: p.phone })) 
+        });
     } catch (error) {
         console.error('[Broadcast Preview Error]:', error);
         res.status(500).json({ error: error.message });
     }
 };
 
+const _randomDelay = (base, variance) => {
+    const ms = base + Math.floor(Math.random() * variance);
+    return new Promise(r => setTimeout(r, ms));
+};
+
 const broadcastDirect = async (req, res) => {
-    const { message, filter = 'last_12_months', delayMs = 4000 } = req.body;
+    const { message, filter = 'last_12_months', month, year, limit = 0 } = req.body;
     if (!message?.trim()) return res.status(400).json({ error: 'Message is required' });
 
-    const patients = await _getPatientsForBroadcast(filter);
+    let patients = await _getPatientsForBroadcast(filter, month, year);
+    if (limit > 0 && patients.length > limit) {
+        patients = patients.slice(0, limit);
+    }
     if (patients.length === 0) return res.json({ message: 'No patients found', results: { success: [], failed: [] } });
 
     const results = { success: [], failed: [] };
-    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-    for (const patient of patients) {
-        const personalizedMessage = message.replace(/\{patient_name\}/gi, patient.full_name || patient.phone);
+    // Preset generic random headers and footers with emojis for anti-spam spinning
+    const HEADERS = [
+        "👋 ¡Hola {patient_name}! Esperamos que estés muy bien. 🌿",
+        "✨ Estimado/a {patient_name}, un gusto saludarte.",
+        "💬 ¡Buenas {patient_name}! ¿Cómo estás? 🙂",
+        "🌟 ¡Hola {patient_name}! Esperamos que tengas un excelente día.",
+        "📩 Estimado/a {patient_name}, te enviamos un cordial saludo. 🌸"
+    ];
+
+    const FOOTERS = [
+        "\n\nQuedamos a disposición ante cualquier consulta. ¡Que tengas un buen día! ✨",
+        "\n\nAnte cualquier duda o consulta, podés responder a este mensaje. ¡Saludos! 💬",
+        "\n\nSi necesitás realizar alguna consulta, estamos a tu disposición por este medio. 🙏",
+        "\n\nCualquier inquietud no dudes en responder este mensaje. ¡Saludos cordiales! 👍",
+        "\n\nQuedamos en contacto por este canal ante cualquier duda. ¡Muchas gracias! 😊"
+    ];
+
+    // If explicit variants are given using '---', use those; otherwise combine auto headers & footers
+    const hasManualVariants = message.includes('---');
+    const templates = hasManualVariants 
+        ? message.split(/[\r\n]*---[\r\n]*/).filter(t => t.trim().length > 0)
+        : [];
+
+    for (let i = 0; i < patients.length; i++) {
+        const patient = patients[i];
+        let personalizedMessage = '';
+
+        if (hasManualVariants) {
+            const template = templates[i % templates.length];
+            personalizedMessage = template.replace(/\{patient_name\}/gi, patient.full_name || patient.phone);
+        } else {
+            const header = HEADERS[i % HEADERS.length].replace(/\{patient_name\}/gi, patient.full_name || patient.phone);
+            const footer = FOOTERS[(i * 3) % FOOTERS.length];
+            personalizedMessage = `${header}\n\n${message.trim()}${footer}`;
+        }
         try {
             await whatsappService.sendMessageDirect(patient.phone, personalizedMessage, patient.id);
             results.success.push({ phone: patient.phone, name: patient.full_name });
@@ -168,7 +269,16 @@ const broadcastDirect = async (req, res) => {
             console.error(`[Broadcast] Failed for ${patient.phone}:`, error.message);
             results.failed.push({ phone: patient.phone, name: patient.full_name, error: error.message });
         }
-        await sleep(Number(delayMs) || 4000);
+        if (i < patients.length - 1) {
+            // Human-like delay: 10 to 25 seconds between messages
+            await _randomDelay(10000, 15000);
+
+            // Batch pause: rest 1 hour (3600 seconds) every 20 messages sent
+            if ((i + 1) % 20 === 0) {
+                console.log(`[Broadcast] Batch pause at message ${i + 1}/${patients.length}... Resting 1 hour (3600s) to limit to 20 messages per hour.`);
+                await _randomDelay(3600000, 60000);
+            }
+        }
     }
 
     res.json({ message: 'Broadcast complete', results });
@@ -176,5 +286,5 @@ const broadcastDirect = async (req, res) => {
 
 module.exports = {
     sendMessage, broadcastMessage, broadcastDirect, broadcastPreview, testConnection, sendDirectMessage,
-    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion
+    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, disconnectBridge, getAiSuggestion
 };

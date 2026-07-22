@@ -135,6 +135,7 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
         dispatch,
         messagesEndRef,
         handleGetAiSuggestion,
-        handleSendMessage
+        handleSendMessage,
+        fetchHistory
     };
 };

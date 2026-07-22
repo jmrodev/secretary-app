@@ -17,7 +17,7 @@ const LanguageSelector = ({ currentLanguage, onToggleLanguage, switchTitle }) =>
                 title={switchTitle}
             >
                 <span className={`${styles.icon}`}>
-                    {currentLanguage === 'es' ? '🇪🇸' : '🇺🇸'}
+                    {currentLanguage === 'es' ? '🇦🇷' : '🇺🇸'}
                 </span>
                 <span className={`${styles.text}`}>
                     {currentLanguage === 'es' ? 'Español' : 'English'}

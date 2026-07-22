@@ -9,6 +9,19 @@
     overflow: hidden;
 }
 
+.noHeader {
+    margin-top: 0;
+    border: none;
+    border-radius: 0;
+    height: 100%;
+}
+
+.loading {
+    text-align: center;
+    color: var(--text-tertiary, #6b7280);
+    padding: 2rem;
+}
+
 .header {
     background: var(--surface-primary, #fff);
     border-bottom: 1px solid var(--border-color, #e0e0e0);
@@ -34,6 +47,7 @@
 
 .messages {
     flex: 1;
+    min-height: 0;
     padding: var(--space-md, 1rem);
     overflow-y: auto;
     background-color: #efeae2;
@@ -103,6 +117,17 @@
     color: var(--text-primary, #111827);
     line-height: 1.4;
     white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.text a {
+    color: #0275d8;
+    text-decoration: underline;
+}
+
+.text a:hover {
+    color: #025aa5;
 }
 
 .meta {
@@ -121,9 +146,14 @@
 .status {
     color: var(--text-tertiary, #9ca3af);
     display: flex;
+    align-items: center;
 }
 
 .statusDelivered {
+    color: #53bdeb;
+}
+
+.statusRead {
     color: #53bdeb;
 }
 
