@@ -4,6 +4,7 @@
   "private": true,
   "packageManager": "pnpm@11.0.8",
   "scripts": {
+    "dev": "pnpm -r --parallel dev",
     "lint": "pnpm recursive run lint",
     "precommit": "pnpm run lint && echo '🚀 Linter passed! Safe to commit.'",
     "build": "pnpm --filter client build",
