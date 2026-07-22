@@ -45,11 +45,11 @@ export const usePatientQuery = (options = {}) => {
         immediate: shouldSearch
     });
 
-    // Unpack ECC envelope
-    const patients = response?.data || [];
-    const meta = response?.meta || {};
-    const totalCount = meta.totalCount || 0;
-    const totalPages = Math.ceil(totalCount / limit);
+    // useFetch returns the full ECC envelope as `data`: { success, data: Array, meta: Object }
+    const patients = Array.isArray(response?.data) ? response.data : [];
+    const meta = response?.meta ?? {};
+    const totalCount = typeof meta.totalCount === 'number' ? meta.totalCount : patients.length;
+    const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
     const handlePageChange = useCallback((newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {

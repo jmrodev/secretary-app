@@ -17,8 +17,11 @@ export const patientService = {
         try {
             const res = await api.get('/users/patients', { params });
             // ECC Pattern: Extract data from envelope
-            const responseData = res.data?.success !== undefined ? res.data.data : res.data;
-            return Array.isArray(responseData) ? responseData : (responseData.patients || []);
+            const payload = res.data?.success !== undefined ? res.data.data : res.data;
+            if (Array.isArray(payload)) return payload;
+            if (Array.isArray(payload?.patients)) return payload.patients;
+            if (Array.isArray(res.data?.patients)) return res.data.patients;
+            return [];
         } catch (err) {
             console.error("[ECC-Service] Error searching patients:", err);
             throw err;
