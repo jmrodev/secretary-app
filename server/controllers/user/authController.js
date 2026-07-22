@@ -1,5 +1,15 @@
 const authService = require('../../services/user/authService');
 
+const resolveAuthError = (message, type) => {
+    if (message === 'User already exists') {
+        return { status: 409, error: 'User already exists' };
+    }
+    if (type === 'login' && message === 'Invalid Credentials') {
+        return { status: 400, error: 'Invalid Credentials' };
+    }
+    return { status: type === 'login' ? 500 : 400, error: type === 'login' ? 'Internal Server Error' : 'Invalid request data' };
+};
+
 /**
  * register
  * Delegating registration logic to AuthService.
@@ -15,7 +25,8 @@ exports.register = async (req, res) => {
         res.status(201).json(result);
     } catch (err) {
         console.error("Register Error:", err);
-        res.status(err.message === 'User already exists' ? 409 : 400).send(err.message);
+        const { status, error } = resolveAuthError(err.message, 'register');
+        res.status(status).send(error);
     }
 };
 
@@ -25,7 +36,8 @@ exports.publicRegister = async (req, res) => {
         res.status(201).json(result);
     } catch (err) {
         console.error("Public Register Error:", err);
-        res.status(err.message === 'User already exists' ? 409 : 400).send(err.message);
+        const { status, error } = resolveAuthError(err.message, 'publicRegister');
+        res.status(status).send(error);
     }
 };
 
@@ -39,7 +51,8 @@ exports.login = async (req, res) => {
         res.status(200).json(result);
     } catch (err) {
         console.error("Login Error:", err);
-        res.status(err.message === 'Invalid Credentials' ? 400 : 500).send(err.message);
+        const { status, error } = resolveAuthError(err.message, 'login');
+        res.status(status).send(error);
     }
 };
 

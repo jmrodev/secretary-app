@@ -1,5 +1,6 @@
 const billingService = require('../../services/finance/billingService');
 const fs = require('fs');
+const path = require('path');
 
 /**
  * ECC-Pattern: BillingController
@@ -50,7 +51,13 @@ exports.uploadCert = async (req, res) => {
         sendResponse(res, true, { message: "Certificate uploaded successfully", path: relativePath });
     } catch (err) {
         console.error("[ECC-Billing] uploadCert error:", err);
-        if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+        if (req.file?.path) {
+            const tempUploadDir = path.resolve(__dirname, '../../uploads/temp');
+            const uploadedPath = path.resolve(req.file.path);
+            if (uploadedPath.startsWith(tempUploadDir) && fs.existsSync(uploadedPath)) {
+                fs.unlinkSync(uploadedPath);
+            }
+        }
         sendResponse(res, false, null, err.message, 500);
     }
 };

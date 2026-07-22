@@ -19,7 +19,8 @@ exports.createPrescription = async (req, res) => {
 
 exports.getPrescriptions = async (req, res) => {
     try {
-        const { page = 1, limit = 50, patientId, doctorId: queryDoctorId } = req.query;
+        const { page = 1, limit = 50, doctorId: queryDoctorId } = req.query;
+        const patientId = req.params.patientId || req.body?.patientId;
         const filters = {
             patientId,
             doctorId: req.doctorId || queryDoctorId,

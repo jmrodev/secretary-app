@@ -25,18 +25,21 @@ const upload = multer({ storage: storage });
 
 // Prescriptions
 router.post('/prescriptions', verifyToken, prescriptionController.createPrescription);
+router.get('/prescriptions/patient/:patientId', verifyToken, prescriptionController.getPrescriptions);
 router.get('/prescriptions', verifyToken, prescriptionController.getPrescriptions);
 router.put('/prescriptions/:id', verifyToken, prescriptionController.updatePrescription);
 router.delete('/prescriptions/:id', verifyToken, prescriptionController.deletePrescription);
 
 // Licenses
 router.post('/licenses', verifyToken, licenseController.createLicense);
+router.get('/licenses/patient/:patientId', verifyToken, licenseController.getLicenses);
 router.get('/licenses', verifyToken, licenseController.getLicenses);
 router.put('/licenses/:id', verifyToken, licenseController.updateLicense);
 router.delete('/licenses/:id', verifyToken, licenseController.deleteLicense);
 
 // Requests
 router.post('/requests', verifyToken, medicalRequestController.createRequest);
+router.get('/requests/patient/:patientId', verifyToken, medicalRequestController.getRequests);
 router.get('/requests', verifyToken, medicalRequestController.getRequests);
 router.patch('/requests/:id', verifyToken, medicalRequestController.updateRequestStatus);
 router.put('/requests/:id', verifyToken, medicalRequestController.updateRequest);
@@ -52,6 +55,7 @@ router.delete('/patients/medications/:id', verifyToken, medicationController.del
 
 // Files
 router.post('/files', verifyToken, upload.single('file'), medicalFileController.uploadFile);
+router.get('/files/patient/:patientId', verifyToken, medicalFileController.getPatientFiles);
 router.get('/files', verifyToken, medicalFileController.getPatientFiles);
 router.delete('/files/:id', verifyToken, medicalFileController.deleteFile);
 
@@ -67,4 +71,3 @@ router.post('/public/prescription-request/:token', publicMedicalController.submi
 router.get('/public/vademecum/search', medicationController.searchVademecum);
 
 module.exports = router;
-

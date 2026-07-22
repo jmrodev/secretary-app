@@ -34,8 +34,7 @@ export const usePatientAppointmentSearch = () => {
     });
 
     // Patient History Fetch
-    const patientHistoryHook = useFetch('/appointments', {
-        params: { patientId: searchPatientId },
+    const patientHistoryHook = useFetch(`/appointments/patient/${searchPatientId}`, {
         initialData: { appointments: [], totalCount: 0 },
         immediate: !!searchPatientId
     });

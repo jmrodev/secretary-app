@@ -15,10 +15,10 @@ export const usePatientHistoryController = (patientId, isOpen) => {
         setLoading(true);
         try {
             const [apptRes, prescRes, licRes, reqRes] = await Promise.all([
-                api.get('/appointments', { params: { patientId } }),
-                api.get('/medical/prescriptions', { params: { patientId } }),
-                api.get('/medical/licenses', { params: { patientId } }),
-                api.get('/medical/requests', { params: { patientId } })
+                api.get(`/appointments/patient/${patientId}`),
+                api.get(`/medical/prescriptions/patient/${patientId}`),
+                api.get(`/medical/licenses/patient/${patientId}`),
+                api.get(`/medical/requests/patient/${patientId}`)
             ]);
 
             setHistory({

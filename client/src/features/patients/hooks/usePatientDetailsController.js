@@ -12,7 +12,7 @@ export const usePatientDetailsController = (patientId) => {
             .then(res => setChronicMeds(res.data))
             .catch(err => console.error("Error fetching chronic meds:", err));
 
-        api.get(`/medical/requests?patientId=${patientId}`)
+        api.get(`/medical/requests/patient/${patientId}`)
             .then(res => {
                 const prescriptions = res.data.requests.filter(r => r.type === 'prescription');
                 setRecentRequests(prescriptions);

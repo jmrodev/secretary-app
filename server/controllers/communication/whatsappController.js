@@ -247,12 +247,15 @@ const broadcastDirect = async (req, res) => {
     // If explicit variants are given using '---', use those; otherwise combine auto headers & footers
     const hasManualVariants = message.includes('---');
     const templates = hasManualVariants 
-        ? message.split(/[\r\n]*---[\r\n]*/).filter(t => t.trim().length > 0)
+        ? message
+            .split('---')
+            .map(template => template.trim())
+            .filter(template => template.length > 0)
         : [];
 
     for (let i = 0; i < patients.length; i++) {
         const patient = patients[i];
-        let personalizedMessage = '';
+        let personalizedMessage;
 
         if (hasManualVariants) {
             const template = templates[i % templates.length];
