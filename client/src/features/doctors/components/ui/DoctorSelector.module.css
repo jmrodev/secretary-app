@@ -74,10 +74,10 @@
     width: 100%;
     min-width: 240px;
     background: var(--bg-card, #141821);
-    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15));
+    border: 1px solid var(--border-color, rgb(255, 255, 255, 0.15));
     border-radius: 14px;
     padding: 0.6rem;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 15px 50px rgb(0, 0, 0, 0.7);
     z-index: 10001;
     backdrop-filter: blur(24px);
     display: flex;

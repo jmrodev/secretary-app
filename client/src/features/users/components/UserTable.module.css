@@ -1,8 +1,8 @@
 .userTableWrapper {
     /* --- Local Component Tokens --- */
     --user-table-header-bg: #1e293b;
-    --user-table-border: rgba(255, 255, 255, 0.12);
-    --user-table-text: #ffffff;
+    --user-table-border: rgb(255, 255, 255, 0.12);
+    --user-table-text: #fff;
     --user-table-muted: #cbd5e1;
 
     overflow-x: auto;
@@ -41,12 +41,12 @@
 .cell {
     padding: 14px 18px;
     vertical-align: middle;
-    color: #ffffff;
+    color: #fff;
 }
 
 .username {
     font-weight: 700;
-    color: #ffffff;
+    color: #fff;
     font-size: 1rem;
 }
 
@@ -58,7 +58,7 @@
 }
 
 .fullName {
-    color: #ffffff;
+    color: #fff;
     font-size: 0.95rem;
     font-weight: 600;
 }

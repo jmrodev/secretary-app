@@ -28,7 +28,7 @@
 .content {
     background: var(--bg-card, rgb(20 24 33 / 95%));
     backdrop-filter: blur(20px);
-    color: var(--text-main, #ffffff);
+    color: var(--text-main, #fff);
     border-radius: var(--radius-lg, 0.75rem);
     width: 100%;
     max-width: 31.25rem; /* default max-width for md */
