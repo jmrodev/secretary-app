@@ -42,7 +42,7 @@ class MedicalRequestRepository {
         }
         if (filters.search) {
             const term = `%${filters.search}%`;
-            whereClauses.push("(p.full_name LIKE ? OR d.full_name LIKE ?)");
+            whereClauses.push("(r.patient_name LIKE ? OR r.doctor_name LIKE ?)");
             params.push(term, term);
         }
 

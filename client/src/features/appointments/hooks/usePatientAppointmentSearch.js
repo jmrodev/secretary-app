@@ -43,8 +43,8 @@ export const usePatientAppointmentSearch = () => {
     return {
         searchTerm, setSearchTerm,
         searchPatientId, setSearchPatientId,
-        appointments: shouldSearch ? (appointmentsHook.data?.appointments || []) : [],
-        patientAppointments: patientHistoryHook.data?.appointments || [],
+        appointments: shouldSearch ? (appointmentsHook.data?.data?.appointments || appointmentsHook.data?.appointments || (Array.isArray(appointmentsHook.data?.data) ? appointmentsHook.data.data : [])) : [],
+        patientAppointments: patientHistoryHook.data?.data?.appointments || patientHistoryHook.data?.appointments || (Array.isArray(patientHistoryHook.data?.data) ? patientHistoryHook.data.data : []),
         patientApptLoading: patientHistoryHook.loading || (shouldSearch && appointmentsHook.loading),
         fetchAppointments: appointmentsHook.refetch
     };

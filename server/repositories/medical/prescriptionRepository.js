@@ -45,6 +45,12 @@ class PrescriptionRepository {
             params.push(filters.patient_id);
         }
 
+        if (filters.search) {
+            whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");
+            const searchTerm = `%${filters.search}%`;
+            params.push(searchTerm, searchTerm, searchTerm);
+        }
+
         if (whereClauses.length > 0) {
             query += " WHERE " + whereClauses.join(" AND ");
         }
@@ -64,6 +70,7 @@ class PrescriptionRepository {
             SELECT COUNT(*) as total 
             FROM prescriptions pr
             JOIN appointments a ON pr.appointment_id = a.id
+            JOIN patients p ON a.patient_id = p.id
         `;
         let params = [];
         let whereClauses = [];
@@ -75,6 +82,11 @@ class PrescriptionRepository {
         if (filters.patient_id) {
             whereClauses.push("a.patient_id = ?");
             params.push(filters.patient_id);
+        }
+        if (filters.search) {
+            whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");
+            const searchTerm = `%${filters.search}%`;
+            params.push(searchTerm, searchTerm, searchTerm);
         }
 
         if (whereClauses.length > 0) {

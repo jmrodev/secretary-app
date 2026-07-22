@@ -20,8 +20,20 @@ class UserRepository {
                 WHEN role = 'patient' THEN (SELECT full_name FROM patients WHERE user_id = users.id)
                 WHEN role = 'doctor' THEN (SELECT full_name FROM doctors WHERE user_id = users.id)
                 WHEN role = 'secretary' THEN (SELECT full_name FROM secretaries WHERE user_id = users.id)
-                ELSE 'System'
-            END as full_name
+                ELSE 'Administrador'
+            END as full_name,
+            CASE 
+                WHEN role = 'patient' THEN (SELECT dni FROM patients WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN (SELECT dni FROM doctors WHERE user_id = users.id)
+                WHEN role = 'secretary' THEN (SELECT dni FROM secretaries WHERE user_id = users.id)
+                ELSE NULL
+            END as dni,
+            CASE 
+                WHEN role = 'patient' THEN (SELECT phone FROM patients WHERE user_id = users.id)
+                WHEN role = 'doctor' THEN (SELECT phone FROM doctors WHERE user_id = users.id)
+                WHEN role = 'secretary' THEN (SELECT phone FROM secretaries WHERE user_id = users.id)
+                ELSE NULL
+            END as phone
             FROM users
             WHERE role != 'patient'
             ORDER BY created_at DESC

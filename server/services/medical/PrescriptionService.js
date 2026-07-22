@@ -66,6 +66,7 @@ class PrescriptionService {
         const repoFilters = {
             doctor_id: doctorId,
             patient_id: patientId,
+            search: filters.search,
             limit: filters.limit,
             offset: filters.offset
         };
