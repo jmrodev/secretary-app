@@ -81,7 +81,9 @@ export const useRequirementManagerController = (user) => {
     const recycleRequests = useMemo(() => recycleBinData.filter(item => item.entity_type === 'medical_request'), [recycleBinData]);
 
     useEffect(() => {
-        setCurrentPage(1);
+        queueMicrotask(() => {
+            setCurrentPage(1);
+        });
     }, [debouncedSearch, filter]);
 
     const setSelectedRequest = useCallback((req) => {
