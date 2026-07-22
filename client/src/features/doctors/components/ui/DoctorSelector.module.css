@@ -2,6 +2,7 @@
     position: relative;
     user-select: none;
     min-width: 200px;
+    z-index: 1000;
 }
 
 .trigger {
@@ -72,16 +73,18 @@
     left: 0;
     width: 100%;
     min-width: 240px;
-    background: #1e2533;
-    border: 1px solid rgb(255, 255, 255, 0.12);
+    background: var(--bg-card, #141821);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15));
     border-radius: 14px;
     padding: 0.6rem;
-    box-shadow: 0 15px 50px rgb(0, 0, 0, 0.5);
-    z-index: 10001; /* Above almost everything */
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.7);
+    z-index: 10001;
     backdrop-filter: blur(24px);
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    max-height: 300px;
+    overflow-y: auto;
     animation: slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
