@@ -14,6 +14,7 @@ import QRCodeModal from '@/features/patients/components/modals/QRCodeModal';
 import Pagination from '@/components/atoms/Pagination';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import SearchBar from '@/components/ui/SearchBar';
 
 // Feature Components
 import PatientList from './components/views/PatientList';
@@ -36,6 +37,7 @@ const PatientsPage = () => {
         doctors, insurances, recycleItems, institutions,
         activeTab, setActiveTab,
         selectedPatientId, setSelectedPatientId, patientDetails,
+        searchTerm, setSearchTerm,
 
         // Modals
         editModal, setEditModal,
@@ -118,6 +120,16 @@ const PatientsPage = () => {
                                 setActiveTab(tab);
                                 if (tab === 'recycle') fetchRecycleBin();
                             }}
+                            search={
+                                activeTab === 'list' && (
+                                    <SearchBar
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        onClear={() => setSearchTerm('')}
+                                        placeholder={t('search_patients') || 'Search patients...'}
+                                    />
+                                )
+                            }
                             actions={
                                 isStaff && activeTab === 'list' && (
                                     <Button

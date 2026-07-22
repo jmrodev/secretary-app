@@ -40,7 +40,6 @@ const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant:
             <div
                 className={`${styles.content} ${size && size !== 'md' ? styles['content' + size.charAt(0).toUpperCase() + size.slice(1)] : ''} ${className}`}
                 onClick={e => e.stopPropagation()}
-                onKeyDown={e => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="modal-title"

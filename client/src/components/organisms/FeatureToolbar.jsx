@@ -15,6 +15,7 @@ const FeatureToolbar = ({
     tabs = EMPTY_ARRAY,
     activeTab,
     onTabChange,
+    search,
     actions,
     className = ''
 }) => {
@@ -36,6 +37,12 @@ const FeatureToolbar = ({
                             </TabButton>
                         ))}
                     </TabNav>
+                )}
+
+                {search && (
+                    <div className={styles.search}>
+                        {search}
+                    </div>
                 )}
 
                 {actions && (

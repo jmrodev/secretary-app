@@ -50,7 +50,7 @@ const DoctorSelector = () => {
                 <div className={styles.labelGroup}>
                     <span className={styles.label}>{t('doctor') || 'Médico'}</span>
                     <span className={styles.value}>
-                        {currentDoctor ? currentDoctor.full_name : t('all_doctors')}
+                        {currentDoctor ? currentDoctor.full_name : (t('all_doctors') || 'Todos los médicos')}
                     </span>
                 </div>
                 <Icon name={isOpen ? 'expand_less' : 'expand_more'} size="1.2rem" className={styles.chevron} />
@@ -62,7 +62,8 @@ const DoctorSelector = () => {
                         className={`${styles.option} ${!viewDoctorId ? styles.optionActive : ''}`}
                         onClick={() => { setViewDoctorId(''); setIsOpen(false); }}
                     >
-                        {t('all_doctors')}
+                        <span className={styles.optionAvatar}>*</span>
+                        {t('all_doctors') || 'Todos los médicos'}
                     </div>
                     {doctors.map(d => (
                         <div 

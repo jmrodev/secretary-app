@@ -28,8 +28,8 @@
 }
 
 .root::placeholder {
-    color: rgb(255 255 255 / 100%);
-    opacity: 1;
+    color: var(--text-muted, rgb(156 163 175));
+    opacity: 0.6;
 }
 
 .root:focus {

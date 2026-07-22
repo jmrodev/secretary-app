@@ -19,10 +19,11 @@ exports.createPrescription = async (req, res) => {
 
 exports.getPrescriptions = async (req, res) => {
     try {
-        const { page = 1, limit = 50, patientId, doctorId: queryDoctorId } = req.query;
+        const { page = 1, limit = 50, patientId, doctorId: queryDoctorId, search } = req.query;
         const filters = {
             patientId,
             doctorId: req.doctorId || queryDoctorId,
+            search,
             limit: parseInt(limit),
             offset: (parseInt(page) - 1) * parseInt(limit)
         };

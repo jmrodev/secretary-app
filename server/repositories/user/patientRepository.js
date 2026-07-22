@@ -180,9 +180,18 @@ static ALLOWED_FIELDS = [
     }
     async searchPatients(filters, user, conn = this.pool) {
         const { search = '', page = 1, limit = 50, doctor_id = null } = filters;
+        // Normalize: empty string is NOT NULL in SQL — the SP must receive null to skip the filter
+        const normalizedDoctorId = doctor_id || null;
+
+        // Prepare search term: convert multi-word input into boolean mode query (+word1* +word2*)
+        const trimmed = (search || '').trim();
+        const booleanQuery = trimmed 
+            ? trimmed.split(/\s+/).filter(Boolean).map(w => `+${w.replace(/[+\-*~"<>()@]/g, '')}*`).join(' ')
+            : '';
+
         const results = await conn.query(
             "CALL sp_search_patients(?, ?, ?, ?, ?, ?, @p_total_count)",
-            [search, page, limit, doctor_id, user.role, user.user_id]
+            [booleanQuery || search, page, limit, normalizedDoctorId, user.role, user.user_id]
         );
         const resultsCount = await conn.query("SELECT @p_total_count as total");
         return {

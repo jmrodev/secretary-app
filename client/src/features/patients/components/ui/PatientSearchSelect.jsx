@@ -18,7 +18,8 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                 label: `${p.full_name} - DNI: ${p.dni || 'N/A'} - ${p.street_name || ''}`,
                 patient: p
             }));
-        } catch {
+        } catch (err) {
+            console.error('[PatientSearchSelect] Error loading options:', err);
             return [];
         }
     };
@@ -46,8 +47,6 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                 singleValue: () => styles.singleValue,
                 valueContainer: () => styles.valueContainer
             }}
-            cacheOptions
-            defaultOptions
             loadOptions={loadOptions}
             onChange={handleSelectPatient}
             placeholder={finalPlaceholder}

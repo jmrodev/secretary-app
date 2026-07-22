@@ -87,7 +87,7 @@ export const useMedicalDocumentsController = () => {
         loading: prescriptionsLoading, 
         refetch: fetchPrescriptions 
     } = useFetch('/medical/prescriptions', {
-        params: { page: prescriptionsPage, limit: prescriptionsLimit, doctorId: viewDoctorId },
+        params: { page: prescriptionsPage, limit: prescriptionsLimit, doctorId: viewDoctorId, search: debouncedSearch || undefined },
         initialData: { success: true, data: [], meta: { totalCount: 0 } },
         immediate: ['prescriptions', 'history'].includes(activeTab)
     });
@@ -99,7 +99,7 @@ export const useMedicalDocumentsController = () => {
         loading: licensesLoading, 
         refetch: fetchLicenses 
     } = useFetch('/medical/licenses', {
-        params: { page: licensesPage, limit: licensesLimit, doctorId: viewDoctorId },
+        params: { page: licensesPage, limit: licensesLimit, doctorId: viewDoctorId, search: debouncedSearch || undefined },
         initialData: { success: true, data: [], meta: { totalCount: 0 } },
         immediate: ['licenses', 'history'].includes(activeTab)
     });

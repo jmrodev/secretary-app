@@ -26,7 +26,10 @@ export const useUsers = (options = {}) => {
         immediate: true 
     });
 
-    const allUsers = useMemo(() => userData?.users || [], [userData]);
+    const allUsers = useMemo(() => {
+        const rawUsers = userData?.data?.users || userData?.users || [];
+        return rawUsers;
+    }, [userData]);
 
     // Filtered data in-memory (as the backend returns all for admin management)
     const users = useMemo(() => {
