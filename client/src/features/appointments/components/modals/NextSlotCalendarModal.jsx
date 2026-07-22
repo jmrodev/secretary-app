@@ -35,8 +35,10 @@ const NextSlotCalendarModal = ({
 
     useEffect(() => {
         if (!isOpen) {
-            setStep('days');
-            setSelectedDate(null);
+            queueMicrotask(() => {
+                setStep('days');
+                setSelectedDate(null);
+            });
         }
     }, [isOpen]);
 
