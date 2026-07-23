@@ -33,7 +33,8 @@ const PatientDetailsView = ({
 }) => {
     const [activeTab, setActiveTab] = useState('general'); // 'general' | 'history' | 'finances' | 'chat'
     const [isCleanView, setIsCleanView] = useState(false);
-    const { chronicMeds, recentRequests } = usePatientDetailsController(details.id);
+    const { chronicMeds, recentRequests, officialPrescriptions = [] } = usePatientDetailsController(details.id);
+    const allPrescriptions = [...officialPrescriptions, ...recentRequests];
 
     return (
         <>
@@ -191,11 +192,11 @@ const PatientDetailsView = ({
                                         </Button>
                                     </header>
                                     <div className={`${styles.blockContent} ${styles.blockContentPadded}`}>
-                                        {recentRequests.length > 0 ? (
+                                        {allPrescriptions.length > 0 ? (
                                             <ul className="patient-details__requests-list">
-                                                {recentRequests.map((r, i) => (
+                                                {allPrescriptions.map((r, i) => (
                                                     <li key={r.id || `req-${i}`} className="patient-details__request-item">
-                                                        <strong>{formatDate(r.created_at)}</strong> - {r.medications}
+                                                        <strong>{formatDate(r.created_at || r.appointment_date)}</strong> - {r.medications} {r.doctor_name ? `(${r.doctor_name})` : ''}
                                                     </li>
                                                 ))}
                                             </ul>

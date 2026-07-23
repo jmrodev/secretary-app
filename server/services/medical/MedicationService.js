@@ -23,6 +23,7 @@ class MedicationService {
             drug: item.monodroga,
             lab: item.laboratorio,
             vademecum_type: item.vademecum_type,
+            units_per_box: item.units_per_box || null,
             full_label: `${item.nombre} (${item.presentacion}) - ${item.monodroga} [${item.laboratorio}]`
         }));
     }
@@ -61,7 +62,7 @@ class MedicationService {
      * Discontinue patient medication
      */
     async deletePatientMedication(id) {
-        return await medicationRepository.update(id, { status: 'discontinued' });
+        return await medicationRepository.delete(id);
     }
 
     /**

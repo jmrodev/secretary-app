@@ -184,6 +184,25 @@ class StatsRepository {
         const rows = await conn.query(query, params);
         return rows;
     }
+
+    async getPatientAppointmentStats(patientId, conn = this.pool) {
+        const [rows] = await conn.query(`
+            SELECT 
+                COUNT(*) as total,
+                SUM(CASE WHEN status IN ('attended', 'completado', 'completed') THEN 1 ELSE 0 END) as attended,
+                SUM(CASE WHEN status = 'absent' THEN 1 ELSE 0 END) as absent,
+                SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled
+            FROM appointments
+            WHERE patient_id = ?
+        `, [patientId]);
+        const row = Array.isArray(rows) ? rows[0] : rows;
+        return row ? {
+            total: Number(row.total || 0),
+            attended: Number(row.attended || 0),
+            absent: Number(row.absent || 0),
+            cancelled: Number(row.cancelled || 0)
+        } : { total: 0, attended: 0, absent: 0, cancelled: 0 };
+    }
 }
 
 const defaultPool = process.env.NODE_ENV === 'test' ? null : require('../../db').pool;

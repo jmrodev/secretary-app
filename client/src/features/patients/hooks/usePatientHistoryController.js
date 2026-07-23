@@ -1,6 +1,17 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import api from '@/api/axios';
 
+const unpack = (res) => {
+    if (!res || !res.data) return [];
+    if (Array.isArray(res.data)) return res.data;
+    if (res.data.success && Array.isArray(res.data.data)) return res.data.data;
+    if (Array.isArray(res.data.appointments)) return res.data.appointments;
+    if (Array.isArray(res.data.prescriptions)) return res.data.prescriptions;
+    if (Array.isArray(res.data.licenses)) return res.data.licenses;
+    if (Array.isArray(res.data.requests)) return res.data.requests;
+    return [];
+};
+
 export const usePatientHistoryController = (patientId, isOpen) => {
     const [loading, setLoading] = useState(true);
     const [history, setHistory] = useState({
@@ -22,10 +33,10 @@ export const usePatientHistoryController = (patientId, isOpen) => {
             ]);
 
             setHistory({
-                appointments: apptRes.data,
-                prescriptions: prescRes.data.prescriptions || [],
-                licenses: licRes.data.licenses || [],
-                requests: reqRes.data.requests || []
+                appointments: unpack(apptRes),
+                prescriptions: unpack(prescRes),
+                licenses: unpack(licRes),
+                requests: unpack(reqRes)
             });
         } catch (err) {
             console.error("Failed to fetch patient history", err);

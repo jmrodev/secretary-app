@@ -40,6 +40,11 @@ class UserRepository {
         `);
     }
 
+    async findById(id, conn = this.pool) {
+        const rows = await conn.query("SELECT * FROM users WHERE id = ?", [id]);
+        return rows[0] || null;
+    }
+
     async create(data, conn = this.pool) {
         const result = await conn.query(
             "INSERT INTO users (username, password_hash, role) VALUES (?, ?, ?)",

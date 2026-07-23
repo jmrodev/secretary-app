@@ -148,7 +148,7 @@ static ALLOWED_FIELDS = [
     }
 
     async getPrescriptionInterval(patientId, doctorId, conn = this.pool) {
-        const rows = await conn.query("SELECT prescription_interval_days FROM patient_doctors WHERE patient_id = ? AND doctor_id = ?", [patientId, doctorId]);
+        const rows = await conn.query("SELECT prescription_interval_days FROM patients WHERE id = ?", [patientId]);
         return rows[0] || null;
     }
 
