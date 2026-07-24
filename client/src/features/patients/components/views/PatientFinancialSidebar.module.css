@@ -7,25 +7,26 @@
     gap: 2rem;
 }
 
-/* Financial Card (Dark Theme) */
+/* Financial Card (Theme Adaptive) */
 .financialCard {
-    background: linear-gradient(135deg, var(--gray-800), var(--gray-900));
-    color: var(--white);
+    background: var(--dashboard-card-bg);
+    color: var(--text-main);
     text-align: center;
-    border-radius: 1rem;
-    box-shadow: var(--shadow-xl);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
 }
 
 .financialHeader {
     padding: 1.25rem;
-    border-bottom: 1px solid rgb(255 255 255 / 10%);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .financialTitle {
     font-size: 0.8rem;
     font-weight: 700;
-    color: rgb(255 255 255 / 60%);
+    color: var(--text-muted);
     text-align: center;
     text-transform: uppercase;
     letter-spacing: 0.05em;

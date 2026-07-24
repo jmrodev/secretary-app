@@ -8,32 +8,32 @@
 /* React Select Custom Class Mappings */
 
 .placeholder {
-    color: rgb(255 255 255 / 100%);
+    color: var(--text-muted);
     font-size: 0.875rem;
 }
 
 .control {
-    background-color: rgb(255 255 255 / 5%);
-    border: 1px solid rgb(255 255 255 / 10%);
-    border-radius: 0.5rem;
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     padding: 0;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    box-shadow: 0 4px 12px 0 rgb(0 0 0 / 10%);
+    box-shadow: var(--shadow-sm);
     backdrop-filter: blur(8px);
 }
 
 .controlFocused {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgb(72 128 255 / 15%);
+    box-shadow: 0 0 0 2px rgb(13, 148, 136, 0.15);
 }
 
 .menu {
-    background-color: var(--dashboard-card-bg);
-    border: 1px solid var(--dashboard-card-border);
+    background-color: var(--modal-bg);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-md);
     margin-top: 0.5rem;
     z-index: 1000;
 }
@@ -42,8 +42,8 @@
     padding: 0.75rem 1rem;
     cursor: pointer;
     font-size: 0.875rem;
-    color: var(--text-secondary);
-    border-bottom: 1px solid var(--dashboard-card-border);
+    color: var(--text-main);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .option:last-child {
@@ -51,13 +51,13 @@
 }
 
 .optionFocused {
-    background-color: var(--gray-800);
+    background-color: rgb(128, 128, 128, 0.08);
     color: var(--text-main);
 }
 
 .optionSelected {
-    background-color: var(--gray-700);
-    color: var(--text-main);
+    background-color: rgb(13, 148, 136, 0.15);
+    color: var(--primary-color);
     font-weight: 700;
 }
 

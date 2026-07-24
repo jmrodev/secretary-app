@@ -19,7 +19,7 @@ exports.logAction = async (req, action, details) => {
     try {
         const user_id = req.user ? req.user.user_id : null;
         let username = req.user ? req.user.username : (req.body.username || 'Anonymous');
-        const ip_address = req.ip || req.socket.remoteAddress;
+        const ip_address = req?.ip || req?.socket?.remoteAddress || req?.connection?.remoteAddress || '127.0.0.1';
 
         let detailsStr = details;
         if (typeof details === 'object') {

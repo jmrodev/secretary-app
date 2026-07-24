@@ -39,9 +39,9 @@
 }
 
 .holidayCard {
-  background-color: rgb(255, 255, 255, 0.05);
-  border: 1px solid rgb(255, 255, 255, 0.1);
-  border-radius: var(--radius-lg);
+  background-color: var(--dashboard-card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
   padding: 1.25rem;
   animation: fade-in-up 0.3s ease-out;
 }

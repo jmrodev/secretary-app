@@ -61,6 +61,11 @@ class MedicationRepository {
         const result = await conn.query(`UPDATE patient_medications SET ${setClauses.join(', ')} ${resetNotified} WHERE id = ?`, params);
         return result.affectedRows;
     }
+    async delete(id, conn = this.pool) {
+        const result = await conn.query("DELETE FROM patient_medications WHERE id = ?", [id]);
+        return result.affectedRows;
+    }
+
     async deleteByRequestId(requestId, conn = this.pool) {
         return await conn.query("DELETE FROM medical_request_items WHERE request_id = ?", [requestId]);
     }

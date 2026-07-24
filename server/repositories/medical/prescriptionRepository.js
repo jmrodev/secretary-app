@@ -12,25 +12,38 @@ class PrescriptionRepository {
 
     async findById(id, conn = this.pool) {
         const rows = await conn.query(`
-            SELECT pr.*, a.doctor_id, a.patient_id, a.appointment_date 
+            SELECT 
+                pr.id, pr.appointment_id, COALESCE(pr.patient_id, a.patient_id) as patient_id,
+                pr.medications, pr.instructions, pr.bonified, pr.created_at,
+                a.doctor_id, a.appointment_date 
             FROM prescriptions pr
-            JOIN appointments a ON pr.appointment_id = a.id
+            LEFT JOIN appointments a ON pr.appointment_id = a.id
             WHERE pr.id = ?`, [id]);
         return rows.length > 0 ? rows[0] : null;
     }
 
+    async create(data, conn = this.pool) {
+        const result = await conn.query(
+            "INSERT INTO prescriptions (appointment_id, patient_id, medications, instructions, bonified) VALUES (?, ?, ?, ?, ?)",
+            [data.appointment_id || null, data.patient_id || null, data.medications || '', data.instructions || '', data.bonified || false]
+        );
+        return result.insertId;
+    }
+
     async findAll(filters = {}, conn = this.pool) {
         let query = `
-            SELECT pr.*, a.appointment_date, d.full_name as doctor_name, 
+            SELECT pr.*, 
+            a.appointment_date, 
+            COALESCE(d.full_name, 'Sin Médico') as doctor_name, 
             p.full_name as patient_name, p.dni as patient_dni,
             CONCAT_WS(' ', p.street_name, p.street_number,
                 IF(p.floor IS NOT NULL AND p.floor != '', CONCAT('Piso ', p.floor), NULL),
                 IF(p.apartment IS NOT NULL AND p.apartment != '', CONCAT('Dto. ', p.apartment), NULL)
             ) as patient_address 
             FROM prescriptions pr
-            JOIN appointments a ON pr.appointment_id = a.id
-            JOIN doctors d ON a.doctor_id = d.id
-            JOIN patients p ON a.patient_id = p.id
+            LEFT JOIN appointments a ON pr.appointment_id = a.id
+            LEFT JOIN doctors d ON a.doctor_id = d.id
+            JOIN patients p ON COALESCE(pr.patient_id, a.patient_id) = p.id
         `;
         let params = [];
         let whereClauses = [];
@@ -41,8 +54,8 @@ class PrescriptionRepository {
         }
 
         if (filters.patient_id) {
-            whereClauses.push("a.patient_id = ?");
-            params.push(filters.patient_id);
+            whereClauses.push("(pr.patient_id = ? OR a.patient_id = ?)");
+            params.push(filters.patient_id, filters.patient_id);
         }
 
         if (filters.search) {
@@ -55,7 +68,7 @@ class PrescriptionRepository {
             query += " WHERE " + whereClauses.join(" AND ");
         }
 
-        query += " ORDER BY a.appointment_date DESC";
+        query += " ORDER BY pr.created_at DESC, a.appointment_date DESC";
 
         if (filters.limit !== undefined && filters.offset !== undefined) {
             query += " LIMIT ? OFFSET ?";
@@ -69,8 +82,8 @@ class PrescriptionRepository {
         let query = `
             SELECT COUNT(*) as total 
             FROM prescriptions pr
-            JOIN appointments a ON pr.appointment_id = a.id
-            JOIN patients p ON a.patient_id = p.id
+            LEFT JOIN appointments a ON pr.appointment_id = a.id
+            JOIN patients p ON COALESCE(pr.patient_id, a.patient_id) = p.id
         `;
         let params = [];
         let whereClauses = [];
@@ -80,8 +93,8 @@ class PrescriptionRepository {
             params.push(filters.doctor_id);
         }
         if (filters.patient_id) {
-            whereClauses.push("a.patient_id = ?");
-            params.push(filters.patient_id);
+            whereClauses.push("(pr.patient_id = ? OR a.patient_id = ?)");
+            params.push(filters.patient_id, filters.patient_id);
         }
         if (filters.search) {
             whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");
@@ -95,14 +108,6 @@ class PrescriptionRepository {
 
         const rows = await conn.query(query, params);
         return rows[0].total;
-    }
-
-    async create(data, conn = this.pool) {
-        const result = await conn.query(
-            "INSERT INTO prescriptions (appointment_id, medications, instructions, bonified) VALUES (?, ?, ?, ?)",
-            [data.appointment_id, data.medications || '', data.instructions, data.bonified || false]
-        );
-        return result.insertId;
     }
 
     async addItem(itemData, conn = this.pool) {
@@ -130,6 +135,7 @@ class PrescriptionRepository {
     }
 
     async delete(id, conn = this.pool) {
+        await conn.query("DELETE FROM prescription_items WHERE prescription_id = ?", [id]);
         const result = await conn.query("DELETE FROM prescriptions WHERE id = ?", [id]);
         return result.affectedRows;
     }

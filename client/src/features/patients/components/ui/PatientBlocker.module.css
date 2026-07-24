@@ -1,6 +1,6 @@
 .root {
     min-height: 100vh;
-    background-color: var(--color-bg-secondary, #f8fafc);
+    background-color: var(--dashboard-card-bg);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9,7 +9,7 @@
 }
 
 .card {
-    background-color: var(--color-bg-primary, #fff);
+    background-color: var(--dashboard-card-bg);
     max-width: 448px;
     padding: 2rem;
     border-radius: 1rem;
@@ -23,18 +23,18 @@
 }
 
 .iconSuccess {
-    color: var(--color-success, #22c55e);
+    color: var(--success);
 }
 
 .title {
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    color: var(--color-text-primary, #1e293b);
+    color: var(--text-main);
 }
 
 .message {
-    color: var(--color-text-secondary, #64748b);
+    color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 1.5rem;
 }

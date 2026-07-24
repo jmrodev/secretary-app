@@ -8,7 +8,9 @@ const appointmentRepository = require('../../repositories/appointments/appointme
 const patientRepository = require('../../repositories/user/patientRepository');
 const medicationRepository = require('../../repositories/medical/medicationRepository');
 const doctorRepository = require('../../repositories/user/doctorRepository');
+const userRepository = require('../../repositories/user/userRepository');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
+const bcrypt = require('bcrypt');
 
 /**
  * PrescriptionService
@@ -23,23 +25,42 @@ class PrescriptionService {
         try {
             await conn.beginTransaction();
 
-            const { appointment_id, medications, instructions, items, bonified } = prescriptionData;
+            const { appointment_id, patient_id, medications, instructions, items, bonified } = prescriptionData;
             const userId = req.user.user_id;
 
-            const appt = await appointmentRepository.findById(appointment_id, conn);
-            if (!appt) throw new Error("Appointment not found");
-
-            await this._checkOwnership(conn, req.user, appt.doctor_id);
-
-            const prescriptionId = await prescriptionRepository.create({
-                appointment_id, medications, instructions, bonified
-            }, conn);
-
-            if (items && Array.isArray(items)) {
-                await this._processPrescriptionItems(conn, prescriptionId, appt.patient_id, items, userId);
+            let appt = null;
+            if (appointment_id) {
+                appt = await appointmentRepository.findById(appointment_id, conn);
             }
 
-            await this._handleFinancialsAndReminders(conn, appointment_id, appt.doctor_id, appt.patient_id, instructions, userId, req, bonified);
+            let targetPatientId = appt?.patient_id || patient_id;
+            let targetDoctorId = appt?.doctor_id;
+
+            if (!targetDoctorId && req.user.role === 'doctor') {
+                const doc = await doctorRepository.getDoctorConfigByUserId(req.user.user_id, conn);
+                if (doc) targetDoctorId = doc.id;
+            }
+
+            if (targetDoctorId) {
+                await this._checkOwnership(conn, req.user, targetDoctorId);
+            }
+
+            let isBonified = bonified;
+            if (req.user.role === 'doctor') {
+                isBonified = 1; // Recetas emitidas por la médica son siempre bonificadas por defecto
+            }
+
+            const prescriptionId = await prescriptionRepository.create({
+                appointment_id: appt?.id || null, patient_id: targetPatientId, medications, instructions, bonified: isBonified ? 1 : 0
+            }, conn);
+
+            if (items && Array.isArray(items) && targetPatientId) {
+                await this._processPrescriptionItems(conn, prescriptionId, targetPatientId, items, userId);
+            }
+
+            if (targetPatientId && targetDoctorId) {
+                await this._handleFinancialsAndReminders(conn, appt?.id || null, targetDoctorId, targetPatientId, instructions, userId, req, isBonified);
+            }
 
             await conn.commit();
             return prescriptionId;
@@ -100,12 +121,39 @@ class PrescriptionService {
     }
 
     async deletePrescription(req, id) {
+        const password = req.body?.password || req.body?.adminPassword;
+        if (!password) throw new Error("Password required");
+
         const conn = await pool.getConnection();
         try {
-            const prescription = await prescriptionRepository.findById(id, conn);
-            if (!prescription) throw new Error("Prescription not found");
+            const currentUser = await userRepository.findById(req.user.user_id, conn);
+            if (!currentUser) throw new Error("Unauthorized");
 
-            await this._checkPermissions(conn, req.user, prescription.doctor_id, 'enable_secretary_crud_prescriptions');
+            const isValid = await bcrypt.compare(password, currentUser.password_hash);
+            if (!isValid) throw new Error("Invalid password");
+
+            const prescription = await prescriptionRepository.findById(id, conn);
+            if (!prescription) {
+                // Si la receta fue guardada como medicación directa de paciente
+                await medicationRepository.delete(id, conn);
+                logAction(req, 'DELETE_MEDICATION', `Deleted Medication ID: ${id}`);
+                return;
+            }
+
+            let doctorId = null;
+            if (prescription.appointment_id) {
+                const appt = await appointmentRepository.findById(prescription.appointment_id, conn);
+                if (appt) doctorId = appt.doctor_id;
+            }
+
+            if (!doctorId && req.user.role === 'doctor') {
+                const doc = await doctorRepository.getDoctorConfigByUserId(req.user.user_id, conn);
+                if (doc) doctorId = doc.id;
+            }
+
+            if (doctorId) {
+                await this._checkOwnership(conn, req.user, doctorId);
+            }
 
             await prescriptionRepository.delete(id, conn);
             logAction(req, 'DELETE_PRESCRIPTION', `Deleted Prescription ID: ${id}`);
@@ -122,19 +170,6 @@ class PrescriptionService {
             await prescriptionRepository.addItem({
                 prescription_id: prescriptionId, ...item, medication_name: medName
             }, conn);
-
-            const existing = await medicationRepository.findActiveByName(patientId, medName, conn);
-            if (!existing) {
-                const nextRefillDate = medicationService.constructor.calculateNextRefillDate(item.daily_units, item.quantity, item.units_per_box);
-                await medicationRepository.create({
-                    patient_id: patientId, medication_name: medName, dose: item.dose,
-                    frequency: item.frequency, monodroga: item.drug || item.monodroga,
-                    presentation: item.presentation, vademecum_id: item.vademecum_id,
-                    added_by: userId, next_refill_date: nextRefillDate,
-                    units_per_box: item.units_per_box, boxes_count: item.quantity,
-                    daily_intake: item.daily_units
-                }, conn);
-            }
         }
     }
 
@@ -157,10 +192,15 @@ class PrescriptionService {
         const interval = patDoc?.prescription_interval_days || doc?.default_prescription_interval_days;
 
         if (interval > 0) {
-            const appt = await appointmentRepository.findById(appointment_id, conn);
-            const nextDate = new Date(appt.appointment_date);
-            nextDate.setDate(nextDate.getDate() + Number(interval));
-            await patientRepository.updatePrescriptionInfo(patientId, nextDate.toISOString().split('T')[0], conn);
+            let baseDate = new Date();
+            if (appointment_id) {
+                const appt = await appointmentRepository.findById(appointment_id, conn);
+                if (appt && appt.appointment_date) {
+                    baseDate = new Date(appt.appointment_date);
+                }
+            }
+            baseDate.setDate(baseDate.getDate() + Number(interval));
+            await patientRepository.updatePrescriptionInfo(patientId, baseDate.toISOString().split('T')[0], conn);
         }
 
         logAction(req, 'CREATE_PRESCRIPTION', `Patient: ${pat.full_name}`);

@@ -7,10 +7,10 @@
 
 .container {
     /* --- Local Component Tokens --- */
-    --requests-bg: var(--white);
-    --requests-border: var(--gray-300);
-    --requests-header-bg: var(--gray-50);
-    --requests-row-hover: var(--gray-50);
+    --requests-bg: var(--dashboard-card-bg);
+    --requests-border: var(--border-color);
+    --requests-header-bg: var(--dashboard-card-bg);
+    --requests-row-hover: rgb(128, 128, 128, 0.08);
     --type-rx-bg: var(--blue-100);
     --type-rx-text: var(--blue-700);
     --type-lic-bg: var(--amber-100);
@@ -33,7 +33,7 @@
 .th {
     padding: 0.75rem 1rem;
     text-align: left;
-    background: var(--gray-50);
+    background: var(--requests-header-bg);
     border-bottom: 1px solid var(--border-color);
     font-size: 0.7rem;
     font-weight: 700;
@@ -61,7 +61,7 @@
 }
 
 .row:hover {
-    background-color: var(--gray-50);
+    background-color: var(--requests-row-hover);
 }
 
 .rowCompleted {
@@ -70,7 +70,7 @@
 
 .td {
     padding: 0.5rem 1rem;
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
 }
 

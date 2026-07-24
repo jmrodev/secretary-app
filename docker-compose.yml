@@ -75,6 +75,7 @@ services:
     build: ./client
     restart: always
     container_name: secretary-app-client-1
+    command: pnpm run dev -- --host
     logging: *default-logging
     networks:
       - secretary_net
@@ -83,6 +84,7 @@ services:
     environment:
       - VITE_API_URL=/api
       - VITE_PROXY_TARGET=http://server:5000
+      - CI=false
     volumes:
       - ./client:/app
       - /app/node_modules

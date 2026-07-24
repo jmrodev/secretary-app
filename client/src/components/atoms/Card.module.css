@@ -16,8 +16,8 @@
 }
 
 .root:hover {
-    box-shadow: var(--shadow-premium);
-    border-color: var(--primary-color);
+    border-color: rgb(255, 255, 255, 0.12);
+    box-shadow: 0 12px 28px -6px rgb(0, 0, 0, 0.35);
 }
 
 .header {

@@ -148,7 +148,7 @@ static ALLOWED_FIELDS = [
     }
 
     async getPrescriptionInterval(patientId, doctorId, conn = this.pool) {
-        const rows = await conn.query("SELECT prescription_interval_days FROM patient_doctors WHERE patient_id = ? AND doctor_id = ?", [patientId, doctorId]);
+        const rows = await conn.query("SELECT prescription_interval_days FROM patients WHERE id = ?", [patientId]);
         return rows[0] || null;
     }
 
@@ -178,26 +178,29 @@ static ALLOWED_FIELDS = [
             await conn.batch("INSERT INTO patient_doctors (patient_id, doctor_id) VALUES (?, ?)", insertValues);
         }
     }
-    async searchPatients(filters, user, conn = this.pool) {
+    async searchPatients(filters, user, conn) {
         const { search = '', page = 1, limit = 50, doctor_id = null } = filters;
-        // Normalize: empty string is NOT NULL in SQL — the SP must receive null to skip the filter
         const normalizedDoctorId = doctor_id || null;
-
-        // Prepare search term: convert multi-word input into boolean mode query (+word1* +word2*)
         const trimmed = (search || '').trim();
-        const booleanQuery = trimmed 
-            ? trimmed.split(/\s+/).filter(Boolean).map(w => `+${w.replace(/[+\-*~"<>()@]/g, '')}*`).join(' ')
-            : '';
 
-        const results = await conn.query(
-            "CALL sp_search_patients(?, ?, ?, ?, ?, ?, @p_total_count)",
-            [booleanQuery || search, page, limit, normalizedDoctorId, user.role, user.user_id]
-        );
-        const resultsCount = await conn.query("SELECT @p_total_count as total");
-        return {
-            patients: results[0] || [],
-            totalCount: resultsCount[0]?.total || 0
-        };
+        const activePool = (conn && conn.getConnection) ? conn : (this.pool || require('../../db').pool);
+        const connection = (activePool.getConnection) ? await activePool.getConnection() : activePool;
+
+        try {
+            const results = await connection.query(
+                "CALL sp_search_patients(?, ?, ?, ?, ?, ?, @p_total_count)",
+                [trimmed, page, limit, normalizedDoctorId, user.role, user.user_id]
+            );
+            const resultsCount = await connection.query("SELECT @p_total_count as total");
+            return {
+                patients: results[0] || [],
+                totalCount: Number(resultsCount[0]?.total || 0)
+            };
+        } finally {
+            if (activePool.getConnection && connection) {
+                connection.release();
+            }
+        }
     }
 }
 

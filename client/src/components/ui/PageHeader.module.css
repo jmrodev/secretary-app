@@ -85,10 +85,10 @@
 
 .utilities {
     display: grid;
-    grid-template-columns: 320px 1fr 450px;
+    grid-template-columns: 300px 1fr auto;
     align-items: center;
     width: 100%;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 /* Centering helper */
@@ -122,14 +122,14 @@
     border-top: 1px solid rgb(255 255 255 / 5%);
 }
 
-/* Search Bar — Premium Glass (No Border) */
+/* Search Bar — Premium Glass */
 .searchContainer {
     position: relative;
     display: flex;
     align-items: center;
-    background: rgb(255 255 255 / 6%);
-    border: none; /* No border as requested */
-    border-radius: 10px;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     padding: 0 1rem;
     width: 320px; 
     height: 38px;
@@ -138,12 +138,13 @@
 }
 
 .searchContainer:focus-within {
-    background: rgb(255 255 255 / 10%);
-    box-shadow: none; /* No shadow/ring */
+    background: var(--dashboard-card-bg);
+    border-color: var(--primary-color);
+    box-shadow: none;
 }
 
 .searchIcon {
-    color: rgb(255 255 255 / 30%);
+    color: var(--text-muted);
     margin-right: 0.6rem;
 }
 
@@ -151,7 +152,7 @@
 .searchInput.input {
     --input-bg: transparent;
     --input-border: transparent;
-    --input-text: var(--white);
+    --input-text: var(--text-main);
     --input-focus-ring: transparent;
 
     padding: 0;
@@ -167,7 +168,7 @@
 }
 
 .searchInput.input::placeholder {
-    color: rgb(255 255 255 / 35%);
+    color: var(--text-muted);
     font-weight: 400;
 }
 

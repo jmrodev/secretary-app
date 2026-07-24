@@ -27,8 +27,8 @@
 }
 
 .tabButton[data-active="true"] {
-    background: white !important;
-    color: var(--color-primary) !important;
+    background: var(--dashboard-card-bg) !important;
+    color: var(--primary-color) !important;
     box-shadow: var(--shadow-sm) !important;
 }
 
@@ -158,9 +158,9 @@
 }
 
 .varBtn:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-    background: var(--blue-50);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: rgb(2, 132, 199, 0.08);
     transform: translateY(-1px);
 }
 

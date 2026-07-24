@@ -1,17 +1,17 @@
 .root {
     /* --- Local Component Tokens --- */
-    --reminders-tabs-bg: var(--gray-900);
+    --reminders-tabs-bg: var(--border-color);
     --reminders-item-bg: var(--dashboard-card-bg);
     --reminders-item-border: var(--dashboard-card-border);
-    --reminders-item-hover: var(--gray-800);
+    --reminders-item-hover: rgb(128, 128, 128, 0.08);
     --badge-visit-bg: rgb(245 158 11 / 15%);
-    --badge-visit-text: var(--amber-400);
+    --badge-visit-text: var(--amber-500);
     --badge-prescription-bg: rgb(16 185 129 / 15%);
-    --badge-prescription-text: var(--green-400);
+    --badge-prescription-text: var(--green-500);
     --badge-medication-bg: rgb(239 68 68 / 15%);
-    --badge-medication-text: var(--red-400);
+    --badge-medication-text: var(--red-500);
     --badge-license-bg: rgb(59 130 246 / 15%);
-    --badge-license-text: var(--blue-400);
+    --badge-license-text: var(--blue-500);
 
     /* ------------------------------ */
 
@@ -37,7 +37,7 @@
 .count {
     margin-left: 0.5rem;
     padding: 0 0.5rem;
-    background: var(--gray-800);
+    background: var(--dashboard-card-bg);
     border: 1px solid var(--dashboard-card-border);
     color: var(--text-muted);
     border-radius: 10px;

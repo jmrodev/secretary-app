@@ -1,10 +1,11 @@
 .root {
     --card-padding: 1.5rem;
     
-    background-color: var(--white);
-    border-radius: var(--radius);
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     padding: var(--card-padding);
-    box-shadow: var(--shadow-premium);
+    box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -39,7 +40,7 @@
 .label {
     font-size: 0.625rem;
     font-weight: 800;
-    color: var(--gray-950);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }

@@ -144,12 +144,49 @@ class MedicalRequestRepository {
 
     async getPatientMedicalHistory(patientId, conn = this.pool) {
         return await conn.query(`
-            (SELECT p.id, p.created_at, 'prescription' as type, d.full_name as doctor_name, p.medications as diagnosis, NULL as days
-             FROM prescriptions p JOIN appointments a ON p.appointment_id = a.id JOIN doctors d ON a.doctor_id = d.id WHERE a.patient_id = ?)
-            UNION
-            (SELECT ml.id, ml.created_at, 'license' as type, d.full_name as doctor_name, ml.diagnosis, ml.days_duration as days
-             FROM medical_licenses ml JOIN appointments a ON ml.appointment_id = a.id JOIN doctors d ON a.doctor_id = d.id WHERE a.patient_id = ?)
-            ORDER BY created_at DESC`, [patientId, patientId]);
+            SELECT 
+                p.id,
+                p.created_at,
+                'prescription' as type,
+                COALESCE(d.full_name, 'Doctora') as doctor_name,
+                CASE 
+                    WHEN pi.medication_name IS NOT NULL AND pi.medication_name != '' THEN pi.medication_name 
+                    WHEN p.medications IS NOT NULL AND p.medications != '' THEN p.medications 
+                    ELSE 'Medicamento Registrado' 
+                END as medication_name,
+                CASE 
+                    WHEN pi.dose IS NOT NULL AND pi.dose != '' THEN pi.dose 
+                    ELSE 'Según indicación médica' 
+                END as dosage,
+                pi.presentation,
+                COALESCE(pi.frequency, '1 toma al día') as frequency,
+                COALESCE(pi.quantity, 30) as quantity,
+                COALESCE(pi.units_per_box, 30) as units_per_box,
+                COALESCE(p.instructions, 'Sin observaciones') as notes
+            FROM prescriptions p
+            LEFT JOIN appointments a ON p.appointment_id = a.id
+            LEFT JOIN doctors d ON a.doctor_id = d.id
+            LEFT JOIN prescription_items pi ON p.id = pi.prescription_id
+            WHERE a.patient_id = ? OR p.patient_id = ?
+            
+            UNION ALL
+
+            SELECT 
+                pm.id,
+                pm.created_at,
+                'patient_medication' as type,
+                'Doctora' as doctor_name,
+                COALESCE(pm.medication_name, 'Medicamento Registrado') as medication_name,
+                COALESCE(pm.dose, 'Según indicación médica') as dosage,
+                pm.presentation,
+                COALESCE(pm.frequency, '1 toma al día') as frequency,
+                COALESCE(pm.boxes_count * pm.units_per_box, 30) as quantity,
+                COALESCE(pm.units_per_box, 30) as units_per_box,
+                COALESCE(pm.notes, 'Sin observaciones') as notes
+            FROM patient_medications pm
+            WHERE pm.patient_id = ?
+
+            ORDER BY created_at DESC`, [patientId, patientId, patientId]);
     }
 }
 

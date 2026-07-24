@@ -17,6 +17,7 @@ const PageHeader = ({
     backgroundUrl: _backgroundUrl,
     hideTitle = false,
     hideClock = false,
+    hideSearch = false,
     searchTerm = '',
     onSearchChange = () => {},
     statsSlot = null,
@@ -53,16 +54,18 @@ const PageHeader = ({
             <div className={`${styles.content}`}>
                 {/* UTILITIES ROW: Search + Clock + Stats + Actions */}
                 <div className={`${styles.utilities}`}>
-                    <div className={`${styles.searchContainer}`}>
-                        <Icon name="search" size="1rem" className={`${styles.searchIcon}`} />
-                        <Input
-                            type="text"
-                            className={`${styles.searchInput}`}
-                            placeholder={labels.searchPlaceholder}
-                            value={searchTerm}
-                            onChange={(e) => onSearchChange(e?.target ? e.target.value : e)}
-                        />
-                    </div>
+                    {!hideSearch && (
+                        <div className={`${styles.searchContainer}`}>
+                            <Icon name="search" size="1rem" className={`${styles.searchIcon}`} />
+                            <Input
+                                type="text"
+                                className={`${styles.searchInput}`}
+                                placeholder={labels.searchPlaceholder}
+                                value={searchTerm}
+                                onChange={(e) => onSearchChange(e?.target ? e.target.value : e)}
+                            />
+                        </div>
+                    )}
 
                     <div className={`${styles.center}`}>
                         {doctorSelectorSlot && (

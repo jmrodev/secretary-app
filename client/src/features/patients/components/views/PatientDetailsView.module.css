@@ -43,10 +43,10 @@
     gap: 0.5rem;
     margin-bottom: 1.5rem;
     padding: 0.5rem;
-    background-color: var(--gray-900);
-    border-radius: var(--radius-md);
+    background-color: var(--dashboard-card-bg);
+    border-radius: var(--radius-sm);
     width: fit-content;
-    border: 1px solid var(--dashboard-card-border);
+    border: 1px solid var(--border-color);
 }
 
 .tabLink {
@@ -66,13 +66,14 @@
 
 .tabLink:hover {
     color: var(--primary-color);
-    background-color: var(--gray-800);
+    background-color: rgb(128, 128, 128, 0.08);
 }
 
 .tabLinkActive {
-    background-color: var(--dashboard-card-bg);
+    background-color: rgb(13, 148, 136, 0.12);
     color: var(--primary-color);
     box-shadow: var(--shadow-sm);
+    border: 1px solid rgb(13, 148, 136, 0.25);
 }
 
 .grid {
@@ -102,8 +103,8 @@
 /* Unified Block Structure (Internal Molecule) */
 .block {
     background-color: var(--dashboard-card-bg);
-    border: 1px solid var(--dashboard-card-border);
-    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     display: flex;
@@ -112,7 +113,7 @@
 
 .blockHeader {
     padding: 1rem 1.5rem;
-    background-color: var(--gray-900);
+    background-color: var(--dashboard-card-bg);
     border-bottom: 2px solid var(--primary-color);
     display: flex;
     justify-content: space-between;
@@ -152,7 +153,7 @@
 
 /* Colors for headers (Semantics) */
 .blockInfo .blockHeader { border-bottom-color: var(--primary-color); }
-.blockHistory .blockHeader { border-bottom-color: var(--gray-700); }
+.blockHistory .blockHeader { border-bottom-color: var(--border-color); }
 .blockFinancial .blockHeader { border-bottom-color: var(--danger); }
 .blockTools .blockHeader { border-bottom-color: var(--success); }
 .blockMedications .blockHeader { border-bottom-color: var(--accent-color); }
@@ -164,7 +165,7 @@
 }
 
 .infoRow {
-    border-bottom: 1px solid var(--dashboard-card-border);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .infoRow:last-child {
@@ -180,8 +181,8 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-muted);
-    background-color: var(--gray-900);
-    border-right: 1px solid var(--dashboard-card-border);
+    background-color: var(--dashboard-card-bg);
+    border-right: 1px solid var(--border-color);
 }
 
 .infoValue {
@@ -207,9 +208,9 @@
 
 .dateIndicator {
     padding: 1rem;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--dashboard-card-border);
-    background: var(--gray-900);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background: var(--dashboard-card-bg);
 }
 
 .dateIndicatorRose { border-left: 4px solid var(--rose-500); }
@@ -234,18 +235,18 @@
 
 /* Financial Debt Block */
 .financialCard {
-    background: linear-gradient(135deg, var(--gray-800), var(--gray-950));
-    color: var(--white);
+    background: var(--dashboard-card-bg);
+    color: var(--text-main);
     text-align: center;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
-    border: 1px solid var(--dashboard-card-border);
+    border: 1px solid var(--border-color);
 }
 
 .financialHeader {
     padding: 1.25rem;
-    border-bottom: 1px solid rgb(255 255 255 / 5%);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .financialContent {
@@ -265,12 +266,10 @@
 
 .financialAmountDebt {
     color: var(--danger);
-    text-shadow: 0 0 20px rgb(249 55 93 / 30%);
 }
 
 .financialAmountClear {
     color: var(--success);
-    text-shadow: 0 0 20px rgb(0 182 122 / 30%);
 }
 
 /* History Table Section */
@@ -294,18 +293,18 @@
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: var(--gray-900);
-    border-bottom: 1px solid var(--dashboard-card-border);
+    background: var(--dashboard-card-bg);
+    border-bottom: 1px solid var(--border-color);
     z-index: 10;
 }
 
 .historyRow {
-    border-bottom: 1px solid var(--dashboard-card-border);
+    border-bottom: 1px solid var(--border-color);
     transition: background-color 0.2s ease;
 }
 
 .historyRow:hover {
-    background-color: var(--gray-800);
+    background-color: rgb(128, 128, 128, 0.08);
 }
 
 .historyCell {

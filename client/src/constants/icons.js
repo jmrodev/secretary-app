@@ -83,6 +83,8 @@ export const ICONS = {
     MAP: 'map',
     ARROW_BACK: 'arrow_back',
     ARROW_FORWARD: 'arrow_forward',
+    FIRST_PAGE: 'first_page',
+    LAST_PAGE: 'last_page',
     CHEVRON_LEFT: 'chevron_left',
     CHEVRON_RIGHT: 'chevron_right',
     DOWNLOAD: 'file_download',

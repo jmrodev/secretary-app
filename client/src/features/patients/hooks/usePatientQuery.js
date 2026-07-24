@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { useSearch } from '@/hooks/useSearch';
 
@@ -11,7 +11,6 @@ export const usePatientQuery = (options = {}) => {
         limit = 50, 
         useGlobalSearch = false,
         minChars = 2,
-        debounceMs = 400
     } = options;
 
     const { searchTerm: globalSearch, setSearchTerm: setGlobalSearch } = useSearch();
@@ -19,41 +18,36 @@ export const usePatientQuery = (options = {}) => {
     const searchTerm = useGlobalSearch ? globalSearch : localSearch;
     const setSearchTerm = useGlobalSearch ? setGlobalSearch : setLocalSearch;
 
-    const [queryState, dispatchQuery] = React.useReducer((s, a) => ({ ...s, ...a }), {
-        debouncedSearch: searchTerm,
-        currentPage: 1
-    });
+    const [executedSearch, setExecutedSearch] = useState(searchTerm);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            dispatchQuery({ debouncedSearch: searchTerm, currentPage: 1 });
-        }, debounceMs);
-        return () => clearTimeout(timer);
-    }, [searchTerm, debounceMs]);
+    const executeSearch = useCallback((overrideTerm) => {
+        const termToUse = overrideTerm !== undefined ? overrideTerm : searchTerm;
+        setExecutedSearch(termToUse);
+        setCurrentPage(1);
+    }, [searchTerm]);
 
-    const { debouncedSearch, currentPage } = queryState;
-    const shouldSearch = debouncedSearch.length >= minChars || debouncedSearch.length === 0;
+    const shouldSearch = executedSearch.length >= minChars || executedSearch.length === 0;
 
-    const { data: response, loading, refetch } = useFetch('/users/patients', {
+    const { data: response, loading, fetched: hasFetchedOnce, refetch } = useFetch('/users/patients', {
         initialData: { success: true, data: [], meta: { totalCount: 0 } },
         params: {
             page: currentPage,
             limit: limit,
-            search: debouncedSearch,
+            search: executedSearch,
             doctor_id: doctorId
         },
         immediate: shouldSearch
     });
 
-    // useFetch returns the full ECC envelope as `data`: { success, data: Array, meta: Object }
     const patients = Array.isArray(response?.data) ? response.data : [];
     const meta = response?.meta ?? {};
-    const totalCount = typeof meta.totalCount === 'number' ? meta.totalCount : patients.length;
+    const totalCount = (meta.totalCount !== undefined && meta.totalCount !== null) ? Number(meta.totalCount) : patients.length;
     const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
     const handlePageChange = useCallback((newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
-            dispatchQuery({ currentPage: newPage });
+            setCurrentPage(newPage);
         }
     }, [totalPages]);
 
@@ -63,8 +57,10 @@ export const usePatientQuery = (options = {}) => {
         totalPages,
         currentPage,
         loading,
+        hasFetchedOnce,
         searchTerm,
         setSearchTerm,
+        executeSearch,
         handlePageChange,
         refetch
     };

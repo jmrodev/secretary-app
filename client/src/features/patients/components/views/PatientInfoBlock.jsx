@@ -59,19 +59,31 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGenerateP
                             <th className={`${styles.infoLabel}`}>{t('address') || 'Dirección'}</th>
                             <td className={`${styles.infoValue}`}>
                                 <div className={`${styles.addressBox}`}>
-                                    {[
-                                        details.street_name && `${details.street_name} ${details.street_number || ''}`,
-                                        details.floor && `Piso ${details.floor}`,
-                                        details.apartment && `Depto ${details.apartment}`,
-                                        details.city,
-                                        details.province,
-                                    ].filter(Boolean).join(', ') || <span className={`${styles.textEmpty}`}>{t('no_address_loaded')}</span>}
+                                    {(() => {
+                                        const street = details.street_name || details.address;
+                                        const hasStreet = Boolean(street && String(street).trim());
+                                        const streetPart = hasStreet ? `${street} ${details.street_number || ''}`.trim() : null;
+                                        const floorPart = details.floor ? `Piso ${details.floor}` : null;
+                                        const aptPart = details.apartment ? `Depto ${details.apartment}` : null;
+
+                                        if (!hasStreet) {
+                                            return (
+                                                <span className={`${styles.textEmpty}`}>
+                                                    {t('no_address_loaded') || 'Sin calle ni altura cargada'}
+                                                    {(details.city || details.province) ? ` (${[details.city, details.province].filter(Boolean).join(', ')})` : ''}
+                                                </span>
+                                            );
+                                        }
+
+                                        return [streetPart, floorPart, aptPart, details.city, details.province].filter(Boolean).join(', ');
+                                    })()}
                                 </div>
-                                {details.street_name && (
+                                {(details.street_name || details.address) && (
                                     <Button
                                         to={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                                            `${details.street_name || ''} ${details.street_number || ''}, ${details.city || ''}, ${details.province || ''}, ${details.country || ''}`.trim()
+                                            `${details.street_name || details.address || ''} ${details.street_number || ''}, ${details.city || ''}, ${details.province || ''}, ${details.country || ''}`.trim()
                                         )}`}
+                                        target="_blank"
                                         variant="link"
                                         size="sm"
                                         className={`${styles.mapLink}`}
@@ -86,35 +98,52 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGenerateP
                             <th className={`${styles.infoLabel}`}>{t('contact')}</th>
                             <td className={`${styles.infoValue}`}>
                                 <div className={`${styles.contactList}`}>
-                                    {details.phoneNumbers && details.phoneNumbers.length > 0 ? (
-                                        details.phoneNumbers.map((p) => (
-                                            <div key={p.phone_number} className={`${styles.contactItem}`}>
-                                                <span className={`${styles.contactIndicator} ${p.is_primary ? styles.contactIndicatorPrimary : ''}`}></span>
-                                                <Button
-                                                    to={`tel:${p.phone_number.replace(/[^0-9+]/g, '')}`}
-                                                    variant="phone"
-                                                    size="sm"
-                                                    className={`${styles.contactLink}`}
-                                                    icon={<Icon name="call" size="0.9rem" />}
-                                                >
-                                                    {p.phone_number}
-                                                </Button>
-                                                {p.label && <span className={`${styles.infoHint}`}>({p.label})</span>}
-                                            </div>
-                                        ))
-                                    ) : (
-                                        details.phone ? (
-                                            <Button
-                                                to={`tel:${details.phone.replace(/[^0-9+]/g, '')}`}
-                                                variant="phone"
-                                                size="sm"
-                                                className={`${styles.contactLink}`}
-                                                icon={<Icon name="call" size="0.9rem" />}
-                                            >
-                                                {details.phone}
-                                            </Button>
-                                        ) : <span>N/A</span>
-                                    )}
+                                    {(() => {
+                                        const validPhones = (details.phoneNumbers || []).filter(p => p && p.phone_number && String(p.phone_number).trim() !== '');
+                                        const hasPhone = validPhones.length > 0;
+                                        const fallbackPhone = !hasPhone && details.phone && String(details.phone).trim() !== '';
+
+                                        if (hasPhone) {
+                                            return validPhones.map((p, idx) => (
+                                                <div key={p.phone_number || `phone-${idx}`} className={`${styles.contactItem}`}>
+                                                    <span className={`${styles.contactIndicator} ${p.is_primary ? styles.contactIndicatorPrimary : ''}`}></span>
+                                                    <Button
+                                                        to={`tel:${String(p.phone_number).replace(/[^0-9+]/g, '')}`}
+                                                        variant="phone"
+                                                        size="sm"
+                                                        className={`${styles.contactLink}`}
+                                                        icon={<Icon name="call" size="0.9rem" />}
+                                                    >
+                                                        {p.phone_number}
+                                                    </Button>
+                                                    {p.label && <span className={`${styles.infoHint}`}>({p.label})</span>}
+                                                </div>
+                                            ));
+                                        }
+
+                                        if (fallbackPhone) {
+                                            return (
+                                                <div className={`${styles.contactItem}`}>
+                                                    <Button
+                                                        to={`tel:${String(details.phone).replace(/[^0-9+]/g, '')}`}
+                                                        variant="phone"
+                                                        size="sm"
+                                                        className={`${styles.contactLink}`}
+                                                        icon={<Icon name="call" size="0.9rem" />}
+                                                    >
+                                                        {details.phone}
+                                                    </Button>
+                                                </div>
+                                            );
+                                        }
+
+                                        if (!details.email) {
+                                            return <span className={`${styles.textEmpty}`}>N/A</span>;
+                                        }
+
+                                        return null;
+                                    })()}
+
                                     {details.email && (
                                         <div className={`${styles.contactItem} patient-details__contact-item--email`}>
                                             <Button

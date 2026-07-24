@@ -23,5 +23,10 @@ export default defineConfig({
       '/api': target,
       '/uploads': target
     }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: './src/test/setup.js'
   }
 })

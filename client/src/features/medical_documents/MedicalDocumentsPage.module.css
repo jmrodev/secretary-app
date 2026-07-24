@@ -28,10 +28,10 @@
 }
 
 .modalContentPremium {
-    background: rgb(255 255 255 / 10%);
+    background: var(--modal-bg);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 10%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
     width: 100%;
     max-width: 550px;
     padding: 0;
@@ -47,8 +47,8 @@
 
 .modalHeader {
     padding: 1.25rem 1.75rem;
-    background: rgb(255 255 255 / 5%);
-    border-bottom: 1px solid rgb(255 255 255 / 5%);
+    background: var(--modal-bg-dark);
+    border-bottom: 1px solid var(--border-color);
     backdrop-filter: blur(8px);
     display: flex;
     justify-content: space-between;
@@ -67,8 +67,8 @@
 }
 
 .close {
-    background: var(--gray-700);
-    border: 1px solid var(--gray-600);
+    background: var(--border-color);
+    border: 1px solid var(--border-color);
     color: var(--text-muted);
     cursor: pointer;
     width: 32px;

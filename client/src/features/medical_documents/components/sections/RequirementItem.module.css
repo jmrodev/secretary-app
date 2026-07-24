@@ -4,7 +4,7 @@
 }
 
 .root:hover {
-    background-color: var(--gray-800);
+    background-color: rgb(128, 128, 128, 0.08);
 }
 
 .cell {

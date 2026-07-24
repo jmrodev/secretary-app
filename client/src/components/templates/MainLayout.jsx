@@ -22,6 +22,7 @@ const MainLayout = ({
     doctorSelectorActions = null,
     actionSlot,
     hideClock = false,
+    hideSearch = false,
     hideTitle = (variant === 'premium')
 }) => {
     const { searchTerm, setSearchTerm } = useSearch();
@@ -39,6 +40,7 @@ const MainLayout = ({
                         actionSlot={actionSlot}
                         hideTitle={hideTitle}
                         hideClock={hideClock}
+                        hideSearch={hideSearch}
                         searchTerm={searchTerm}
                         onSearchChange={setSearchTerm}
                         statsSlot={<CompactHeaderStats />}

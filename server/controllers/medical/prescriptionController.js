@@ -59,6 +59,8 @@ exports.deletePrescription = async (req, res) => {
         sendResponse(res, true, { message: "Prescription deleted" });
     } catch (err) {
         console.error("[ECC-Medical] deletePrescription error:", err);
+        if (err.message === 'Password required') return sendResponse(res, false, null, null, 'password_required', 401);
+        if (err.message === 'Invalid password') return sendResponse(res, false, null, null, 'invalid_password', 401);
         if (err.message === 'Prescription not found') return sendResponse(res, false, null, null, 'prescription_not_found', 404);
         if (err.message === 'Unauthorized') return sendResponse(res, false, null, null, 'unauthorized', 403);
         sendResponse(res, false, null, null, 'server_error', 500);

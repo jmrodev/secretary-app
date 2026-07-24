@@ -1,7 +1,7 @@
 .root {
-    --stats-gap: 1.5rem;
-    --stats-pill-bg: rgb(255 255 255 / 4%);
-    --stats-pill-border: rgb(255 255 255 / 8%);
+    --stats-gap: 1.25rem;
+    --stats-pill-bg: var(--dashboard-card-bg);
+    --stats-pill-border: var(--dashboard-card-border);
 
     display: flex;
     align-items: center;
@@ -20,19 +20,19 @@
     align-items: center;
     gap: 0.65rem;
     background: var(--stats-pill-bg);
-    border: none; /* No border as requested */
+    border: 1px solid var(--stats-pill-border);
     backdrop-filter: blur(20px);
     padding: 0.4rem 0.8rem 0.4rem 0.5rem;
-    border-radius: 10px;
-    color: var(--white);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    transition: all 0.2s ease;
     cursor: default;
 }
 
 .pill:hover {
-    background: rgb(255 255 255 / 10%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgb(0 0 0 / 30%);
+    background: rgb(128, 128, 128, 0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.15);
 }
 
 .iconWrapper {

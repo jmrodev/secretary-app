@@ -7,14 +7,17 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     RefreshControl,
-    SafeAreaView,
+    StatusBar,
+    Platform,
     Modal,
     ScrollView,
     Linking,
     Alert
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { apiFetch } from '../services/api';
+import { PatientDetailScreen } from './PatientDetailScreen';
 
 export const AppointmentsScreen = ({ onLogout }) => {
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -25,6 +28,8 @@ export const AppointmentsScreen = ({ onLogout }) => {
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [patientDetails, setPatientDetails] = useState(null);
     const [loadingPatientDetails, setLoadingPatientDetails] = useState(false);
+    const [viewingPatientId, setViewingPatientId] = useState(null);
+    const [viewingAppointmentId, setViewingAppointmentId] = useState(null);
 
     useEffect(() => {
         const fetchPatientDetails = async () => {
@@ -178,7 +183,18 @@ export const AppointmentsScreen = ({ onLogout }) => {
         const displayName = item.patient_name || item.patientName;
 
         return (
-            <TouchableOpacity style={styles.card} onPress={() => setSelectedAppointment({ ...item, formattedTime })}>
+            <TouchableOpacity
+                style={styles.card}
+                onPress={() => {
+                    const pId = item.patient_id || item.patientId;
+                    if (pId) {
+                        setViewingPatientId(pId);
+                        setViewingAppointmentId(item.id || null);
+                    } else {
+                        Alert.alert('Aviso', 'Este turno no está vinculado a una ficha de paciente registrada.');
+                    }
+                }}
+            >
                 <View style={styles.timeBadge}>
                     <Text style={styles.timeText}>{formattedTime}</Text>
                 </View>
@@ -221,6 +237,19 @@ export const AppointmentsScreen = ({ onLogout }) => {
     };
 
     const weekDays = getWeekDays();
+
+    if (viewingPatientId) {
+        return (
+            <PatientDetailScreen
+                patientId={viewingPatientId}
+                appointmentId={viewingAppointmentId}
+                onClose={() => {
+                    setViewingPatientId(null);
+                    setViewingAppointmentId(null);
+                }}
+            />
+        );
+    }
 
     return (
         <SafeAreaView
@@ -329,145 +358,6 @@ export const AppointmentsScreen = ({ onLogout }) => {
                     }
                 />
             )}
-
-            {/* Modal de Detalle de Turno */}
-            <Modal
-                visible={!!selectedAppointment}
-                transparent={true}
-                animationType="slide"
-                onRequestClose={() => setSelectedAppointment(null)}
-            >
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>Detalle del Turno</Text>
-                            <TouchableOpacity onPress={() => setSelectedAppointment(null)}>
-                                <Text style={styles.modalCloseText}>✕</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        {selectedAppointment && (
-                            <ScrollView style={styles.modalBody}>
-                                <View style={styles.detailRow}>
-                                    <Text style={styles.detailLabel}>Paciente:</Text>
-                                    <Text style={styles.detailValueBold}>{selectedAppointment.patient_name || selectedAppointment.patientName || 'Sin Nombre'}</Text>
-                                </View>
-
-                                <View style={styles.detailRow}>
-                                    <Text style={styles.detailLabel}>Horario:</Text>
-                                    <Text style={styles.detailValue}>{selectedAppointment.formattedTime || '09:00'} hs</Text>
-                                </View>
-
-                                <View style={styles.detailRow}>
-                                    <Text style={styles.detailLabel}>Estado:</Text>
-                                    <Text style={[styles.detailValue, { textTransform: 'capitalize', fontWeight: 'bold' }]}>
-                                        {selectedAppointment.status || 'Pendiente'}
-                                    </Text>
-                                </View>
-
-                                <View style={styles.detailRow}>
-                                    <Text style={styles.detailLabel}>Teléfono:</Text>
-                                    <Text style={styles.detailValue}>{selectedAppointment.patient_phone || selectedAppointment.phone || '-'}</Text>
-                                </View>
-
-                                {selectedAppointment.reason ? (
-                                    <View style={styles.detailBlock}>
-                                        <Text style={styles.detailLabel}>Motivo de consulta:</Text>
-                                        <Text style={styles.detailBlockText}>{selectedAppointment.reason}</Text>
-                                    </View>
-                                ) : null}
-
-                                {/* Sección Finanzas y Visitas del Paciente */}
-                                <View style={styles.sectionHeader}>
-                                    <Text style={styles.sectionTitle}>💳 Estado Financiero & Visitas</Text>
-                                </View>
-
-                                <View style={styles.detailRow}>
-                                    <Text style={styles.detailLabel}>Visitas Realizadas:</Text>
-                                    <Text style={styles.detailValueBold}>
-                                        {patientDetails?.stats?.attended || patientDetails?.accumulated_days || 0} asistencias
-                                    </Text>
-                                </View>
-
-                                <View style={styles.detailRow}>
-                                    <Text style={styles.detailLabel}>Costo del Turno:</Text>
-                                    <Text style={styles.detailValue}>${Number(selectedAppointment.cost || 65000).toLocaleString('es-AR')}</Text>
-                                </View>
-
-                                <View style={styles.detailRow}>
-                                    <Text style={styles.detailLabel}>Estado de Pago:</Text>
-                                    <Text style={[styles.detailValue, { color: selectedAppointment.is_paid ? '#16a34a' : '#ea580c', fontWeight: 'bold' }]}>
-                                        {selectedAppointment.is_paid ? 'Pagado ✅' : `Pendiente (${selectedAppointment.payment_status || 'Pendiente'}) ⚠️`}
-                                    </Text>
-                                </View>
-
-                                {patientDetails?.total_debt > 0 ? (
-                                    <View style={[styles.detailRow, styles.debtHighlightRow]}>
-                                        <Text style={[styles.detailLabel, { color: '#dc2626' }]}>Deuda Total Paciente:</Text>
-                                        <Text style={[styles.detailValueBold, { color: '#dc2626' }]}>
-                                            ${Number(patientDetails.total_debt).toLocaleString('es-AR')}
-                                        </Text>
-                                    </View>
-                                ) : null}
-
-                                {/* Sección Medicación Habitual */}
-                                <View style={styles.sectionHeader}>
-                                    <Text style={styles.sectionTitle}>💊 Medicación Habitual</Text>
-                                </View>
-
-                                {loadingPatientDetails ? (
-                                    <ActivityIndicator size="small" color="#2563eb" style={{ marginVertical: 10 }} />
-                                ) : (patientDetails?.prescriptions && patientDetails.prescriptions.length > 0) ? (
-                                    <View style={styles.medicationList}>
-                                        {patientDetails.prescriptions.map((med, idx) => (
-                                            <View key={idx} style={styles.medicationCard}>
-                                                <Text style={styles.medicationName}>• {med.medication_name || med.medication || med.name || 'Medicamento'}</Text>
-                                                {med.dosage ? <Text style={styles.medicationDetail}>Dosis: {med.dosage}</Text> : null}
-                                                {med.frequency ? <Text style={styles.medicationDetail}>Frecuencia: {med.frequency}</Text> : null}
-                                            </View>
-                                        ))}
-                                    </View>
-                                ) : (
-                                    <Text style={styles.emptySubText}>No hay medicación registrada para este paciente.</Text>
-                                )}
-
-                                {(selectedAppointment.patient_phone || selectedAppointment.phone) ? (
-                                    <View style={styles.actionButtonsRow}>
-                                        <TouchableOpacity
-                                            style={styles.callButton}
-                                            onPress={() => {
-                                                const phone = selectedAppointment.patient_phone || selectedAppointment.phone;
-                                                const name = selectedAppointment.patient_name || selectedAppointment.patientName;
-                                                handleConfirmCall(phone, name);
-                                            }}
-                                        >
-                                            <Text style={styles.actionButtonText}>📞 Llamar</Text>
-                                        </TouchableOpacity>
-
-                                        <TouchableOpacity
-                                            style={styles.wsButton}
-                                            onPress={() => {
-                                                const phone = selectedAppointment.patient_phone || selectedAppointment.phone;
-                                                const name = selectedAppointment.patient_name || selectedAppointment.patientName;
-                                                handleConfirmWhatsApp(phone, name);
-                                            }}
-                                        >
-                                            <Text style={styles.actionButtonText}>💬 WhatsApp</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                ) : null}
-                            </ScrollView>
-                        )}
-
-                        <TouchableOpacity
-                            style={styles.modalCloseButton}
-                            onPress={() => setSelectedAppointment(null)}
-                        >
-                            <Text style={styles.modalCloseButtonText}>Cerrar</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
         </SafeAreaView>
     );
 };
@@ -482,7 +372,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: 20,
-        paddingTop: 16,
+        paddingTop: Platform.OS === 'android' ? (StatusBar.currentHeight || 36) + 12 : 16,
         paddingBottom: 12,
         backgroundColor: '#ffffff',
         borderBottomWidth: 1,
@@ -820,6 +710,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 12,
         marginTop: 18,
+    },
+    fullDetailButton: {
+        backgroundColor: '#0284c7',
+        paddingVertical: 14,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 16,
+    },
+    fullDetailButtonText: {
+        color: '#ffffff',
+        fontWeight: 'bold',
+        fontSize: 15,
     },
     callButton: {
         flex: 1,
