@@ -462,6 +462,18 @@
 }
 
 /* Pairing Screen Styles */
+
+/* Pairing overlay — covers full panel when bridge is not connected */
+.pairingOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 20;
+    background: var(--surface-primary, #fff);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
 .pairing {
     flex: 1;
     display: flex;

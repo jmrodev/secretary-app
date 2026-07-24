@@ -117,7 +117,7 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if client != nil {
-		client.Logout()
+		client.Logout(context.Background())
 		client.Disconnect()
 		lastQR = ""
 	}

@@ -243,14 +243,7 @@ const GlobalWhatsappMessenger = ({ t }) => {
                 </header>
 
                 <div className={`${styles.chatContent}`}>
-                    {bridgeStatus.status !== 'connected' ? (
-                        <WhatsappPairing
-                            bridgeStatus={bridgeStatus}
-                            onRefresh={fetchStatus}
-                            statusLoading={statusLoading}
-                            t={t}
-                        />
-                    ) : activeTab === 'broadcast' ? (
+                    {activeTab === 'broadcast' ? (
                         <WhatsappBroadcast t={t} />
                     ) : activeChat ? (
                         <div className={`${styles.chatWrapper}`}>
@@ -266,6 +259,18 @@ const GlobalWhatsappMessenger = ({ t }) => {
                     )}
                 </div>
             </section>
+
+            {/* Pairing overlay — visible in sidebar when bridge is not connected */}
+            {bridgeStatus.status !== 'connected' && (
+                <div className={styles.pairingOverlay}>
+                    <WhatsappPairing
+                        bridgeStatus={bridgeStatus}
+                        onRefresh={fetchStatus}
+                        statusLoading={statusLoading}
+                        t={t}
+                    />
+                </div>
+            )}
         </aside>
     );
 };
