@@ -35,6 +35,8 @@ router.post('/test', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappControll
 // Bridge Status (Internal check)
 router.get('/status', whatsappController.getBridgeStatus);
 
+router.post('/logout', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.logoutBridge);
+
 // Broadcast via local bridge (plain text, with delay)
 router.post('/broadcast-direct', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.broadcastDirect);
 
