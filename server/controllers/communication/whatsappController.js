@@ -120,6 +120,13 @@ const getBridgeStatus = async (req, res) => {
     } catch (error) { res.status(500).json({ error: error.message }); }
 };
 
+const logoutBridge = async (req, res) => {
+    try {
+        await whatsappService.logoutBridge();
+        res.json({ success: true, message: 'Logged out. Scan QR to reconnect.' });
+    } catch (error) { res.status(500).json({ error: error.message }); }
+};
+
 const _getPatientsForBroadcast = async (filter) => {
     if (filter === 'all') {
         return await defaultPool.query(
@@ -176,5 +183,5 @@ const broadcastDirect = async (req, res) => {
 
 module.exports = {
     sendMessage, broadcastMessage, broadcastDirect, broadcastPreview, testConnection, sendDirectMessage,
-    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion
+    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion, logoutBridge
 };
