@@ -41,18 +41,21 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
                 ) : (
                     messages.map((msg, index) => {
                         const showDate = index === 0 || formatDate(messages[index - 1].created_at) !== formatDate(msg.created_at);
+                        const isOutbound = msg.direction === 'outbound';
                         return (
                             <React.Fragment key={msg.id}>
-                                {showDate && <div className={`${styles.dateDivider}`}>{formatDate(msg.created_at)}</div>}
-                                <div className={`${styles.bubble} whatsapp-chat__bubble--${msg.direction}`}>
-                                    <p className={`${styles.text}`}>{msg.body}</p>
-                                    <div className={`${styles.meta}`}>
-                                        <span className={`${styles.time}`}>{formatTime(msg.created_at)}</span>
-                                        {msg.direction === 'outbound' && (
-                                            <span className={`${styles.status} whatsapp-chat__status--${msg.status}`}>
-                                                <Icon name={msg.status === 'delivered' ? 'done_all' : 'done'} size="12px" />
-                                            </span>
-                                        )}
+                                {showDate && <div className={styles.dateDivider}>{formatDate(msg.created_at)}</div>}
+                                <div className={`${styles.bubbleWrapper} ${isOutbound ? styles.bubbleWrapperOutbound : styles.bubbleWrapperInbound}`}>
+                                    <div className={`${styles.bubble} ${isOutbound ? styles.bubbleOutbound : styles.bubbleInbound}`}>
+                                        <p className={styles.text}>{msg.body}</p>
+                                        <div className={styles.meta}>
+                                            <span className={styles.time}>{formatTime(msg.created_at)}</span>
+                                            {isOutbound && (
+                                                <span className={`${styles.status} ${msg.status === 'delivered' ? styles.statusDelivered : ''}`}>
+                                                    <Icon name={msg.status === 'delivered' ? 'done_all' : 'done'} size="12px" />
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </React.Fragment>
