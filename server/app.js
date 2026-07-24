@@ -1,15 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { pool } = require('./db');
-const systemSettingsRepository = require('./repositories/systemSettingsRepository');
-const appointmentRepository = require('./repositories/appointmentRepository');
+const db = require('./db');
+const systemSettingsRepository = require('./repositories/system/systemSettingsRepository');
 
 // BigInt JSON serialization fix
 BigInt.prototype.toJSON = function () { return Number(this); };
 
-const authRoutes = require('./routes/authRoutes');
-const institutionRoutes = require('./routes/institutionRoutes');
+const authRoutes = require('./routes/user/authRoutes');
+const institutionRoutes = require('./routes/core/institutionRoutes');
 
 const morgan = require('morgan');
 const { rateLimit } = require('express-rate-limit');
@@ -18,7 +17,7 @@ dotenv.config();
 // Define Global Rate Limiter (satisfies CodeQL js/missing-rate-limiting)
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 500, // Limit each IP to 500 requests per `window`
+    limit: 5000, // Increased to 5000 to avoid blocking during development/intense use
     standardHeaders: 'draft-7',
     legacyHeaders: false,
     message: { error: 'Too many requests, please try again later.' }
@@ -26,8 +25,9 @@ const globalLimiter = rateLimit({
 
 // Register Event Listeners
 require('./listeners/appointmentListeners');
+require('./listeners/financeListener');
 
-const { initScheduler } = require('./utils/scheduler');
+const { initScheduler } = require('./utils/system/scheduler');
 
 const app = express();
 
@@ -72,47 +72,61 @@ app.use(async (req, res, next) => {
                 }
             }
         }
-    } catch (e) {
+    } catch (_) {
         // Silently fail to not block the request
     }
 
     next();
 });
 
+// SPA Fallback: Redirect common frontend routes to root for HashRouter compatibility
+const frontendRoutes = ['/login', '/register', '/dashboard', '/patients', '/appointments', '/finances', '/p/register'];
+app.get(frontendRoutes, (req, res) => {
+    res.redirect('/#' + req.path);
+});
+
+// Extract Doctor Context from Headers
+app.use((req, res, next) => {
+    const doctorId = req.headers['x-doctor-id'];
+    if (doctorId && doctorId !== 'undefined' && doctorId !== 'null' && doctorId !== '') {
+        req.doctorId = doctorId;
+    }
+    next();
+});
+
 app.use('/api/auth', authRoutes);
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/appointments', require('./routes/appointmentRoutes'));
-app.use('/api/consultorios', require('./routes/consultorioRoutes'));
-app.use('/api/medical', require('./routes/medicalRoutes'));
-app.use('/api/whatsapp', require('./routes/whatsappRoutes'));
-app.use('/api/finances', require('./routes/financeRoutes'));
-app.use('/api/logs', require('./routes/logRoutes'));
-app.use('/api/google', require('./routes/googleRoutes'));
-app.use('/api/import', require('./routes/importRoutes'));
-app.use('/api/settings', require('./routes/settingsRoutes'));
-app.use('/api/insurances', require('./routes/insuranceRoutes'));
-app.use('/api/holidays', require('./routes/holidayRoutes'));
-app.use('/api/messages', require('./routes/messageRoutes'));
-app.use('/api/temp-access', require('./routes/tempAccessRoutes'));
+app.use('/api/users', require('./routes/user/userRoutes'));
+app.use('/api/appointments', require('./routes/appointments/appointmentRoutes'));
+app.use('/api/consultorios', require('./routes/core/consultorioRoutes'));
+app.use('/api/medical', require('./routes/medical/medicalRoutes'));
+app.use('/api/whatsapp', require('./routes/communication/whatsappRoutes'));
+
+const transactionRepository = require('./repositories/finance/transactionRepository');
+const FinanceController = require('./controllers/finance/financeController');
+const financeController = new FinanceController(transactionRepository);
+const financeRoutes = require('./routes/finance/financeRoutes')(financeController);
+app.use('/api/finances', financeRoutes);
+app.use('/api/logs', require('./routes/system/logRoutes'));
+app.use('/api/google', require('./routes/integrations/googleRoutes'));
+app.use('/api/import', require('./routes/system/importRoutes'));
+app.use('/api/settings', require('./routes/system/settingsRoutes'));
+app.use('/api/insurances', require('./routes/core/insuranceRoutes'));
+app.use('/api/holidays', require('./routes/appointments/holidayRoutes'));
+app.use('/api/messages', require('./routes/communication/messageRoutes'));
+app.use('/api/temp-access', require('./routes/system/tempAccessRoutes'));
 app.use('/api/institutions', institutionRoutes);
-app.use('/api/schedules', require('./routes/scheduleRoutes'));
-app.use('/api/billing', require('./routes/billingRoutes'));
+app.use('/api/schedules', require('./routes/appointments/scheduleRoutes'));
+app.use('/api/billing', require('./routes/finance/billingRoutes'));
 app.use('/uploads', express.static('uploads'));
 
-app.get('/api/debug/dump-appointments', async (req, res) => {
-    try {
-        const rows = await appointmentRepository.findAllDetailed();
-        res.json({ count: rows.length, rows });
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
-});
+
 
 // Start server
 const server = app.listen(PORT, '0.0.0.0', async () => {
     console.log(`Server running on port ${PORT}`);
     try {
-        const conn = await pool.getConnection();
+        await db.dbReady;
+        const conn = await db.pool.getConnection();
         console.log('Connected to MariaDB');
 
         // Debug: Identify DB
@@ -123,12 +137,12 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
 
 
         // Start Google Sync Worker
-        const { startSyncWorker } = require('./services/googleSyncService');
+        const { startSyncWorker } = require('./services/integrations/googleSyncService');
         startSyncWorker();
 
         // Start WhatsApp Bridge (Go)
         // The bridge is now managed by docker-compose
-        // const whatsappBridgeService = require('./services/whatsappBridgeService');
+        // const whatsappBridgeService = require('./services/communication/whatsappBridgeService');
         // whatsappBridgeService.init();
 
 
@@ -143,7 +157,7 @@ const gracefulShutdown = async (signal) => {
     console.log(`\n🛑 Received ${signal}. Shutting down gracefully...`);
     server.close(() => {
         console.log('👋 HTTP server closed.');
-        pool.end().then(() => {
+        db.pool.end().then(() => {
             console.log('💾 Database connections closed.');
             process.exit(0);
         });

@@ -1,0 +1,73 @@
+.root {
+    --card-padding: 1.5rem;
+    
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: var(--card-padding);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    grid-column: span 5;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary-color);
+}
+
+.title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.25rem;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.groupSpan6 { grid-column: span 6; }
+
+.label {
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.securityNote {
+    margin-top: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: rgb(128, 128, 128, 0.08);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-muted);
+}
+
+.securityNote p {
+    font-size: 0.75rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+@media (width <= 48rem) {
+    .group {
+        grid-column: span 12 !important;
+    }
+}

@@ -1,0 +1,49 @@
+import React from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
+
+/**
+ * ChatConversationItem Molecule (Feature Component).
+ * Renders a single conversation or contact in the chat list.
+ */
+const ChatConversationItem = ({
+    convo,
+    isContact = false,
+    onClick,
+    unreadCount = 0
+}) => {
+    const { t } = useLanguage();
+    const avatarChar = (convo.other_display_name || convo.display_name || '?')[0].toUpperCase();
+    const handleKeyDown = (event) => {
+        if (!onClick) return;
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onClick(event);
+        }
+    };
+
+    return (
+        <article
+            className={`floating-chat__item ${unreadCount > 0 ? 'floating-chat__item--unread' : ''}`}
+            onClick={onClick}
+            onKeyDown={handleKeyDown}
+            role="button"
+            tabIndex={0}
+        >
+            <h4 className="visually-hidden">{t('conversation')}</h4>
+            <div className={`floating-chat__avatar ${isContact ? 'floating-chat__avatar--contact' : ''}`}>
+                {avatarChar}
+            </div>
+            <div className="floating-chat__item-info">
+                <span className="floating-chat__item-name">
+                    {convo.other_display_name || convo.display_name}
+                </span>
+                <span className={`floating-chat__item-last ${isContact ? 'floating-chat__item-last--contact' : ''}`}>
+                    {isContact ? t('start_chat_now') : convo.message}
+                </span>
+            </div>
+            {unreadCount > 0 && <span className="floating-chat__badge">{unreadCount}</span>}
+        </article>
+    );
+};
+
+export default ChatConversationItem;

@@ -1,0 +1,93 @@
+/* DoctorGoogleSettings Component Styles */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.connectBtn {
+    width: 100%;
+}
+
+.disconnectBtn {
+    width: 100%;
+}
+
+.statusCard {
+    background: var(--gray-50);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0 0 0.25rem;
+}
+
+.subtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.helpText {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-align: center;
+    font-style: italic;
+}
+
+.tools {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 0.5rem 0;
+    opacity: 0.5;
+}
+
+.resetBox {
+    background: var(--amber-50);
+    padding: 1rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--amber-100);
+}
+
+.resetNotice {
+    font-size: 0.7rem;
+    text-align: center;
+    color: var(--amber-700);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.resetBtn {
+    width: 100%;
+    color: var(--amber-700);
+}
+
+.resetBtn:hover {
+    background: var(--amber-100);
+}

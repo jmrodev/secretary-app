@@ -1,5 +1,5 @@
 import React from 'react';
-import './Badge.css';
+import styles from './Badge.module.css';
 
 /**
  * Badge Atom Component.
@@ -28,7 +28,7 @@ const Badge = ({
 
         return (
             <span
-                className={`badge badge--notification badge--${position} ${className}`}
+                className={`${styles.root} ${styles.notification} badge--${position} ${className}`}
                 title={title}
             >
                 {count > 99 ? '99+' : count}
@@ -37,16 +37,38 @@ const Badge = ({
     }
 
     // Standard badge mode
-    const baseClass = 'badge';
+    const baseClass = styles.root;
     const normalizedVariant = variant.replace('status-', '').replace('chip-', '');
     const variantClass = `${baseClass}--${normalizedVariant}`;
     const interactiveClass = onClick ? `${baseClass}--interactive` : '';
 
+    const handleKeyDown = (e) => {
+        if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            onClick(e);
+        }
+    };
+
+    if (onClick) {
+        return (
+            <button
+                type="button"
+                className={`${baseClass} ${variantClass} ${interactiveClass} ${className}`}
+                onClick={onClick}
+                onKeyDown={handleKeyDown}
+                title={title}
+                style={{ border: 'none', background: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex' }}
+            >
+                {children}
+            </button>
+        );
+    }
+
     return (
         <span
-            className={`${baseClass} ${variantClass} ${interactiveClass} ${className}`}
-            onClick={onClick}
+            className={`${baseClass} ${variantClass} ${className}`}
             title={title}
+            role="presentation"
         >
             {children}
         </span>

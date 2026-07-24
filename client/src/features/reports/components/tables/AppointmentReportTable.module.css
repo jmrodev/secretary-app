@@ -1,0 +1,159 @@
+/* AppointmentReportTable Component Styles (BEM) */
+
+.root {
+    /* --- Local Component Tokens --- */
+    --report-card-bg: var(--white);
+    --report-card-border: var(--gray-300);
+    --report-summary-bg: var(--gray-50);
+    --report-header-bg: var(--gray-100);
+    --report-row-hover: var(--gray-50);
+    --report-accent-blue: var(--blue-50);
+    --report-accent-text: var(--blue-700);
+
+    /* ------------------------------ */
+
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.summary {
+    background-color: var(--report-summary-bg);
+    border-radius: var(--radius);
+    padding: 2rem;
+    border: 1px solid var(--report-card-border);
+}
+
+.summaryTitle {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--report-card-bg);
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--report-card-border);
+}
+
+.table th {
+    text-align: left;
+    padding: 1rem 1.25rem;
+    background-color: var(--report-header-bg);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid var(--report-card-border);
+}
+
+.row {
+    border-bottom: 1px solid var(--gray-100);
+    transition: all 0.2s;
+}
+
+.row:hover {
+    background: var(--gray-50);
+}
+
+.row td {
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+    color: var(--text-main);
+}
+
+.dayHeader td {
+    background: var(--blue-50);
+    font-weight: 800;
+    color: var(--blue-700);
+    padding: 0.75rem 1.25rem;
+}
+
+.dayHeaderWeekend td {
+    background: var(--amber-50);
+    color: var(--amber-700);
+}
+
+.dayHeaderHoliday td {
+    background: var(--red-50);
+    color: var(--red-700);
+}
+
+.cellPatient {
+    font-weight: 700;
+}
+
+.cellTime {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.cellAmount {
+    font-family: inherit;
+    font-weight: 700;
+    text-align: right;
+    color: var(--text-main);
+}
+
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: inline-flex;
+}
+
+.badgeStatusCompleted {
+    background-color: var(--green-100);
+    color: var(--green-700);
+}
+
+.badgeStatusCancelled {
+    background-color: var(--red-100);
+    color: var(--red-700);
+}
+
+.badgeStatusAbsent {
+    background-color: var(--amber-100);
+    color: var(--amber-700);
+}
+
+.footer {
+    background: var(--gray-100);
+    font-weight: 800;
+    border-top: 2px solid var(--gray-300);
+}
+
+.footerSubtotal {
+    background: var(--gray-50);
+    font-weight: 700;
+}
+
+.reportTableEmpty {
+    padding: 4rem;
+    text-align: center;
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    border: 1px dashed var(--border-color);
+}
+
+.overturnBadge {
+    background: var(--blue-100);
+    color: var(--blue-700);
+    font-size: 0.6rem;
+    font-weight: 900;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    margin-left: 0.5rem;
+    text-transform: uppercase;
+}

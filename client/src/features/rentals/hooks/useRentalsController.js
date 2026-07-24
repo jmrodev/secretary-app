@@ -2,7 +2,7 @@ import { useState } from 'react';
 import api from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useFetch } from '@/hooks/useFetch';
 
 /**

@@ -1,17 +1,19 @@
-const doctorService = require('../../services/doctorService');
+const doctorService = require('../../services/user/doctorService');
 
 /**
- * DoctorManagementController
- * Handles administration of doctors.
+ * ECC-Pattern: Standard API Response Envelope
  */
+const sendResponse = (res, success, data, error = null, status = 200) => {
+    res.status(status).json({ success, data, error });
+};
 
 exports.getAllDoctors = async (req, res) => {
     try {
         const rows = await doctorService.getAllDoctors();
-        res.json(rows);
+        sendResponse(res, true, rows);
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+        console.error("[ECC-Controller] getAllDoctors error:", err);
+        sendResponse(res, false, null, "Server Error", 500);
     }
 };
 
@@ -19,9 +21,9 @@ exports.updateDoctor = async (req, res) => {
     try {
         const { id } = req.params;
         await doctorService.updateDoctor(id, req.body);
-        res.json({ message: "Doctor updated successfully" });
+        sendResponse(res, true, { message: "Doctor updated successfully" });
     } catch (err) {
-        console.error("Update Doctor Error:", err);
-        res.status(500).send("Server Error");
+        console.error("[ECC-Controller] updateDoctor error:", err);
+        sendResponse(res, false, null, "Server Error", 500);
     }
 };

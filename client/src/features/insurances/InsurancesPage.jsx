@@ -1,11 +1,13 @@
 import React from 'react';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';
+import Card from '@/components/atoms/Card';
 import Icon from '@/components/atoms/Icon';
-import SearchBar from '@/components/molecules/SearchBar';
 import { useInsurancesController, InsuranceList, InsuranceFormModal } from '@/features/insurances/index';
 import MainLayout from '@/components/templates/MainLayout';
-import './InsurancesPage.css';
+import styles from './InsurancesPage.module.css';
+
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 
 /**
  * InsurancesPage (Orchestrator).
@@ -19,7 +21,6 @@ const InsurancesPage = () => {
         modalOpen,
         editingId,
         formData,
-        setSearchTerm,
         setModalOpen,
         setFormData,
         handlers,
@@ -35,59 +36,38 @@ const InsurancesPage = () => {
 
     return (
         <MainLayout wide flush title={t('insurances') || 'Obras Sociales'}>
-            <div className="insurances-page-orchestrator">
+            <div className={`${styles.root} layout-content-area animate-fade-in`}>
+                <FeatureToolbar
+                    className="insurances-page-orchestrator__toolbar"
+                    actions={
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={handleOpenCreate}
+                            icon={<Icon name="add" size="1.1rem" />}
+                        >
+                            {t('new_insurance') || 'Nueva Obra Social'}
+                        </Button>
+                    }
+                />
 
-                <div className="layout-content-area animate-fadeIn">
-                    {loading ? (
+                <main className={`${styles.main}`}>
+                    {loading && filteredInsurances.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
-                        <div className="dashboard-grid animate-fadeIn">
-                            <aside className="dashboard-sidebar">
-                                <div className="dashboard-card">
-                                    <h3 className="dashboard-card__title">
-                                        <Icon name="search" size="1.2rem" />
-                                        {t('search') || 'Buscar'}
-                                    </h3>
-                                    <SearchBar
-                                        value={searchTerm}
-                                        onChange={e => setSearchTerm(e.target.value)}
-                                        placeholder={t('search_insurances_placeholder') || 'Buscar por nombre, CUIT...'}
-                                    />
-                                </div>
-
-                                <div className="dashboard-card">
-                                    <h3 className="dashboard-card__title">
-                                        <Icon name="build" size="1.2rem" />
-                                        {t('actions') || 'Acciones'}
-                                    </h3>
-                                    <div className="insurances-page__actions-group">
-                                        <Button
-                                            variant="primary"
-                                            className="insurances-page__add-btn"
-                                            onClick={handleOpenCreate}
-                                            icon={<Icon name="add" size="1.1rem" />}
-                                        >
-                                            {t('new_insurance') || 'Nueva Obra Social'}
-                                        </Button>
-                                    </div>
-                                </div>
-                            </aside>
-
-                            <main className="dashboard-main">
-                                <div className="dashboard-card no-padding">
-                                    <div className="insurances__content animate-fadeIn">
-                                        <InsuranceList
-                                            insurances={filteredInsurances}
-                                            onEdit={handleOpenEdit}
-                                            onDelete={handleDelete}
-                                            hasFilter={searchTerm !== ''}
-                                        />
-                                    </div>
-                                </div>
-                            </main>
-                        </div>
+                        <Card noPadding>
+                            <div className={`${styles.content} animate-fade-in`}>
+                                <InsuranceList
+                                    insurances={filteredInsurances}
+                                    onEdit={handleOpenEdit}
+                                    onDelete={handleDelete}
+                                    hasFilter={searchTerm !== ''}
+                                />
+                            </div>
+                        </Card>
                     )}
-                </div>
+                </main>
+            </div>
 
                 <InsuranceFormModal
                     isOpen={modalOpen}
@@ -97,7 +77,6 @@ const InsurancesPage = () => {
                     setFormData={setFormData}
                     isEditing={!!editingId}
                 />
-            </div>
         </MainLayout>
     );
 };

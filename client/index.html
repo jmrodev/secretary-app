@@ -12,15 +12,82 @@
   </head>
   <body>
     <div id="root">
-      <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; color: #64748b;">
-        <div style="text-align: center;">
-          <div style="width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #0ea5e9; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 10px;"></div>
-          <span>Cargando Clínica...</span>
+      <div class="splash-screen">
+        <div class="splash-content">
+          <div class="premium-loader">
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
+          </div>
+          <span class="splash-text">Cargando Clínica...</span>
         </div>
       </div>
     </div>
     <style>
-      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      :root {
+        --bg-color: #020617;
+        --accent-color: #0ea5e9;
+        --text-color: #94a3b8;
+      }
+      body {
+        margin: 0;
+        background-color: var(--bg-color);
+        font-family: 'Outfit', sans-serif;
+      }
+      .splash-screen {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+      }
+      .splash-content {
+        text-align: center;
+        animation: fadeIn 0.8s ease-out;
+      }
+      .premium-loader {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 24px;
+      }
+      .loader-ring {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 4px solid transparent;
+        border-top-color: var(--accent-color);
+        border-radius: 50%;
+        animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+      }
+      .loader-ring:nth-child(2) {
+        width: 70%;
+        height: 70%;
+        top: 15%;
+        left: 15%;
+        border-top-color: #38bdf8;
+        animation: spin-reverse 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+        opacity: 0.7;
+      }
+      .splash-text {
+        color: var(--text-color);
+        font-size: 1.1rem;
+        letter-spacing: 0.05em;
+        font-weight: 500;
+        display: block;
+      }
+      @keyframes spin { 
+        0% { transform: rotate(0deg); } 
+        100% { transform: rotate(360deg); } 
+      }
+      @keyframes spin-reverse { 
+        0% { transform: rotate(0deg); } 
+        100% { transform: rotate(-360deg); } 
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
     </style>
     <script type="module" src="/src/main.jsx"></script>
   </body>

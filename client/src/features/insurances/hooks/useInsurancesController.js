@@ -2,9 +2,10 @@ import { useState, useCallback, useMemo } from 'react';
 import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
-import { useLanguage } from '@/context/LanguageContext';
-import { capitalizeWords } from '@/utils/stringUtils';
+import { useLanguage } from '@/hooks/useLanguage';
+import { capitalizeWords } from '@/utils/core/stringUtils';
 import { useFetch } from '@/hooks/useFetch';
+import { useSearch } from '@/hooks/useSearch';
 
 export const useInsurancesController = () => {
     const { showMessage } = useMessage();
@@ -16,10 +17,9 @@ export const useInsurancesController = () => {
         initialData: { insurances: [], totalCount: 0 } 
     });
 
-    const insurances = insData?.insurances || [];
+    const insurances = useMemo(() => insData?.insurances || [], [insData]);
 
-    // UI State
-    const [searchTerm, setSearchTerm] = useState('');
+    const { searchTerm, setSearchTerm } = useSearch();
     const [modalOpen, setModalOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({

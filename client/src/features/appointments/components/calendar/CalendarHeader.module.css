@@ -1,0 +1,47 @@
+/* CalendarHeader Styles (BEM) - Dark Mode Standard */
+
+.root {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+    padding: 0.5rem 0.25rem 1rem; 
+    background-color: transparent;
+    border-bottom: 1px solid var(--dashboard-card-border);
+    margin-bottom: 0.5rem;
+}
+
+.title { 
+    font-size: 1.25rem; 
+    font-weight: 700; 
+    color: var(--text-main); 
+    margin: 0; 
+    font-family: var(--font-manrope);
+    letter-spacing: -0.01em;
+    text-transform: capitalize;
+}
+
+.navButton {
+    color: var(--text-muted);
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+}
+
+.navButton:hover {
+    color: var(--text-main);
+    background-color: rgb(128, 128, 128, 0.08);
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.navButton:active {
+    transform: scale(0.95);
+}
+

@@ -1,22 +1,33 @@
 {
   "name": "secretary-app",
+  "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "client",
-    "server"
-  ],
+  "packageManager": "pnpm@11.0.8",
   "scripts": {
-    "lint": "npm run lint --workspace=client",
-    "build": "npm run build --workspace=client",
-    "test": "npm run test --workspace=server"
+    "dev": "pnpm -r --parallel dev",
+    "lint": "pnpm recursive run lint",
+    "precommit": "pnpm run lint && echo '🚀 Linter passed! Safe to commit.'",
+    "build": "pnpm --filter client build",
+    "docs:dev": ".venv/bin/mkdocs serve",
+    "docs:build": ".venv/bin/mkdocs build",
+    "test": "pnpm --filter server test"
   },
+
   "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^6.0.1",
-    "vite": "^8.0.10",
-    "wrangler": "^4.83.0"
+    "@vitejs/plugin-react": "^6.0.3",
+    "vite": "^8.0.13",
+    "wrangler": "^4.91.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "form-data": "^4.0.1",
+      "qs": "^6.11.0",
+      "follow-redirects": "^1.15.4",
+      "tough-cookie": "^4.1.3"
+    }
   }
 }

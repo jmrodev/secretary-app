@@ -1,0 +1,198 @@
+/* ScheduleTimeline Styles (BEM) - Dark Mode Standard */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 0;
+    overflow: hidden auto;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    position: relative;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+}
+
+.currentTimeLine {
+    position: absolute;
+    left: -10px;
+    right: -10px;
+    height: 2px;
+    z-index: 50;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+}
+
+.currentTimeLineLabel {
+    position: absolute;
+    left: 0;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--white);
+    background: var(--danger);
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-sm, 0.35rem);
+    letter-spacing: 0.05em;
+    border: 1px solid rgb(255, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgb(220, 38, 38, 0.5);
+    white-space: nowrap;
+}
+
+.currentTimeLineBar {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, rgb(220, 38, 38, 0.8) 0%, rgb(220, 38, 38, 1) 50%, rgb(220, 38, 38, 0.8) 100%);
+    box-shadow: 0 0 8px rgb(220, 38, 38, 0.6);
+}
+
+.root::-webkit-scrollbar {
+    width: 6px;
+}
+
+.root::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.root::-webkit-scrollbar-thumb {
+    background: rgb(128, 128, 128, 0.2);
+    border-radius: 10px;
+}
+
+.root::-webkit-scrollbar-thumb:hover {
+    background: rgb(128, 128, 128, 0.3);
+}
+
+/* --- Available / Empty Slot Card --- */
+.availableCard {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--dashboard-card-bg);
+    border: 1px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+    position: relative;
+    user-select: none;
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.6rem 1rem;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.availableCard:hover {
+    border-style: solid;
+    border-color: var(--primary-color);
+    background: rgb(128, 128, 128, 0.05);
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+}
+
+.availableTimeTop {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    margin: 0;
+    padding: 0;
+    border: none;
+    min-width: 4.5rem;
+    font-family: var(--font-manrope);
+}
+
+.availableBody {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    margin: 0;
+    min-height: auto;
+    opacity: 0.8;
+}
+
+.availableCard:hover .availableBody {
+    opacity: 1;
+}
+
+.availableIcon {
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+.availableCard:hover .availableIcon {
+    color: var(--primary-color);
+    transform: rotate(90deg);
+}
+
+.availableLabel {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: left;
+}
+
+.availableClosed {
+    background: rgb(239, 68, 68, 0.03);
+    border-color: rgb(239, 68, 68, 0.2);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.availableClosed:hover {
+    transform: none;
+    background: rgb(239, 68, 68, 0.05);
+    border-color: var(--danger);
+    box-shadow: none;
+}
+
+.availableClosed:hover .availableIcon {
+    transform: none;
+    color: var(--danger);
+}
+
+/* --- Google Blocked Card --- */
+.googleBlocked {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 3.25rem;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    padding: 0.6rem 1rem;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.googleBlocked span {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.googleBlocked span {
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+}
+
+/* Past and closed slot modifiers for blocked placeholders */
+.slotClosed .googleBlocked {
+    opacity: 0.6;
+}
+
+.slotPast .googleBlocked {
+    opacity: 0.45;
+}

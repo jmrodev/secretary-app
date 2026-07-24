@@ -1,7 +1,7 @@
 import React from 'react';
 import { useMessagesPageController, ChatSidebar, ChatWindow } from '@/features/chat/index';
 import MainLayout from '@/components/templates/MainLayout';
-import './ChatPage.css';
+import styles from './ChatPage.module.css';
 
 
 /**
@@ -26,32 +26,37 @@ const ChatPage = () => {
     } = useMessagesPageController();
 
     return (
-        <MainLayout wide>
-            <main className="chat-page-orchestrator animate-fadeIn">
-                <ChatSidebar
-                    className="chat-sidebar"
-                    conversations={conversations}
-                    selectedConvo={selectedConvo}
-                    onSelectConvo={setSelectedConvo}
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    recipients={recipients}
-                    onStartNewChat={startNewChat}
-                    unreadCount={unreadCount}
-                />
+        <MainLayout wide flush>
+            <main className={`${styles.chatPageOrchestrator} ${selectedConvo ? styles.chatPageOrchestratorConvoSelected : ''} animate-fade-in`}>
+                <div className="layout-content-area">
+                    <div className="chat-page-container">
+                        <ChatSidebar
+                            className={`${styles.chatSidebar}`}
+                            conversations={conversations}
+                            selectedConvo={selectedConvo}
+                            onSelectConvo={setSelectedConvo}
+                            searchTerm={searchTerm}
+                            setSearchTerm={setSearchTerm}
+                            recipients={recipients}
+                            onStartNewChat={startNewChat}
+                            unreadCount={unreadCount}
+                        />
 
-                <ChatWindow
-                    className="chat-window"
-                    selectedConvo={selectedConvo}
-                    thread={thread}
-                    user={user}
-                    loading={loading}
-                    sending={sending}
-                    messageText={messageText}
-                    setMessageText={setMessageText}
-                    onSendMessage={handleSendMessage}
-                    scrollRef={scrollRef}
-                />
+                        <ChatWindow
+                            className={`${styles.chatWindow}`}
+                            selectedConvo={selectedConvo}
+                            thread={thread}
+                            user={user}
+                            loading={loading}
+                            sending={sending}
+                            messageText={messageText}
+                            setMessageText={setMessageText}
+                            onSendMessage={handleSendMessage}
+                            scrollRef={scrollRef}
+                            onBack={() => setSelectedConvo(null)} // Call setSelectedConvo(null) to go back
+                        />
+                    </div>
+                </div>
             </main>
         </MainLayout>
     );

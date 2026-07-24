@@ -1,6 +1,6 @@
-const userRepository = require('../../repositories/userRepository');
-const userAccountService = require('../../services/UserAccountService');
-const { logAction } = require('../../utils/audit');
+const userRepository = require('../../repositories/user/userRepository');
+const userAccountService = require('../../services/user/UserAccountService');
+const { logAction } = require('../../utils/system/audit');
 const bcrypt = require('bcrypt');
 
 /**

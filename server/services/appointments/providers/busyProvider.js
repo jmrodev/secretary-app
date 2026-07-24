@@ -1,5 +1,5 @@
 const googleCalendarService = require('../../google/GoogleCalendarService');
-const appointmentRepository = require('../../../repositories/appointmentRepository');
+const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
 
 class BusyProvider {
     async getBusyIntervals(doctorId, startTime, endTime) {

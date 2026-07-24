@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/features/auth/AuthContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useNavigate } from 'react-router-dom';
 
 /**

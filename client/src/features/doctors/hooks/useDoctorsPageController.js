@@ -1,25 +1,26 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import api from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useModal } from '@/context/ModalContext';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useFetch } from '@/hooks/useFetch';
+import { useSearch } from '@/hooks/useSearch';
 
 export const useDoctorsPageController = () => {
     const { t } = useLanguage();
     const { user: currentUser } = useAuth();
     const { showMessage } = useMessage();
     const { confirm } = useModal();
+    const { searchTerm, setSearchTerm } = useSearch();
+
     // Data State using useFetch
     const { data: docData, loading: doctorsLoading, refetch: fetchDoctors } = useFetch('/users/doctors', { 
         initialData: { doctors: [], totalCount: 0 } 
     });
 
-    const doctors = docData?.doctors || [];
+    const doctors = useMemo(() => docData?.doctors || [], [docData]);
     const { data: settings = {}, loading: settingsLoading } = useFetch('/settings', { initialData: {} });
-
-    const [searchTerm, setSearchTerm] = useState('');
 
     // Unified Modal State: type = 'EDIT'
     const [modalState, setModalState] = useState({
@@ -115,7 +116,9 @@ export const useDoctorsPageController = () => {
             reminder_template: doc.reminder_template || '',
             confirmation_template: doc.confirmation_template || '',
             reminder_virtual_template: doc.reminder_virtual_template || '',
-            confirmation_virtual_template: doc.confirmation_virtual_template || ''
+            confirmation_virtual_template: doc.confirmation_virtual_template || '',
+            gemini_context: doc.gemini_context || '',
+            gemini_history_limit: doc.gemini_history_limit || 3
         };
 
         setModalState({
@@ -162,7 +165,7 @@ export const useDoctorsPageController = () => {
         try {
             const res = await api.get(`/google/auth-url?doctorId=${modalState.data.id}`);
             window.location.href = res.data.url;
-        } catch (err) {
+        } catch {
             showMessage('Failed to initiate connection.', 'error');
         }
     };
@@ -208,14 +211,14 @@ export const useDoctorsPageController = () => {
             try {
                 const res = await api.get(`/google/appointments?doctorId=${modalState.data.id}`);
                 showMessage(`Encontrados ${res.data.events?.length || 0} turnos en Calendar.`, 'success');
-            } catch (e) { showMessage('Error al verificar calendar', 'error'); }
+            } catch { showMessage('Error al verificar calendar', 'error'); }
         },
         onImportContacts: async () => {
             if (!await confirm("¿Importar contactos como pacientes?")) return;
             try {
                 await api.post('/google/import', { doctorId: modalState.data.id });
                 showMessage('Importación completada con éxito', 'success');
-            } catch (e) { showMessage('Error al importar contactos', 'error'); }
+            } catch { showMessage('Error al importar contactos', 'error'); }
         },
         onResetSpreadsheet: async () => {
             if (!await confirm("¿Restablecer planilla de Finanzas? Se creará una nueva con el próximo pago.")) return;

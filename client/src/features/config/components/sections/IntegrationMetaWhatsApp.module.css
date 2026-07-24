@@ -1,0 +1,9 @@
+/* IntegrationMetaWhatsApp Component Styles (BEM) */
+
+.root {
+    /* Specialized styles if needed, otherwise uses global config-section */
+}
+
+.intro {
+    margin-bottom: 1.5rem;
+}

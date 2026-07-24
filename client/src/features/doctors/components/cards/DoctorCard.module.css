@@ -1,0 +1,161 @@
+/* DoctorCard Component Styles */
+
+.root {
+    /* --- Local Component Tokens --- */
+    --doc-card-bg: var(--white);
+    --doc-card-border: var(--gray-300);
+    --doc-avatar-bg: var(--blue-100);
+    --doc-avatar-text: var(--blue-600);
+    --doc-price-bg: var(--gray-50);
+
+    /* ------------------------------ */
+
+    background-color: var(--doc-card-bg);
+    border: 1px solid var(--doc-card-border);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.root:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--gray-400);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.avatar {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background-color: var(--doc-avatar-bg);
+    color: var(--doc-avatar-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+}
+
+.info {
+    flex: 1;
+    min-width: 0;
+}
+
+.name {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s;
+}
+
+.root:hover .name {
+    color: var(--accent-color);
+}
+
+.specialty {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.25rem;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.detailItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.detailIcon {
+    font-size: 1.25rem;
+    width: 1.5rem;
+    text-align: center;
+}
+
+.phoneLink {
+    font-weight: 600;
+    color: var(--text-main);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.phoneLink:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.phoneEmpty {
+    font-style: italic;
+    color: var(--text-muted);
+}
+
+.officeLabel {
+    font-weight: 600;
+}
+
+.officeValue {
+    color: var(--text-main);
+}
+
+.prices {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.priceBox {
+    background-color: var(--doc-price-bg);
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    text-align: center;
+    border: 1px solid var(--gray-200);
+}
+
+.priceLabel {
+    font-size: 0.625rem;
+    font-weight: 900;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+}
+
+.priceValue {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.footer {
+    margin-top: auto;
+}
+
+.configBtn {
+    width: 100%;
+}

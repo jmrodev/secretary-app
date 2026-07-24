@@ -1,0 +1,154 @@
+/* PatientRecycleBin Component Styles - Feature Specific */
+
+.root {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.emptyState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    text-align: center;
+    background: var(--dashboard-card-bg);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+}
+
+.emptyIcon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.container {
+    background: var(--dashboard-card-bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    background: var(--dashboard-card-bg);
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.row:hover {
+    background-color: rgb(128, 128, 128, 0.08);
+}
+
+.patientName {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.patientDni {
+    font-family: monospace;
+    color: var(--text-secondary);
+    background: var(--gray-50);
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.8rem;
+    display: inline-block;
+}
+
+.contactInfo {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.contactItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.dateWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.emptyTitle {
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.emptyText {
+    font-size: 0.875rem;
+    color: var(--gray-400);
+    margin-top: 0.5rem;
+}
+
+.patientWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.contactMissing {
+    font-style: italic;
+    color: var(--slate-400);
+}
+
+.actionBtnRestore {
+    color: var(--green-600);
+    border-color: var(--green-200);
+    font-weight: 700;
+}
+
+.actionBtnRestore:hover {
+    background-color: var(--green-50);
+    border-color: var(--green-300);
+}
+
+.footerHint {
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--gray-400);
+}
+

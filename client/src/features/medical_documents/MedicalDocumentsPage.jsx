@@ -1,25 +1,25 @@
 import React from 'react';
-import { 
-    useMedicalDocumentsController,
-    MedicalRequestForm,
-    MedicalRequestList,
-    MedicalHistoryTable,
-    MedicalFileRepository,
-    MedicalActionModals,
-    DocumentsHeader,
-    DocumentsSidebar
-} from '@/features/medical_documents/index'; // Using local index for feature components
+import { useMedicalDocumentsController } from './hooks/useMedicalDocumentsController';
+import MedicalRequestForm from './components/forms/MedicalRequestForm';
+import MedicalRequestList from './components/lists/MedicalRequestList';
+import MedicalHistoryTable from './components/lists/MedicalHistoryTable';
+import MedicalFileRepository from './components/lists/MedicalFileRepository';
+import MedicalActionModals from './components/modals/MedicalActionModals';
+import MedicalDocumentsPrintView from './components/ui/MedicalDocumentsPrintView';
+import { PatientSearchSelect } from '@/features/patients';
+import { TransactionModal } from '@/features/finances';
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
-import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 import TabButton from '@/components/atoms/TabButton';
 import TabNav from '@/components/molecules/TabNav';
-import { formatDate } from '@/utils/dateUtils';
+
+import { useMedicalDocumentsDerivedData } from './hooks/useMedicalDocumentsDerivedData';
+import { MedicalDocumentsToolbar } from './components/sections/MedicalDocumentsToolbar';
 
 // Styles
-import './MedicalDocumentsPage.css';
+import styles from './MedicalDocumentsPage.module.css';
 
 /**
  * MedicalDocumentsPage (Orchestrator).
@@ -29,7 +29,7 @@ const MedicalDocumentsPage = () => {
     const controller = useMedicalDocumentsController();
     const {
         user, t, activeTab, requestsSubTab,
-        searchTerm, isEditing,
+        isEditing,
         requests, files, prescriptions, licenses, doctors,
         requestsPage, requestsTotalPages,
         prescriptionsPage, prescriptionsTotalPages,
@@ -49,7 +49,7 @@ const MedicalDocumentsPage = () => {
     } = controller;
 
     const {
-        handleSearchChange, handleTabChange, handleSubTabChange,
+        handleTabChange, handleSubTabChange,
         handleFileDescChange, handleFilePatientChange, handleFileUploadChange,
         handleActionNoteChange, handleEditDataChange, handleLicenseEditDataChange,
         handleRequestEditDataChange, handleSelectMedication, toggleEditing,
@@ -61,169 +61,138 @@ const MedicalDocumentsPage = () => {
         filterItem, handleExportJSON, handlePrintPrescriptions
     } = handlers;
 
-    // --- Derived Data for Combined Views ---
-    const combinedPrescriptions = [
-        ...prescriptions.map(p => ({ ...p, _origin: 'prescription' })),
-        ...requests.filter(r => r.type === 'prescription' && r.status === 'completed').map(r => ({
-            ...r,
-            _origin: 'request',
-            medications: r.request_note,
-            instructions: r.doctor_note
-        }))
-    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-    const combinedLicenses = [
-        ...licenses.map(l => ({ ...l, _origin: 'license' })),
-        ...requests.filter(r => r.type === 'license' && r.status === 'completed').map(r => ({
-            ...r,
-            _origin: 'request',
-            start_date: r.created_at,
-            days_duration: '-',
-            diagnosis: r.request_note
-        }))
-    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-    const combinedCertificates = [
-        ...requests.filter(r => r.type === 'certificate' && r.status === 'completed').map(r => ({
-            ...r,
-            _origin: 'request',
-            description: r.request_note
-        }))
-    ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-    if (loading) return (
-        <MainLayout wide flush>
-            <Loading variant="centered" />
-        </MainLayout>
-    );
+    const {
+        combinedPrescriptions,
+        combinedLicenses,
+        combinedCertificates,
+        printDate
+    } = useMedicalDocumentsDerivedData({ prescriptions, requests, licenses, t });
 
     return (
-        <MainLayout wide flush title={t('documents') || 'Documentos Médicos'}>
-            <div className="medical-documents-page">
-                <div className="medical-documents no-print">
+        <MainLayout wide flush title={t('medical_documents')}>
+            <div className={`${styles.medicalDocumentsPageOrchestrator} layout-content-area`}>
+                <MedicalDocumentsToolbar 
+                    activeTab={activeTab}
+                    requestsSubTab={requestsSubTab}
+                    handleTabChange={handleTabChange}
+                    handleExportJSON={handleExportJSON}
+                    handlePrintPrescriptions={handlePrintPrescriptions}
+                    t={t}
+                />
 
-                <div className="dashboard-grid animate-fadeIn">
-                    <DocumentsSidebar
-                        t={t}
-                        activeTab={activeTab}
-                        handleTabChange={handleTabChange}
-                        searchTerm={searchTerm}
-                        handleSearchChange={handleSearchChange}
-                        requestsSubTab={requestsSubTab}
-                        handleExportJSON={handleExportJSON}
-                        handlePrintPrescriptions={handlePrintPrescriptions}
-                    />
+                <main className={`${styles.main} ${styles.animateFadeIn} ${styles.noPrint}`}>
+                    <div className={`${styles.tabsContent}`}>
+                        {activeTab === 'requests' && (
+                            <article className="medical-documents__requests-layout">
+                                <TabNav className="tab-nav--sub">
+                                    <TabButton
+                                        isActive={requestsSubTab === 'list'}
+                                        onClick={() => handleSubTabChange('list')}
+                                    >
+                                        {t('request_status')}
+                                    </TabButton>
+                                    <TabButton
+                                        isActive={requestsSubTab === 'new'}
+                                        onClick={() => handleSubTabChange('new')}
+                                        icon={<Icon name="add" size="1rem" />}
+                                    >
+                                        {t('new_request')}
+                                    </TabButton>
+                                </TabNav>
 
-                    <main className="dashboard-main">
-                        <div className="medical-documents__tabs-content">
-                            {activeTab === 'requests' && (
-                                <div className="medical-documents__requests-layout">
-                                    <TabNav className="tab-nav--sub">
-                                        <TabButton
-                                            isActive={requestsSubTab === 'list'}
-                                            onClick={() => handleSubTabChange('list')}
-                                        >
-                                            {t('request_status')}
-                                        </TabButton>
-                                        <TabButton
-                                            isActive={requestsSubTab === 'new'}
-                                            onClick={() => handleSubTabChange('new')}
-                                            icon={<Icon name="add" size="1rem" />}
-                                        >
-                                            {t('new_request')}
-                                        </TabButton>
-                                    </TabNav>
+                                {requestsSubTab === 'new' ? (
+                                    <MedicalRequestForm
+                                        doctors={doctors}
+                                        initialType={reqType}
+                                        initialSendToDoctor={sendToDoctor}
+                                        onRequestCreated={() => {
+                                            handlers.fetchRequests();
+                                            handleSubTabChange('list');
+                                        }}
+                                        PatientSearchSelectComponent={PatientSearchSelect}
+                                    />
+                                ) : (
+                                    <MedicalRequestList
+                                        requests={requests}
+                                        loading={loading}
+                                        handleDeleteRequest={handleDeleteRequest}
+                                        openActionModal={openActionModal}
+                                        setPaymentModal={openPaymentModal}
+                                        onBonify={handlers.handleBonifyRequest}
+                                        canDelete={user?.role === 'admin' || canDeleteRequest}
+                                        handleEditRequest={handleEditItem}
+                                        currentPage={requestsPage}
+                                        totalPages={requestsTotalPages}
+                                        onPageChange={handlers.handlePageChange}
+                                    />
+                                )}
+                            </article>
+                        )}
 
-                                    {requestsSubTab === 'new' ? (
-                                        <MedicalRequestForm
-                                            doctors={doctors}
-                                            initialType={reqType}
-                                            initialSendToDoctor={sendToDoctor}
-                                            onRequestCreated={() => {
-                                                handlers.fetchRequests();
-                                                handleSubTabChange('list');
-                                            }}
-                                        />
-                                    ) : (
-                                        <MedicalRequestList
-                                            requests={requests}
-                                            handleDeleteRequest={handleDeleteRequest}
-                                            openActionModal={openActionModal}
-                                            setPaymentModal={openPaymentModal}
-                                            onBonify={handlers.handleBonifyRequest}
-                                            canDelete={user?.role === 'admin' || canDeleteRequest}
-                                            handleEditRequest={handleEditItem}
-                                            currentPage={requestsPage}
-                                            totalPages={requestsTotalPages}
-                                            onPageChange={handlers.handlePageChange}
-                                        />
-                                    )}
-                                </div>
-                            )}
+                        {activeTab === 'files' && (
+                            <MedicalFileRepository
+                                t={t}
+                                user={user}
+                                files={files}
+                                filterItem={filterItem}
+                                filePatient={filePatient}
+                                fileDesc={fileDesc}
+                                handleFilePatientChange={handleFilePatientChange}
+                                handleFileDescChange={handleFileDescChange}
+                                handleFileUploadChange={handleFileUploadChange}
+                                handleFileUpload={handleFileUpload}
+                                openDeleteFileModal={openDeleteFileModal}
+                                canDeleteFile={canDeleteFile}
+                                PatientSearchSelectComponent={PatientSearchSelect}
+                            />
+                        )}
 
-                            {activeTab === 'files' && (
-                                <MedicalFileRepository
-                                    t={t}
-                                    user={user}
-                                    files={files}
-                                    filterItem={filterItem}
-                                    filePatient={filePatient}
-                                    fileDesc={fileDesc}
-                                    handleFilePatientChange={handleFilePatientChange}
-                                    handleFileDescChange={handleFileDescChange}
-                                    handleFileUploadChange={handleFileUploadChange}
-                                    handleFileUpload={handleFileUpload}
-                                    openDeleteFileModal={openDeleteFileModal}
-                                    canDeleteFile={canDeleteFile}
-                                />
-                            )}
-
-                            {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
-                                <MedicalHistoryTable
-                                    items={
-                                        activeTab === 'prescriptions' ? combinedPrescriptions :
-                                            activeTab === 'licenses' ? combinedLicenses :
-                                                combinedCertificates
-                                    }
-                                    onView={handleEditItem}
-                                    onDelete={
-                                        activeTab === 'prescriptions' ? handleDeletePrescription :
-                                            activeTab === 'licenses' ? handleDeleteLicense :
-                                                (id, item) => handleDeleteRequest(id, item)
-                                    }
-                                    canDelete={
-                                        user?.role === 'admin' ||
-                                        (activeTab === 'prescriptions' && canDeletePrescription) ||
-                                        (['licenses', 'certificates'].includes(activeTab) && canDeleteLicense)
-                                    }
-                                    icon={activeTab === 'prescriptions' ? 'medication' : activeTab === 'licenses' ? 'description' : 'verified'}
-                                    title={
-                                        activeTab === 'prescriptions' ? t('recent_prescriptions') :
-                                            activeTab === 'licenses' ? t('recent_licenses') :
-                                                t('recent_certificates')
-                                    }
-                                    originLabel={activeTab === 'certificates' ? t('certificate') : undefined}
-                                    // Pagination Props
-                                    currentPage={
-                                        activeTab === 'prescriptions' ? prescriptionsPage :
-                                            activeTab === 'licenses' ? licensesPage :
-                                                requestsPage
-                                    }
-                                    totalPages={
-                                        activeTab === 'prescriptions' ? prescriptionsTotalPages :
-                                            activeTab === 'licenses' ? licensesTotalPages :
-                                                requestsTotalPages
-                                    }
-                                    onPageChange={
-                                        activeTab === 'prescriptions' ? handlers.handlePrescriptionPageChange :
-                                            activeTab === 'licenses' ? handlers.handleLicensePageChange :
-                                                handlers.handlePageChange
-                                    }
-                                />
-                            )}
-                        </div>
-                    </main>
-                </div>
+                        {['prescriptions', 'licenses', 'certificates'].includes(activeTab) && (
+                            <MedicalHistoryTable
+                                items={
+                                    activeTab === 'prescriptions' ? combinedPrescriptions :
+                                        activeTab === 'licenses' ? combinedLicenses :
+                                            combinedCertificates
+                                }
+                                loading={loading}
+                                onView={handleEditItem}
+                                onDelete={
+                                    activeTab === 'prescriptions' ? handleDeletePrescription :
+                                        activeTab === 'licenses' ? handleDeleteLicense :
+                                            (id, item) => handleDeleteRequest(id, item)
+                                }
+                                canDelete={
+                                    user?.role === 'admin' ||
+                                    (activeTab === 'prescriptions' && canDeletePrescription) ||
+                                    (['licenses', 'certificates'].includes(activeTab) && canDeleteLicense)
+                                }
+                                icon={activeTab === 'prescriptions' ? 'medication' : activeTab === 'licenses' ? 'description' : 'verified'}
+                                title={
+                                    activeTab === 'prescriptions' ? t('recent_prescriptions') :
+                                        activeTab === 'licenses' ? t('recent_licenses') :
+                                            t('recent_certificates')
+                                }
+                                originLabel={activeTab === 'certificates' ? t('certificate') : undefined}
+                                // Pagination Props
+                                currentPage={
+                                    activeTab === 'prescriptions' ? prescriptionsPage :
+                                        activeTab === 'licenses' ? licensesPage :
+                                            requestsPage
+                                }
+                                totalPages={
+                                    activeTab === 'prescriptions' ? prescriptionsTotalPages :
+                                        activeTab === 'licenses' ? licensesTotalPages :
+                                            requestsTotalPages
+                                }
+                                onPageChange={
+                                    activeTab === 'prescriptions' ? handlers.handlePrescriptionPageChange :
+                                        activeTab === 'licenses' ? handlers.handleLicensePageChange :
+                                            handlers.handlePageChange
+                                }
+                            />
+                        )}
+                    </div>
+                </main>
 
                 <MedicalActionModals
                     t={t}
@@ -253,58 +222,15 @@ const MedicalDocumentsPage = () => {
                     requestEditData={requestEditData}
                     handleRequestEditDataChange={handleRequestEditDataChange}
                     handleUpdateRequest={handleUpdateRequest}
+                    TransactionModalComponent={TransactionModal}
+                />
+
+                <MedicalDocumentsPrintView 
+                    printData={printData} 
+                    printDate={printDate} 
+                    t={t} 
                 />
             </div>
-
-            {/* Print Section - BEM compliant */}
-            <div className="medical-documents__print-container">
-                <header className="medical-documents__print-header">
-                    <h1 className="medical-documents__print-title">Reporte de Recetas y Solicitudes</h1>
-                    <p className="medical-documents__print-date">Generado el {formatDate(new Date(), { time: true })}</p>
-                </header>
-
-                <table className="print-table">
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Paciente</th>
-                            <th>Médico</th>
-                            <th>Origen</th>
-                            <th>Pago</th>
-                            <th>Detalle / Medicamentos</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {printData && printData.map((item, idx) => (
-                            <tr key={idx}>
-                                <td>{formatDate(item.date)}</td>
-                                <td className="print-table__cell--bold">{item.patient_name}</td>
-                                <td>{item.doctor_name}</td>
-                                <td>
-                                    {item.source_type === 'direct' ? 'Consulta' : 'Solicitud'}
-                                </td>
-                                <td>
-                                    {item.source_type === 'request' ? (
-                                        <span className={`status-chip status-${item.payment_status}`}>
-                                            {item.payment_status === 'paid' ? 'PAGADO' :
-                                                item.payment_status === 'debt' ? 'DEUDA' :
-                                                    item.payment_status === 'bonified' ? 'BONIF.' : item.payment_status}
-                                            {item.amount > 0 && ` $${item.amount}`}
-                                        </span>
-                                    ) : '-'}
-                                </td>
-                                <td>
-                                    <div className="config-flex--column">
-                                        <span className="print-table__cell--mono">{item.medications}</span>
-                                        {item.instructions && <span className="print-table__cell--muted">{item.instructions}</span>}
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        </div>
         </MainLayout>
     );
 };

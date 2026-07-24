@@ -1,20 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Button.css';
+import Loading from './Loading';
+import styles from './Button.module.css';
 
 /**
- * Button Atom component.
- * Supports various variants, sizes, and navigation via 'to' prop.
- * Automatically styles as icon-only if no children are provided.
+ * Button Atom component (ECC Refactored).
+ * Follows Atomic Design and ensures prop integrity.
  */
-const Button = ({
+export const Button = React.memo(({
     children,
     onClick,
     to,
     type = 'button',
-    variant = 'primary', // primary, secondary, success, danger, outline-danger, accent, warning, info, link, ghost, status
-    size = 'md', // sm, sm-compact, md, lg
+    variant = 'primary', 
+    size = 'md',
     disabled = false,
+    loading = false,
     className = '',
     title = '',
     tooltip = null,
@@ -22,50 +23,55 @@ const Button = ({
     iconRight = null,
     active = false,
     unstyled = false,
+    outline = false,
+    round = false,
     target = '_self',
     rel = 'noopener noreferrer',
     ...rest
 }) => {
-    const baseClass = 'btn';
-
-    // Construct BEM classes
-    const variantClass = variant ? `${baseClass}--${variant}` : '';
-    const sizeClass = size && size !== 'md' ? `${baseClass}--${size}` : '';
-    const activeClass = active ? `${baseClass}--active` : '';
-    const iconOnlyClass = !children && icon ? `${baseClass}--icon-only` : '';
-
-    const combinedClassName = unstyled
-        ? className
-        : `
-            ${baseClass} 
-            ${variantClass} 
-            ${sizeClass} 
-            ${activeClass}
-            ${iconOnlyClass}
-            ${className}
-        `.trim().replace(/\s+/g, ' ');
+    // ECC: Use native array mapping for clean CSS Module class management
+    const isIconOnly = !children && icon;
+    
+    const combinedClassName = unstyled ? className : [
+        styles.root,
+        variant && styles[variant],
+        size && size !== 'md' && styles[size],
+        active && styles.active,
+        isIconOnly && styles.iconOnly,
+        round && styles.round, // Support for round prop
+        loading && styles.loading,
+        className
+    ].filter(Boolean).join(' ');
 
     const content = (
         <>
-            {icon && <span className="btn__icon">{icon}</span>}
-            {children && <span className="btn__content">{children}</span>}
-            {iconRight && <span className="btn__icon">{iconRight}</span>}
+            {loading && <Loading size="sm" variant="inline" className={styles.spinner} />}
+            {!loading && icon && <span className={styles.icon}>{icon}</span>}
+            {children && <span className={styles.content}>{children}</span>}
+            {!loading && iconRight && <span className={styles.icon}>{iconRight}</span>}
         </>
     );
 
-    // If 'to' prop is provided and it's an external link or a protocol
     const isExternal = to && (to.startsWith('http') || to.startsWith('tel:') || to.startsWith('mailto:') || to.startsWith('whatsapp:'));
+
+    // ECC: Props for the underlying element
+    const elementProps = {
+        className: combinedClassName,
+        title,
+        'data-tooltip': tooltip,
+        onClick: (e) => {
+            if (disabled || loading) {
+                e.preventDefault();
+                return;
+            }
+            if (onClick) onClick(e);
+        },
+        ...rest
+    };
 
     if (to && !isExternal) {
         return (
-            <Link
-                to={to}
-                className={combinedClassName}
-                title={title}
-                data-tooltip={tooltip}
-                onClick={onClick}
-                {...rest}
-            >
+            <Link to={to} {...elementProps}>
                 {content}
             </Link>
         );
@@ -73,34 +79,17 @@ const Button = ({
 
     if (to && isExternal) {
         return (
-            <a
-                href={to}
-                className={combinedClassName}
-                title={title}
-                data-tooltip={tooltip}
-                target={target}
-                rel={rel}
-                onClick={onClick}
-                {...rest}
-            >
+            <a href={to} target={target} rel={rel} {...elementProps}>
                 {content}
             </a>
         );
     }
 
     return (
-        <button
-            type={type}
-            onClick={onClick}
-            disabled={disabled}
-            className={combinedClassName}
-            title={title}
-            data-tooltip={tooltip}
-            {...rest}
-        >
+        <button type={type} disabled={disabled || loading} {...elementProps}>
             {content}
         </button>
     );
-};
+});
 
-export default Button;
+

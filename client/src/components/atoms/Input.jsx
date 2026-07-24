@@ -1,5 +1,5 @@
 import React from 'react';
-import './Input.css';
+import styles from './Input.module.css';
 
 /**
  * Input Atom.
@@ -22,11 +22,11 @@ const Input = ({
     size = 'md',         // 'sm' | 'md' | 'lg'
     ...rest              // forwards: checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.
 }) => {
-    const baseClass = 'input';
+    const baseClass = styles.root;
 
-    const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
-    const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
-    const typeClass = type === 'textarea' ? `${baseClass}--textarea` : '';
+    const variantClass = variant !== 'default' && styles[variant] ? styles[variant] : '';
+    const sizeClass = size !== 'md' && styles[size] ? styles[size] : '';
+    const typeClass = type === 'textarea' && styles.textarea ? styles.textarea : '';
 
     const combinedClassName = `
         ${baseClass} 

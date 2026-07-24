@@ -1,10 +1,15 @@
 import React from 'react';
-import { Sidebar, PageHeader } from '@/features/layout';
-import './MainLayout.css';
+import { Navbar } from '@/features/layout';
+import PageHeader from '@/components/ui/PageHeader';
+import { useSearch } from '@/hooks/useSearch';
+import { useLanguage } from '@/hooks/useLanguage';
+import { DoctorSelector } from '@/features/doctors';
+import CompactHeaderStats from '@/components/molecules/CompactHeaderStats';
+import styles from './MainLayout.module.css';
 
 /**
  * MainLayout Template.
- * Orchestrates the primary application structure: Sidebar + PageHeader + Content.
+ * Orchestrates the primary application structure: Navbar + PageHeader + Content.
  */
 const MainLayout = ({ 
     children, 
@@ -14,22 +19,47 @@ const MainLayout = ({
     variant = 'premium',
     backgroundUrl,
     hideDoctorSelector = false,
-    headerActions
+    doctorSelectorActions = null,
+    actionSlot,
+    hideClock = false,
+    hideSearch = false,
+    hideTitle = (variant === 'premium')
 }) => {
+    const { searchTerm, setSearchTerm } = useSearch();
+    const { t } = useLanguage();
+
     return (
-        <div className="app-layout">
-            <Sidebar />
-            <main className={`main-content ${wide ? 'dashboard-wide' : ''} ${flush ? 'main-content--flush' : ''}`}>
+        <div className={`${styles.appLayout}`}>
+            <Navbar />
+            <main className={`${styles.root} ${wide ? styles.dashboardWide : ''} ${flush ? styles.flush : ''}`}>
                 {title && (
                     <PageHeader 
                         title={title}
                         variant={variant}
                         backgroundUrl={backgroundUrl}
-                        hideDoctorSelector={hideDoctorSelector}
-                        actionSlot={headerActions}
+                        actionSlot={actionSlot}
+                        hideTitle={hideTitle}
+                        hideClock={hideClock}
+                        hideSearch={hideSearch}
+                        searchTerm={searchTerm}
+                        onSearchChange={setSearchTerm}
+                        statsSlot={<CompactHeaderStats />}
+                        doctorSelectorSlot={
+                            !hideDoctorSelector ? (
+                                <>
+                                    <DoctorSelector />
+                                    {doctorSelectorActions}
+                                </>
+                            ) : null
+                        }
+                        labels={{
+                            searchPlaceholder: t('search_placeholder') || 'Search...'
+                        }}
                     />
                 )}
-                {children}
+                <div className={`${styles.inner}`}>
+                    {children}
+                </div>
             </main>
         </div>
     );

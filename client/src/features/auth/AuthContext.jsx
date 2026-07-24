@@ -1,9 +1,9 @@
-import { createContext, useContext, useMemo } from 'react';
+import { createContext, use } from 'react';
 import { useAuthLogic } from '@/features/auth/useAuthLogic';
 
 const AuthContext = createContext();
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => use(AuthContext);
 
 export const AuthProvider = ({ children }) => {
     const authValue = useAuthLogic();

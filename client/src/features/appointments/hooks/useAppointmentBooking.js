@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useAuth } from '@/features/auth';
-import { capitalizeFirst } from '@/utils/stringUtils';
+import { capitalizeFirst } from '@/utils/core/stringUtils';
+import { formatCurrency } from '@/utils/core/formatUtils';
 
 /**
  * Hook to manage the appointment booking lifecycle.
@@ -59,9 +60,6 @@ export const useAppointmentBooking = (doctors) => {
             queueMicrotask(() => setSelectedInstitution(selectedPatientData.institution_id));
         }
     }, [selectedPatientData]);
-
-    const formatCurrency = (val) =>
-        new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(val);
 
     const getBookingContext = useCallback(() => {
         if (!selectedPatientData || !date) return null;
@@ -141,7 +139,7 @@ export const useAppointmentBooking = (doctors) => {
             if (editModeId) {
                 await api.put(`/appointments/${editModeId}`, {
                     doctor_id: selectedDoctor,
-                    patient_id: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
+                    patientId: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
                     appointment_date: new Date(date).toISOString(),
                     reason: reason || 'Consulta',
                     bonified,
@@ -152,7 +150,7 @@ export const useAppointmentBooking = (doctors) => {
             } else {
                 await api.post('/appointments', {
                     doctor_id: selectedDoctor,
-                    patient_id: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
+                    patientId: (user.role === 'secretary' || user.role === 'doctor') ? selectedPatient : undefined,
                     appointment_date: new Date(date).toISOString(),
                     reason: reason || 'Consulta',
                     bonified,
@@ -256,15 +254,18 @@ export const useAppointmentBooking = (doctors) => {
         bookAppointment,
         resetForm,
         handlers: {
-            handleDateChange: (val) => setDate(val),
-            handleDoctorChange: (val) => setSelectedDoctor(val),
+            handleDateChange: (e) => setDate(e?.target ? e.target.value : e),
+            handleDoctorChange: (e) => setSelectedDoctor(e?.target ? e.target.value : e),
             handlePatientChange: (val, obj) => {
                 setSelectedPatient(val);
                 setSelectedPatientData(obj);
             },
             handleTypeChange: (val) => setType(val),
-            handleInstitutionChange: (val) => setSelectedInstitution(val),
-            handleReasonChange: (val) => setReason(capitalizeFirst(val)),
+            handleInstitutionChange: (e) => setSelectedInstitution(e?.target ? e.target.value : e),
+            handleReasonChange: (e) => {
+                const val = e?.target ? e.target.value : e;
+                setReason(capitalizeFirst(val));
+            },
             handleBonifiedChange: (val) => setBonified(val),
             handlePhoneChange: (val) => setSelectedPatientData(prev => ({ ...prev, phone: val })),
             toggleForm: () => setShowForm(prev => !prev),

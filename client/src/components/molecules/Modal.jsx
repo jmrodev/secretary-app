@@ -1,45 +1,69 @@
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './Modal.css';
+import styles from './Modal.module.css';
 
-const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant = 'light', className = '' }) => {
-    // Prevent scrolling on body when modal is open
+const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant: _variant = 'light', className = '' }) => {
+    // Prevent scrolling on body when modal is open and handle global Escape key
+    const onCloseRef = React.useRef(onClose);
+    
     useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        }
+        onCloseRef.current = onClose;
+    });
+
+    // Prevent scrolling on body when modal is open and handle global Escape key
+    useEffect(() => {
+        if (!isOpen) return;
+
+        document.body.style.overflow = 'hidden';
+        const handleKeyDownGlobal = (e) => {
+            if (e.key === 'Escape') onCloseRef.current();
+        };
+        window.addEventListener('keydown', handleKeyDownGlobal);
         return () => {
             document.body.style.overflow = 'unset';
+            window.removeEventListener('keydown', handleKeyDownGlobal);
         };
     }, [isOpen]);
 
     if (!isOpen) return null;
 
     return ReactDOM.createPortal(
-        <div className="modal-overlay" onClick={onClose}>
+        <div className={`${styles.root}`}>
+            <button
+                type="button"
+                className={`${styles.backdrop}`}
+                onClick={onClose}
+                aria-label="Cerrar modal"
+            />
             <div
-                className={`modal-content ${size && size !== 'md' ? `modal-content--${size}` : ''} ${variant === 'dark' ? 'modal-content--dark' : ''} ${className}`}
+                className={`${styles.content} ${size && size !== 'md' ? styles['content' + size.charAt(0).toUpperCase() + size.slice(1)] : ''} ${className}`}
                 onClick={e => e.stopPropagation()}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="modal-title"
+                tabIndex={-1}
             >
-                <header className="modal-header">
-                    <h3 className="modal-header__title">{title}</h3>
+                <header className={`${styles.header}`}>
+                    <h3 id="modal-title" className={`${styles.title}`}>{title}</h3>
                     <Button
-                        className="modal-close"
+                        variant="ghost"
+                        size="md-compact"
+                        className={`${styles.close}`}
                         onClick={onClose}
                         aria-label="Close"
+                        icon={<Icon name="CLOSE" />}
                         unstyled
-                        icon={<Icon name="close" />}
                     />
                 </header>
 
-                <div className="modal-body">
+                <div className={`${styles.body}`}>
                     {children}
                 </div>
 
                 {footer && (
-                    <footer className="modal-footer">
+                    <footer className={`${styles.footer}`}>
                         {footer}
                     </footer>
                 )}

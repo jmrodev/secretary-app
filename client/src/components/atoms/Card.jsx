@@ -1,8 +1,8 @@
 import React from 'react';
-import './Card.css';
+import styles from './Card.module.css';
 
 const Card = ({ children, className = '', title = '', footer = null, noPadding = false, as: Component = 'section' }) => {
-    const baseClass = 'card';
+    const baseClass = styles.root;
     const combinedClasses = [
         baseClass,
         noPadding ? `${baseClass}--no-padding` : '',
@@ -13,7 +13,11 @@ const Card = ({ children, className = '', title = '', footer = null, noPadding =
         <Component className={combinedClasses}>
             {title && (
                 <header className={`${baseClass}__header`}>
-                    <h3 className={`${baseClass}__title`}>{title}</h3>
+                    {typeof title === 'string' ? (
+                        <h3 className={`${baseClass}__title`}>{title}</h3>
+                    ) : (
+                        title
+                    )}
                 </header>
             )}
             <div className={`${baseClass}__content`}>

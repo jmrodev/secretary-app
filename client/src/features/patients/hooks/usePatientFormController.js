@@ -1,10 +1,9 @@
-
-import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import api from '@/api/axios';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
-import { capitalizeWords } from '@/utils/stringUtils';
+import { capitalizeWords } from '@/utils/core/stringUtils';
 import { PATIENT_CAPITALIZE_FIELDS } from '@/constants/patientConstants';
 
 /**
@@ -25,12 +24,17 @@ export const usePatientFormController = ({
     const { showMessage } = useMessage();
     const { settings } = useConfig();
 
-    // Data State
-    const [insurances, setInsurances] = useState(providedInsurances);
-    const [doctors, setDoctors] = useState(providedDoctors);
-    const [institutions, setInstitutions] = useState([]);
-    const [loadingData, setLoadingData] = useState(false);
+    // Data State (Consolidated for atomic updates)
+    const [dataState, dispatchData] = React.useReducer((s, a) => ({ ...s, ...a }), {
+        insurances: providedInsurances,
+        doctors: providedDoctors,
+        institutions: [],
+        loadingData: false
+    });
+    const { insurances, doctors, institutions, loadingData } = dataState;
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const setLoadingData = (val) => dispatchData({ loadingData: val });
 
     // Form State
     const [formData, setFormData] = useState({
@@ -69,34 +73,53 @@ export const usePatientFormController = ({
     // Initial Load of Resources
     useEffect(() => {
         const fetchResources = async () => {
+            if (loadingData) return;
             setLoadingData(true);
+            
             try {
-                const promises = [];
-                if (insurances.length === 0) promises.push(api.get('/insurances'));
-                if (doctors.length === 0) promises.push(api.get('/users/doctors'));
-                promises.push(api.get('/institutions'));
+                const fetchInsurances = async () => {
+                    if (insurances.length > 0) return;
+                    try {
+                        const res = await api.get('/insurances');
+                        const data = Array.isArray(res.data) ? res.data : (res.data.insurances || []);
+                        dispatchData({ insurances: data });
+                    } catch (e) { console.error("Error fetching insurances", e); }
+                };
 
-                const results = await Promise.all(promises);
-                let idx = 0;
-                if (insurances.length === 0) {
-                    const res = results[idx++];
-                    setInsurances(Array.isArray(res.data) ? res.data : (res.data.insurances || []));
-                }
-                if (doctors.length === 0) {
-                    const res = results[idx++];
-                    setDoctors(Array.isArray(res.data) ? res.data : (res.data.doctors || []));
-                }
-                const instRes = results[idx++];
-                setInstitutions(Array.isArray(instRes.data) ? instRes.data : (instRes.data.institutions || []));
+                const fetchDoctors = async () => {
+                    if (doctors.length > 0) return;
+                    try {
+                        const res = await api.get('/users/doctors');
+                        const data = Array.isArray(res.data) ? res.data : (res.data.doctors || []);
+                        dispatchData({ doctors: data });
+                    } catch (e) { console.error("Error fetching doctors", e); }
+                };
+
+                const fetchInstitutions = async () => {
+                    if (institutions.length > 0) return;
+                    try {
+                        const res = await api.get('/institutions');
+                        const data = Array.isArray(res.data) ? res.data : (res.data.institutions || []);
+                        dispatchData({ institutions: data });
+                    } catch (e) { console.error("Error fetching institutions", e); }
+                };
+
+                await Promise.allSettled([
+                    fetchInsurances(),
+                    fetchDoctors(),
+                    fetchInstitutions()
+                ]);
+
             } catch (err) {
                 console.error("Failed to fetch form resources", err);
             } finally {
-                setLoadingData(false);
+                dispatchData({ loadingData: false });
             }
         };
 
         fetchResources();
-    }, [doctors.length, insurances.length]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []); // Run once on mount. State variables inside will check if they need to fetch.
 
     // Helper to ensure date is YYYY-MM-DD
     const formatDate = (dateStr) => {
@@ -143,7 +166,7 @@ export const usePatientFormController = ({
 
     // Handlers
     const handlers = {
-        handleChange: (e) => {
+        updatePatientData: (e) => {
             let { name, value } = e.target;
 
             // Apply capitalization if needed
@@ -183,11 +206,11 @@ export const usePatientFormController = ({
             });
         },
 
-        handleManualValueChange: (name, value) => {
+        setPatientValue: (name, value) => {
             setFormData(prev => ({ ...prev, [name]: value }));
         },
 
-        handleDoctorToggle: (doctorId) => {
+        toggleDoctorAssignment: (doctorId) => {
             setFormData(prev => {
                 const current = prev.assignedDoctors || [];
                 const next = current.includes(doctorId)
@@ -197,18 +220,18 @@ export const usePatientFormController = ({
             });
         },
 
-        handlePhoneChange: (newPhones) => {
+        updatePhoneNumbers: (newPhones) => {
             setFormData(prev => ({ ...prev, phoneNumbers: newPhones }));
         },
 
-        handleInstitutionToggle: (checked) => {
+        toggleInstitutionCoverage: (checked) => {
             setCoveredByInstitution(checked);
             if (!checked) {
                 setFormData(prev => ({ ...prev, institution_id: '' }));
             }
         },
 
-        handleSubmit: async (e) => {
+        savePatient: async (e) => {
             if (e) e.preventDefault();
             setIsSubmitting(true);
 
@@ -224,12 +247,12 @@ export const usePatientFormController = ({
 
                     // Clean payload: exclude computed joins and read-only fields
                     const {
-                        insurance_name,    
-                        institution_name,  
-                        total_debt,        
-                        total_appointments,
-                        missed_appointments,
-                        role,              
+                        insurance_name: _insurance_name,    
+                        institution_name: _institution_name,  
+                        total_debt: _total_debt,        
+                        total_appointments: _total_appointments,
+                        missed_appointments: _missed_appointments,
+                        role: _role,              
                         ...updatePayload
                     } = formData;
 
@@ -263,7 +286,7 @@ export const usePatientFormController = ({
                     const insuranceName = insurances.find(i => i.id == formData.insurance_id)?.name || 'Particular';
 
                     const newPatient = {
-                        id: res.data.patient_id,
+                        id: res.data.patientId,
                         user_id: res.data.user_id,
                         ...formData,
                         phone: derivedPhone,

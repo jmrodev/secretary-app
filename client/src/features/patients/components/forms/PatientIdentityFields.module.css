@@ -1,0 +1,84 @@
+.root {
+    --card-padding: 1.5rem;
+
+    background-color: var(--dashboard-card-bg);
+    border-radius: var(--radius);
+
+    /* XL 1.5rem */
+    padding: var(--card-padding);
+    box-shadow: var(--shadow-premium);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    grid-column: span 7;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary-color);
+}
+
+.title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: .5rem;
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+}
+
+.groupSpan6 {
+    grid-column: span 6;
+}
+
+.groupSpan4 {
+    grid-column: span 4;
+}
+
+.groupSpan8 {
+    grid-column: span 8;
+}
+
+.label {
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.note {
+    margin-top: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: rgb(128, 128, 128, 0.08);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: var(--text-muted);
+}
+
+.note p {
+    font-size: 0.75rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+@media (width <= 48rem) {
+    .group {
+        grid-column: span 12 !important;
+    }
+}

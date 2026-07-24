@@ -1,0 +1,120 @@
+.root {
+    --stats-gap: 1.25rem;
+    --stats-pill-bg: var(--dashboard-card-bg);
+    --stats-pill-border: var(--dashboard-card-border);
+
+    display: flex;
+    align-items: center;
+    gap: var(--stats-gap);
+    animation: fade-in-down 0.6s cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+.group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.pill {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: var(--stats-pill-bg);
+    border: 1px solid var(--stats-pill-border);
+    backdrop-filter: blur(20px);
+    padding: 0.4rem 0.8rem 0.4rem 0.5rem;
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    cursor: default;
+}
+
+.pill:hover {
+    background: rgb(128, 128, 128, 0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.15);
+}
+
+.iconWrapper {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.iconWrapper[data-stat="appointments"] {
+    background: rgb(72 128 255 / 20%);
+    color: #4880FF;
+}
+
+.iconWrapper[data-stat="week"] {
+    background: rgb(16 185 129 / 20%);
+    color: #10B981;
+}
+
+.iconWrapper[data-stat="month"] {
+    background: rgb(245 158 11 / 20%);
+    color: #F59E0B;
+}
+
+.iconWrapper[data-stat="patients"] {
+    background: rgb(239 68 68 / 20%);
+    color: #EF4444;
+}
+
+.iconWrapper[data-stat="growth"] {
+    background: rgb(139 92 246 / 20%);
+    color: #8B5CF6;
+}
+
+.value {
+    font-family: var(--font-manrope);
+    font-size: 1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+
+.skeleton {
+    width: 40px;
+    height: 14px;
+    background: rgb(255 255 255 / 5%);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgb(255 255 255 / 5%),
+        transparent
+    );
+    animation: skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes skeleton-shimmer {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes fade-in-down {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

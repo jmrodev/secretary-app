@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import './CurrencyInput.css';
+
+const CURRENCY_FORMATTER = new Intl.NumberFormat('es-AR', {
+    style: 'decimal',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+});
+
+const format = (val) => {
+    const num = Number(val);
+    if (Number.isNaN(num) || (!num && num !== 0)) return '';
+    return CURRENCY_FORMATTER.format(num);
+};
 
 /**
  * CurrencyInput Atom follows Atomic Design & BEM.
@@ -15,7 +26,20 @@ const CurrencyInput = ({
     variant = 'default',
     ...props
 }) => {
-    const [displayValue, setDisplayValue] = useState('');
+    const [prevValue, setPrevValue] = useState(value);
+    const [displayValue, setDisplayValue] = useState(() => {
+        if (value !== undefined && value !== null) return format(value);
+        return '';
+    });
+
+    if (!Object.is(value, prevValue)) {
+        setPrevValue(value);
+        if (value !== undefined && value !== null) {
+            setDisplayValue(format(value));
+        } else {
+            setDisplayValue('');
+        }
+    }
 
     const baseClass = 'input';
     const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
@@ -23,26 +47,7 @@ const CurrencyInput = ({
 
     const combinedClassName = `${baseClass} ${variantClass} ${sizeClass} ${className}`.trim();
 
-    const format = (val) => {
-        if (!val && val !== 0) return '';
-        return new Intl.NumberFormat('es-AR', {
-            style: 'decimal',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
-        }).format(Number(val));
-    };
-
-    useEffect(() => {
-        queueMicrotask(() => {
-            if (value !== undefined && value !== null) {
-                setDisplayValue(format(value));
-            } else {
-                setDisplayValue('');
-            }
-        });
-    }, [value]);
-
-    const handleChange = (e) => {
+    const handleCurrencyChange = (e) => {
         const inputVal = e.target.value;
         const rawValue = inputVal.replace(/\D/g, '');
 
@@ -65,7 +70,7 @@ const CurrencyInput = ({
             placeholder={placeholder}
             required={required}
             value={displayValue}
-            onChange={handleChange}
+            onChange={handleCurrencyChange}
         />
     );
 };

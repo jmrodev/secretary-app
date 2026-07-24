@@ -1,0 +1,181 @@
+.publicRegisterPaginated {
+    min-height: 100vh;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    color: #000;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.stepHeader {
+    padding: 1.5rem;
+    background: rgb(255 255 255 / 10%);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgb(255 255 255 / 5%);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+}
+
+.progressText {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+}
+
+.progressBar {
+    height: 12px;
+    background: #e9ecef;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.progressFill {
+    height: 100%;
+    background: #007bff;
+    transition: width 0.3s ease;
+}
+
+.stepContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    justify-content: center;
+    max-width: 600px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.stepField {
+    margin-bottom: 3rem;
+}
+
+.accessibleLabel {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 2rem;
+    color: #000;
+}
+
+.accessibleInput {
+    width: 100%;
+    font-size: 2rem;
+    padding: 1.5rem;
+    border: 1px solid rgb(255 255 255 / 5%);
+    border-radius: 1rem;
+    background: rgb(255 255 255 / 10%);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    color: #000;
+    font-weight: 700;
+}
+
+.accessibleInput:focus {
+    outline: none;
+    border-color: #007bff;
+    background: #fff;
+    box-shadow: 0 0 0 6px rgb(0 123 255 / 20%);
+}
+
+.accessibleInputDisabled {
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #495057;
+}
+
+.stepFooter {
+    display: flex;
+    gap: 1rem;
+    margin-top: auto;
+    padding-bottom: 2rem;
+}
+
+.btnHuge {
+    flex: 1;
+    height: 6rem;
+    font-size: 1.75rem;
+    font-weight: 900;
+    border: none;
+    border-radius: 1.25rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btnHugePrimary {
+    background: #000;
+    color: #fff;
+}
+
+.btnHugeSecondary {
+    background: #e9ecef;
+    color: #000;
+    border: 3px solid #000;
+}
+
+.btnHugeSuccess {
+    background: #28a745;
+    color: #fff;
+}
+
+.accessibleError {
+    background: rgb(255 0 0 / 10%);
+    backdrop-filter: blur(16px);
+    color: #c92a2a;
+    padding: 1.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgb(255 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+}
+
+.successCard {
+    text-align: center;
+    padding: 3rem;
+}
+
+.successEmoji {
+    font-size: 6rem;
+    display: block;
+    margin-bottom: 2rem;
+}
+
+.accessibleTitle {
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 1.5rem;
+}
+
+.accessibleText {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.accessibleSubtext {
+    font-size: 1.25rem;
+    color: #495057;
+}
+
+/* Specific adjustments for very small phones */
+@media (width <= 400px) {
+    .accessibleLabel {
+        font-size: 1.8rem;
+    }
+
+    .accessibleInput {
+        font-size: 1.5rem;
+        padding: 1rem;
+    }
+
+    .btnHuge {
+        font-size: 1.25rem;
+        height: 5rem;
+    }
+}

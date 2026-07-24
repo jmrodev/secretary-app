@@ -1,14 +1,16 @@
-import { useState, useMemo, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
-import { useModal } from '@/context/ModalContext';
-import { useDoctors } from '@/context/DoctorContext';
-import { useAppointments } from '@/features/appointments';
-import { useUsers } from '@/features/users';
+import { useSearch } from '@/hooks/useSearch';
 import { usePatientsHandlers } from '@/features/patients/hooks/usePatientsHandlers';
 import { useFetch } from '@/hooks/useFetch';
+import { useModal } from '@/context/ModalContext';
+import { useDoctors } from '@/context/DoctorContextDefinition';
+import { useAppointments } from '@/features/appointments/hooks/useAppointments';
+import { useUsers } from '@/features/users/hooks/useUsers';
+import { usePatientQuery } from '@/features/patients/hooks/usePatientQuery';
 
 /**
  * usePatientsPageController (Orchestrator).
@@ -25,40 +27,32 @@ export const usePatientsPageController = () => {
     const { viewDoctorId, setViewDoctorId } = useDoctors();
     const { savePrescription } = useAppointments();
     const { deleteUser } = useUsers();
+    const { searchTerm, setSearchTerm } = useSearch();
 
     // View State (Pagination)
-    const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(50);
     const [activeTab, setActiveTab] = useState('list'); // 'list' | 'recycle'
-    const [searchTerm, setSearchTerm] = useState(() => {
-        const params = new URLSearchParams(window.location.search);
-        return params.get('search') || '';
-    });
 
-    // --- FETCH DATA (Server-Side) using useFetch ---
-    
-    // Main Patients Data
     const { 
-        data: patientData, 
+        patients, 
+        totalCount, 
+        totalPages, 
+        currentPage, 
+        handlePageChange,
         loading: patientsLoading, 
-        refetch: fetchPatients 
-    } = useFetch('/users/patients', {
-        initialData: { patients: [], totalCount: 0 },
-        params: {
-            page: currentPage,
-            limit: itemsPerPage,
-            search: searchTerm,
-            doctor_id: viewDoctorId
-        }
+        hasFetchedOnce,
+        executeSearch,
+        refetch: fetchPatients,
+    } = usePatientQuery({
+        limit: itemsPerPage,
+        doctorId: null,
+        useGlobalSearch: true
     });
-
-    const patients = patientData?.patients || [];
-    const totalCount = patientData?.totalCount || 0;
 
     // Supplementary Lists
-    const { data: doctorsData = [] } = useFetch('/users/doctors', { initialData: [] });
-    const { data: insurancesData = [] } = useFetch('/insurances', { initialData: [] });
-    const { data: institutionsData = [] } = useFetch('/institutions', { initialData: [] });
+    const { data: doctorsData = {} } = useFetch('/users/doctors', { initialData: { doctors: [] } });
+    const { data: insurancesData = {} } = useFetch('/insurances', { initialData: { insurances: [] } });
+    const { data: institutionsData = {} } = useFetch('/institutions', { initialData: { institutions: [] } });
 
     const doctors = doctorsData?.doctors || [];
     const insurances = insurancesData?.insurances || [];
@@ -78,21 +72,6 @@ export const usePatientsPageController = () => {
     const [debtModal, setDebtModal] = useState({ open: false, params: { patientId: null, amount: '', method: 'cash' } });
     const [prescribeModal, setPrescribeModal] = useState({ open: false, data: { apptId: null, patientId: null, patientName: '', medications: '', instructions: '' } });
     const [qrModal, setQrModal] = useState({ open: false, url: '', expiry: null, patientName: '', patientPhone: '' });
-
-    // Reset to page 1 on search
-    const handleSearchChange = useCallback((value) => {
-        setSearchTerm(value);
-        setCurrentPage(1);
-    }, []);
-
-    const totalPages = Math.ceil(totalCount / itemsPerPage);
-
-    const handlePageChange = useCallback((newPage) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }, [totalPages]);
 
     // --- Handlers Hook ---
     const hookHandlers = usePatientsHandlers({
@@ -126,7 +105,7 @@ export const usePatientsPageController = () => {
         detailsLoading,
         activeTab, setActiveTab,
         viewDoctorId, setViewDoctorId,
-        searchTerm, setSearchTerm: handleSearchChange,
+        searchTerm, setSearchTerm, executeSearch,
         selectedPatientId, setSelectedPatientId,
         patientDetails, setPatientDetails,
 
@@ -141,7 +120,9 @@ export const usePatientsPageController = () => {
             ...hookHandlers,
             fetchPatients, fetchRecycleBin,
             handleSavePrescription,
-        }
+        },
+        fetched: hasFetchedOnce || (patientsLoading === false && patients !== undefined),
     };
+
 };
 

@@ -1,0 +1,13 @@
+import { use } from 'react';
+import { SearchContext } from '@/context/SearchContext';
+
+/**
+ * Hook to consume the SearchContext.
+ */
+export const useSearch = () => {
+    const context = use(SearchContext);
+    if (!context) {
+        throw new Error('useSearch must be used within a SearchProvider');
+    }
+    return context;
+};

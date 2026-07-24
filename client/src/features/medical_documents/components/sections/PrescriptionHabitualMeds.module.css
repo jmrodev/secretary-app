@@ -1,0 +1,104 @@
+/* PrescriptionHabitualMeds Component Styles (BEM) */
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tableWrapper {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: none;
+}
+
+.actionBtn {
+    width: 100%;
+}
+
+.metaItem {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-bottom: 0.2rem;
+}
+
+.metaItem:last-child {
+    margin-bottom: 0;
+}
+
+.metaItem i {
+    color: rgb(255 255 255 / 90%);
+}
+
+.daysSupply {
+    color: var(--green-300);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.table th {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: rgb(255 255 255 / 40%);
+    text-transform: uppercase;
+    border-bottom: 1px solid rgb(255 255 255 / 10%);
+    background: transparent;
+}
+
+.table td {
+    padding: 0.5rem;
+    vertical-align: middle;
+    border-bottom: 1px dashed rgb(255 255 255 / 5%);
+    color: var(--text-main);
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table tr:hover td {
+    background: rgb(255 255 255 / 2%);
+}
+
+.rowSelected td {
+    background: rgb(72 128 255 / 10%) !important;
+}
+
+.nameCell {
+    font-weight: 600;
+    font-size: 0.85rem;
+    width: 50%;
+}
+
+.metaCell {
+    font-size: 0.8rem;
+    color: rgb(255 255 255 / 70%);
+}
+
+.actionsCol {
+    text-align: right;
+    width: 1%;
+    white-space: nowrap;
+}

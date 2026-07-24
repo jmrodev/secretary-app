@@ -19,7 +19,8 @@ exports.uploadFile = async (req, res) => {
 exports.getPatientFiles = async (req, res) => {
     try {
         const filters = {
-            patient_id: req.body?.patient_id
+            patientId: req.body?.patientId || req.query?.patientId,
+            doctorId: req.doctorId || req.query?.doctorId
         };
         const rows = await medicalFileService.getPatientFiles(filters);
         res.json(rows);

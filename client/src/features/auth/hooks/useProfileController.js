@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '@/api/axios';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * Profile Controller (Auth Feature Hook).
@@ -24,10 +24,11 @@ export const useProfileController = () => {
     });
 
     useEffect(() => {
+        let isCurrent = true;
         const fetchProfile = async () => {
             try {
                 const res = await api.get('/users/profile');
-                if (res.data) {
+                if (res.data && isCurrent) {
                     setFormData({
                         fullName: res.data.full_name || '',
                         phoneNumbers: res.data.phoneNumbers || (res.data.phone ? [{ phone_number: res.data.phone, is_primary: true, label: 'Celular' }] : []),
@@ -37,25 +38,20 @@ export const useProfileController = () => {
                 }
             } catch (err) {
                 console.error(err);
-                showMessage("Error loading profile", "error");
+                if (isCurrent) showMessage("Error loading profile", "error");
             } finally {
-                setLoading(false);
+                if (isCurrent) setLoading(false);
             }
         };
         fetchProfile();
 
-        // Safety timeout to prevent infinite loading spinners
-        const timeoutId = setTimeout(() => {
-            setLoading(false);
-        }, 5000);
-
-        return () => clearTimeout(timeoutId);
+        return () => { isCurrent = false; };
     }, [showMessage]);
 
     /**
      * Updates local form state before submission
      */
-    const handleChange = (field, value) => {
+    const handleProfileChange = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
@@ -80,7 +76,7 @@ export const useProfileController = () => {
     };
 
     const handlers = {
-        handleChange,
+        handleProfileChange,
         handleUpdate,
     };
 

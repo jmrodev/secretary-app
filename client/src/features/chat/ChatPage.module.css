@@ -1,0 +1,39 @@
+/* ChatPage.css */
+
+.chatPageOrchestrator {
+    display: flex;
+    height: calc(100vh - 64px); /* Subtract header height */
+    overflow: hidden;
+    background: rgb(255 255 255 / 10%);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 1rem;
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    position: relative;
+}
+
+@media (width <= 768px) {
+    .chatPageOrchestrator .chatSidebar {
+        width: 100%;
+        position: absolute;
+        inset: 0;
+        z-index: 20;
+        transition: transform 0.3s ease;
+    }
+
+    .chatPageOrchestrator .chatWindow {
+        width: 100%;
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+    }
+
+    /* When a convo is selected, slide out the sidebar */
+    .chatPageOrchestratorConvoSelected .chatSidebar {
+        transform: translateX(-100%);
+    }
+
+    .chatPageOrchestratorConvoSelected .chatWindow {
+        z-index: 30;
+    }
+}

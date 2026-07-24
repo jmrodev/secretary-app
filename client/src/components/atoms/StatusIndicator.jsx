@@ -1,11 +1,11 @@
 import React from 'react';
-import './StatusIndicator.css';
+import styles from './StatusIndicator.module.css';
 
 /**
  * StatusIndicator Atom follows Atomic Design & BEM.
  */
 const StatusIndicator = ({ status, label, className = '' }) => {
-    const baseClass = 'status-indicator';
+    const baseClass = styles.root;
     const statusClass = `${baseClass}--${status}`;
 
     return (

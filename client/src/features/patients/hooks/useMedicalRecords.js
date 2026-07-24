@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import api from '@/api/axios';
+import { getNow, addDays, toInputDate } from '@/utils/core/dateUtils';
 
 /**
  * useMedicalRecords (Handler).
@@ -20,8 +21,8 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
             const res = await api.get(`/medical/patients/${patientId}/medications`);
             setMedications(res.data);
 
-            const reqRes = await api.post('/medical/requests', { patientId });
-            setRecentRequests(reqRes.data.filter(r => r.type === 'prescription'));
+            const reqRes = await api.get(`/medical/requests?patientId=${patientId}`);
+            setRecentRequests(reqRes.data.requests.filter(r => r.type === 'prescription'));
 
         } catch (err) {
             console.error("Error fetching patient meds:", err);
@@ -39,9 +40,7 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
 
         const totalUnits = Number(units) * Number(boxes || 1);
         const daysLasting = Math.floor(totalUnits / Number(daily));
-        const date = new Date();
-        date.setDate(date.getDate() + daysLasting);
-        return date.toISOString().split('T')[0];
+        return toInputDate(addDays(getNow(), daysLasting));
     };
 
     const handleSaveMedications = async () => {
@@ -51,12 +50,12 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
         }
 
         try {
-            for (const med of pendingMedications) {
-                await api.post('/medical/patients/medications', {
+            await Promise.all(pendingMedications.map(med => 
+                api.post('/medical/patients/medications', {
                     ...med,
-                    patient_id: patientId
-                });
-            }
+                    patientId: patientId
+                })
+            ));
 
             showMessage(
                 t('medications_added') || `${pendingMedications.length} medicamento(s) agregado(s)`,
@@ -66,7 +65,7 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
             setIsAdding(false);
             setPendingMedications([]);
             fetchMedications();
-        } catch (err) {
+        } catch {
             showMessage(t('error_adding_medication') || 'Error al agregar medicamento', 'error');
         }
     };
@@ -77,13 +76,13 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
             await api.delete(`/medical/patients/medications/${id}`);
             showMessage(t('medication_discontinued') || 'Medicamento descontinuado', 'success');
             fetchMedications();
-        } catch (err) {
+        } catch {
             showMessage(t('error_discontinuing_med') || 'Error al descontinuar', 'error');
         }
     };
 
     const handleAddToPending = (med) => {
-        setPendingMedications(prev => [...prev, med]);
+        setPendingMedications(prev => [...prev, { ...med, _tempId: `${Date.now()}-${Math.random()}` }]);
     };
 
     const handleRemovePending = (index) => {

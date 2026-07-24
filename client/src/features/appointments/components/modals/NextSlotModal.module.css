@@ -1,0 +1,152 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+    max-height: 80vh;
+}
+
+/* 1. Month Bar */
+.monthBar {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: rgb(255, 255, 255, 0.03);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+}
+
+.monthItem {
+    flex: 1;
+    text-align: center;
+    padding: 0.6rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.8rem;
+    color: rgb(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    min-width: 60px;
+}
+
+.monthItem:hover {
+    background: rgb(255, 255, 255, 0.06);
+    color: #fff;
+}
+
+.monthActive {
+    background: var(--primary-color) !important;
+    color: #0b0c10 !important;
+}
+
+/* 2. Options */
+.options {
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgb(255, 255, 255, 0.08);
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+/* 3. Timeline List */
+.content {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dateHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
+}
+
+.dayNum {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--primary-color);
+}
+
+.dayMonth {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+}
+
+.dayName {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgb(255, 255, 255, 0.3);
+    margin-left: auto;
+}
+
+.slotItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: rgb(255, 255, 255, 0.04);
+    border: 1px solid rgb(255, 255, 255, 0.05);
+    border-radius: 12px;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.slotItem:hover {
+    background: rgb(255, 255, 255, 0.07);
+    transform: translateX(4px);
+}
+
+.slotExtra {
+    border-left: 4px solid orange;
+}
+
+.slotTime {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #fff;
+}
+
+.slotActions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* 4. Footer */
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.pageInfo {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.empty {
+    padding: 3rem;
+    text-align: center;
+    color: var(--text-muted);
+}

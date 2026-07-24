@@ -5,34 +5,30 @@ import { usePermissions } from '@/hooks/usePermissions';
 
 // Atoms (Shared)
 import MainLayout from '@/components/templates/MainLayout';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Loading from '@/components/atoms/Loading';
-import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
-// Molecules (Shared/Global)
-import QRCodeModal from '@/features/patients/components/QRCodeModal';
-import SearchBar from '@/components/molecules/SearchBar';
-import Pagination from '@/components/molecules/Pagination';
-import TabNav from '@/components/molecules/TabNav';
+import QRCodeModal from '@/features/patients/components/modals/QRCodeModal';
+import Pagination from '@/components/atoms/Pagination';
 
-// Feature components (Internal - Local to this folder)
-import PatientList from '@/features/patients/components/PatientList';
-import PatientDetailsView from '@/features/patients/components/PatientDetailsView';
-import PatientRecycleBin from '@/features/patients/components/PatientRecycleBin';
-import PatientMedications from '@/features/patients/components/PatientMedications';
-import DebtPaymentModal from '@/features/patients/components/DebtPaymentModal';
-import PatientManagerModal from '@/features/patients/components/PatientManagerModal';
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import SearchBar from '@/components/ui/SearchBar';
 
-import './PatientsPage.css';
+// Feature Components
+import PatientList from './components/views/PatientList';
+import PatientRecycleBin from './components/views/PatientRecycleBin';
+import PatientDetailsView from './components/views/PatientDetailsView';
+import PatientManagerModal from './components/modals/PatientManagerModal';
+import DebtPaymentModal from './components/modals/DebtPaymentModal';
 
 /**
  * PatientsPage (Orchestrator).
  * Coordinates patient listing, search, details, and recycle bin.
  */
 const PatientsPage = () => {
-    const { isStaff, isAdmin, user: authUser } = usePermissions();
+    const { isStaff, user: authUser } = usePermissions();
     const controller = usePatientsPageController();
     const {
         user, t,
@@ -40,9 +36,8 @@ const PatientsPage = () => {
         totalCount, currentPage, totalPages, handlePageChange,
         doctors, insurances, recycleItems, institutions,
         activeTab, setActiveTab,
-        viewDoctorId, setViewDoctorId,
-        searchTerm, setSearchTerm,
         selectedPatientId, setSelectedPatientId, patientDetails,
+        searchTerm, setSearchTerm, executeSearch,
 
         // Modals
         editModal, setEditModal,
@@ -72,103 +67,105 @@ const PatientsPage = () => {
         handleRestorePatient,
     } = handlers;
 
-    if (loading || !authUser) return (
-        <MainLayout wide flush>
+    if (!authUser) return <Loading variant="full-page" />;
+
+    // Only show global loading if we haven't fetched any patients yet (initial load)
+    if (loading && !controller.fetched) return (
+        <MainLayout wide flush hideSearch>
             <Loading variant="centered" text={t('loading')} />
         </MainLayout>
     );
 
     if (detailsLoading) return (
-        <MainLayout wide flush>
+        <MainLayout wide flush hideSearch>
             <Loading variant="centered" />
         </MainLayout>
     );
 
     return (
-        <MainLayout wide flush title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
-            {(selectedPatientId && patientDetails) ? (
-                // --- DETAILS VIEW ---
-                <PatientDetailsView
-                    details={patientDetails}
-                    t={t}
-                    user={user}
-                    onBack={() => setSelectedPatientId(null)}
-                    onEdit={() => handleEditClick(patientDetails)}
-                    onDelete={handleDeletePatient}
-                    onGenerateQR={handleGenerateQR}
-                    onGeneratePrescriptionLink={handleGeneratePrescriptionLink}
-                    onToggleNew={handleToggleNew}
-                    onPayDebt={handleOpenDebtModal}
-                >
-                    <PatientMedications patientId={patientDetails.id} patientName={patientDetails.full_name} />
-                </PatientDetailsView>
-            ) : (
-                // --- LIST VIEW ---
-                <div className="layout-content-area">
-                    <section className="dashboard-grid animate-fadeIn">
-                        <aside className="dashboard-sidebar">
-                            <div className="dashboard-nav-bar">
-                                <TabNav className="patients__nav">
-                                    <TabButton
-                                        isActive={activeTab === 'list'}
-                                        onClick={() => setActiveTab('list')}
-                                        icon={<Icon name="groups" size="1.1rem" />}
+        <MainLayout wide flush hideSearch title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
+            <div className="patients-page-orchestrator layout-content-area animate-fade-in">
+                {(selectedPatientId && patientDetails) ? (
+                    // --- DETAILS VIEW ---
+                    <PatientDetailsView
+                        details={patientDetails}
+                        t={t}
+                        user={user}
+                        onBack={() => setSelectedPatientId(null)}
+                        onEdit={() => handleEditClick(patientDetails)}
+                        onDelete={handleDeletePatient}
+                        onGenerateQR={handleGenerateQR}
+                        onGeneratePrescriptionLink={handleGeneratePrescriptionLink}
+                        onToggleNew={handleToggleNew}
+                        onPayDebt={handleOpenDebtModal}
+                    />
+
+                ) : (
+                    // --- LIST VIEW ---
+                    <div className="patients-page__list-view">
+                        <FeatureToolbar
+                            className="patients-page-orchestrator__toolbar"
+                            tabs={[
+                                { id: 'list', label: t('active_list'), icon: 'groups' },
+                                { 
+                                    id: 'recycle', 
+                                    label: t('recycle_bin'), 
+                                    icon: 'delete',
+                                    badge: recycleItems.length > 0 ? recycleItems.length : null,
+                                    hidden: !isStaff
+                                }
+                            ]}
+                            activeTab={activeTab}
+                            onTabChange={(tab) => {
+                                setActiveTab(tab);
+                                if (tab === 'recycle') fetchRecycleBin();
+                            }}
+                            search={
+                                activeTab === 'list' && (
+                                    <SearchBar
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                executeSearch();
+                                            }
+                                        }}
+                                        onClear={() => {
+                                            setSearchTerm('');
+                                            executeSearch('');
+                                        }}
+                                        placeholder={t('search_patients_placeholder') || 'Buscar pacientes (Presioná Enter)...'}
+                                    />
+                                )
+                            }
+                            actions={
+                                isStaff && activeTab === 'list' && (
+                                    <Button
+                                        variant="primary"
+                                        size="sm"
+                                        onClick={handleNewClick}
+                                        icon={<Icon name="add" size="1.1rem" />}
                                     >
-                                        {t('active_list')}
-                                    </TabButton>
-                                    {isStaff && (
-                                        <TabButton
-                                            isActive={activeTab === 'recycle'}
-                                            onClick={() => { setActiveTab('recycle'); fetchRecycleBin(); }}
-                                            icon={<Icon name="delete" size="1.1rem" />}
-                                        >
-                                            {t('recycle_bin')}
-                                            {recycleItems.length > 0 && <span className="patients__dot-badge">{recycleItems.length}</span>}
-                                        </TabButton>
-                                    )}
-                                </TabNav>
-                            </div>
+                                        {t('new_patient_btn')}
+                                    </Button>
+                                )
+                            }
+                        />
 
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="search" size="1.2rem" />
-                                    {t('search')}
-                                </h3>
-                                <div className="patients-sidebar__search">
-                                    {activeTab === 'list' && (
-                                        <SearchBar
-                                            value={searchTerm}
-                                            onChange={e => setSearchTerm(e.target.value)}
-                                            placeholder={t('search_placeholder')}
-                                            className="action-bar__search"
-                                        />
-                                    )}
-                                </div>
-                            </div>
-
-                            {isStaff && activeTab === 'list' && (
-                                <div className="dashboard-card">
-                                    <h3 className="dashboard-card__title">
-                                        <Icon name="build" size="1.2rem" />
-                                        {t('actions')}
-                                    </h3>
-                                    <div className="patients-sidebar__tools">
-                                        <Button
-                                            variant="primary"
-                                            className="patients-sidebar__btn-tool"
-                                            onClick={handleNewClick}
-                                            icon={<Icon name="add" size="1.1rem" />}
-                                        >
-                                            {t('new_patient_btn')}
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
-                        </aside>
-
-                        <main className="dashboard-main">
+                        <main className="patients-page-orchestrator__main">
                             {activeTab === 'list' ? (
-                                <div className="patients-list-view">
+                                <div className="patients-page__table-wrapper">
+                                    <div className="patients-page__pagination-top" style={{ marginBottom: '0.75rem' }}>
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            totalCount={totalCount}
+                                            itemsShowing={patients.length}
+                                            onPageChange={handlePageChange}
+                                            t={t}
+                                        />
+                                    </div>
+
                                     <section className="dashboard-card dashboard-card--no-padding dashboard-card--scroll-horizontal">
                                         <PatientList
                                             patients={patients}
@@ -199,14 +196,14 @@ const PatientsPage = () => {
                                 />
                             )}
                         </main>
-                    </section>
-                </div>
-            )}
+                    </div>
+                )}
+            </div>
 
             {/* --- GLOBALLY HOISTED MODALS --- */}
             <PatientManagerModal
                 isOpen={editModal.open}
-                onClose={() => setEditModal({ ...editModal, open: false })}
+                onClose={() => setEditModal(prev => ({ ...prev, open: false }))}
                 patient={editModal.data}
                 onUpdate={handleUpdatePatient}
                 insurances={insurances}
@@ -215,7 +212,7 @@ const PatientsPage = () => {
 
             <QRCodeModal
                 isOpen={qrModal.open}
-                onClose={() => setQrModal({ ...qrModal, open: false })}
+                onClose={() => setQrModal(prev => ({ ...prev, open: false }))}
                 url={qrModal.url}
                 expiresAt={qrModal.expiry}
                 patientName={qrModal.patientName}
@@ -224,7 +221,7 @@ const PatientsPage = () => {
 
             <DebtPaymentModal
                 isOpen={debtModal.open}
-                onClose={() => setDebtModal({ ...debtModal, open: false })}
+                onClose={() => setDebtModal(prev => ({ ...prev, open: false }))}
                 onConfirm={() => handlePayDebt(debtModal.params)}
                 amount={debtModal.params.amount}
                 onAmountChange={handleDebtAmountChange}

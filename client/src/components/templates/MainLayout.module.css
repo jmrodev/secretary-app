@@ -1,0 +1,68 @@
+.appLayout {
+    /* --- Local Component Tokens --- */
+    --layout-bg: var(--background-bg);
+
+    /* ------------------------------ */
+
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+    background-color: var(--layout-bg);
+    color: var(--text-main);
+    position: relative;
+}
+
+/* --- ECC-Pattern: Z-Index & Layout Management --- */
+
+/* The Navbar MUST have a higher stacking context than the main content */
+.appLayout > header {
+    z-index: 1000; /* Higher than content */
+    position: sticky;
+    top: 0;
+}
+
+.appLayout > main {
+    z-index: 10; /* Lower than header */
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: auto;
+    min-height: 0;
+}
+
+/* ---------------------------------------- */
+
+.inner {
+    padding: 0.75rem 1.5rem;
+    width: 100%;
+    max-width: 1800px;
+    margin: 0 auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.root {
+    --content-padding: 0.75rem 1.5rem;
+}
+
+.root.dashboardWide .inner {
+    padding: 0.75rem 1.5rem;
+    max-width: 1800px;
+}
+
+.flush .inner {
+    padding: 0.75rem 1.5rem;
+    max-width: 1800px;
+}
+
+@media screen and (width <= 1024px) {
+    .inner {
+        padding: 1rem;
+    }
+}

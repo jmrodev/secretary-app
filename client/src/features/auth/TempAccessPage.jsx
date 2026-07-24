@@ -1,11 +1,11 @@
 import React from 'react';
 import { PatientForm, usePatientFormController } from '@/features/patients';
 import StatusDisplay from '@/components/molecules/StatusDisplay';
-import { useTempAccessController } from '@/controllers/useTempAccessController';
-import { useLanguage } from '@/context/LanguageContext';
-import Button from '@/components/atoms/Button';
+import { useTempAccessController } from '@/features/users/hooks/useTempAccessController';
+import { useLanguage } from '@/hooks/useLanguage';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './TempAccessPage.css';
+import styles from './TempAccessPage.module.css';
 
 const TempAccessFormWrapper = ({ initialData, insurances, onSubmit, isEdit }) => {
     const controller = usePatientFormController({
@@ -60,19 +60,19 @@ const TempAccessPage = () => {
     }
 
     return (
-        <div className="temp-access-orchestrator">
-            <div className="temp-access__container">
-                <article className="temp-access__card">
-                    <header className="temp-access__header">
-                        <h1 className="temp-access__title">
+        <div className={`${styles.tempAccessOrchestrator}`}>
+            <div className={`${styles.container}`}>
+                <article className={`${styles.card}`}>
+                    <header className={`${styles.header}`}>
+                        <h1 className={`${styles.title}`}>
                             {isNew ? 'Registro de Paciente' : 'Actualizar mis Datos'}
                         </h1>
-                        <p className="temp-access__subtitle">
+                        <p className={`${styles.subtitle}`}>
                             Por favor completa los siguientes campos para continuar.
                         </p>
                     </header>
 
-                    <section className="temp-access__form-section">
+                    <section className={`${styles.formSection}`}>
                         <TempAccessFormWrapper
                             initialData={initialData}
                             insurances={insurances}
@@ -82,19 +82,19 @@ const TempAccessPage = () => {
                     </section>
                 </article>
 
-                <aside className="temp-access__download-card animate-fadeIn">
-                    <div className="temp-access__download-info">
-                        <h4 className="temp-access__download-title">
+                <aside className={`${styles.downloadCard} animate-fade-in`}>
+                    <div className={`${styles.downloadInfo}`}>
+                        <h4 className={`${styles.downloadTitle}`}>
                             <Icon name="SMARTPHONE" className="mr-2" />
                             {t('mobile_app')}
                         </h4>
-                        <p className="temp-access__download-text">
+                        <p className={`${styles.downloadText}`}>
                             Descarga nuestra aplicación para gestionar tus turnos y recetas más rápido.
                         </p>
                     </div>
                     <Button
                         variant="secondary"
-                        className="temp-access__download-button"
+                        className={`${styles.downloadButton}`}
                         icon={<Icon name="DOWNLOAD" size="1.1rem" />}
                         onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
                     >

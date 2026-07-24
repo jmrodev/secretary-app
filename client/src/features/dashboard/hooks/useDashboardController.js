@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useAppointments } from '@/features/appointments';
 import api from '@/api/axios';
@@ -10,21 +10,22 @@ import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats'
 import { useDashboardReminders } from '@/features/dashboard/hooks/useDashboardReminders';
 import { useDashboardModals } from '@/features/dashboard/hooks/useDashboardModals';
 import { useDashboardWhatsApp } from '@/features/dashboard/hooks/useDashboardWhatsApp';
+import { useDoctors } from '@/context/DoctorContextDefinition';
 
 /**
- * Controller hook for Dashboard component.
- * Orchesrates stats, reminders, appointments and modal states at the root level.
+ * ECC-Pattern: useDashboardController Hook (Orchestrator)
  */
 export const useDashboardController = () => {
     const permissions = usePermissions();
-    const { user, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = permissions;
+    const { user, isStaff, isPatient, isAdmin, isSecretary, isDoctor, isMedicalStaff } = permissions;
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { settings } = useConfig();
 
     const { updateStatus, cancelAppointment, deleteAppointment, savePrescription } = useAppointments();
     
-    const [viewDoctorId, setViewDoctorId] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    // ECC: Use global doctor context instead of local state
+    const { viewDoctorId, setViewDoctorId, doctors, doctorsLoading, doctorsFetched } = useDoctors();
 
     const statsHook = useDashboardStats(isStaff, viewDoctorId);
     const remindersHook = useDashboardReminders({ user, t, settings, showMessage });
@@ -34,32 +35,24 @@ export const useDashboardController = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [activeTab, setActiveTab] = useState('requirements');
 
-    // Fetch Data Methods (Force refetch)
     const refreshDashboard = () => {
         statsHook.fetchStats();
         statsHook.fetchRequests();
-        if (isStaff) {
-            statsHook.fetchNewPatientStats();
-        }
+        if (isStaff) statsHook.fetchNewPatientStats();
     };
 
-    // Periodic Refresh handled by standard useEffect
     useEffect(() => {
         if (!user || isPatient) return;
-
         const interval = setInterval(() => {
+            refreshDashboard();
             remindersHook.fetchReminders();
-            statsHook.fetchRequests();
-            statsHook.fetchStats();
         }, 30000);
-        
         return () => clearInterval(interval);
-    }, [user, isPatient, remindersHook, statsHook]);
+    }, [user, isPatient]);
 
-    // Action Handlers
     const handleUpdateStatus = async (id, status) => {
         await updateStatus(id, status, (id, newStatus) => {
-            if (modalsHook.actionModal.open && modalsHook.actionModal.appt && modalsHook.actionModal.appt.id === id) {
+            if (modalsHook.actionModal.open && String(modalsHook.actionModal.appt?.id) === String(id)) {
                 modalsHook.setActionModal(prev => ({
                     ...prev,
                     appt: { ...prev.appt, status: newStatus }
@@ -112,13 +105,15 @@ export const useDashboardController = () => {
         }
     };
 
-    const handlePrescriptionSubmit = async ({ medications, instructions, bonified }) => {
+    const handlePrescriptionSubmit = async ({ medications, instructions, items, bonified }) => {
         setIsSubmitting(true);
         try {
             await savePrescription({
                 apptId: modalsHook.prescribeModal.apptId,
+                patientId: modalsHook.prescribeModal.patientId,
                 medications,
                 instructions,
+                items,
                 bonified
             }, () => {
                 modalsHook.setPrescribeModal({ ...modalsHook.prescribeModal, open: false });
@@ -148,37 +143,20 @@ export const useDashboardController = () => {
         handleWhatsAppReminder: remindersHook.handleWhatsAppReminder,
         handleMarkNotified: remindersHook.handleMarkNotified,
         setActiveTab,
-        setViewDoctorId: (id) => {
-            setViewDoctorId(id);
-            localStorage.setItem('last_selected_doctor_id', id);
-        },
+        setViewDoctorId,
         setActionModal: modalsHook.setActionModal,
         setHistoryModal: modalsHook.setHistoryModal,
         setPrescribeModal: modalsHook.setPrescribeModal,
         setPaymentModal: modalsHook.setPaymentModal,
+        setNewRequestModal: modalsHook.setNewRequestModal,
+        handleOpenNewRequest: modalsHook.handleOpenNewRequest,
         navigate: modalsHook.navigate
     };
 
-    const loading = (
-        statsHook.loadingStats ||
-        statsHook.loadingDoctors ||
-        statsHook.loadingRequests ||
-        remindersHook.loadingReminders ||
-        (isStaff && statsHook.loadingNewPatientStats)
-    );
-
-    const error =
-        statsHook.errorStats ||
-        statsHook.errorDoctors ||
-        statsHook.errorRequests ||
-        remindersHook.errorReminders ||
-        (isStaff ? statsHook.errorNewPatientStats : null);
-
     return {
-        // State exposed for orchestration
         user, t, settings,
-        loading,
-        error,
+        loading: statsHook.loadingStats || doctorsLoading,
+        error: statsHook.errorStats || statsHook.errorDoctors || remindersHook.errorReminders,
         stats: statsHook.stats,
         newPatientStats: statsHook.newPatientStats,
         reminders: remindersHook.reminders,
@@ -188,10 +166,12 @@ export const useDashboardController = () => {
         historyModal: modalsHook.historyModal,
         prescribeModal: modalsHook.prescribeModal,
         paymentModal: modalsHook.paymentModal,
+        newRequestModal: modalsHook.newRequestModal,
+        fetched: statsHook.fetched && doctorsFetched,
         isSubmitting,
         viewDoctorId,
         setViewDoctorId,
-        doctors: statsHook.doctors,
+        doctors,
         handlers,
         isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff
     };

@@ -14,8 +14,20 @@ export const useLanguageLogic = () => {
         localStorage.setItem(LANGUAGE_KEY, language);
     }, [language]);
 
-    const t = useCallback((key) => {
-        return translations[language][key] || key;
+    const t = useCallback((key, params = null) => {
+        const langData = translations[language] || translations['es'] || {};
+        let text = langData[key] || key;
+        
+        if (params && typeof params === 'object') {
+            // Using a single pass replacement if possible, or simple split/join for speed
+            for (const k in params) {
+                if (Object.prototype.hasOwnProperty.call(params, k)) {
+                    text = text.split(`{${k}}`).join(params[k]);
+                }
+            }
+        }
+        
+        return text;
     }, [language]);
 
     const toggleLanguage = useCallback(() => {

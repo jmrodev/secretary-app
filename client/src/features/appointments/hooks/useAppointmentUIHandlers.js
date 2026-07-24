@@ -9,18 +9,18 @@ export const useAppointmentUIHandlers = ({
     setDate,
     setSelectedDoctor,
     setShowForm,
-    setBonified,
-    setSelectedInstitution,
-    setReason,
-    setSyncReferenceInfo,
-    setSyncingZombieId,
+    setBonified: _setBonified,
+    setSelectedInstitution: _setSelectedInstitution,
+    setReason: _setReason,
+    setSyncReferenceInfo: _setSyncReferenceInfo,
+    setSyncingZombieId: _setSyncingZombieId,
     setActionModal,
     setPrescribeModal,
-    setAuthModalOpen,
-    setRetryAction,
-    setShowNextSlotModal,
-    setWhatsappModal,
-    setEditPatientModalOpen,
+    setAuthModalOpen: _setAuthModalOpen,
+    setRetryAction: _setRetryAction,
+    setShowNextSlotModal: _setShowNextSlotModal,
+    setWhatsappModal: _setWhatsappModal,
+    setEditPatientModalOpen: _setEditPatientModalOpen,
     setPaymentModal,
     setHistoryModal,
     exitRescheduleMode,
@@ -31,7 +31,7 @@ export const useAppointmentUIHandlers = ({
     confirm,
     showMessage,
     t,
-    doctors
+    doctors: _doctors
 }) => {
     const handleDateSelect = useCallback((date) => setSelectedDate(date), [setSelectedDate]);
 
@@ -76,13 +76,14 @@ export const useAppointmentUIHandlers = ({
     }, [rescheduleAppt, selectedDate, exitRescheduleMode, confirm, t, setActionModal, holidays, showMessage, user, viewDoctorId, setSelectedDoctor, setDate, setShowForm]);
 
     const handleOpenPayment = useCallback((appt) => {
+        const remainingDebt = Math.max(0, (Number(appt.cost) || 0) - (Number(appt.paid_amount) || 0));
         setPaymentModal({
             open: true,
             initialData: {
                 type: 'income_patient',
                 patientId: appt.patient_id,
                 patientName: appt.patient_name || appt.full_name,
-                amount: appt.tariff,
+                amount: remainingDebt,
                 description: `Turno - ${appt.patient_name || appt.full_name} - ${appt.appointment_date ? new Date(appt.appointment_date).toLocaleDateString() : 'Sin Fecha'}`,
                 doctorId: appt.doctor_id,
                 appointment_id: appt.id,

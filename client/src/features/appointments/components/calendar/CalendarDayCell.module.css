@@ -1,0 +1,266 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 0;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  min-height: 3.5rem;
+  background: var(--dashboard-card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.compact {
+  min-height: 3.5rem;
+}
+
+.root:not(.compact) {
+  min-height: 3.5rem;
+}
+
+.root:hover {
+  background: rgb(128, 128, 128, 0.08) !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  z-index: 5;
+}
+
+.today {
+  background-color: rgb(14, 165, 233, 0.12) !important;
+  border: 2px solid #0284c7 !important;
+  z-index: 2;
+}
+
+.today .number {
+  color: #0284c7 !important;
+  font-weight: 900;
+}
+
+.selected {
+  background: rgb(13, 148, 136, 0.15) !important;
+  border: 1px solid var(--primary-color) !important;
+  z-index: 3;
+  box-shadow: var(--shadow-sm);
+}
+
+.selected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--primary-color);
+}
+
+.numberWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+}
+
+.numberWrapper::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  padding: 3px;
+  background: conic-gradient(
+    var(--primary-color) 0%,
+    var(--primary-color) var(--occupancy-normal, 0%),
+    var(--border-color) var(--occupancy-normal, 0%),
+    var(--border-color) 100%
+  );
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.numberWrapper::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  padding: 2px;
+  background: conic-gradient(
+    var(--warning) 0%,
+    var(--warning) var(--occupancy-extra, 0%),
+    var(--border-color) var(--occupancy-extra, 0%),
+    var(--border-color) 100%
+  );
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: var(--extra-opacity, 0);
+  transition: opacity 0.3s ease;
+}
+
+.selected .numberWrapper::before,
+.selected .numberWrapper::after {
+  opacity: 0;
+}
+
+.selected .number {
+  background: var(--primary-color);
+  color: #fff !important;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  box-shadow: var(--shadow-sm);
+  font-weight: 800;
+}
+
+.holiday {
+  background-color: rgb(var(--danger-rgb), 0.02);
+  border-style: dashed;
+  border-color: rgb(var(--danger-rgb), 0.25);
+}
+
+.holiday:hover {
+  border-color: rgb(var(--danger-rgb), 0.5);
+  background-color: rgb(var(--danger-rgb), 0.04);
+}
+
+.weekend {
+  background-color: rgb(99, 102, 241, 0.05) !important;
+}
+
+:root[data-theme="dark"] .weekend,
+html[data-theme="dark"] .weekend,
+body:not(.theme-light) .weekend {
+  background-color: rgb(99, 102, 241, 0.1) !important;
+}
+
+.past {
+  background-color: rgb(0, 0, 0, 0.04) !important;
+}
+
+:root[data-theme="dark"] .past,
+html[data-theme="dark"] .past,
+body:not(.theme-light) .past {
+  background-color: rgb(0, 0, 0, 0.25) !important;
+}
+
+.past .number {
+  color: var(--text-muted);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  padding: 0.5rem;
+}
+
+.date {
+  position: absolute;
+  top: 0.4rem;
+  left: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 2;
+}
+
+.markers {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.number {
+  font-weight: 800;
+  font-size: 1.8rem;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  transition: all 0.2s ease;
+  font-family: var(--font-manrope);
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.compact .numberWrapper {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.compact .number {
+  font-size: 1.25rem;
+}
+
+.compact.selected .number {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.compact .content {
+  padding: 0.2rem;
+}
+
+.compact .date {
+  top: 0.2rem;
+  left: 0.35rem;
+  right: 0.35rem;
+}
+
+.compact .todayMarker,
+.compact .holidayMarker {
+  font-size: 0.5rem;
+}
+
+.todayMarker,
+.holidayMarker {
+  font-size: 0.58rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: var(--font-manrope);
+}
+
+.todayMarker {
+  color: #0284c7;
+  font-weight: 800;
+}
+
+.holidayMarker {
+  color: var(--danger);
+  background-color: rgb(var(--danger-rgb), 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: var(--radius-full);
+}

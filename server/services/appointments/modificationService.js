@@ -1,9 +1,8 @@
-const appointmentRepository = require('../../repositories/appointmentRepository');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
 const googleSyncService = require('./googleSyncService');
 const financeService = require('../finance/financeService');
 const helper = require('./appointmentHelper');
 const { pool } = require('../../db');
-const { logAction } = require('../../utils/audit');
 
 /**
  * ModificationService
@@ -23,18 +22,15 @@ class ModificationService {
             const medical = await conn.query("SELECT id FROM prescriptions WHERE appointment_id = ? UNION SELECT id FROM medical_licenses WHERE appointment_id = ?", [id, id]);
             if (medical.length > 0) throw new Error("No se puede eliminar: tiene registros médicos asociados.");
 
-            // Handle transactions
-            if (appt.payment_status === 'paid') {
-                await conn.query("UPDATE transactions SET description = CONCAT('Saldo a favor (Turno Eliminado): ', description) WHERE appointment_id = ? AND status = 'paid'", [id]);
-            } else {
-                await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id]);
-            }
-
             await helper.freeSlot(conn, appt.doctor_id, appt.appointment_date);
             await appointmentRepository.delete(id, conn);
-            await conn.commit();
 
-            if (appt.google_event_id) await googleSyncService.syncDelete(id, appt.doctor_id, appt.google_event_id, userId);
+            // Notify side effects (Finances, Google Sync, etc.)
+            const eventBus = require('../../events/eventBus');
+            const EVENTS = require('../../events/eventConstants');
+            eventBus.emit(EVENTS.APPOINTMENT_DELETED, { id, payment_status: appt.payment_status, google_event_id: appt.google_event_id, doctor_id: appt.doctor_id, userId, conn });
+
+            await conn.commit();
             return true;
         } catch (err) {
             await conn.rollback();
@@ -52,8 +48,8 @@ class ModificationService {
             if (!appt) throw new Error("Appointment not found");
 
             // Enforce strict business rules for status transitions
-            if (status === 'arrived' && appt.status !== 'confirmed') {
-                throw new Error("No se puede marcar como 'En Sala' si el turno no está en estado 'Confirmado'.");
+            if (status === 'arrived' && !['confirmed', 'pending', 'rescheduled'].includes(appt.status)) {
+                throw new Error("No se puede marcar como 'En Sala' si el turno no está en estado 'Confirmado', 'Pendiente' o 'Reprogramado'.");
             }
             if (status === 'completed') {
                 const isVirtual = appt.type === 'virtual';
@@ -75,11 +71,21 @@ class ModificationService {
 
             await appointmentRepository.update(id, updates, conn);
 
-            if (status === 'completed') await this._handleCompletion(conn, appt);
-            if (['cancelled', 'absent', 'suspended'].includes(status)) await this._handleCancellation(conn, appt, status);
+            // Notify side effects via eventBus (ECC Pattern)
+            const eventBus = require('../../events/eventBus');
+            const EVENTS = require('../../events/eventConstants');
+            
+            if (status === 'completed') {
+                await this._handleCompletion(conn, appt);
+                eventBus.emit(EVENTS.APPOINTMENT_COMPLETED, { id, appt, userId, conn });
+            }
+            
+            if (['cancelled', 'absent', 'suspended'].includes(status)) {
+                await this._handleCancellation(conn, appt, status);
+                eventBus.emit(EVENTS.APPOINTMENT_CANCELLED, { id, status, appt, userId, conn });
+            }
 
             await conn.commit();
-            await this._syncStatusToGoogle(id, status, userId);
             return true;
         } catch (err) {
             await conn.rollback();
@@ -119,7 +125,6 @@ class ModificationService {
                 await appointmentRepository.update(id, updates, conn);
             }
             await conn.commit();
-            await this._syncUpdateToGoogle(id, updates, userId);
             return true;
         } catch (err) {
             await conn.rollback();
@@ -171,37 +176,6 @@ class ModificationService {
         if (status === 'absent') {
             await conn.query("UPDATE patients SET behavior_rating = GREATEST(0, behavior_rating - 1) WHERE id = ?", [appt.patient_id]);
         }
-        await conn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [appt.id]);
-    }
-
-    async _syncStatusToGoogle(id, status, userId) {
-        try {
-            const appt = await appointmentRepository.findById(id);
-            if (!appt?.google_event_id) return;
-            if (status === 'cancelled') await googleSyncService.syncDelete(id, appt.doctor_id, appt.google_event_id, userId);
-            else {
-                const data = { status, description: googleSyncService.buildDescription(appt, { id: appt.patient_id, full_name: appt.patient_name }, { status }) };
-                await googleSyncService.syncUpdate(id, appt.doctor_id, appt.google_event_id, data, userId);
-            }
-        } catch (e) { console.warn("Sync Status Failed", e.message); }
-    }
-
-    async _syncUpdateToGoogle(id, updates, userId) {
-        try {
-            const appt = await appointmentRepository.findById(id);
-            if (!appt?.google_event_id) return;
-            const data = {
-                summary: appt.patient_name,
-                description: googleSyncService.buildDescription({ ...appt, ...updates }, { id: appt.patient_id, full_name: appt.patient_name })
-            };
-            if (updates.appointment_date) {
-                const start = new Date(updates.appointment_date);
-                const end = new Date(start.getTime() + (updates.duration || appt.duration || 30) * 60000);
-                data.start = { dateTime: start.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' };
-                data.end = { dateTime: end.toISOString(), timeZone: 'America/Argentina/Buenos_Aires' };
-            }
-            await googleSyncService.syncUpdate(id, appt.doctor_id, appt.google_event_id, data, userId);
-        } catch (e) { console.warn("Sync Update Failed", e.message); }
     }
 }
 

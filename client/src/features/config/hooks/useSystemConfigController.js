@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/features/auth';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
@@ -47,11 +47,6 @@ export const useSystemConfigController = () => {
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const status = urlParams.get('status');
-        const tab = urlParams.get('tab');
-
-        if (tab && tab !== activeTab) {
-            queueMicrotask(() => setActiveTab(tab));
-        }
 
         if (status === 'success') {
             showMessage('Cuenta de Google Conectada con Éxito', 'success');
@@ -75,7 +70,7 @@ export const useSystemConfigController = () => {
         try {
             const { data } = await api.get('/google/auth-url');
             window.location.href = data.url;
-        } catch (error) {
+        } catch {
             showMessage('Error al iniciar autenticación con Google', 'error');
         }
     }, [showMessage]);
@@ -89,7 +84,7 @@ export const useSystemConfigController = () => {
             await api.post('/google/disconnect');
             await refreshSettings();
             showMessage('Cuenta desconectada correctamente', 'success');
-        } catch (error) {
+        } catch {
             showMessage('Error al desconectar cuenta', 'error');
         }
     }, [confirm, refreshSettings, showMessage]);
@@ -120,7 +115,7 @@ export const useSystemConfigController = () => {
         try {
             setLoading(true);
             await api.post('/whatsapp/test', { to: phone });
-            showMessage('Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
+            showMessage('✅ Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
         } catch (error) {
             console.error(error);
             showMessage(error.response?.data?.error || 'Error al enviar mensaje de prueba', 'error');
@@ -163,30 +158,28 @@ export const useSystemConfigController = () => {
             await api.post('/settings/refresh-tunnel');
             showMessage("IP de DuckDNS actualizada correctamente.", 'info');
             setTimeout(refreshSettings, 2000);
-        } catch (err) {
+        } catch {
             showMessage(t('error_saving'), 'error');
         } finally {
             setLoading(false);
         }
     }, [confirm, showMessage, refreshSettings, t]);
 
-    const handlers = {
-        setActiveTab,
-        setQrModal,
-        updateSetting,
-        handleGoogleAuth,
-        handleDisconnectGoogle,
-        handleRetryGoogleFailed,
-        handleTestMeta,
-        insertVariable,
-        handleRefreshTunnel
-    };
-
     return {
         user, t, settings, loading,
         activeTab,
         qrModal,
         googleUnlinked,
-        handlers
+        handlers: {
+            setActiveTab,
+            setQrModal,
+            updateSetting,
+            handleGoogleAuth,
+            handleDisconnectGoogle,
+            handleRetryGoogleFailed,
+            handleTestMeta,
+            insertVariable,
+            handleRefreshTunnel
+        }
     };
 };

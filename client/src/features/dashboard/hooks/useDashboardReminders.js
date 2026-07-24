@@ -1,18 +1,28 @@
+import { useCallback, useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import api from '@/api/axios';
-import { replaceTemplateVariables } from '@/utils/stringUtils';
+import { replaceTemplateVariables } from '@/utils/core/stringUtils';
 
+/**
+ * ECC-Pattern: useDashboardReminders Hook
+ */
 export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
+    // ECC: Fetch data with envelope support
+    const remindersHook = useFetch('/users/reminders', {
+        initialData: { success: true, data: [] }
+    });
+
     const { 
-        data: reminders = [], 
+        data: response, 
         loading: loadingReminders, 
         error: errorReminders,
         refetch: fetchReminders 
-    } = useFetch('/users/reminders', {
-        initialData: []
-    });
+    } = remindersHook;
 
-    const handleCompleteReminder = async (reminder, type) => {
+    // Unpack ECC data
+    const reminders = useMemo(() => response?.data || [], [response]);
+
+    const handleCompleteReminder = useCallback(async (reminder, type) => {
         try {
             await api.post('/users/reminders/complete', {
                 patientId: reminder.id,
@@ -25,9 +35,9 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
             console.error(err);
             showMessage(t('error_completing_reminder'), 'error');
         }
-    };
+    }, [t, showMessage, fetchReminders]);
 
-    const handleMarkNotified = async (reminder, type, notified = true) => {
+    const handleMarkNotified = useCallback(async (reminder, type, notified = true) => {
         try {
             await api.post('/users/reminders/complete', {
                 patientId: reminder.id,
@@ -41,9 +51,9 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
             console.error(err);
             showMessage(t('error_updating_status'), 'error');
         }
-    };
+    }, [t, showMessage, fetchReminders]);
 
-    const handleWhatsAppReminder = (reminder, typeOverride) => {
+    const handleWhatsAppReminder = useCallback((reminder, typeOverride) => {
         const phone = reminder.phone;
         if (!phone) return showMessage(t('no_phone_available'), 'error');
 
@@ -81,7 +91,6 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
         let normalizedPhone = cleanPhone;
         if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
 
-        // Try direct send via bridge
         const sendDirect = async () => {
             try {
                 showMessage(t('sending_whatsapp') || 'Enviando WhatsApp...', 'info');
@@ -90,26 +99,29 @@ export const useDashboardReminders = ({ user, t, settings, showMessage }) => {
                     message: message
                 });
                 showMessage(t('whatsapp_sent') || 'Mensaje enviado!', 'success');
-                // Auto-mark as notified
                 handleMarkNotified(reminder, type, true);
             } catch (err) {
                 console.error("Direct send failed, falling back to manual", err);
                 window.open(`https://wa.me/${normalizedPhone}?text=${encodeURIComponent(message)}`, '_blank');
-                // Still mark as notified as we opened the link
                 handleMarkNotified(reminder, type, true);
             }
         };
 
         sendDirect();
-    };
+    }, [t, showMessage, user, settings, handleMarkNotified]);
 
-    return {
+    return useMemo(() => ({
         reminders,
         loadingReminders,
+        fetched: remindersHook.fetched,
         errorReminders,
         fetchReminders,
         handleCompleteReminder,
         handleMarkNotified,
         handleWhatsAppReminder
-    };
+    }), [
+        reminders, loadingReminders, remindersHook.fetched, errorReminders, fetchReminders,
+        handleCompleteReminder, handleMarkNotified, handleWhatsAppReminder
+    ]);
+
 };

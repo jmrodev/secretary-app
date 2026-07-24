@@ -1,12 +1,12 @@
 const { pool } = require('../../db');
-const { calculatePrice } = require('../../utils/priceCalculator');
+const { calculatePrice } = require('../../utils/finance/priceCalculator');
 const crypto = require('crypto');
-const prescriptionRequestTokenRepository = require('../../repositories/prescriptionRequestTokenRepository');
-const appointmentRepository = require('../../repositories/appointmentRepository');
-const doctorRepository = require('../../repositories/doctorRepository');
-const patientRepository = require('../../repositories/patientRepository');
-const medicalRequestRepository = require('../../repositories/medicalRequestRepository');
-const transactionRepository = require('../../repositories/transactionRepository');
+const prescriptionRequestTokenRepository = require('../../repositories/system/prescriptionRequestTokenRepository');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
+const doctorRepository = require('../../repositories/user/doctorRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
+const medicalRequestRepository = require('../../repositories/medical/medicalRequestRepository');
+const transactionRepository = require('../../repositories/finance/transactionRepository');
 
 /**
  * PublicMedicalService
@@ -40,10 +40,10 @@ class PublicMedicalService {
 
     async getPublicPrescriptionRequestData(token) {
         const tokenData = await prescriptionRequestTokenRepository.findActiveByToken(token);
-        if (!tokenData) throw new Error("Link inválido o expirado");
+        if (!tokenData) throw new Error("invalid_or_expired_token");
 
         const patient = await patientRepository.findById(tokenData.patient_id);
-        if (!patient) throw new Error("Paciente no encontrado");
+        if (!patient) throw new Error("patient_not_found");
 
         const historyRows = await patientRepository.findRecentMedications(tokenData.patient_id);
 
@@ -64,14 +64,14 @@ class PublicMedicalService {
         };
     }
 
-    async submitPublicPrescriptionRequest(token, requestData, req) {
+    async submitPublicPrescriptionRequest(token, requestData) {
         const conn = await pool.getConnection();
         try {
             const { medications, notes, doctorId } = requestData;
-            if (!medications || medications.length === 0) throw new Error("Debe seleccionar al menos una medicación");
+            if (!medications || medications.length === 0) throw new Error("medications_required");
 
             const tokenData = await prescriptionRequestTokenRepository.findActiveByToken(token, conn);
-            if (!tokenData) throw new Error("Link inválido o expirado");
+            if (!tokenData) throw new Error("invalid_or_expired_token");
 
             let finalDoctorId = doctorId || tokenData.doctor_id;
             if (!finalDoctorId) {
@@ -83,7 +83,7 @@ class PublicMedicalService {
                 }
             }
 
-            if (!finalDoctorId) throw new Error("No se pudo asignar un médico a la solicitud");
+            if (!finalDoctorId) throw new Error("doctor_assignment_failed");
 
             await conn.beginTransaction();
 
@@ -99,7 +99,7 @@ class PublicMedicalService {
                 };
             });
 
-            const combinedNote = `[Solicitud Paciente] ${medString}${notes ? '\nNotas: ' + notes : ''}`;
+            const combinedNote = `[Patient Request] ${medString}${notes ? '\nNotes: ' + notes : ''}`;
 
             const requestId = await medicalRequestRepository.create({
                 type: 'prescription',
@@ -157,7 +157,7 @@ class PublicMedicalService {
             await prescriptionRequestTokenRepository.markAsUsed(tokenData.id, conn);
 
             await conn.commit();
-            return { success: true, message: "Solicitud enviada con éxito" };
+            return { success: true, message: "request_submitted_successfully" };
         } catch (err) {
             await conn.rollback();
             throw err;

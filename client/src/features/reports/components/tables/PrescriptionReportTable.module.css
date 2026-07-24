@@ -1,0 +1,85 @@
+/* PrescriptionReportTable Component Styles (BEM) */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.summary {
+    background: var(--gray-50);
+    border-radius: var(--radius);
+    padding: 2rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+}
+
+.summaryTitle {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    text-align: left;
+    padding: 1rem 1.25rem;
+    background: var(--gray-100);
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.row {
+    border-bottom: 1px solid var(--gray-50);
+}
+
+.row td {
+    padding: 1rem 1.25rem;
+    font-size: 0.875rem;
+}
+
+.patientName {
+    font-weight: 700;
+}
+
+.meds {
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.65rem;
+    font-weight: 800;
+}
+
+.badgePaid {
+    background: var(--green-100);
+    color: var(--green-700);
+}
+
+.badgeDebt {
+    background: var(--red-100);
+    color: var(--red-700);
+}
+
+.dateHeader {
+    background: var(--purple-700);
+    color: white;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 800;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}

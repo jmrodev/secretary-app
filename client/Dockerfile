@@ -1,13 +1,15 @@
 FROM node:22-alpine
 
+RUN npm install -g pnpm
+
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
 
-RUN npm install --legacy-peer-deps
+RUN pnpm install --no-frozen-lockfile
 
 COPY . .
 
 EXPOSE 5173
 
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["pnpm", "run", "dev", "--", "--host"]

@@ -1,6 +1,6 @@
 const googleCalendarService = require('../../services/google/GoogleCalendarService');
 const googleCalendarAuditService = require('../../services/google/GoogleCalendarAuditService');
-const { logAction } = require('../../utils/audit');
+const { logAction } = require('../../utils/system/audit');
 
 /**
  * googleCalendarController

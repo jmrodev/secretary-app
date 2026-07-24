@@ -1,0 +1,91 @@
+/* AuditLogTable Styles (BEM) */
+
+.auditLogTableContainer {
+    background-color: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.root {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.thead {
+    background-color: var(--gray-50);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.thDetails {
+    width: 33.333%;
+}
+
+.row {
+    border-bottom: 1px solid var(--gray-100);
+    transition: background-color 0.2s;
+}
+
+.row:hover {
+    background-color: var(--gray-50);
+}
+
+.cell {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: var(--text-main);
+}
+
+.cellTime {
+    white-space: nowrap;
+    color: var(--text-muted);
+}
+
+.cellUser {
+    font-weight: 500;
+}
+
+.cellDetails {
+    max-width: 320px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.detailsWrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.detailsText {
+    display: block;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-muted);
+}
+
+.cellIp {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono, monospace);
+}
+
+.empty {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+}

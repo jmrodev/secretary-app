@@ -1,0 +1,62 @@
+schema: spec-driven
+
+context: |
+  Tech stack: React 19, Express v5, Go 1.25.0, SQLite, MariaDB/MySQL, pnpm monorepo
+  Architecture: Atomic Design, MVC + Repository
+  Testing: Jest (server unit/integration), Go testing (bridge)
+  Style: BEM (CSS Modules), ESLint, Stylelint, Oxlint
+  Tools: graphify (codebase mapping & callflow visualization)
+
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    - Follow existing code patterns
+    tdd: true
+    test_command: "pnpm --filter server test"
+  verify:
+    test_command: "pnpm --filter server test"
+    build_command: "pnpm build"
+    coverage_threshold: 80
+  archive:
+    - Warn before merging destructive deltas
+
+testing:
+  strict_tdd: true
+  detected_at: "2026-06-28"
+  runner:
+    command: "pnpm --filter server test"
+    framework: "Jest"
+  layers:
+    unit:
+      available: true
+      tool: "Jest (server)"
+    integration:
+      available: true
+      tool: "Jest (server with node-mocks-http)"
+    e2e:
+      available: false
+      tool: "—"
+  coverage:
+    available: true
+    command: "pnpm --filter server test -- --coverage"
+  quality_tools:
+    linter:
+      available: true
+      command: "pnpm lint"
+    type_checker:
+      available: false
+      command: "—"
+    formatter:
+      available: true
+      command: "pnpm --filter client lint:fix"
