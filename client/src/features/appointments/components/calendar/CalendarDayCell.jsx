@@ -24,6 +24,7 @@ const CalendarDayCell = ({
   const { 
     isSelected = false, 
     isToday = false, 
+    isWeekend = false,
     isHoliday = false, 
     isPast = false, 
     disabled = false, 
@@ -36,6 +37,7 @@ const CalendarDayCell = ({
     styles.root,
     isSelected && styles.selected,
     isToday && styles.today,
+    isWeekend && styles.weekend,
     isHoliday && styles.holiday,
     isPast && styles.past,
     compact && styles.compact

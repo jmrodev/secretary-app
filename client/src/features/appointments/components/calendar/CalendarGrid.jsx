@@ -42,6 +42,7 @@ const CalendarGrid = ({
                 status={{
                     isSelected,
                     isToday: isTodayDate,
+                    isWeekend: currentDay.getDay() === 0 || currentDay.getDay() === 6,
                     isPast: isPastDay(currentDay),
                     isHoliday: !!isHolidayObj,
                     compact

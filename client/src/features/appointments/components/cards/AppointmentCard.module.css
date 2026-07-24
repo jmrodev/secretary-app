@@ -1,166 +1,167 @@
-/* AppointmentCard - High Contrast Production Design */
-
 .root {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     justify-content: space-between;
-    background: linear-gradient(135deg, rgb(59, 130, 246, 0.8), rgb(139, 92, 246, 0.5));
-    backdrop-filter: blur(16px);
-    border: 1px solid rgb(255, 255, 255, 0.2);
-    border-radius: 0.75rem;
+    width: 100%;
+    min-height: 3.25rem;
+    padding: 0.75rem 1.25rem;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    border-left: 4px solid var(--primary-color);
     position: relative;
-    overflow: hidden;
     user-select: none;
-    width: 200px;
-    min-height: 185px;
-    padding: 0.75rem;
-    color: #fff;
-    box-shadow: 0 4px 10px rgb(0, 0, 0, 0.15);
-    flex: 0 0 auto;
+    color: var(--text-main);
+    transition: all 0.15s ease;
+    gap: 1rem;
 }
 
 .root:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 10px 25px rgb(0, 0, 0, 0.4);
-    filter: brightness(1.1);
-    border-color: rgb(255, 255, 255, 0.4);
+    transform: none;
+    box-shadow: none;
+    background: rgba(128, 128, 128, 0.06);
 }
 
-/* --- Status Modifiers (Vibrant Multi-Color Glass Blocks) --- */
-.completed  { background: linear-gradient(135deg, rgb(34, 197, 94, 0.8), rgb(20, 184, 166, 0.5)) !important; border-color: rgb(34, 197, 94, 0.6) !important; }
-.attended   { background: linear-gradient(135deg, rgb(16, 185, 129, 0.8), rgb(6, 182, 212, 0.5)) !important; border-color: rgb(16, 185, 129, 0.6) !important; }
-.cancelled  { background: linear-gradient(135deg, rgb(239, 68, 68, 0.8), rgb(249, 115, 22, 0.5)) !important; border-color: rgb(239, 68, 68, 0.6) !important; }
-.suspended  { background: linear-gradient(135deg, rgb(220, 38, 38, 0.8), rgb(225, 29, 72, 0.5)) !important; border-color: rgb(220, 38, 38, 0.6) !important; }
-.absent     { background: linear-gradient(135deg, rgb(245, 158, 11, 0.8), rgb(234, 179, 8, 0.5)) !important; border-color: rgb(245, 158, 11, 0.6) !important; }
-.rescheduled{ background: linear-gradient(135deg, rgb(217, 119, 6, 0.8), rgb(180, 83, 9, 0.5)) !important; border-color: rgb(217, 119, 6, 0.6) !important; }
-.pending    { background: linear-gradient(135deg, rgb(59, 130, 246, 0.8), rgb(139, 92, 246, 0.5)) !important; border-color: rgb(59, 130, 246, 0.6) !important; }
-.confirmed  { background: linear-gradient(135deg, rgb(6, 182, 212, 0.8), rgb(59, 130, 246, 0.5)) !important; border-color: rgb(6, 182, 212, 0.6) !important; }
-.arrived    { background: linear-gradient(135deg, rgb(14, 165, 233, 0.8), rgb(99, 102, 241, 0.5)) !important; border-color: rgb(14, 165, 233, 0.6) !important; }
-.virtual    { background: linear-gradient(135deg, rgb(168, 85, 247, 0.8), rgb(236, 72, 153, 0.5)) !important; border-color: rgb(168, 85, 247, 0.6) !important; }
+/* --- Status Modifiers (Subtle List Row Left Accents) --- */
+.completed  { border-left-color: #22c55e !important; }
+.attended   { border-left-color: #10b981 !important; }
+.cancelled  { border-left-color: #ef4444 !important; }
+.suspended  { border-left-color: #dc2626 !important; }
+.absent     { border-left-color: #f59e0b !important; }
+.rescheduled{ border-left-color: #d97706 !important; }
+.pending    { border-left-color: #3b82f6 !important; }
+.confirmed  { border-left-color: #06b6d4 !important; }
+.arrived    { border-left-color: #0ea5e9 !important; }
+.virtual    { border-left-color: #a855f7 !important; }
 
 /* --- Sub-elements --- */
+.timeLineTop {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+    border: none;
+    min-width: 4.5rem;
+    flex-shrink: 0;
+    font-family: var(--font-manrope);
+}
+
 .info {
     display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
     min-width: 0;
 }
 
 .patientName {
-    color: #fff !important;
+    color: var(--text-main) !important;
     display: flex;
-    align-items: flex-start;
-    gap: 0.65rem;
-    min-width: 0;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 180px;
 }
 
 .patientNameText {
     display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
-    overflow: hidden;
+    flex-direction: row;
+    gap: 0.35rem;
+    align-items: center;
+    white-space: nowrap;
 }
 
 .surname {
-    font-size: 1.15rem;
+    font-size: 1rem;
     font-weight: 800;
-    line-height: 1.1;
+    line-height: 1.2;
     text-transform: uppercase;
+    color: var(--text-main);
 }
 
 .givenName {
     font-size: 0.95rem;
     font-weight: 500;
-    line-height: 1.1;
-    opacity: 0.9;
+    line-height: 1.2;
+    color: var(--text-muted);
 }
 
 .details {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-    font-size: 0.8rem;
-    color: rgb(255, 255, 255, 0.9);
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
     min-width: 0;
-}
-
-.timeLineTop {
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 0.5rem;
-    padding-bottom: 0.25rem;
-    border-bottom: 1px solid rgb(255, 255, 255, 0.15);
-    display: inline-block;
-    align-self: flex-start;
 }
 
 .doctor {
     font-weight: 600;
-    color: rgb(255, 255, 255, 0.9);
+    color: var(--text-muted);
     display: flex;
     align-items: center;
     gap: 0.25rem;
 }
 
 .reason {
-    color: rgb(255, 255, 255, 0.8);
+    color: var(--text-muted);
     overflow-wrap: break-word;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 0.25rem;
 }
 
 .reasonText {
-    margin-top: 0.1rem;
+    margin-top: 0;
 }
 
 /* --- Status Area (Payment & Chips) --- */
 .status {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 0.45rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
     margin-left: auto;
     flex-shrink: 0;
 }
 
 .statusChip {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.35rem; /* Removed pill style, made it slightly rounded square */
-    background: rgb(255, 255, 255, 0.2);
-    color: #fff;
-    border: none;
-    backdrop-filter: blur(5px);
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-sm);
+    background: rgba(128, 128, 128, 0.12);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
 }
 
-.statusChipCompleted { background: rgb(255, 255, 255, 0.25); }
-.statusChipCancelled { background: rgb(255, 255, 255, 0.25); }
-.statusChipPending   { background: rgb(255, 255, 255, 0.25); }
-.statusChipConfirmed { background: rgb(255, 255, 255, 0.25); }
-.statusChipArrived   { background: rgb(255, 255, 255, 0.25); }
-.statusChipAbsent    { background: rgb(255, 255, 255, 0.25); }
-.statusChipSuspended { background: rgb(255, 255, 255, 0.25); }
-.statusChipRescheduled { background: rgb(255, 255, 255, 0.25); }
+.statusChipCompleted { background: rgba(34, 197, 94, 0.12); color: #16a34a; border-color: rgba(34, 197, 94, 0.3); }
+.statusChipCancelled { background: rgba(239, 68, 68, 0.12); color: #dc2626; border-color: rgba(239, 68, 68, 0.3); }
+.statusChipPending   { background: rgba(59, 130, 246, 0.12); color: #2563eb; border-color: rgba(59, 130, 246, 0.3); }
+.statusChipConfirmed { background: rgba(6, 182, 212, 0.12); color: #0891b2; border-color: rgba(6, 182, 212, 0.3); }
+.statusChipArrived   { background: rgba(14, 165, 233, 0.12); color: #0284c7; border-color: rgba(14, 165, 233, 0.3); }
+.statusChipAbsent    { background: rgba(245, 158, 11, 0.12); color: #d97706; border-color: rgba(245, 158, 11, 0.3); }
+.statusChipSuspended { background: rgba(220, 38, 38, 0.12); color: #b91c1c; border-color: rgba(220, 38, 38, 0.3); }
+.statusChipRescheduled { background: rgba(217, 119, 6, 0.12); color: #b45309; border-color: rgba(217, 119, 6, 0.3); }
 
 /* --- Payment Amount Indicators --- */
 .paymentInfo {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    font-weight: 900;
-    font-size: 1rem;
+    font-weight: 800;
+    font-size: 0.95rem;
 }
 
-.paymentInfoPaid { color: #fff; }
-.paymentInfoPending { color: rgb(255, 255, 255, 0.8); }
-.paymentInfoDebt { color: rgb(255, 255, 255, 0.9); }
-.paymentInfoBonified { color: #fff; }
+.paymentInfoPaid { color: #16a34a; }
+.paymentInfoPending { color: var(--text-muted); }
+.paymentInfoDebt { color: #dc2626; }
+.paymentInfoBonified { color: #0284c7; }
 
 /* --- Skeleton Loading State --- */
 .skeleton {

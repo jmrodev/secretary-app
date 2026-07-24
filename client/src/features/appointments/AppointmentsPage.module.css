@@ -2,54 +2,22 @@
 
 .root {
     /* --- Local Component Tokens --- */
-    --appointments-surface: rgb(255, 255, 255, 0.03);
-    --appointments-panel-bg: rgb(255, 255, 255, 0.03);
-    --appointments-panel-border: rgb(255, 255, 255, 0.08);
-    --appointments-panel-shadow: 0 8px 32px 0 rgb(0, 0, 0, 0.2);
-    --appointments-gap: 2rem;
-    --appointments-radius: 20px;
-    --live-indicator-bg: rgb(0, 206, 209, 0.1);
-    --live-indicator-dot: #00ced1;
-    --live-indicator-text: #00ced1;
-    --search-bg: rgb(0, 0, 0, 0.2);
-
-    /* ------------------------------ */
+    --appointments-surface: var(--dashboard-card-bg);
+    --appointments-panel-bg: var(--dashboard-card-bg);
+    --appointments-panel-border: var(--border-color);
+    --appointments-panel-shadow: var(--shadow-md);
+    --appointments-gap: 1.5rem;
+    --appointments-radius: var(--radius-sm);
 
     flex: 1;
-    min-height: 0;          /* Propaga altura desde el padre flex */
+    min-height: 0;
     display: flex;
     flex-direction: column;
     position: relative;
-    overflow: auto hidden;  /* Scroll vertical, sin corte horizontal */
-    animation: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    overflow: auto hidden;
     padding: 0.5rem 0.75rem;
     z-index: 1;
     background: transparent;
-}
-
-.root::before, .root::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(140px);
-    z-index: -1;
-    pointer-events: none;
-}
-
-.root::before {
-    width: 50vw;
-    height: 50vw;
-    background: rgb(59, 130, 246, 0.2);
-    top: -20%;
-    left: -10%;
-}
-
-.root::after {
-    width: 40vw;
-    height: 40vw;
-    background: rgb(168, 85, 247, 0.15);
-    bottom: -10%;
-    right: -5%;
 }
 
 .toolbarActions {
@@ -62,17 +30,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-}
-
-.nextSlotBtn {
-    box-shadow: 0 0 15px rgb(0,206,209, 0.3);
-    animation: pulse-glow 2s infinite;
-}
-
-@keyframes pulse-glow {
-    0% { box-shadow: 0 0 5px rgb(0,206,209, 0.2); }
-    50% { box-shadow: 0 0 20px rgb(0,206,209, 0.5); }
-    100% { box-shadow: 0 0 5px rgb(0,206,209, 0.2); }
 }
 
 /* --- Live Indicator --- */
@@ -152,12 +109,12 @@
     gap: 0;
     min-height: 0;
     height: 100%;          /* Ocupa toda la altura disponible */
-    background: rgb(15, 23, 42, 0.6);
+    background: var(--dashboard-card-bg);
     backdrop-filter: blur(24px);
-    border: 1px solid rgb(255, 255, 255, 0.08);
-    border-radius: 24px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     overflow: hidden;      /* Clips los bordes redondeados */
-    box-shadow: 0 25px 50px -12px rgb(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-md);
     margin-bottom: 0;
 }
 
@@ -169,7 +126,7 @@
 
 .panelCalendar {
     background: transparent;
-    border-right: 1px solid rgb(255, 255, 255, 0.05);
+    border-right: 1px solid var(--border-color);
     padding: 0.5rem;
     overflow: hidden auto;
 }
@@ -180,7 +137,7 @@
 }
 
 .panelCalendar::-webkit-scrollbar-thumb {
-    background: rgb(255,255,255,0.1);
+    background: rgba(128, 128, 128, 0.15);
     border-radius: 10px;
 }
 
@@ -198,16 +155,16 @@
 }
 
 .panelAgenda::-webkit-scrollbar-thumb {
-    background: rgb(255,255,255,0.1);
+    background: rgba(128, 128, 128, 0.15);
     border-radius: 10px;
 }
 
 .panelSearch, .panelUpcoming {
-    background: rgb(15, 23, 42, 0.6);
+    background: var(--dashboard-card-bg);
     backdrop-filter: blur(24px);
-    border: 1px solid rgb(255, 255, 255, 0.08);
-    border-radius: 24px;
-    box-shadow: 0 25px 50px -12px rgb(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
     margin-bottom: 2rem;
     padding: 1.5rem;
     flex: 1;

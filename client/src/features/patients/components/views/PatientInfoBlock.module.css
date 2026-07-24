@@ -2,14 +2,14 @@
 /* PatientInfoBlock Styles (BEM) */
 
 .detailsBlock {
-    --block-bg: var(--white);
-    --block-border: var(--gray-200);
-    --block-header-bg: var(--gray-50);
-    --block-title-color: var(--gray-800);
+    --block-bg: var(--dashboard-card-bg);
+    --block-border: var(--border-color);
+    --block-header-bg: var(--dashboard-card-bg);
+    --block-title-color: var(--text-main);
 
     background-color: var(--block-bg);
     border: 1px solid var(--block-border);
-    border-radius: 1rem;
+    border-radius: var(--radius-sm);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
     display: flex;
@@ -19,7 +19,7 @@
 .header {
     padding: 1.25rem 1.5rem;
     background-color: var(--block-header-bg);
-    border-bottom: 2px solid var(--blue-500);
+    border-bottom: 2px solid var(--primary-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -43,7 +43,7 @@
 
 /* Modifier for Info Block */
 .detailsBlockInfo .header {
-    border-bottom-color: var(--blue-500);
+    border-bottom-color: var(--primary-color);
 }
 
 .infoTable {
@@ -52,7 +52,7 @@
 }
 
 .infoRow {
-    border-bottom: 1px solid var(--gray-50);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .infoRow:last-child {
@@ -67,16 +67,16 @@
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--blue-700);
-    background-color: var(--blue-50);
-    border-right: 1px solid var(--blue-100);
+    color: var(--text-muted);
+    background-color: var(--dashboard-card-bg);
+    border-right: 1px solid var(--border-color);
 }
 
 .infoValue {
     padding: 1rem 1.5rem;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--gray-800);
+    color: var(--text-main);
 }
 
 .infoHint {

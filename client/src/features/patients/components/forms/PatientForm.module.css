@@ -14,11 +14,9 @@
 .header {
     flex-shrink: 0;
     background: var(--dashboard-card-bg);
-    border-bottom: 1px solid var(--dashboard-card-border);
+    border-bottom: 1px solid var(--border-color);
     z-index: 10;
-    box-shadow: 0 0.25rem 1rem rgb(0 0 0 / 2%);
-
-    /* Very subtle shadow instead of line */
+    box-shadow: var(--shadow-sm);
 }
 
 .stepper {
@@ -39,7 +37,7 @@
     left: 4.5rem;
     right: 4.5rem;
     height: 0.125rem;
-    background: var(--gray-800);
+    background: var(--border-color);
     z-index: 1;
 }
 
@@ -65,15 +63,11 @@
 /* 3. FOOTER: Actions (Fixed & Tonal) */
 .footer {
     flex-shrink: 0;
-    background: var(--gray-800);
-    border-top: 1px solid var(--dashboard-card-border);
-
-    /* Tonal shift instead of white to separate from content */
+    background: var(--dashboard-card-bg);
+    border-top: 1px solid var(--border-color);
     padding: 1.25rem 2rem;
     z-index: 10;
-    box-shadow: 0 -0.25rem 1rem rgb(0 0 0 / 3%);
-
-    /* Ambient shadow instead of line */
+    box-shadow: var(--shadow-sm);
 }
 
 .actions {

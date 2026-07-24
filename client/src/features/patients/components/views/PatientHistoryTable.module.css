@@ -20,7 +20,7 @@
 .historyHeader {
     position: sticky;
     top: 0;
-    background-color: var(--slate-50);
+    background-color: var(--dashboard-card-bg);
     z-index: 10;
 }
 
@@ -28,24 +28,24 @@
     padding: 1rem;
     font-size: 0.75rem;
     font-weight: 800;
-    color: white;
+    color: var(--text-main);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    background: linear-gradient(to right, var(--slate-700), var(--slate-800));
-    border-bottom: 2px solid var(--slate-900);
+    background: var(--dashboard-card-bg);
+    border-bottom: 2px solid var(--border-color);
 }
 
 .historyRow:nth-child(even) {
-    background-color: var(--slate-50);
+    background-color: transparent;
 }
 
 .historyRow {
-    border-bottom: 1px solid var(--slate-50);
+    border-bottom: 1px solid var(--border-color);
     transition: background-color 0.2s ease;
 }
 
 .historyRow:hover {
-    background-color: var(--slate-50);
+    background-color: rgba(128, 128, 128, 0.08);
 }
 
 .historyCell {
@@ -59,12 +59,12 @@
 
 .tableCellDateMain {
     font-weight: 700;
-    color: var(--slate-800);
+    color: var(--text-main);
 }
 
 .tableCellDateSub {
     font-size: 0.75rem;
-    color: var(--slate-400);
+    color: var(--text-muted);
 }
 
 .tableCellBold {

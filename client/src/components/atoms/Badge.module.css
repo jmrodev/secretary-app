@@ -34,53 +34,47 @@
     font-size: 0.6875rem;
 }
 
-/* Variants - Tonal Layering Strategy for Dark Mode */
+/* Variants - Soft Theme Adaptive */
 .blue {
-    --badge-bg: var(--blue-800);
-    --badge-color: var(--blue-200);
-
-    border: 1px solid var(--blue-700);
+    --badge-bg: rgba(2, 132, 199, 0.12);
+    --badge-color: #0284c7;
+    border: 1px solid rgba(2, 132, 199, 0.25);
 }
 
 .green,
 .success,
 .completed {
-    --badge-bg: var(--green-800);
-    --badge-color: var(--green-200);
-
-    border: 1px solid var(--green-700);
+    --badge-bg: rgba(34, 197, 94, 0.12);
+    --badge-color: #16a34a;
+    border: 1px solid rgba(34, 197, 94, 0.25);
 }
 
 .red,
 .danger,
 .rejected {
-    --badge-bg: var(--red-800);
-    --badge-color: var(--red-200);
-
-    border: 1px solid var(--red-700);
+    --badge-bg: rgba(239, 68, 68, 0.12);
+    --badge-color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
 .amber,
 .warning,
 .pending {
-    --badge-bg: var(--amber-700);
-    --badge-color: var(--amber-200);
-
-    border: 1px solid var(--amber-600);
+    --badge-bg: rgba(245, 158, 11, 0.12);
+    --badge-color: #d97706;
+    border: 1px solid rgba(245, 158, 11, 0.25);
 }
 
 .purple,
 .consult {
-    --badge-bg: var(--purple-800);
-    --badge-color: var(--purple-200);
-
-    border: 1px solid var(--purple-700);
+    --badge-bg: rgba(168, 85, 247, 0.12);
+    --badge-color: #9333ea;
+    border: 1px solid rgba(168, 85, 247, 0.25);
 }
 
 .accent {
     --badge-bg: var(--primary-color);
-    --badge-color: var(--text-main);
-
+    --badge-color: #ffffff;
     box-shadow: var(--shadow-sm);
 }
 

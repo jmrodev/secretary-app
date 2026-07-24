@@ -5,11 +5,11 @@
     flex-direction: column;
     gap: 1.5rem;
     animation: fade-in 0.3s ease-out;
-    background: rgb(255 255 255 / 10%);
+    background: var(--dashboard-card-bg);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 5%);
-    border-radius: 1rem;
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
     padding: 1.5rem;
 }
 

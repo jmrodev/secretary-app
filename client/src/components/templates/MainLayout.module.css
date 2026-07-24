@@ -14,36 +14,7 @@
     position: relative;
 }
 
-/* Global Glassmorphism Background Orbs */
-.appLayout::before,
-.appLayout::after {
-    content: '';
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.18;
-    z-index: 0;
-    pointer-events: none;
-    transition: opacity 0.5s ease;
-}
-
-.appLayout::before {
-    top: -5vw;
-    right: -5vw;
-    width: 45vw;
-    height: 45vw;
-    background: radial-gradient(circle, rgb(138 43 226) 0%, transparent 70%);
-}
-
-.appLayout::after {
-    bottom: -5vw;
-    left: -5vw;
-    width: 50vw;
-    height: 50vw;
-    background: radial-gradient(circle, rgb(0 206 209) 0%, transparent 70%);
-}
-
-/* --- ECC-Pattern: Z-Index Management --- */
+/* --- ECC-Pattern: Z-Index & Layout Management --- */
 
 /* The Navbar MUST have a higher stacking context than the main content */
 .appLayout > header {
@@ -66,9 +37,9 @@
 /* ---------------------------------------- */
 
 .inner {
-    padding: var(--content-padding);
+    padding: 0.75rem 1.5rem;
     width: 100%;
-    max-width: var(--layout-max-width, 1600px);
+    max-width: 1800px;
     margin: 0 auto;
     flex: 1;
     display: flex;
@@ -77,17 +48,17 @@
 }
 
 .root {
-    --content-padding: clamp(0.75rem, 2vh, 1.25rem) clamp(1rem, 3vw, 2.5rem);
+    --content-padding: 0.75rem 1.5rem;
 }
 
 .root.dashboardWide .inner {
-    padding: 0.5rem;
-    max-width: 1920px;
+    padding: 0.75rem 1.5rem;
+    max-width: 1800px;
 }
 
 .flush .inner {
-    padding: 0 !important;
-    max-width: 100% !important;
+    padding: 0.75rem 1.5rem;
+    max-width: 1800px;
 }
 
 @media screen and (width <= 1024px) {

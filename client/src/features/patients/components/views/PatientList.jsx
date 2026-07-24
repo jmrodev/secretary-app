@@ -70,16 +70,22 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
             tabIndex={0}
         >
             <td>
-                <div className={`${styles.nameCell}`}>
+                <div className={`${styles.patientCol}`}>
                     <strong className={`${styles.name}`}>
                         {p.full_name || `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'N/A'}
                     </strong>
-                    {p.is_new_patient === 1 && <Badge variant="blue" size="sm">NEW</Badge>}
+                    {((Boolean(p.is_new_patient) || Number(p.is_new_patient) === 1) || Number(p.attended_appointments) > 0) && (
+                        <div className={`${styles.badgeRow}`}>
+                            {(Boolean(p.is_new_patient) || Number(p.is_new_patient) === 1) && (
+                                <Badge variant="blue" size="sm">NUEVO</Badge>
+                            )}
 
-                    {p.attended_appointments > 0 && (
-                        <Badge variant="success" size="sm" title={`${t('attended_appointments') || 'Visitas'}: ${p.attended_appointments}`}>
-                            <Icon name="history" size="0.8rem" /> {p.attended_appointments}
-                        </Badge>
+                            {Number(p.attended_appointments) > 0 && (
+                                <Badge variant="success" size="sm" title={`${t('attended_appointments') || 'Visitas'}: ${p.attended_appointments}`}>
+                                    <Icon name="history" size="0.75rem" /> {p.attended_appointments} {p.attended_appointments === 1 ? 'visita' : 'visitas'}
+                                </Badge>
+                            )}
+                        </div>
                     )}
                 </div>
             </td>
@@ -165,9 +171,9 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                         variant="warning"
                         onClick={(e) => onOpenDebt(e, p.id, p.total_debt)}
                         className={`${styles.debtBadge}`}
-                        icon={<Icon name="payments" size="1rem" />}
+                        icon={<Icon name="payments" size="0.9rem" />}
                     >
-                        ${p.total_debt}
+                        ${Number(p.total_debt).toLocaleString()}
                     </Button>
                 ) : (
                     <span className={`${styles.zeroDebt}`}>$0.00</span>

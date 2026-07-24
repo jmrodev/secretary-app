@@ -40,10 +40,12 @@ export const usePatientsPageController = () => {
         currentPage, 
         handlePageChange,
         loading: patientsLoading, 
+        hasFetchedOnce,
+        executeSearch,
         refetch: fetchPatients,
     } = usePatientQuery({
         limit: itemsPerPage,
-        doctorId: viewDoctorId,
+        doctorId: null,
         useGlobalSearch: true
     });
 
@@ -103,7 +105,7 @@ export const usePatientsPageController = () => {
         detailsLoading,
         activeTab, setActiveTab,
         viewDoctorId, setViewDoctorId,
-        searchTerm, setSearchTerm,
+        searchTerm, setSearchTerm, executeSearch,
         selectedPatientId, setSelectedPatientId,
         patientDetails, setPatientDetails,
 
@@ -119,7 +121,7 @@ export const usePatientsPageController = () => {
             fetchPatients, fetchRecycleBin,
             handleSavePrescription,
         },
-        fetched: patientsLoading === false && patients !== undefined, // Or update usePatientQuery to return fetched
+        fetched: hasFetchedOnce || (patientsLoading === false && patients !== undefined),
     };
 
 };

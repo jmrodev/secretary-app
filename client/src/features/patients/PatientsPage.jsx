@@ -37,7 +37,7 @@ const PatientsPage = () => {
         doctors, insurances, recycleItems, institutions,
         activeTab, setActiveTab,
         selectedPatientId, setSelectedPatientId, patientDetails,
-        searchTerm, setSearchTerm,
+        searchTerm, setSearchTerm, executeSearch,
 
         // Modals
         editModal, setEditModal,
@@ -71,19 +71,19 @@ const PatientsPage = () => {
 
     // Only show global loading if we haven't fetched any patients yet (initial load)
     if (loading && !controller.fetched) return (
-        <MainLayout wide flush>
+        <MainLayout wide flush hideSearch>
             <Loading variant="centered" text={t('loading')} />
         </MainLayout>
     );
 
     if (detailsLoading) return (
-        <MainLayout wide flush>
+        <MainLayout wide flush hideSearch>
             <Loading variant="centered" />
         </MainLayout>
     );
 
     return (
-        <MainLayout wide flush title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
+        <MainLayout wide flush hideSearch title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
             <div className="patients-page-orchestrator layout-content-area animate-fade-in">
                 {(selectedPatientId && patientDetails) ? (
                     // --- DETAILS VIEW ---
@@ -125,8 +125,16 @@ const PatientsPage = () => {
                                     <SearchBar
                                         value={searchTerm}
                                         onChange={(e) => setSearchTerm(e.target.value)}
-                                        onClear={() => setSearchTerm('')}
-                                        placeholder={t('search_patients') || 'Search patients...'}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                executeSearch();
+                                            }
+                                        }}
+                                        onClear={() => {
+                                            setSearchTerm('');
+                                            executeSearch('');
+                                        }}
+                                        placeholder={t('search_patients_placeholder') || 'Buscar pacientes (Presioná Enter)...'}
                                     />
                                 )
                             }
@@ -147,6 +155,17 @@ const PatientsPage = () => {
                         <main className="patients-page-orchestrator__main">
                             {activeTab === 'list' ? (
                                 <div className="patients-page__table-wrapper">
+                                    <div className="patients-page__pagination-top" style={{ marginBottom: '0.75rem' }}>
+                                        <Pagination
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            totalCount={totalCount}
+                                            itemsShowing={patients.length}
+                                            onPageChange={handlePageChange}
+                                            t={t}
+                                        />
+                                    </div>
+
                                     <section className="dashboard-card dashboard-card--no-padding dashboard-card--scroll-horizontal">
                                         <PatientList
                                             patients={patients}

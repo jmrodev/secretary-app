@@ -53,8 +53,7 @@ const AppointmentsPage = () => {
         <MainLayout 
             wide flush 
             title={t('appointments_title')} 
-            hideClock={true}
-            doctorSelectorActions={
+            actionSlot={
                 <div style={{ position: 'relative' }}>
                     <Button 
                         variant="accent" 

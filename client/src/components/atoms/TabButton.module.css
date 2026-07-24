@@ -2,7 +2,7 @@
     /* --- Local Component Tokens --- */
     --tab-bg: transparent;
     --tab-color: var(--text-muted);
-    --tab-hover-bg: var(--gray-800);
+    --tab-hover-bg: rgba(128, 128, 128, 0.1);
     --tab-hover-color: var(--text-main);
     --tab-active-bg: var(--dashboard-card-bg);
     --tab-active-color: var(--primary-color);

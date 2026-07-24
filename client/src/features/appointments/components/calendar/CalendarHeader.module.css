@@ -22,9 +22,9 @@
 
 .navButton {
     color: var(--text-muted);
-    background-color: rgb(255 255 255 / 2%);
-    border: 1px solid rgb(255 255 255 / 4%);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -35,10 +35,10 @@
 }
 
 .navButton:hover {
-    color: var(--white);
-    background-color: rgb(var(--accent-rgb), 0.15);
-    border-color: rgb(var(--accent-rgb), 0.3);
-    transform: scale(1.08);
+    color: var(--text-main);
+    background-color: rgba(128, 128, 128, 0.08);
+    border-color: var(--primary-color);
+    transform: scale(1.05);
 }
 
 .navButton:active {

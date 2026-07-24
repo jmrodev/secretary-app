@@ -24,6 +24,7 @@ const SearchBar = ({
     suggestions = EMPTY_ARRAY,
     showSuggestions = false,
     onFocus,
+    onKeyDown,
     onClear,
     onCloseSuggestions,
     labels = DEFAULT_LABELS
@@ -67,6 +68,7 @@ const SearchBar = ({
                     value={value}
                     onChange={onChange}
                     onFocus={onFocus}
+                    onKeyDown={onKeyDown}
                     autoComplete="off"
                 />
                 {value && (

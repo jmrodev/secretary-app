@@ -1,10 +1,11 @@
 .root {
     --card-padding: 1.5rem;
     
-    background-color: var(--white);
-    border-radius: var(--radius); /* XL 1.5rem */
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     padding: var(--card-padding);
-    box-shadow: var(--shadow-premium);
+    box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -43,7 +44,7 @@
 .label {
     font-size: 0.625rem;
     font-weight: 800;
-    color: var(--gray-950);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -52,8 +53,8 @@
     width: 100%;
     padding: 0.625rem 0.75rem;
     border-radius: var(--radius-sm);
-    border: 0.0625rem solid var(--gray-200);
-    background-color: var(--gray-50);
+    border: 1px solid var(--border-color);
+    background-color: var(--dashboard-card-bg);
     color: var(--text-main);
     font-size: 0.875rem;
     transition: all 0.2s ease;
@@ -61,15 +62,15 @@
 
 .select:focus {
     border-color: var(--primary-color);
-    background-color: var(--white);
-    box-shadow: 0 0 0 0.125rem rgb(0 61 155 / 10%);
+    background-color: var(--dashboard-card-bg);
+    box-shadow: var(--shadow-sm);
 }
 
 .statusCard {
     margin-top: 0.5rem;
     padding: 1rem;
-    background-color: var(--blue-50);
-    border-radius: var(--radius-md);
+    background-color: rgba(128, 128, 128, 0.08);
+    border-radius: var(--radius-sm);
     border-left: 0.25rem solid var(--primary-color);
 }
 

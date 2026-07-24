@@ -37,7 +37,8 @@ export const usePatientsHandlers = ({
 
             // Optimized: Only fetch basic details (which now include stats via the extended view)
             const res = await api.get(`/users/patients/${id}`);
-            setPatientDetails(res.data);
+            const patientData = res.data?.data || res.data;
+            setPatientDetails(patientData);
         } catch (err) {
             console.error(err);
             showMessage(t('failed_load_history') || "Failed to load history", 'error');

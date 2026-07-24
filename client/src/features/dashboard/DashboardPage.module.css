@@ -7,51 +7,44 @@
     min-height: 0;
     overflow: auto hidden;
     position: relative;
-    background: radial-gradient(circle at 0% 0%, rgb(138, 43, 226, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgb(0, 242, 254, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgb(10, 11, 20, 0.6) 0%, transparent 100%);
-    color: #e0e6ed;
+    background: var(--background-bg);
+    color: var(--text-main);
     padding: 0.75rem;
 }
-
 
 .bentoGrid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-auto-rows: minmax(120px, auto);
-    gap: 0.75rem;
+    gap: 1rem;
     padding: 0.25rem 0;
     width: 100%;
 }
 
 .bentoCard {
     position: relative;
-    background: rgb(30, 41, 59, 0.4);
-    backdrop-filter: blur(24px) saturate(180%);
-    border: 1px solid rgb(255, 255, 255, 0.1);
-    border-top: 1px solid rgb(255, 255, 255, 0.15);
-    border-radius: 20px;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
-    box-shadow: 0 8px 32px 0 rgb(0, 0, 0, 0.37);
+    box-shadow: 0 4px 16px rgb(0, 0, 0, 0.2);
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.2s ease-in-out;
     display: flex;
     flex-direction: column;
     min-height: 0;
 }
 
 .bentoCard:hover {
-    transform: translateY(-8px) scale(1.01);
-    box-shadow: 0 20px 60px -15px rgb(0, 206, 209, 0.25);
-    border-color: rgb(0, 206, 209, 0.4);
-    background: rgb(30, 41, 59, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgb(0, 0, 0, 0.3);
+    border-color: rgb(255, 255, 255, 0.12);
 }
 
 .cashMonitorCard {
     grid-column: span 4;
     grid-row: span 1;
     order: 1;
-    background: linear-gradient(135deg, rgb(72, 128, 255, 0.08) 0%, rgb(0, 242, 254, 0.03) 100%);
 }
 
 .statsOverviewCard {
@@ -64,37 +57,38 @@
     grid-column: span 4;
     grid-row: span 1;
     order: 3;
-    background: linear-gradient(135deg, rgb(20, 22, 35, 0.6) 0%, rgb(138, 43, 226, 0.05) 100%);
 }
 
 .mainContentCard {
     grid-column: span 8;
     grid-row: span 3;
     order: 4;
-    background: rgb(15, 17, 26, 0.5);
 }
 
 .remindersCard {
     grid-column: span 4;
     grid-row: span 3;
     order: 5;
-    background: rgb(15, 17, 26, 0.4);
 }
 
 .bentoHeader {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
-    font-size: 0.7rem;
-    font-weight: 750;
-    color: #fff;
-    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.05em;
 }
 
 .bentoHeaderIcon {
-    color: #00f2fe;
+    color: var(--primary-color);
+}
+
+.bentoHeaderIconPurple {
+    color: var(--accent-color);
 }
 
 .statsRow {
@@ -111,21 +105,19 @@
 }
 
 .statValue {
-    font-size: 1.5rem;
-    font-weight: 850;
+    font-size: 1.75rem;
+    font-weight: 800;
     line-height: 1;
-    margin-bottom: 0.25rem;
-    color: #fff;
+    margin-bottom: 0.35rem;
+    color: var(--text-main);
 }
 
 .statValuePurple {
-    font-size: 1.5rem;
-    font-weight: 850;
+    font-size: 1.75rem;
+    font-weight: 800;
     line-height: 1;
-    margin-bottom: 0.25rem;
-    background: linear-gradient(135deg, #b82bf2 0%, #6e00ff 100%);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.35rem;
+    color: var(--text-main);
 }
 
 .statLabel {
@@ -133,23 +125,7 @@
     font-weight: 600;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.chartPlaceholder {
-    display: flex;
-    align-items: flex-end;
-    gap: 4px;
-    height: 40px;
-    margin-top: 0.5rem;
-    width: 100%;
-}
-
-.chartBar {
-    flex: 1;
-    background: rgb(184, 43, 242, 0.5);
-    border-radius: 4px 4px 0 0;
-    min-height: 10%;
+    letter-spacing: 0.04em;
 }
 
 @media (width <= 1024px) {

@@ -4,6 +4,7 @@ import { useLayoutController } from '@/features/layout/hooks/useLayoutController
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import LanguageSelector from '@/components/atoms/LanguageSelector';
+import ThemeToggle from '@/components/atoms/ThemeToggle';
 import NavbarLink from './NavbarLink';
 import NavbarDropdown from './NavbarDropdown';
 import styles from './Navbar.module.css';
@@ -104,6 +105,7 @@ const Navbar = () => {
                 {/* --- Right: User & Actions --- */}
                 <div className={styles.right}>
                     <div className={styles.actions}>
+                        <ThemeToggle />
                         <div className={styles.actionIcon}>
                             <Icon name="NOTIFICATIONS" size="1.2rem" />
                             <span className={styles.badge}></span>

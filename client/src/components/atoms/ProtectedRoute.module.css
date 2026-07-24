@@ -5,13 +5,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-bg-primary, white);
+    background-color: var(--background-bg, white);
 }
 
 .content {
     font-size: 1.5rem;
     font-weight: 500;
-    color: var(--color-primary);
+    color: var(--primary-color);
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 

@@ -93,7 +93,7 @@
     --btn-border: var(--dashboard-card-border);
     --btn-text: var(--text-main);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: var(--gray-800);
+    --btn-hover-bg: rgba(128, 128, 128, 0.12);
 }
 
 .outlineDanger {
@@ -129,7 +129,7 @@
 .ghost {
     --btn-bg: transparent;
     --btn-text: var(--text-muted);
-    --btn-hover-bg: var(--gray-800);
+    --btn-hover-bg: rgba(128, 128, 128, 0.12);
     --btn-hover-text: var(--text-main);
     --btn-hover-y: 0;
 }

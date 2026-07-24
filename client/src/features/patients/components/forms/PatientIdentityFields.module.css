@@ -54,7 +54,7 @@
 .label {
     font-size: 0.625rem;
     font-weight: 800;
-    color: var(--gray-950);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -62,12 +62,13 @@
 .note {
     margin-top: 0.5rem;
     padding: 0.75rem 1rem;
-    background-color: var(--gray-800);
+    background-color: rgba(128, 128, 128, 0.08);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
-    color: var(--gray-600);
+    color: var(--text-muted);
 }
 
 .note p {
