@@ -66,14 +66,14 @@
 
 .tabLink:hover {
     color: var(--primary-color);
-    background-color: rgba(128, 128, 128, 0.08);
+    background-color: rgb(128, 128, 128, 0.08);
 }
 
 .tabLinkActive {
-    background-color: rgba(13, 148, 136, 0.12);
+    background-color: rgb(13, 148, 136, 0.12);
     color: var(--primary-color);
     box-shadow: var(--shadow-sm);
-    border: 1px solid rgba(13, 148, 136, 0.25);
+    border: 1px solid rgb(13, 148, 136, 0.25);
 }
 
 .grid {
@@ -304,7 +304,7 @@
 }
 
 .historyRow:hover {
-    background-color: rgba(128, 128, 128, 0.08);
+    background-color: rgb(128, 128, 128, 0.08);
 }
 
 .historyCell {

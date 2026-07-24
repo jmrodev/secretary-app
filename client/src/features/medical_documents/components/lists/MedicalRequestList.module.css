@@ -10,7 +10,7 @@
     --requests-bg: var(--dashboard-card-bg);
     --requests-border: var(--border-color);
     --requests-header-bg: var(--dashboard-card-bg);
-    --requests-row-hover: rgba(128, 128, 128, 0.08);
+    --requests-row-hover: rgb(128, 128, 128, 0.08);
     --type-rx-bg: var(--blue-100);
     --type-rx-text: var(--blue-700);
     --type-lic-bg: var(--amber-100);

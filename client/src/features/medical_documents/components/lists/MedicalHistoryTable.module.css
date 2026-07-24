@@ -19,7 +19,7 @@
     --history-bg: var(--dashboard-card-bg);
     --history-border: var(--border-color);
     --history-header-bg: var(--dashboard-card-bg);
-    --history-row-hover: rgba(128, 128, 128, 0.08);
+    --history-row-hover: rgb(128, 128, 128, 0.08);
 
     /* ------------------------------ */
 

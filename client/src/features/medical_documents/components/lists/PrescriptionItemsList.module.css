@@ -51,7 +51,7 @@
 }
 
 .table tr:hover td {
-    background: rgba(128, 128, 128, 0.08);
+    background: rgb(128, 128, 128, 0.08);
 }
 
 .nameWrap {

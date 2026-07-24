@@ -20,7 +20,7 @@
 .root:hover {
     transform: none;
     box-shadow: none;
-    background: rgba(128, 128, 128, 0.06);
+    background: rgb(128, 128, 128, 0.06);
 }
 
 /* --- Status Modifiers (Subtle List Row Left Accents) --- */
@@ -135,19 +135,19 @@
     letter-spacing: 0.06em;
     padding: 0.25rem 0.6rem;
     border-radius: var(--radius-sm);
-    background: rgba(128, 128, 128, 0.12);
+    background: rgb(128, 128, 128, 0.12);
     color: var(--text-main);
     border: 1px solid var(--border-color);
 }
 
-.statusChipCompleted { background: rgba(34, 197, 94, 0.12); color: #16a34a; border-color: rgba(34, 197, 94, 0.3); }
-.statusChipCancelled { background: rgba(239, 68, 68, 0.12); color: #dc2626; border-color: rgba(239, 68, 68, 0.3); }
-.statusChipPending   { background: rgba(59, 130, 246, 0.12); color: #2563eb; border-color: rgba(59, 130, 246, 0.3); }
-.statusChipConfirmed { background: rgba(6, 182, 212, 0.12); color: #0891b2; border-color: rgba(6, 182, 212, 0.3); }
-.statusChipArrived   { background: rgba(14, 165, 233, 0.12); color: #0284c7; border-color: rgba(14, 165, 233, 0.3); }
-.statusChipAbsent    { background: rgba(245, 158, 11, 0.12); color: #d97706; border-color: rgba(245, 158, 11, 0.3); }
-.statusChipSuspended { background: rgba(220, 38, 38, 0.12); color: #b91c1c; border-color: rgba(220, 38, 38, 0.3); }
-.statusChipRescheduled { background: rgba(217, 119, 6, 0.12); color: #b45309; border-color: rgba(217, 119, 6, 0.3); }
+.statusChipCompleted { background: rgb(34, 197, 94, 0.12); color: #16a34a; border-color: rgb(34, 197, 94, 0.3); }
+.statusChipCancelled { background: rgb(239, 68, 68, 0.12); color: #dc2626; border-color: rgb(239, 68, 68, 0.3); }
+.statusChipPending   { background: rgb(59, 130, 246, 0.12); color: #2563eb; border-color: rgb(59, 130, 246, 0.3); }
+.statusChipConfirmed { background: rgb(6, 182, 212, 0.12); color: #0891b2; border-color: rgb(6, 182, 212, 0.3); }
+.statusChipArrived   { background: rgb(14, 165, 233, 0.12); color: #0284c7; border-color: rgb(14, 165, 233, 0.3); }
+.statusChipAbsent    { background: rgb(245, 158, 11, 0.12); color: #d97706; border-color: rgb(245, 158, 11, 0.3); }
+.statusChipSuspended { background: rgb(220, 38, 38, 0.12); color: #b91c1c; border-color: rgb(220, 38, 38, 0.3); }
+.statusChipRescheduled { background: rgb(217, 119, 6, 0.12); color: #b45309; border-color: rgb(217, 119, 6, 0.3); }
 
 /* --- Payment Amount Indicators --- */
 .paymentInfo {

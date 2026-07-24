@@ -26,7 +26,7 @@
 
 .controlFocused {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
+    box-shadow: 0 0 0 2px rgb(13, 148, 136, 0.15);
 }
 
 .menu {
@@ -51,12 +51,12 @@
 }
 
 .optionFocused {
-    background-color: rgba(128, 128, 128, 0.08);
+    background-color: rgb(128, 128, 128, 0.08);
     color: var(--text-main);
 }
 
 .optionSelected {
-    background-color: rgba(13, 148, 136, 0.15);
+    background-color: rgb(13, 148, 136, 0.15);
     color: var(--primary-color);
     font-weight: 700;
 }

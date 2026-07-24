@@ -3,7 +3,7 @@
     --reminders-tabs-bg: var(--border-color);
     --reminders-item-bg: var(--dashboard-card-bg);
     --reminders-item-border: var(--dashboard-card-border);
-    --reminders-item-hover: rgba(128, 128, 128, 0.08);
+    --reminders-item-hover: rgb(128, 128, 128, 0.08);
     --badge-visit-bg: rgb(245 158 11 / 15%);
     --badge-visit-text: var(--amber-500);
     --badge-prescription-bg: rgb(16 185 129 / 15%);

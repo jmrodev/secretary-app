@@ -4,16 +4,16 @@
     /* --- Local Component Tokens (Theme Adaptive) --- */
     --history-item-bg: var(--dashboard-card-bg);
     --history-item-border: var(--border-color);
-    --history-cancelled-bg: rgba(239, 68, 68, 0.08);
-    --history-cancelled-border: rgba(239, 68, 68, 0.2);
-    --record-rx-bg: rgba(34, 197, 94, 0.08);
-    --record-rx-border: rgba(34, 197, 94, 0.2);
+    --history-cancelled-bg: rgb(239, 68, 68, 0.08);
+    --history-cancelled-border: rgb(239, 68, 68, 0.2);
+    --record-rx-bg: rgb(34, 197, 94, 0.08);
+    --record-rx-border: rgb(34, 197, 94, 0.2);
     --record-rx-accent: #16a34a;
-    --record-req-bg: rgba(168, 85, 247, 0.08);
-    --record-req-border: rgba(168, 85, 247, 0.2);
+    --record-req-bg: rgb(168, 85, 247, 0.08);
+    --record-req-border: rgb(168, 85, 247, 0.2);
     --record-req-accent: #9333ea;
-    --record-lic-bg: rgba(245, 158, 11, 0.08);
-    --record-lic-border: rgba(245, 158, 11, 0.2);
+    --record-lic-bg: rgb(245, 158, 11, 0.08);
+    --record-lic-border: rgb(245, 158, 11, 0.2);
     --record-lic-accent: #d97706;
     --accent-blue: var(--primary-color);
 

@@ -55,7 +55,7 @@
 .mapCard {
     margin-top: 0.5rem;
     padding: 1rem;
-    background-color: rgba(128, 128, 128, 0.08);
+    background-color: rgb(128, 128, 128, 0.08);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     display: flex;

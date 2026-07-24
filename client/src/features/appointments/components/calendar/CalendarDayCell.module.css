@@ -27,7 +27,7 @@
 }
 
 .root:hover {
-  background: rgba(128, 128, 128, 0.08) !important;
+  background: rgb(128, 128, 128, 0.08) !important;
   border-color: var(--primary-color) !important;
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
@@ -35,7 +35,7 @@
 }
 
 .today {
-  background-color: rgba(14, 165, 233, 0.12) !important;
+  background-color: rgb(14, 165, 233, 0.12) !important;
   border: 2px solid #0284c7 !important;
   z-index: 2;
 }
@@ -46,7 +46,7 @@
 }
 
 .selected {
-  background: rgba(13, 148, 136, 0.15) !important;
+  background: rgb(13, 148, 136, 0.15) !important;
   border: 1px solid var(--primary-color) !important;
   z-index: 3;
   box-shadow: var(--shadow-sm);
@@ -143,23 +143,23 @@
 }
 
 .weekend {
-  background-color: rgba(99, 102, 241, 0.05) !important;
+  background-color: rgb(99, 102, 241, 0.05) !important;
 }
 
 :root[data-theme="dark"] .weekend,
 html[data-theme="dark"] .weekend,
 body:not(.theme-light) .weekend {
-  background-color: rgba(99, 102, 241, 0.1) !important;
+  background-color: rgb(99, 102, 241, 0.1) !important;
 }
 
 .past {
-  background-color: rgba(0, 0, 0, 0.04) !important;
+  background-color: rgb(0, 0, 0, 0.04) !important;
 }
 
 :root[data-theme="dark"] .past,
 html[data-theme="dark"] .past,
 body:not(.theme-light) .past {
-  background-color: rgba(0, 0, 0, 0.25) !important;
+  background-color: rgb(0, 0, 0, 0.25) !important;
 }
 
 .past .number {

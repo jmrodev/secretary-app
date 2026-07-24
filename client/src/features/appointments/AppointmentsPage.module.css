@@ -137,7 +137,7 @@
 }
 
 .panelCalendar::-webkit-scrollbar-thumb {
-    background: rgba(128, 128, 128, 0.15);
+    background: rgb(128, 128, 128, 0.15);
     border-radius: 10px;
 }
 
@@ -155,7 +155,7 @@
 }
 
 .panelAgenda::-webkit-scrollbar-thumb {
-    background: rgba(128, 128, 128, 0.15);
+    background: rgb(128, 128, 128, 0.15);
     border-radius: 10px;
 }
 

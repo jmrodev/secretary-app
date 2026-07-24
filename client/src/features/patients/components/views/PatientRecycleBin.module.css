@@ -54,7 +54,7 @@
 }
 
 .row:hover {
-    background-color: rgba(128, 128, 128, 0.08);
+    background-color: rgb(128, 128, 128, 0.08);
 }
 
 .patientName {
