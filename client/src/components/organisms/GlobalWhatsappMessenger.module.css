@@ -462,6 +462,7 @@
 }
 
 /* Pairing Screen Styles */
+
 /* Pairing overlay — covers full panel when bridge is not connected */
 .pairingOverlay {
     position: absolute;
