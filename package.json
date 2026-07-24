@@ -4,6 +4,7 @@
   "private": true,
   "packageManager": "pnpm@11.0.8",
   "scripts": {
+    "dev": "pnpm -r --parallel dev",
     "lint": "pnpm recursive run lint",
     "precommit": "pnpm run lint && echo '🚀 Linter passed! Safe to commit.'",
     "build": "pnpm --filter client build",
@@ -17,7 +18,7 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^6.0.1",
+    "@vitejs/plugin-react": "^6.0.3",
     "vite": "^8.0.13",
     "wrangler": "^4.91.0"
   },
