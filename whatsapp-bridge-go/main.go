@@ -125,6 +125,53 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"status": "logged_out"})
 }
 
+func connectClient() {
+	if client.Store.ID == nil {
+		fmt.Println("No session found. Starting pairing process...")
+		qrChan, _ := client.GetQRChannel(context.Background())
+		err := client.Connect()
+		if err != nil {
+			fmt.Printf("Failed to connect: %v\n", err)
+			return
+		}
+		go func() {
+			for evt := range qrChan {
+				if evt.Event == "code" {
+					lastQR = evt.Code
+					fmt.Println("\n--- NEW QR CODE RECEIVED ---")
+					fmt.Printf("Code: %s\n", lastQR)
+					q, _ := qrcode.New(evt.Code, qrcode.Medium)
+					fmt.Println(q.ToSmallString(false))
+				} else if evt.Event == "success" {
+					lastQR = ""
+					fmt.Println("Successfully paired!")
+				} else if evt.Event == "timeout" {
+					lastQR = ""
+					fmt.Println("QR timeout.")
+				}
+			}
+		}()
+	} else {
+		fmt.Println("Existing session found. Connecting...")
+		err := client.Connect()
+		if err != nil {
+			fmt.Printf("Failed to connect with existing session: %v\n", err)
+		} else {
+			fmt.Println("WhatsApp connection initiated!")
+		}
+	}
+}
+
+func handleRefresh(w http.ResponseWriter, r *http.Request) {
+	if client != nil && !client.IsLoggedIn() {
+		client.Disconnect()
+		lastQR = ""
+		connectClient()
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"status": "refreshing"})
+}
+
 func main() {
 	dbLog := waLog.Stdout("Database", "INFO", true)
 	container, err := sqlstore.New(context.Background(), "sqlite3", "file:examplestore.db?_foreign_keys=on", dbLog)
@@ -139,42 +186,12 @@ func main() {
 	client = whatsmeow.NewClient(deviceStore, clientLog)
 	client.AddEventHandler(eventHandler)
 
-	if client.Store.ID == nil {
-		fmt.Println("No session found. Starting pairing process...")
-		qrChan, _ := client.GetQRChannel(context.Background())
-		err = client.Connect()
-		if err != nil {
-			fmt.Printf("Failed to connect: %v\n", err)
-			panic(err)
-		}
-		go func() {
-			for evt := range qrChan {
-				if evt.Event == "code" {
-					lastQR = evt.Code
-					fmt.Println("\n--- NEW QR CODE RECEIVED ---")
-					fmt.Printf("Code: %s\n", lastQR)
-					q, _ := qrcode.New(evt.Code, qrcode.Medium)
-					fmt.Println(q.ToSmallString(false))
-				} else if evt.Event == "success" {
-					lastQR = ""
-					fmt.Println("Successfully paired!")
-				}
-			}
-		}()
-	} else {
-		fmt.Println("Existing session found. Connecting...")
-		err = client.Connect()
-		if err != nil {
-			fmt.Printf("Failed to connect with existing session: %v\n", err)
-			// Optional: force logout here if error is critical
-		} else {
-			fmt.Println("WhatsApp connection initiated!")
-		}
-	}
+	connectClient()
 
 	http.HandleFunc("/api/send", handleSend)
 	http.HandleFunc("/api/status", handleStatus)
 	http.HandleFunc("/api/logout", handleLogout)
+	http.HandleFunc("/api/refresh", handleRefresh)
 	
 	go func() {
 		fmt.Println("Bridge listening on :8090")

@@ -181,7 +181,17 @@ const broadcastDirect = async (req, res) => {
     res.json({ message: 'Broadcast complete', results });
 };
 
+const refreshBridge = async (req, res) => {
+    try {
+        await whatsappService.refreshBridge();
+        res.json({ success: true, message: 'Bridge refreshed.' });
+    } catch (error) {
+        console.error('Failed to refresh bridge:', error);
+        res.status(500).json({ success: false, error: 'Failed to refresh bridge' });
+    }
+};
+
 module.exports = {
     sendMessage, broadcastMessage, broadcastDirect, broadcastPreview, testConnection, sendDirectMessage,
-    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion, logoutBridge
+    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion, logoutBridge, refreshBridge
 };

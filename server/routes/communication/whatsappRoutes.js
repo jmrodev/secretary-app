@@ -37,6 +37,9 @@ router.get('/status', whatsappController.getBridgeStatus);
 
 router.post('/logout', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.logoutBridge);
 
+// Refresh Bridge Pairing (regenerate QR code)
+router.post('/refresh', whatsappController.refreshBridge);
+
 // Broadcast via local bridge (plain text, with delay)
 router.post('/broadcast-direct', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.broadcastDirect);
 
