@@ -104,11 +104,25 @@ func handleStatus(w http.ResponseWriter, r *http.Request) {
 	if client != nil && client.IsLoggedIn() {
 		status = "connected"
 	}
-	
+
 	json.NewEncoder(w).Encode(map[string]interface{}{
 		"status":  status,
 		"qr_code": lastQR,
 	})
+}
+
+func handleLogout(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if client != nil {
+		client.Logout()
+		client.Disconnect()
+		lastQR = ""
+	}
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"status": "logged_out"})
 }
 
 func main() {
@@ -160,6 +174,7 @@ func main() {
 
 	http.HandleFunc("/api/send", handleSend)
 	http.HandleFunc("/api/status", handleStatus)
+	http.HandleFunc("/api/logout", handleLogout)
 	
 	go func() {
 		fmt.Println("Bridge listening on :8090")

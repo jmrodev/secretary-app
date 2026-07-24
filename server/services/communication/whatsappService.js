@@ -171,6 +171,18 @@ const getBridgeStatus = async () => {
 };
 
 /**
+ * Logout from WhatsApp bridge (clears session, forces new QR)
+ */
+const logoutBridge = async () => {
+    const bridgeBase = (process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status').replace('/api/status', '');
+    try {
+        await axios.post(`${bridgeBase}/api/logout`, {}, { timeout: 3000 });
+    } catch (error) {
+        throw new Error('Could not reach WhatsApp bridge to logout.', { cause: error });
+    }
+};
+
+/**
  * Send an immediate confirmation message for a newly booked appointment
  * @param {Object} data - Appointment details { patient_name, appointment_date, doctor_id, type, patient_phone, patient_id }
  */
@@ -255,5 +267,6 @@ module.exports = {
     sendConfirmationMessage,
     sendAutomatedReminders,
     sendDebtReminder,
-    getBridgeStatus
+    getBridgeStatus,
+    logoutBridge
 };
