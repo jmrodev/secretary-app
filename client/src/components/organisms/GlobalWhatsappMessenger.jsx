@@ -107,6 +107,8 @@ const GlobalWhatsappMessenger = ({ t }) => {
         dispatch({ type: 'SET_STATUS_LOADING', payload: true });
         try {
             await api.post('/whatsapp/refresh');
+            // Give the bridge time to rebuild the client and generate a new QR
+            await new Promise((resolve) => setTimeout(resolve, 3000));
         } catch (error) {
             console.error("[WhatsApp] Failed to refresh bridge:", error);
         } finally {
