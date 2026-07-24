@@ -542,6 +542,19 @@
     line-height: 1.4;
 }
 
+.qrWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.pairingActions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
 .qrContainer {
     position: relative;
     padding: 1rem;
