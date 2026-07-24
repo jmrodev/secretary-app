@@ -11,11 +11,11 @@ describe('Input Atom', () => {
     });
 
     it('handles typing and onChange events', () => {
-        const handleChange = vi.fn();
-        render(<Input placeholder="Email" onChange={handleChange} />);
+        const handleInputChange = vi.fn();
+        render(<Input placeholder="Email" onChange={handleInputChange} />);
         const input = screen.getByPlaceholderText('Email');
         fireEvent.change(input, { target: { value: 'test@clinic.com' } });
-        expect(handleChange).toHaveBeenCalledTimes(1);
+        expect(handleInputChange).toHaveBeenCalledTimes(1);
     });
 
     it('renders textarea when type="textarea"', () => {

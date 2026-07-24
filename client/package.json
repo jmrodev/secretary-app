@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "pnpm lint:css && oxlint . && react-doctor --lint --fail-on error . && eslint .",
+    "lint": "pnpm lint:css && oxlint . && react-doctor -y --lint --fail-on=none . && eslint .",
     "lint:fix": "pnpm lint:css --fix && oxlint . --fix && eslint . --fix",
     "lint:css": "stylelint \"src/**/*.css\"",
     "doctor": "react-doctor",

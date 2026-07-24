@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { useSearch } from '@/hooks/useSearch';
 
@@ -20,7 +20,6 @@ export const usePatientQuery = (options = {}) => {
 
     const [executedSearch, setExecutedSearch] = useState(searchTerm);
     const [currentPage, setCurrentPage] = useState(1);
-    const [hasFetchedOnce, setHasFetchedOnce] = useState(false);
 
     const executeSearch = useCallback((overrideTerm) => {
         const termToUse = overrideTerm !== undefined ? overrideTerm : searchTerm;
@@ -30,7 +29,7 @@ export const usePatientQuery = (options = {}) => {
 
     const shouldSearch = executedSearch.length >= minChars || executedSearch.length === 0;
 
-    const { data: response, loading, refetch } = useFetch('/users/patients', {
+    const { data: response, loading, fetched: hasFetchedOnce, refetch } = useFetch('/users/patients', {
         initialData: { success: true, data: [], meta: { totalCount: 0 } },
         params: {
             page: currentPage,
@@ -40,12 +39,6 @@ export const usePatientQuery = (options = {}) => {
         },
         immediate: shouldSearch
     });
-
-    useEffect(() => {
-        if (!loading && response) {
-            setHasFetchedOnce(true);
-        }
-    }, [loading, response]);
 
     const patients = Array.isArray(response?.data) ? response.data : [];
     const meta = response?.meta ?? {};

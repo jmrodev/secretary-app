@@ -19,10 +19,10 @@ describe('Badge Atom', () => {
     });
 
     it('triggers onClick when interactive', () => {
-        const handleClick = vi.fn();
-        render(<Badge onClick={handleClick}>Filtrar</Badge>);
+        const handleBadgeClick = vi.fn();
+        render(<Badge onClick={handleBadgeClick}>Filtrar</Badge>);
         const btn = screen.getByRole('button');
         fireEvent.click(btn);
-        expect(handleClick).toHaveBeenCalledTimes(1);
+        expect(handleBadgeClick).toHaveBeenCalledTimes(1);
     });
 });
