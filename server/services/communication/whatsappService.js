@@ -260,6 +260,15 @@ const sendDebtReminder = async (data) => {
     }
 };
 
+const refreshBridge = async () => {
+    const bridgeBase = (process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status').replace('/api/status', '');
+    try {
+        await axios.post(`${bridgeBase}/api/refresh`, {}, { timeout: 3000 });
+    } catch (error) {
+        throw new Error('Could not reach WhatsApp bridge to refresh.', { cause: error });
+    }
+};
+
 module.exports = {
     sendTemplateMessage,
     sendTestMessage,
@@ -268,5 +277,6 @@ module.exports = {
     sendAutomatedReminders,
     sendDebtReminder,
     getBridgeStatus,
-    logoutBridge
+    logoutBridge,
+    refreshBridge
 };

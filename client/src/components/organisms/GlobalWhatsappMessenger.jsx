@@ -103,6 +103,17 @@ const GlobalWhatsappMessenger = ({ t }) => {
         }
     }, []);
 
+    const handleManualRefresh = useCallback(async () => {
+        dispatch({ type: 'SET_STATUS_LOADING', payload: true });
+        try {
+            await api.post('/whatsapp/refresh');
+        } catch (error) {
+            console.error("[WhatsApp] Failed to refresh bridge:", error);
+        } finally {
+            fetchStatus();
+        }
+    }, [fetchStatus]);
+
     // Use React 19 useEffectEvent for stable, up-to-date callback references
     const onPollStatus = React.useEffectEvent(() => {
         fetchStatus();
@@ -265,7 +276,7 @@ const GlobalWhatsappMessenger = ({ t }) => {
                 <div className={styles.pairingOverlay}>
                     <WhatsappPairing
                         bridgeStatus={bridgeStatus}
-                        onRefresh={fetchStatus}
+                        onRefresh={handleManualRefresh}
                         statusLoading={statusLoading}
                         t={t}
                     />
