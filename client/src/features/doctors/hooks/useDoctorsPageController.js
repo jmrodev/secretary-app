@@ -16,10 +16,10 @@ export const useDoctorsPageController = () => {
 
     // Data State using useFetch
     const { data: docData, loading: doctorsLoading, refetch: fetchDoctors } = useFetch('/users/doctors', { 
-        initialData: { doctors: [], totalCount: 0 } 
+        initialData: { success: true, data: { doctors: [], totalCount: 0 } } 
     });
 
-    const doctors = useMemo(() => docData?.doctors || [], [docData]);
+    const doctors = useMemo(() => docData?.data?.doctors || docData?.doctors || [], [docData]);
     const { data: settings = {}, loading: settingsLoading } = useFetch('/settings', { initialData: {} });
 
     // Unified Modal State: type = 'EDIT'

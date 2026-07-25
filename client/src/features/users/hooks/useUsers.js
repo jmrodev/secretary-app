@@ -146,11 +146,11 @@ export const useUsers = (options = {}) => {
  */
 export const useDoctors = () => {
     const { data: docData, loading } = useFetch('/users/doctors', { 
-        initialData: { doctors: [], totalCount: 0 },
+        initialData: { success: true, data: { doctors: [], totalCount: 0 } },
         immediate: true 
     });
 
-    const doctors = useMemo(() => docData?.doctors || [], [docData]);
+    const doctors = useMemo(() => docData?.data?.doctors || docData?.doctors || [], [docData]);
 
     return { doctors, loading };
 };
