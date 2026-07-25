@@ -54,9 +54,7 @@ const GlobalWhatsappMessenger = ({ t }) => {
     const fetchConversations = useCallback(async (isAuto = false) => {
         if (!isAuto) dispatch({ type: 'SET_LOADING', payload: true });
         try {
-            const res = await api.get('/whatsapp/recent', {
-                params: { doctor_id: viewDoctorId }
-            });
+            const res = await api.get('/whatsapp/recent');
             if (res.data.success) {
                 dispatch({ 
                     type: 'UPDATE_MANY', 
@@ -69,7 +67,7 @@ const GlobalWhatsappMessenger = ({ t }) => {
             console.error("Error fetching recent conversations", error);
             if (!isAuto) dispatch({ type: 'SET_LOADING', payload: false });
         }
-    }, [viewDoctorId]);
+    }, []);
 
     const handleManualRefresh = useCallback(async () => {
         dispatch({ type: 'SET_STATUS_LOADING', payload: true });
@@ -216,8 +214,6 @@ const GlobalWhatsappMessenger = ({ t }) => {
                 onPatientClick={handlePatientClick}
                 onRefresh={() => fetchConversations()}
                 onClose={() => setIsOpen(false)}
-                viewDoctorId={viewDoctorId}
-                doctorDisplayName={doctorDisplayName}
                 bridgeStatus={bridgeStatus}
                 onLogout={handleLogout}
                 t={t}
