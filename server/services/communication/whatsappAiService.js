@@ -17,27 +17,31 @@ class WhatsAppAiService {
         const context = await this._buildContext(patientId, doctorId, userId);
         const prompt = this._buildPrompt(context);
         
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) throw new Error('Configuración de IA incompleta (Falta API Key).');
+        const apiKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY;
+        if (!apiKey) throw new Error('Configuración de IA incompleta (Falta GROQ_API_KEY).');
 
-        const apiVersion = context.doctor?.gemini_api_version || 'v1beta';
-        const apiModel = context.doctor?.gemini_model || 'gemini-2.0-flash';
-        const url = `https://generativelanguage.googleapis.com/${apiVersion}/models/${apiModel}:generateContent?key=${apiKey}`;
+        const apiModel = context.doctor?.gemini_model || 'llama-3.3-70b-versatile';
+        const url = 'https://api.groq.com/openai/v1/chat/completions';
 
         const response = await fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-                generationConfig: { maxOutputTokens: 4000, temperature: 0.7 }
+                model: apiModel.startsWith('gemini') ? 'llama-3.3-70b-versatile' : apiModel,
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 150,
+                temperature: 0.7
             })
         });
 
         const result = await response.json();
-        if (!response.ok) throw new Error(result.error?.message || 'Error en la API de Google Gemini');
+        if (!response.ok) throw new Error(result.error?.message || 'Error en la API de Groq');
 
-        const suggestion = result.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-        if (!suggestion) throw new Error('Google no devolvió ninguna sugerencia.');
+        const suggestion = result.choices?.[0]?.message?.content?.trim();
+        if (!suggestion) throw new Error('Groq no devolvió ninguna sugerencia.');
 
         return suggestion;
     }
