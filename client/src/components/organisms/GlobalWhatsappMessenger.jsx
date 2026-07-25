@@ -122,6 +122,20 @@ const GlobalWhatsappMessenger = ({ t }) => {
         }
     };
 
+    const handleLogout = useCallback(async () => {
+        if (!window.confirm(t('confirm_logout_bridge') || '¿Seguro que querés desconectar WhatsApp?')) return;
+        dispatch({ type: 'SET_STATUS_LOADING', payload: true });
+        try {
+            await api.post('/whatsapp/logout');
+            // Give it 1.5s to let the bridge write files and restart
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+        } catch (error) {
+            console.error("[WhatsApp] Failed to logout:", error);
+        } finally {
+            fetchStatus();
+        }
+    }, [fetchStatus, t]);
+
     // Use React 19 useEffectEvent for stable, up-to-date callback references
     const onPollStatus = React.useEffectEvent(() => {
         fetchStatus();
@@ -204,6 +218,8 @@ const GlobalWhatsappMessenger = ({ t }) => {
                 onClose={() => setIsOpen(false)}
                 viewDoctorId={viewDoctorId}
                 doctorDisplayName={doctorDisplayName}
+                bridgeStatus={bridgeStatus}
+                onLogout={handleLogout}
                 t={t}
             />
 

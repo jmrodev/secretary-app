@@ -17,6 +17,8 @@ const WhatsappInbox = ({
     onClose, 
     viewDoctorId, 
     doctorDisplayName, 
+    bridgeStatus,
+    onLogout,
     t 
 }) => {
     return (
@@ -40,6 +42,15 @@ const WhatsappInbox = ({
                         title={t('whatsapp_refresh')}
                         icon={<Icon name="refresh" size="1.1rem" />}
                     />
+                    {bridgeStatus?.status === 'connected' && (
+                        <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={onLogout} 
+                            title={t('whatsapp_logout') || 'Desconectar'}
+                            icon={<Icon name="logout" size="1.1rem" color="#ef4444" />}
+                        />
+                    )}
                     <Button 
                         variant="ghost"
                         size="sm"

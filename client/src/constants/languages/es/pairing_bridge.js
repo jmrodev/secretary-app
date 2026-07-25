@@ -38,4 +38,6 @@ export const pairing_bridge = {
     live: "En línea",
     whatsapp_messenger: "Mensajería de WhatsApp",
     register_contact: "Registrar Paciente",
+    confirm_logout_bridge: "¿Estás seguro de que querés desconectar este celular de WhatsApp?",
+    whatsapp_logout: "Desconectar celular",
 };

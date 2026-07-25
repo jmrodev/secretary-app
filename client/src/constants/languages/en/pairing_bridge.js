@@ -49,4 +49,6 @@ export const pairing_bridge = {
     live: "Live",
     whatsapp_messenger: "WhatsApp Messenger",
     register_contact: "Register Patient",
+    confirm_logout_bridge: "Are you sure you want to disconnect this phone from WhatsApp?",
+    whatsapp_logout: "Disconnect phone",
 };
