@@ -26,3 +26,6 @@ jobs:
             
             # Reconstruir y levantar los contenedores de Docker para producción
             docker compose -f docker-compose.prod.yml up -d --build
+            
+            # Limpiar imágenes antiguas/huérfanas para liberar espacio en la RPi
+            docker image prune -f
