@@ -36,9 +36,7 @@ export const useDashboardController = () => {
     const [activeTab, setActiveTab] = useState('requirements');
 
     const refreshDashboard = () => {
-        statsHook.fetchStats();
-        statsHook.fetchRequests();
-        if (isStaff) statsHook.fetchNewPatientStats();
+        statsHook.refetch();
     };
 
     useEffect(() => {

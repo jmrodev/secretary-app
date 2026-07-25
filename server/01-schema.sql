@@ -685,6 +685,8 @@ CREATE TABLE `prescription_items` (
   `duration` varchar(100) DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `daily_intake` decimal(10,2) DEFAULT NULL,
+  `units_per_box` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_pi_prescription` (`prescription_id`),
   KEY `fk_pi_vademecum` (`vademecum_id`),
