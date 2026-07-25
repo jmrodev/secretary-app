@@ -50,13 +50,13 @@ export const usePatientsPageController = () => {
     });
 
     // Supplementary Lists
-    const { data: doctorsData = {} } = useFetch('/users/doctors', { initialData: { doctors: [] } });
-    const { data: insurancesData = {} } = useFetch('/insurances', { initialData: { insurances: [] } });
-    const { data: institutionsData = {} } = useFetch('/institutions', { initialData: { institutions: [] } });
+    const { data: doctorsData = {} } = useFetch('/users/doctors', { initialData: { success: true, data: { doctors: [] } } });
+    const { data: insurancesData = {} } = useFetch('/insurances', { initialData: { success: true, data: { insurances: [] } } });
+    const { data: institutionsData = {} } = useFetch('/institutions', { initialData: { success: true, data: { institutions: [] } } });
 
-    const doctors = doctorsData?.doctors || [];
-    const insurances = insurancesData?.insurances || [];
-    const institutions = institutionsData?.institutions || [];
+    const doctors = doctorsData?.data?.doctors || doctorsData?.doctors || [];
+    const insurances = insurancesData?.data?.insurances || insurancesData?.insurances || [];
+    const institutions = institutionsData?.data?.institutions || institutionsData?.institutions || [];
     const { data: recycleItems = [], refetch: fetchRecycleBin } = useFetch('/logs/recycle-bin', { 
         initialData: [],
         immediate: isStaff // only fetch if user is staff
