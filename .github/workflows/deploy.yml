@@ -18,6 +18,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT || 22 }}
           script: |
+            export PNPM_HOME="/home/cima/.local/share/pnpm"
+            export PATH="$PNPM_HOME/bin:$PATH"
             cd ${{ secrets.DEPLOY_PATH }}
             git checkout main
             git pull origin main
