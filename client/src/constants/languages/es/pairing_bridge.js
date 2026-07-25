@@ -34,4 +34,10 @@ export const pairing_bridge = {
     broadcast_confirm_yes: "Sí, enviar",
     broadcast_confirm_no: "Cancelar",
     broadcast_empty_message: "Escribí un mensaje primero.",
+    contacts: "Conversaciones",
+    live: "En línea",
+    whatsapp_messenger: "Mensajería de WhatsApp",
+    register_contact: "Registrar Paciente",
+    confirm_logout_bridge: "¿Estás seguro de que querés desconectar este celular de WhatsApp?",
+    whatsapp_logout: "Desconectar celular",
 };

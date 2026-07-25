@@ -71,7 +71,20 @@ const GlobalWhatsappMessenger = ({ t }) => {
         }
     }, [viewDoctorId]);
 
-    const fetchStatus = useCallback(async () => {
+    const handleManualRefresh = useCallback(async () => {
+        dispatch({ type: 'SET_STATUS_LOADING', payload: true });
+        try {
+            await api.post('/whatsapp/refresh');
+            // Give the bridge time to rebuild the client and generate a new QR
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+        } catch (error) {
+            console.error("[WhatsApp] Failed to refresh bridge:", error);
+        } finally {
+            fetchStatus(true);
+        }
+    }, []);
+
+    const fetchStatus = async (isAutoCall = false) => {
         try {
             const res = await api.get('/whatsapp/status');
             if (res.data.success) {
@@ -82,6 +95,12 @@ const GlobalWhatsappMessenger = ({ t }) => {
                         statusLoading: false
                     } 
                 });
+
+                // Auto-refresh if QR timed out (disconnected & empty QR) and we aren't already refreshing
+                if (res.data.status === 'disconnected' && !res.data.qr_code && !isAutoCall) {
+                    console.log("[WhatsApp] Stale/Timeout QR detected. Auto-refreshing...");
+                    handleManualRefresh();
+                }
             } else {
                 dispatch({ 
                     type: 'UPDATE_MANY', 
@@ -101,18 +120,21 @@ const GlobalWhatsappMessenger = ({ t }) => {
                 } 
             });
         }
-    }, []);
+    };
 
-    const handleManualRefresh = useCallback(async () => {
+    const handleLogout = useCallback(async () => {
+        if (!window.confirm(t('confirm_logout_bridge') || '¿Seguro que querés desconectar WhatsApp?')) return;
         dispatch({ type: 'SET_STATUS_LOADING', payload: true });
         try {
-            await api.post('/whatsapp/refresh');
+            await api.post('/whatsapp/logout');
+            // Give it 1.5s to let the bridge write files and restart
+            await new Promise((resolve) => setTimeout(resolve, 1500));
         } catch (error) {
-            console.error("[WhatsApp] Failed to refresh bridge:", error);
+            console.error("[WhatsApp] Failed to logout:", error);
         } finally {
             fetchStatus();
         }
-    }, [fetchStatus]);
+    }, [fetchStatus, t]);
 
     // Use React 19 useEffectEvent for stable, up-to-date callback references
     const onPollStatus = React.useEffectEvent(() => {
@@ -196,6 +218,8 @@ const GlobalWhatsappMessenger = ({ t }) => {
                 onClose={() => setIsOpen(false)}
                 viewDoctorId={viewDoctorId}
                 doctorDisplayName={doctorDisplayName}
+                bridgeStatus={bridgeStatus}
+                onLogout={handleLogout}
                 t={t}
             />
 

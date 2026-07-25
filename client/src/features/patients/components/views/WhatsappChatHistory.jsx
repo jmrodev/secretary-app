@@ -6,6 +6,30 @@ import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import { useWhatsappChatController } from '@/features/patients/hooks/useWhatsappChatController';
 import styles from './WhatsappChatHistory.module.css';
 
+const MessageBody = ({ body }) => {
+    if (!body) return '';
+    // Regex for matches like http://, https://, or www.
+    const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+    const parts = body.split(urlRegex);
+    return parts.map((part, i) => {
+        if (urlRegex.test(part)) {
+            const href = part.startsWith('http') ? part : `https://${part}`;
+            return (
+                <a 
+                    key={i} 
+                    href={href} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className={styles.link}
+                >
+                    {part}
+                </a>
+            );
+        }
+        return part;
+    });
+};
+
 const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
     const { showMessage } = useMessage();
     const {
@@ -47,7 +71,7 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
                                 {showDate && <div className={styles.dateDivider}>{formatDate(msg.created_at)}</div>}
                                 <div className={`${styles.bubbleWrapper} ${isOutbound ? styles.bubbleWrapperOutbound : styles.bubbleWrapperInbound}`}>
                                     <div className={`${styles.bubble} ${isOutbound ? styles.bubbleOutbound : styles.bubbleInbound}`}>
-                                        <p className={styles.text}>{msg.body}</p>
+                                        <p className={styles.text}><MessageBody body={msg.body} /></p>
                                         <div className={styles.meta}>
                                             <span className={styles.time}>{formatTime(msg.created_at)}</span>
                                             {isOutbound && (
