@@ -1,0 +1,33 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy App via SSH
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Remote Deploy Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            git checkout main
+            git pull origin main
+            
+            # Instalar dependencias del workspace
+            pnpm install --frozen-lockfile
+            
+            # Si usás Docker Compose para producción:
+            # docker compose -f docker-compose.prod.yml up -d --build
+            
+            # O si corrés los servicios directos con PM2 o similar:
+            # pnpm --filter server build
+            # pm2 restart all
