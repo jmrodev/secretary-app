@@ -45,4 +45,8 @@ export const pairing_bridge = {
     broadcast_confirm_yes: "Yes, send",
     broadcast_confirm_no: "Cancel",
     broadcast_empty_message: "Please write a message first.",
+    contacts: "Conversations",
+    live: "Live",
+    whatsapp_messenger: "WhatsApp Messenger",
+    register_contact: "Register Patient",
 };

@@ -92,6 +92,12 @@
     align-items: center;
 }
 
+.headerActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .title {
     display: flex;
     align-items: center;
