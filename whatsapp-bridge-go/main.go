@@ -22,7 +22,7 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-const dbPath = "file:examplestore.db?_foreign_keys=on"
+const dbPath = "file:data/examplestore.db?_foreign_keys=on"
 
 var (
 	client    *whatsmeow.Client
@@ -223,9 +223,9 @@ func handleRefresh(w http.ResponseWriter, r *http.Request) {
 	lastQR = ""
 
 	// Delete stale session so whatsmeow enters pairing mode
-	os.Remove("examplestore.db")
-	os.Remove("examplestore.db-wal")
-	os.Remove("examplestore.db-shm")
+	os.Remove("data/examplestore.db")
+	os.Remove("data/examplestore.db-wal")
+	os.Remove("data/examplestore.db-shm")
 
 	newClient, err := buildClient()
 	if err != nil {
