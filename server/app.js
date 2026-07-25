@@ -30,6 +30,7 @@ require('./listeners/financeListener');
 const { initScheduler } = require('./utils/system/scheduler');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Apply Security Middlewares
 app.use(globalLimiter);
