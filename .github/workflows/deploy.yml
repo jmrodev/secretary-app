@@ -24,12 +24,8 @@ jobs:
             git checkout main
             git pull origin main
             
-            # Instalar dependencias del workspace
-            pnpm install --frozen-lockfile
+            # Reconstruir y levantar los contenedores de Docker para producción
+            docker compose -f docker-compose.prod.yml up -d --build
             
-            # Si usás Docker Compose para producción:
-            # docker compose -f docker-compose.prod.yml up -d --build
-            
-            # O si corrés los servicios directos con PM2 o similar:
-            # pnpm --filter server build
-            # pm2 restart all
+            # Limpiar imágenes antiguas/huérfanas para liberar espacio en la RPi
+            docker image prune -f

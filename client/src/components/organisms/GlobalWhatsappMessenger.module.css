@@ -220,7 +220,7 @@
 
 .itemHeader strong {
     font-size: 0.95rem;
-    color: var(--text-main);
+    color: #1f2937;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
