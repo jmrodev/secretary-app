@@ -22,6 +22,7 @@ import { list_view } from './en/list_view';
 import { institutions } from './en/institutions';
 import { printable_report_patient_sheet } from './en/printable_report_patient_sheet';
 import { pairing_bridge } from './en/pairing_bridge';
+import { outreach } from './en/outreach';
 
 export const en = {
     ...general,
@@ -47,4 +48,5 @@ export const en = {
     ...institutions,
     ...printable_report_patient_sheet,
     ...pairing_bridge,
+    ...outreach,
 };
