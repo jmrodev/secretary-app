@@ -29,6 +29,7 @@ import { configuration_tabs } from './es/configuration_tabs';
 import { communication_settings_extra } from './es/communication_settings_extra';
 import { whatsapp_automation } from './es/whatsapp_automation';
 import { medical_documents_extra } from './es/medical_documents_extra';
+import { outreach } from './es/outreach';
 
 export const es = {
     ...general,
@@ -61,4 +62,5 @@ export const es = {
     ...communication_settings_extra,
     ...whatsapp_automation,
     ...medical_documents_extra,
+    ...outreach,
 };
