@@ -18,30 +18,56 @@ class WhatsAppAiService {
         const prompt = this._buildPrompt(context);
         
         const apiKey = process.env.GROQ_API_KEY || process.env.GEMINI_API_KEY;
-        if (!apiKey) throw new Error('Configuración de IA incompleta (Falta GROQ_API_KEY).');
+        if (!apiKey) throw new Error('Configuración de IA incompleta');
 
-        const apiModel = context.doctor?.gemini_model || 'llama-3.3-70b-versatile';
-        const url = 'https://api.groq.com/openai/v1/chat/completions';
+        const apiModel = process.env.AI_MODEL || context.doctor?.gemini_model || 'llama-3.3-70b-versatile';
+        const isGemini = apiModel.startsWith('gemini');
 
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-                model: apiModel.startsWith('gemini') ? 'llama-3.3-70b-versatile' : apiModel,
-                messages: [{ role: 'user', content: prompt }],
-                max_tokens: 150,
-                temperature: 0.7
-            })
-        });
+        let url, response, result, suggestion;
 
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.error?.message || 'Error en la API de Groq');
+        if (isGemini) {
+            url = `https://generativelanguage.googleapis.com/v1beta/models/${apiModel}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+            response = await fetch(url, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: {
+                        maxOutputTokens: 150,
+                        temperature: 0.7
+                    }
+                })
+            });
 
-        const suggestion = result.choices?.[0]?.message?.content?.trim();
-        if (!suggestion) throw new Error('Groq no devolvió ninguna sugerencia.');
+            result = await response.json();
+            if (!response.ok) throw new Error(result.error?.message || 'Error en la API de Gemini');
+
+            suggestion = result.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+            if (!suggestion) throw new Error('Gemini no devolvió ninguna sugerencia.');
+        } else {
+            url = 'https://api.groq.com/openai/v1/chat/completions';
+            response = await fetch(url, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: apiModel,
+                    messages: [{ role: 'user', content: prompt }],
+                    max_tokens: 150,
+                    temperature: 0.7
+                })
+            });
+
+            result = await response.json();
+            if (!response.ok) throw new Error(result.error?.message || 'Error en la API de Groq');
+
+            suggestion = result.choices?.[0]?.message?.content?.trim();
+            if (!suggestion) throw new Error('Groq no devolvió ninguna sugerencia.');
+        }
 
         return suggestion;
     }

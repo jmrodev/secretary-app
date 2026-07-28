@@ -118,5 +118,28 @@ describe('WhatsAppAiService', () => {
             await expect(whatsappAiService.getAiSuggestion(1, null, 1))
                 .rejects.toThrow('Configuración de IA incompleta');
         });
+
+        it('should call Gemini endpoint when model starts with gemini and GEMINI_API_KEY is present', async () => {
+            delete process.env.GROQ_API_KEY;
+            process.env.GEMINI_API_KEY = 'mock-gemini';
+            process.env.AI_MODEL = 'gemini-2.5-flash';
+
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            
+            global.fetch.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue({
+                    candidates: [{ content: { parts: [{ text: 'Sugerencia Gemini' }] } }]
+                })
+            });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1);
+            expect(suggestion).toBe('Sugerencia Gemini');
+            expect(global.fetch).toHaveBeenCalledWith(
+                expect.stringContaining('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=mock-gemini'),
+                expect.any(Object)
+            );
+        });
     });
 });
