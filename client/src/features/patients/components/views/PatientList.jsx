@@ -184,6 +184,7 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                     variant="info"
                     size="sm-compact"
                     className={`${styles.viewBtn}`}
+                    onClick={() => onViewDetails(p.id)}
                     icon={<Icon name="badge" />}
                 >
                     {t('view_details') || 'Ficha'}
