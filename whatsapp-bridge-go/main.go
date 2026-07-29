@@ -64,6 +64,16 @@ func eventHandler(evt interface{}) {
 				resp.Body.Close()
 			}
 		}
+	case *events.LoggedOut:
+		clientMu.Lock()
+		if client != nil {
+			client.Disconnect()
+			lastQR = ""
+		}
+		clientMu.Unlock()
+		os.Remove("data/examplestore.db")
+		os.Remove("data/examplestore.db-wal")
+		os.Remove("data/examplestore.db-shm")
 	}
 }
 
