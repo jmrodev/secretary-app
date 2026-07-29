@@ -185,22 +185,22 @@ class WhatsAppAiService {
     }
 
     async _fallbackToGroq(prompt, originalError, groqKey) {
-        console.warn(`[AI Fallback] Intentando Gemini. Error original: ${originalError.message}`);
+        console.warn(`[AI Fallback] Intentando Groq. Error original: ${originalError.message}`);
         if (!groqKey) throw originalError;
         try {
-            return await this._tryGemini(prompt, 'gemini-1.5-flash', groqKey);
+            return await this._tryGroq(prompt, 'llama-3.3-70b-versatile', groqKey);
         } catch (fallbackErr) {
-            throw new Error(`Groq: ${originalError.message} | Gemini fallback: ${fallbackErr.message}`);
+            throw new Error(`Groq primary failed: ${originalError.message} | Groq fallback: ${fallbackErr.message}`);
         }
     }
 
     async _fallbackToGemini(prompt, originalError, geminiKey) {
-        console.warn(`[AI Fallback] Intentando Groq. Error original: ${originalError.message}`);
+        console.warn(`[AI Fallback] Intentando Gemini. Error original: ${originalError.message}`);
         if (!geminiKey) throw originalError;
         try {
-            return await this._tryGroq(prompt, 'llama-3.3-70b-versatile', geminiKey);
+            return await this._tryGemini(prompt, 'gemini-1.5-flash', geminiKey);
         } catch (fallbackErr) {
-            throw new Error(`Gemini: ${originalError.message} | Groq fallback: ${fallbackErr.message}`);
+            throw new Error(`Gemini primary failed: ${originalError.message} | Gemini fallback: ${fallbackErr.message}`);
         }
     }
 
