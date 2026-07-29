@@ -101,17 +101,16 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
             dispatch({ type: 'SET_SENDING', payload: true });
             let targetPhone;
             if (patientId) {
-                const patientRes = await api.get(`/users/patients/${patientId}`);
-                targetPhone = normalizePhone(patientRes.data.phone);
+                targetPhone = normalizePhone(phone || '');
             } else if (phone) {
                 targetPhone = normalizePhone(phone);
             } else {
                 return;
             }
 
-            const res = await api.post('/whatsapp/send', {
+            const res = await api.post('/whatsapp/send-direct', {
                 patientId,
-                phone: targetPhone,
+                to: targetPhone,
                 message: state.newMessage
             });
             

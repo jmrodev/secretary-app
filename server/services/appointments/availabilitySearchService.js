@@ -1,5 +1,5 @@
 const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
-const { formatLocalSQL } = require('../../utils/core/dateUtils');
+const { formatDateOnlySQL } = require('../../utils/core/dateUtils');
 
 /**
  * AvailabilitySearchService (SQL-First Edition)
@@ -9,7 +9,7 @@ class AvailabilitySearchService {
     async getNextFreeSlot({ doctor_id, start_date, include_out_of_hours = 'false' }) {
         const slots = await appointmentRepository.callSpGetFreeSlots({
             doctor_id,
-            start_date: formatLocalSQL(start_date || new Date()),
+            start_date: formatDateOnlySQL(start_date || new Date()),
             days_to_check: 30,
             include_out_of_hours: include_out_of_hours === 'true' ? 1 : 0
         });
