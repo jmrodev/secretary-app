@@ -1,0 +1,20 @@
+.statusBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background-color: var(--success-bg, rgba(16, 185, 129, 0.1));
+    border: 1px solid var(--success-border, rgba(16, 185, 129, 0.2));
+    border-radius: 0.5rem;
+    width: fit-content;
+}
+
+.statusIcon {
+    color: var(--success-color, #10b981);
+}
+
+.statusText {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
