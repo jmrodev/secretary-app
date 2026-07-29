@@ -73,6 +73,12 @@
     margin: 0;
 }
 
+.config-section__desc {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
 .config-section__body {
     display: flex;
     flex-direction: column;
@@ -92,7 +98,7 @@
 }
 
 .config-section__divider {
-    border-top: 1px solid var(--gray-100, #f1f5f9);
+    border-top: 1px solid var(--dashboard-card-border);
     margin: 2rem 0;
 }
 

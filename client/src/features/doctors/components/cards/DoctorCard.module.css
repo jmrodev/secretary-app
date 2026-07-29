@@ -2,11 +2,11 @@
 
 .root {
     /* --- Local Component Tokens --- */
-    --doc-card-bg: var(--white);
-    --doc-card-border: var(--gray-300);
-    --doc-avatar-bg: var(--blue-100);
-    --doc-avatar-text: var(--blue-600);
-    --doc-price-bg: var(--gray-50);
+    --doc-card-bg: var(--dashboard-card-bg);
+    --doc-card-border: var(--dashboard-card-border);
+    --doc-avatar-bg: var(--brand-blue-alpha);
+    --doc-avatar-text: var(--brand-blue);
+    --doc-price-bg: var(--background-bg);
 
     /* ------------------------------ */
 
@@ -134,7 +134,7 @@
     padding: 0.75rem;
     border-radius: 0.75rem;
     text-align: center;
-    border: 1px solid var(--gray-200);
+    border: 1px solid var(--dashboard-card-border);
 }
 
 .priceLabel {

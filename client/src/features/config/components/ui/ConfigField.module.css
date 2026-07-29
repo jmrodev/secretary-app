@@ -9,13 +9,13 @@
 .label {
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--gray-700, #334155);
+    color: var(--text-main);
     margin: 0;
 }
 
 .hint {
     font-size: 0.75rem;
-    color: var(--gray-500, #64748b);
+    color: var(--text-muted);
     line-height: 1.4;
 }
 
