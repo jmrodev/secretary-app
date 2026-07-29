@@ -70,6 +70,12 @@ class PrescriptionRepository {
             params.push(searchTerm, searchTerm, searchTerm);
         }
 
+        if (filters.search) {
+            whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");
+            const searchTerm = `%${filters.search}%`;
+            params.push(searchTerm, searchTerm, searchTerm);
+        }
+
         if (whereClauses.length > 0) {
             query += " WHERE " + whereClauses.join(" AND ");
         }
@@ -101,6 +107,11 @@ class PrescriptionRepository {
         if (filters.patient_id) {
             whereClauses.push("(pr.patient_id = ? OR a.patient_id = ?)");
             params.push(filters.patient_id, filters.patient_id);
+        }
+        if (filters.search) {
+            whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");
+            const searchTerm = `%${filters.search}%`;
+            params.push(searchTerm, searchTerm, searchTerm);
         }
         if (filters.search) {
             whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");
