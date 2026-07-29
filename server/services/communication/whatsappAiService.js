@@ -7,6 +7,7 @@ const patientRepository = require('../../repositories/user/patientRepository');
 const bookingService = require('../../services/appointments/bookingService');
 const { formatLocalSQL } = require('../../utils/core/dateUtils');
 const { pool } = require('../../db');
+const systemSettingsService = require('../system/systemSettingsService');
 
 /**
  * WhatsAppAiService
@@ -30,15 +31,29 @@ class WhatsAppAiService {
         if (!groqKey && !geminiKey) throw new Error('Configuración de IA incompleta');
 
         const apiModel = process.env.AI_MODEL || context.doctor?.gemini_model || 'llama-3.3-70b-versatile';
-        const preferGemini = apiModel.startsWith('gemini') || context.doctor?.gemini_model?.startsWith('gemini');
 
-        if (preferGemini) {
-            return await this._tryGemini(prompt, apiModel, geminiKey)
-                .catch(err => this._fallbackToGroq(prompt, err, groqKey));
-        } else {
+        // Determine provider priority from system setting (default: groq first)
+        const aiProvider = (await systemSettingsService.getPublicSettings()).ai_provider || 'groq';
+        const preferGemini = aiProvider === 'gemini';
+        const preferGroq = !preferGemini;
+
+        if (preferGroq && groqKey) {
             return await this._tryGroq(prompt, apiModel, groqKey)
                 .catch(err => this._fallbackToGemini(prompt, err, geminiKey));
         }
+
+        if (preferGemini && geminiKey) {
+            return await this._tryGemini(prompt, apiModel, geminiKey)
+                .catch(err => this._fallbackToGroq(prompt, err, groqKey));
+        }
+
+        // Fallback if preferred provider has no key: use whichever is available
+        if (groqKey) {
+            return await this._tryGroq(prompt, apiModel, groqKey)
+                .catch(err => this._fallbackToGemini(prompt, err, geminiKey));
+        }
+        return await this._tryGemini(prompt, apiModel, geminiKey)
+            .catch(err => this._fallbackToGroq(prompt, err, groqKey));
     }
 
     /**
