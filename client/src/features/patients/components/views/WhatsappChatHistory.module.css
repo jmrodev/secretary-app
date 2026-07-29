@@ -90,14 +90,15 @@
 
 .bubbleOutbound {
     background-color: #d9fdd3;
-    border-top-right-radius: 0;
-    min-width: 75px; /* Ensures space for time + double check */
+    border-top-right-radius: 2px;
+    min-width: 75px;
 }
 
 .bubbleInbound {
     background-color: #fff;
-    border-top-left-radius: 0;
-    min-width: 60px; /* Space for time only */
+    border-top-left-radius: 2px;
+    min-width: 60px;
+    border: 1px solid #e0e0e0;
 }
 
 .text {

@@ -13,7 +13,7 @@ class PrescriptionRepository {
     async findById(id, conn = this.pool) {
         const rows = await conn.query(`
             SELECT 
-                pr.id, pr.appointment_id, COALESCE(pr.patient_id, a.patient_id) as patient_id,
+                pr.id, pr.appointment_id, a.patient_id as patient_id,
                 pr.medications, pr.instructions, pr.bonified, pr.created_at,
                 a.doctor_id, a.appointment_date 
             FROM prescriptions pr
@@ -24,8 +24,8 @@ class PrescriptionRepository {
 
     async create(data, conn = this.pool) {
         const result = await conn.query(
-            "INSERT INTO prescriptions (appointment_id, patient_id, medications, instructions, bonified) VALUES (?, ?, ?, ?, ?)",
-            [data.appointment_id || null, data.patient_id || null, data.medications || '', data.instructions || '', data.bonified || false]
+            "INSERT INTO prescriptions (appointment_id, medications, instructions, bonified) VALUES (?, ?, ?, ?)",
+            [data.appointment_id || null, data.medications || '', data.instructions || '', data.bonified || false]
         );
         return result.insertId;
     }
@@ -43,7 +43,7 @@ class PrescriptionRepository {
             FROM prescriptions pr
             LEFT JOIN appointments a ON pr.appointment_id = a.id
             LEFT JOIN doctors d ON a.doctor_id = d.id
-            JOIN patients p ON COALESCE(pr.patient_id, a.patient_id) = p.id
+            JOIN patients p ON a.patient_id = p.id
         `;
         let params = [];
         let whereClauses = [];
@@ -54,8 +54,8 @@ class PrescriptionRepository {
         }
 
         if (filters.patient_id) {
-            whereClauses.push("(pr.patient_id = ? OR a.patient_id = ?)");
-            params.push(filters.patient_id, filters.patient_id);
+            whereClauses.push("a.patient_id = ?");
+            params.push(filters.patient_id);
         }
 
         if (filters.search) {
@@ -83,7 +83,7 @@ class PrescriptionRepository {
             SELECT COUNT(*) as total 
             FROM prescriptions pr
             LEFT JOIN appointments a ON pr.appointment_id = a.id
-            JOIN patients p ON COALESCE(pr.patient_id, a.patient_id) = p.id
+            JOIN patients p ON a.patient_id = p.id
         `;
         let params = [];
         let whereClauses = [];
@@ -93,8 +93,8 @@ class PrescriptionRepository {
             params.push(filters.doctor_id);
         }
         if (filters.patient_id) {
-            whereClauses.push("(pr.patient_id = ? OR a.patient_id = ?)");
-            params.push(filters.patient_id, filters.patient_id);
+            whereClauses.push("a.patient_id = ?");
+            params.push(filters.patient_id);
         }
         if (filters.search) {
             whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");

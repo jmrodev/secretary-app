@@ -167,7 +167,7 @@ class MedicalRequestRepository {
             LEFT JOIN appointments a ON p.appointment_id = a.id
             LEFT JOIN doctors d ON a.doctor_id = d.id
             LEFT JOIN prescription_items pi ON p.id = pi.prescription_id
-            WHERE a.patient_id = ? OR p.patient_id = ?
+            WHERE a.patient_id = ?
             
             UNION ALL
 
@@ -186,7 +186,7 @@ class MedicalRequestRepository {
             FROM patient_medications pm
             WHERE pm.patient_id = ?
 
-            ORDER BY created_at DESC`, [patientId, patientId, patientId]);
+            ORDER BY created_at DESC`, [patientId, patientId]);
     }
 }
 
