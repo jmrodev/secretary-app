@@ -48,7 +48,7 @@
 
 .phoneInputContainer:focus-within {
     border-color: #25D366;
-    box-shadow: 0 0 0 2px rgba(37, 211, 102, 0.2);
+    box-shadow: 0 0 0 2px rgb(37 211 102 / 20%);
 }
 
 .targetPhoneInput {
