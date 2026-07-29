@@ -2,6 +2,7 @@ import React from 'react';
 import ConfigField from '@/features/config/components/ui/ConfigField';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
+import styles from './AiSettings.module.css';
 
 /**
  * AiSettings Feature Component.
@@ -13,6 +14,34 @@ const AiSettings = ({ user, settings, updateSetting }) => {
 
     return (
         <div className="tab-panel animate-fade-in ai-settings">
+            {/* AI Provider Priority */}
+            <div className="config-section">
+                <div className="config-section__header">
+                    <Icon name="psychology" size="1.2rem" className="config-section__icon" />
+                    <h4 className="config-section__title">{t('ai_provider_title') || 'Proveedor de IA'}</h4>
+                </div>
+                <div className="config-section__body">
+                    <p className="config-section__desc">
+                        {t('ai_provider_hint') || 'Define qué proveedor se intenta primero y cuál actúa como respaldo al enviar solicitudes de IA.'}
+                    </p>
+                    <div className="config-grid">
+                        <ConfigField
+                            id="ai-provider"
+                            label={t('ai_provider_label') || 'Proveedor principal'}
+                            type="select"
+                            value={settings.ai_provider || 'groq'}
+                            onChange={(e) => updateSetting('ai_provider', e.target.value)}
+                            disabled={!isAdmin}
+                            options={[
+                                { value: 'groq', label: 'Groq (Llama) primero, Gemini respaldo' },
+                                { value: 'gemini', label: 'Gemini primero, Groq respaldo' },
+                            ]}
+                            hint={t('ai_provider_hint_detail') || 'El proveedor secundario se usa automáticamente si el principal falla.'}
+                        />
+                    </div>
+                </div>
+            </div>
+
             {/* WhatsApp Automation */}
             <div className="config-section">
                 <div className="config-section__header">
@@ -21,15 +50,17 @@ const AiSettings = ({ user, settings, updateSetting }) => {
                 </div>
 
                 <div className="config-section__body">
-                    <ConfigField
-                        id="whatsapp-auto-respond-unknown"
-                        label={t('whatsapp_auto_respond_unknown_label') || 'Responder automáticamente a números desconocidos'}
-                        type="checkbox"
-                        checked={settings.whatsapp_auto_respond_unknown === '1'}
-                        onChange={(e) => updateSetting('whatsapp_auto_respond_unknown', e.target.checked ? '1' : '0')}
-                        disabled={!isAdmin}
-                        hint={t('whatsapp_auto_respond_unknown_hint') || 'Si está activado, la IA enviará automáticamente un mensaje de bienvenida y el link de registro a cualquier número que no esté en la lista de pacientes.'}
-                    />
+                    <div className="config-grid">
+                        <ConfigField
+                            id="whatsapp-auto-respond-unknown"
+                            label={t('whatsapp_auto_respond_unknown_label') || 'Responder automáticamente a números desconocidos'}
+                            type="checkbox"
+                            checked={settings.whatsapp_auto_respond_unknown === '1'}
+                            onChange={(e) => updateSetting('whatsapp_auto_respond_unknown', e.target.checked ? '1' : '0')}
+                            disabled={!isAdmin}
+                            hint={t('whatsapp_auto_respond_unknown_hint') || 'Si está activado, la IA enviará automáticamente un mensaje de bienvenida y el link de registro a cualquier número que no esté en la lista de pacientes.'}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -41,25 +72,27 @@ const AiSettings = ({ user, settings, updateSetting }) => {
                 </div>
 
                 <div className="config-section__body">
-                    <p className="config-section__description">
+                    <p className="config-section__desc">
                         Configura el comportamiento global de la inteligencia artificial. Estos valores se usarán como base para todos los médicos del sistema.
                     </p>
                     
-                    <ConfigField
-                        id="gemini-global-model"
-                        label="Modelo Global (Vía ENV)"
-                        type="text"
-                        value={settings.gemini_global_model || 'gemini-1.5-flash'}
-                        onChange={(e) => updateSetting('gemini_global_model', e.target.value)}
-                        disabled={!isAdmin}
-                        hint="El modelo utilizado para generar sugerencias de respuesta y automatizaciones."
-                    />
+                    <div className="config-grid">
+                        <ConfigField
+                            id="gemini-global-model"
+                            label="Modelo Global (Vía ENV)"
+                            type="text"
+                            value={settings.gemini_global_model || 'gemini-1.5-flash'}
+                            onChange={(e) => updateSetting('gemini_global_model', e.target.value)}
+                            disabled={!isAdmin}
+                            hint="El modelo utilizado para generar sugerencias de respuesta y automatizaciones."
+                        />
+                    </div>
 
                     <div className="config-section__divider"></div>
 
-                    <div className="config-section__ai-status">
-                        <Icon name="check_circle" size="1rem" style={{ color: 'var(--success-color)' }} />
-                        <span>Conexión con Google Cloud activa</span>
+                    <div className={styles.statusBadge}>
+                        <Icon name="check_circle" size="1rem" className={styles.statusIcon} />
+                        <span className={styles.statusText}>Conexión con Google Cloud activa</span>
                     </div>
                 </div>
             </div>

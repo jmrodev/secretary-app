@@ -22,6 +22,7 @@ function chatReducer(state, action) {
 }
 
 const normalizePhone = (raw) => {
+    if (!raw) return '';
     const digits = raw.replace(/\D/g, '');
     return !digits.startsWith('54') && digits.length >= 10 ? '549' + digits : digits;
 };
@@ -100,19 +101,31 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
         try {
             dispatch({ type: 'SET_SENDING', payload: true });
             let targetPhone;
+            let patientName = '';
             if (patientId) {
                 const patientRes = await api.get(`/users/patients/${patientId}`);
-                targetPhone = normalizePhone(patientRes.data.phone);
+                const patientData = patientRes.data?.success !== undefined ? patientRes.data.data : patientRes.data;
+                targetPhone = normalizePhone(patientData?.phone);
+                patientName = patientData?.full_name || '';
             } else if (phone) {
                 targetPhone = normalizePhone(phone);
             } else {
                 return;
             }
 
-            const res = await api.post('/whatsapp/send', {
-                patientId,
-                phone: targetPhone,
-                message: state.newMessage
+            if (!targetPhone) {
+                const msg = patientName
+                    ? t('phone_required') || `${patientName} no tiene un teléfono registrado.`
+                    : t('phone_required') || "El paciente no tiene un teléfono registrado.";
+                showMessage(msg, "error");
+                dispatch({ type: 'SET_SENDING', payload: false });
+                return;
+            }
+
+            const res = await api.post('/whatsapp/send-direct', {
+                to: targetPhone,
+                message: state.newMessage,
+                patientId
             });
             
             if (res.data.success) {

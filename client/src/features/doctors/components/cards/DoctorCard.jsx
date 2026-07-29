@@ -44,6 +44,12 @@ const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
                         {t('office') || 'Consultorio'}: <span className={`${styles.officeValue}`}>{doctor.office_number || 'N/A'}</span>
                     </span>
                 </div>
+                {doctor.dni && (
+                    <div className={`${styles.detailItem}`}>
+                        <Icon name="badge" size="1rem" className={`${styles.detailIcon}`} />
+                        <span className={`${styles.officeValue}`}>DNI: {doctor.dni}</span>
+                    </div>
+                )}
             </div>
 
             <div className={`${styles.prices}`}>
@@ -58,6 +64,18 @@ const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
                         {t('rx_abbrev') || 'RECETA'}
                     </div>
                     <div className={`${styles.priceValue}`}>{formatCurrency(doctor.prescription_price)}</div>
+                </div>
+                <div className={`${styles.priceBox}`}>
+                    <div className={`${styles.priceLabel}`}>
+                        {t('virtual_abbrev') || 'VIRTUAL'}
+                    </div>
+                    <div className={`${styles.priceValue}`}>{formatCurrency(doctor.virtual_consultation_price)}</div>
+                </div>
+                <div className={`${styles.priceBox}`}>
+                    <div className={`${styles.priceLabel}`}>
+                        {t('license_abbrev') || 'CM/CERT'}
+                    </div>
+                    <div className={`${styles.priceValue}`}>{formatCurrency(doctor.medical_license_price || doctor.certificate_price)}</div>
                 </div>
             </div>
 
