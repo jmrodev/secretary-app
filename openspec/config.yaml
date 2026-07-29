@@ -33,7 +33,7 @@ rules:
 
 testing:
   strict_tdd: true
-  detected_at: "2026-06-28"
+  detected_at: "2026-07-28"
   runner:
     command: "pnpm --filter server test"
     framework: "Jest"

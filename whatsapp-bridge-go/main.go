@@ -64,6 +64,16 @@ func eventHandler(evt interface{}) {
 				resp.Body.Close()
 			}
 		}
+	case *events.LoggedOut:
+		clientMu.Lock()
+		if client != nil {
+			client.Disconnect()
+			lastQR = ""
+		}
+		clientMu.Unlock()
+		os.Remove("data/examplestore.db")
+		os.Remove("data/examplestore.db-wal")
+		os.Remove("data/examplestore.db-shm")
 	}
 }
 
@@ -114,8 +124,12 @@ func handleStatus(w http.ResponseWriter, r *http.Request) {
 	clientMu.Unlock()
 
 	status := "disconnected"
-	if c != nil && c.IsLoggedIn() {
-		status = "connected"
+	if c != nil {
+		if c.IsLoggedIn() {
+			status = "connected"
+		} else if c.Store.ID != nil {
+			status = "connecting"
+		}
 	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
@@ -137,6 +151,11 @@ func handleLogout(w http.ResponseWriter, r *http.Request) {
 		lastQR = ""
 	}
 	clientMu.Unlock()
+
+	// Clean up database files on explicit logout
+	os.Remove("data/examplestore.db")
+	os.Remove("data/examplestore.db-wal")
+	os.Remove("data/examplestore.db-shm")
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"status": "logged_out"})
@@ -222,7 +241,6 @@ func handleRefresh(w http.ResponseWriter, r *http.Request) {
 	}
 	lastQR = ""
 
-	// Delete stale session so whatsmeow enters pairing mode
 	os.Remove("data/examplestore.db")
 	os.Remove("data/examplestore.db-wal")
 	os.Remove("data/examplestore.db-shm")
