@@ -1,0 +1,47 @@
+import React, { useState } from 'react';
+import MainLayout from '@/components/templates/MainLayout';
+import Icon from '@/components/atoms/Icon';
+import { WhatsappBroadcast } from '@/components/molecules/WhatsappBroadcast';
+import WhatsappConfig from './WhatsappConfig';
+import { useLanguage } from '@/hooks/useLanguage';
+import styles from './WhatsappPage.module.css';
+
+const WhatsappPage = () => {
+    const { t } = useLanguage();
+    const [activeTab, setActiveTab] = useState('config');
+
+    return (
+        <MainLayout wide flush title={t('whatsapp_messenger')}>
+            <div className={styles.page}>
+                <div className={styles.tabBar}>
+                    <button
+                        className={`${styles.tab} ${activeTab === 'broadcast' ? styles.tabActive : ''}`}
+                        onClick={() => setActiveTab('broadcast')}
+                    >
+                        <Icon name="campaign" size="1rem" />
+                        {t('broadcast_tab') || 'Difusión'}
+                    </button>
+                    <button
+                        className={`${styles.tab} ${activeTab === 'config' ? styles.tabActive : ''}`}
+                        onClick={() => setActiveTab('config')}
+                    >
+                        <Icon name="settings" size="1rem" />
+                        Config
+                    </button>
+                </div>
+
+                {activeTab === 'broadcast' ? (
+                    <div className={styles.broadcastContainer}>
+                        <WhatsappBroadcast t={t} />
+                    </div>
+                ) : (
+                    <div className={styles.configContainer}>
+                        <WhatsappConfig t={t} />
+                    </div>
+                )}
+            </div>
+        </MainLayout>
+    );
+};
+
+export default WhatsappPage;

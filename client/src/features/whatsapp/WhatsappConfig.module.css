@@ -1,0 +1,108 @@
+.message {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.message--success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.message--error {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+.vars {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.var-btn {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 4px;
+    background: var(--color-surface, #f8fafc);
+    font-size: 0.8rem;
+    font-family: monospace;
+    cursor: pointer;
+    color: var(--color-primary, #2563eb);
+    transition: all 0.15s;
+}
+
+.var-btn:hover {
+    background: var(--color-primary, #2563eb);
+    color: #fff;
+    border-color: var(--color-primary, #2563eb);
+}
+
+.textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    resize: vertical;
+    background: var(--color-surface, #f8fafc);
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: var(--color-primary, #2563eb);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.small-btn {
+    align-self: flex-start;
+}
+
+.row {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    flex: 1;
+}
+
+.field-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-secondary, #64748b);
+}
+
+.responses {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 0.75rem;
+}
+
+.response-card {
+    padding: 0.75rem;
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 8px;
+    background: var(--color-surface, #fff);
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.response-card strong {
+    font-size: 0.85rem;
+    color: var(--color-text, #1e293b);
+}
+
+.response-card p {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary, #64748b);
+    margin: 0;
+    line-height: 1.4;
+}
