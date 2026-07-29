@@ -13,6 +13,32 @@ const AiSettings = ({ user, settings, updateSetting }) => {
 
     return (
         <div className="tab-panel animate-fade-in ai-settings">
+            {/* AI Provider Priority */}
+            <div className="config-section">
+                <div className="config-section__header">
+                    <Icon name="psychology" size="1.2rem" className="config-section__icon" />
+                    <h4 className="config-section__title">{t('ai_provider_title') || 'Proveedor de IA'}</h4>
+                </div>
+                <div className="config-section__body">
+                    <p className="config-section__description">
+                        {t('ai_provider_hint') || 'Define qué proveedor se intenta primero y cuál actúa como respaldo al enviar solicitudes de IA.'}
+                    </p>
+                    <ConfigField
+                        id="ai-provider"
+                        label={t('ai_provider_label') || 'Proveedor principal'}
+                        type="select"
+                        value={settings.ai_provider || 'groq'}
+                        onChange={(e) => updateSetting('ai_provider', e.target.value)}
+                        disabled={!isAdmin}
+                        options={[
+                            { value: 'groq', label: 'Groq (Llama) primero, Gemini respaldo' },
+                            { value: 'gemini', label: 'Gemini primero, Groq respaldo' },
+                        ]}
+                        hint={t('ai_provider_hint_detail') || 'El proveedor secundario se usa automáticamente si el principal falla.'}
+                    />
+                </div>
+            </div>
+
             {/* WhatsApp Automation */}
             <div className="config-section">
                 <div className="config-section__header">
