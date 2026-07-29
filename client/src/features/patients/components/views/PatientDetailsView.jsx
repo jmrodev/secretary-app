@@ -175,7 +175,7 @@ const PatientDetailsView = ({
                                     <div className={`${styles.blockContent} ${styles.blockContentPadded}`}>
                                         {chronicMeds.length > 0 ? (
                                             <ul className="patient-details__meds-list">
-                                                {chronicMeds.map((m, i) => <li key={m.id || `med-${i}`}>{m.name || m}</li>)}
+                                                {chronicMeds.map((m, i) => <li key={m.id || `med-${i}`}>{m.medication_name || m.name || '—'}</li>)}
                                             </ul>
                                         ) : <p className="patient-details__text-empty">{t('no_current_medications')}</p>}
                                     </div>

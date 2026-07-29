@@ -68,7 +68,7 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
                         const isOutbound = msg.direction === 'outbound';
                         return (
                             <React.Fragment key={msg.id}>
-                                {showDate && <div className={styles.dateDivider}>{formatDate(msg.created_at)}</div>}
+                                {showDate && <div className={styles.dateDivider}><span>{formatDate(msg.created_at)}</span></div>}
                                 <div className={`${styles.bubbleWrapper} ${isOutbound ? styles.bubbleWrapperOutbound : styles.bubbleWrapperInbound}`}>
                                     <div className={`${styles.bubble} ${isOutbound ? styles.bubbleOutbound : styles.bubbleInbound}`}>
                                         <p className={styles.text}><MessageBody body={msg.body} /></p>

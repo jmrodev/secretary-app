@@ -46,7 +46,7 @@ describe('PrescriptionRepository', () => {
             );
 
             const sqlQuery = mockPool.query.mock.calls[0][0];
-            expect(sqlQuery).toContain('JOIN patients p ON COALESCE(pr.patient_id, a.patient_id) = p.id');
+            expect(sqlQuery).toContain('JOIN patients p ON a.patient_id = p.id');
         });
     });
 });
