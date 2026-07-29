@@ -163,5 +163,20 @@ android_sdk/
 /openspec/.cache/
 /openspec/cache/
 
+# Other AI tool configs
+.aider/
+.aider.chat.history.md
+.aider.input.history
+.codex/
+.cursor/
+.github/hooks/
+
+# Ollama
+Modelfile
+
+# Backups and screenshots
+backups/
+screenshots
+
 
 
