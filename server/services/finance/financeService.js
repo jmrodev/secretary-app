@@ -1,483 +1,236 @@
-const transactionRepository = require('../../repositories/transactionRepository');
-const appointmentRepository = require('../../repositories/appointmentRepository');
-const patientRepository = require('../../repositories/patientRepository');
-const medicalRequestRepository = require('../../repositories/medicalRequestRepository');
-const prescriptionRepository = require('../../repositories/prescriptionRepository');
+const transactionRepository = require('../../repositories/finance/transactionRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
 const { pool } = require('../../db');
-const { formatLocalSQL, nowLocalSQL } = require('../../utils/dateUtils');
-const { calculatePrice } = require('../../utils/priceCalculator');
+const { formatLocalSQL, nowLocalSQL } = require('../../utils/core/dateUtils');
+const { calculatePrice } = require('../../utils/finance/priceCalculator');
 
+/**
+ * FinanceService (ECC Optimized - High Performance Edition)
+ */
 class FinanceService {
-    async createTransaction(data, userId) {
-        if (!data.doctor_id) {
-            throw new Error("Doctor ID is required for transactions");
+    async createTransaction(data, userId, conn = null) {
+        if (!data.doctor_id) throw new Error("Doctor ID is required");
+
+        if (data.payments && typeof data.payments === 'string') {
+            try {
+                data.payments = JSON.parse(data.payments);
+            } catch (err) {
+                console.warn("[FinanceService] payments parsing failed:", err.message);
+            }
         }
-        const conn = await pool.getConnection();
+
+        const connection = conn || await pool.getConnection();
+        // ECC: Generate global idempotency key if not provided
+        const idempotencyKey = data.idempotency_key || `idp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
         try {
-            await conn.beginTransaction();
-
+            if (!conn) await connection.beginTransaction();
             const finalDate = formatLocalSQL(data.transaction_date) || nowLocalSQL();
-
-            // 1. Cleanup pending
-            if (data.appointment_id) {
-                console.log(`[FinanceService] Deleting pending for Appointment: ${data.appointment_id}`);
-                await transactionRepository.deletePendingByAppointment(data.appointment_id, conn);
-            }
-            if (data.request_id) {
-                console.log(`[FinanceService] Deleting pending for Request: ${data.request_id}`);
-                await transactionRepository.deletePendingByRequest(data.request_id, conn);
+            
+            if (!data.type) {
+                if (data.appointment_id) data.type = 'income_patient';
+                else if (data.request_id) data.type = 'income_request';
+                else data.type = 'income';
             }
 
-            let lastInsertId;
-
-            // 2. Register Payments
-            if (Array.isArray(data.payments) && data.payments.length > 0) {
-                for (const p of data.payments) {
-                    if (Number(p.amount) > 0) {
-                        const methodSuffix = data.payments.length > 1 ? ` [${(p.method || 'cash').toUpperCase()}]` : '';
-                        lastInsertId = await transactionRepository.create({
-                            ...data,
-                            amount: p.amount,
-                            description: `${data.description}${methodSuffix}`,
-                            method: p.method || 'cash',
-                            status: data.status || 'paid',
-                            transaction_date: finalDate
-                        }, conn);
+            let relatedUserId = data.related_user_id || data.patientUserId || null;
+            if (relatedUserId) {
+                const userRows = await connection.query("SELECT id FROM users WHERE id = ?", [relatedUserId]);
+                if (!userRows || userRows.length === 0) {
+                    const mappedUserId = await patientRepository.findUserIdById(relatedUserId, connection);
+                    if (mappedUserId) {
+                        console.warn(`[ECC-Finance] Mapped misaligned related_user_id (patient_id) ${relatedUserId} to user_id ${mappedUserId}`);
+                        relatedUserId = mappedUserId;
+                    } else {
+                        console.warn(`[ECC-Finance] Invalid related_user_id ${relatedUserId} (does not exist in users or patients), setting to null`);
+                        relatedUserId = null;
                     }
                 }
-            } else if (Number(data.amount) > 0) {
-                lastInsertId = await transactionRepository.create({
-                    ...data,
-                    transaction_date: finalDate
-                }, conn);
             }
 
-            // 3. Register Debt
-            if (Number(data.debt_amount) > 0) {
-                await transactionRepository.create({
-                    ...data,
-                    amount: data.debt_amount,
-                    description: `DEBT: ${data.description}`,
-                    method: 'on_account',
-                    status: 'pending',
-                    transaction_date: finalDate
-                }, conn);
+            if (!relatedUserId && (data.patient_id || data.patientId)) {
+                relatedUserId = await patientRepository.findUserIdById(data.patient_id || data.patientId, connection);
             }
 
-            // 4. Sync
-            if (data.appointment_id) await this.syncAppointmentPaymentStatus(data.appointment_id, userId, conn);
-            if (data.request_id) await this.syncRequestPaymentStatus(data.request_id, conn);
+            let lastTransactionId = null;
+            let paymentsList = [];
 
-            await conn.commit();
-            return lastInsertId;
-        } catch (err) {
-            await conn.rollback();
-            throw err;
-        } finally {
-            conn.release();
-        }
-    }
+            if (data.payments && Array.isArray(data.payments) && data.payments.length > 0) {
+                paymentsList = data.payments;
+            } else if (data.amount) {
+                paymentsList = [{ amount: data.amount, method: data.method || 'cash' }];
+            }
 
-    async payDebt(data, currentUserId) {
-        const conn = await pool.getConnection();
-        try {
-            await conn.beginTransaction();
-            const { patient_id, amount, method, doctor_id } = data;
-            const payAmount = parseFloat(amount);
+            // Sequential processing with per-item idempotency
+            for (let i = 0; i < paymentsList.length; i++) {
+                const p = paymentsList[i];
+                const amount = parseFloat(p.amount);
+                if (isNaN(amount) || amount <= 0) continue;
 
-            const userId = await patientRepository.findUserIdById(patient_id, conn);
-            if (!userId) throw new Error("Patient not found");
-
-            const debts = await transactionRepository.findPendingByUserId(userId, conn);
-            let remaining = payAmount;
-            let totalPaid = 0;
-
-            for (const debt of debts) {
-                if (remaining <= 0.01) break;
-                const debtAmount = Number(debt.amount);
-
-                if (remaining >= debtAmount) {
-                    await transactionRepository.update(debt.id, {
-                        status: 'paid',
-                        method: method,
-                        description: `${debt.description} - Paid`
-                    }, conn);
-                    if (debt.appointment_id) await this.syncAppointmentPaymentStatus(debt.appointment_id, currentUserId, conn);
-                    if (debt.request_id) await this.syncRequestPaymentStatus(debt.request_id, conn);
-                    remaining -= debtAmount;
-                    totalPaid += debtAmount;
-                } else {
-                    await transactionRepository.update(debt.id, {
-                        status: 'paid',
-                        amount: remaining,
-                        method: method,
-                        description: `${debt.description} - Paid Part`
-                    }, conn);
-
-                    const remainder = debtAmount - remaining;
-                    await transactionRepository.create({
-                        ...debt,
-                        amount: remainder,
-                        method: 'on_account',
-                        status: 'pending'
-                    }, conn);
-
-                    if (debt.appointment_id) await this.syncAppointmentPaymentStatus(debt.appointment_id, currentUserId, conn);
-                    if (debt.request_id) await this.syncRequestPaymentStatus(debt.request_id, conn);
-                    totalPaid += remaining;
-                    remaining = 0;
+                // Check if there is an existing pending transaction for this appointment
+                if (data.appointment_id) {
+                    const pendingRows = await connection.query(
+                        "SELECT id FROM transactions WHERE appointment_id = ? AND status = 'pending' LIMIT 1",
+                        [data.appointment_id]
+                    );
+                    if (pendingRows && pendingRows.length > 0) {
+                        const pendingTx = pendingRows[0];
+                        await connection.query(
+                            `UPDATE transactions SET 
+                                status = 'paid', 
+                                amount = ?, 
+                                method = ?, 
+                                description = ?, 
+                                transaction_date = ?
+                             WHERE id = ?`,
+                            [
+                                amount,
+                                p.method || 'cash',
+                                data.description || 'Pago de Turno',
+                                finalDate,
+                                pendingTx.id
+                            ]
+                        );
+                        lastTransactionId = pendingTx.id;
+                        continue;
+                    }
                 }
+
+                lastTransactionId = await transactionRepository.callSpCreateTransaction({
+                    ...data,
+                    amount,
+                    method: p.method || 'cash',
+                    related_user_id: relatedUserId,
+                    transaction_date: finalDate,
+                    idempotency_key: `${idempotencyKey}_${i}`
+                }, connection);
             }
 
-            if (remaining > 0.01) {
-                await transactionRepository.create({
-                    type: 'income_patient',
-                    amount: remaining,
-                    description: 'Advance Payment / Credit',
-                    related_user_id: userId,
-                    doctor_id: doctor_id || null,
-                    method: method,
-                    status: 'paid',
-                    transaction_date: nowLocalSQL()
-                }, conn);
-                totalPaid += remaining;
+            // Handle debt
+            const debtAmount = parseFloat(data.debt_amount);
+            if (!isNaN(debtAmount) && debtAmount > 0) {
+                await transactionRepository.callSpCreateTransaction({
+                    ...data,
+                    amount: debtAmount,
+                    status: 'pending',
+                    description: `${data.description || 'Saldo'} (Pendiente)`,
+                    related_user_id: relatedUserId,
+                    transaction_date: finalDate,
+                    idempotency_key: `${idempotencyKey}_debt`
+                }, connection);
             }
 
-            await conn.commit();
-            return totalPaid;
+            // Sync status of appointment or request if applicable
+            if (data.appointment_id) {
+                await connection.query("CALL sp_sync_appointment_payment_status(?)", [data.appointment_id]);
+            }
+            if (data.request_id || data.requestId) {
+                const reqId = data.request_id || data.requestId;
+                await connection.query("CALL sp_sync_request_payment_status(?)", [reqId]);
+            }
+            if (data.rental_id || data.rentalId) {
+                const rentId = data.rental_id || data.rentalId;
+                await connection.query("CALL sp_sync_rental_payment_status(?)", [rentId]);
+            }
+
+            if (!conn) await connection.commit();
+            return { id: lastTransactionId, idempotencyKey };
         } catch (err) {
-            await conn.rollback();
+            if (!conn) await connection.rollback();
             throw err;
         } finally {
-            conn.release();
+            if (!conn) connection.release();
         }
     }
 
     async getTransactions(user, filters) {
         const today = nowLocalSQL().split(' ')[0];
-
-        let patientUserId = null;
-        if (filters.patientId) {
-            patientUserId = await patientRepository.findUserIdById(filters.patientId);
-        }
-
         const limit = parseInt(filters.limit) || 50;
         const page = parseInt(filters.page) || 1;
         const offset = (page - 1) * limit;
 
         const [transactions, totalCount] = await Promise.all([
-            transactionRepository.findFiltered({
-                role: user.role,
-                user_id: user.user_id,
-                doctor_id: filters.doctor_id,
-                patient_user_id: patientUserId,
-                institution_id: filters.institution_id,
-                search: filters.search,
-                limit,
-                offset,
-                today
-            }),
-            transactionRepository.countFiltered({
-                role: user.role,
-                user_id: user.user_id,
-                doctor_id: filters.doctor_id,
-                patient_user_id: patientUserId,
-                institution_id: filters.institution_id,
-                search: filters.search,
-                today
-            })
+            transactionRepository.findFiltered({ ...filters, today, limit, offset }),
+            transactionRepository.countFiltered({ ...filters, today })
         ]);
-
         return { transactions, totalCount };
-    }
-
-    async getPendingClosures(doctorId) {
-        return await transactionRepository.findPendingClosures(doctorId);
-    }
-
-
-    async payInstitutionDebt(data, currentUserId) {
-        const conn = await pool.getConnection();
-        try {
-            const { institution_id, amount, method, transaction_ids } = data;
-            const payAmount = parseFloat(amount);
-            if (isNaN(payAmount) || payAmount <= 0) throw new Error("Invalid amount");
-
-            await conn.beginTransaction();
-            let debts = await transactionRepository.findPendingByInstitutionId(institution_id, conn);
-
-            // Si se envían IDs específicos (desde checkboxes), pagar solo esos
-            if (Array.isArray(transaction_ids) && transaction_ids.length > 0) {
-                const idSet = new Set(transaction_ids.map(Number));
-                debts = debts.filter(debt => idSet.has(Number(debt.id)));
-            }
-
-            let remaining = payAmount;
-            let totalPaid = 0;
-
-            const fullyPaidIds = [];
-            const syncAppointments = new Set();
-            const syncRequests = new Set();
-            let partialUpdate = null;
-            let partialCreate = null;
-
-            for (const debt of debts) {
-                if (remaining <= 0.01) break;
-                const debtAmount = Number(debt.amount);
-
-                if (remaining >= debtAmount) {
-                    fullyPaidIds.push(debt.id);
-                    if (debt.appointment_id) syncAppointments.add(debt.appointment_id);
-                    if (debt.request_id) syncRequests.add(debt.request_id);
-
-                    remaining -= debtAmount;
-                    totalPaid += debtAmount;
-                } else {
-                    partialUpdate = {
-                        id: debt.id,
-                        updates: {
-                            status: 'paid',
-                            amount: remaining,
-                            method,
-                            description: `${debt.description} - Paid Part by Inst`
-                        }
-                    };
-
-                    const remainder = debtAmount - remaining;
-                    partialCreate = {
-                        ...debt,
-                        amount: remainder,
-                        method: 'on_account',
-                        status: 'pending'
-                    };
-
-                    if (debt.appointment_id) syncAppointments.add(debt.appointment_id);
-                    if (debt.request_id) syncRequests.add(debt.request_id);
-
-                    totalPaid += remaining;
-                    remaining = 0;
-                }
-            }
-
-            // Execute all DB operations in parallel using Promise.all or batched queries
-            const promises = [];
-
-            if (fullyPaidIds.length > 0) {
-                // Batch update fully paid debts
-                // Since transactionRepository.update doesn't support bulk out of the box, we can do a raw query here,
-                // or just map to multiple update calls. But raw query is faster.
-                const placeholders = fullyPaidIds.map(() => '?').join(',');
-                promises.push(conn.query(
-                    `UPDATE transactions SET status = 'paid', method = ?, description = CONCAT(description, ' - Paid by Inst') WHERE id IN (${placeholders})`,
-                    [method, ...fullyPaidIds]
-                ));
-            }
-
-            if (partialUpdate) {
-                promises.push(transactionRepository.update(partialUpdate.id, partialUpdate.updates, conn));
-            }
-
-            if (partialCreate) {
-                promises.push(transactionRepository.create(partialCreate, conn));
-            }
-
-            if (promises.length > 0) {
-                await Promise.all(promises);
-            }
-
-            // Sync statuses
-            const syncPromises = [];
-            for (const appointmentId of syncAppointments) {
-                syncPromises.push(this.syncAppointmentPaymentStatus(appointmentId, currentUserId, conn));
-            }
-            for (const requestId of syncRequests) {
-                syncPromises.push(this.syncRequestPaymentStatus(requestId, conn));
-            }
-            if (syncPromises.length > 0) {
-                await Promise.all(syncPromises);
-            }
-
-            if (remaining > 0.01) {
-                const { nowLocalSQL } = require('../../utils/dateUtils');
-                await transactionRepository.create({
-                    type: 'income_institution',
-                    amount: remaining,
-                    description: 'Pago Adelantado / Crédito Institución',
-                    institution_id: institution_id,
-                    doctor_id: null,
-                    method: method,
-                    status: 'paid',
-                    transaction_date: nowLocalSQL()
-                }, conn);
-                totalPaid += remaining;
-            }
-
-            await conn.commit();
-            return totalPaid;
-        } catch (err) {
-            await conn.rollback();
-            throw err;
-        } finally {
-            conn.release();
-        }
-    }
-
-    async syncAppointmentPaymentStatus(appointmentId, userId, conn) {
-        const { totalPaid, totalPending, hasPaid, hasPending } = await transactionRepository.getPaymentSummary(appointmentId, conn);
-        let finalStatus = (hasPaid && hasPending) ? 'partial' : (hasPaid ? 'paid' : (hasPending ? 'debt' : 'pending'));
-        await appointmentRepository.update(appointmentId, {
-            payment_status: finalStatus,
-            is_paid: finalStatus === 'paid' ? 1 : 0
-        }, conn);
-    }
-
-    async syncRequestPaymentStatus(requestId, conn) {
-        console.log(`[FinanceService] syncRequestPaymentStatus for Request: ${requestId}`);
-        const { totalPaid, totalPending, hasPaid, hasPending } = await transactionRepository.getRequestPaymentSummary(requestId, conn);
-        console.log(`[FinanceService] Summary for ${requestId}: Paid=${totalPaid}, Pending=${totalPending}, hasPaid=${hasPaid}, hasPending=${hasPending}`);
-
-        let finalStatus = (hasPaid && hasPending) ? 'partial' : (hasPaid ? 'paid' : (hasPending ? 'debt' : 'pending'));
-        console.log(`[FinanceService] Updating Request ${requestId} status to: ${finalStatus}`);
-
-        const paidTransactions = await conn.query(
-            "SELECT method FROM transactions WHERE request_id = ? AND status = 'paid' ORDER BY transaction_date DESC LIMIT 1",
-            [requestId]
-        );
-        const lastMethod = paidTransactions[0]?.method;
-
-        const updates = {
-            payment_status: finalStatus,
-            debt_amount: totalPending
-        };
-        if (lastMethod) updates.payment_method = lastMethod;
-
-        await medicalRequestRepository.update(requestId, updates, conn);
-    }
-
-    async closeCashBox(data) {
-        const { doctor_id, amount_delivered, description } = data;
-        const amount = parseFloat(amount_delivered);
-        if (isNaN(amount)) throw new Error("Invalid amount");
-
-        await transactionRepository.create({
-            type: 'withdrawal',
-            amount,
-            description,
-            doctor_id,
-            status: 'paid',
-            is_withdrawal: true,
-            transaction_date: nowLocalSQL()
-        });
     }
 
     async getPricing(doctorId, patientId, serviceType) {
         return await calculatePrice(pool, doctorId, patientId, serviceType);
     }
 
-    async markAsBonified(id, type, conn) {
-        const connection = conn || await pool.getConnection();
+    async getPendingClosures(doctorId) {
+        return await transactionRepository.findPendingClosures(doctorId);
+    }
+
+    /**
+     * ECC: Perform Automatic Cash Box Balancing (Arqueo)
+     */
+    async performBalancing(data, userId) {
+        const { doctor_id, balancing_date, theoretical_balance, physical_balance, notes } = data;
+        const difference = parseFloat(physical_balance) - parseFloat(theoretical_balance);
+        
+        const conn = await pool.getConnection();
         try {
-            if (type === 'appointment') {
-                const appt = await appointmentRepository.findById(id, connection);
-                if (!appt) throw new Error("Turno no encontrado");
+            await conn.beginTransaction();
 
-                // Check if already paid (and not bonified)
-                if (appt.payment_status === 'paid' && !appt.bonified) {
-                    throw new Error("No se puede bonificar un turno que ya ha sido pagado.");
-                }
+            // 1. Record the balancing event
+            await conn.query(`
+                INSERT INTO cash_box_balancings (doctor_id, balancing_date, theoretical_balance, physical_balance, difference, notes)
+                VALUES (?, ?, ?, ?, ?, ?)
+            `, [doctor_id, balancing_date, theoretical_balance, physical_balance, difference, notes]);
 
-                const pendings = await transactionRepository.findPendingByAppointment(id, connection);
-                if (pendings.length > 0) {
-                    for (const tx of pendings) {
-                        await transactionRepository.update(tx.id, {
-                            status: 'paid',
-                            amount: 0,
-                            method: 'bonified',
-                            description: (tx.description || '') + " (Bonificado)"
-                        }, connection);
-                    }
-                } else {
-                    if (appt) {
-                        await transactionRepository.create({
-                            type: 'income',
-                            amount: 0,
-                            description: `${appt.reason || 'Consulta'} (Bonificado)`,
-                            related_user_id: appt.patient_id ? (await patientRepository.findById(appt.patient_id, connection))?.user_id : null,
-                            doctor_id: appt.doctor_id,
-                            appointment_id: id,
-                            transaction_date: appt.appointment_date,
-                            method: 'bonified',
-                            status: 'paid'
-                        }, connection);
-                    }
-                }
-                await appointmentRepository.update(id, { payment_status: 'paid', bonified: 1 }, connection);
-            } else if (type === 'request') {
-                const req = await medicalRequestRepository.findById(id, connection);
-                if (!req) throw new Error("Solicitud no encontrada");
+            // 2. Create the withdrawal transaction to reset the balance
+            await this.createTransaction({
+                type: 'withdrawal',
+                amount: parseFloat(physical_balance),
+                method: 'cash',
+                description: `Cierre de Caja: ${balancing_date} ${notes ? ' - ' + notes : ''}`,
+                doctor_id: doctor_id,
+                status: 'paid',
+                is_withdrawal: true,
+                transaction_date: `${balancing_date} 23:59:59`,
+                idempotency_key: `closure_${doctor_id}_${balancing_date}`
+            }, userId, conn);
 
-                // Check if already paid
-                if (req.payment_status === 'paid') {
-                    throw new Error("No se puede bonificar una solicitud que ya ha sido pagada.");
-                }
-
-                const pendings = await transactionRepository.findPendingByRequest(id, connection);
-                if (pendings.length > 0) {
-                    for (const tx of pendings) {
-                        await transactionRepository.update(tx.id, {
-                            status: 'paid',
-                            amount: 0,
-                            method: 'bonified',
-                            description: (tx.description || '') + " (Bonificado)"
-                        }, connection);
-                    }
-                } else {
-                    if (req) {
-                        await transactionRepository.create({
-                            type: 'income',
-                            amount: 0,
-                            description: `Solicitud: ${req.type} (Bonificado)`,
-                            related_user_id: req.user_id,
-                            doctor_id: req.doctor_id,
-                            request_id: id,
-                            transaction_date: req.created_at,
-                            method: 'bonified',
-                            status: 'paid'
-                        }, connection);
-                    }
-                }
-                await medicalRequestRepository.update(id, { payment_status: 'bonified', debt_amount: 0 }, connection);
-            } else if (type === 'prescription') {
-                // Here id is prescriptionId
-                const prescription = await prescriptionRepository.findById(id, connection);
-                if (!prescription) throw new Error("Receta no encontrada");
-
-                // Check if already bonified. If not, check if it has paid transactions
-                // (Prescriptions usually don't have their own payment_status in the main table yet, 
-                // but they are linked to appointment transactions or standalone ones)
-                // If it's already bonified, we allow it (idempotency).
-                if (prescription.bonified) return;
-
-                if (prescription.appointment_id) {
-                    // Check if there are PAID transactions for this prescription
-                    const paidTx = await connection.query(
-                        "SELECT id FROM transactions WHERE appointment_id = ? AND description LIKE 'Prescription%' AND status = 'paid'",
-                        [prescription.appointment_id]
-                    );
-                    if (paidTx.length > 0) {
-                        throw new Error("No se puede bonificar una receta que ya ha sido pagada.");
-                    }
-
-                    await connection.query(
-                        "DELETE FROM transactions WHERE appointment_id = ? AND description LIKE 'Prescription%' AND status = 'pending'",
-                        [prescription.appointment_id]
-                    );
-                }
-                await prescriptionRepository.update(id, { bonified: 1 }, connection);
-            }
+            await conn.commit();
+            return { difference, success: true };
+        } catch (err) {
+            await conn.rollback();
+            throw err;
         } finally {
-            if (!conn) connection.release();
+            conn.release();
         }
+    }
+
+    async payDebt(data, _userId) {
+        const payAmount = parseFloat(data.amount);
+        if (isNaN(payAmount) || payAmount <= 0) throw new Error("Invalid amount");
+        
+        if (data.patientId) {
+            const idempotencyKey = data.idempotency_key || `pay_pat_${data.patientId}_${Date.now()}`;
+            await pool.query("CALL proc_pay_patient_debt(?, ?, ?, ?, ?, ?)", [
+                data.patientId, payAmount, data.method, data.doctor_id || null, 'PAGO_DEUDA', idempotencyKey
+            ]);
+            return { amount: payAmount, idempotencyKey };
+        } else if (data.doctorId) {
+            const idempotencyKey = data.idempotency_key || `pay_doc_${data.doctorId}_${Date.now()}`;
+            await pool.query("CALL proc_pay_doctor_debt(?, ?, ?, ?, ?)", [
+                data.doctorId, payAmount, data.method, 'PAGO_ALQUILER', idempotencyKey
+            ]);
+            return { amount: payAmount, idempotencyKey };
+        } else {
+            throw new Error("Patient ID or Doctor ID is required to pay debt");
+        }
+    }
+
+    async syncRequestPaymentStatus(requestId, conn = pool) {
+        await conn.query("CALL sp_sync_request_payment_status(?)", [requestId]);
+    }
+
+    async markAsBonified(id, type, conn = pool) {
+        await transactionRepository.callSpMarkAsBonified(id, type, conn);
     }
 }
 

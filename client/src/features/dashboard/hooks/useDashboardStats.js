@@ -1,61 +1,74 @@
+import { useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 
+/**
+ * ECC-Pattern: useDashboardStats Hook
+ * Orchestrates fetching and mapping of dashboard metrics.
+ */
 export const useDashboardStats = (isStaff = false, doctor_id = '') => {
-    // Stats Fetching
-    const {
-        data: stats = null,
-        loading: loadingStats,
-        error: errorStats,
-        refetch: fetchStats
-    } = useFetch('/users/stats', {
-        params: { doctor_id }
+    // 1. Core Appointments & Patient Stats
+    const statsHook = useFetch('/users/stats', {
+        params: { doctor_id },
+        initialData: { success: true, data: {} }
     });
-    const {
-        data: doctorData,
-        loading: loadingDoctors,
-        error: errorDoctors
-    } = useFetch('/users/doctors', { initialData: { doctors: [], totalCount: 0 } });
-
-    const doctors = doctorData?.doctors || [];
     
-    const {
-        data: newPatientStats = null,
-        loading: loadingNewPatientStats,
-        error: errorNewPatientStats,
-        refetch: fetchNewPatientStats
-    } = useFetch('/users/patients/stats/new', {
+    // Map backend UserStatsService response to Dashboard structure
+    const stats = useMemo(() => {
+        const raw = statsHook.data?.data || {};
+        return {
+            appointments: {
+                today: { count: raw.appointments_today || 0 },
+                week: { count: raw.appointments_week || 0 },
+                month: { count: raw.appointments_month || 0 },
+                total: { count: raw.total_appointments || 0 }
+            },
+            total_patients: raw.total_patients || 0,
+            total_contacts: raw.total_contacts || 0
+        };
+    }, [statsHook.data]);
+
+    // 2. Finance Stats (For Cash Monitor)
+    const finStatsHook = useFetch('/finances/stats', {
+        params: { doctor_id: doctor_id || 'all' },
+        initialData: { success: true, data: {} }
+    });
+    const financeStats = useMemo(() => finStatsHook.data?.data || {}, [finStatsHook.data]);
+
+    // 3. New Patients Stats
+    const newPatientsHook = useFetch('/users/patients/stats/new', {
         immediate: isStaff,
-        initialData: { current_new: 0, currentDay: 0, currentWeek: 0, currentMonth: 0, currentYear: 0, lastYear: 0 }
+        initialData: { success: true, data: { currentDay: 0, currentWeek: 0, currentMonth: 0, currentYear: 0 } }
     });
+    const newPatientStats = useMemo(() => newPatientsHook.data?.data || {}, [newPatientsHook.data]);
 
-    const { 
-        data: requestsData = { requests: [], totalCount: 0 }, 
-        loading: loadingRequests,
-        error: errorRequests,
-        refetch: fetchRequests 
-    } = useFetch('/medical/requests', {
-        initialData: { requests: [], totalCount: 0 },
-        params: { status: ['pending', 'consult'] }
+    // 4. Pending Requests Count
+    const requestsHook = useFetch('/medical/requests', {
+        initialData: { success: true, data: [], meta: { totalCount: 0 } },
+        params: { status: ['pending', 'consult'], limit: 1 } // We only need the totalCount
     });
+    const pendingReqCount = useMemo(() => Number(requestsHook.data?.meta?.totalCount || 0), [requestsHook.data]);
 
-    // Computed
-    const pendingReqCount = requestsData.totalCount || 0;
+    const doctorsHook = useFetch('/users/doctors', { initialData: { success: true, data: [] } });
+    const doctors = useMemo(() => doctorsHook.data?.data || [], [doctorsHook.data]);
 
-    return {
+    return useMemo(() => ({
         stats,
+        financeStats,
         newPatientStats,
-        pendingReqCount: Number(pendingReqCount),
+        pendingReqCount,
         doctors,
-        loadingStats,
-        loadingDoctors,
-        loadingNewPatientStats,
-        loadingRequests,
-        errorStats,
-        errorDoctors,
-        errorNewPatientStats,
-        errorRequests,
-        fetchStats,
-        fetchRequests,
-        fetchNewPatientStats
-    };
+        loading: statsHook.loading || finStatsHook.loading || newPatientsHook.loading,
+        fetched: statsHook.fetched && finStatsHook.fetched && doctorsHook.fetched,
+        refetch: () => {
+            statsHook.refetch();
+            finStatsHook.refetch();
+            if (isStaff) newPatientsHook.refetch();
+            requestsHook.refetch();
+        }
+    }), [
+        stats, financeStats, newPatientStats, pendingReqCount, doctors, 
+        statsHook.loading, finStatsHook.loading, newPatientsHook.loading,
+        statsHook.fetched, finStatsHook.fetched, doctorsHook.fetched,
+        statsHook.refetch, finStatsHook.refetch, newPatientsHook.refetch, requestsHook.refetch, isStaff
+    ]);
 };

@@ -1,9 +1,10 @@
 import React from 'react';
-import { usePublicPrescriptionRequestController } from '@/controllers/usePublicPrescriptionRequestController';
+import { usePublicPrescriptionRequestController } from '@/features/medical_documents/hooks/usePublicPrescriptionRequestController';
 import StatusDisplay from '@/components/molecules/StatusDisplay';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './PublicRequestPage.css';
+import Loading from '@/components/atoms/Loading';
+import styles from './PublicRequestPage.module.css';
 
 /**
  * PublicRequestPage (Orchestrator).
@@ -35,38 +36,38 @@ const PublicRequestPage = () => {
     if (success) return <StatusDisplay type="success" title="¡Solicitud Enviada!" message="Tu médico recibirá la solicitud. Te notificaremos cuando las recetas estén listas." />;
 
     return (
-        <div className="public-prescription">
-            <div className="public-prescription__container">
-                <header className="public-prescription__header">
-                    <div className="public-prescription__icon-wrapper">
+        <div className={`${styles.root}`}>
+            <div className={`${styles.container}`}>
+                <header className={`${styles.header}`}>
+                    <div className={`${styles.iconWrapper}`}>
                         <Icon name="PRESCRIPTION" size="2rem" />
                     </div>
-                    <h1 className="public-prescription__title">Solicitud de Recetas</h1>
-                    <p className="public-prescription__subtitle">
-                        Paciente: <span className="public-prescription__patient-name">{patientInfo?.patientName}</span>
+                    <h1 className={`${styles.title}`}>Solicitud de Recetas</h1>
+                    <p className={`${styles.subtitle}`}>
+                        Paciente: <span className={`${styles.patientName}`}>{patientInfo?.patientName}</span>
                     </p>
                 </header>
 
                 {error && patientInfo && (
-                    <div className="public-prescription__error-banner animate-fadeIn">
-                        <p className="public-prescription__error-text">
+                    <div className={`${styles.errorBanner} animate-fade-in`}>
+                        <p className={`${styles.errorText}`}>
                             <Icon name="WARNING" className="mr-1" /> {error}
                         </p>
                     </div>
                 )}
 
                 {patientInfo?.recentMeds?.length > 0 && (
-                    <section className="public-prescription__section">
-                        <h2 className="public-prescription__section-title">
+                    <section className={`${styles.section}`}>
+                        <h2 className={`${styles.sectionTitle}`}>
                             <Icon name="HISTORY" size="1.2rem" className="mr-2" />
                             Medicación Reciente
                         </h2>
-                        <div className="med-chip-grid">
-                            {patientInfo.recentMeds.map((med, idx) => (
+                        <div className={`${styles.medChipGrid}`}>
+                            {patientInfo.recentMeds.map((med) => (
                                 <Button
-                                    key={idx}
+                                    key={med}
                                     onClick={() => handleToggleMedSelection(med)}
-                                    className={`med-chip ${selectedMeds.includes(med) ? 'med-chip--active' : ''}`}
+                                    className={`${styles.medChip} ${selectedMeds.includes(med) ? styles.medChipActive : ''}`}
                                     title={med}
                                     unstyled
                                 >
@@ -78,18 +79,18 @@ const PublicRequestPage = () => {
                 )}
 
                 {selectedMeds.length > 0 && (
-                    <section className="public-prescription__section animate-fadeIn">
-                        <h2 className="public-prescription__section-title">
+                    <section className={`${styles.section} animate-fade-in`}>
+                        <h2 className={`${styles.sectionTitle}`}>
                             <Icon name="CHECK" size="1.2rem" className="mr-2" />
                             Seleccionados ({selectedMeds.length})
                         </h2>
-                        <ul className="selected-list list-none">
-                            {selectedMeds.map((med, idx) => (
-                                <li key={idx} className="selected-item">
-                                    <span className="selected-item__name">{med}</span>
+                        <ul className={`${styles.selectedList} list-none`}>
+                            {selectedMeds.map((med) => (
+                                <li key={med} className={`${styles.selectedItem}`}>
+                                    <span className={`${styles.name}`}>{med}</span>
                                     <Button
                                         onClick={() => handleToggleMedSelection(med)}
-                                        className="selected-item__remove"
+                                        className={`${styles.remove}`}
                                         title="Quitar"
                                         unstyled
                                         icon={<Icon name="close" />}
@@ -102,41 +103,41 @@ const PublicRequestPage = () => {
                     </section>
                 )}
 
-                <section className="public-prescription__section">
-                    <h2 className="public-prescription__section-title">
+                <section className={`${styles.section}`}>
+                    <h2 className={`${styles.sectionTitle}`}>
                         <Icon name="SEARCH" size="1.2rem" className="mr-2" />
                         Buscar otra medicación
                     </h2>
-                    <div className="search-wrapper">
+                    <div className={`${styles.searchWrapper}`}>
                         <input
                             type="text"
                             placeholder="Ej: Losartan, Atenolol..."
-                            className="search-input"
+                            className={`${styles.searchInput}`}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
-                        {searching && <div className="search-spinner"></div>}
+                        {searching && <Loading variant="inline" size="sm" />}
                     </div>
 
                     {searchResults.length > 0 && (
-                        <div className="search-results scrollbar-hide">
+                        <div className={`${styles.searchResults} scrollbar-hide`}>
                             {searchResults.map((res) => (
                                 <Button
                                     key={res.id}
                                     onClick={() => handleToggleMedSelection(res.full_label)}
-                                    className="search-result-item"
+                                    className={`${styles.searchResultItem}`}
                                     unstyled
                                 >
-                                    <span className="search-result-item__name">{res.name}</span>
-                                    <span className="search-result-item__desc">{res.presentation} - {res.drug}</span>
+                                    <span className={`${styles.name}`}>{res.name}</span>
+                                    <span className={`${styles.desc}`}>{res.presentation} - {res.drug}</span>
                                 </Button>
                             ))}
                         </div>
                     )}
 
                     {searchTerm.length >= 3 && !searching && searchResults.length === 0 && (
-                        <div className="empty-state">
-                            <p className="empty-state__text">¿No encuentras lo que buscas? Puedes agregarlo manualmente:</p>
+                        <div className={`${styles.emptyState}`}>
+                            <p className={`${styles.text}`}>¿No encuentras lo que buscas? Puedes agregarlo manualmente:</p>
                             <Button
                                 variant="secondary"
                                 size="sm"
@@ -149,32 +150,31 @@ const PublicRequestPage = () => {
                     )}
                 </section>
 
-                <section className="public-prescription__section">
-                    <h2 className="public-prescription__section-title">
+                <section className={`${styles.section}`}>
+                    <h2 className={`${styles.sectionTitle}`}>
                         <Icon name="NOTES" size="1.2rem" className="mr-2" />
                         Notas (Opcional)
                     </h2>
                     <textarea
-                        className="input-field"
-                        style={{ minHeight: '120px' }}
+                        className="public-prescription__notes-field"
                         placeholder="Ej: Retiro por secretaría el miércoles..."
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                     ></textarea>
                 </section>
 
-                <div className="public-prescription__footer">
+                <div className={`${styles.footer}`}>
                     <Button
                         variant="primary"
                         size="lg"
-                        className="w-full btn--submit"
+                        className={`${styles.btnSubmit} w-full`}
                         disabled={selectedMeds.length === 0 || loading}
                         onClick={handleSubmit}
                         icon={<Icon name="SEND" size="1.2rem" />}
                     >
                         {loading ? 'Enviando...' : 'Enviar Solicitud'}
                     </Button>
-                    <p className="public-prescription__brand">
+                    <p className={`${styles.brand}`}>
                         Sistema Seguro de Gestión Médica • CIMA
                     </p>
                 </div>

@@ -1,0 +1,46 @@
+.root {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background-color: var(--dashboard-card-bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--dashboard-card-border);
+    box-shadow: var(--shadow-sm);
+}
+
+.info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.name {
+    font-weight: 700;
+}
+
+.dose {
+    color: var(--text-muted);
+}
+
+.freq {
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.qty {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.removeBtn:hover {
+    background-color: var(--gray-800);
+}

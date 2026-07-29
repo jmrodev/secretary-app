@@ -1,16 +1,53 @@
-const appointmentRepository = require('../../repositories/appointmentRepository');
-const transactionRepository = require('../../repositories/transactionRepository');
-const holidayRepository = require('../../repositories/holidayRepository');
-const patientRepository = require('../../repositories/patientRepository');
-const doctorRepository = require('../../repositories/doctorRepository');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
+const transactionRepository = require('../../repositories/finance/transactionRepository');
+const holidayRepository = require('../../repositories/appointments/holidayRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
+const doctorRepository = require('../../repositories/user/doctorRepository');
+
+/**
+ * ECC-Pattern: Domain Data Mapping (Immutability)
+ */
+const mapAppointment = (a) => ({
+    id: a.id,
+    appointment_date: a.appointment_date,
+    doctor_id: a.doctor_id,
+    doctor_name: a.doctor_name,
+    patient_id: a.patient_id,
+    patient_name: a.patient_name || (a.reason ? `(Sin Paciente) ${a.reason}` : 'Desconocido'),
+    patient_phone: a.patient_phone || a.phone || '-',
+    status: a.status,
+    reason: a.reason || '-',
+    type: a.type,
+    is_out_of_hours: !!a.is_out_of_hours,
+    paid_amount: Number(a.paid_amount || 0),
+    pending_amount: Number(a.pending_amount || 0),
+    cost: Number(a.cost || 0),
+    payment_status: a.payment_status,
+    is_paid: !!a.is_paid,
+    rescheduled_from_date: a.rescheduled_from_date
+});
+
+/**
+ * Specialized mapper for daily schedule slots
+ */
+const mapSlot = (s) => ({
+    ...mapAppointment(s),
+    slot_date: s.slot_date,
+    slot_time: s.slot_time,
+    slot_status: s.slot_status
+});
 
 class RetrievalService {
     async getAppointments(user, query) {
         const { role, user_id } = user;
-        // patientId may come from body (POST) or query (GET)
         const filters = {
-            patient_id: query.patientId,
-            search: query.search
+            search: query.search || '',
+            status: query.status || null,
+            start_date: query.startDate || null,
+            end_date: query.endDate || null,
+            page: parseInt(query.page) || 1,
+            limit: parseInt(query.limit) || 50,
+            patient_id: query.patientId || null
         };
 
         if (role === 'patient') {
@@ -21,95 +58,70 @@ class RetrievalService {
             if (doctor) filters.doctor_id = doctor.id;
         }
 
-        return await appointmentRepository.getHistory(filters);
+        const { appointments, totalCount } = await appointmentRepository.searchAppointments(filters);
+        return {
+            appointments: appointments.map(mapAppointment),
+            totalCount
+        };
+    }
+
+    async getDailySchedule(doctorId, dateStr) {
+        const rows = await appointmentRepository.getDailySchedule(doctorId, dateStr);
+        // Use mapSlot to preserve slot_time and slot_status
+        return rows.map(mapSlot);
     }
 
     async getMonthlyReport(doctorId, month, year) {
         const targetMonth = month || new Date().getMonth() + 1;
         const targetYear = year || new Date().getFullYear();
 
-        // 0. Fetch Holidays
-        const holidays = await holidayRepository.findActiveByMonth(targetMonth, targetYear);
+        const [holidays, appointments, dailySummaries, withdrawals] = await Promise.all([
+            holidayRepository.findActiveByMonth(targetMonth, targetYear),
+            appointmentRepository.findMonthlyAppointments(targetMonth, targetYear, doctorId),
+            transactionRepository.findDailySummary(targetMonth, targetYear, doctorId),
+            transactionRepository.findMonthlyWithdrawals(targetMonth, targetYear, doctorId)
+        ]);
+
         const holidayMap = {};
         holidays.forEach(h => {
             const d = new Date(h.date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
             holidayMap[d] = h.description;
         });
 
-        // 1. Fetch Appointments for the list
-        const appointments = await appointmentRepository.findMonthlyAppointments(targetMonth, targetYear, doctorId);
-
-        // 2. Fetch ALL Paid Income Transactions of the month (The real Cash Flow)
-        const incomeTransactions = await transactionRepository.findMonthlyIncome(targetMonth, targetYear, doctorId);
+        const summaryMap = {};
+        dailySummaries.forEach(s => {
+            const d = new Date(s.report_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+            summaryMap[d] = s;
+        });
 
         const report = {};
         const daysInMonth = new Date(targetYear, targetMonth, 0).getDate();
 
         for (let d = 1; d <= daysInMonth; d++) {
-            const dateObj = new Date(targetYear, targetMonth - 1, d);
+            const dateStrRaw = `${targetYear}-${String(targetMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const dateObj = new Date(`${dateStrRaw}T12:00:00-03:00`);
             const dateStr = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
             const dayOfWeek = dateObj.getDay();
+            const daySummary = summaryMap[dateStr] || {};
+            
             report[dateStr] = {
                 date: dateStr,
                 appointments: [],
-                total_dia: 0,
-                total_efectivo: 0,
-                total_paid: 0,
+                total_dia: Number(daySummary.total_income || 0),
+                total_efectivo: Number(daySummary.total_cash || 0),
+                total_paid: Number(daySummary.total_income || 0),
+                total_withdrawal: Number(daySummary.total_withdrawal || 0),
                 is_weekend: dayOfWeek === 0 || dayOfWeek === 6,
                 is_holiday: !!holidayMap[dateStr],
                 holiday_description: holidayMap[dateStr] || null
             };
         }
 
-        // Fill Appointments list (List only, don't use for totals yet)
         appointments.forEach(a => {
-            const dateObj = new Date(a.appointment_date);
-            const dateStr = dateObj.toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
-
-            let finalName = a.patient_name || (a.reason ? `(Sin Paciente) ${a.reason}` : 'Desconocido');
-            const typeLabel = a.type === 'virtual' ? 'Virtual' : 'Presencial';
-            let detail = `Consulta ${typeLabel}`;
-            if (a.reason && a.reason.toLowerCase() !== 'consulta' && a.reason !== detail) {
-                detail = a.reason;
-            }
-
-            if (report[dateStr]) {
-                report[dateStr].appointments.push({
-                    id: a.id,
-                    hora: dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', timeZone: 'America/Argentina/Buenos_Aires' }),
-                    nombre: finalName || 'Desconocido',
-                    info: detail,
-                    asistencia: a.status,
-                    pago: a.payment_status,
-                    monto_pagado: a.paid_amount,
-                    monto_efectivo: a.cash_amount,
-                    debt_amount: a.debt_amount,
-                    metodos_pago: a.methods || '',
-                    dia: dateStr,
-                    tipo_atencion: a.type,
-                    is_overturn: !!a.is_out_of_hours
-                });
-            }
+            const mapped = mapAppointment(a);
+            const dateStr = new Date(mapped.appointment_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+            if (report[dateStr]) report[dateStr].appointments.push(mapped);
         });
-
-        // Calculate Totals per Day based on ACTUAL Transactions (Cash Flow)
-        incomeTransactions.forEach(t => {
-            const dateStr = new Date(t.transaction_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
-            if (report[dateStr]) {
-                report[dateStr].total_paid += Number(t.amount);
-                report[dateStr].total_dia += Number(t.amount); // total_dia used in some views as total_paid synonym
-                if (t.method === 'cash' || t.method === 'efectivo') {
-                    report[dateStr].total_efectivo += Number(t.amount);
-                }
-            }
-        });
-
-        const totalOther = incomeTransactions
-            .filter(t => !t.appointment_id)
-            .reduce((acc, t) => acc + Number(t.amount), 0);
-
-        // Withdrawals
-        const withdrawals = await transactionRepository.findMonthlyWithdrawals(targetMonth, targetYear, doctorId);
 
         return {
             appointments: Object.values(report),
@@ -118,7 +130,7 @@ class RetrievalService {
                 monto: w.amount,
                 descripcion: w.description
             })),
-            other_income: Number(totalOther)
+            other_income: 0
         };
     }
 }

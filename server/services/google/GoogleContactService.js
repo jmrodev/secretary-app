@@ -1,8 +1,8 @@
 const { google } = require('googleapis');
 const { pool } = require('../../db');
 const googleAuthService = require('./GoogleAuthService');
-const patientRepository = require('../../repositories/patientRepository');
-const userRepository = require('../../repositories/userRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
+const userRepository = require('../../repositories/user/userRepository');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
@@ -154,7 +154,7 @@ class GoogleContactService {
                         conn.release();
                     }
                 }
-            } catch (err) {
+            } catch (_error) {
                 results.errors++;
             }
         }

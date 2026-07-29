@@ -1,6 +1,6 @@
 const { google } = require('googleapis');
-const googleIntegrationRepository = require('../../repositories/googleIntegrationRepository');
-const systemSettingsRepository = require('../../repositories/systemSettingsRepository');
+const googleIntegrationRepository = require('../../repositories/user/googleIntegrationRepository');
+const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 
 /**
  * GoogleAuthService
@@ -9,9 +9,7 @@ const systemSettingsRepository = require('../../repositories/systemSettingsRepos
 class GoogleAuthService {
     constructor() {
         this.SCOPES = [
-            'https://www.googleapis.com/auth/contacts',
-            'https://www.googleapis.com/auth/calendar',
-            'https://www.googleapis.com/auth/spreadsheets'
+            'https://www.googleapis.com/auth/calendar'
         ];
     }
 

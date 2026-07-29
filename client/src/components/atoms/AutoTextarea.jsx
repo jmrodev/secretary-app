@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-import './AutoTextarea.css';
 
 /**
  * AutoTextarea Atom follows Atomic Design & BEM.
@@ -27,7 +26,8 @@ const AutoTextarea = ({
         const el = textareaRef.current;
         if (!el) return;
         el.style.height = 'auto';
-        el.style.height = el.scrollHeight + 'px';
+        const nextHeight = el.scrollHeight;
+        el.style.height = `${nextHeight}px`;
     };
 
     useEffect(() => {

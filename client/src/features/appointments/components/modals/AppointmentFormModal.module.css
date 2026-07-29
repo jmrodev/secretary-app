@@ -1,0 +1,107 @@
+.root {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem; /* Even tighter gap */
+    padding: 0;
+}
+
+.panel {
+    background-color: rgb(255 255 255 / 3%);
+    backdrop-filter: blur(8px);
+    padding: 0.5rem 0.8rem; /* Ultra compact padding */
+    border-radius: 10px;
+    border: 1px solid rgb(255, 255, 255, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.fieldFull {
+    grid-column: span 2;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: rgb(255, 255, 255, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.submit {
+    min-width: 140px;
+    height: 36px;
+    font-size: 0.85rem !important;
+}
+
+.readOnlyField {
+    padding: 0.35rem 0.6rem;
+    background: rgb(255, 255, 255, 0.02);
+    border: 1px solid rgb(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-weight: 700;
+    color: #fff;
+    font-size: 0.8rem;
+}
+
+.extraBadge {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.55rem;
+    font-weight: 800;
+    padding: 0.2rem 0.4rem;
+    background: rgb(255, 165, 0, 0.08);
+    color: orange;
+    border-radius: 4px;
+}
+
+.checkboxContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    cursor: pointer;
+}
+
+.checkbox {
+    width: 0.85rem;
+    height: 0.85rem;
+}
+
+.checkboxLabel {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: rgb(255, 255, 255, 0.5);
+}
+
+/* ECC: Utility to remove padding from the parent modal body if needed */
+.compactModalBody :global(.modal__body) {
+    padding: 0.5rem !important;
+}
+
+@media (width <= 768px) {
+    .grid { grid-template-columns: 1fr; }
+    .fieldFull { grid-column: span 1; }
+}

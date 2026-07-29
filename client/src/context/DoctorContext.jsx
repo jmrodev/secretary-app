@@ -1,64 +1,64 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { usePermissions } from '@/hooks/usePermissions';
+import { DoctorContext } from './DoctorContextDefinition';
 
-const DoctorContext = createContext();
-
-export const useDoctors = () => {
-    const context = useContext(DoctorContext);
-    if (!context) {
-        if (import.meta.env.DEV) {
-            console.error('[DoctorContext] useDoctors called outside DoctorProvider — returning safe defaults. Likely an HMR boundary issue; please do a full page reload.');
-        }
-        // Return safe defaults to prevent a full app crash
-        return { doctors: [], doctorsLoading: false, viewDoctorId: null, setViewDoctorId: () => {}, currentDoctor: null, doctorDisplayName: null, isStaff: false };
-    }
-    return context;
-};
-
+/**
+ * ECC-Pattern: Optimized DoctorProvider
+ */
 export const DoctorProvider = ({ children }) => {
     const { user, isStaff, isDoctor } = usePermissions();
     
     // Global filter state
-    const [viewDoctorId, setViewDoctorIdInternal] = useState(
+    const [viewDoctorIdInternal, setViewDoctorIdInternal] = useState(
         localStorage.getItem('global_selected_doctor_id') || ''
     );
 
-    // Doctors List (Cached globally)
-    const { data: doctorData, loading: doctorsLoading } = useFetch('/users/doctors', {
-        initialData: { doctors: [], totalCount: 0 },
-        immediate: !!user // Fetch only if logged in
+    // Doctors List (Cached globally) - ECC Envelope support
+    const { data: response, loading: doctorsLoading, fetched: doctorsFetched } = useFetch('/users/doctors', {
+        initialData: { success: true, data: [] },
+        immediate: !!user
     });
 
-    const doctors = doctorData?.doctors || [];
+    const doctors = useMemo(() => {
+        // Handle both raw array (legacy) and ECC envelope
+        const rawData = response?.data || response;
+        if (Array.isArray(rawData)) return rawData;
+        return rawData?.doctors || [];
+    }, [response]);
 
     const setViewDoctorId = useCallback((id) => {
         const stringId = id ? String(id) : '';
-        setViewDoctorIdInternal(stringId);
-        localStorage.setItem('global_selected_doctor_id', stringId);
+        setViewDoctorIdInternal(prev => {
+            if (prev === stringId) return prev;
+            localStorage.setItem('global_selected_doctor_id', stringId);
+            return stringId;
+        });
     }, []);
 
-    // Initial logic: if user is a doctor, default to their own ID
-    useEffect(() => {
-        if (isDoctor && doctors.length > 0 && !viewDoctorId) {
-            const profile = doctors.find(d => d.user_id === (user.user_id || user.id));
-            if (profile) {
-                setViewDoctorId(profile.id);
-            }
+    const viewDoctorId = useMemo(() => {
+        if (viewDoctorIdInternal) return viewDoctorIdInternal;
+        if (isDoctor && doctors.length > 0) {
+            const profile = doctors.find(d => d.user_id === (user?.user_id || user?.id));
+            if (profile) return String(profile.id);
         }
-    }, [isDoctor, doctors, user, viewDoctorId, setViewDoctorId]);
+        return '';
+    }, [viewDoctorIdInternal, isDoctor, doctors, user]);
 
-    const currentDoctor = doctors.find(d => String(d.id) === String(viewDoctorId)) || null;
+    const currentDoctor = useMemo(() => 
+        doctors.find(d => String(d.id) === String(viewDoctorId)) || null
+    , [doctors, viewDoctorId]);
 
-    const value = {
+    const value = useMemo(() => ({
         doctors,
         doctorsLoading,
+        doctorsFetched,
         viewDoctorId,
         setViewDoctorId,
         currentDoctor,
         doctorDisplayName: currentDoctor ? currentDoctor.full_name : null,
         isStaff
-    };
+    }), [doctors, doctorsLoading, doctorsFetched, viewDoctorId, setViewDoctorId, currentDoctor, isStaff]);
 
     return (
         <DoctorContext.Provider value={value}>

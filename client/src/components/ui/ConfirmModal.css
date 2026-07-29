@@ -1,0 +1,13 @@
+.modal-body-bem__text {
+    white-space: pre-wrap;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.modal-body-bem__text--prompt {
+    margin-bottom: 1rem;
+}
+
+.modal-form-bem {
+    margin-top: 1rem;
+}

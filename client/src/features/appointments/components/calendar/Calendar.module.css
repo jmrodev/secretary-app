@@ -1,0 +1,77 @@
+/* Calendar Component Styles (BEM) - Dark Mode Standard */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    width: 100%;
+    background: var(--dashboard-card-bg);
+    backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.75rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+
+.simpleTitle {
+    padding: 0.1rem 0.25rem 0.4rem;
+    text-align: left;
+    font-weight: 700;
+    font-size: 1.1rem;
+    font-family: var(--font-manrope);
+    color: var(--text-main);
+    background-color: transparent;
+    letter-spacing: -0.02em;
+}
+
+.mainContainer {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.body {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background-color: transparent;
+    gap: 0.35rem;
+}
+
+.cellEmpty {
+    background: transparent;
+    border: none;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    min-height: 3rem;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.calendarLoader, .calendarEmpty {
+    text-align: center;
+    padding: 4rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.calendarFooter {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    border-top: 1px solid var(--dashboard-card-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 800;
+}
+

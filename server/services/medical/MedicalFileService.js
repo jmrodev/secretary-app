@@ -1,8 +1,8 @@
-const { logAction } = require('../../utils/audit');
+const { logAction } = require('../../utils/system/audit');
 const fs = require('fs');
 const path = require('path');
-const medicalFileRepository = require('../../repositories/medicalFileRepository');
-const systemSettingsRepository = require('../../repositories/systemSettingsRepository');
+const medicalFileRepository = require('../../repositories/medical/medicalFileRepository');
+const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 
 /**
  * MedicalFileService
@@ -13,7 +13,7 @@ class MedicalFileService {
      * Upload a file
      */
     async uploadFile(req, fileData) {
-        const { patient_id, description } = fileData.body;
+        const { patientId, description } = fileData.body;
         const { filename, originalname, mimetype } = fileData.file;
         const uploaded_by = req.user.user_id;
         const file_url = `/uploads/${filename}`;
@@ -21,10 +21,10 @@ class MedicalFileService {
         const file_type = mimetype;
 
         await medicalFileRepository.create({
-            patient_id, uploaded_by, file_name, file_url, file_type, description
+            patient_id: patientId, uploaded_by, file_name, file_url, file_type, description
         });
 
-        logAction(req, 'UPLOAD_FILE', `File: ${file_name} for Patient ID: ${patient_id}`);
+        logAction(req, 'UPLOAD_FILE', `File: ${file_name} for Patient ID: ${patientId}`);
     }
 
     /**

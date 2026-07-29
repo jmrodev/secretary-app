@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react';
+import { createContext, use } from 'react';
 import { useAuth } from '@/features/auth';
 import { useConfigLogic } from '@/context/useConfigLogic';
 
@@ -12,7 +12,7 @@ const defaultContextValue = {
 const ConfigContext = createContext(defaultContextValue);
 
 export const useConfig = () => {
-    const ctx = useContext(ConfigContext);
+    const ctx = use(ConfigContext);
     if (!ctx) return defaultContextValue;
     return ctx;
 };

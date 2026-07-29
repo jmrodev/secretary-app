@@ -1,4 +1,6 @@
 const medicationService = require('../../services/medical/MedicationService');
+const userRepository = require('../../repositories/user/userRepository');
+const bcrypt = require('bcrypt');
 
 /**
  * medicationController
@@ -52,6 +54,14 @@ exports.updatePatientMedication = async (req, res) => {
 exports.deletePatientMedication = async (req, res) => {
     try {
         const { id } = req.params;
+        const password = req.body?.password || req.body?.adminPassword;
+        if (!password) return res.status(401).json({ error: "password_required" });
+
+        const currentUser = await userRepository.findById(req.user.user_id);
+        if (!currentUser || !(await bcrypt.compare(password, currentUser.password_hash))) {
+            return res.status(401).json({ error: "invalid_password" });
+        }
+
         await medicationService.deletePatientMedication(id);
         res.json({ message: "Medication discontinued" });
     } catch (err) {

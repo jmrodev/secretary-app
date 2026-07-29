@@ -18,7 +18,8 @@ export const useAuthLogic = () => {
             return { success: true, user: userData };
         } catch (error) {
             console.error("Auth helper error:", error);
-            const message = error.response?.data || errorMsgDefault;
+            const responseData = error.response?.data;
+            const message = (typeof responseData === 'object' ? (responseData.error || responseData.message) : responseData) || errorMsgDefault;
             dispatch({ type: 'AUTH_ERROR', payload: message });
             return { success: false, message };
         }
@@ -44,13 +45,13 @@ export const useAuthLogic = () => {
                     const updatedUser = { ...userObj, ...verifiedUser };
                     localStorage.setItem(USER_KEY, JSON.stringify(updatedUser));
                     dispatch({ type: 'AUTH_INIT', payload: { user: updatedUser, token: storedToken } });
-                } catch (verifyError) {
+                } catch {
                     logout();
                 }
             } else {
                 dispatch({ type: 'FINISH_LOADING' });
             }
-        } catch (error) {
+        } catch {
             logout();
         }
     }, [logout]);

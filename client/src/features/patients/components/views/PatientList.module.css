@@ -1,0 +1,222 @@
+/* PatientList Feature Component - Premium Bento Box Style */
+
+.root {
+    width: 100%;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.table {
+    width: 100%;
+    min-width: 1000px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: auto;
+}
+
+.table th {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    background: rgb(128, 128, 128, 0.04);
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table th:first-child { padding-left: 1.5rem; }
+.table th:last-child { padding-right: 1.5rem; }
+
+.row {
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.row:hover {
+    background-color: rgb(128, 128, 128, 0.06);
+}
+
+.table td {
+    padding: 1rem;
+    font-size: 0.938rem;
+    vertical-align: middle;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table tr:last-child td {
+    border-bottom: none;
+}
+
+.table td:first-child {
+    padding-left: 1.5rem;
+}
+
+.table td:last-child {
+    padding-right: 1.5rem;
+}
+
+.patientCol {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    align-items: flex-start;
+}
+
+.badgeRow {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.name {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--text-main);
+    text-transform: capitalize;
+    white-space: nowrap;
+}
+
+.rowInstitution {
+    background-color: var(--dashboard-card-bg); /* Dark contrast for institutions */
+    border-color: var(--dashboard-card-border);
+}
+
+.rowInstitution td {
+    color: var(--text-secondary);
+    border-color: var(--dashboard-card-border);
+}
+
+.instIcon {
+    color: var(--amber-400);
+    filter: drop-shadow(0 0 8px rgb(245 158 11 / 30%));
+}
+
+.instName {
+    font-weight: 700;
+    color: var(--amber-300);
+}
+
+.idInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.813rem;
+    color: var(--gray-600);
+}
+
+.idLabel {
+    font-weight: 700;
+    color: var(--gray-400);
+    width: 2.2rem;
+    display: inline-block;
+    font-size: 0.688rem;
+    text-transform: uppercase;
+}
+
+.contactInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.contactRow {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.contactLink {
+    color: var(--primary-color);
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.813rem;
+    letter-spacing: -0.2px;
+}
+
+.contactLink:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+.ratingGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.ratingItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.125rem 0;
+}
+
+.ratingLabel {
+    font-size: 0.625rem;
+    font-weight: 900;
+    color: var(--gray-400);
+    width: 2.5rem;
+    letter-spacing: 0.05em;
+}
+
+.stars {
+    display: flex;
+    gap: 2px;
+}
+
+.starsGold { color: var(--amber-500); }
+.starsBlue { color: var(--primary-color); }
+.starsPink { color: var(--rose-600); }
+
+.debtBadge {
+    font-weight: 700 !important;
+    font-size: 0.813rem !important;
+    padding: 0.35rem 0.75rem !important;
+    border-radius: var(--radius-sm) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+    box-shadow: none !important;
+}
+
+.zeroDebt {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.813rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: rgb(128, 128, 128, 0.08);
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.actions {
+    text-align: right;
+}
+
+.viewBtn {
+    font-weight: 800 !important;
+    letter-spacing: 0.3px;
+}
+
+.empty {
+    padding: 5rem 2rem;
+    text-align: center;
+    background: var(--dashboard-card-bg);
+    border: 2px dashed var(--dashboard-card-border);
+    border-radius: var(--radius-lg);
+}
+
+.emptyText {
+    color: var(--text-muted);
+    font-size: 1.125rem;
+    font-weight: 600;
+}

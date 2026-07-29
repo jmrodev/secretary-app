@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import api from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { useFetch } from '@/hooks/useFetch';
 
@@ -26,7 +26,10 @@ export const useUsers = (options = {}) => {
         immediate: true 
     });
 
-    const allUsers = userData?.users || [];
+    const allUsers = useMemo(() => {
+        const rawUsers = userData?.data?.users || userData?.users || [];
+        return rawUsers;
+    }, [userData]);
 
     // Filtered data in-memory (as the backend returns all for admin management)
     const users = useMemo(() => {
@@ -143,11 +146,11 @@ export const useUsers = (options = {}) => {
  */
 export const useDoctors = () => {
     const { data: docData, loading } = useFetch('/users/doctors', { 
-        initialData: { doctors: [], totalCount: 0 },
+        initialData: { success: true, data: { doctors: [], totalCount: 0 } },
         immediate: true 
     });
 
-    const doctors = docData?.doctors || [];
+    const doctors = useMemo(() => docData?.data?.doctors || docData?.doctors || [], [docData]);
 
     return { doctors, loading };
 };

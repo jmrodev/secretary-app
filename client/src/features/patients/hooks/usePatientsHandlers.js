@@ -10,7 +10,7 @@ export const usePatientsHandlers = ({
     // Contexts/External
     t,
     showMessage,
-    confirm,
+    confirm: _confirm,
     deleteUser,
     settings,
 
@@ -35,12 +35,10 @@ export const usePatientsHandlers = ({
             setDetailsLoading(true);
             setSelectedPatientId(id);
 
-            const [info, trans, appts] = await Promise.all([
-                api.get(`/users/patients/${id}`),
-                api.get(`/finances/transactions?patient_id=${id}`),
-                api.get(`/appointments?patientId=${id}`)
-            ]);
-            setPatientDetails({ ...info.data, transactions: trans.data, appointments: appts.data });
+            // Optimized: Only fetch basic details (which now include stats via the extended view)
+            const res = await api.get(`/users/patients/${id}`);
+            const patientData = res.data?.data || res.data;
+            setPatientDetails(patientData);
         } catch (err) {
             console.error(err);
             showMessage(t('failed_load_history') || "Failed to load history", 'error');
@@ -49,6 +47,7 @@ export const usePatientsHandlers = ({
             setDetailsLoading(false);
         }
     }, [showMessage, setSelectedPatientId, setDetailsLoading, setPatientDetails, t]);
+
 
     const handleDeletePatient = useCallback(async (patientData) => {
         if (!patientData?.user_id) return;
@@ -136,7 +135,7 @@ export const usePatientsHandlers = ({
     const handlePayDebt = useCallback(async (debtParams) => {
         try {
             const { patientId, amount, method } = debtParams;
-            await api.post('/finances/pay-debt', { patient_id: patientId, amount, method });
+            await api.post('/finances/pay-debt', { patientId, amount, method });
             showMessage(t('payment_processed'), 'success');
             setDebtModal(prev => ({ ...prev, open: false }));
             fetchPatients();
@@ -145,7 +144,7 @@ export const usePatientsHandlers = ({
                 if (current === patientId) handleViewDetailsAction(patientId);
                 return current;
             });
-        } catch (err) {
+        } catch {
             showMessage(t('payment_failed'), 'error');
         }
     }, [t, showMessage, fetchPatients, setSelectedPatientId, handleViewDetailsAction, setDebtModal]);
@@ -170,7 +169,7 @@ export const usePatientsHandlers = ({
             setPatients(prev => prev.map(p => p.id === patientId ? { ...p, is_new_patient, marked_new_at } : p));
             setPatientDetails(prev => (prev?.id === patientId ? { ...prev, is_new_patient, marked_new_at } : prev));
             showMessage(is_new_patient ? 'Marcado como Nuevo' : 'Desmarcado', 'success');
-        } catch (err) { showMessage("Error updating status", 'error'); }
+        } catch { showMessage("Error updating status", 'error'); }
     }, [showMessage, setPatients, setPatientDetails]);
 
     const handleGenerateQR = useCallback(async (patientId) => {
@@ -189,7 +188,7 @@ export const usePatientsHandlers = ({
                 patientName,
                 patientPhone
             });
-        } catch (err) { showMessage('Error generating QR', 'error'); }
+        } catch { showMessage('Error generating QR', 'error'); }
     }, [settings.public_base_url, showMessage, patients, setQrModal]);
 
     const handleGeneratePrescriptionLink = useCallback(async (patientId) => {
@@ -209,7 +208,7 @@ export const usePatientsHandlers = ({
                 patientPhone,
                 type: 'prescription'
             });
-        } catch (err) { showMessage('Error generating prescription link', 'error'); }
+        } catch { showMessage('Error generating prescription link', 'error'); }
     }, [settings.public_base_url, showMessage, patients, setQrModal]);
 
     const handleRestorePatient = useCallback(async (id) => {

@@ -1,0 +1,128 @@
+.root {
+    /* --- Local Component Tokens --- */
+    --reminders-tabs-bg: var(--border-color);
+    --reminders-item-bg: var(--dashboard-card-bg);
+    --reminders-item-border: var(--dashboard-card-border);
+    --reminders-item-hover: rgb(128, 128, 128, 0.08);
+    --badge-visit-bg: rgb(245 158 11 / 15%);
+    --badge-visit-text: var(--amber-500);
+    --badge-prescription-bg: rgb(16 185 129 / 15%);
+    --badge-prescription-text: var(--green-500);
+    --badge-medication-bg: rgb(239 68 68 / 15%);
+    --badge-medication-text: var(--red-500);
+    --badge-license-bg: rgb(59 130 246 / 15%);
+    --badge-license-text: var(--blue-500);
+
+    /* ------------------------------ */
+
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tabs {
+    display: flex;
+    gap: 0.5rem;
+    background-color: var(--reminders-tabs-bg);
+    padding: 0.25rem;
+    border-radius: 100px;
+}
+
+.count {
+    margin-left: 0.5rem;
+    padding: 0 0.5rem;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    color: var(--text-muted);
+    border-radius: 10px;
+    font-size: 0.75rem;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--reminders-item-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.item {
+    background-color: var(--reminders-item-bg);
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--reminders-item-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.item:last-child {
+    border-bottom: none;
+}
+
+.item:hover {
+    background-color: var(--reminders-item-hover);
+}
+
+.itemInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.itemName {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+
+.itemDetails {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.badgeVisit {
+    background-color: var(--badge-visit-bg);
+    color: var(--badge-visit-text);
+}
+
+.badgePrescription {
+    background-color: var(--badge-prescription-bg);
+    color: var(--badge-prescription-text);
+}
+
+.badgeMedication {
+    background-color: var(--badge-medication-bg);
+    color: var(--badge-medication-text);
+}
+
+.badgeLicense {
+    background-color: var(--badge-license-bg);
+    color: var(--badge-license-text);
+}
+
+.itemActions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.empty {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+}

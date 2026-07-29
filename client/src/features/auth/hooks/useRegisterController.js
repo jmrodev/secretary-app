@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '@/features/auth/AuthContext';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useNavigate } from 'react-router-dom';
-import { capitalizeWords } from '@/utils/stringUtils';
+import { capitalizeWords } from '@/utils/core/stringUtils';
 
 /**
  * Controller hook for the Register form.
@@ -29,7 +29,7 @@ export const useRegisterController = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleChange = (e) => {
+    const updateRegisterData = (e) => {
         let { name, value } = e.target;
         if (['fullName'].includes(name)) {
             value = capitalizeWords(value);
@@ -60,7 +60,7 @@ export const useRegisterController = () => {
     };
 
     const handlers = {
-        handleChange,
+        updateRegisterData,
         handleSubmit,
     };
 

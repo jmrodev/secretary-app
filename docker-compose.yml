@@ -4,6 +4,10 @@ x-logging: &default-logging
     max-size: "10m"
     max-file: "3"
 
+networks:
+  secretary_net:
+    driver: bridge
+
 services:
   db:
     image: mariadb:10.6
@@ -11,127 +15,100 @@ services:
     container_name: secretary-db-dev
     command: --innodb-use-native-aio=OFF
     logging: *default-logging
+    networks:
+      - secretary_net
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-cima1255}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME:-clinical_management}
+      MYSQL_USER: ${DB_USER:-secretary_user}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
       TZ: America/Argentina/Buenos_Aires
+    ports:
+      - "3306:3306"
     volumes:
       - ./mysql_data:/var/lib/mysql
       - ./server/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
       - ./server/02-dev-seed.sql:/docker-entrypoint-initdb.d/02-dev-seed.sql
-    ports:
-      - "${DB_EXTERNAL_PORT:-3307}:3306"
+      - ./server/03-optimizations.sql:/docker-entrypoint-initdb.d/03-optimizations.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-cima1255}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
-    deploy:
-      resources:
-        limits:
-          cpus: '1.0'
-          memory: 512M
-        reservations:
-          cpus: '0.25'
-          memory: 256M
 
   server:
     build: ./server
     restart: always
     container_name: secretary-app-server-1
-    command: npm run dev
+    command: pnpm run dev
     logging: *default-logging
+    networks:
+      - secretary_net
     ports:
       - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
       - DB_HOST=db
-      - DB_USER=root
-      - DB_PASSWORD=cima1255
-      - DB_NAME=clinical_management
+      - DB_USER=${DB_USER:-secretary_user}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME:-clinical_management}
       - DB_PORT=3306
       - PORT=5000
       - NODE_ENV=development
       - DEBUG=afip-apis:*
       - TZ=America/Argentina/Buenos_Aires
-      - JWT_SECRET=${JWT_SECRET:-supersecretkey123}
+      - JWT_SECRET=${JWT_SECRET}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_CLI_TRUST_WORKSPACE=true
       - WHATSAPP_BRIDGE_URL=http://whatsapp-bridge:8090/api/send
       - WHATSAPP_BRIDGE_STATUS_URL=http://whatsapp-bridge:8090/api/status
-    depends_on:
-      db:
-        condition: service_healthy
     volumes:
       - ./server:/app
       - /app/node_modules
-    healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:5000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
 
   client:
     build: ./client
     restart: always
     container_name: secretary-app-client-1
+    command: pnpm run dev -- --host
     logging: *default-logging
+    networks:
+      - secretary_net
     ports:
       - "5173:5173"
     environment:
       - VITE_API_URL=/api
-    depends_on:
-      - server
+      - VITE_PROXY_TARGET=http://server:5000
+      - CI=false
     volumes:
       - ./client:/app
       - /app/node_modules
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: 1G
-        reservations:
-          cpus: '0.5'
-          memory: 512M
 
   whatsapp-bridge:
     build: ./whatsapp-bridge-go
     restart: always
     container_name: secretary-whatsapp-bridge
     logging: *default-logging
-    ports:
-      - "8090:8090"
+    networks:
+      - secretary_net
     volumes:
-      - ./whatsapp-bridge-go/examplestore.db:/app/examplestore.db
+      - ./whatsapp-bridge-go/data:/app/data
     environment:
       - TZ=America/Argentina/Buenos_Aires
       - WHATSAPP_WEBHOOK_URL=http://server:5000/api/whatsapp/webhook
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 256M
-        reservations:
-          cpus: '0.1'
-          memory: 128M
-
-  # [MONITORING] Real-time log viewer (Dev version)
 
   dozzle:
     image: amir20/dozzle:latest
     container_name: secretary-logs-dev
     restart: always
+    networks:
+      - secretary_net
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - "8889:8080"
     environment:
       - DOZZLE_LEVEL=info

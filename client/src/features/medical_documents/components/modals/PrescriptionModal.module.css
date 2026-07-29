@@ -1,0 +1,300 @@
+
+/* PrescriptionModal Styles – BEM compliant */
+
+/* ── Root container ── */
+.root {
+    /* --- Local Component Tokens --- */
+    --modal-bg: rgb(255 255 255 / 10%);
+    --modal-island-bg: rgb(255 255 255 / 5%);
+    --modal-border: rgb(255 255 255 / 5%);
+    --btn-active-bg: var(--primary-color);
+    --btn-hover-bg: rgb(255 255 255 / 15%);
+
+    /* ------------------------------ */
+
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+}
+
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ── Label shared style (uppercase micro-label) ── */
+.label {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.subLabel {
+    font-size: 0.65rem;
+    color: var(--text-main);
+    font-weight: 500;
+    margin-left: auto;
+}
+
+/* ── Panel specific styles ── */
+.panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.75rem;
+    background-color: var(--modal-island-bg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--modal-border);
+}
+
+.panelItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.panelLabel {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-main);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ── Single field wrapper (label + control stacked) ── */
+.fieldWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 100%;
+}
+
+/* ── Frequency presets pill-row ── */
+.freqPresets {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 0.25rem;
+    padding-bottom: 0.25rem; /* Space for potential scrollbar */
+    scrollbar-width: none; /* Firefox */
+}
+
+.freqPresets::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.freqBtn {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background-color: var(--modal-island-bg);
+    color: var(--text-main);
+    border: 1px solid var(--modal-border);
+    border-radius: 99px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.freqBtn:hover {
+    background-color: var(--btn-hover-bg);
+    color: var(--text-main);
+    border-color: var(--dashboard-card-border);
+}
+
+.freqBtnActive {
+    background-color: var(--btn-active-bg);
+    color: var(--text-main);
+    border-color: var(--primary-color);
+}
+
+/* ── Medicamento and Dose Row ── */
+.medDoseRow {
+    display: grid;
+    grid-template-columns: 2.5fr 1fr;
+    gap: 0.75rem;
+}
+
+/* ── Numeric fields row (3 inputs + add btn) ── */
+.numericRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 0.4rem;
+}
+
+.numericField {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.addCol {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.addColSpacer {
+    /* empty label placeholder */
+    display: block;
+    height: 1.1rem;
+}
+
+/* ── Quick lists container ── */
+.quickLists {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ── Days-supply preview banner ── */
+.supplyPreview {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.9rem;
+    background: rgb(255 255 255 / 10%);
+    border: 1px solid rgb(255 255 255 / 5%);
+    border-radius: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--green-200);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 4px 16px 0 rgb(0 0 0 / 20%);
+}
+
+/* ── Habitual medications ── */
+.habitual {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background-color: var(--modal-island-bg);
+    border: 1px solid var(--modal-border);
+    border-radius: 0.75rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+}
+
+.habitualGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.habitualBtn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    background: rgb(255 255 255 / 5%);
+    color: var(--text-main);
+    border: 1px solid rgb(255 255 255 / 10%);
+    border-radius: 99px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-align: left;
+}
+
+.habitualBtn:hover {
+    background: rgb(255 255 255 / 10%);
+    border-color: rgb(255 255 255 / 30%);
+}
+
+.habitualBtnActive {
+    background: rgb(72 128 255 / 20%);
+    border-color: var(--primary-color);
+    color: var(--white);
+}
+
+.habitualName {
+    font-weight: 600;
+}
+
+.habitualDose {
+    font-size: 0.7rem;
+    color: rgb(255 255 255 / 70%);
+    background: rgb(255 255 255 / 10%);
+    padding: 0.1rem 0.4rem;
+    border-radius: 99px;
+}
+
+/* ── Items list (added medications) ── */
+.itemsList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: var(--modal-island-bg);
+    border: 1px solid var(--modal-border);
+    border-radius: 0.75rem;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+}
+
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: rgb(255 255 255 / 10%);
+    border: 1px solid rgb(255 255 255 / 20%);
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 16px 0 rgb(0 0 0 / 15%);
+    backdrop-filter: blur(12px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.item:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 20%);
+}
+
+.itemInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.itemName {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.itemMeta {
+    font-size: 0.8rem;
+    color: rgb(255 255 255 / 70%);
+}
+
+.itemSupply {
+    font-weight: 700;
+    color: var(--green-400);
+}
+
+/* ── Textarea (preview and instructions) ── */
+.textarea {
+    min-height: 60px;
+    resize: vertical;
+}
+
+/* ── Responsive: stack numeric row on small screens ── */
+@media (width <= 480px) {
+    .numericRow {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .addCol {
+        grid-column: span 2;
+    }
+}

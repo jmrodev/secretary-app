@@ -1,0 +1,118 @@
+/* ScheduleTimeBlock Molecule Styles (BEM) - Dark Mode Standard */
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1rem;
+    animation: fade-in-up 0.3s ease-out;
+    transition: all 0.2s ease;
+}
+
+.container:hover {
+    border-color: var(--primary-color);
+    background-color: rgb(128, 128, 128, 0.08);
+}
+
+.inputs {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.connector {
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.divider {
+    width: 1px;
+    height: 1.5rem;
+    background: var(--dashboard-card-border);
+    margin: 0 0.5rem;
+}
+
+.typeContainer {
+    flex: 1;
+    min-width: 120px;
+}
+
+.typeSelectVirtual {
+    color: var(--primary-color);
+}
+
+.options {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
+}
+
+.alignment {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--primary-color);
+    cursor: pointer;
+}
+
+.alignmentText {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: color 0.2s ease;
+    text-transform: uppercase;
+}
+
+.alignment:hover .alignmentText {
+    color: var(--primary-color);
+}
+
+.remove {
+    transition: all 0.2s ease;
+}
+
+.remove:hover {
+    color: var(--danger) !important;
+    background-color: rgb(249 55 93 / 10%) !important;
+}
+
+@keyframes fade-in-up {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (width <= 640px) {
+    .container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .divider {
+        display: none;
+    }
+    
+    .options {
+        margin-left: 0;
+        justify-content: space-between;
+    }
+}

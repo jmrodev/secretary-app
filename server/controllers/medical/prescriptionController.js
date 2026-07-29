@@ -1,37 +1,41 @@
 const prescriptionService = require('../../services/medical/PrescriptionService');
 
-/**
- * prescriptionController
- * Handles HTTP requests for medical prescriptions.
- */
+const sendResponse = (res, success, data, meta = null, error = null, status = 200) => {
+    res.status(status).json({ success, data, meta, error });
+};
 
 exports.createPrescription = async (req, res) => {
     try {
         await prescriptionService.createPrescription(req, req.body);
-        res.status(201).send("Prescription created");
+        sendResponse(res, true, { message: "Prescription created" }, null, null, 201);
     } catch (err) {
-        console.error(err);
-        if (err.message === 'Appointment not found') return res.status(404).send(err.message);
-        if (err.message === 'Unauthorized') return res.status(403).send(err.message);
-        if (err.message === 'Medications are required') return res.status(400).send(err.message);
-        res.status(500).send("Server Error");
+        console.error("[ECC-Medical] createPrescription error:", err);
+        if (err.message === 'Appointment not found') return sendResponse(res, false, null, null, 'appointment_not_found', 404);
+        if (err.message === 'Unauthorized') return sendResponse(res, false, null, null, 'unauthorized', 403);
+        if (err.message === 'Medications are required') return sendResponse(res, false, null, null, 'medications_required', 400);
+        sendResponse(res, false, null, null, 'server_error', 500);
     }
 };
 
 exports.getPrescriptions = async (req, res) => {
     try {
-        const { page = 1, limit = 50 } = req.query;
-        const { patientId } = req.body;
+        const { page = 1, limit = 50, patientId, doctorId: queryDoctorId, search } = req.query;
         const filters = {
             patientId,
+            doctorId: req.doctorId || queryDoctorId,
+            search,
             limit: parseInt(limit),
             offset: (parseInt(page) - 1) * parseInt(limit)
         };
         const result = await prescriptionService.getPrescriptions(req.user, filters);
-        res.json(result);
+        sendResponse(res, true, result.prescriptions || result, {
+            totalCount: result.totalCount || result.length,
+            page: parseInt(page),
+            limit: parseInt(limit)
+        });
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Server Error");
+        console.error("[ECC-Medical] getPrescriptions error:", err);
+        sendResponse(res, false, null, null, 'server_error', 500);
     }
 };
 
@@ -39,12 +43,12 @@ exports.updatePrescription = async (req, res) => {
     try {
         const { id } = req.params;
         await prescriptionService.updatePrescription(req, id, req.body);
-        res.send("Prescription updated");
+        sendResponse(res, true, { message: "Prescription updated" });
     } catch (err) {
-        console.error(err);
-        if (err.message === 'Prescription not found') return res.status(404).send(err.message);
-        if (err.message === 'Unauthorized') return res.status(403).send(err.message);
-        res.status(500).send("Server Error");
+        console.error("[ECC-Medical] updatePrescription error:", err);
+        if (err.message === 'Prescription not found') return sendResponse(res, false, null, null, 'prescription_not_found', 404);
+        if (err.message === 'Unauthorized') return sendResponse(res, false, null, null, 'unauthorized', 403);
+        sendResponse(res, false, null, null, 'server_error', 500);
     }
 };
 
@@ -52,11 +56,13 @@ exports.deletePrescription = async (req, res) => {
     try {
         const { id } = req.params;
         await prescriptionService.deletePrescription(req, id);
-        res.json({ message: "Prescription deleted" });
+        sendResponse(res, true, { message: "Prescription deleted" });
     } catch (err) {
-        console.error(err);
-        if (err.message === 'Prescription not found') return res.status(404).send(err.message);
-        if (err.message === 'Unauthorized') return res.status(403).send(err.message);
-        res.status(500).send("Server Error");
+        console.error("[ECC-Medical] deletePrescription error:", err);
+        if (err.message === 'Password required') return sendResponse(res, false, null, null, 'password_required', 401);
+        if (err.message === 'Invalid password') return sendResponse(res, false, null, null, 'invalid_password', 401);
+        if (err.message === 'Prescription not found') return sendResponse(res, false, null, null, 'prescription_not_found', 404);
+        if (err.message === 'Unauthorized') return sendResponse(res, false, null, null, 'unauthorized', 403);
+        sendResponse(res, false, null, null, 'server_error', 500);
     }
 };

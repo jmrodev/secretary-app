@@ -1,0 +1,80 @@
+/* Reports-specific Styles */
+
+.results {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Horizontal Filters in Toolbar */
+.horizontal {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background-color: var(--dashboard-card-bg-alt, rgb(0 0 0 / 2%));
+    padding: 0.15rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--dashboard-card-border);
+}
+
+.fieldDoctor {
+    min-width: 200px;
+}
+
+.selectMonth {
+    min-width: 120px;
+}
+
+.input {
+    width: 80px;
+    text-align: center;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.exportGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--dashboard-card-border);
+}
+
+@media (width <= 1200px) {
+    .horizontal {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .field {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .actions {
+        justify-content: space-between;
+    }
+}

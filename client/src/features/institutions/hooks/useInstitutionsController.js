@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
-import { institutionService } from '@/services/institutionService';
+import { institutionService } from '@/features/institutions/services/institutionService';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
-import { useLanguage } from '@/context/LanguageContext';
-import { capitalizeWords } from '@/utils/stringUtils';
+import { useLanguage } from '@/hooks/useLanguage';
+import { capitalizeWords } from '@/utils/core/stringUtils';
 import { useFetch } from '@/hooks/useFetch';
 
 const createInitialFormState = () => ({

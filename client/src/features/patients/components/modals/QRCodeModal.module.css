@@ -1,0 +1,56 @@
+/* QRCodeModal Styles (BEM) */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.text {
+    text-align: center;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+}
+
+.wrapper {
+    padding: 1rem;
+    background-color: rgb(255 255 255 / 15%);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgb(255 255 255 / 20%);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 15%);
+    border-radius: var(--radius);
+}
+
+.expiry {
+    font-size: 0.75rem;
+    color: var(--slate-500);
+    margin-top: 0.5rem;
+}
+
+.qrModalFooter {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.whatsapp {
+    background-color: #25D366;
+    border-color: #25D366;
+    color: white;
+    display: flex;
+    align-items: center;
+    height: fit-content;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius);
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: filter 0.2s;
+}
+
+.whatsapp:hover {
+    filter: brightness(0.9);
+}

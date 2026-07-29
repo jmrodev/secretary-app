@@ -1,0 +1,17 @@
+/* CommunicationSettings Component Styles (BEM) */
+
+.root {
+    /* Root styles */
+}
+
+/* Helper for labels that include an icon */
+.labelWithIcon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+}
+
+.labelIcon {
+    color: var(--accent-color);
+}

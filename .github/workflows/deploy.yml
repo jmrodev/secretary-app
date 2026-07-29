@@ -1,0 +1,31 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy App via SSH
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute Remote Deploy Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            export PNPM_HOME="/home/cima/.local/share/pnpm"
+            export PATH="$PNPM_HOME/bin:$PATH"
+            cd ${{ secrets.DEPLOY_PATH }}
+            git checkout main
+            git pull origin main
+            
+            # Reconstruir y levantar los contenedores de Docker para producción
+            docker compose -f docker-compose.prod.yml up -d --build
+            
+            # Limpiar imágenes antiguas/huérfanas para liberar espacio en la RPi
+            docker image prune -f

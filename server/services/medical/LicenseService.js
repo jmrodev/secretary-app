@@ -1,12 +1,12 @@
 const { pool } = require('../../db');
-const { logAction } = require('../../utils/audit');
-const { calculatePrice } = require('../../utils/priceCalculator');
+const { logAction } = require('../../utils/system/audit');
+const { calculatePrice } = require('../../utils/finance/priceCalculator');
 const financeService = require('../finance/financeService');
-const licenseRepository = require('../../repositories/licenseRepository');
-const appointmentRepository = require('../../repositories/appointmentRepository');
-const patientRepository = require('../../repositories/patientRepository');
-const doctorRepository = require('../../repositories/doctorRepository');
-const systemSettingsRepository = require('../../repositories/systemSettingsRepository');
+const licenseRepository = require('../../repositories/medical/licenseRepository');
+const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
+const doctorRepository = require('../../repositories/user/doctorRepository');
+const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 
 /**
  * LicenseService
@@ -116,7 +116,7 @@ class LicenseService {
                 description: `Medical License - ${days} days`,
                 related_user_id: patientUserId, doctor_id: doctorId,
                 appointment_id: apptId, status: 'pending'
-            }, userId);
+            }, userId, conn);
         }
     }
 

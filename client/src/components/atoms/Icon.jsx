@@ -1,6 +1,6 @@
 import React from 'react';
 import { ICONS } from '@/constants/icons';
-import './Icon.css';
+import styles from './Icon.module.css';
 
 /**
  * Icon Atom component.
@@ -19,15 +19,44 @@ const Icon = ({
 
     const style = {
         fontSize: size,
-        color: color,
-        cursor: onIconClick ? 'pointer' : 'inherit'
+        color: color
     };
+
+    const combinedClasses = [
+        'material-symbols-outlined',
+        styles.root,
+        onIconClick ? styles.clickable : '',
+        className
+    ].filter(Boolean).join(' ');
+
+    const handleKeyDown = (e) => {
+        if (onIconClick && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            onIconClick(e);
+        }
+    };
+
+    if (onIconClick) {
+        return (
+            <button
+                type="button"
+                className={combinedClasses}
+                style={{ ...style, background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+                onClick={onIconClick}
+                onKeyDown={handleKeyDown}
+                aria-label={typeof name === 'string' ? name.toLowerCase().replace(/_/g, ' ') : styles.root}
+            >
+                {symbol}
+            </button>
+        );
+    }
 
     return (
         <span
-            className={`material-symbols-outlined icon ${className}`}
+            className={combinedClasses}
             style={style}
-            onClick={onIconClick}
+            role="presentation"
+            aria-hidden="true"
         >
             {symbol}
         </span>

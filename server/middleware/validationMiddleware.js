@@ -1,5 +1,3 @@
-const { ValidationError } = require('../utils/errors');
-
 const validate = (schema) => {
     return (req, res, next) => {
         const errors = [];

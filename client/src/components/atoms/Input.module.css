@@ -1,0 +1,65 @@
+.root {
+    /* --- Local Component Tokens --- */
+    --input-bg: rgb(255 255 255 / 5%);
+    --input-border: rgb(255 255 255 / 10%);
+    --input-text: var(--text-main);
+    --input-focus-border: var(--primary-color);
+    --input-focus-ring: rgb(72 128 255 / 15%);
+    --input-error-border: var(--danger);
+    --input-error-ring: rgb(249 55 93 / 10%);
+    --input-disabled-bg: rgb(255 255 255 / 2%);
+    --input-disabled-text: var(--text-muted);
+
+    /* ------------------------------ */
+
+    width: 100%;
+    padding: 0.5rem 0.875rem;
+    border-radius: 0.5rem; /* Standard DashStack radius */
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    font-size: 0.875rem;
+    font-family: inherit;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px 0 rgb(0 0 0 / 10%);
+    backdrop-filter: blur(8px);
+    outline: none;
+}
+
+.root::placeholder {
+    color: var(--text-muted, rgb(156 163 175));
+    opacity: 0.6;
+}
+
+.root:focus {
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 4px var(--input-focus-ring);
+    transform: translateY(-1px);
+}
+
+.root:disabled {
+    background-color: var(--input-disabled-bg);
+    color: var(--input-disabled-text);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.error {
+    border-color: var(--red-500);
+}
+
+.error:focus {
+    box-shadow: 0 0 0 4px rgb(239 68 68 / 10%);
+}
+
+.sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    border-radius: 0.5rem;
+}

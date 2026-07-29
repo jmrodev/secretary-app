@@ -1,0 +1,63 @@
+
+.root {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (width >= 1024px) {
+    .root {
+        grid-template-columns: 350px 1fr;
+    }
+}
+
+.tableContainer {
+    overflow-x: auto;
+}
+
+.fileIcon {
+    font-size: 1.25rem;
+    margin-right: 0.75rem;
+    color: var(--primary-color);
+}
+
+.fileName {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.patientName {
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+.empty {
+    padding: 4rem 2rem;
+    text-align: center;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.emptyIcon {
+    opacity: 0.5;
+}
+
+.btnSubmit {
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cellPl { padding-left: 1.5rem; }
+.cellPr { padding-right: 1.5rem; }
+.cellPy { padding-top: 1rem; padding-bottom: 1rem; }
+.cellRight { text-align: right; }
+.rowInteractive { cursor: pointer; transition: background-color 0.2s; }
+.rowInteractive:hover { background-color: var(--slate-50); }
+.btnDelete { color: var(--rose-600); }

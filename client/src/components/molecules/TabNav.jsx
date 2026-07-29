@@ -1,5 +1,5 @@
 import React from 'react';
-import './TabNav.css';
+import styles from './TabNav.module.css';
 
 /**
  * TabNav molecule.
@@ -7,7 +7,7 @@ import './TabNav.css';
  */
 const TabNav = ({ children, className = '' }) => {
     return (
-        <nav className={`tab-nav ${className}`}>
+        <nav className={`${styles.tabNav} ${className}`}>
             {children}
         </nav>
     );

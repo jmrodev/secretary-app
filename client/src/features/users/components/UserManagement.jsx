@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useUsers } from '@/features/users/hooks/useUsers';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 // Atoms & Molecules
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Card from '@/components/atoms/Card';
 import Icon from '@/components/atoms/Icon';
 import Modal from '@/components/molecules/Modal';
@@ -11,8 +11,11 @@ import Modal from '@/components/molecules/Modal';
 // Feature Components
 import UserTable from '@/features/users/components/UserTable';
 import UserForm from '@/features/users/components/UserForm';
+import styles from './UserManagement.module.css';
 
-const UserManagement = ({ excludeRoles = [], role = null }) => {
+const EMPTY_EXCLUDE = [];
+
+const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
     const { t } = useLanguage();
     const {
         users,
@@ -81,7 +84,7 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
     );
 
     return (
-        <div className="user-management-organism">
+        <div className={`${styles.userManagementOrganism}`}>
             <section className="action-bar">
                 <div className="action-bar__search">
                     <div className="search-box__wrapper">
@@ -103,9 +106,9 @@ const UserManagement = ({ excludeRoles = [], role = null }) => {
                 </div>
             </section>
 
-            <Card className="user-management__table-container">
+            <Card className={`${styles.tableContainer}`}>
                 {loading ? (
-                    <div className="user-management__loader">{t('loading_users')}</div>
+                    <div className={`${styles.loader}`}>{t('loading_users')}</div>
                 ) : (
                     <UserTable
                         users={filteredUsers}

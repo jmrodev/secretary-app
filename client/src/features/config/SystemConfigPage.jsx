@@ -1,237 +1,97 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useMemo } from 'react';
 import { useSystemConfigController } from '@/features/config/hooks/useSystemConfigController';
-import GeneralSettings from '@/features/config/components/GeneralSettings';
-import CommunicationSettings from '@/features/config/components/CommunicationSettings';
-import IntegrationSettings from '@/features/config/components/IntegrationSettings';
-import BillingSettings from '@/features/config/components/BillingSettings';
-import { useDoctorsPageController } from '@/features/doctors';
-import { useProfileController, ProfileEditor } from '@/features/auth';
-import { useReportsController, useAuditLogsController } from '@/features/reports';
-import { QRCodeModal } from '@/features/patients'; // Fixed import from patients feature
-import { useInstitutionsController } from '@/features/institutions';
+import { getConfigSections, getConfigSection } from './registry/configRegistry';
+import { loadDefaultConfigSections } from './components/ConfigRegistryLoader';
 
 // Global Atomic Components
 import MainLayout from '@/components/templates/MainLayout';
-import Button from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
+import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { QRCodeModal } from '@/features/patients';
 
-// Lazy load heavy components
-const DoctorsManager = React.lazy(() => import('@/features/doctors').then(module => ({ default: module.DoctorsManager })));
-const ReportsDashboard = React.lazy(() => import('@/features/reports').then(module => ({ default: module.ReportsDashboard })));
-const InstitutionManager = React.lazy(() => import('@/features/institutions').then(module => ({ default: module.InstitutionManager })));
-const AuditLogManager = React.lazy(() => import('@/features/reports').then(module => ({ default: module.AuditLogManager })));
-const UserManager = React.lazy(() => import('@/features/users').then(module => ({ default: module.UserManager })));
+import styles from './SystemConfigPage.module.css';
 
-import { printReport } from '@/utils/reportPrintHelper';
-import './SystemConfigPage.css';
+/**
+ * SettingsContent (Slot Renderer).
+ * Renders the active configuration section based on the registry.
+ */
+const SettingsContent = ({ activeTab, controller }) => {
+    const { t } = controller;
+    const section = useMemo(() => getConfigSection(activeTab), [activeTab]);
 
-// --- Sub-sections Orchestrated within the Page ---
+    if (!section) return null;
 
-const DoctorsSection = () => {
-    const controller = useDoctorsPageController();
-    return <DoctorsManager {...controller} />;
-};
-const ProfileSection = () => {
-    const controller = useProfileController();
-    return <ProfileEditor {...controller} />;
-};
-const ReportsSection = () => {
-    const controller = useReportsController();
-    const handlePrint = () => {
-        printReport(controller.reportData, {
-            activeTab: controller.activeTab,
-            month: controller.month,
-            year: controller.year,
-            t: controller.t
-        });
-    };
-    return <ReportsDashboard {...controller} onPrint={handlePrint} />;
-};
+    const { metadata, Component } = section;
 
-const InstitutionsSection = () => {
-    const controller = useInstitutionsController();
-    return <InstitutionManager {...controller} />;
-};
-const AuditLogsSection = () => {
-    const controller = useAuditLogsController();
-    return <AuditLogManager {...controller} />;
-};
-const UserSection = () => {
-    const { t } = useSystemConfigController();
-    return <UserManager t={t} />;
-};
-
-const renderContent = (activeTab, controller) => {
-    const {
-        user,
-        settings,
-        loading,
-        googleUnlinked,
-        t,
-        handlers
-    } = controller;
-    const {
-        updateSetting,
-        setQrModal,
-        handleGoogleAuth,
-        handleDisconnectGoogle,
-        handleRetryGoogleFailed,
-        handleTestMeta,
-        insertVariable,
-        handleRefreshTunnel
-    } = handlers;
-
-    switch (activeTab) {
-        case 'profile':
-            return <ProfileSection />;
-        case 'doctors':
-            return <DoctorsSection />;
-        case 'reports':
-            return <ReportsSection />;
-        case 'institutions':
-            return <InstitutionsSection />;
-        case 'users':
-            return <UserSection />;
-        case 'logs':
-            return <AuditLogsSection />;
-        case 'general':
-            return (
-                <section className="settings-content-wrapper">
-                    <header className="settings-content-header">
-                        <h2 className="settings-content-title">{t('general') || 'Configuración General'}</h2>
-                    </header>
-                    <GeneralSettings
-                        user={user}
-                        settings={settings}
-                        updateSetting={updateSetting}
-                        onShowQr={() => {
-                            const url = settings.staff_base_url || window.location.origin;
-                            setQrModal({ open: true, url, expiry: null });
-                        }}
-                    />
-                    <article className="system-config-page__documentation animate-fadeIn">
-                        <header className="system-config-page__section-header">
-                            <Icon name="description" size="1.2rem" className="system-config-page__section-icon" />
-                            <h3 className="system-config-page__section-title">Documentación y Ayuda</h3>
-                        </header>
-                        <div className="system-config-page__actions">
-                            <Button
-                                variant="ghost"
-                                onClick={() => window.open('/docs/MANUAL_OPERACIONES.html', '_blank')}
-                                icon={<Icon name="assessment" size="1.1rem" />}
-                                className="system-config-page__action-btn"
-                            >
-                                Ver Manual de Operaciones
-                            </Button>
-                            <Button
-                                variant="ghost"
-                                onClick={() => window.open('/docs/GUIA_CONFIGURACION_GENERAL.md', '_blank')}
-                                icon={<Icon name="settings" size="1.1rem" />}
-                                className="system-config-page__action-btn"
-                            >
-                                Guía de Configuración
-                            </Button>
-                        </div>
-                    </article>
-                </section>
-            );
-        case 'communications':
-            return (
-                <div className="settings-content-wrapper">
-                    <h2 className="settings-content-title">{t('communications') || 'Comunicaciones'}</h2>
-                    <CommunicationSettings
-                        user={user}
-                        settings={settings}
-                        updateSetting={updateSetting}
-                        insertVariable={insertVariable}
-                    />
+    return (
+        <section className="settings-content-wrapper animate-fade-in-up">
+            <header className="settings-content-header">
+                <div className="settings-content-header__icon">
+                    <Icon name={metadata.icon} size="1.5rem" />
                 </div>
-            );
-        case 'integrations':
-            return (
-                <div className="settings-content-wrapper">
-                    <h2 className="settings-content-title">{t('integrations') || 'Integraciones'}</h2>
-                    <IntegrationSettings
-                        user={user}
-                        settings={settings}
-                        updateSetting={updateSetting}
-                        loading={loading}
-                        googleUnlinked={googleUnlinked}
-                        onGoogleAuth={handleGoogleAuth}
-                        onDisconnectGoogle={handleDisconnectGoogle}
-                        onRefreshToken={handleGoogleAuth}
-                        onRetryGoogle={handleRetryGoogleFailed}
-                        onRefreshTunnel={handleRefreshTunnel}
-                        onTestMeta={handleTestMeta}
-                    />
+                <div className="settings-content-header__text">
+                    <h2 className="settings-content-title">{metadata.title}</h2>
+                    <p className="settings-content-description">{metadata.desc}</p>
                 </div>
-            );
-        case 'billing':
-            return (
-                <div className="settings-content-wrapper">
-                    <h2 className="settings-content-title">{t('billing') || 'Facturación'}</h2>
-                    <BillingSettings
-                        user={user}
-                        settings={settings}
-                        updateSetting={updateSetting}
-                    />
-                </div>
-            );
-        case 'data':
-            return (
-                <div className="settings-content-wrapper">
-                    <h2 className="settings-content-title">{t('data_management_title') || 'Datos y Seguridad'}</h2>
-                    <div className="system-config-page__data-management animate-fadeIn">
-                        <div className="system-config-page__section-header">
-                            <Icon name="payments" size="1.2rem" className="system-config-page__section-icon" />
-                            <h3 className="system-config-page__section-title">
-                                {t('data_management_title') || 'Gestión de Datos y Copias de Seguridad'}
-                            </h3>
-                        </div>
-                        <div className="system-config-page__placeholder">
-                            <p className="system-config-page__placeholder-text">{t('coming_soon') || 'Próximamente...'}</p>
-                        </div>
-                    </div>
-                </div>
-            );
-        default:
-            return null;
-    }
+            </header>
+            <div className="settings-content-body">
+                <Suspense fallback={<Loading variant="centered" />}>
+                    <Component controller={controller} />
+                </Suspense>
+            </div>
+        </section>
+    );
 };
 
 /**
  * SystemConfigPage (Orchestrator).
- * Centralized settings panel for the application.
+ * Now fully decoupled using a Slot/Registry pattern.
  */
 const SystemConfigPage = () => {
     const controller = useSystemConfigController();
-    const {
-        activeTab,
-        qrModal,
-        handlers
-    } = controller;
+    const { t, activeTab, qrModal, handlers } = controller;
 
-    const { setQrModal } = handlers;
+    // Initialize the registry once. 
+    // In a larger app, this would happen at the app level.
+    useEffect(() => {
+        loadDefaultConfigSections(t);
+    }, [t]);
+
+    const tabs = useMemo(() => 
+        getConfigSections().map(s => ({
+            id: s.id,
+            label: s.metadata.title,
+            icon: s.metadata.icon
+        })), []);
 
     return (
-        <MainLayout wide flush title={controller.t('config') || 'Configuración del Sistema'}>
-            <section className="system-config-page">
-                <div className="system-config-container animate-fadeIn">
-                    <main className="system-config-main">
-                        <Suspense fallback={<Loading variant="centered" />}>
-                            {renderContent(activeTab, controller)}
-                        </Suspense>
-                    </main>
+        <MainLayout wide flush title={t('config') || 'Configuración del Sistema'}>
+            <div className="system-config-page-orchestrator layout-content-area animate-fade-in">
+                <FeatureToolbar
+                    className="system-config-page__toolbar"
+                    tabs={tabs.length > 0 ? tabs : [
+                        { id: 'general', label: t('general'), icon: 'settings' }
+                    ]}
+                    activeTab={activeTab}
+                    onTabChange={handlers.setActiveTab}
+                />
 
-                    <QRCodeModal
-                        isOpen={qrModal.open}
-                        onClose={() => setQrModal({ ...qrModal, open: false })}
-                        url={qrModal.url}
-                        expiresAt={qrModal.expiry}
-                    />
-                </div>
-            </section>
+                <main className="system-config-page-orchestrator__main">
+                    <div className={`${styles.systemConfigContainer}`}>
+                        <Suspense fallback={<Loading variant="centered" />}>
+                            <SettingsContent activeTab={activeTab} controller={controller} />
+                        </Suspense>
+
+                        <QRCodeModal
+                            isOpen={qrModal.open}
+                            onClose={() => handlers.setQrModal(prev => ({ ...prev, open: false }))}
+                            url={qrModal.url}
+                            expiresAt={qrModal.expiry}
+                        />
+                    </div>
+                </main>
+            </div>
         </MainLayout>
     );
 };

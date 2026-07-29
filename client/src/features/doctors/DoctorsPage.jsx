@@ -1,8 +1,7 @@
 import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
-import DoctorsManager from '@/features/doctors/components/DoctorsManager';
+import DoctorsManager from '@/features/doctors/components/views/DoctorsManager';
 import { useDoctorsPageController } from '@/features/doctors/hooks/useDoctorsPageController';
-import { PageHeader } from '@/features/layout';
 
 /**
  * DoctorsPage (Orchestrator).
@@ -13,7 +12,7 @@ const DoctorsPage = () => {
 
     return (
         <MainLayout wide flush title="Gestión de Profesionales">
-            <div className="layout-content-area animate-fadeIn">
+            <div className="layout-content-area animate-fade-in">
                 <DoctorsManager {...controller} />
             </div>
         </MainLayout>

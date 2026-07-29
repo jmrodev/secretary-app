@@ -1,0 +1,35 @@
+/* EditTransactionModal Component Styles (BEM) */
+
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.footer {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.warning {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgb(245 158 11 / 10%);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgb(245 158 11 / 20%);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 10%);
+    color: var(--amber-700);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 0.5rem;
+    line-height: 1.4;
+}
+
+.warningIcon {
+    color: var(--amber-600);
+    flex-shrink: 0;
+}

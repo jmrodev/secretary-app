@@ -1,24 +1,39 @@
 import React from 'react';
-import { useLanguage } from '@/context/LanguageContext';
-import Button from '@/components/atoms/Button';
+import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import './PhoneNumbersManager.css';
+import styles from './PhoneNumbersManager.module.css';
 
 /**
  * PhoneNumbersManager Shared Molecule (BEM).
  * Optimized for high-density Bento Box layouts.
  * Shared across: institutions, patients, users, auth and config features.
+ * 
+ * @param {Array} phoneNumbers - List of phone numbers
+ * @param {Function} onChange - Callback when list changes
+ * @param {Object} texts - Translations { cellPhone, label, call, markAsPrimary, deleteBtn, addAnotherPhone }
  */
-const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
-    const { t } = useLanguage();
+const EMPTY_OBJECT = {};
+
+const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) => {
+    const generateId = () => crypto.randomUUID();
+
+    // Default fallbacks in case texts are not provided
+    const tx = {
+        cellPhone: texts.cellPhone || 'Celular',
+        label: texts.label || 'Etiqueta',
+        call: texts.call || 'Llamar',
+        markAsPrimary: texts.markAsPrimary || 'Marcar como principal',
+        deleteBtn: texts.deleteBtn || 'Eliminar',
+        addAnotherPhone: texts.addAnotherPhone || 'Agregar otro teléfono'
+    };
 
     // Ghost item if list is empty
     const displayPhoneNumbers = (phoneNumbers && phoneNumbers.length > 0)
         ? phoneNumbers
-        : [{ phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: true }];
+        : [{ id: 'ghost', phone_number: '+549', label: tx.cellPhone, is_primary: true }];
 
     const handleAdd = () => {
-        onChange([...(phoneNumbers || []), { phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: false }]);
+        onChange([...(phoneNumbers || []), { id: generateId(), phone_number: '+549', label: tx.cellPhone, is_primary: false }]);
     };
 
     const handleRemove = (index) => {
@@ -27,8 +42,12 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     };
 
     const handleUpdate = (index, field, value) => {
-        let currentList = (phoneNumbers && phoneNumbers.length > 0) ? [...phoneNumbers] : [{ phone_number: '+549', label: t('cell_phone') || 'Celular', is_primary: true }];
-        currentList[index][field] = value;
+        let currentList = (phoneNumbers && phoneNumbers.length > 0) 
+            ? phoneNumbers.map(p => ({ ...p, id: p.id || generateId() })) 
+            : [{ id: generateId(), phone_number: '+549', label: tx.cellPhone, is_primary: true }];
+            
+        currentList[index] = { ...currentList[index], [field]: value };
+        
         if (field === 'is_primary' && value === true) {
             currentList.forEach((p, i) => { if (i !== index) p.is_primary = false; });
         }
@@ -36,22 +55,22 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
     };
 
     return (
-        <section className="phone-manager">
-            <div className="phone-manager__list">
+        <section className={`${styles.root}`}>
+            <div className={`${styles.list}`}>
                 {displayPhoneNumbers.map((pn, index) => (
-                    <div key={index} className={`phone-manager__row ${pn.is_primary ? 'phone-manager__row--primary' : ''}`}>
-                        <div className="phone-manager__label-wrapper">
+                    <div key={pn.id || `phone-${index}`} className={`${styles.row} ${pn.is_primary ? styles.rowPrimary : ''}`}>
+                        <div className={`${styles.labelWrapper}`}>
                             <input
-                                className="phone-manager__input-label"
+                                className={`${styles.inputLabel}`}
                                 value={pn.label}
                                 onChange={(e) => handleUpdate(index, 'label', e.target.value)}
-                                placeholder={t('label')}
+                                placeholder={tx.label}
                             />
                         </div>
 
-                        <div className="phone-manager__number-wrapper">
+                        <div className={`${styles.numberWrapper}`}>
                             <input
-                                className="phone-manager__input-number"
+                                className={`${styles.inputNumber}`}
                                 value={pn.phone_number}
                                 onChange={(e) => handleUpdate(index, 'phone_number', e.target.value)}
                                 placeholder="+549..."
@@ -59,13 +78,13 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                             />
                             
                             {pn.phone_number && pn.phone_number.length > 5 && (
-                                <div className="phone-manager__actions">
+                                <div className={`${styles.actions}`}>
                                     <Button
                                         to={`tel:${pn.phone_number.replace(/[^0-9+]/g, '')}`}
                                         variant="link"
                                         size="compact"
-                                        title={t('call')}
-                                        className="phone-manager__action phone-manager__action--call"
+                                        title={tx.call}
+                                        className={`${styles.action} ${styles.actionCall}`}
                                         icon={<Icon name="call" size="1rem" />}
                                     />
                                     <Button
@@ -74,28 +93,28 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                                         variant="link"
                                         size="compact"
                                         title="WhatsApp"
-                                        className="phone-manager__action phone-manager__action--whatsapp"
+                                        className={`${styles.action} ${styles.actionWhatsapp}`}
                                         icon={<Icon name="chat" size="1rem" />}
                                     />
                                 </div>
                             )}
                         </div>
 
-                        <div className="phone-manager__controls">
+                        <div className={`${styles.controls}`}>
                             <button
                                 type="button"
-                                className={`phone-manager__star ${pn.is_primary ? 'phone-manager__star--active' : ''}`}
+                                className={`${styles.star} ${pn.is_primary ? styles.starActive : ''}`}
                                 onClick={() => handleUpdate(index, 'is_primary', true)}
-                                title={t('mark_as_primary')}
+                                title={tx.markAsPrimary}
                             >
                                 <Icon name={pn.is_primary ? 'star' : 'star_outline'} size="1rem" />
                             </button>
 
                             <button
                                 type="button"
-                                className="phone-manager__delete"
+                                className={`${styles.delete}`}
                                 onClick={() => handleRemove(index)}
-                                title={t('delete')}
+                                title={tx.deleteBtn}
                             >
                                 <Icon name="close" size="1rem" />
                             </button>
@@ -104,9 +123,9 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange }) => {
                 ))}
             </div>
 
-            <button type="button" className="phone-manager__add" onClick={handleAdd}>
+            <button type="button" className={`${styles.add}`} onClick={handleAdd}>
                 <Icon name="add" size="0.9rem" />
-                <span>{t('add_another_phone')}</span>
+                <span>{tx.addAnotherPhone}</span>
             </button>
         </section>
     );

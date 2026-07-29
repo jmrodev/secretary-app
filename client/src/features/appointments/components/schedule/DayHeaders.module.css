@@ -1,0 +1,32 @@
+/* DayHeaders Styles (BEM) - Dark Mode Standard */
+
+.root {
+    display: grid; 
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.35rem;
+    background-color: transparent; 
+    padding: 0.5rem 0 0.25rem;
+}
+
+.day {
+    text-align: center; 
+    font-size: 0.625rem; 
+    font-weight: 800;
+    color: var(--text-muted); 
+    text-transform: uppercase; 
+    letter-spacing: 0.15em;
+    font-family: var(--font-manrope);
+}
+
+/* Sunday Header */
+.root > :nth-child(1) { 
+    color: var(--red-400);
+    opacity: 0.9;
+}
+
+/* Saturday Header */
+.root > :nth-child(7) { 
+    color: var(--blue-400);
+    opacity: 0.9;
+}
+

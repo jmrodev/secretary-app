@@ -1,9 +1,0 @@
-/* ChatPage.css */
-
-.chat-page-orchestrator {
-    display: flex;
-    height: 100vh; /* Actually should be height relative to MainLayout */
-    height: calc(100vh - 40px); /* Adjusting based on layout padding */
-    overflow: hidden;
-    background: var(--card-bg);
-}

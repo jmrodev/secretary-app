@@ -1,0 +1,58 @@
+/* AppointmentHeader Molecule Styles (BEM) - Dark Mode Standard */
+
+.root {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.5rem;
+    background-color: var(--gray-900);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--dashboard-card-border);
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.patientInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.text {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+    letter-spacing: -0.025em;
+    font-family: var(--font-newsreader);
+    font-style: italic;
+}
+
+.date {
+    font-size: 0.95rem;
+    color: var(--primary-color);
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.badges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    align-items: flex-end;
+}
+
+.visuallyHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+}

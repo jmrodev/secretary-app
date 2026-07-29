@@ -1,0 +1,283 @@
+/* SystemConfigPage Styles (BEM) */
+
+.root {
+    /* --- Local Component Tokens --- */
+    --config-bg: var(--white);
+    --config-border: var(--gray-200);
+    --config-island-bg: #f8fafc;
+    --config-header-color: var(--slate-800);
+
+    /* ------------------------------ */
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background-color: var(--gray-50);
+}
+
+.systemConfigTabs {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    padding: 0.5rem;
+    background: rgb(255 255 255 / 15%);
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg, 12px);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border: 1px solid rgb(255 255 255 / 8%);
+    margin-bottom: 0.5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.systemConfigTabs::-webkit-scrollbar {
+    display: none;
+}
+
+.systemConfigTabs .tabButton {
+    padding: 0.75rem 1.25rem;
+    border-radius: var(--radius-md, 8px);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+}
+
+.systemConfigTabs .tabButtonActive {
+    background-color: var(--accent-color);
+    color: white !important;
+    box-shadow: 0 4px 12px rgb(var(--accent-rgb, 14, 165, 233), 0.3);
+}
+
+.systemConfigTabs .tabButton:not(.tabButtonActive):hover {
+    background-color: var(--gray-100);
+    color: var(--accent-color);
+}
+
+.systemConfigContainer {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.systemConfigMain {
+    background: rgb(255 255 255 / 15%);
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg, 12px);
+    border: 1px solid rgb(255 255 255 / 8%);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    padding: 2.5rem;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.appCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    background: rgb(255 255 255 / 10%);
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-md, 8px);
+    border: 1px solid rgb(255 255 255 / 8%);
+    box-shadow: 0 4px 16px 0 rgb(0 0 0 / 10%);
+    padding: 1.5rem;
+}
+
+.appTitle {
+    font-weight: 700;
+    color: var(--config-header-color);
+    margin-bottom: 0.25rem;
+}
+
+.appDescription {
+    font-size: 0.875rem;
+    color: var(--gray-500);
+    margin: 0;
+}
+
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.sectionIcon {
+    color: var(--accent-color);
+}
+
+.sectionTitle {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.placeholder {
+    padding: 5rem 0;
+    text-align: center;
+}
+
+.placeholderText {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.labelWithIcon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Billing and Status Spacing/Colors */
+.configStatus {
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.configStatusSuccess {
+    color: var(--green-600);
+}
+
+.configStatusError {
+    color: var(--red-600);
+}
+
+.configActionsMt1 {
+    margin-top: 1rem;
+}
+
+.hintMb15 {
+    margin-bottom: 1.5rem;
+}
+
+.configLink {
+    color: var(--blue-600);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.configLink:hover {
+    text-decoration: underline;
+}
+
+.configGroupBgWhite {
+    background: rgb(255 255 255 / 10%);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgb(255 255 255 / 8%);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border-radius: var(--radius-md, 8px);
+    padding: 1.5rem;
+}
+
+.hintMb05 {
+    margin-bottom: 0.5rem;
+}
+
+.inputMonospace {
+    font-family: Monaco, Consolas, 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.configActionsRight {
+    justify-content: flex-end;
+}
+
+/* Integration-specific Layouts */
+.headerFlexSpaced {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+}
+
+.statusInfo {
+    flex: 1;
+}
+
+.syncControls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.hintMb075 {
+    margin-bottom: 0.75rem;
+}
+
+.hintTextRight {
+    text-align: right;
+    margin: 0;
+}
+
+.configActionsMt05 {
+    margin-top: 0.5rem;
+}
+
+.configGridGap1 {
+    gap: 1rem;
+}
+
+.configFlexAlignCenter {
+    align-items: center;
+}
+
+.configFlexMt1 {
+    margin-top: 1rem;
+}
+
+.configGuide {
+    background: rgb(255 255 255 / 10%);
+    backdrop-filter: blur(16px);
+    padding: 1.5rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid rgb(255 255 255 / 8%);
+    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+}
+
+.title {
+    margin-bottom: 0.75rem;
+    color: var(--config-header-color);
+    font-weight: 700;
+}
+
+.list {
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.configUrlDisplay {
+    padding: 0.75rem 1rem;
+    background-color: var(--gray-100);
+    border-radius: var(--radius-xs);
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: var(--gray-700);
+    border: 1px solid var(--config-border);
+}
+
+
+
+

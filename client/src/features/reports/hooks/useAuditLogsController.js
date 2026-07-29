@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '@/features/auth';
-import { useLanguage } from '@/context/LanguageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { useFetch } from '@/hooks/useFetch';
 
 export const useAuditLogsController = () => {

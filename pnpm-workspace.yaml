@@ -1,0 +1,11 @@
+packages:
+  - 'client'
+  - 'server'
+allowBuilds:
+  '@github/keytar': true
+  bcrypt: true
+  esbuild: true
+  node-pty: true
+  sharp: true
+  unrs-resolver: true
+  workerd: true

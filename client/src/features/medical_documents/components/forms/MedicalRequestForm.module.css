@@ -1,0 +1,73 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.medicalRequestCard {
+    height: 100%;
+}
+
+.row {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.row2 {
+    grid-template-columns: 1fr 2fr;
+}
+
+.row3 {
+    grid-template-columns: 1fr 1fr 2fr;
+}
+
+.readonlyValue {
+    display: none; /* Hidden just in case */
+}
+
+.badgeWrapper {
+    margin-top: 0.5rem;
+}
+
+.panel {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 0 0.5rem;
+}
+
+.panelItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+}
+
+.panelLabel {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.root .prescriptionModal {
+    margin-top: 0.5rem;
+}
+
+@media (width <= 768px) {
+    .row2, .row3 {
+        grid-template-columns: 1fr;
+    }
+}

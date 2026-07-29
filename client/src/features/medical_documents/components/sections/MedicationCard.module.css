@@ -1,0 +1,60 @@
+/* MedicationCard Feature Styles */
+.root {
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    transition: all 0.2s ease;
+}
+
+.unknown {
+    border-left: 4px solid var(--error);
+    background-color: var(--red-900);
+}
+
+.known {
+    border-left: 4px solid var(--success);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-main);
+}
+
+.statusIcon {
+    color: var(--success);
+    font-size: 1.1rem;
+}
+
+.details {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    background: var(--gray-800);
+    border-radius: 4px;
+    color: var(--text-secondary);
+}
+
+.duration {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: auto;
+}

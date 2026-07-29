@@ -1,0 +1,52 @@
+/* RequirementItem Feature Styles */
+.root {
+    transition: background-color 0.2s;
+}
+
+.root:hover {
+    background-color: rgb(128, 128, 128, 0.08);
+}
+
+.cell {
+    padding: 0.5rem 0.75rem; /* Reduced from 0.75/1 */
+    border-bottom: 1px solid var(--dashboard-card-border);
+    vertical-align: middle;
+}
+
+.patientName {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.doctor {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.author {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.4rem;
+}
+
+.badgeClickable {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.badgeClickable:hover {
+    transform: scale(1.05);
+}
+
+.statusGroup {
+    display: flex;
+    flex-direction: row;
+    gap: 0.375rem;
+    align-items: center;
+}
+
