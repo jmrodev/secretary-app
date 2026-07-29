@@ -98,7 +98,12 @@ const getPatientHistory = async (req, res) => {
 
 const getAiSuggestion = async (req, res) => {
     try {
-        const suggestion = await whatsappAiService.getAiSuggestion(req.body.patientId, req.doctorId, req.user?.user_id);
+        const suggestion = await whatsappAiService.getAiSuggestion(
+            req.body.patientId, 
+            req.body.phone, 
+            req.doctorId, 
+            req.user?.user_id
+        );
         res.json({ success: true, suggestion });
     } catch (error) {
         console.error('[AI Suggestion Error]:', error);
@@ -191,7 +196,18 @@ const refreshBridge = async (req, res) => {
     }
 };
 
+const deleteConversation = async (req, res) => {
+    try {
+        const { patientId, phone } = req.body;
+        await whatsappRepository.deleteConversation(patientId, phone);
+        res.json({ success: true, message: 'Conversación eliminada con éxito.' });
+    } catch (error) {
+        console.error('Error al eliminar conversación:', error);
+        res.status(500).json({ success: false, error: 'Error al eliminar conversación' });
+    }
+};
+
 module.exports = {
     sendMessage, broadcastMessage, broadcastDirect, broadcastPreview, testConnection, sendDirectMessage,
-    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion, logoutBridge, refreshBridge
+    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion, logoutBridge, refreshBridge, deleteConversation
 };

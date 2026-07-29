@@ -81,7 +81,7 @@ const AiSettings = ({ user, settings, updateSetting }) => {
                             id="gemini-global-model"
                             label="Modelo Global (Vía ENV)"
                             type="text"
-                            value={settings.gemini_global_model || 'gemini-1.5-flash'}
+                            value={settings.gemini_global_model || 'gemini-2.5-flash'}
                             onChange={(e) => updateSetting('gemini_global_model', e.target.value)}
                             disabled={!isAdmin}
                             hint="El modelo utilizado para generar sugerencias de respuesta y automatizaciones."

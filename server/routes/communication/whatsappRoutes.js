@@ -20,6 +20,9 @@ router.post('/ai-suggestion', whatsappController.getAiSuggestion);
 // Get recent conversations for the global messenger inbox
 router.get('/recent', whatsappController.getRecentConversations);
 
+// Delete a conversation history
+router.post('/delete-conversation', whatsappController.deleteConversation);
+
 // Send a single message (e.g. from Appointment Flow) - Allowed for Secretary/Doctor
 router.post('/send', whatsappController.sendMessage);
 
