@@ -30,6 +30,7 @@ require('./listeners/financeListener');
 const { initScheduler } = require('./utils/system/scheduler');
 
 const app = express();
+app.set('trust proxy', 1);
 
 // Apply Security Middlewares
 app.use(globalLimiter);
@@ -113,6 +114,7 @@ app.use('/api/settings', require('./routes/system/settingsRoutes'));
 app.use('/api/insurances', require('./routes/core/insuranceRoutes'));
 app.use('/api/holidays', require('./routes/appointments/holidayRoutes'));
 app.use('/api/messages', require('./routes/communication/messageRoutes'));
+app.use('/api/outreach', require('./routes/communication/outreachRoutes'));
 app.use('/api/temp-access', require('./routes/system/tempAccessRoutes'));
 app.use('/api/institutions', institutionRoutes);
 app.use('/api/schedules', require('./routes/appointments/scheduleRoutes'));

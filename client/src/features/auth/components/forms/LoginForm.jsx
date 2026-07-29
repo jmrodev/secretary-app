@@ -28,8 +28,8 @@ const LoginForm = () => {
 
     return (
         <Card
-            className="login-form animate-fade-in"
-            header={
+            className={`${styles.loginForm} animate-fade-in`}
+            title={
                 <div className={`${styles.header}`}>
                     <h1 className={`${styles.title}`}>{t('welcome_back')}</h1>
                     <p className={`${styles.subtitle}`}>{t('sign_in_subtitle')}</p>
@@ -57,24 +57,26 @@ const LoginForm = () => {
             {error && <div className={`${styles.error}`}>{error}</div>}
 
             <form className={`${styles.form}`} onSubmit={handlers.handleSubmit}>
-                <FormGroup label={t('username')}>
+                <FormGroup label={t('username')} className={styles.loginFormGroup}>
                     <Input
                         type="text"
                         value={username}
                         onChange={(e) => handlers.setUsername(e.target.value)}
                         placeholder={t('username_placeholder')}
                         disabled={loading}
+                        className={styles.loginInput}
                         required
                     />
                 </FormGroup>
 
-                <FormGroup label={t('password')}>
+                <FormGroup label={t('password')} className={styles.loginFormGroup}>
                     <Input
                         type="password"
                         value={password}
                         onChange={(e) => handlers.setPassword(e.target.value)}
                         placeholder="••••••••"
                         disabled={loading}
+                        className={styles.loginInput}
                         required
                     />
                 </FormGroup>

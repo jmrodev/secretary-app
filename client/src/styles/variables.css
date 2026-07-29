@@ -163,19 +163,22 @@
     --sidebar-bg: #273142; /* DashStack Sidebar Bg */
 }
 
-/* Light Theme - Tonos Claros (Tiza / Executive Chalk Palette) */
+/* Light Theme - Tonos Claros (Tiza / High Contrast Clinical Palette) */
 :root[data-theme="light"], html[data-theme="light"], [data-theme="light"], body.theme-light {
-    --background-bg: #f3f4f6;        /* Tiza suave */
-    --bg-gradient-blue: #f3f4f6;
-    --dashboard-card-bg: #fff;     /* Blanco limpio para tarjetas */
-    --dashboard-card-border: #e2e8f0; /* Borde gris fino */
+    --primary-color: #0284c7;        /* Sky 600 - High contrast clinical blue */
+    --primary-hover: #0369a1;
+    --accent-color: #0d9488;         /* Teal 600 */
+    --background-bg: #f8fafc;        /* Slate 50 - Crisp clean background */
+    --bg-gradient-blue: #f8fafc;
+    --dashboard-card-bg: #fff;     /* Pure white cards */
+    --dashboard-card-border: #cbd5e1; /* Slate 300 - Sharp defined borders */
     --modal-bg: #fff;
     --modal-bg-dark: #f8fafc;
-    --text-main: #0f172a;            /* Texto oscuro Slate 900 */
-    --text-muted: #64748b;           /* Slate 500 */
-    --text-secondary: #334155;       /* Slate 700 */
-    --border-color: #e2e8f0;
+    --text-main: #0f172a;            /* Slate 900 - High legibility */
+    --text-muted: #475569;           /* Slate 600 */
+    --text-secondary: #1e293b;       /* Slate 800 */
+    --border-color: #cbd5e1;
     --navbar-bg: #fff;
-    --navbar-border: #e2e8f0;
-    --navbar-link-color: #475569;
+    --navbar-border: #cbd5e1;
+    --navbar-link-color: #1e293b;
 }

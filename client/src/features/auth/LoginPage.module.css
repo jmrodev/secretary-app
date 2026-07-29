@@ -1,5 +1,7 @@
 /* LoginPage Styles (BEM) */
 
+/* LoginPage Styles (BEM) - Nordic Ultra-clean */
+
 .root {
     min-height: 100vh;
     display: flex;
@@ -8,12 +10,12 @@
     position: relative;
     padding: 1.5rem;
     overflow: hidden;
-    background-color: var(--background-bg);
+    background-color: var(--background-bg); /* Use soft gray background-bg */
     font-family: var(--font-nunito);
 }
 
 .hero {
-    background-image: url('https://images.unsplash.com/photo-1576091160550-217359f42f8c?q=80&w=2070&auto=format&fit=crop');
+    background-color: #f4f5f6; /* Serene flat soft gray */
     background-size: cover;
     background-position: center;
 }
@@ -21,7 +23,7 @@
 .overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, rgb(15 23 42 / 60%) 0%, rgb(15 23 42 / 98%) 100%);
+    background: radial-gradient(circle at center, rgb(255, 255, 255, 0.4) 0%, rgb(248, 249, 250, 0.95) 100%); /* Clear light gradient */
     z-index: 1;
 }
 
@@ -35,42 +37,42 @@
 
 .blob {
     position: absolute;
-    width: 500px;
-    height: 500px;
+    width: 600px;
+    height: 600px;
     border-radius: 50%;
-    filter: blur(120px);
-    opacity: 0.3;
-    animation: blob-move 20s infinite alternate;
+    filter: blur(140px);
+    opacity: 0.15; /* Softened light blobs */
+    animation: blob-move 25s infinite alternate;
 }
 
 .blobPrimary {
-    background: var(--primary-color);
-    top: -100px;
-    right: -100px;
+    background: var(--primary-color); /* Soft sage green */
+    top: -150px;
+    right: -150px;
 }
 
 .blobSecondary {
-    background: #7c3aed; /* Violet/Purple accent */
-    bottom: -100px;
-    left: -100px;
+    background: #e2e8f0; /* Soft slate gray */
+    bottom: -150px;
+    left: -150px;
     animation-delay: -5s;
 }
 
 @keyframes blob-move {
     0% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(-20px, 50px) scale(1.1); }
-    100% { transform: translate(20px, -20px) scale(0.9); }
+    50% { transform: translate(-30px, 60px) scale(1.05); }
+    100% { transform: translate(30px, -30px) scale(0.95); }
 }
 
 .content {
     position: relative;
     z-index: 10;
     width: 100%;
-    max-width: 450px;
+    max-width: 400px; /* Snugger card width */
     animation: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slide-up {
-    0% { opacity: 0; transform: translateY(20px); }
+    0% { opacity: 0; transform: translateY(12px); }
     100% { opacity: 1; transform: translateY(0); }
 }
