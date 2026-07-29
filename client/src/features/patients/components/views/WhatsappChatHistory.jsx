@@ -1,4 +1,5 @@
 import React from 'react';
+import api from '@/api/axios';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { useMessage } from '@/context/MessageContext';
@@ -35,6 +36,8 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
     const {
         state,
         dispatch,
+        targetPhoneInput,
+        handleTargetPhoneChange,
         messagesEndRef,
         handleGetAiSuggestion,
         handleSendMessage,
@@ -43,19 +46,44 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
     
     const { messages, loading, newMessage, sending, aiLoading } = state;
 
+    const handleDeleteConversation = async () => {
+        if (window.confirm("¿Seguro que deseas eliminar esta conversación del historial?")) {
+            try {
+                await api.post('/whatsapp/delete-conversation', { patientId, phone: targetPhoneInput || phone });
+                showMessage("Conversación eliminada con éxito.", "success");
+                fetchHistory();
+            } catch (err) {
+                console.error("Error al borrar conversación", err);
+                showMessage("No se pudo eliminar la conversación.", "error");
+            }
+        }
+    };
+
     return (
         <section className={`${styles.root} ${hideHeader ? 'whatsapp-chat--no-header' : ''}`}>
-            {!hideHeader && (
-                <header className={`${styles.header}`}>
-                    <div className={`${styles.headerInfo}`}>
-                        <Icon name="whatsapp" size="1.2rem" />
-                        <h3 className={`${styles.title}`}>{t('whatsapp_history')}</h3>
+            <header className={`${styles.header}`}>
+                <div className={`${styles.headerInfo}`}>
+                    <Icon name="whatsapp" size="1.2rem" />
+                    <h3 className={`${styles.title}`}>{t('whatsapp_history')}</h3>
+                    <div className={styles.phoneInputContainer} title="Teléfono WhatsMeow (ej: 54249...)">
+                        <Icon name="edit" size="0.85rem" />
+                        <input
+                            type="text"
+                            className={styles.targetPhoneInput}
+                            value={targetPhoneInput}
+                            onChange={(e) => handleTargetPhoneChange(e.target.value)}
+                            placeholder="542494521825..."
+                        />
                     </div>
-                    <Button size="sm" variant="ghost" onClick={fetchHistory} icon={<Icon name="refresh" size="1rem" />}>
+                </div>
+                <div style={{ display: 'flex', gap: '4px' }}>
+                    <Button size="sm" variant="ghost" onClick={fetchHistory} title="Refrescar" icon={<Icon name="refresh" size="1rem" />}>
                         {t('refresh')}
                     </Button>
-                </header>
-            )}
+                    <Button size="sm" variant="ghost" onClick={handleDeleteConversation} title="Eliminar conversación" icon={<Icon name="delete" size="1rem" />}>
+                    </Button>
+                </div>
+            </header>
             
             <div className={`${styles.messages}`}>
                 {loading && messages.length === 0 ? (
@@ -75,8 +103,11 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
                                         <div className={styles.meta}>
                                             <span className={styles.time}>{formatTime(msg.created_at)}</span>
                                             {isOutbound && (
-                                                <span className={`${styles.status} ${msg.status === 'delivered' ? styles.statusDelivered : ''}`}>
-                                                    <Icon name={msg.status === 'delivered' ? 'done_all' : 'done'} size="12px" />
+                                                <span 
+                                                    className={`${styles.status} ${msg.status === 'delivered' ? styles.statusDelivered : msg.status === 'failed' ? styles.statusFailed : ''}`}
+                                                    title={msg.status === 'failed' ? 'Error al enviar por WhatsApp' : ''}
+                                                >
+                                                    <Icon name={msg.status === 'delivered' ? 'done_all' : msg.status === 'failed' ? 'error_outline' : 'done'} size="12px" />
                                                 </span>
                                             )}
                                         </div>

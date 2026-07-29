@@ -8,15 +8,21 @@ const bookingService = require('../../services/appointments/bookingService');
 const { formatLocalSQL } = require('../../utils/core/dateUtils');
 const { pool } = require('../../db');
 
+const authService = require('../../services/user/authService');
+
 /**
  * WhatsAppAiService
  * Handles AI-powered features for WhatsApp communication, including suggestions and auto-booking.
  */
 class WhatsAppAiService {
-    async getAiSuggestion(patientId, doctorId, userId) {
-        if (!patientId) throw new Error('patientId is required');
+    async getAiSuggestion(patientId, phone, doctorId, userId) {
+        if (!patientId && !phone) throw new Error('patientId o phone es requerido');
 
-        const context = await this._buildContext(patientId, doctorId, userId);
+        const context = await this._buildContext(patientId, phone, doctorId, userId);
+
+        // Try to auto-register if patient submitted registration details (DNI/Name)
+        const autoRegisterResult = await this._tryAutoRegister(context);
+        if (autoRegisterResult) return autoRegisterResult;
 
         // Try to auto-book if patient confirmed a slot
         const autoBookResult = await this._tryAutoBook(context, userId);
@@ -29,11 +35,15 @@ class WhatsAppAiService {
         const geminiKey = process.env.GEMINI_API_KEY;
         if (!groqKey && !geminiKey) throw new Error('Configuración de IA incompleta');
 
-        const apiModel = process.env.AI_MODEL || context.doctor?.gemini_model || 'llama-3.3-70b-versatile';
-        const preferGemini = apiModel.startsWith('gemini') || context.doctor?.gemini_model?.startsWith('gemini');
+        let apiModel = process.env.AI_MODEL || context.doctor?.gemini_model || (geminiKey ? 'gemini-2.5-flash' : 'llama-3.3-70b-versatile');
+        if (apiModel.includes('gemini-1.5')) {
+            apiModel = apiModel.replace('gemini-1.5', 'gemini-2.5');
+        }
+
+        const preferGemini = geminiKey && (!groqKey || apiModel.startsWith('gemini') || context.doctor?.gemini_model?.startsWith('gemini'));
 
         if (preferGemini) {
-            return await this._tryGemini(prompt, apiModel, geminiKey)
+            return await this._tryGemini(prompt, apiModel.startsWith('gemini') ? apiModel : 'gemini-2.5-flash', geminiKey)
                 .catch(err => this._fallbackToGroq(prompt, err, groqKey));
         } else {
             return await this._tryGroq(prompt, apiModel, groqKey)
@@ -183,21 +193,33 @@ class WhatsAppAiService {
         console.warn(`[AI Fallback] Intentando Gemini. Error original: ${originalError.message}`);
         if (!geminiKey) throw originalError;
         try {
-            return await this._tryGemini(prompt, 'gemini-1.5-flash', geminiKey);
+            return await this._tryGemini(prompt, 'gemini-2.5-flash', geminiKey);
         } catch (fallbackErr) {
             throw new Error(`Gemini primary failed: ${originalError.message} | Gemini fallback: ${fallbackErr.message}`);
         }
     }
 
-    async _buildContext(patientId, doctorId, userId) {
+    async _buildContext(patientId, phone, doctorId, userId) {
         let doctorContext = "Actuá como la secretaría de un consultorio médico. Respondé de forma breve y profesional. Usá los turnos disponibles de la agenda para ofrecer opciones. Si no hay turnos o el paciente pide algo fuera de la agenda, decí 'Consulto con la Secretaría y te confirmo.'";
         let historyLimit = 3;
         let doctorName = "la Secretaría";
 
         const doctor = doctorId ? await doctorRepository.findById(doctorId) : null;
-        const patient = await patientRepository.findById(patientId);
+        let patient = patientId ? await patientRepository.findById(patientId) : null;
+        
+        if (!patient && phone) {
+            patient = await patientRepository.findByPhone(phone);
+            if (patient) patientId = patient.id;
+        }
+
+        let history = [];
+        if (patientId) {
+            history = await whatsappRepository.getHistoryByPatient(patientId);
+        } else if (phone) {
+            history = await whatsappRepository.getHistoryByPhone(phone);
+        }
+
         const patientName = patient ? patient.full_name : 'Paciente';
-        const history = await whatsappRepository.getHistoryByPatient(patientId);
 
         // Extract last patient message for auto-booking detection
         const lastPatientMessage = history
@@ -274,17 +296,79 @@ class WhatsAppAiService {
                 lastPatientMessage,
                 freeSlots: freeSlotsData.results,
                 patientId,
+                phone,
+                isRegistered: !!patient
             };
         }
 
         const lastMessages = history.slice(-historyLimit).map(m => `${m.direction === 'inbound' ? 'Paciente' : 'Secretaría'}: ${m.body}`).join('\n');
 
-        return { doctor, doctorName, doctorContext, lastMessages, lastPatientMessage, freeSlots: [], patientId };
+        return { 
+            doctor, 
+            doctorName, 
+            doctorContext, 
+            lastMessages, 
+            lastPatientMessage, 
+            freeSlots: [], 
+            patientId,
+            phone,
+            isRegistered: !!patient
+        };
+    }
+
+    async _tryAutoRegister(ctx) {
+        if (ctx.isRegistered || !ctx.lastPatientMessage) return null;
+
+        const msg = ctx.lastPatientMessage;
+        const dniMatch = msg.match(/\b(\d{7,8})\b/);
+        const nameMatch = msg.match(/(?:me llamo|mi nombre es|nombre:?|soy)\s+([a-záéíóúñA-ZÁÉÍÓÚÑ\s]{3,40})/i);
+
+        if (dniMatch && (nameMatch || msg.split(' ').length <= 10)) {
+            const dni = dniMatch[1];
+            let fullName = nameMatch ? nameMatch[1].trim() : '';
+            
+            if (!fullName) {
+                const words = msg.split(/\s+/).filter(w => !/\d/.test(w) && w.length > 2);
+                if (words.length >= 2) fullName = words.join(' ');
+            }
+
+            fullName = fullName.replace(/(?:dni|documento|vivo|direccion|calle).*/i, '').trim();
+            if (fullName.length < 3) fullName = `Paciente ${dni}`;
+
+            try {
+                const cleanPhone = ctx.phone ? ctx.phone.replace(/\D/g, '') : '';
+                const regResult = await authService.publicRegister({ ip: '127.0.0.1' }, {
+                    fullName,
+                    dni,
+                    phone: cleanPhone || '54900000000'
+                });
+                
+                if (regResult && regResult.patientId) {
+                    return `¡Muchas gracias, ${fullName}! Te registramos en el sistema correctamente. ¿En qué día u horario te gustaría agendar tu turno?`;
+                }
+            } catch (err) {
+                console.error("[Auto-Register Error]:", err.message);
+            }
+        }
+        return null;
     }
 
     _buildPrompt(ctx) {
+        let registrationInstruction = '';
+        if (!ctx.isRegistered) {
+            registrationInstruction = `
+IMPORTANTE REGISTRO DE PACIENTE NUEVO:
+El paciente (${ctx.phone || 'Número Desconocido'}) AÚN NO ESTÁ REGISTRADO en el sistema.
+Debes solicitarle amablemente los 3 datos obligatorios para darle el alta antes de agendar:
+1. Nombre y Apellido completo.
+2. Número de DNI.
+3. Dirección / Domicilio.
+Sé breve, cálido y profesional pidiendo estos datos.`;
+        }
+
         return `
 ${ctx.doctorContext}
+${registrationInstruction}
 
 Historial de WhatsApp:
 ${ctx.lastMessages}

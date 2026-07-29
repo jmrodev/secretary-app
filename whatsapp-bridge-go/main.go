@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 
@@ -35,6 +36,11 @@ var (
 func eventHandler(evt interface{}) {
 	switch v := evt.(type) {
 	case *events.Message:
+		// Ignorar mensajes de grupos, historias/estados y canales de noticias
+		if v.Info.IsGroup || v.Info.Chat.Server == "g.us" || v.Info.Chat.Server == "broadcast" || v.Info.Chat.Server == "newsletter" || v.Info.Chat.User == "status" || strings.HasPrefix(v.Info.Chat.User, "120363") {
+			return
+		}
+
 		msgText := v.Message.GetConversation()
 		if msgText == "" {
 			msgText = v.Message.GetExtendedTextMessage().GetText()
@@ -103,7 +109,45 @@ func handleSend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	recipientJID, _ := types.ParseJID(req.Recipient + "@s.whatsapp.net")
+	var recipientJID types.JID
+	rawPhone := strings.TrimPrefix(req.Recipient, "+")
+	var cleanPhone string
+	if strings.HasPrefix(rawPhone, "549") {
+		cleanPhone = "54" + rawPhone[3:]
+	} else {
+		cleanPhone = rawPhone
+	}
+
+	numbersToCheck := []string{
+		"+" + req.Recipient,
+		req.Recipient,
+		"+" + cleanPhone,
+		cleanPhone,
+		"+" + rawPhone,
+		rawPhone,
+	}
+
+	onWA, errOnWA := c.IsOnWhatsApp(context.Background(), numbersToCheck)
+	fmt.Printf("[IsOnWhatsApp] Query: %v | Err: %v | Results: %+v\n", numbersToCheck, errOnWA, onWA)
+
+	found := false
+	if errOnWA == nil {
+		for _, item := range onWA {
+			if item.IsIn {
+				recipientJID = item.JID
+				found = true
+				fmt.Printf("[Send] SUCCESS Resolved JID: %s for input: %s\n", recipientJID.String(), req.Recipient)
+				break
+			}
+		}
+	}
+
+	if !found {
+		parsed, _ := types.ParseJID(cleanPhone + "@s.whatsapp.net")
+		recipientJID = parsed
+		fmt.Printf("[Send] Fallback JID: %s for input: %s\n", recipientJID.String(), req.Recipient)
+	}
+
 	_, err := c.SendMessage(context.Background(), recipientJID, &waE2E.Message{
 		Conversation: proto.String(req.Message),
 	})

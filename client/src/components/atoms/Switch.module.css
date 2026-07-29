@@ -1,9 +1,9 @@
 .root {
     /* --- Local Component Tokens --- */
-    --switch-bg: var(--gray-300);
-    --switch-checked-bg: var(--blue-600);
+    --switch-bg: var(--gray-500);
+    --switch-checked-bg: var(--accent-color);
     --switch-dot-bg: var(--white);
-    --switch-focus-ring: rgb(37 99 235 / 20%);
+    --switch-focus-ring: rgb(var(--accent-rgb, 2, 132, 199) / 20%);
     --switch-label-color: var(--text-main);
 
     /* ------------------------------ */

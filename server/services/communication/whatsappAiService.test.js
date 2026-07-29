@@ -162,7 +162,10 @@ describe('WhatsAppAiService', () => {
     });
 
     describe('getAiSuggestion', () => {
-        it('should request suggestion from Groq and return response', async () => {
+        it('should request suggestion from Groq', async () => {
+            process.env.GROQ_API_KEY = 'mock-groq';
+            delete process.env.GEMINI_API_KEY;
+            delete process.env.AI_MODEL;
             patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
             whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
             

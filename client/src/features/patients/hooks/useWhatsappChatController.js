@@ -1,4 +1,4 @@
-import { useReducer, useCallback, useRef, useEffect, useEffectEvent } from 'react';
+import { useState, useReducer, useCallback, useRef, useEffect, useEffectEvent } from 'react';
 import api from '@/api/axios';
 
 const initialState = {
@@ -29,12 +29,34 @@ const normalizePhone = (raw) => {
 
 export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
     const [state, dispatch] = useReducer(chatReducer, initialState);
+    const [targetPhoneInput, setTargetPhoneInput] = useState(phone || '');
     const messagesEndRef = useRef(null);
+
+    useEffect(() => {
+        let isMounted = true;
+        if (patientId) {
+            api.get(`/users/patients/${patientId}`).then(patientRes => {
+                const patientData = patientRes.data?.success !== undefined ? patientRes.data.data : patientRes.data;
+                if (isMounted && patientData?.phone) setTargetPhoneInput(patientData.phone);
+            }).catch(err => console.error("Error fetching patient phone", err));
+        } else if (phone) {
+            queueMicrotask(() => {
+                if (isMounted) setTargetPhoneInput(phone);
+            });
+        }
+        return () => { isMounted = false; };
+    }, [patientId, phone]);
+
+    const handleTargetPhoneChange = (val) => {
+        const hasPlus = val.startsWith('+');
+        const digits = val.replace(/\D/g, '');
+        setTargetPhoneInput((hasPlus ? '+' : '') + digits);
+    };
 
     const fetchHistory = useCallback(async () => {
         try {
             dispatch({ type: 'SET_LOADING', payload: true });
-            const res = await api.post('/whatsapp/history', { patientId, phone });
+            const res = await api.post('/whatsapp/history', { patientId, phone: targetPhoneInput || phone });
             if (res.data.success) {
                 dispatch({ type: 'SET_MESSAGES', payload: res.data.data });
             } else {
@@ -44,18 +66,18 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
             console.error("Error fetching WhatsApp history", error);
             dispatch({ type: 'SET_LOADING', payload: false });
         }
-    }, [patientId, phone]);
+    }, [patientId, phone, targetPhoneInput]);
 
     const onFetchHistory = useEffectEvent(() => {
         fetchHistory();
     });
 
     useEffect(() => {
-        if (patientId || phone) {
+        if (patientId || phone || targetPhoneInput) {
             const initFetchTimer = setTimeout(() => onFetchHistory(), 0);
             
             const intervalId = setInterval(() => {
-                api.post('/whatsapp/history', { patientId, phone })
+                api.post('/whatsapp/history', { patientId, phone: targetPhoneInput || phone })
                    .then(res => {
                        if (res.data.success) {
                            dispatch({ type: 'SET_MESSAGES', payload: res.data.data });
@@ -68,7 +90,7 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
                 clearInterval(intervalId);
             };
         }
-    }, [patientId, phone]);
+    }, [patientId, phone, targetPhoneInput]);
 
     useEffect(() => {
         if (messagesEndRef.current) {
@@ -80,7 +102,10 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
         if (state.aiLoading) return;
         try {
             dispatch({ type: 'SET_AI_LOADING', payload: true });
-            const res = await api.post('/whatsapp/ai-suggestion', { patientId });
+            const res = await api.post('/whatsapp/ai-suggestion', { 
+                patientId, 
+                phone: targetPhoneInput || phone 
+            });
             
             if (res.data.success && res.data.suggestion) {
                 dispatch({ type: 'SET_NEW_MESSAGE', payload: res.data.suggestion });
@@ -100,30 +125,29 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
         
         try {
             dispatch({ type: 'SET_SENDING', payload: true });
-            let targetPhone;
+            let finalPhone = targetPhoneInput ? normalizePhone(targetPhoneInput) : '';
             let patientName = '';
-            if (patientId) {
+
+            if (!finalPhone && patientId) {
                 const patientRes = await api.get(`/users/patients/${patientId}`);
                 const patientData = patientRes.data?.success !== undefined ? patientRes.data.data : patientRes.data;
-                targetPhone = normalizePhone(patientData?.phone);
+                finalPhone = normalizePhone(patientData?.phone);
                 patientName = patientData?.full_name || '';
-            } else if (phone) {
-                targetPhone = normalizePhone(phone);
-            } else {
-                return;
+            } else if (!finalPhone && phone) {
+                finalPhone = normalizePhone(phone);
             }
 
-            if (!targetPhone) {
+            if (!finalPhone || finalPhone.replace(/\D/g, '').length < 8) {
                 const msg = patientName
-                    ? t('phone_required') || `${patientName} no tiene un teléfono registrado.`
-                    : t('phone_required') || "El paciente no tiene un teléfono registrado.";
+                    ? t('phone_required') || `${patientName} no tiene un teléfono válido registrado.`
+                    : t('phone_required') || "Por favor ingresá un número de teléfono válido (mínimo 10 dígitos).";
                 showMessage(msg, "error");
                 dispatch({ type: 'SET_SENDING', payload: false });
                 return;
             }
 
             const res = await api.post('/whatsapp/send-direct', {
-                to: targetPhone,
+                to: finalPhone,
                 message: state.newMessage,
                 patientId
             });
@@ -131,7 +155,7 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
             if (res.data.success) {
                 showMessage(t('message_sent') || "Mensaje enviado", "success");
                 dispatch({ type: 'SEND_SUCCESS' });
-                fetchHistory(); // refresh history
+                fetchHistory();
             } else {
                 showMessage("Error al enviar mensaje.", "error");
                 dispatch({ type: 'SET_SENDING', payload: false });
@@ -146,8 +170,11 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
     return {
         state,
         dispatch,
+        targetPhoneInput,
+        handleTargetPhoneChange,
         messagesEndRef,
         handleGetAiSuggestion,
-        handleSendMessage
+        handleSendMessage,
+        fetchHistory
     };
 };
