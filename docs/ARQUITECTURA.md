@@ -16,9 +16,9 @@ Clasificamos y ubicamos los componentes estrictamente en su nivel jerárquico co
 ---
 
 ## 2. Estilos y CSS
-- **CSS Modules**: Usamos exclusivamente CSS Modules (`styles.module.css`) para todos los componentes de React, previniendo colisiones de selectores en el árbol global.
-- **Metodología BEM**: Los nombres de clases dentro del CSS deben seguir la convención BEM (`bloque__elemento--modificador`).
-- **Sin Estilos inline**: Está estrictamente prohibido usar estilos en línea (`style={{...}}`) salvo para valores dinámicos calculados por JavaScript en tiempo de ejecución.
+- **CSS Modules**: Usamos CSS Modules (`styles.module.css`) como mecanismo principal para aislar selectores y evitar colisiones en el árbol global.
+- **Metodología BEM**: Los nombres de clases dentro del CSS siguen la convención BEM (`bloque__elemento--modificador`).
+- **Estilos en línea**: Se permiten únicamente para valores dinámicos calculados por JavaScript en tiempo de ejecución (posiciones relativas, colores condicionales, dimensiones derivadas de estado). No se deben usar para estilos estáticos o reutilizables.
 
 ---
 
@@ -76,7 +76,7 @@ El sistema implementa mecanismos tanto a nivel de aplicación (Node) como de bas
   *   **Acciones**: Registra si fue una inserción, actualización o eliminación.
   *   **Historial de importes**: Guarda el valor anterior (`old_amount`) y el nuevo (`new_amount`).
   *   **Historial de estados**: Guarda el estado anterior (`old_status`) y el nuevo (`new_status`).
-  *   **Usuario de cambio (`changed_by_user_id`)**: Se puede inyectar en las operaciones de actualización para registrar la trazabilidad del usuario que modificó o eliminó el registro contable.
+  * **Usuario de cambio (`changed_by_user_id`)**: La columna existe en el esquema para futura trazabilidad, pero los triggers actuales aún no la pueblan. Su implementación está pendiente.
 
 
 
