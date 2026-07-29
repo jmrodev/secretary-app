@@ -33,14 +33,18 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
+        let isMounted = true;
         if (patientId) {
             api.get(`/users/patients/${patientId}`).then(patientRes => {
                 const patientData = patientRes.data?.success !== undefined ? patientRes.data.data : patientRes.data;
-                if (patientData?.phone) setTargetPhoneInput(patientData.phone);
+                if (isMounted && patientData?.phone) setTargetPhoneInput(patientData.phone);
             }).catch(err => console.error("Error fetching patient phone", err));
         } else if (phone) {
-            setTargetPhoneInput(phone);
+            queueMicrotask(() => {
+                if (isMounted) setTargetPhoneInput(phone);
+            });
         }
+        return () => { isMounted = false; };
     }, [patientId, phone]);
 
     const handleTargetPhoneChange = (val) => {
