@@ -16,6 +16,7 @@ class MedicalFileService {
         const { patientId, description } = fileData.body;
         const { filename, originalname, mimetype } = fileData.file;
         const uploaded_by = req.user.user_id;
+        const doctorId = req.doctorId || req.query?.doctorId || req.body?.doctorId;
         const file_url = `/uploads/${filename}`;
         const file_name = originalname;
         const file_type = mimetype;
@@ -23,6 +24,15 @@ class MedicalFileService {
         await medicalFileRepository.create({
             patient_id: patientId, uploaded_by, file_name, file_url, file_type, description
         });
+
+        if (patientId && doctorId) {
+            try {
+                const { pool } = require('../../db');
+                await pool.query('INSERT IGNORE INTO patient_doctors (patient_id, doctor_id) VALUES (?, ?)', [patientId, doctorId]);
+            } catch (err) {
+                console.error('[MedicalFileService] Error linking patient to doctor:', err);
+            }
+        }
 
         logAction(req, 'UPLOAD_FILE', `File: ${file_name} for Patient ID: ${patientId}`);
     }

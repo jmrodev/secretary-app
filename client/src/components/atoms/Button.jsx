@@ -52,7 +52,14 @@ export const Button = React.memo(({
         </>
     );
 
-    const isExternal = to && (to.startsWith('http') || to.startsWith('tel:') || to.startsWith('mailto:') || to.startsWith('whatsapp:'));
+    const isExternal = to && (
+        to.startsWith('http') || 
+        to.startsWith('tel:') || 
+        to.startsWith('mailto:') || 
+        to.startsWith('whatsapp:') || 
+        to.startsWith('/uploads') || 
+        target === '_blank'
+    );
 
     // ECC: Props for the underlying element
     const elementProps = {

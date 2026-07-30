@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import AsyncSelect from 'react-select/async';
 import { patientService } from '@/features/patients/services/patientService';
 import { Button } from '@/components/atoms/Button';
@@ -8,14 +8,15 @@ import styles from './PatientSearchSelect.module.css';
 const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus: _autoFocus = false, selectedData }) => {
     const { t } = useLanguage();
     const finalPlaceholder = placeholder || t('search_placeholder');
+    const [internalSelected, setInternalSelected] = useState(null);
 
     const loadOptions = async (inputValue) => {
         try {
-            const patients = await patientService.search(inputValue);
+            const patients = await patientService.search(inputValue || '');
             
-            return patients.map(p => ({
+            return (patients || []).map(p => ({
                 value: p.id,
-                label: `${p.full_name} - DNI: ${p.dni || 'N/A'} - ${p.street_name || ''}`,
+                label: `${p.full_name} - DNI: ${p.dni || 'N/A'}${p.street_name ? ` - ${p.street_name}` : ''}`,
                 patient: p
             }));
         } catch (err) {
@@ -25,15 +26,25 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
     };
 
     const handleSelectPatient = (selectedOption) => {
+        setInternalSelected(selectedOption);
         onChange(selectedOption ? selectedOption.value : '', selectedOption ? selectedOption.patient : null);
     };
 
-    // Construct the selected option object if we have selectedData
-    const selectedOption = selectedData ? {
-        value: selectedData.id || value,
-        label: selectedData.full_name ? `${selectedData.full_name}${selectedData.dni ? ` - DNI: ${selectedData.dni}` : ''}` : '',
-        patient: selectedData
-    } : (value ? { value, label: 'Cargando...' } : null);
+    // Construct the selected option object
+    const selectedOption = useMemo(() => {
+        if (selectedData) {
+            return {
+                value: selectedData.id || value,
+                label: selectedData.full_name ? `${selectedData.full_name}${selectedData.dni ? ` - DNI: ${selectedData.dni}` : ''}` : '',
+                patient: selectedData
+            };
+        }
+        if (internalSelected && String(internalSelected.value) === String(value)) {
+            return internalSelected;
+        }
+        if (!value) return null;
+        return internalSelected || { value, label: 'Paciente seleccionado' };
+    }, [selectedData, internalSelected, value]);
 
     return (
         <AsyncSelect
@@ -47,6 +58,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                 singleValue: () => styles.singleValue,
                 valueContainer: () => styles.valueContainer
             }}
+            defaultOptions={true}
             loadOptions={loadOptions}
             onChange={handleSelectPatient}
             placeholder={finalPlaceholder}
@@ -73,10 +85,9 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
                 </div>
             )}
             loadingMessage={() => t('loading')}
-            // Disable browser autocomplete to prevent password manager interference
             autoComplete="chrome-off"
             inputId="patient-search-input"
-            unstyled // Removes default styles so our classes take over
+            unstyled
             menuPortalTarget={document.body}
             styles={{
                 menuPortal: (base) => ({ ...base, zIndex: 9999 })
