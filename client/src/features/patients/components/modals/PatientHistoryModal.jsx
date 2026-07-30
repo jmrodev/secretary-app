@@ -176,6 +176,37 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                         </div>
                                     )}
                                 </section>
+
+                                {/* Files / Documents */}
+                                <section className={`${baseClass}__section`}>
+                                    <h4 className={`${baseClass}__section-title`}>
+                                        <Icon name="folder_open" size="1.2rem" />
+                                        {t('documents') || 'Documentos y Estudios Adjuntos'}
+                                    </h4>
+                                    {(!history.files || history.files.length === 0) ? (
+                                        <p className={`${baseClass}__empty-record`}>{t('none') || 'Ninguno'}</p>
+                                    ) : (
+                                        <div className={`${baseClass}__record-list`}>
+                                            {history.files.map(f => (
+                                                <div key={f.id} className={`${baseClass}__record`}>
+                                                    <div className={`${baseClass}__record-header`}>
+                                                        <span>
+                                                            <Icon name={f.file_type?.includes('pdf') ? 'picture_as_pdf' : 'description'} size="1rem" className="mr-1" />
+                                                            <strong>{f.file_name}</strong>
+                                                        </span>
+                                                        <span><SimpleDateDisplay date={f.created_at} /></span>
+                                                    </div>
+                                                    {f.description && <div className={`${baseClass}__record-text`}>{f.description}</div>}
+                                                    <div style={{ marginTop: '0.5rem' }}>
+                                                        <a href={f.file_url} target="_blank" rel="noreferrer" style={{ fontSize: '0.85rem', color: 'var(--primary-color)', textDecoration: 'underline' }}>
+                                                            {t('view') || 'Ver / Descargar'} &rarr;
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </section>
                             </div>
                         )}
                     </>

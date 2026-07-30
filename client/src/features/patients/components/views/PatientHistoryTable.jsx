@@ -35,43 +35,49 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {details.appointments.map(app => (
-                                    <tr key={app.id} className={`${styles.historyRow}`}>
-                                        <td className={`${styles.historyCell}`}>
-                                            <div className={`${styles.tableCellDateBox}`}>
-                                                <div className={`${styles.tableCellDateMain}`}>{formatDate(app.appointment_date)}</div>
-                                                <div className={`${styles.tableCellDateSub}`}>
-                                                    {formatTime(app.appointment_date)}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className={`${styles.historyCell}`}>{app.doctor_name}</td>
-                                        <td className={`${styles.historyCell}`}>
-                                            <span className={`${styles.statusTag} status-${app.status}`}>
-                                                {t(app.status) || app.status}
-                                            </span>
-                                        </td>
-                                        <td className={`${styles.historyCell} ${styles.historyCellSuccess} ${styles.tableCellBold}`}>
-                                            {Number(app.paid_amount) > 0 ? `$${app.paid_amount}` : '-'}
-                                        </td>
-                                        <td className={`${styles.historyCell}`}>
-                                            <div className={`${styles.tableCellBold} ${Number(app.pending_amount) > 0 ? styles.tableCellBoldDanger : styles.tableCellBoldMuted}`}>
-                                                {Number(app.pending_amount) > 0 ? `$${app.pending_amount}` : '$0'}
-                                                {Number(app.pending_amount) > 0 && (
-                                                    <div className={`${styles.payAction}`}>
-                                                        <Button
-                                                            size="sm-compact"
-                                                            variant="ghost"
-                                                            className={`${styles.payBtnMini}`}
-                                                            onClick={() => onPayDebt(null, details.id, app.pending_amount)}
-                                                            icon={<Icon name="payments" size="0.8rem" />}
-                                                        >
-                                                            {t('pay')}
-                                                        </Button>
+                                {details.appointments.map(app => {
+                                    const isPaid = app.is_paid === 1 || app.payment_status === 'paid';
+                                    const costVal = Number(app.cost || app.price || 0);
+                                    const paidVal = isPaid ? costVal : Number(app.amount_paid || app.paid_amount || 0);
+                                    const pendingVal = isPaid ? 0 : Math.max(0, costVal - paidVal);
+
+                                    return (
+                                        <tr key={app.id} className={`${styles.historyRow}`}>
+                                            <td className={`${styles.historyCell}`}>
+                                                <div className={`${styles.tableCellDateBox}`}>
+                                                    <div className={`${styles.tableCellDateMain}`}>{formatDate(app.appointment_date)}</div>
+                                                    <div className={`${styles.tableCellDateSub}`}>
+                                                        {formatTime(app.appointment_date)}
                                                     </div>
-                                                )}
-                                            </div>
-                                        </td>
+                                                </div>
+                                            </td>
+                                            <td className={`${styles.historyCell}`}>{app.doctor_name || '—'}</td>
+                                            <td className={`${styles.historyCell}`}>
+                                                <span className={`${styles.statusTag} status-${app.status}`}>
+                                                    {t(app.status) || app.status}
+                                                </span>
+                                            </td>
+                                            <td className={`${styles.historyCell} ${isPaid ? styles.historyCellSuccess : ''} ${styles.tableCellBold}`}>
+                                                {isPaid ? `$${costVal.toLocaleString()}` : (paidVal > 0 ? `$${paidVal.toLocaleString()}` : '-')}
+                                            </td>
+                                            <td className={`${styles.historyCell}`}>
+                                                <div className={`${styles.tableCellBold} ${pendingVal > 0 ? styles.tableCellBoldDanger : styles.tableCellBoldMuted}`}>
+                                                    {pendingVal > 0 ? `$${pendingVal.toLocaleString()}` : '$0'}
+                                                    {pendingVal > 0 && (
+                                                        <div className={`${styles.payAction}`}>
+                                                            <Button
+                                                                size="sm-compact"
+                                                                variant="ghost"
+                                                                className={`${styles.payBtnMini}`}
+                                                                onClick={() => onPayDebt(null, details.id, pendingVal)}
+                                                                icon={<Icon name="payments" size="0.8rem" />}
+                                                            >
+                                                                {t('pay') || 'Pagar'}
+                                                            </Button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </td>
                                         <td className={`${styles.historyCell}`}>
                                             <div className={`${styles.tableCellReason}`}>
                                                 {app.reason}
@@ -94,7 +100,8 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                             </div>
                                         </td>
                                     </tr>
-                                ))}
+                                );
+                            })}
                             </tbody>
                         </table>
                     </div>

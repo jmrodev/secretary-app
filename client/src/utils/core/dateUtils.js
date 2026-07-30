@@ -172,9 +172,8 @@ export const formatDate = (date, options = {}) => {
     const d = parseDate(date);
     if (!d) return options.fallback || 'N/A';
 
-    const locale = undefined; // undefined tells the browser to use the user's system locale
+    const locale = options.locale || 'es-AR';
     const opts = {
-        // timeZone is intentionally omitted to use the user's local timezone
         day: '2-digit',
         month: options.monthName ? 'long' : '2-digit',
         ...(options.hideYear ? {} : { year: 'numeric' }),
@@ -183,7 +182,6 @@ export const formatDate = (date, options = {}) => {
     };
 
     let str = d.toLocaleDateString(locale, opts);
-    // Capitalize first letter if it's a weekday/month name
     if (options.weekday || options.monthName) {
         str = str.charAt(0).toUpperCase() + str.slice(1);
     }

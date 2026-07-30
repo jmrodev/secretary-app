@@ -9,6 +9,7 @@ import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import Badge from '@/components/atoms/Badge';
 import { formatDate } from '@/utils/core/dateUtils';
+import { PatientSearchSelect as DefaultPatientSearchSelect } from '@/features/patients';
 import styles from './MedicalRequestForm.module.css';
 
 // Hooks
@@ -23,6 +24,7 @@ import SimpleRequestForm from '@/features/medical_documents/components/forms/Sim
  * Form to create new medical requests. Doctor is derived from global context.
  */
 const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSendToDoctor, noCard = false, PatientSearchSelectComponent }) => {
+    const PatientSearchSelect = PatientSearchSelectComponent || DefaultPatientSearchSelect;
     const { user } = useAuth();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
@@ -69,7 +71,7 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
                 {/* ECC: Doctor selection removed from UI. It uses context automatically. */}
 
                 <div>
-                    <PatientSearchSelectComponent
+                    <PatientSearchSelect
                         value={selectedPatient}
                         selectedData={patientData}
                         onChange={(val, patient) => {

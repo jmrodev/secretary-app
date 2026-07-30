@@ -18,25 +18,28 @@ export const usePatientHistoryController = (patientId, isOpen) => {
         appointments: [],
         prescriptions: [],
         licenses: [],
-        requests: []
+        requests: [],
+        files: []
     });
 
     const fetchHistory = useCallback(async () => {
         if (!patientId) return;
         setLoading(true);
         try {
-            const [apptRes, prescRes, licRes, reqRes] = await Promise.all([
+            const [apptRes, prescRes, licRes, reqRes, fileRes] = await Promise.all([
                 api.get('/appointments', { params: { patientId } }),
                 api.get('/medical/prescriptions', { params: { patientId } }),
                 api.get('/medical/licenses', { params: { patientId } }),
-                api.get('/medical/requests', { params: { patientId } })
+                api.get('/medical/requests', { params: { patientId } }),
+                api.get('/medical/files', { params: { patient_id: patientId } })
             ]);
 
             setHistory({
                 appointments: unpack(apptRes),
                 prescriptions: unpack(prescRes),
                 licenses: unpack(licRes),
-                requests: unpack(reqRes)
+                requests: unpack(reqRes),
+                files: unpack(fileRes)
             });
         } catch (err) {
             console.error("Failed to fetch patient history", err);
