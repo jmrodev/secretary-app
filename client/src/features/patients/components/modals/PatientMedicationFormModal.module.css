@@ -43,7 +43,7 @@
 .input:focus {
     outline: none;
     border-color: var(--primary-color, #1a73e8);
-    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.15);
+    box-shadow: 0 0 0 3px rgb(26, 115, 232, 0.15);
 }
 
 .textarea {
@@ -78,10 +78,10 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: #ffffff;
+    background: #fff;
     border: 1px solid var(--gray-300, #ced4da);
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15);
     max-height: 220px;
     overflow-y: auto;
     margin-top: 0.25rem;
