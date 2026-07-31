@@ -198,4 +198,67 @@ describe('PendingBookingRepository', () => {
             expect(affected).toBe(0);
         });
     });
+
+    describe('acceptAlternativeById', () => {
+        it('should set status to alternative_accepted with the appointment id, only when alternative_sent', async () => {
+            mockPool.query.mockResolvedValue({ affectedRows: 1 });
+
+            const affected = await repo.acceptAlternativeById(4, 456);
+
+            expect(mockPool.query).toHaveBeenCalledWith(
+                expect.stringContaining("status = 'alternative_accepted'"),
+                expect.any(Array)
+            );
+            expect(mockPool.query).toHaveBeenCalledWith(
+                expect.stringContaining('appointment_id = ?'),
+                expect.any(Array)
+            );
+            expect(mockPool.query).toHaveBeenCalledWith(
+                expect.stringContaining("id = ? AND status = 'alternative_sent'"),
+                expect.any(Array)
+            );
+            expect(mockPool.query.mock.calls[0][1]).toEqual([456, 4]);
+            expect(affected).toBe(1);
+        });
+
+        it('should return 0 affectedRows when the alternative was already resolved', async () => {
+            mockPool.query.mockResolvedValue({ affectedRows: 0 });
+
+            const affected = await repo.acceptAlternativeById(4, 456);
+
+            expect(affected).toBe(0);
+        });
+    });
+
+    describe('rejectAlternativeById', () => {
+        it('should set status to alternative_rejected with the reason, only when alternative_sent', async () => {
+            mockPool.query.mockResolvedValue({ affectedRows: 1 });
+
+            const affected = await repo.rejectAlternativeById(4, 'patient_declined');
+
+            expect(mockPool.query).toHaveBeenCalledWith(
+                expect.stringContaining("status = 'alternative_rejected'"),
+                expect.any(Array)
+            );
+            expect(mockPool.query).toHaveBeenCalledWith(
+                expect.stringContaining('rejected_reason = ?'),
+                expect.any(Array)
+            );
+            expect(mockPool.query).toHaveBeenCalledWith(
+                expect.stringContaining("id = ? AND status = 'alternative_sent'"),
+                expect.any(Array)
+            );
+            expect(mockPool.query.mock.calls[0][1]).toEqual(['patient_declined', 4]);
+            expect(affected).toBe(1);
+        });
+
+        it('should default the reason to null when none is provided', async () => {
+            mockPool.query.mockResolvedValue({ affectedRows: 1 });
+
+            const affected = await repo.rejectAlternativeById(4, null);
+
+            expect(mockPool.query.mock.calls[0][1]).toEqual([null, 4]);
+            expect(affected).toBe(1);
+        });
+    });
 });

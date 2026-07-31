@@ -98,6 +98,38 @@ class PendingBookingRepository {
         return result.affectedRows;
     }
 
+    /**
+     * Alternative accepted by the patient: marks alternative_accepted and
+     * stores the created appointment id. Only succeeds while status is
+     * alternative_sent (optimistic lock against timeout/secretary actions).
+     */
+    async acceptAlternativeById(id, appointmentId, conn = this.pool) {
+        const query = `
+            UPDATE whatsapp_pending_bookings
+            SET status = 'alternative_accepted',
+                appointment_id = ?,
+                accepted_at = NOW()
+            WHERE id = ? AND status = 'alternative_sent'
+        `;
+        const result = await conn.query(query, [appointmentId, id]);
+        return result.affectedRows;
+    }
+
+    /**
+     * Alternative declined by the patient: marks alternative_rejected with an
+     * optional reason. Only succeeds while status is alternative_sent.
+     */
+    async rejectAlternativeById(id, reason, conn = this.pool) {
+        const query = `
+            UPDATE whatsapp_pending_bookings
+            SET status = 'alternative_rejected',
+                rejected_reason = ?
+            WHERE id = ? AND status = 'alternative_sent'
+        `;
+        const result = await conn.query(query, [reason || null, id]);
+        return result.affectedRows;
+    }
+
     async rejectById(id, rejectedBy, reason, conn = this.pool) {
         const query = `
             UPDATE whatsapp_pending_bookings

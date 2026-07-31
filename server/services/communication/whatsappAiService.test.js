@@ -231,6 +231,82 @@ describe('WhatsAppAiService', () => {
         });
     });
 
+    describe('_tryHandleAlternativeReply', () => {
+        const pendingAlternative = {
+            id: 4,
+            patient_id: 5,
+            doctor_id: 3,
+            status: 'alternative_sent',
+            alternative_slot_iso: '2026-08-05T10:00:00',
+            patient_phone: '+5491112345678'
+        };
+
+        beforeEach(() => {
+            bookingService.createAppointment.mockResolvedValue({ id: 456, patient_id: 5 });
+        });
+
+        it('should return null when the pending is not an alternative_sent', async () => {
+            const result = await whatsappAiService._tryHandleAlternativeReply({
+                activePending: { ...pendingAlternative, status: 'pending' },
+                lastPatientMessage: 'si'
+            });
+            expect(result).toBeNull();
+            expect(bookingService.createAppointment).not.toHaveBeenCalled();
+        });
+
+        it('should return null when the message is not a yes/no answer', async () => {
+            const result = await whatsappAiService._tryHandleAlternativeReply({
+                activePending: pendingAlternative,
+                lastPatientMessage: '¿a qué hora es?'
+            });
+            expect(result).toBeNull();
+            expect(bookingService.createAppointment).not.toHaveBeenCalled();
+        });
+
+        it('should book the alternative and mark alternative_accepted when the patient confirms', async () => {
+            const result = await whatsappAiService._tryHandleAlternativeReply({
+                activePending: pendingAlternative,
+                lastPatientMessage: 'si, dale',
+                doctorName: 'Dr. House'
+            });
+
+            expect(bookingService.createAppointment).toHaveBeenCalledWith(null, 'system', {
+                patient_id: 5,
+                doctor_id: 3,
+                appointment_date: '2026-08-05 10:00:00',
+                reason: 'Turno alternativo confirmado por paciente'
+            });
+            expect(pendingBookingRepository.acceptAlternativeById).toHaveBeenCalledWith(4, 456);
+            expect(result).toContain('Turno confirmado');
+            expect(result).toContain('10:00');
+        });
+
+        it('should mark alternative_rejected with patient_declined when the patient declines', async () => {
+            const result = await whatsappAiService._tryHandleAlternativeReply({
+                activePending: pendingAlternative,
+                lastPatientMessage: 'no, gracias'
+            });
+
+            expect(bookingService.createAppointment).not.toHaveBeenCalled();
+            expect(pendingBookingRepository.rejectAlternativeById).toHaveBeenCalledWith(4, 'patient_declined');
+            expect(result).toContain('No hay problema');
+        });
+
+        it('should mark alternative_rejected with alternative_slot_taken when booking fails', async () => {
+            const err = new Error('slot_already_taken');
+            bookingService.createAppointment.mockRejectedValue(err);
+
+            const result = await whatsappAiService._tryHandleAlternativeReply({
+                activePending: pendingAlternative,
+                lastPatientMessage: 'si'
+            });
+
+            expect(pendingBookingRepository.acceptAlternativeById).not.toHaveBeenCalled();
+            expect(pendingBookingRepository.rejectAlternativeById).toHaveBeenCalledWith(4, 'alternative_slot_taken');
+            expect(result).toContain('ya no está disponible');
+        });
+    });
+
     describe('getAiSuggestion', () => {
         it('should return the configured pending template without calling AI when a pending booking exists', async () => {
             process.env.GROQ_API_KEY = 'mock-groq';
@@ -254,6 +330,40 @@ describe('WhatsAppAiService', () => {
             expect(suggestion).toBe('Tu solicitud está en revisión. Te confirmamos a la brevedad.');
             expect(global.fetch).not.toHaveBeenCalled();
             expect(pendingBookingRepository.create).not.toHaveBeenCalled();
+        });
+
+        it('should book the alternative instead of replying the template when the patient confirms an offered slot', async () => {
+            process.env.GROQ_API_KEY = 'mock-groq';
+            delete process.env.GEMINI_API_KEY;
+            doctorRepository.findById.mockResolvedValue({
+                full_name: 'Dr. House',
+                gemini_context: 'Hola {patient_name}',
+                gemini_history_limit: 3,
+                pending_response_template: 'Tu solicitud está en revisión. Te confirmamos a la brevedad.'
+            });
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([
+                { direction: 'inbound', body: 'si, dale' }
+            ]);
+            scheduleRepository.findByDoctor.mockResolvedValue([]);
+            holidayRepository.findAll.mockResolvedValue([]);
+            pool.query.mockResolvedValue([[{ full_name: 'Ana' }]]);
+            availabilitySearchService.getFreeSlotsBatch.mockResolvedValue({ results: [] });
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue({
+                id: 9,
+                status: 'alternative_sent',
+                patient_id: 5,
+                doctor_id: 3,
+                alternative_slot_iso: '2026-08-05T10:00:00'
+            });
+            bookingService.createAppointment.mockResolvedValue({ id: 456, patient_id: 5 });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1);
+
+            expect(bookingService.createAppointment).toHaveBeenCalledWith(null, 'system', expect.any(Object));
+            expect(pendingBookingRepository.acceptAlternativeById).toHaveBeenCalledWith(9, 456);
+            expect(suggestion).toContain('Turno confirmado');
+            expect(global.fetch).not.toHaveBeenCalled();
         });
 
         it('should use the default pending message when no template is configured', async () => {
