@@ -5,6 +5,7 @@ const holidayRepository = require('../../repositories/appointments/holidayReposi
 const availabilitySearchService = require('../../services/appointments/availabilitySearchService');
 const patientRepository = require('../../repositories/user/patientRepository');
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
+const bookingService = require('../appointments/bookingService');
 const { pool } = require('../../db');
 
 const authService = require('../../services/user/authService');
@@ -25,6 +26,9 @@ class WhatsAppAiService {
         // Re-detection guard: while a pending booking exists, do not re-detect
         // booking intent nor trigger auto-booking — respond with the pending template.
         if (context.hasPendingBooking) {
+            // The patient may be answering a suggested-alternative question.
+            const alternativeResult = await this._tryHandleAlternativeReply(context);
+            if (alternativeResult) return alternativeResult;
             return this._pendingStateReply(context);
         }
 
@@ -124,6 +128,76 @@ class WhatsAppAiService {
 
         // Time matched patterns but not found in available slots
         return null;
+    }
+
+    /**
+     * Handles the patient's yes/no reply to a suggested alternative slot.
+     * Called only when an active pending booking exists (re-detection guard).
+     * - "sí" / "dale" / "confirmo" → books the alternative directly and marks
+     *   the pending as alternative_accepted (spec 3.1).
+     * - "no" → marks alternative_rejected (decline path).
+     * Any other message returns null so the caller falls back to the pending template.
+     */
+    async _tryHandleAlternativeReply(context) {
+        const pending = context.activePending;
+        if (!pending || pending.status !== 'alternative_sent') return null;
+        if (!context.lastPatientMessage) return null;
+
+        const msg = context.lastPatientMessage.toLowerCase().trim();
+
+        const yesPatterns = [
+            /^(si|sí)[\s,.!¡]*$/,
+            /^dale$/,
+            /^confirmo$/,
+            /^ok$/,
+            /^de acuerdo$/,
+            /^(si|sí)[\s,.!¡]+(dale|confirmo|ok|me sirve|me conviene)/,
+        ];
+        const noPatterns = [
+            /^(no)[\s,.!¡]*$/,
+            /^(no)[\s,.!¡]+(gracias|me sirve|me conviene|puedo|quiero|me va)/,
+            /^(no[.,!¡]?\s*)+$/,
+        ];
+
+        const isYes = yesPatterns.some(p => p.test(msg));
+        const isNo = noPatterns.some(p => p.test(msg));
+
+        if (!isYes && !isNo) return null;
+
+        const alternativeIso = pending.alternative_slot_iso;
+        if (!alternativeIso) return null;
+
+        if (isYes) {
+            try {
+                // ISO "YYYY-MM-DDTHH:mm(:ss)?" → SQL "YYYY-MM-DD HH:mm:00"
+                const appointmentDate = `${alternativeIso.replace('T', ' ').slice(0, 16)}:00`;
+                const result = await bookingService.createAppointment(null, 'system', {
+                    patient_id: pending.patient_id,
+                    doctor_id: pending.doctor_id,
+                    appointment_date: appointmentDate,
+                    reason: 'Turno alternativo confirmado por paciente'
+                });
+                await pendingBookingRepository.acceptAlternativeById(pending.id, result.id);
+
+                const dateLabel = new Date(alternativeIso).toLocaleDateString('es-AR', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+                });
+                const timeLabel = alternativeIso.includes('T')
+                    ? alternativeIso.split('T')[1].slice(0, 5)
+                    : alternativeIso;
+                const doctorLabel = context.doctorName || 'el doctor';
+
+                return `✅ Turno confirmado para el ${dateLabel} a las ${timeLabel} hs con ${doctorLabel}. ¡Te esperamos! 🏥`;
+            } catch (err) {
+                console.error('[Alternative Confirm Error]:', err);
+                await pendingBookingRepository.rejectAlternativeById(pending.id, 'alternative_slot_taken');
+                return 'El turno alternativo ya no está disponible. Consulto con la Secretaría para ayudarte. 🙋♀️';
+            }
+        }
+
+        // Patient declined the alternative
+        await pendingBookingRepository.rejectAlternativeById(pending.id, 'patient_declined');
+        return 'No hay problema, quedamos atentos a tu consulta. Si querés otro horario, escribinos. 🙋♀️';
     }
 
     /**
@@ -239,9 +313,10 @@ class WhatsAppAiService {
 
         // Active pending booking flag — used by the re-detection guard
         let hasPendingBooking = false;
+        let activePending = null;
         if (patientId) {
             try {
-                const activePending = await pendingBookingRepository.findActiveByPatient(patientId);
+                activePending = await pendingBookingRepository.findActiveByPatient(patientId);
                 hasPendingBooking = !!activePending;
             } catch (err) {
                 console.error('[Pending Booking Check Error]:', err);
@@ -325,6 +400,7 @@ class WhatsAppAiService {
                 patientId,
                 phone,
                 hasPendingBooking,
+                activePending,
                 isRegistered: !!patient
             };
         }
@@ -341,6 +417,7 @@ class WhatsAppAiService {
             patientId,
             phone,
             hasPendingBooking,
+            activePending,
             isRegistered: !!patient
         };
     }

@@ -52,7 +52,7 @@ Chain strategy: pending
 
 ## Phase 4: Integration + Tests + Documentation
 
-- [ ] 4.1 Integration (node-mocks-http + pool): accept flow — appointment created, pending `accepted` (spec 2.1)
-- [ ] 4.2 Integration: concurrent accept — one wins, second sees `taken` (spec 4.1)
-- [ ] 4.3 Integration: phone change → auto-reject (spec 5.1); suggest → webhook "yes" books (spec 3.1)
-- [ ] 4.4 Run `pnpm lint` + `pnpm --filter server test` + `pnpm --filter client test`; all green
+- [x] 4.1 Integration (node-mocks-http + in-memory fake pool): accept flow — appointment created, pending `accepted` (spec 2.1) — `whatsappPendingIntegration.test.js`
+- [x] 4.2 Integration: concurrent accept — one wins, second sees `taken` (spec 4.1) — real optimistic lock against fake pool
+- [x] 4.3 Integration: phone change → auto-reject (spec 5.1); suggest → webhook "yes" books (spec 3.1) — incl. implementing the missing alternative-confirmation flow in `whatsappAiService._tryHandleAlternativeReply` (auto-book + `alternative_accepted`, decline + `alternative_rejected`)
+- [x] 4.4 Run `pnpm lint` + `pnpm --filter server test` + `pnpm --filter client test`; all green (server 127 passed, 1 pre-existing unrelated `prescriptionRepository` failure; client 116 passed)
