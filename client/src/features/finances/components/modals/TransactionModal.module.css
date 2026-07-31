@@ -26,6 +26,7 @@
     .root {
         grid-template-columns: 1fr;
     }
+
     .fieldFull,
     .fieldHalf,
     .fieldThird,
@@ -196,6 +197,7 @@
         flex-direction: column;
         align-items: stretch;
     }
+
     .summary {
         border-left: none;
         border-top: 1px solid rgb(255 255 255 / 10%);
