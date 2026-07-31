@@ -42,13 +42,13 @@ Chain strategy: pending
 
 ## Phase 3: Frontend (Context, Components, Wiring)
 
-- [ ] 3.1 Create `client/src/api/pendingBookingApi.js` (wraps `@/api/axios`: list/accept/suggestAlternative/reject)
-- [ ] 3.2 RED: vitest `PendingApprovalContext.test.jsx` — 10s poll starts/stops on unmount; actions call api
-- [ ] 3.3 Create `client/src/context/PendingApprovalContext.jsx` (polling, accept/suggestAlternative/reject/refresh); GREEN
-- [ ] 3.4 Create `PendingBookingBanner.jsx` + `.module.css` in `client/src/features/communication/components/` (fixed-bottom trigger, RescheduleBanner pattern)
-- [ ] 3.5 Create `PendingApprovalQueue.jsx` + `.module.css` in same dir (Accept / Suggest Alternative via SlotExplorerDropdown / Reject)
-- [ ] 3.6 Mount context + queue in `client/src/components/templates/MainLayout.jsx`
-- [ ] 3.7 Add `pending_response_template` field to `client/src/features/whatsapp/WhatsappConfig.jsx`
+- [x] 3.1 Create `client/src/api/pendingBookingApi.js` (wraps `@/api/axios`: list/accept/suggestAlternative/reject)
+- [x] 3.2 RED: vitest `PendingApprovalContext.test.jsx` — 10s poll starts/stops on unmount; actions call api
+- [x] 3.3 Create `client/src/context/PendingApprovalContext.jsx` (polling, accept/suggestAlternative/reject/refresh); GREEN
+- [x] 3.4 Create `PendingBookingBanner.jsx` + `.module.css` in `client/src/features/communication/components/` (fixed-bottom trigger, RescheduleBanner pattern)
+- [x] 3.5 Create `PendingApprovalQueue.jsx` + `.module.css` in same dir (Accept / Suggest Alternative via SlotExplorerDropdown / Reject)
+- [x] 3.6 Mount context + queue in `client/src/components/templates/MainLayout.jsx`
+- [x] 3.7 Add `pending_response_template` field to `client/src/features/whatsapp/WhatsappConfig.jsx`
 
 ## Phase 4: Integration + Tests + Documentation
 
