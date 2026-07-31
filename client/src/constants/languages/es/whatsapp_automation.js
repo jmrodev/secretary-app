@@ -36,4 +36,31 @@ export const whatsapp_automation = {
 
     // Copy button
     wa_copy_btn: "Copiar",
+
+    // Pending approvals queue (supervised auto-booking)
+    pending_approval_title: "Aprobaciones pendientes",
+    pending_approval_banner_one: "{count} aprobación pendiente",
+    pending_approval_banner_many: "{count} aprobaciones pendientes",
+    pending_approval_open: "Abrir aprobaciones pendientes",
+    pending_approval_close: "Cerrar aprobaciones pendientes",
+    pending_approval_empty: "No hay aprobaciones pendientes",
+    pending_approval_accept: "Aceptar",
+    pending_approval_suggest: "Sugerir alternativa",
+    pending_approval_reject: "Rechazar",
+    pending_approval_status_alternative: "Esperando respuesta del paciente",
+    pending_approval_accept_success: "Turno aprobado y confirmado ✅",
+    pending_approval_accept_error: "Error al aprobar el turno",
+    pending_approval_accept_taken: "Ya fue aprobado por otra persona",
+    pending_approval_accept_slot_taken: "El turno ya no está disponible",
+    pending_approval_accept_phone_changed: "El paciente cambió su número. El pedido fue rechazado.",
+    pending_approval_suggest_success: "Alternativa enviada al paciente",
+    pending_approval_suggest_error: "Error al enviar la alternativa",
+    pending_approval_reject_success: "Pedido rechazado",
+    pending_approval_reject_error: "Error al rechazar el pedido",
+    pending_approval_loading: "Cargando aprobaciones...",
+
+    // Pending-state AI response template
+    wa_config_pending_template_label: "Plantilla de respuesta en estado pendiente",
+    wa_config_pending_template_hint: "Mensaje que envía la IA cuando el paciente escribe mientras su turno espera aprobación.",
+    wa_config_pending_template_placeholder: "Ej: Tu solicitud está en revisión, te confirmamos a la brevedad.",
 };

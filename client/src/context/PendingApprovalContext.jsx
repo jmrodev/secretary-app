@@ -1,0 +1,85 @@
+import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react';
+import { useAuth } from '@/features/auth';
+import {
+    listPending,
+    acceptPending as acceptPendingRequest,
+    suggestAlternative as suggestAlternativeRequest,
+    rejectPending as rejectPendingRequest
+} from '@/api/pendingBookingApi';
+
+/** Polling interval for the pending-approval queue (design: every 10s). */
+export const POLL_INTERVAL_MS = 10000;
+
+const PendingApprovalContext = createContext(null);
+
+export const usePendingApproval = () => use(PendingApprovalContext);
+
+/**
+ * PendingApprovalProvider — global context for the supervised WhatsApp
+ * auto-booking queue. Polls GET /whatsapp/pending-bookings every 10s while
+ * mounted (MainLayout) and exposes the actions accept / suggestAlternative /
+ * reject, each refreshing the list on completion. Patients never poll.
+ */
+export const PendingApprovalProvider = ({ children }) => {
+    const { user } = useAuth();
+    const [pendingItems, setPendingItems] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const refresh = useCallback(async () => {
+        setLoading(true);
+        try {
+            const items = await listPending();
+            setPendingItems(items);
+        } catch (error) {
+            console.error('[PendingApprovalContext] Error fetching pending bookings:', error);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!user || user.role === 'patient') return undefined;
+        refresh();
+        const interval = setInterval(refresh, POLL_INTERVAL_MS);
+        return () => clearInterval(interval);
+    }, [user, refresh]);
+
+    const accept = useCallback(async (id) => {
+        try {
+            return await acceptPendingRequest(id);
+        } finally {
+            await refresh();
+        }
+    }, [refresh]);
+
+    const suggestAlternative = useCallback(async (id, slotIso, note = '') => {
+        try {
+            return await suggestAlternativeRequest(id, slotIso, note);
+        } finally {
+            await refresh();
+        }
+    }, [refresh]);
+
+    const reject = useCallback(async (id, reason = '') => {
+        try {
+            return await rejectPendingRequest(id, reason);
+        } finally {
+            await refresh();
+        }
+    }, [refresh]);
+
+    const value = useMemo(() => ({
+        pendingItems,
+        loading,
+        accept,
+        suggestAlternative,
+        reject,
+        refresh
+    }), [pendingItems, loading, accept, suggestAlternative, reject, refresh]);
+
+    return (
+        <PendingApprovalContext value={value}>
+            {children}
+        </PendingApprovalContext>
+    );
+};
