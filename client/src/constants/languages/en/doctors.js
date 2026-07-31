@@ -208,4 +208,20 @@ export const doctors = {
     next_suggested_visit: "Next Suggested Visit",
     next_suggested_prescription: "Next Suggested Prescription",
     license_expiry: "License Expiry",
+
+    // Doctor messages AI subtab
+    reminders_tab: "Reminders",
+    confirmations_tab: "Confirmations",
+    ai_tab: "AI",
+    load_base_rules: "Load base rules",
+    gemini_config_title: "Gemini AI Configuration",
+    gemini_context_label: "AI Prompt / Context",
+    gemini_context_placeholder: "E.g. You are Gemi, the clinic's virtual assistant...",
+    gemini_context_hint: "This context customizes how the AI responds for this doctor. The anti-hallucination rule is always kept.",
+    gemini_model_label: "Model",
+    gemini_api_version_label: "API version",
+    gemini_api_version_option_v1: "v1 (Stable)",
+    gemini_api_version_option_v1beta: "v1beta (Preview)",
+    gemini_history_limit_label: "History (messages)",
+    gemini_history_limit_hint: "Number of previous messages the AI considers when replying.",
 };

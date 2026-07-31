@@ -4,6 +4,23 @@ export const whatsapp_automation = {
     whatsapp_auto_respond_unknown_label: "Auto-respond to unknown numbers",
     whatsapp_auto_respond_unknown_hint: "If enabled, AI will send a greeting and registration link to any number not in your contact list.",
 
+    // AI Provider Priority (AiSettings)
+    ai_provider_title: "AI Provider",
+    ai_provider_hint: "Defines which provider is tried first and which acts as a fallback when sending AI requests.",
+    ai_provider_label: "Primary provider",
+    ai_provider_hint_detail: "The secondary provider is used automatically if the primary fails.",
+    ai_provider_option_ollama: "Ollama (local) first, Groq fallback",
+    ai_provider_option_groq: "Groq (Llama) first, Gemini fallback",
+    ai_provider_option_gemini: "Gemini first, Groq fallback",
+    ai_ollama_model_label: "Ollama Model (Global)",
+    ai_ollama_model_hint: "Model used for suggestions when Ollama is the primary or fallback provider.",
+    ai_groq_model_label: "Groq Model (Global)",
+    ai_groq_model_hint: "Model used for suggestions when Groq is the primary or fallback provider.",
+    gemini_global_model_label: "Gemini Model (Global)",
+    gemini_global_model_hint: "The model used to generate reply suggestions and automations.",
+    ai_gemini_section_title: "Per-provider models",
+    ai_gemini_section_desc: "Configure the global AI behavior. These values are used as the base for all doctors in the system.",
+
     // WhatsApp Page Config
     wa_config_doctor: "Doctor",
     wa_config_prompt_label: "AI Prompt / Context",

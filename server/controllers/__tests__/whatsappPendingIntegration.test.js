@@ -40,6 +40,15 @@ jest.mock('../../services/appointments/availabilitySearchService', () => ({
 jest.mock('../../db', () => ({
     pool: { query: jest.fn() }
 }));
+// Defensive: the controller imports this repo; under NODE_ENV=test its real
+// module loads with a null pool. Mocking keeps the module graph off any real
+// DB binding while the env-only AI path is exercised.
+jest.mock('../../repositories/system/systemSettingsRepository', () => ({
+    findManyByKeys: jest.fn().mockResolvedValue([]),
+    findByKey: jest.fn().mockResolvedValue(null),
+    findAll: jest.fn().mockResolvedValue([]),
+    upsert: jest.fn().mockResolvedValue([])
+}));
 
 const whatsappController = require('../communication/whatsappController');
 const whatsappAiService = require('../../services/communication/whatsappAiService');
