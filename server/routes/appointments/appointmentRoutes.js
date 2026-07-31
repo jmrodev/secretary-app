@@ -7,7 +7,11 @@ const schemas = require('../../validators/appointmentSchemas');
 
 router.get('/next-free', verifyToken, appointmentController.getNextFreeSlot);
 router.get('/next-free-batch', verifyToken, appointmentController.getFreeSlotsBatch);
+router.get('/stats', verifyToken, appointmentController.getCalendarStats);
+router.get('/month-report', verifyToken, appointmentController.getMonthlyReport);
+router.get('/daily-schedule', verifyToken, appointmentController.getDailySchedule);
 router.get('/', verifyToken, appointmentController.getAppointments);
+router.get('/:id', verifyToken, appointmentController.getAppointmentById);
 router.post('/', verifyToken, validate(schemas.createAppointment), appointmentController.createAppointment);
 router.put('/:id', verifyToken, appointmentController.updateAppointment);
 router.put('/:id/status', verifyToken, validate(schemas.updateStatus), appointmentController.updateStatus);
@@ -15,10 +19,5 @@ router.patch('/:id/payment', verifyToken, validate(schemas.updatePayment), appoi
 router.patch('/:id/type', verifyToken, appointmentController.updateType);
 router.post('/bulk-update-type', verifyToken, appointmentController.bulkUpdateType);
 router.delete('/:id', verifyToken, appointmentController.deleteAppointment);
-
-router.get('/stats', verifyToken, appointmentController.getCalendarStats);
-
-router.get('/month-report', verifyToken, appointmentController.getMonthlyReport);
-router.get('/daily-schedule', verifyToken, appointmentController.getDailySchedule);
 
 module.exports = router;

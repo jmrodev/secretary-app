@@ -1,9 +1,10 @@
 const TABLE_COLUMNS = {
     appointments: [
-        'patient_id', 'doctor_id', 'start_time', 'end_time', 'status', 'type',
-        'is_overbooked', 'description', 'google_event_id', 'payment_status', 'tariff',
+        'patient_id', 'doctor_id', 'appointment_date', 'start_time', 'end_time', 'status', 'type',
+        'is_overbooked', 'description', 'reason', 'google_event_id', 'payment_status', 'tariff',
         'institution_id', 'is_paid', 'is_notified', 'first_visit', 'debt_cleared_at',
-        'cancellation_reason'
+        'cancellation_reason', 'bonified', 'cost', 'rescheduled_from_date', 'duration',
+        'is_out_of_hours', 'created_at', 'confirmed_at', 'arrived_at', 'completed_at', 'paid_at'
     ],
     doctors: [
         'user_id', 'full_name', 'specialty', 'google_calendar_id', 'appointment_duration',

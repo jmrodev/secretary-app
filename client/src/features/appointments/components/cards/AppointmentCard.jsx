@@ -78,11 +78,18 @@ const AppointmentCard = ({ appt, onClick, showActions: _showActions = false, onW
                 <div className={`${styles.patientName}`}>
                     {appt.type === 'virtual' && <Icon name="videocam" size="1.1rem" />}
                     <div className={`${styles.patientNameText}`}>
-                        {(appt.patient_name || 'S/N').split(' ').map((part, index) => (
-                            <span key={index} className={index === 0 ? styles.surname : styles.givenName}>
-                                {part}
-                            </span>
-                        ))}
+                        {(() => {
+                            const parts = (appt.patient_name || 'S/N').split(' ').filter(Boolean);
+                            if (parts.length === 1) {
+                                return <span className={styles.surname}>{parts[0]}</span>;
+                            }
+                            const surnameIndex = parts.length - 1;
+                            return parts.map((part, index) => (
+                                <span key={index} className={index === surnameIndex ? styles.surname : styles.givenName}>
+                                    {part}
+                                </span>
+                            ));
+                        })()}
                     </div>
                     {appt.attended_appointments > 0 && (
                         <Badge 
@@ -116,7 +123,7 @@ const AppointmentCard = ({ appt, onClick, showActions: _showActions = false, onW
                 </div>
             </div>
 
-            <div className={`${styles.status}`}>
+            <div className={`${styles.paymentColumn}`}>
                 {(() => {
                     const isAttended = ['arrived', 'attended', 'completed'].includes(appt.status);
                     const paid = Number(appt.paid_amount || 0);
@@ -142,29 +149,51 @@ const AppointmentCard = ({ appt, onClick, showActions: _showActions = false, onW
                     let colorModifier = '';
                     let amountToDisplay = effectiveTotal;
                     let statusIcon = null;
+                    let titleTooltip = '';
 
                     if (paid >= effectiveTotal && effectiveTotal > 0) {
                         colorModifier = 'paid';
                         amountToDisplay = paid;
                         statusIcon = <Icon name="check_circle" className={styles.paymentIcon} />;
+                        titleTooltip = `Pagado totalmente: $${paid}`;
+                    } else if (paid > 0 && paid < effectiveTotal) {
+                        // Pago Parcial: Mostrar el saldo restante en rojo adeudado
+                        colorModifier = 'debt';
+                        const remaining = effectiveTotal - paid;
+                        amountToDisplay = remaining;
+                        statusIcon = <Icon name="error" className={styles.paymentIcon} />;
+                        titleTooltip = `Pago parcial: Cobrado $${paid} de $${effectiveTotal}. Saldo adeudado: $${remaining}`;
                     } else if (!isAttended) {
                         colorModifier = 'pending';
+                        statusIcon = <Icon name="payments" className={styles.paymentIcon} />;
+                        titleTooltip = `Pendiente de cobro: $${effectiveTotal}`;
                     } else if (pending > 0 || (!hasTransactions && cost > 0)) {
                         colorModifier = 'debt';
                         amountToDisplay = pending > 0 ? pending : cost;
                         statusIcon = <Icon name="error" className={styles.paymentIcon} />;
+                        titleTooltip = `Deuda pendiente: $${amountToDisplay}`;
                     }
 
-                    if (amountToDisplay === 0) return null;
+                    if (amountToDisplay === 0 && appt.payment_status !== 'paid') return null;
 
                     return (
-                        <div className={`${styles.paymentInfo} ${styles['paymentInfo' + colorModifier.charAt(0).toUpperCase() + colorModifier.slice(1)]}`}>
+                        <div 
+                            className={`${styles.paymentInfo} ${styles['paymentInfo' + colorModifier.charAt(0).toUpperCase() + colorModifier.slice(1)]}`}
+                            title={titleTooltip}
+                        >
+                            {paid > 0 && paid < effectiveTotal && (
+                                <span style={{ fontSize: '0.75rem', opacity: 0.85, marginRight: '0.2rem' }}>
+                                    (Resto)
+                                </span>
+                            )}
                             <span>{formatCurrency(amountToDisplay)}</span>
                             {statusIcon}
                         </div>
                     );
                 })()}
+            </div>
 
+            <div className={`${styles.status}`}>
                 <span className={`${styles.statusChip} ${styles['statusChip' + appt.status.charAt(0).toUpperCase() + appt.status.slice(1)]}`}>
                     {t(appt.status) || appt.status}
                 </span>

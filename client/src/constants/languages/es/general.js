@@ -102,6 +102,7 @@ export const general = {
     recent_prescriptions: "Recetas Recientes",
     new_prescription: "Nueva Receta",
     appointment_history: "Historial de Turnos",
+    appointment_details: "Detalles del Turno",
     appointment_date: "Fecha",
     appointment_doctor: "Doctor",
     appointment_status: "Estado",

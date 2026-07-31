@@ -76,9 +76,12 @@ const TransactionModal = ({
             isOpen={isOpen}
             onClose={onClose}
             title={t('record_payment')}
+            size="lg"
             footer={
-                <div className="transaction-modal__footer">
-                    <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
+                <div className={styles.footerButtons}>
+                    <Button variant="secondary" onClick={onClose} icon={<Icon name="close" size="1.1rem" />}>
+                        {t('cancel')}
+                    </Button>
                     <Button onClick={saveTransaction} disabled={loading} variant="primary" icon={<Icon name="check" size="1.2rem" />}>
                         {loading ? t('processing') : t('confirm_payment')}
                     </Button>
@@ -86,160 +89,119 @@ const TransactionModal = ({
             }
         >
             <div className={`${styles.root}`}>
-                <TransactionSummaryHeader 
-                    requestId={requestId} 
-                    patientSearch={patientSearch} 
-                    doctors={doctors} 
-                    doctor_id={formData.doctor_id} 
-                    t={t} 
-                />
-
-                {!requestId && (
-                    <FormGroup label={t('type')}>
-                        <Select
-                            value={formData.type}
-                            onChange={e => updateField('type', e.target.value)}
-                            options={transactionTypes}
-                            className="transaction-modal__select"
-                        />
-                    </FormGroup>
-                )}
+                <div className={styles.fieldFull}>
+                    <TransactionSummaryHeader 
+                        requestId={requestId} 
+                        patientSearch={patientSearch} 
+                        doctors={doctors} 
+                        doctor_id={formData.doctor_id} 
+                        t={t} 
+                    />
+                </div>
 
                 {!requestId && formData.type === 'income_patient' && (
-                    <FormGroup label={t('patient')}>
-                        <div className={`${styles.autocomplete}`}>
-                            <Input
-                                value={patientSearch}
-                                onChange={e => { setPatientSearch(e.target.value); setShowPatientList(true); updateField('related_user_id', ''); }}
-                                onFocus={() => !initialData?.patientId && setShowPatientList(true)}
-                                placeholder={t('search_name_dni')} disabled={!!initialData?.patientId}
-                                icon={<Icon name="search" size="1.1rem" />} className="transaction-modal__input"
-                            />
-                            {showPatientList && patientSearch && !formData.related_user_id && (
-                                <ul className={`${styles.results}`} role="listbox">
-                                    {filteredPatients.map(p => (
-                                        <li
-                                            key={p.id} onClick={() => selectPatient(p)}
-                                            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectPatient(p); } }}
-                                            className={`${styles.item}`} role="option" aria-selected={false} tabIndex={0}
-                                        >
-                                            <span className="transaction-modal__item-name">{p.full_name}</span>
-                                            <span className={`${styles.hint}`}>{p.dni}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    </FormGroup>
+                    <div className={styles.fieldThird}>
+                        <FormGroup label={t('patient')}>
+                            <div className={`${styles.autocomplete}`}>
+                                <Input
+                                    value={patientSearch}
+                                    onChange={e => { setPatientSearch(e.target.value); setShowPatientList(true); updateField('related_user_id', ''); }}
+                                    onFocus={() => !initialData?.patientId && setShowPatientList(true)}
+                                    placeholder={t('search_name_dni')} disabled={!!initialData?.patientId}
+                                    icon={<Icon name="search" size="1.1rem" />} className="transaction-modal__input"
+                                />
+                                {showPatientList && patientSearch && !formData.related_user_id && (
+                                    <ul className={`${styles.results}`} role="listbox">
+                                        {filteredPatients.map(p => (
+                                            <li
+                                                key={p.id} onClick={() => selectPatient(p)}
+                                                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectPatient(p); } }}
+                                                className={`${styles.item}`} role="option" aria-selected={false} tabIndex={0}
+                                            >
+                                                <span className="transaction-modal__item-name">{p.full_name}</span>
+                                                <span className={`${styles.hint}`}>{p.dni}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        </FormGroup>
+                    </div>
                 )}
 
                 {formData.type === 'income_rental' && (
-                    <FormGroup label={t('doctor_payer')}>
-                        <Select
-                            value={formData.related_user_id}
-                            onChange={e => updateField('related_user_id', e.target.value)}
-                            options={doctorUserOptions}
-                            className="transaction-modal__select"
-                        />
-                    </FormGroup>
+                    <div className={styles.fieldThird}>
+                        <FormGroup label={t('doctor_payer')}>
+                            <Select
+                                value={formData.related_user_id}
+                                onChange={e => updateField('related_user_id', e.target.value)}
+                                options={doctorUserOptions}
+                                className="transaction-modal__select"
+                            />
+                        </FormGroup>
+                    </div>
                 )}
 
                 {!requestId && (
-                    <FormGroup label={t('beneficiary_doctor_cash_box')}>
-                        <Select
-                            value={formData.doctor_id}
-                            onChange={e => updateDoctor(e.target.value)}
-                            options={doctorOptions}
-                            className="transaction-modal__select"
-                        />
-                    </FormGroup>
+                    <div className={styles.fieldThird}>
+                        <FormGroup label={t('beneficiary_doctor_cash_box')}>
+                            <Select
+                                value={formData.doctor_id}
+                                onChange={e => updateDoctor(e.target.value)}
+                                options={doctorOptions}
+                                className="transaction-modal__select"
+                            />
+                        </FormGroup>
+                    </div>
                 )}
 
                 {!requestId && formData.type === 'income_patient' && (
-                    <FormGroup label={t('service_type')}>
-                        <Select
-                            value={formData.service_type}
-                            onChange={e => updateServiceType(e.target.value)}
-                            options={serviceTypes}
-                            className="transaction-modal__select"
+                    <div className={styles.fieldThird}>
+                        <FormGroup label={t('service_type')}>
+                            <Select
+                                value={formData.service_type}
+                                onChange={e => updateServiceType(e.target.value)}
+                                options={serviceTypes}
+                                className="transaction-modal__select"
+                            />
+                        </FormGroup>
+                    </div>
+                )}
+
+
+
+
+
+                <div className={styles.fieldFull}>
+                    <TransactionPaymentsSection 
+                        pricingInfo={pricingInfo} totalPrice={totalPrice} setTotalPrice={setTotalPrice}
+                        payments={formData.payments} handlePaymentChange={handlePaymentChange}
+                        addPaymentMethod={addPaymentMethod} removePaymentMethod={removePaymentMethod}
+                        currentPaidTotal={currentPaidTotal} debtAmount={debtAmount}
+                        formatCurrency={formatCurrency} t={t}
+                    />
+                </div>
+
+                <div className={styles.fieldFull}>
+                    <FormGroup label={t('description')}>
+                        <AutoTextarea
+                            value={formData.description}
+                            onChange={e => updateField('description', e.target.value)}
+                            placeholder={t('description_placeholder')}
+                            className="transaction-modal__textarea"
                         />
                     </FormGroup>
-                )}
+                </div>
 
-                {!requestId && formData.type === 'income_patient' && (
-                    MedicationInputComponent ? (
-                        <MedicationInputComponent
-                            medications={medications}
-                            onAdd={addMedication}
-                            onRemove={removeMedication}
-                            selectedPatient={selectedPatient}
-                            label={t('medications')}
-                            className="transaction-modal__medication-input"
-                        />
-                    ) : typeof medicationInputSlot === 'function' ? (
-                        medicationInputSlot({
-                            medications,
-                            onAdd: addMedication,
-                            onRemove: removeMedication,
-                            selectedPatient,
-                            label: t('medications'),
-                            className: "transaction-modal__medication-input"
-                        })
-                    ) : (
-                        medicationInputSlot
-                    )
-                )}
-
-                <TransactionPaymentsSection 
-                    pricingInfo={pricingInfo} totalPrice={totalPrice} setTotalPrice={setTotalPrice}
-                    payments={formData.payments} handlePaymentChange={handlePaymentChange}
-                    addPaymentMethod={addPaymentMethod} removePaymentMethod={removePaymentMethod}
-                    currentPaidTotal={currentPaidTotal} debtAmount={debtAmount}
-                    formatCurrency={formatCurrency} t={t}
-                />
-
-                {!requestId && (
-                    <FormGroup label={t('status')}>
-                        <Select
-                            value={formData.status}
-                            onChange={e => updateField('status', e.target.value)}
-                            options={statusOptions}
-                            className="transaction-modal__select"
-                        />
-                    </FormGroup>
-                )}
-
-                {!requestId && settings.allow_admin_edit_finance_date === 'true' && (
-                    <FormGroup label={t('transaction_date')}>
+                <div className={styles.fieldHalf}>
+                    <FormGroup label={t('proof_payment_optional')}>
                         <Input
-                            type="datetime-local"
-                            value={formData.transaction_date}
-                            onChange={e => updateField('transaction_date', e.target.value)}
-                            className="transaction-modal__input"
+                            type="file"
+                            onChange={e => updateField('proof', e.target.files[0])}
+                            className="transaction-modal__file-input"
                         />
-                        <div className="transaction-modal__date-warning">
-                            <Icon name="warning" size="1.1rem" className="transaction-modal__warning-icon" />
-                            <span>{t('edit_date_warning')}</span>
-                        </div>
                     </FormGroup>
-                )}
-
-                <FormGroup label={t('description')}>
-                    <AutoTextarea
-                        value={formData.description}
-                        onChange={e => updateField('description', e.target.value)}
-                        placeholder={t('description_placeholder')}
-                        className="transaction-modal__textarea"
-                    />
-                </FormGroup>
-
-                <FormGroup label={t('proof_payment_optional')}>
-                    <Input
-                        type="file"
-                        onChange={e => updateField('proof', e.target.files[0])}
-                        className="transaction-modal__file-input"
-                    />
-                </FormGroup>
+                </div>
             </div>
         </Modal>
     );

@@ -93,6 +93,7 @@ export const general = {
     recent_prescriptions: "Recent Prescriptions",
     new_prescription: "New Prescription",
     appointment_history: "Appointment History",
+    appointment_details: "Appointment Details",
     appointment_date: "Date",
     appointment_doctor: "Doctor",
     appointment_status: "Status",

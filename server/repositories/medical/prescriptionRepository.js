@@ -23,6 +23,13 @@ class PrescriptionRepository {
     }
 
     async create(data, conn = this.pool) {
+        if (data.patient_id) {
+            const result = await conn.query(
+                "INSERT INTO prescriptions (appointment_id, patient_id, medications, instructions, bonified) VALUES (?, ?, ?, ?, ?)",
+                [data.appointment_id || null, data.patient_id, data.medications || '', data.instructions || '', data.bonified || false]
+            );
+            return result.insertId;
+        }
         const result = await conn.query(
             "INSERT INTO prescriptions (appointment_id, medications, instructions, bonified) VALUES (?, ?, ?, ?)",
             [data.appointment_id || null, data.medications || '', data.instructions || '', data.bonified || false]

@@ -135,7 +135,8 @@
 
 .dateLabel {
     font-size: 0.85rem;
-    color: var(--text-muted);
+    color: #fff !important;
+    font-weight: 600;
 }
 
 .todayBadge {
@@ -219,8 +220,8 @@
 }
 
 .titleDate {
-    font-weight: 400;
-    color: var(--text-muted);
+    font-weight: 700;
+    color: #fff !important;
 }
 
 .body {

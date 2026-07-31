@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"os/signal"
@@ -94,11 +95,18 @@ func handleSend(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Read the raw body for logging BEFORE decoding
+	bodyBytes, _ := io.ReadAll(r.Body)
+	r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes)) // Restore for Decode
+
 	var req SendRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		fmt.Printf("[Send ERROR] Failed to decode request body: %v\n", err)
+		fmt.Printf("[Send ERROR] Raw body received: %s\n", string(bodyBytes))
+		http.Error(w, fmt.Sprintf("Invalid request body: %v", err), http.StatusBadRequest)
 		return
 	}
+	fmt.Printf("[Send DEBUG] Decoded request — recipient: %q, message length: %d chars\n", req.Recipient, len(req.Message))
 
 	clientMu.Lock()
 	c := client

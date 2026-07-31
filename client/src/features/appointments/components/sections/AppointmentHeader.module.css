@@ -45,6 +45,62 @@
     align-items: flex-end;
 }
 
+.timelineList {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    align-items: center;
+}
+
+.timelineItem {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    letter-spacing: 0.01em;
+    box-shadow: var(--shadow-sm);
+}
+
+.itemCreated {
+    background: rgb(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgb(59, 130, 246, 0.35);
+}
+
+.itemConfirmed {
+    background: rgb(20, 184, 166, 0.15);
+    color: #2dd4bf;
+    border: 1px solid rgb(20, 184, 166, 0.35);
+}
+
+.itemArrived {
+    background: rgb(168, 85, 247, 0.15);
+    color: #c084fc;
+    border: 1px solid rgb(168, 85, 247, 0.35);
+}
+
+.itemCompleted {
+    background: rgb(16, 185, 129, 0.15);
+    color: #34d399;
+    border: 1px solid rgb(16, 185, 129, 0.35);
+}
+
+.itemPaid {
+    background: rgb(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgb(34, 197, 94, 0.35);
+}
+
+.itemBonified {
+    background: rgb(168, 85, 247, 0.18);
+    color: #e879f9;
+    border: 1px solid rgb(168, 85, 247, 0.45);
+}
+
 .visuallyHidden {
     position: absolute;
     width: 1px;

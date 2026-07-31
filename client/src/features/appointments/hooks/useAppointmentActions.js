@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import api from '@/api/axios';
 
 /**
  * Hook that contains specific logic for appointment lifecycle actions (reschedule, cancel, delete, status).
@@ -13,7 +14,8 @@ export const useAppointmentActions = ({
     updateAppointment,
     deleteAppointment,
     rescheduleAppointment,
-    fetchAppointments
+    fetchAppointments,
+    setActionModal
 }) => {
     const handleReschedule = useCallback(async (apptId, newDateTime) => {
         try {
@@ -83,11 +85,29 @@ export const useAppointmentActions = ({
         }
     }, [updateAppointment, showMessage, t]);
 
+    const handleBonify = useCallback(async (appt) => {
+        if (!await confirm(t('confirm_bonify') || "¿Seguro que desea marcar como bonificado? Esto cancelará deudas pendientes.")) return;
+        try {
+            await updateAppointment(appt.id, { bonified: true });
+            showMessage(t('bonify_success') || "Turno bonificado exitosamente.", 'success');
+            fetchAppointments();
+            try {
+                const updated = await api.get(`/appointments/${appt.id}`);
+                if (updated?.data?.data && setActionModal) {
+                    setActionModal(prev => (prev.open ? { ...prev, appt: updated.data.data } : prev));
+                }
+            } catch (_) {}
+        } catch {
+            showMessage(t('bonify_error') || "Error al intentar bonificar el turno.", 'error');
+        }
+    }, [confirm, updateAppointment, showMessage, t, fetchAppointments, setActionModal]);
+
     return {
         handleReschedule,
         handleCancel,
         handleDelete,
         handleStatusUpdate,
-        handleTypeUpdate
+        handleTypeUpdate,
+        handleBonify
     };
 };

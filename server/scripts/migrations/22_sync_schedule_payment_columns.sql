@@ -123,6 +123,11 @@ BEGIN
         a.cost,
         a.payment_status,
         a.rescheduled_from_date,
+        a.created_at,
+        a.confirmed_at,
+        a.arrived_at,
+        a.completed_at,
+        a.paid_at,
         ts.slot_date,
         ts.slot_time,
         CASE 
