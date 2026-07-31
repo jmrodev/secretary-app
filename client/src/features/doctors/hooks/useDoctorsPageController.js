@@ -7,6 +7,49 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useFetch } from '@/hooks/useFetch';
 import { useSearch } from '@/hooks/useSearch';
 
+/**
+ * Builds the edit-modal initialData from a doctor record.
+ * Pure function so the seeding logic is unit-testable without rendering the
+ * controller hook. AI fields are seeded explicitly (gemini_model, and
+ * gemini_api_version defaulting to 'v1beta') so stored values display and
+ * persist through the modal.
+ *
+ * @param {object} doc doctor record
+ * @returns {object} modal initialData
+ */
+export const buildDoctorInitialData = (doc) => ({
+    id: doc.id,
+    specialty: doc.specialty || '',
+    cbu: doc.cbu || '',
+    bio: doc.bio || '',
+    office_number: doc.office_number || '',
+    rental_type: doc.rental_type || 'monthly',
+    rental_cost: doc.rental_cost || 0,
+    consultation_price: doc.consultation_price || 0,
+    prescription_price: doc.prescription_price || 0,
+    medical_license_price: doc.medical_license_price || 0,
+    certificate_price: doc.certificate_price || 0,
+    virtual_consultation_price: doc.virtual_consultation_price || 0,
+    appointment_duration: doc.appointment_duration || 60,
+    break_duration: doc.break_duration || 0,
+    default_visit_interval_days: doc.default_visit_interval_days || 0,
+    default_prescription_interval_days: doc.default_prescription_interval_days || 0,
+    overturn_start_time: doc.overturn_start_time || '08:00:00',
+    overturn_end_time: doc.overturn_end_time || '21:00:00',
+    force_hour_alignment: doc.force_hour_alignment === 1 || doc.force_hour_alignment === true,
+    afip_cuit: doc.afip_cuit || '',
+    afip_pto_vta: doc.afip_pto_vta || 1,
+    afip_enabled: doc.afip_enabled === 1 || doc.afip_enabled === true,
+    reminder_template: doc.reminder_template || '',
+    confirmation_template: doc.confirmation_template || '',
+    reminder_virtual_template: doc.reminder_virtual_template || '',
+    confirmation_virtual_template: doc.confirmation_virtual_template || '',
+    gemini_context: doc.gemini_context || '',
+    gemini_history_limit: doc.gemini_history_limit || 3,
+    gemini_model: doc.gemini_model || '',
+    gemini_api_version: doc.gemini_api_version || 'v1beta'
+});
+
 export const useDoctorsPageController = () => {
     const { t } = useLanguage();
     const { user: currentUser } = useAuth();
@@ -90,36 +133,7 @@ export const useDoctorsPageController = () => {
             });
             return;
         }
-        const initialData = {
-            id: doc.id,
-            specialty: doc.specialty || '',
-            cbu: doc.cbu || '',
-            bio: doc.bio || '',
-            office_number: doc.office_number || '',
-            rental_type: doc.rental_type || 'monthly',
-            rental_cost: doc.rental_cost || 0,
-            consultation_price: doc.consultation_price || 0,
-            prescription_price: doc.prescription_price || 0,
-            medical_license_price: doc.medical_license_price || 0,
-            certificate_price: doc.certificate_price || 0,
-            virtual_consultation_price: doc.virtual_consultation_price || 0,
-            appointment_duration: doc.appointment_duration || 60,
-            break_duration: doc.break_duration || 0,
-            default_visit_interval_days: doc.default_visit_interval_days || 0,
-            default_prescription_interval_days: doc.default_prescription_interval_days || 0,
-            overturn_start_time: doc.overturn_start_time || '08:00:00',
-            overturn_end_time: doc.overturn_end_time || '21:00:00',
-            force_hour_alignment: doc.force_hour_alignment === 1 || doc.force_hour_alignment === true,
-            afip_cuit: doc.afip_cuit || '',
-            afip_pto_vta: doc.afip_pto_vta || 1,
-            afip_enabled: doc.afip_enabled === 1 || doc.afip_enabled === true,
-            reminder_template: doc.reminder_template || '',
-            confirmation_template: doc.confirmation_template || '',
-            reminder_virtual_template: doc.reminder_virtual_template || '',
-            confirmation_virtual_template: doc.confirmation_virtual_template || '',
-            gemini_context: doc.gemini_context || '',
-            gemini_history_limit: doc.gemini_history_limit || 3
-        };
+        const initialData = buildDoctorInitialData(doc);
 
         setModalState({
             isOpen: true,
