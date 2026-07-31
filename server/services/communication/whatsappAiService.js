@@ -4,11 +4,13 @@ const scheduleRepository = require('../../repositories/appointments/scheduleRepo
 const holidayRepository = require('../../repositories/appointments/holidayRepository');
 const availabilitySearchService = require('../../services/appointments/availabilitySearchService');
 const patientRepository = require('../../repositories/user/patientRepository');
-const bookingService = require('../../services/appointments/bookingService');
-const { formatLocalSQL } = require('../../utils/core/dateUtils');
+const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
 const { pool } = require('../../db');
 
 const authService = require('../../services/user/authService');
+
+/** Default polite message used while a booking is pending secretary approval. */
+const DEFAULT_PENDING_RESPONSE = 'Tu solicitud de turno está en revisión. La Secretaría te va a confirmar a la brevedad. 🙋♀️';
 
 /**
  * WhatsAppAiService
@@ -19,6 +21,12 @@ class WhatsAppAiService {
         if (!patientId && !phone) throw new Error('patientId o phone es requerido');
 
         const context = await this._buildContext(patientId, phone, doctorId, userId);
+
+        // Re-detection guard: while a pending booking exists, do not re-detect
+        // booking intent nor trigger auto-booking — respond with the pending template.
+        if (context.hasPendingBooking) {
+            return this._pendingStateReply(context);
+        }
 
         // Try to auto-register if patient submitted registration details (DNI/Name)
         const autoRegisterResult = await this._tryAutoRegister(context);
@@ -53,9 +61,11 @@ class WhatsAppAiService {
 
     /**
      * Checks if the last patient message is a confirmation of an offered slot.
-     * If so, books the appointment automatically and returns a confirmation message.
+     * If so, inserts a whatsapp_pending_bookings row (status 'pending') instead
+     * of creating the appointment directly — the secretary must approve it first.
      */
     async _tryAutoBook(context, userId) {
+        if (context.hasPendingBooking) return null; // Re-detection guard
         if (!context.doctor || !context.freeSlots?.length) return null;
         if (!context.lastPatientMessage) return null;
 
@@ -89,14 +99,14 @@ class WhatsAppAiService {
         for (const day of context.freeSlots) {
             const slot = day.slots.find(s => s.time === targetTime);
             if (slot) {
-                // Found matching slot — create the appointment
+                // Found matching slot — queue it for secretary approval (no appointment yet)
                 try {
-                    const appointmentDate = `${day.date} ${targetTime}:00`;
-                    const result = await bookingService.createAppointment(userId, 'secretary', {
+                    await pendingBookingRepository.create({
                         patient_id: context.patientId,
                         doctor_id: context.doctor.id,
-                        appointment_date: appointmentDate,
-                        reason: 'Turno solicitado por WhatsApp',
+                        patient_phone: context.phone || '',
+                        requested_slot_date: day.date,
+                        requested_slot_time: targetTime
                     });
 
                     const dayName = context.doctorName;
@@ -104,19 +114,25 @@ class WhatsAppAiService {
                         weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
                     });
 
-                    return `✅ Turno reservado: ${formattedDate} a las ${targetTime} hs con ${dayName}. ¡Te esperamos! 🏥`;
+                    return `✅ Recibimos tu solicitud para el turno del ${formattedDate} a las ${targetTime} hs con ${dayName}. Tu pedido quedó en revisión y la Secretaría te confirma a la brevedad. 🙋♀️`;
                 } catch (err) {
-                    if (err.message?.includes('slot_already_taken') || err.message?.includes('ya existe')) {
-                        return `El turno de las ${targetTime} ya fue reservado por otro paciente. Consulto con la Secretaría para ofrecerte un nuevo horario. 🙋‍♀️`;
-                    }
-                    console.error('[AutoBook Error]:', err);
-                    return `Hubo un problema al reservar el turno. Consulto con la Secretaría para ayudarte. 🙋‍♀️`;
+                    console.error('[AutoBook Pending Error]:', err);
+                    return `Hubo un problema al reservar el turno. Consulto con la Secretaría para ayudarte. 🙋♀️`;
                 }
             }
         }
 
         // Time matched patterns but not found in available slots
         return null;
+    }
+
+    /**
+     * Builds the AI reply used while the patient's booking is pending approval.
+     * Uses the doctor's configurable pending_response_template with a default fallback.
+     */
+    _pendingStateReply(context) {
+        const template = context.doctor?.pending_response_template?.trim();
+        return template || DEFAULT_PENDING_RESPONSE;
     }
 
     async _tryGroq(prompt, model, apiKey) {
@@ -221,6 +237,17 @@ class WhatsAppAiService {
 
         const patientName = patient ? patient.full_name : 'Paciente';
 
+        // Active pending booking flag — used by the re-detection guard
+        let hasPendingBooking = false;
+        if (patientId) {
+            try {
+                const activePending = await pendingBookingRepository.findActiveByPatient(patientId);
+                hasPendingBooking = !!activePending;
+            } catch (err) {
+                console.error('[Pending Booking Check Error]:', err);
+            }
+        }
+
         // Extract last patient message for auto-booking detection
         const lastPatientMessage = history
             .filter(m => m.direction === 'inbound')
@@ -297,6 +324,7 @@ class WhatsAppAiService {
                 freeSlots: freeSlotsData.results,
                 patientId,
                 phone,
+                hasPendingBooking,
                 isRegistered: !!patient
             };
         }
@@ -312,6 +340,7 @@ class WhatsAppAiService {
             freeSlots: [], 
             patientId,
             phone,
+            hasPendingBooking,
             isRegistered: !!patient
         };
     }
