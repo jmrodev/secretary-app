@@ -64,6 +64,7 @@ const WhatsappConfig = ({ t }) => {
     const [aiContext, setAiContext] = useState('');
     const [aiModel, setAiModel] = useState('llama-3.3-70b-versatile');
     const [historyLimit, setHistoryLimit] = useState(3);
+    const [pendingTemplate, setPendingTemplate] = useState('');
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState(null);
 
@@ -85,6 +86,7 @@ const WhatsappConfig = ({ t }) => {
             setAiContext(doctor.gemini_context || BUSINESS_RULES_BASE);
             setAiModel(doctor.gemini_model || 'llama-3.3-70b-versatile');
             setHistoryLimit(doctor.gemini_history_limit || 3);
+            setPendingTemplate(doctor.pending_response_template || '');
         }
     }, [selectedDoctorId, doctors]);
 
@@ -97,6 +99,7 @@ const WhatsappConfig = ({ t }) => {
                 gemini_context: aiContext,
                 gemini_model: aiModel,
                 gemini_history_limit: historyLimit,
+                pending_response_template: pendingTemplate,
             });
             if (res.data.success) {
                 setMessage({ type: 'success', text: t('wa_config_saved') });
@@ -198,6 +201,29 @@ const WhatsappConfig = ({ t }) => {
                         <Icon name="sync" size="0.9rem" />
                         {t('wa_config_prompt_restore')}
                     </Button>
+                </div>
+            </div>
+
+            <div className="config-section__divider"></div>
+
+            {/* Pending-state response template */}
+            <div className="config-section">
+                <div className="config-section__header">
+                    <Icon name="NOTIFICATIONS" size="1.2rem" className="config-section__icon" />
+                    <h4 className="config-section__title">{t('wa_config_pending_template_label')}</h4>
+                </div>
+                <div className="config-section__body">
+                    <p className="config-section__description" style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
+                        {t('wa_config_pending_template_hint')}
+                    </p>
+                    <textarea
+                        className={styles.textarea}
+                        value={pendingTemplate}
+                        onChange={e => setPendingTemplate(e.target.value)}
+                        rows={4}
+                        placeholder={t('wa_config_pending_template_placeholder')}
+                        aria-label={t('wa_config_pending_template_label')}
+                    />
                 </div>
             </div>
 

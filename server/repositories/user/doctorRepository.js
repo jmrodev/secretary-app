@@ -40,7 +40,8 @@ const ALLOWED_FIELDS = [
     "gemini_context",
     "gemini_history_limit",
     "gemini_model",
-    "gemini_api_version"
+    "gemini_api_version",
+    "pending_response_template"
 ];
 
 class DoctorRepository {
