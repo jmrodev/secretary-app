@@ -26,10 +26,10 @@ Chain strategy: pending
 
 ## Phase 1: Database + Repository Foundation
 
-- [ ] 1.1 Create `server/scripts/migrations/25_whatsapp_pending_bookings.sql` (table + `doctors.pending_response_template`); applied manually via mysql CLI per existing migration convention
-- [ ] 1.2 RED: `pendingBookingRepository.test.js` — create/findActive/acceptById/suggestAlternative/rejectById fail (repo missing)
-- [ ] 1.3 Create `server/repositories/communication/pendingBookingRepository.js` — pool queries; `acceptById` = `UPDATE ... SET status='accepted' WHERE id=? AND status='pending'` (optimistic lock)
-- [ ] 1.4 GREEN: Jest passes for repository
+- [x] 1.1 Create `server/scripts/migrations/25_whatsapp_pending_bookings.sql` (table + `doctors.pending_response_template`); applied manually via mysql CLI per existing migration convention
+- [x] 1.2 RED: `pendingBookingRepository.test.js` — create/findActive/acceptById/suggestAlternative/rejectById fail (repo missing)
+- [x] 1.3 Create `server/repositories/communication/pendingBookingRepository.js` — pool queries; `acceptById` = `UPDATE ... SET status='accepted' WHERE id=? AND status='pending'` (optimistic lock)
+- [x] 1.4 GREEN: Jest passes for repository
 - [ ] 1.5 Add `pending_response_template` to `ALLOWED_FIELDS` in `server/repositories/user/doctorRepository.js`
 
 ## Phase 2: Backend (Service, Controller, Routes)
