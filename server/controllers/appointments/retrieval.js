@@ -61,3 +61,17 @@ exports.getDailySchedule = async (req, res) => {
         sendResponse(res, false, null, "Error al recuperar la agenda diaria", 500);
     }
 };
+
+exports.getAppointmentById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const appointment = await retrievalService.getAppointmentById(id);
+        if (!appointment) {
+            return sendResponse(res, false, null, "Turno no encontrado", 404);
+        }
+        sendResponse(res, true, appointment);
+    } catch (err) {
+        console.error("[ECC-Controller] getAppointmentById error:", err);
+        sendResponse(res, false, null, "Error al recuperar el turno", 500);
+    }
+};

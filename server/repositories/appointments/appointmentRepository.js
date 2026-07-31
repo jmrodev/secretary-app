@@ -54,7 +54,7 @@ class AppointmentRepository {
         const connection = conn || await this.pool.getConnection();
         try {
             const result = await connection.query(
-                "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id, bonified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id, bonified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())",
                 [data.patient_id, data.doctor_id, data.appointment_date, data.reason, data.is_out_of_hours || false, data.type || 'consultation', data.status || 'pending', data.institution_id, data.bonified || false]
             );
             return result.insertId;
