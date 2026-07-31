@@ -33,7 +33,7 @@ class WhatsAppAiService {
         if (autoRegisterResult) return autoRegisterResult;
 
         // Try to auto-book if patient confirmed a slot
-        const autoBookResult = await this._tryAutoBook(context, userId);
+        const autoBookResult = await this._tryAutoBook(context);
         if (autoBookResult) return autoBookResult;
 
         // Otherwise, generate AI suggestion as usual
@@ -64,7 +64,7 @@ class WhatsAppAiService {
      * If so, inserts a whatsapp_pending_bookings row (status 'pending') instead
      * of creating the appointment directly — the secretary must approve it first.
      */
-    async _tryAutoBook(context, userId) {
+    async _tryAutoBook(context) {
         if (context.hasPendingBooking) return null; // Re-detection guard
         if (!context.doctor || !context.freeSlots?.length) return null;
         if (!context.lastPatientMessage) return null;

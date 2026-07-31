@@ -37,8 +37,8 @@ Chain strategy: pending
 - [x] 2.1 RED: extend `server/services/communication/whatsappAiService.test.js` — `_tryAutoBook()` inserts pending (never `createAppointment`); `_buildContext()` sets `hasPendingBooking`
 - [x] 2.2 Modify `whatsappAiService.js`: `_tryAutoBook()` INSERT pending + "en revisión" reply; `_buildContext()` adds pending flag; pending-state reply uses `pending_response_template` with default fallback
 - [x] 2.3 GREEN: whatsappAiService tests pass
-- [ ] 2.4 Add `whatsappController.js` handlers: `listPending` (with 2h alternative timeout cleanup), `acceptPending` (createAppointment, phone-change guard, slot-taken → rejected), `suggestAlternative`, `rejectPending`
-- [ ] 2.5 Register 4 endpoints in `server/routes/communication/whatsappRoutes.js` (verifyToken)
+- [x] 2.4 Add `whatsappController.js` handlers: `listPending` (with 2h alternative timeout cleanup), `acceptPending` (createAppointment, phone-change guard, slot-taken → rejected), `suggestAlternative`, `rejectPending`
+- [x] 2.5 Register 4 endpoints in `server/routes/communication/whatsappRoutes.js` (verifyToken)
 
 ## Phase 3: Frontend (Context, Components, Wiring)
 
