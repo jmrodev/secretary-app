@@ -5,6 +5,8 @@ const whatsappRepository = require('../../repositories/communication/whatsappRep
 const scheduleRepository = require('../../repositories/appointments/scheduleRepository');
 const holidayRepository = require('../../repositories/appointments/holidayRepository');
 const availabilitySearchService = require('../../services/appointments/availabilitySearchService');
+const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
+const bookingService = require('../../services/appointments/bookingService');
 const { pool } = require('../../db');
 
 jest.mock('../../repositories/user/doctorRepository');
@@ -13,6 +15,8 @@ jest.mock('../../repositories/communication/whatsappRepository');
 jest.mock('../../repositories/appointments/scheduleRepository');
 jest.mock('../../repositories/appointments/holidayRepository');
 jest.mock('../../services/appointments/availabilitySearchService');
+jest.mock('../../repositories/communication/pendingBookingRepository');
+jest.mock('../../services/appointments/bookingService');
 jest.mock('../../db', () => ({
     pool: {
         query: jest.fn()
@@ -121,6 +125,56 @@ describe('WhatsAppAiService', () => {
             expect(context.doctorContext).toContain('Lunes: 09:00');
             expect(context.doctorContext).toContain('2026');
         });
+        it('should set hasPendingBooking true when the patient has an active pending booking', async () => {
+            const mockDoctor = {
+                full_name: 'Dr. House',
+                gemini_context: 'Hola {patient_name}',
+                gemini_history_limit: 3
+            };
+            doctorRepository.findById.mockResolvedValue(mockDoctor);
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            scheduleRepository.findByDoctor.mockResolvedValue([]);
+            holidayRepository.findAll.mockResolvedValue([]);
+            pool.query.mockResolvedValue([[{ full_name: 'Ana' }]]);
+            availabilitySearchService.getFreeSlotsBatch.mockResolvedValue({ results: [] });
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue({ id: 9, status: 'pending' });
+
+            const context = await whatsappAiService._buildContext(1, 2, 3);
+
+            expect(context.hasPendingBooking).toBe(true);
+            expect(pendingBookingRepository.findActiveByPatient).toHaveBeenCalledWith(1);
+        });
+
+        it('should set hasPendingBooking false when the patient has no active pending booking', async () => {
+            const mockDoctor = {
+                full_name: 'Dr. House',
+                gemini_context: 'Hola {patient_name}',
+                gemini_history_limit: 3
+            };
+            doctorRepository.findById.mockResolvedValue(mockDoctor);
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            scheduleRepository.findByDoctor.mockResolvedValue([]);
+            holidayRepository.findAll.mockResolvedValue([]);
+            pool.query.mockResolvedValue([[{ full_name: 'Ana' }]]);
+            availabilitySearchService.getFreeSlotsBatch.mockResolvedValue({ results: [] });
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+            const context = await whatsappAiService._buildContext(1, 2, 3);
+
+            expect(context.hasPendingBooking).toBe(false);
+        });
+
+        it('should set hasPendingBooking false in the fallback context when no doctor is provided', async () => {
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+            const context = await whatsappAiService._buildContext(1, null, null);
+
+            expect(context.hasPendingBooking).toBe(false);
+        });
     });
 
     describe('_tryAutoBook', () => {
@@ -138,36 +192,99 @@ describe('WhatsAppAiService', () => {
             expect(result).toBeNull();
         });
 
-        it('should book appointment when patient confirms a slot', async () => {
-            const bookingService = require('../../services/appointments/bookingService');
-            bookingService.createAppointment = jest.fn().mockResolvedValue({ id: 123 });
+        it('should create a pending booking instead of an appointment when patient confirms a slot', async () => {
+            pendingBookingRepository.create.mockResolvedValue(7);
 
             const result = await whatsappAiService._tryAutoBook({
                 doctor: { id: 1, full_name: 'Dr. House' },
                 doctorName: 'Dr. House',
                 freeSlots: [{ dayName: 'Lunes 3 de Agosto', date: '2026-08-03', slots: [{ time: '09:00' }] }],
                 lastPatientMessage: 'si, el de las 9',
+                patientId: 5,
+                phone: '5491112345678'
+            }, 3);
+
+            expect(pendingBookingRepository.create).toHaveBeenCalledWith({
+                patient_id: 5,
+                doctor_id: 1,
+                patient_phone: '5491112345678',
+                requested_slot_date: '2026-08-03',
+                requested_slot_time: '09:00'
+            });
+            expect(bookingService.createAppointment).not.toHaveBeenCalled();
+            expect(result).toContain('revisión');
+            expect(result).toContain('09:00');
+        });
+
+        it('should NOT create a pending booking when the patient already has an active pending (re-detection guard)', async () => {
+            const result = await whatsappAiService._tryAutoBook({
+                doctor: { id: 1, full_name: 'Dr. House' },
+                freeSlots: [{ dayName: 'Lunes 3 de Agosto', date: '2026-08-03', slots: [{ time: '09:00' }] }],
+                lastPatientMessage: 'si, el de las 9',
+                hasPendingBooking: true,
                 patientId: 5
             }, 3);
 
-            expect(result).toContain('✅ Turno reservado');
-            expect(result).toContain('09:00');
-            expect(bookingService.createAppointment).toHaveBeenCalledWith(3, 'secretary', {
-                patient_id: 5,
-                doctor_id: 1,
-                appointment_date: '2026-08-03 09:00:00',
-                reason: 'Turno solicitado por WhatsApp',
-            });
+            expect(result).toBeNull();
+            expect(pendingBookingRepository.create).not.toHaveBeenCalled();
+            expect(bookingService.createAppointment).not.toHaveBeenCalled();
         });
     });
 
     describe('getAiSuggestion', () => {
+        it('should return the configured pending template without calling AI when a pending booking exists', async () => {
+            process.env.GROQ_API_KEY = 'mock-groq';
+            delete process.env.GEMINI_API_KEY;
+            doctorRepository.findById.mockResolvedValue({
+                full_name: 'Dr. House',
+                gemini_context: 'Hola {patient_name}',
+                gemini_history_limit: 3,
+                pending_response_template: 'Tu solicitud está en revisión. Te confirmamos a la brevedad.'
+            });
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            scheduleRepository.findByDoctor.mockResolvedValue([]);
+            holidayRepository.findAll.mockResolvedValue([]);
+            pool.query.mockResolvedValue([[{ full_name: 'Ana' }]]);
+            availabilitySearchService.getFreeSlotsBatch.mockResolvedValue({ results: [] });
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue({ id: 9, status: 'pending' });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1);
+
+            expect(suggestion).toBe('Tu solicitud está en revisión. Te confirmamos a la brevedad.');
+            expect(global.fetch).not.toHaveBeenCalled();
+            expect(pendingBookingRepository.create).not.toHaveBeenCalled();
+        });
+
+        it('should use the default pending message when no template is configured', async () => {
+            process.env.GROQ_API_KEY = 'mock-groq';
+            delete process.env.GEMINI_API_KEY;
+            doctorRepository.findById.mockResolvedValue({
+                full_name: 'Dr. House',
+                gemini_context: 'Hola {patient_name}',
+                gemini_history_limit: 3
+            });
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            scheduleRepository.findByDoctor.mockResolvedValue([]);
+            holidayRepository.findAll.mockResolvedValue([]);
+            pool.query.mockResolvedValue([[{ full_name: 'Ana' }]]);
+            availabilitySearchService.getFreeSlotsBatch.mockResolvedValue({ results: [] });
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue({ id: 9, status: 'pending' });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1);
+
+            expect(suggestion).toContain('revisión');
+            expect(global.fetch).not.toHaveBeenCalled();
+        });
+
         it('should request suggestion from Groq', async () => {
             process.env.GROQ_API_KEY = 'mock-groq';
             delete process.env.GEMINI_API_KEY;
             delete process.env.AI_MODEL;
             patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
             whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
             
             const mockResponse = {
                 choices: [{ message: { content: 'Sugerencia de respuesta' } }]
@@ -185,6 +302,7 @@ describe('WhatsAppAiService', () => {
         it('should throw error when api key is missing', async () => {
             delete process.env.GROQ_API_KEY;
             delete process.env.GEMINI_API_KEY;
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
             await expect(whatsappAiService.getAiSuggestion(1, null, 1))
                 .rejects.toThrow('Configuración de IA incompleta');
         });
@@ -196,6 +314,7 @@ describe('WhatsAppAiService', () => {
 
             patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
             whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
             
             global.fetch.mockResolvedValue({
                 ok: true,
