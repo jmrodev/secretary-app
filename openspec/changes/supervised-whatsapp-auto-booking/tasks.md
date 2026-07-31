@@ -30,7 +30,7 @@ Chain strategy: pending
 - [x] 1.2 RED: `pendingBookingRepository.test.js` — create/findActive/acceptById/suggestAlternative/rejectById fail (repo missing)
 - [x] 1.3 Create `server/repositories/communication/pendingBookingRepository.js` — pool queries; `acceptById` = `UPDATE ... SET status='accepted' WHERE id=? AND status='pending'` (optimistic lock)
 - [x] 1.4 GREEN: Jest passes for repository
-- [ ] 1.5 Add `pending_response_template` to `ALLOWED_FIELDS` in `server/repositories/user/doctorRepository.js`
+- [x] 1.5 Add `pending_response_template` to `ALLOWED_FIELDS` in `server/repositories/user/doctorRepository.js`
 
 ## Phase 2: Backend (Service, Controller, Routes)
 
