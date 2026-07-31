@@ -1,5 +1,6 @@
 const whatsappService = require('../../services/communication/whatsappService');
 const whatsappAiService = require('../../services/communication/whatsappAiService');
+const { AI_SETTING_KEYS } = require('../../services/communication/aiConfigResolver');
 const whatsappRepository = require('../../repositories/communication/whatsappRepository');
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
@@ -102,11 +103,26 @@ const getPatientHistory = async (req, res) => {
 
 const getAiSuggestion = async (req, res) => {
     try {
+        // AI provider/model settings: rows -> {key: value} map. On any read
+        // failure fall back to an empty map so provider/model resolve from
+        // env/built-in defaults (graceful degradation, no error for the user).
+        let aiSettings = {};
+        try {
+            const rows = await systemSettingsRepository.findManyByKeys(AI_SETTING_KEYS);
+            aiSettings = rows.reduce((map, row) => {
+                map[row.setting_key] = row.setting_value;
+                return map;
+            }, {});
+        } catch (settingsError) {
+            console.warn('[AI Suggestion] No se pudieron leer las configuraciones de IA, usando defaults de env:', settingsError.message);
+        }
+
         const suggestion = await whatsappAiService.getAiSuggestion(
-            req.body.patientId, 
-            req.body.phone, 
-            req.doctorId, 
-            req.user?.user_id
+            req.body.patientId,
+            req.body.phone,
+            req.doctorId,
+            req.user?.user_id,
+            aiSettings
         );
         res.json({ success: true, suggestion });
     } catch (error) {
