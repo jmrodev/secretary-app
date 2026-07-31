@@ -9,16 +9,31 @@ const bookingService = require('../appointments/bookingService');
 const { pool } = require('../../db');
 
 const authService = require('../../services/user/authService');
+const { resolveAiConfig, FALLBACK_CHAIN } = require('./aiConfigResolver');
 
 /** Default polite message used while a booking is pending secretary approval. */
 const DEFAULT_PENDING_RESPONSE = 'Tu solicitud de turno está en revisión. La Secretaría te va a confirmar a la brevedad. 🙋♀️';
+
+/** Safe canned reply used when the agenda has no free slots or the AI invents times. */
+const DEFAULT_CONSULT_REPLY = 'Consulto con la Secretaría y te confirmo.';
+
+/**
+ * Anti-hallucination guard: the AI may only offer slots listed in {free_slots}
+ * and must never invent times. The default doctor context embeds it; custom
+ * doctor.gemini_context values get it appended in _buildContext
+ * (Design Decision 6 — guard always present).
+ */
+const AI_GUARD = "SOLO podés ofrecer los turnos listados en {free_slots}; NUNCA inventes horarios, días ni turnos que no estén en esa lista. Si no hay turnos o el paciente pide algo fuera de la agenda, respondé exactamente: 'Consulto con la Secretaría y te confirmo.'";
+
+/** Default assistant persona prompt for a doctor without a custom context. */
+const DEFAULT_DOCTOR_CONTEXT = `Actuá como la secretaría de un consultorio médico. Respondé de forma breve y profesional. ${AI_GUARD}`;
 
 /**
  * WhatsAppAiService
  * Handles AI-powered features for WhatsApp communication, including suggestions and auto-booking.
  */
 class WhatsAppAiService {
-    async getAiSuggestion(patientId, phone, doctorId, userId) {
+    async getAiSuggestion(patientId, phone, doctorId, userId, aiSettings = {}) {
         if (!patientId && !phone) throw new Error('patientId o phone es requerido');
 
         const context = await this._buildContext(patientId, phone, doctorId, userId);
@@ -43,24 +58,49 @@ class WhatsAppAiService {
         // Otherwise, generate AI suggestion as usual
         const prompt = this._buildPrompt(context);
 
-        const groqKey = process.env.GROQ_API_KEY;
-        const geminiKey = process.env.GEMINI_API_KEY;
-        if (!groqKey && !geminiKey) throw new Error('Configuración de IA incompleta');
+        const { provider, models, geminiApiVersion } = resolveAiConfig({
+            settings: aiSettings,
+            doctor: context.doctor,
+            env: process.env
+        });
 
-        let apiModel = process.env.AI_MODEL || context.doctor?.gemini_model || (geminiKey ? 'gemini-2.5-flash' : 'llama-3.3-70b-versatile');
-        if (apiModel.includes('gemini-1.5')) {
-            apiModel = apiModel.replace('gemini-1.5', 'gemini-2.5');
+        // Unified chain: primary provider first, then the fixed fallback order
+        // (ollama -> groq -> gemini), skipping unauthorized providers.
+        const chain = this._buildProviderChain(provider, process.env);
+        if (!chain.length) throw new Error('Configuración de IA incompleta');
+
+        let lastError = null;
+        for (const p of chain) {
+            try {
+                const suggestion = await this._tryProvider(p, prompt, models[p], process.env, geminiApiVersion);
+                // Validation discard does NOT trigger fallback — only provider errors do.
+                return this._validateSuggestion(suggestion, context);
+            } catch (err) {
+                lastError = err;
+                console.warn(`[AI Fallback] Proveedor ${p} falló: ${err.message}`);
+            }
         }
+        throw lastError;
+    }
 
-        const preferGemini = geminiKey && (!groqKey || apiModel.startsWith('gemini') || context.doctor?.gemini_model?.startsWith('gemini'));
-
-        if (preferGemini) {
-            return await this._tryGemini(prompt, apiModel.startsWith('gemini') ? apiModel : 'gemini-2.5-flash', geminiKey)
-                .catch(err => this._fallbackToGroq(prompt, err, groqKey));
-        } else {
-            return await this._tryGroq(prompt, apiModel, groqKey)
-                .catch(err => this._fallbackToGemini(prompt, err, geminiKey));
+    /**
+     * Anti-hallucination guard. If the generated suggestion mentions times
+     * that are NOT in the real free slots from the agenda, discard it and
+     * return the safe canned reply instead of inventing availability.
+     */
+    _validateSuggestion(suggestion, context) {
+        if (!suggestion || !context?.freeSlots?.length) return suggestion;
+        const slotTimes = new Set();
+        for (const day of context.freeSlots) {
+            for (const slot of day.slots) slotTimes.add(slot.time);
         }
+        const mentioned = suggestion.match(/\b(\d{1,2}):(\d{2})\b/g) || [];
+        const invalid = mentioned.filter(time => !slotTimes.has(time));
+        if (invalid.length) {
+            console.warn(`[AI Validation] Descartada sugerencia con horarios fuera de agenda: ${invalid.join(', ')}`);
+            return DEFAULT_CONSULT_REPLY;
+        }
+        return suggestion;
     }
 
     /**
@@ -240,10 +280,41 @@ class WhatsAppAiService {
         return suggestion;
     }
 
-    async _tryGemini(prompt, model, apiKey) {
+    async _tryOllama(prompt, model, baseUrl) {
+        if (!baseUrl) throw new Error('OLLAMA_BASE_URL no configurada');
+
+        // Ollama exposes an OpenAI-compatible /v1/chat/completions endpoint.
+        const url = `${baseUrl.replace(/\/$/, '')}/v1/chat/completions`;
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model,
+                messages: [{ role: 'user', content: prompt }],
+                max_tokens: 150,
+                temperature: 0.7,
+                stream: false
+            })
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+            const errMsg = result.error?.message || 'Error en la API de Ollama';
+            const apiError = new Error(errMsg);
+            apiError.apiProvider = 'ollama';
+            throw apiError;
+        }
+
+        const suggestion = result.choices?.[0]?.message?.content?.trim();
+        if (!suggestion) throw new Error('Ollama no devolvió ninguna sugerencia.');
+        return suggestion;
+    }
+
+    async _tryGemini(prompt, model, apiKey, apiVersion = 'v1beta') {
         if (!apiKey) throw new Error('GEMINI_API_KEY no configurada');
 
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+        // The API version is resolved (doctor field, else v1beta) — never hardcoded.
+        const url = `https://generativelanguage.googleapis.com/${apiVersion}/models/${model}:generateContent?key=${apiKey}`;
         const response = await fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -269,28 +340,38 @@ class WhatsAppAiService {
         return suggestion;
     }
 
-    async _fallbackToGroq(prompt, originalError, groqKey) {
-        console.warn(`[AI Fallback] Intentando Groq. Error original: ${originalError.message}`);
-        if (!groqKey) throw originalError;
-        try {
-            return await this._tryGroq(prompt, 'llama-3.3-70b-versatile', groqKey);
-        } catch (fallbackErr) {
-            throw new Error(`Groq primary failed: ${originalError.message} | Groq fallback: ${fallbackErr.message}`);
-        }
+    /**
+     * Builds the ordered provider chain: primary first, then the remaining fixed
+     * fallback order (ollama -> groq -> gemini), skipping providers that are not
+     * authorized by the current environment (missing key / base URL).
+     */
+    _buildProviderChain(primary, env) {
+        const ordered = [primary, ...FALLBACK_CHAIN.filter(p => p !== primary)];
+        return ordered.filter(p => this._isProviderAvailable(p, env));
     }
 
-    async _fallbackToGemini(prompt, originalError, geminiKey) {
-        console.warn(`[AI Fallback] Intentando Gemini. Error original: ${originalError.message}`);
-        if (!geminiKey) throw originalError;
-        try {
-            return await this._tryGemini(prompt, 'gemini-2.5-flash', geminiKey);
-        } catch (fallbackErr) {
-            throw new Error(`Gemini primary failed: ${originalError.message} | Gemini fallback: ${fallbackErr.message}`);
+    _isProviderAvailable(provider, env) {
+        if (provider === 'ollama') return !!env.OLLAMA_BASE_URL;
+        if (provider === 'groq') return !!env.GROQ_API_KEY;
+        if (provider === 'gemini') return !!env.GEMINI_API_KEY;
+        return false;
+    }
+
+    async _tryProvider(provider, prompt, model, env, geminiApiVersion) {
+        switch (provider) {
+            case 'ollama':
+                return this._tryOllama(prompt, model, env.OLLAMA_BASE_URL);
+            case 'groq':
+                return this._tryGroq(prompt, model, env.GROQ_API_KEY);
+            case 'gemini':
+                return this._tryGemini(prompt, model, env.GEMINI_API_KEY, geminiApiVersion);
+            default:
+                throw new Error(`Proveedor IA desconocido: ${provider}`);
         }
     }
 
     async _buildContext(patientId, phone, doctorId, userId) {
-        let doctorContext = "Actuá como la secretaría de un consultorio médico. Respondé de forma breve y profesional. Usá los turnos disponibles de la agenda para ofrecer opciones. Si no hay turnos o el paciente pide algo fuera de la agenda, decí 'Consulto con la Secretaría y te confirmo.'";
+        let doctorContext = DEFAULT_DOCTOR_CONTEXT;
         let historyLimit = 3;
         let doctorName = "la Secretaría";
 
@@ -330,7 +411,9 @@ class WhatsAppAiService {
 
         if (doctor) {
             doctorName = doctor.full_name;
-            if (doctor.gemini_context) doctorContext = doctor.gemini_context;
+            // Custom contexts get the anti-hallucination guard appended
+            // (Design Decision 6); the default context already embeds it.
+            if (doctor.gemini_context) doctorContext = `${doctor.gemini_context}\n${AI_GUARD}`;
             if (doctor.gemini_history_limit) historyLimit = doctor.gemini_history_limit;
             
             const schedules = await scheduleRepository.findByDoctor(doctorId);

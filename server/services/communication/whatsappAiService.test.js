@@ -23,6 +23,16 @@ jest.mock('../../db', () => ({
     }
 }));
 
+// Defensive: the controller imports this repo; under NODE_ENV=test its real
+// module loads with a null pool. Keep it mocked in this file so the module
+// graph never touches a real DB binding.
+jest.mock('../../repositories/system/systemSettingsRepository', () => ({
+    findManyByKeys: jest.fn().mockResolvedValue([]),
+    findByKey: jest.fn().mockResolvedValue(null),
+    findAll: jest.fn().mockResolvedValue([]),
+    upsert: jest.fn().mockResolvedValue([])
+}));
+
 describe('WhatsAppAiService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -32,6 +42,10 @@ describe('WhatsAppAiService', () => {
 
     afterEach(() => {
         delete process.env.GROQ_API_KEY;
+        delete process.env.GEMINI_API_KEY;
+        delete process.env.AI_MODEL;
+        delete process.env.OLLAMA_BASE_URL;
+        delete process.env.OLLAMA_MODEL;
     });
 
     describe('_buildPrompt', () => {
@@ -88,7 +102,11 @@ describe('WhatsAppAiService', () => {
             const context = await whatsappAiService._buildContext(1, 2, 3);
 
             expect(context.doctorName).toBe('Dr. Gregory House');
-            expect(context.doctorContext).toBe('Hola Juan Perez, sos atendido por Dr. Gregory House. Horarios: Lunes: 09:00 a 12:00.');
+            expect(context.doctorContext).toContain('Hola Juan Perez, sos atendido por Dr. Gregory House. Horarios: Lunes: 09:00 a 12:00.');
+            // Design Decision 6: the anti-hallucination guard is appended to any
+            // custom doctor context (the default context already embeds it).
+            expect(context.doctorContext).toContain('NUNCA inventes horarios, días ni turnos');
+            expect(context.doctorContext).toContain('Consulto con la Secretaría y te confirmo.');
             expect(context.lastMessages).toContain('Paciente: Necesito un turno');
             expect(context.lastPatientMessage).toBe('Necesito un turno');
             expect(context.freeSlots).toEqual([{ dayName: 'Lunes', slots: [{ time: '09:00' }] }]);
@@ -124,6 +142,26 @@ describe('WhatsAppAiService', () => {
             expect(context.doctorContext).toContain('Pago: 12345 / house.alias');
             expect(context.doctorContext).toContain('Lunes: 09:00');
             expect(context.doctorContext).toContain('2026');
+        });
+        it('should append the anti-hallucination guard to a custom doctor gemini_context', async () => {
+            const mockDoctor = {
+                full_name: 'Dr. House',
+                gemini_context: 'Hola {patient_name}, te atiende {doctor_name}.',
+                gemini_history_limit: 3
+            };
+            doctorRepository.findById.mockResolvedValue(mockDoctor);
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            scheduleRepository.findByDoctor.mockResolvedValue([]);
+            holidayRepository.findAll.mockResolvedValue([]);
+            pool.query.mockResolvedValue([[{ full_name: 'Ana' }]]);
+            availabilitySearchService.getFreeSlotsBatch.mockResolvedValue({ results: [] });
+
+            const context = await whatsappAiService._buildContext(1, 2, 3);
+
+            expect(context.doctorContext).toContain('Hola Juan, te atiende Dr. House.');
+            expect(context.doctorContext).toContain('NUNCA inventes horarios, días ni turnos');
+            expect(context.doctorContext).toContain('Consulto con la Secretaría y te confirmo.');
         });
         it('should set hasPendingBooking true when the patient has an active pending booking', async () => {
             const mockDoctor = {
@@ -420,7 +458,7 @@ describe('WhatsAppAiService', () => {
         it('should call Gemini endpoint when model starts with gemini and GEMINI_API_KEY is present', async () => {
             delete process.env.GROQ_API_KEY;
             process.env.GEMINI_API_KEY = 'mock-gemini';
-            process.env.AI_MODEL = 'gemini-2.5-flash';
+            process.env.AI_MODEL = 'gemini-3.6-flash';
 
             patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
             whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
@@ -436,7 +474,272 @@ describe('WhatsAppAiService', () => {
             const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1);
             expect(suggestion).toBe('Sugerencia Gemini');
             expect(global.fetch).toHaveBeenCalledWith(
-                expect.stringContaining('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=mock-gemini'),
+                expect.stringContaining('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=mock-gemini'),
+                expect.any(Object)
+            );
+        });
+
+        it('should use Ollama as primary provider when OLLAMA_BASE_URL is set', async () => {
+            process.env.OLLAMA_BASE_URL = 'http://host.docker.internal:11434';
+            process.env.OLLAMA_MODEL = 'llama3.2';
+            delete process.env.GROQ_API_KEY;
+            delete process.env.GEMINI_API_KEY;
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+            global.fetch.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue({
+                    choices: [{ message: { content: 'Sugerencia Ollama' } }]
+                })
+            });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1);
+            expect(suggestion).toBe('Sugerencia Ollama');
+            expect(global.fetch).toHaveBeenCalledWith(
+                expect.stringContaining('http://host.docker.internal:11434/v1/chat/completions'),
+                expect.objectContaining({
+                    body: expect.stringContaining('llama3.2')
+                })
+            );
+        });
+
+        it('should fall back to Groq when Ollama fails', async () => {
+            process.env.OLLAMA_BASE_URL = 'http://host.docker.internal:11434';
+            process.env.OLLAMA_MODEL = 'llama3.2';
+            process.env.GROQ_API_KEY = 'mock-groq';
+            delete process.env.GEMINI_API_KEY;
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+            global.fetch
+                .mockResolvedValueOnce({
+                    ok: false,
+                    json: jest.fn().mockResolvedValue({ error: { message: 'Ollama caído' } })
+                })
+                .mockResolvedValueOnce({
+                    ok: true,
+                    json: jest.fn().mockResolvedValue({
+                        choices: [{ message: { content: 'Sugerencia Groq fallback' } }]
+                    })
+                });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1);
+            expect(suggestion).toBe('Sugerencia Groq fallback');
+            expect(global.fetch).toHaveBeenCalledTimes(2);
+        });
+
+        it('should discard a suggestion that invents times outside the real free slots', async () => {
+            process.env.GROQ_API_KEY = 'mock-groq';
+            delete process.env.GEMINI_API_KEY;
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+            availabilitySearchService.getFreeSlotsBatch.mockResolvedValue({
+                results: [
+                    {
+                        dayName: 'Lunes',
+                        slots: [{ time: '09:00' }, { time: '10:00' }]
+                    }
+                ]
+            });
+
+            global.fetch.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue({
+                    choices: [{ message: { content: 'Tenemos turnos hoy a las 14:30 y 17:00' } }]
+                })
+            });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1);
+            expect(suggestion).toBe('Consulto con la Secretaría y te confirmo.');
+        });
+
+        it('should keep a suggestion when all mentioned times are in the free slots', async () => {
+            process.env.GROQ_API_KEY = 'mock-groq';
+            delete process.env.GEMINI_API_KEY;
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+            availabilitySearchService.getFreeSlotsBatch.mockResolvedValue({
+                results: [
+                    {
+                        dayName: 'Lunes',
+                        slots: [{ time: '09:00' }, { time: '10:00' }]
+                    }
+                ]
+            });
+
+            global.fetch.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue({
+                    choices: [{ message: { content: 'Sí, tenemos turnos mañana a las 09:00 y 10:00' } }]
+                })
+            });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1);
+            expect(suggestion).toBe('Sí, tenemos turnos mañana a las 09:00 y 10:00');
+        });
+
+        it('should route to Groq when ai_provider is groq even if GEMINI_API_KEY and a gemini AI_MODEL are set', async () => {
+            process.env.GROQ_API_KEY = 'mock-groq';
+            process.env.GEMINI_API_KEY = 'mock-gemini';
+            process.env.AI_MODEL = 'gemini-3.6-flash'; // the legacy env heuristic would pick Gemini here
+            delete process.env.OLLAMA_BASE_URL;
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+            global.fetch.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue({
+                    choices: [{ message: { content: 'Sugerencia Groq configurada' } }]
+                })
+            });
+
+            const aiSettings = { ai_provider: 'groq', ai_groq_model: 'llama-3.3-70b-versatile' };
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1, 1, aiSettings);
+            expect(suggestion).toBe('Sugerencia Groq configurada');
+            expect(global.fetch).toHaveBeenCalledTimes(1);
+            expect(global.fetch).toHaveBeenCalledWith(
+                expect.stringContaining('https://api.groq.com/openai/v1/chat/completions'),
+                expect.objectContaining({
+                    body: expect.stringContaining('llama-3.3-70b-versatile')
+                })
+            );
+        });
+
+        it('should follow the fixed chain ollama -> groq -> gemini when each primary fails', async () => {
+            process.env.OLLAMA_BASE_URL = 'http://host.docker.internal:11434';
+            process.env.GROQ_API_KEY = 'mock-groq';
+            process.env.GEMINI_API_KEY = 'mock-gemini';
+            delete process.env.AI_MODEL;
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+            global.fetch
+                .mockResolvedValueOnce({ ok: false, json: jest.fn().mockResolvedValue({ error: { message: 'ollama down' } }) })
+                .mockResolvedValueOnce({ ok: false, json: jest.fn().mockResolvedValue({ error: { message: 'groq down' } }) })
+                .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ candidates: [{ content: { parts: [{ text: 'Sugerencia Gemini final' }] } }] }) });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1, 1, {});
+            expect(suggestion).toBe('Sugerencia Gemini final');
+            expect(global.fetch).toHaveBeenCalledTimes(3);
+            const urls = global.fetch.mock.calls.map(c => c[0]);
+            expect(urls[0]).toContain('host.docker.internal:11434/v1/chat/completions');
+            expect(urls[1]).toContain('https://api.groq.com/openai/v1/chat/completions');
+            expect(urls[2]).toContain('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent');
+        });
+
+        it('should skip unauthorized providers and try the next authorized one in chain order', async () => {
+            process.env.OLLAMA_BASE_URL = 'http://host.docker.internal:11434';
+            process.env.GROQ_API_KEY = 'mock-groq';
+            delete process.env.GEMINI_API_KEY; // Gemini is NOT authorized
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+            global.fetch
+                .mockResolvedValueOnce({ ok: false, json: jest.fn().mockResolvedValue({ error: { message: 'ollama down' } }) })
+                .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ choices: [{ message: { content: 'Sugerencia Groq' } }] }) });
+
+            // ai_provider=gemini but no GEMINI_API_KEY -> gemini is skipped,
+            // ollama (authorized) is tried first, then groq.
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1, 1, { ai_provider: 'gemini' });
+            expect(suggestion).toBe('Sugerencia Groq');
+            expect(global.fetch).toHaveBeenCalledTimes(2);
+            const urls = global.fetch.mock.calls.map(c => c[0]);
+            expect(urls[0]).toContain('host.docker.internal:11434');
+            expect(urls[1]).toContain('https://api.groq.com');
+            expect(urls.every(u => !u.includes('generativelanguage'))).toBe(true);
+        });
+
+        it('should use the configured model for each fallback provider', async () => {
+            process.env.OLLAMA_BASE_URL = 'http://host.docker.internal:11434';
+            process.env.GROQ_API_KEY = 'mock-groq';
+            process.env.GEMINI_API_KEY = 'mock-gemini';
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+            global.fetch
+                .mockResolvedValueOnce({ ok: false, json: jest.fn().mockResolvedValue({ error: { message: 'ollama down' } }) })
+                .mockResolvedValueOnce({ ok: false, json: jest.fn().mockResolvedValue({ error: { message: 'groq down' } }) })
+                .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue({ candidates: [{ content: { parts: [{ text: 'OK' }] } }] }) });
+
+            const aiSettings = {
+                ai_provider: 'ollama',
+                ai_ollama_model: 'llama3.1',
+                ai_groq_model: 'llama-3.1-8b-instant',
+                gemini_global_model: 'gemini-3.5-flash'
+            };
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1, 1, aiSettings);
+            expect(suggestion).toBe('OK');
+            expect(global.fetch).toHaveBeenCalledTimes(3);
+            const bodies = global.fetch.mock.calls.map(c => JSON.parse(c[1].body));
+            expect(bodies[0].model).toBe('llama3.1'); // ollama configured model
+            expect(bodies[1].model).toBe('llama-3.1-8b-instant'); // groq configured model
+            expect(global.fetch.mock.calls[2][0]).toContain('/models/gemini-3.5-flash:generateContent');
+        });
+
+        it('should call Gemini with the doctor gemini_api_version when set', async () => {
+            process.env.GEMINI_API_KEY = 'mock-gemini';
+            delete process.env.GROQ_API_KEY;
+            delete process.env.OLLAMA_BASE_URL;
+            doctorRepository.findById.mockResolvedValue({
+                full_name: 'Dr. House',
+                gemini_context: 'Hola {patient_name}',
+                gemini_history_limit: 3,
+                gemini_model: 'gemini-3.6-flash',
+                gemini_api_version: 'v1'
+            });
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            scheduleRepository.findByDoctor.mockResolvedValue([]);
+            holidayRepository.findAll.mockResolvedValue([]);
+            pool.query.mockResolvedValue([[{ full_name: 'Ana' }]]);
+            availabilitySearchService.getFreeSlotsBatch.mockResolvedValue({ results: [] });
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+            global.fetch.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue({
+                    candidates: [{ content: { parts: [{ text: 'Sugerencia v1' }] } }]
+                })
+            });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1, 1, { ai_provider: 'gemini' });
+            expect(suggestion).toBe('Sugerencia v1');
+            expect(global.fetch).toHaveBeenCalledWith(
+                expect.stringContaining('https://generativelanguage.googleapis.com/v1/models/gemini-3.6-flash:generateContent?key=mock-gemini'),
+                expect.any(Object)
+            );
+        });
+
+        it('should keep env-driven behavior when aiSettings is {}: both keys -> groq primary', async () => {
+            process.env.GROQ_API_KEY = 'mock-groq';
+            process.env.GEMINI_API_KEY = 'mock-gemini';
+            delete process.env.OLLAMA_BASE_URL;
+            delete process.env.AI_MODEL;
+            patientRepository.findById.mockResolvedValue({ full_name: 'Juan Perez' });
+            whatsappRepository.getHistoryByPatient.mockResolvedValue([]);
+            pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+            global.fetch.mockResolvedValue({
+                ok: true,
+                json: jest.fn().mockResolvedValue({
+                    choices: [{ message: { content: 'Sugerencia Groq env' } }]
+                })
+            });
+
+            const suggestion = await whatsappAiService.getAiSuggestion(1, null, 1, 1, {});
+            expect(suggestion).toBe('Sugerencia Groq env');
+            expect(global.fetch).toHaveBeenCalledTimes(1);
+            expect(global.fetch).toHaveBeenCalledWith(
+                expect.stringContaining('https://api.groq.com/openai/v1/chat/completions'),
                 expect.any(Object)
             );
         });
