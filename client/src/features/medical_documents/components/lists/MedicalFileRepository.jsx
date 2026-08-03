@@ -1,7 +1,7 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
+import { DocumentViewerModal } from '@/components/molecules/DocumentViewerModal';
 import styles from './MedicalFileRepository.module.css';
 
 /**
@@ -23,6 +23,8 @@ const MedicalFileRepository = ({
     canDeleteFile,
     PatientSearchSelectComponent
 }) => {
+    const [selectedViewerFile, setSelectedViewerFile] = useState(null);
+
     return (
         <div className={`${styles.root}`}>
             <section className="medical-file-repository__upload">
@@ -38,17 +40,17 @@ const MedicalFileRepository = ({
                             />
                         </div>
                         <div className="input-group">
-                            <label className="input-label">{t('description')}</label>
+                            <label className="input-label">{t('file_description_label')}</label>
                             <input
+                                type="text"
                                 className="input-field"
                                 value={fileDesc}
                                 onChange={e => handleFileDescChange(e.target.value)}
-                                placeholder="e.g. Lab Results PDF"
-                                required
+                                placeholder={t('file_description_placeholder')}
                             />
                         </div>
                         <div className="input-group">
-                            <label className="input-label">{t('file')}</label>
+                            <label className="input-label">{t('file_label')}</label>
                             <input
                                 type="file"
                                 className="input-field"
@@ -56,26 +58,27 @@ const MedicalFileRepository = ({
                                 required
                             />
                         </div>
-                        <Button type="submit" className={`${styles.btnSubmit}`}>{t('upload_file')}</Button>
+                        <Button type="submit" variant="primary" style={{ width: '100%' }}>
+                            {t('upload_file')}
+                        </Button>
                     </form>
                 </div>
             </section>
 
             <section className="medical-file-repository__list">
-                <div className="dashboard-card no-padding">
-                    <div className={`${styles.tableContainer}`}>
+                <div className="dashboard-card">
+                    <h3 className="dashboard-card__title">{t('repository_title')}</h3>
+
+                    <div className={`${styles.tableWrapper}`}>
                         {files.filter(filterItem).length === 0 ? (
-                            <div className={`${styles.empty}`}>
-                                <Icon name="folder_open" size="3rem" className={`${styles.emptyIcon}`} />
-                                {t('no_files')}
-                            </div>
+                            <p className="medical-file-repository__text-empty">{t('no_files_uploaded')}</p>
                         ) : (
                             <table className={`${styles.table}`}>
                                 <thead>
                                     <tr>
-                                        <th className={`${styles.cellPl}`}>{t('file')}</th>
-                                        <th>{t('patient')}</th>
-                                        <th className={`${styles.cellPr} ${styles.cellRight}`}>{t('actions')}</th>
+                                        <th className={`${styles.cellPl} ${styles.cellPy}`}>{t('file_column')}</th>
+                                        <th>{t('patient_column')}</th>
+                                        <th className={`${styles.cellPr} ${styles.cellRight}`}></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -85,7 +88,7 @@ const MedicalFileRepository = ({
                                                 <tr
                                                     key={f.id}
                                                     className={`${styles.rowInteractive}`}
-                                                    onClick={() => window.open(f.file_url, '_blank')}
+                                                    onClick={() => setSelectedViewerFile(f)}
                                                 >
                                                     <td className={`${styles.cellPl} ${styles.cellPy}`}>
                                                         <div className="config-flex">
@@ -118,6 +121,14 @@ const MedicalFileRepository = ({
                     </div>
                 </div>
             </section>
+
+            <DocumentViewerModal
+                isOpen={!!selectedViewerFile}
+                onClose={() => setSelectedViewerFile(null)}
+                file={selectedViewerFile}
+                filesList={files.filter(filterItem)}
+                onSelectFile={(f) => setSelectedViewerFile(f)}
+            />
         </div>
     );
 };

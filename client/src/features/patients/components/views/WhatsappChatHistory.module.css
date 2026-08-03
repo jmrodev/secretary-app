@@ -23,6 +23,7 @@
     align-items: center;
     gap: var(--space-sm, 0.5rem);
     color: #25D366;
+    flex: 1;
 }
 
 .title {
@@ -30,6 +31,35 @@
     font-size: var(--text-sm, 0.875rem);
     font-weight: 600;
     color: var(--text-primary, #111827);
+}
+
+.phoneInputContainer {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: #f3f4f6;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin-left: var(--space-sm, 0.5rem);
+    color: #6b7280;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.phoneInputContainer:focus-within {
+    border-color: #25D366;
+    box-shadow: 0 0 0 2px rgb(37 211 102 / 20%);
+}
+
+.targetPhoneInput {
+    border: none;
+    background: transparent;
+    font-size: 0.8rem;
+    font-family: monospace;
+    font-weight: 600;
+    color: #111827;
+    outline: none;
+    width: 140px;
 }
 
 .messages {
@@ -90,14 +120,15 @@
 
 .bubbleOutbound {
     background-color: #d9fdd3;
-    border-top-right-radius: 0;
-    min-width: 75px; /* Ensures space for time + double check */
+    border-top-right-radius: 2px;
+    min-width: 75px;
 }
 
 .bubbleInbound {
     background-color: #fff;
-    border-top-left-radius: 0;
-    min-width: 60px; /* Space for time only */
+    border-top-left-radius: 2px;
+    min-width: 60px;
+    border: 1px solid #e0e0e0;
 }
 
 .text {
@@ -131,6 +162,10 @@
 
 .statusDelivered {
     color: #53bdeb;
+}
+
+.statusFailed {
+    color: #ef4444;
 }
 
 .inputArea {

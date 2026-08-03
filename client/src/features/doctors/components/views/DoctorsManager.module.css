@@ -4,6 +4,15 @@
     /* Root BEM class */
 }
 
+.headerActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--dashboard-card-border);
+}
+
 .counter {
     display: flex;
     align-items: center;
@@ -55,9 +64,9 @@
     align-items: center;
     justify-content: center;
     padding: 6rem 2rem;
-    border: 2px dashed var(--border-color);
+    border: 2px dashed var(--dashboard-card-border);
     border-radius: var(--radius-lg);
-    background: var(--card-bg);
+    background: var(--dashboard-card-bg);
     text-align: center;
 }
 

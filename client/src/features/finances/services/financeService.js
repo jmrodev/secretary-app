@@ -7,7 +7,7 @@ export const financeService = {
             patientId: patientId,
             service_type: serviceType
         });
-        return response.data;
+        return response.data?.data || response.data;
     },
 
     createTransaction: async (data) => {

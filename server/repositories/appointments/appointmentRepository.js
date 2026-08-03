@@ -54,7 +54,7 @@ class AppointmentRepository {
         const connection = conn || await this.pool.getConnection();
         try {
             const result = await connection.query(
-                "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id, bonified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id, bonified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())",
                 [data.patient_id, data.doctor_id, data.appointment_date, data.reason, data.is_out_of_hours || false, data.type || 'consultation', data.status || 'pending', data.institution_id, data.bonified || false]
             );
             return result.insertId;
@@ -231,9 +231,10 @@ class AppointmentRepository {
 
     async findByPatientId(patientId, conn = this.pool) {
         return await conn.query(`
-            SELECT a.*, d.full_name as doctor_name 
+            SELECT a.*, d.full_name as doctor_name, t.method as payment_method 
             FROM appointments a 
             JOIN doctors d ON a.doctor_id = d.id 
+            LEFT JOIN transactions t ON t.appointment_id = a.id
             WHERE a.patient_id = ? 
             ORDER BY a.appointment_date DESC`, [patientId]);
     }

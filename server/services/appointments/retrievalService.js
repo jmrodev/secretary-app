@@ -24,7 +24,12 @@ const mapAppointment = (a) => ({
     cost: Number(a.cost || 0),
     payment_status: a.payment_status,
     is_paid: !!a.is_paid,
-    rescheduled_from_date: a.rescheduled_from_date
+    rescheduled_from_date: a.rescheduled_from_date,
+    created_at: a.created_at,
+    confirmed_at: a.confirmed_at,
+    arrived_at: a.arrived_at,
+    completed_at: a.completed_at,
+    paid_at: a.paid_at
 });
 
 /**
@@ -63,6 +68,12 @@ class RetrievalService {
             appointments: appointments.map(mapAppointment),
             totalCount
         };
+    }
+
+    async getAppointmentById(id) {
+        const appt = await appointmentRepository.findById(id);
+        if (!appt) return null;
+        return mapAppointment(appt);
     }
 
     async getDailySchedule(doctorId, dateStr) {

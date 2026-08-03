@@ -54,25 +54,34 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
     }
 };
 
+const normalizePhoneForWhatsapp = (phone) => {
+    if (!phone) return phone;
+    let cleaned = phone.toString().replace(/\D/g, '');
+    if (cleaned.startsWith('549')) {
+        cleaned = '54' + cleaned.slice(3);
+    }
+    return cleaned;
+};
+
 /**
  * Send a direct text message using the local WhatsApp Bridge (MCP/Go)
  * @param {string} to - Recipient phone number
  * @param {string} message - Plain text message
  */
 const sendMessageDirect = async (to, message, patientId = null) => {
+    const formattedRecipient = normalizePhoneForWhatsapp(to);
+    const bridgeUrl = process.env.WHATSAPP_BRIDGE_URL || 'http://127.0.0.1:8090/api/send';
+    
     try {
-        const bridgeUrl = process.env.WHATSAPP_BRIDGE_URL || 'http://127.0.0.1:8090/api/send';
-        console.log(`[WhatsApp Bridge] Sending to: ${to}, URL: ${bridgeUrl}`);
-        
+        console.log(`[WhatsApp Bridge] Sending to: ${formattedRecipient} (original: ${to}), URL: ${bridgeUrl}`);
         const response = await axios.post(bridgeUrl, {
-            recipient: to,
+            recipient: formattedRecipient,
             message: message
         });
         
         if (patientId) {
             await whatsappRepository.createMessage(patientId, 'outbound', message, null, 'sent');
         } else {
-            // Save for unknown contact
             await whatsappRepository.createMessage(null, 'outbound', message, null, 'sent', to);
         }
 
@@ -80,7 +89,20 @@ const sendMessageDirect = async (to, message, patientId = null) => {
         return response.data;
     } catch (error) {
         console.error('Local WhatsApp Bridge Error:', error.response?.data || error.message);
-        throw new Error('Local WhatsApp bridge is not responding. Ensure the bridge service is running.', { cause: error });
+        
+        // Save failed message to history for UI feedback
+        try {
+            if (patientId) {
+                await whatsappRepository.createMessage(patientId, 'outbound', message, null, 'failed');
+            } else {
+                await whatsappRepository.createMessage(null, 'outbound', message, null, 'failed', to);
+            }
+        } catch (dbErr) {
+            console.error('[WhatsApp Service] Error saving failed message:', dbErr);
+        }
+
+        const detailMsg = error.response?.data || error.message || 'WhatsApp Bridge error';
+        throw new Error(`No se pudo enviar el mensaje por WhatsApp: ${detailMsg}`);
     }
 };
 

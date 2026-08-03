@@ -10,19 +10,15 @@ const TabButton = ({
     activeColor = 'blue', // 'blue' | 'purple' | 'green' | 'amber' | 'default'
     className = ''
 }) => {
-    const baseClass = styles.tabBtn;
-
-    const variantClass = `${baseClass}--${variant}`;
-    const colorClass = isActive ? `${baseClass}--${activeColor}` : '';
-    const activeClass = isActive ? `${baseClass}--active` : '';
-
-    const combinedClassName = `
-        ${baseClass} 
-        ${variantClass} 
-        ${colorClass} 
-        ${activeClass} 
-        ${className}
-    `.trim().replace(/\s+/g, ' ');
+    const colorKey = `tabBtn${activeColor.charAt(0).toUpperCase() + activeColor.slice(1)}`;
+    
+    const combinedClassName = [
+        styles.tabBtn,
+        variant === 'underline' && styles.tabBtnUnderline,
+        isActive && styles.tabBtnActive,
+        isActive && styles[colorKey],
+        className
+    ].filter(Boolean).join(' ');
 
     return (
         <Button

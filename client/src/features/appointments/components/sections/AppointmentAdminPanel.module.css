@@ -2,14 +2,14 @@
 
 .root {
     /* --- Local Component Tokens --- */
-    --panel-group-bg: var(--gray-900);
-    --panel-group-border: var(--dashboard-card-border);
-    --panel-group-border-left: var(--gray-700);
-    --panel-highlight-bg: rgb(59 130 246 / 5%);
-    --panel-highlight-border: rgb(59 130 246 / 15%);
+    --panel-group-bg: var(--dashboard-card-bg);
+    --panel-group-border: var(--border-color);
+    --panel-group-border-left: var(--gray-500);
+    --panel-highlight-bg: var(--dashboard-card-bg);
+    --panel-highlight-border: var(--primary-color);
     --panel-highlight-border-left: var(--primary-color);
-    --panel-danger-bg: rgb(249 55 93 / 5%);
-    --panel-danger-border: rgb(249 55 93 / 15%);
+    --panel-danger-bg: var(--dashboard-card-bg);
+    --panel-danger-border: var(--danger);
     --panel-danger-border-left: var(--danger);
 
     /* ------------------------------ */
@@ -32,6 +32,26 @@
 
 .content {
     min-height: 180px;
+}
+
+.horizontalGroups {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: stretch;
+    width: 100%;
+    margin-bottom: 1.25rem;
+}
+
+.horizontalGroups .group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+@media (width <= 640px) {
+    .horizontalGroups {
+        flex-direction: column;
+    }
 }
 
 .group {
@@ -85,12 +105,17 @@
 .grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 0.6rem;
+    align-items: center;
 }
 
 .action {
-    flex: 1;
-    min-width: 140px;
+    width: auto !important;
+    flex: 0 0 auto !important;
+    padding: 0.45rem 0.85rem !important;
+    min-height: 2.25rem !important;
+    font-size: 0.85rem !important;
+    justify-content: center;
 }
 
 .phoneDisplay {

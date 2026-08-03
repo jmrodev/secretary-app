@@ -17,8 +17,12 @@ const MedicalRequestModal = ({ isOpen, onClose, doctors, t, onRequestCreated }) 
             <MedicalRequestForm 
                 doctors={doctors} 
                 onRequestCreated={() => {
-                    onRequestCreated();
-                    onClose();
+                    if (typeof onRequestCreated === 'function') {
+                        onRequestCreated();
+                    }
+                    if (typeof onClose === 'function') {
+                        onClose();
+                    }
                 }}
                 noCard
             />

@@ -61,6 +61,49 @@ class FinanceService {
                 paymentsList = [{ amount: data.amount, method: data.method || 'cash' }];
             }
 
+            if (data.appointment_id) {
+                const apptRows = await connection.query(
+                    "SELECT id, doctor_id, patient_id, cost, payment_status, paid_amount, type AS service_type FROM v_appointment_details WHERE id = ?",
+                    [data.appointment_id]
+                );
+                if (apptRows && apptRows.length > 0) {
+                    const appt = apptRows[0];
+                    let effectiveCost = Number(appt.cost || 0);
+
+                    // Si el costo grabado en el turno es 0, resolver el arancel del servicio/médico
+                    if (effectiveCost === 0 && (data.doctor_id || appt.doctor_id)) {
+                        try {
+                            const calculated = await calculatePrice(
+                                data.doctor_id || appt.doctor_id,
+                                data.patient_id || appt.patient_id,
+                                data.service_type || appt.service_type || 'consultation',
+                                connection
+                            );
+                            if (calculated && Number(calculated.price) > 0) {
+                                effectiveCost = Number(calculated.price);
+                                // Sincronizar el costo en la tabla appointments
+                                await connection.query("UPDATE appointments SET cost = ? WHERE id = ? AND (cost = 0 OR cost IS NULL)", [effectiveCost, data.appointment_id]);
+                            }
+                        } catch (pErr) {
+                            console.warn("[FinanceService] Could not resolve calculated price:", pErr.message);
+                        }
+                    }
+
+                    const currentPaid = Number(appt.paid_amount || 0);
+                    const remainingDebt = Math.max(0, effectiveCost - currentPaid);
+
+                    if (appt.payment_status === 'paid' || (effectiveCost > 0 && remainingDebt === 0)) {
+                        throw new Error("El turno ya se encuentra totalmente pagado. No se pueden registrar pagos adicionales.");
+                    }
+
+                    // Sumar los pagos entrantes para validar que no superen el saldo pendiente
+                    const incomingTotal = paymentsList.reduce((acc, p) => acc + (parseFloat(p.amount) || 0), 0);
+                    if (effectiveCost > 0 && incomingTotal > (remainingDebt + 0.01)) {
+                        throw new Error(`El monto a ingresar ($${incomingTotal}) supera el saldo pendiente del turno ($${remainingDebt}).`);
+                    }
+                }
+            }
+
             // Sequential processing with per-item idempotency
             for (let i = 0; i < paymentsList.length; i++) {
                 const p = paymentsList[i];
@@ -123,6 +166,10 @@ class FinanceService {
             // Sync status of appointment or request if applicable
             if (data.appointment_id) {
                 await connection.query("CALL sp_sync_appointment_payment_status(?)", [data.appointment_id]);
+                await connection.query(
+                    "UPDATE appointments SET paid_at = ? WHERE id = ? AND (payment_status = 'paid' OR is_paid = 1) AND (paid_at IS NULL OR paid_at = '0000-00-00 00:00:00')",
+                    [finalDate, data.appointment_id]
+                );
             }
             if (data.request_id || data.requestId) {
                 const reqId = data.request_id || data.requestId;
@@ -231,6 +278,9 @@ class FinanceService {
 
     async markAsBonified(id, type, conn = pool) {
         await transactionRepository.callSpMarkAsBonified(id, type, conn);
+        if (type === 'appointment') {
+            await conn.query("UPDATE appointments SET paid_at = NOW() WHERE id = ? AND paid_at IS NULL", [id]);
+        }
     }
 }
 

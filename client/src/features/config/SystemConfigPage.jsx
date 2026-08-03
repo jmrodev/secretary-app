@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo } from 'react';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import { useSystemConfigController } from '@/features/config/hooks/useSystemConfigController';
 import { getConfigSections, getConfigSection } from './registry/configRegistry';
 import { loadDefaultConfigSections } from './components/ConfigRegistryLoader';
@@ -16,26 +16,26 @@ import styles from './SystemConfigPage.module.css';
  * SettingsContent (Slot Renderer).
  * Renders the active configuration section based on the registry.
  */
-const SettingsContent = ({ activeTab, controller }) => {
+const SettingsContent = ({ activeTab, controller, registryLoaded }) => {
     const { t } = controller;
-    const section = useMemo(() => getConfigSection(activeTab), [activeTab]);
+    const section = useMemo(() => getConfigSection(activeTab), [activeTab, registryLoaded]);
 
     if (!section) return null;
 
     const { metadata, Component } = section;
 
     return (
-        <section className="settings-content-wrapper animate-fade-in-up">
-            <header className="settings-content-header">
-                <div className="settings-content-header__icon">
+        <section className="config-section animate-fade-in-up">
+            <header className="config-section__header">
+                <div className="config-section__icon">
                     <Icon name={metadata.icon} size="1.5rem" />
                 </div>
-                <div className="settings-content-header__text">
-                    <h2 className="settings-content-title">{metadata.title}</h2>
-                    <p className="settings-content-description">{metadata.desc}</p>
+                <div className="config-section__text">
+                    <h2 className="config-section__title">{metadata.title}</h2>
+                    <p className="config-section__desc">{metadata.desc}</p>
                 </div>
             </header>
-            <div className="settings-content-body">
+            <div className="config-section__body">
                 <Suspense fallback={<Loading variant="centered" />}>
                     <Component controller={controller} />
                 </Suspense>
@@ -52,10 +52,13 @@ const SystemConfigPage = () => {
     const controller = useSystemConfigController();
     const { t, activeTab, qrModal, handlers } = controller;
 
+    const [registryLoaded, setRegistryLoaded] = useState(false);
+
     // Initialize the registry once. 
     // In a larger app, this would happen at the app level.
     useEffect(() => {
         loadDefaultConfigSections(t);
+        setRegistryLoaded(true);
     }, [t]);
 
     const tabs = useMemo(() => 
@@ -63,13 +66,12 @@ const SystemConfigPage = () => {
             id: s.id,
             label: s.metadata.title,
             icon: s.metadata.icon
-        })), []);
+        })), [registryLoaded]);
 
     return (
         <MainLayout wide flush title={t('config') || 'Configuración del Sistema'}>
-            <div className="system-config-page-orchestrator layout-content-area animate-fade-in">
+            <div className={`${styles.root} layout-content-area animate-fade-in`}>
                 <FeatureToolbar
-                    className="system-config-page__toolbar"
                     tabs={tabs.length > 0 ? tabs : [
                         { id: 'general', label: t('general'), icon: 'settings' }
                     ]}
@@ -77,10 +79,10 @@ const SystemConfigPage = () => {
                     onTabChange={handlers.setActiveTab}
                 />
 
-                <main className="system-config-page-orchestrator__main">
-                    <div className={`${styles.systemConfigContainer}`}>
+                <main className={styles.systemConfigMain}>
+                    <div className={styles.systemConfigContainer}>
                         <Suspense fallback={<Loading variant="centered" />}>
-                            <SettingsContent activeTab={activeTab} controller={controller} />
+                            <SettingsContent activeTab={activeTab} controller={controller} registryLoaded={registryLoaded} />
                         </Suspense>
 
                         <QRCodeModal

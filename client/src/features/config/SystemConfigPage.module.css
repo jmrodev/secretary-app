@@ -2,10 +2,10 @@
 
 .root {
     /* --- Local Component Tokens --- */
-    --config-bg: var(--white);
-    --config-border: var(--gray-200);
-    --config-island-bg: #f8fafc;
-    --config-header-color: var(--slate-800);
+    --config-bg: var(--dashboard-card-bg);
+    --config-border: var(--border-color);
+    --config-island-bg: var(--background-bg);
+    --config-header-color: var(--text-main);
 
     /* ------------------------------ */
     display: flex;
@@ -14,7 +14,7 @@
     min-height: 0;
     gap: 1.5rem;
     padding: 1.5rem;
-    background-color: var(--gray-50);
+    background-color: var(--background-bg);
 }
 
 .systemConfigTabs {
@@ -22,11 +22,10 @@
     gap: 0.25rem;
     overflow-x: auto;
     padding: 0.5rem;
-    background: rgb(255 255 255 / 15%);
-    backdrop-filter: blur(16px);
+    background: var(--dashboard-card-bg);
     border-radius: var(--radius-lg, 12px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
-    border: 1px solid rgb(255 255 255 / 8%);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
     margin-bottom: 0.5rem;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -70,11 +69,10 @@
 }
 
 .systemConfigMain {
-    background: rgb(255 255 255 / 15%);
-    backdrop-filter: blur(16px);
+    background: var(--dashboard-card-bg);
     border-radius: var(--radius-lg, 12px);
-    border: 1px solid rgb(255 255 255 / 8%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
     padding: 2.5rem;
     flex: 1;
     overflow-y: auto;
@@ -85,11 +83,10 @@
     justify-content: space-between;
     align-items: center;
     gap: 2rem;
-    background: rgb(255 255 255 / 10%);
-    backdrop-filter: blur(16px);
+    background: var(--dashboard-card-bg);
     border-radius: var(--radius-md, 8px);
-    border: 1px solid rgb(255 255 255 / 8%);
-    box-shadow: 0 4px 16px 0 rgb(0 0 0 / 10%);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
     padding: 1.5rem;
 }
 
@@ -179,10 +176,9 @@
 }
 
 .configGroupBgWhite {
-    background: rgb(255 255 255 / 10%);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 8%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md, 8px);
     padding: 1.5rem;
 }
@@ -246,12 +242,11 @@
 }
 
 .configGuide {
-    background: rgb(255 255 255 / 10%);
-    backdrop-filter: blur(16px);
+    background: var(--dashboard-card-bg);
     padding: 1.5rem;
     border-radius: var(--radius-sm);
-    border: 1px solid rgb(255 255 255 / 8%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
 }
 
 .title {

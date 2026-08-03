@@ -17,8 +17,17 @@ router.post('/history', whatsappController.getPatientHistory);
 // Get AI suggestion for a response
 router.post('/ai-suggestion', whatsappController.getAiSuggestion);
 
+// Supervised WhatsApp auto-booking: pending bookings queue (secretary approval)
+router.get('/pending-bookings', whatsappController.listPending);
+router.post('/pending-bookings/:id/accept', whatsappController.acceptPending);
+router.post('/pending-bookings/:id/suggest-alternative', whatsappController.suggestAlternative);
+router.post('/pending-bookings/:id/reject', whatsappController.rejectPending);
+
 // Get recent conversations for the global messenger inbox
 router.get('/recent', whatsappController.getRecentConversations);
+
+// Delete a conversation history
+router.post('/delete-conversation', whatsappController.deleteConversation);
 
 // Send a single message (e.g. from Appointment Flow) - Allowed for Secretary/Doctor
 router.post('/send', whatsappController.sendMessage);

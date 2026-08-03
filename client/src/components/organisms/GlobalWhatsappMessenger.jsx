@@ -160,6 +160,20 @@ const GlobalWhatsappMessenger = ({ t }) => {
         };
     }, [isOpen]); // Only depends on isOpen now!
 
+    // Listen for external requests to open a specific patient chat
+    useEffect(() => {
+        const handleOpenChat = (e) => {
+            const { phone, patientId, patientName } = e.detail || {};
+            if (!phone) return;
+            dispatch({ type: 'SET_OPEN', payload: true });
+            dispatch({ type: 'SET_ACTIVE_CHAT', payload: { phone, patientId: patientId || null, patientName } });
+            fetchConversations();
+        };
+
+        window.addEventListener('whatsapp:open-chat', handleOpenChat);
+        return () => window.removeEventListener('whatsapp:open-chat', handleOpenChat);
+    }, [fetchConversations]);
+
     const handlePatientClick = (conv) => {
         setActiveChat({ patientId: conv.patientId || conv.patient_id, phone: conv.patient_phone });
     };

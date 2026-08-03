@@ -24,8 +24,10 @@ exports.getPublicPrescriptionRequestData = async (req, res) => {
         const result = await publicMedicalService.getPublicPrescriptionRequestData(token);
         res.json(result);
     } catch (err) {
-        console.error(err);
-        if (err.message === 'Link inválido o expirado') return res.status(404).json({ error: err.message });
+        console.error('[PublicMedicalController] Error:', err.message);
+        if (err.message === 'Link inválido o expirado' || err.message === 'invalid_or_expired_token' || err.message === 'patient_not_found') {
+            return res.status(404).json({ error: 'El enlace de la receta ha expirado o no es válido.' });
+        }
         res.status(500).json({ error: "Server Error" });
     }
 };
@@ -36,9 +38,11 @@ exports.submitPublicPrescriptionRequest = async (req, res) => {
         const result = await publicMedicalService.submitPublicPrescriptionRequest(token, req.body, req);
         res.json(result);
     } catch (err) {
-        console.error(err);
+        console.error('[PublicMedicalController] Error:', err.message);
         if (err.message === 'Debe seleccionar al menos una medicación') return res.status(400).json({ error: err.message });
-        if (err.message === 'Link inválido o expirado') return res.status(404).json({ error: err.message });
+        if (err.message === 'Link inválido o expirado' || err.message === 'invalid_or_expired_token') {
+            return res.status(404).json({ error: 'El enlace de la receta ha expirado o no es válido.' });
+        }
         if (err.message === 'No se pudo asignar un médico a la solicitud') return res.status(400).json({ error: err.message });
         res.status(500).json({ error: "Server Error" });
     }

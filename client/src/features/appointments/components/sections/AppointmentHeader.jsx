@@ -55,21 +55,59 @@ const AppointmentHeader = ({ appt, t }) => {
                     <Icon name="calendar_month" size="1.1rem" />
                     {formatDate(appt.appointment_date, true)}
                 </p>
+
+                {/* Timeline / Traceability section - Colorful pills */}
+                <div className={styles.timelineList}>
+                    {appt.created_at && (
+                        <div className={`${styles.timelineItem} ${styles.itemCreated}`} title="Creación del turno">
+                            <Icon name="add_circle" size="0.85rem" />
+                            <span>Creado: {formatDate(appt.created_at, true)}</span>
+                        </div>
+                    )}
+
+                    {appt.confirmed_at && (
+                        <div className={`${styles.timelineItem} ${styles.itemConfirmed}`} title="Confirmación de la cita">
+                            <Icon name="check_circle" size="0.85rem" />
+                            <span>Confirmado: {formatDate(appt.confirmed_at, true)}</span>
+                        </div>
+                    )}
+
+                    {appt.arrived_at && (
+                        <div className={`${styles.timelineItem} ${styles.itemArrived}`} title="Llegada a sala de espera">
+                            <Icon name="meeting_room" size="0.85rem" />
+                            <span>En sala: {formatDate(appt.arrived_at, true)}</span>
+                        </div>
+                    )}
+
+                    {appt.completed_at && (
+                        <div className={`${styles.timelineItem} ${styles.itemCompleted}`} title="Atención finalizada">
+                            <Icon name="task_alt" size="0.85rem" />
+                            <span>Atendido: {formatDate(appt.completed_at, true)}</span>
+                        </div>
+                    )}
+
+                    {appt.paid_at && (
+                        <div className={`${styles.timelineItem} ${!(appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') ? styles.itemPaid : styles.itemBonified}`} title={!(appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') ? "Cobro registrado" : "Turno bonificado"}>
+                            <Icon name={!(appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') ? "payments" : "card_giftcard"} size="0.85rem" />
+                            <span>{!(appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') ? 'Pagado' : 'Bonificado'}: {formatDate(appt.paid_at, true)}</span>
+                        </div>
+                    )}
+                </div>
             </section>
 
             <aside className={styles.badges}>
                 <Badge variant={getStatusVariant(appt.status)}>
-                    {t(appt.status) || appt.status}
+                    {t('appointment_status') || 'Turno'}: {t(appt.status) || appt.status}
                 </Badge>
                 
-                {/* Payment badge: only show if NOT bonified */}
-                {!(appt.bonified === 1 || appt.bonified === true) ? (
+                {/* Payment badge */}
+                {!(appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') ? (
                     <Badge variant={getPaymentStatusVariant(appt.payment_status)}>
-                        {getPaymentStatusLabel(appt.payment_status)}
+                        {t('payment') || 'Pago'}: {getPaymentStatusLabel(appt.payment_status)}
                     </Badge>
                 ) : (
                     <Badge variant="accent">
-                        {t('bonified') || 'Bonificado'}
+                        {t('payment') || 'Pago'}: {t('bonified') || 'Bonificado'}
                     </Badge>
                 )}
             </aside>

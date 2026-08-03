@@ -14,10 +14,17 @@ export const useInsurancesController = () => {
 
     // Data State using custom hook
     const { data: insData, loading, refetch: fetchInsurances } = useFetch('/insurances', { 
-        initialData: { insurances: [], totalCount: 0 } 
+        initialData: [] 
     });
 
-    const insurances = useMemo(() => insData?.insurances || [], [insData]);
+    const insurances = useMemo(() => {
+        if (!insData) return [];
+        if (Array.isArray(insData)) return insData;
+        if (Array.isArray(insData.data)) return insData.data;
+        if (insData.data && Array.isArray(insData.data.insurances)) return insData.data.insurances;
+        if (Array.isArray(insData.insurances)) return insData.insurances;
+        return [];
+    }, [insData]);
 
     const { searchTerm, setSearchTerm } = useSearch();
     const [modalOpen, setModalOpen] = useState(false);
