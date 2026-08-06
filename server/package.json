@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google/gemini-cli": "^0.41.2",
+    "@google/gemini-cli": "^0.53.0",
     "afip-apis": "^0.5.5",
     "axios": "^1.18.0",
     "bcrypt": "^6.0.0",
