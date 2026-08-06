@@ -109,12 +109,36 @@
     linear-gradient(#fff 0 0);
   mask-composite: exclude;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.extraRing {
+  position: absolute;
+  inset: -7px;
+  width: calc(100% + 14px);
+  height: calc(100% + 14px);
+  pointer-events: none;
   opacity: var(--extra-opacity, 0);
   transition: opacity 0.3s ease;
 }
 
+.extraRingTrack {
+  fill: none;
+  stroke: var(--border-color);
+  stroke-width: 2;
+}
+
+.extraRingFill {
+  fill: none;
+  stroke: var(--warning);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
 .selected .numberWrapper::before,
-.selected .numberWrapper::after {
+.selected .numberWrapper::after,
+.selected .extraRing {
   opacity: 0;
 }
 

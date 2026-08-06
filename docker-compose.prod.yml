@@ -11,7 +11,7 @@ services:
     container_name: secretary-db-prod
     logging: *default-logging
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD_PROD:-cima1255}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD_PROD:?DB_ROOT_PASSWORD_PROD no definida en .env}
       MYSQL_DATABASE: ${DB_NAME_PROD:-clinical_management}
       TZ: America/Argentina/Buenos_Aires
     volumes:
@@ -41,12 +41,12 @@ services:
     environment:
       - DB_HOST=db-prod
       - DB_USER=root
-      - DB_PASSWORD=cima1255
+      - DB_PASSWORD=${DB_ROOT_PASSWORD_PROD:?DB_ROOT_PASSWORD_PROD no definida en .env}
       - DB_NAME=clinical_management
       - PORT=5000
       - TZ=America/Argentina/Buenos_Aires
       - NODE_ENV=production
-      - JWT_SECRET=${JWT_SECRET:-supersecretkey123}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET no definida en .env}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
