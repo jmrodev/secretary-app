@@ -87,14 +87,13 @@ class AvailabilityStatsService {
                     minute: '2-digit'
                 }) + ':00';
 
-                const isExplicitExtra = (a.is_out_of_hours === 1 || a.is_out_of_hours === true || String(a.is_out_of_hours) === 'true');
                 const fallsInOfficial = officialBlocks.some(s => {
                     const sStart = String(s.start_time).substring(0, 5) + ':00';
                     const sEnd = String(s.end_time).substring(0, 5) + ':00';
                     return apptTimeStr >= sStart && apptTimeStr < sEnd;
                 });
 
-                if (!isExplicitExtra && fallsInOfficial) {
+                if (fallsInOfficial) {
                     bookedIn++;
                 } else {
                     bookedOut++;

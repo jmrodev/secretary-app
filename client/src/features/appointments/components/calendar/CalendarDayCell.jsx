@@ -56,11 +56,22 @@ const CalendarDayCell = ({
   const extraTotal = bookedOutCount + freeOutCount;
   const extraOccupancy = extraTotal > 0 ? (bookedOutCount / extraTotal) * 100 : 0;
 
+  const EXTRA_RADIUS = 44;
+  const extraCirc = 2 * Math.PI * EXTRA_RADIUS;
+  const extraOccupiedLen = extraCirc * (extraOccupancy / 100);
+  const dashLen = 6;
+  const gapLen = 5;
+  const dashCount = extraOccupiedLen > 0 ? Math.max(1, Math.floor(extraOccupiedLen / (dashLen + gapLen))) : 0;
+  const extraDashPattern = dashCount > 0
+    ? `${dashLen} ${gapLen} `.repeat(dashCount) + `${Math.max(0, extraOccupiedLen - dashCount * (dashLen + gapLen))} ${extraCirc - extraOccupiedLen}`
+    : `0 ${extraCirc}`;
+
   const ringStyles = {
     '--occupancy-normal': `${normalOccupancy}%`,
-    '--occupancy-extra': `${extraOccupancy}%`,
     '--extra-opacity': (showOutOfHours && extraTotal > 0) ? '1' : '0'
   };
+
+  const showExtraRing = showOutOfHours && extraTotal > 0;
 
   return (
     <div
@@ -74,6 +85,20 @@ const CalendarDayCell = ({
     >
       <div className={`${styles.content}`}>
         <div className={styles.numberWrapper} style={ringStyles}>
+          {showExtraRing && (
+            <svg className={styles.extraRing} viewBox="0 0 100 100" aria-hidden="true">
+              <circle
+                className={styles.extraRingTrack}
+                cx="50" cy="50" r={EXTRA_RADIUS}
+              />
+              <circle
+                className={styles.extraRingFill}
+                cx="50" cy="50" r={EXTRA_RADIUS}
+                strokeDasharray={extraDashPattern}
+                transform="rotate(-90 50 50)"
+              />
+            </svg>
+          )}
           <span className={`${styles.number}`}>{day}</span>
         </div>
         <div className={styles.markers}>
