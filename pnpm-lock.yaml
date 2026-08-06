@@ -146,8 +146,8 @@ importers:
         specifier: ^9.0.3
         version: 9.0.3
       knex:
-        specifier: ^3.2.10
-        version: 3.2.10(mysql2@3.23.2(@types/node@25.7.0))
+        specifier: ^3.3.0
+        version: 3.3.0(mariadb@3.5.2)(mysql2@3.23.2(@types/node@25.7.0))
       mariadb:
         specifier: 3.5.2
         version: 3.5.2
@@ -3502,12 +3502,13 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
 
-  knex@3.2.10:
-    resolution: {integrity: sha512-oypTHfrc9i72iyxaUQBKHOxhcr0xM65MPf6FpN02nimsftXwzXprIkLjfXdubvhbu4PMWLp023q8o8CYvHSuZw==}
+  knex@3.3.0:
+    resolution: {integrity: sha512-LgWl031hNuLv9Lhxdd9093zULa2aNcoP04Bk29e5NidgRcEr/T0rAr2WYi4BhjTiCDoQiRU56meUE5rppLKZzQ==}
     engines: {node: '>=16'}
     hasBin: true
     peerDependencies:
       better-sqlite3: '*'
+      mariadb: '*'
       mysql: '*'
       mysql2: '*'
       pg: '*'
@@ -3517,6 +3518,8 @@ packages:
       tedious: '*'
     peerDependenciesMeta:
       better-sqlite3:
+        optional: true
+      mariadb:
         optional: true
       mysql:
         optional: true
@@ -4694,8 +4697,8 @@ packages:
     resolution: {integrity: sha512-9kY+CygyYM6j02t5YFHbNz2FN5QmYGv9zAjVp4lCDjlCw7amdckXlEt/bjMhUIfj4ThGRE4gCUH5+yGnNuPo5A==}
     engines: {node: '>=10.0.0'}
 
-  tarn@3.0.2:
-    resolution: {integrity: sha512-51LAVKUSZSVfI05vjPESNc5vwqqZpbXCsU+/+wxlOrUjk2SnFTt97v9ZgQrD4YmxYW1Px6w2KjaDitCfkvgxMQ==}
+  tarn@3.1.2:
+    resolution: {integrity: sha512-3RTvqKZcK/17jnJ8rMKFXbyNogywTs1z0gVPPwFsJGX46rkmUHOdIaSQ/aVO1rS7nH+soiXiWk7rvUXxndm8Dg==}
     engines: {node: '>=8.0.0'}
 
   test-exclude@6.0.0:
@@ -8615,7 +8618,7 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knex@3.2.10(mysql2@3.23.2(@types/node@25.7.0)):
+  knex@3.3.0(mariadb@3.5.2)(mysql2@3.23.2(@types/node@25.7.0)):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -8629,9 +8632,10 @@ snapshots:
       pg-connection-string: 2.6.2
       rechoir: 0.8.0
       resolve-from: 5.0.0
-      tarn: 3.0.2
+      tarn: 3.1.2
       tildify: 2.0.0
     optionalDependencies:
+      mariadb: 3.5.2
       mysql2: 3.23.2(@types/node@25.7.0)
     transitivePeerDependencies:
       - supports-color
@@ -9939,7 +9943,7 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
 
-  tarn@3.0.2: {}
+  tarn@3.1.2: {}
 
   test-exclude@6.0.0:
     dependencies:
