@@ -29,7 +29,7 @@
     "mariadb": "3.5.2",
     "morgan": "^1.11.0",
     "multer": "^2.2.0",
-    "mysql2": "^3.23.2",
+"mysql2": "^3.23.2",
     "node-cron": "^4.2.1"
   },
   "devDependencies": {
