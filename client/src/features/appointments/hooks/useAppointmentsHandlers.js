@@ -26,7 +26,7 @@ export const useAppointmentsHandlers = ({
     const appointmentActions = useAppointmentActions({
         user, t, showMessage, confirm, prompt, navigate,
         updateStatus, updateAppointment, deleteAppointment, rescheduleAppointment,
-        bookAppointment, savePrescription, fetchAppointments
+        bookAppointment, savePrescription, fetchAppointments, setActionModal
     });
 
     const uiHandlers = useAppointmentUIHandlers({
@@ -92,6 +92,14 @@ export const useAppointmentsHandlers = ({
     const handleUpdateStatus = async (id, status) => {
         await appointmentActions.handleStatusUpdate(id, status);
         fetchAppointments();
+        try {
+            const updated = await api.get(`/appointments/${id}`);
+            if (updated?.data?.data) {
+                const freshAppt = updated.data.data;
+                setActionModal(prev => (prev.open && prev.appt && String(prev.appt.id) === String(id)) ? { ...prev, appt: freshAppt } : prev);
+                return;
+            }
+        } catch (_) {}
         setActionModal(prev => (prev.open && prev.appt && String(prev.appt.id) === String(id)) ? { ...prev, appt: { ...prev.appt, status } } : prev);
     };
 
@@ -225,6 +233,7 @@ export const useAppointmentsHandlers = ({
         handleSyncGoogleEvent, handleBook, handleNextFreeSlot: (sd, override) => fetchNextFreeSlots(sd, override), handleWhatsAppSlot, confirmNextSlot,
         handleAdminAuthConfirm: (retry, pass) => appointmentActions.handleAdminAuthConfirm?.(retry, pass), // Mapping if needed or using direct
         handleUpdateType, handleSaveNote, toggleForm: () => setShowForm(p => !p),
+        handleBonify: appointmentActions.handleBonify,
         createPatient: () => { booking.setSelectedPatientData(null); setEditPatientModalOpen(true); },
         openNextSlot: () => { if (setSlotHistory) setSlotHistory([]); fetchNextFreeSlots(null); },
         handleOpenPayment: uiHandlers.handleOpenPayment,

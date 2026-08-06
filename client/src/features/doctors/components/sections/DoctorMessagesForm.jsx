@@ -3,6 +3,7 @@ import Icon from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
+import { GEMINI_VALID_MODELS, normalizeGeminiModel } from '@/constants/aiModels';
 import styles from './DoctorMessagesForm.module.css';
 
 /**
@@ -235,8 +236,8 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                                         value={data.gemini_api_version || 'v1beta'}
                                         onChange={(e) => updateField('gemini_api_version', e.target.value)}
                                     >
-                                        <option value="v1">v1 (Estable)</option>
-                                        <option value="v1beta">v1beta (Preview)</option>
+                                        <option value="v1">{t('gemini_api_version_option_v1')}</option>
+                                        <option value="v1beta">{t('gemini_api_version_option_v1beta')}</option>
                                     </select>
                                 </div>
 
@@ -246,12 +247,12 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                                     </label>
                                     <select
                                         className={`${styles.input}`}
-                                        value={data.gemini_model || 'gemini-2.5-flash'}
+                                        value={normalizeGeminiModel(data.gemini_model) || 'gemini-3.6-flash'}
                                         onChange={(e) => updateField('gemini_model', e.target.value)}
                                     >
-                                        <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-                                        <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
-                                        <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                                        {GEMINI_VALID_MODELS.map((model) => (
+                                            <option key={model} value={model}>{model}</option>
+                                        ))}
                                     </select>
                                 </div>
 

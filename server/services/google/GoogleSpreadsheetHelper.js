@@ -49,13 +49,13 @@ class GoogleSpreadsheetHelper {
                 }
             });
 
-            // Add Headers: Date, Time, Patient, Value, Paid, Pending, Internal ID
+            // Add Headers: Fecha, Hora Turno, Paciente, Hora Llegada Sala, Hora Atendido, Hora Pago, Servicio, Monto Total, Cobrado, Saldo Turno, Medios de Pago, Bitácora/Notas, ID
             await sheets.spreadsheets.values.update({
                 spreadsheetId,
-                range: `${sheetName}!A1:G1`,
+                range: `${sheetName}!A1:M1`,
                 valueInputOption: 'RAW',
                 resource: {
-                    values: [['Date', 'Time', 'Patient', 'Value', 'Paid', 'Pending', 'Internal ID']]
+                    values: [['Fecha', 'Hora Turno', 'Paciente', 'Hora Llegada Sala', 'Hora Atendido', 'Hora Pago', 'Servicio', 'Monto Total', 'Cobrado', 'Saldo Turno', 'Medios de Pago', 'Bitácora/Notas', 'ID']]
                 }
             });
         }
@@ -110,7 +110,7 @@ class GoogleSpreadsheetHelper {
                             startRowIndex: rowIndex,
                             endRowIndex: rowIndex + 1,
                             startColumnIndex: 0,
-                            endColumnIndex: 7
+                            endColumnIndex: 13
                         },
                         cell: {
                             userEnteredFormat: { backgroundColor: color }

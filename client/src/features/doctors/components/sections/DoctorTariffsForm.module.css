@@ -13,10 +13,10 @@
 }
 
 .sectionRental {
-    background: var(--gray-50);
+    background: var(--dashboard-card-bg);
     padding: 1.5rem;
     border-radius: var(--radius);
-    border: 1px solid var(--gray-100);
+    border: 1px solid var(--dashboard-card-border);
 }
 
 .title {

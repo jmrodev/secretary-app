@@ -18,7 +18,7 @@ import styles from './AppointmentActionModal.module.css';
  */
 const AppointmentActionModal = ({
     isOpen, onClose, appt, onHistory, onPrescribe, onUpdateStatus, onReschedule,
-    onCancel, onDelete, onSync, onPay, onWhatsApp, onUpdateType, onHardEdit,
+    onCancel, onDelete, onSync, onPay, onWhatsApp, onWhatsAppConfirmation, onUpdateType, onHardEdit,
     onBonify, onSaveNote, fetchAppointments: _fetchAppointments
 }) => {
     const { t } = useLanguage();
@@ -42,17 +42,11 @@ const AppointmentActionModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={`${t('appointment_details') || 'Detalles del Turno'}: ${appt.patient_name || appt.reason || t('sync_required')}`}
+            title={t('appointment_details') || 'Detalles del Turno'}
             size="lg"
         >
             <div className={`${styles.content}`}>
                 <AppointmentHeader appt={appt} t={t} />
-
-                <div className={`${styles.reason}`}>
-                    <p className={`${styles.text}`}>
-                        <strong className={`${styles.strong}`}>{t('reason')}:</strong> {appt.reason || t('no_description')}
-                    </p>
-                </div>
 
                 {showMedicalPanel && (
                     <AppointmentMedicalPanel
@@ -80,7 +74,7 @@ const AppointmentActionModal = ({
                         t={t} onPay={onPay} onUpdateStatus={onUpdateStatus} onReschedule={onReschedule}
                         onCancel={onCancel} onDelete={onDelete} onUpdateType={onUpdateType}
                         onHardEdit={onHardEdit} onBonify={onBonify} onClose={onClose} note={note}
-                        onWhatsApp={onWhatsApp}
+                        onWhatsApp={onWhatsApp} onWhatsAppConfirmation={onWhatsAppConfirmation}
                     />
                 )}
             </div>

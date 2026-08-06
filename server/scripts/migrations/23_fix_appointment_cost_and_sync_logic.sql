@@ -97,10 +97,10 @@ BEGIN
     -- Create the appointment
     INSERT INTO appointments (
         patient_id, doctor_id, appointment_date, reason, 
-        is_out_of_hours, type, status, institution_id, bonified
+        is_out_of_hours, type, status, institution_id, bonified, created_at
     ) VALUES (
         p_patient_id, p_doctor_id, p_appointment_date, p_reason, 
-        p_is_out_of_hours, p_type, 'pending', p_institution_id, p_bonified
+        p_is_out_of_hours, p_type, 'pending', p_institution_id, p_bonified, NOW()
     );
     
     SET p_appointment_id = LAST_INSERT_ID();

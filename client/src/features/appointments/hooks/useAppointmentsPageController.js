@@ -11,7 +11,7 @@ import { useAppointments } from './useAppointments';
 import { useHolidays } from './useHolidays';
 import { useNextFreeSlot } from './useNextFreeSlot';
 import { useAppointmentBooking } from './useAppointmentBooking';
-import { useWhatsAppUniversal } from './useWhatsAppUniversal';
+import { useWhatsAppUniversal, buildWhatsAppMessage } from './useWhatsAppUniversal';
 import { useGoogleSync } from './useGoogleSync';
 import { useDoctorSchedules } from './useDoctorSchedules';
 import { usePatientAppointmentSearch } from './usePatientAppointmentSearch';
@@ -96,6 +96,22 @@ export const useAppointmentsPageController = () => {
     const booking = useAppointmentBooking(doctors);
     const nextSlot = useNextFreeSlot(viewDoctorId || booking.selectedDoctor);
 
+    const handleWhatsAppConfirmation = useCallback(async (appt) => {
+        let phone = appt.patient_phone;
+        if (!phone) { showMessage('No hay teléfono disponible para este paciente.', 'error'); return; }
+        let normalizedPhone = phone.replace(/\D/g, '');
+        if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
+
+        const confirmed = await confirm(
+            `¿Enviar confirmación de WhatsApp a ${appt.patient_name || 'el paciente'}?`
+        );
+        if (!confirmed) return;
+
+        const doctor = doctors.find(d => Number(d.id) === Number(appt.doctor_id));
+        const message = buildWhatsAppMessage({ appt, doctor, settings, user, type: 'confirmation' });
+        booking.setWhatsappModal({ open: true, phone: normalizedPhone, message });
+    }, [doctors, settings, user, confirm, showMessage, booking]);
+
     // --- 5. Derived State & Callbacks ---
     const institutions = useMemo(() => institutionsHook.data?.data?.institutions || [], [institutionsHook.data]);
     const insurances = useMemo(() => insurancesHook.data?.data?.insurances || [], [insurancesHook.data]);
@@ -146,7 +162,7 @@ export const useAppointmentsPageController = () => {
     const handlers = useMemo(() => ({
         ...hookHandlers,
         handleAdminAuthConfirm: (password) => hookHandlers.handleAdminAuthConfirm(retryAction, password),
-        handleWhatsAppUniversal, syncDayToGoogle, cancelAppointment, fetchAppointments,
+        handleWhatsAppUniversal, handleWhatsAppConfirmation, syncDayToGoogle, cancelAppointment, fetchAppointments,
         handleCancel: (id, reason) => cancelAppointment(id, fetchAppointments, reason),
         exitRescheduleMode, rescheduleAppt,
         setShowOutOfHours,
@@ -154,7 +170,7 @@ export const useAppointmentsPageController = () => {
         setEditPatientModalOpen, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setAuthModalOpen, setSearchPatientId, setSearchTerm
     }), [
-        hookHandlers, retryAction, handleWhatsAppUniversal, syncDayToGoogle, cancelAppointment, fetchAppointments,
+        hookHandlers, retryAction, handleWhatsAppUniversal, handleWhatsAppConfirmation, syncDayToGoogle, cancelAppointment, fetchAppointments,
         exitRescheduleMode, rescheduleAppt, setShowOutOfHours, setViewDoctorId, setSelectedDate,
         setEditPatientModalOpen, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setAuthModalOpen, setSearchPatientId, setSearchTerm

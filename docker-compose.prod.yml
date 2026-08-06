@@ -32,6 +32,9 @@ services:
       dockerfile: Dockerfile.prod
     restart: always
     container_name: secretary-server-prod
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     logging: *default-logging
     ports:
       - "5001:5000"
@@ -67,6 +70,9 @@ services:
     build: ./whatsapp-bridge-go
     restart: always
     container_name: secretary-whatsapp-bridge
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     logging: *default-logging
     networks:
       - internal-network

@@ -23,7 +23,8 @@ class MedicalFileRepository {
     }
 
     async findAll(filters = {}, conn = this.pool) {
-        const { patient_id, doctorId } = filters;
+        const targetPatientId = filters.patient_id || filters.patientId;
+        const doctorId = filters.doctorId;
         let query = `
             SELECT f.*, u.username as uploader_name, p.full_name as patient_name, p.dni as patient_dni,
             CONCAT_WS(' ', p.street_name, p.street_number,
@@ -37,13 +38,13 @@ class MedicalFileRepository {
         const params = [];
         const whereClauses = [];
 
-        if (patient_id) {
+        if (targetPatientId) {
             whereClauses.push("f.patient_id = ?");
-            params.push(patient_id);
+            params.push(targetPatientId);
         }
 
         if (doctorId) {
-            whereClauses.push("EXISTS (SELECT 1 FROM patient_doctors pd WHERE pd.patient_id = f.patient_id AND pd.doctor_id = ?)");
+            whereClauses.push("(EXISTS (SELECT 1 FROM patient_doctors pd WHERE pd.patient_id = f.patient_id AND pd.doctor_id = ?) OR NOT EXISTS (SELECT 1 FROM patient_doctors pd2 WHERE pd2.patient_id = f.patient_id))");
             params.push(doctorId);
         }
 

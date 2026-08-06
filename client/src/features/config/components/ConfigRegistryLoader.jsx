@@ -24,6 +24,7 @@ import { InstitutionFinances } from '@/features/finances';
 import MessageTemplateEditor from './forms/MessageTemplateEditor';
 
 // Eager imports for hooks to avoid undef require at runtime/eslint
+import { useProfileController } from '@/features/auth/hooks/useProfileController';
 import { useDoctorsPageController } from '@/features/doctors';
 import { useReportsController, useAuditLogsController } from '@/features/reports';
 import { useInstitutionsController } from '@/features/institutions';
@@ -46,10 +47,8 @@ const GeneralSettingsWrapper = ({ controller }) => {
 };
 
 const ProfileEditorWrapper = ({ controller }) => {
-    // In auth feature, useProfileController is usually called inside ProfileEditor 
-    // or passed down. Here we can use a custom hook from auth if needed.
-    // For now, let's assume it handles its own logic or use a specific import.
-    return <ProfileEditor />;
+    const profileController = useProfileController();
+    return <ProfileEditor {...profileController} />;
 };
 
 const DoctorsManagerWrapper = ({ controller }) => {

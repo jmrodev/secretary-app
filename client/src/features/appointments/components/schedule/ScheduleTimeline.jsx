@@ -64,19 +64,31 @@ const ScheduleTimeline = ({
                 
                 if (isTodaySchedule && !timeMarkerRendered) {
                     const nextTime = index < filteredSlots.length - 1 ? filteredSlots[index+1].time : new Date(time.getTime() + 60*60*1000);
-                    if (now >= time && now < nextTime) {
+                    
+                    if (index === 0 && now < time) {
+                        // La hora actual es anterior al primer slot visible (ej. son las 08:30 y el primer turno es a las 09:00)
+                        isCurrentSlot = true;
+                        timeMarkerRendered = true;
+                        progressPercent = 0;
+                    } else if (now >= time && now < nextTime) {
+                        // La hora actual cae dentro de este slot
                         isCurrentSlot = true;
                         timeMarkerRendered = true;
                         const totalDuration = nextTime.getTime() - time.getTime();
                         const elapsed = now.getTime() - time.getTime();
                         progressPercent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+                    } else if (index === filteredSlots.length - 1 && now >= nextTime) {
+                        // La hora actual es posterior a todo el rango visible dentro de horario (ej. pasadas las 12:00 p.m.)
+                        isCurrentSlot = true;
+                        timeMarkerRendered = true;
+                        progressPercent = 100;
                     }
                 }
 
                 return (
                     <div key={timeKey} style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
                         {isCurrentSlot && (
-                            <div ref={markerRef} className={styles.currentTimeLine} style={{ left: `${progressPercent}%` }}>
+                            <div ref={markerRef} className={styles.currentTimeLine} style={{ top: `${progressPercent}%`, left: 0, right: 0 }}>
                                 <div className={styles.currentTimeLineLabel}>AHORA</div>
                                 <div className={styles.currentTimeLineBar}></div>
                             </div>

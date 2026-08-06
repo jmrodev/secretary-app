@@ -32,7 +32,7 @@ class GoogleSpreadsheetService {
         const dateObj = new Date(tx.transaction_date);
         const rowValues = this._mapTxToRow(tx, dateObj);
 
-        const result = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${sheetName}!G:G` });
+        const result = await sheets.spreadsheets.values.get({ spreadsheetId, range: `${sheetName}!M:M` });
         const ids = result.data.values ? result.data.values.map(row => row[0]) : [];
         const rowIndexInColumn = ids.findIndex(id => id == tx.id);
 
@@ -41,14 +41,14 @@ class GoogleSpreadsheetService {
             finalRowIndex = rowIndexInColumn;
             await sheets.spreadsheets.values.update({
                 spreadsheetId,
-                range: `${sheetName}!A${finalRowIndex + 1}:G${finalRowIndex + 1}`,
+                range: `${sheetName}!A${finalRowIndex + 1}:M${finalRowIndex + 1}`,
                 valueInputOption: 'USER_ENTERED',
                 requestBody: { values: [rowValues] }
             });
         } else {
             const appendResponse = await sheets.spreadsheets.values.append({
                 spreadsheetId,
-                range: `${sheetName}!A:G`,
+                range: `${sheetName}!A:M`,
                 valueInputOption: 'USER_ENTERED',
                 insertDataOption: 'INSERT_ROWS',
                 requestBody: { values: [rowValues] }
@@ -71,11 +71,15 @@ class GoogleSpreadsheetService {
     async bulkSync(doctorId = null, userId = null) {
         const { pool } = require('../../db');
         const query = `
-            SELECT t.*, p.full_name as patient_name, d.full_name as doctor_name
+            SELECT t.*, p.full_name as patient_name, d.full_name as doctor_name,
+                   a.appointment_date, a.type as service_type, a.cost, a.created_at,
+                   a.confirmed_at, a.arrived_at, a.completed_at, a.paid_at,
+                   a.payment_status as appt_payment_status
             FROM transactions t
             LEFT JOIN users u ON t.related_user_id = u.id
             LEFT JOIN patients p ON u.id = p.user_id
             LEFT JOIN doctors d ON t.doctor_id = d.id
+            LEFT JOIN appointments a ON t.appointment_id = a.id
             ${doctorId ? 'WHERE t.doctor_id = ?' : ''}
             ORDER BY t.transaction_date ASC
         `;
@@ -140,17 +144,36 @@ class GoogleSpreadsheetService {
     }
 
     _mapTxToRow(tx, dateObj) {
-        const amount = Number(tx.amount);
+        const amount = Number(tx.amount || 0);
         const isOutflow = (tx.type === 'withdrawal' || tx.is_withdrawal === 1 || tx.type === 'payout');
         const val = isOutflow ? -amount : amount;
+        const formatTime = (date) => {
+            if (!date) return '-';
+            try {
+                const d = new Date(date);
+                return isNaN(d.getTime()) ? '-' : d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+            } catch (e) {
+                return '-';
+            }
+        };
+
+        const apptCost = Number(tx.cost || amount);
+        const paidAmt = tx.status === 'paid' ? amount : (Number(tx.paid_amount) || 0);
+        const turnDebt = tx.status === 'pending' ? amount : Math.max(0, apptCost - paidAmt);
 
         return [
             dateObj.toLocaleDateString('es-AR'),
-            dateObj.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }),
-            tx.patient_name || tx.description || 'N/A',
+            tx.appointment_date ? formatTime(tx.appointment_date) : formatTime(dateObj),
+            tx.patient_name || tx.related_patient_name || 'N/A',
+            formatTime(tx.arrived_at),
+            formatTime(tx.completed_at),
+            formatTime(tx.paid_at || (tx.status === 'paid' ? tx.transaction_date : null)),
+            tx.service_type || tx.type || 'Consulta',
             val,
             tx.status === 'paid' ? val : 0,
-            tx.status === 'pending' ? amount : 0,
+            turnDebt,
+            tx.method || 'cash',
+            tx.description || '',
             tx.id
         ];
     }
@@ -196,7 +219,7 @@ class GoogleSpreadsheetService {
                         startRowIndex: apiRowIndex,
                         endRowIndex: apiRowIndex + 1,
                         startColumnIndex: 0,
-                        endColumnIndex: 7
+                        endColumnIndex: 13
                     },
                     cell: { userEnteredFormat: { backgroundColor: helper.getRowColor(tx) } },
                     fields: 'userEnteredFormat.backgroundColor'

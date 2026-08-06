@@ -31,7 +31,7 @@
     color: var(--text-main, #fff);
     border-radius: var(--radius-lg, 0.75rem);
     width: 100%;
-    max-width: 31.25rem; /* default max-width for md */
+    max-width: 42rem; /* default max-width for md (antes 31.25rem) */
     height: auto;
     max-height: calc(100vh - 2 * clamp(0.5rem, 3vw, 5rem));
     display: flex;
@@ -47,9 +47,9 @@
     overflow: hidden; 
 }
 
-.contentLg { max-width: 56.25rem; }
-.contentXl { max-width: 68.75rem; }
-.content2xl { max-width: 81.25rem; }
+.contentLg { max-width: 64rem; }
+.contentXl { max-width: 76rem; }
+.content2xl { max-width: 90rem; }
 
 .header {
     display: flex;

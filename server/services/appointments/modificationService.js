@@ -3,6 +3,7 @@ const googleSyncService = require('./googleSyncService');
 const financeService = require('../finance/financeService');
 const helper = require('./appointmentHelper');
 const { pool } = require('../../db');
+const { nowLocalSQL } = require('../../utils/core/dateUtils');
 
 /**
  * ModificationService
@@ -65,6 +66,14 @@ class ModificationService {
             }
 
             const updates = { status, cancellation_reason: reason || null };
+            if (status === 'confirmed') {
+                updates.confirmed_at = nowLocalSQL();
+            } else if (status === 'arrived') {
+                updates.arrived_at = nowLocalSQL();
+            } else if (status === 'completed') {
+                updates.completed_at = nowLocalSQL();
+            }
+
             if (['cancelled', 'absent', 'suspended'].includes(status) && ['pending', 'debt'].includes(appt.payment_status)) {
                 updates.payment_status = null;
             }
@@ -116,6 +125,12 @@ class ModificationService {
             }
 
             if (updates.bonified === 1 || updates.bonified === true || updates.bonified === 'true') {
+                if (appt.bonified === 1 || appt.bonified === true) {
+                    throw new Error("El turno ya se encuentra bonificado.");
+                }
+                if (appt.payment_status === 'paid') {
+                    throw new Error("No se puede bonificar un turno que ya ha sido pagado.");
+                }
                 await financeService.markAsBonified(id, 'appointment', conn);
                 delete updates.bonified;
                 if (updates.payment_status) delete updates.payment_status;

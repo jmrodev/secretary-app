@@ -89,11 +89,43 @@
 }
 
 .secondary {
-    --btn-bg: var(--gray-900);
-    --btn-border: var(--dashboard-card-border);
+    --btn-bg: var(--gray-800, #2a2d3d);
+    --btn-border: var(--border-color, #3a3f55);
     --btn-text: var(--text-main);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: rgb(128, 128, 128, 0.12);
+    --btn-hover-bg: var(--gray-700, #363b52);
+}
+
+.accent {
+    --btn-bg: #8b5cf6;
+    --btn-text: var(--white);
+    --btn-border: #8b5cf6;
+    --btn-shadow: 0 4px 10px rgb(139 92 246 / 25%);
+    --btn-hover-bg: #7c3aed;
+}
+
+.purple {
+    --btn-bg: #d946ef;
+    --btn-text: var(--white);
+    --btn-border: #d946ef;
+    --btn-shadow: 0 4px 10px rgb(217 70 239 / 25%);
+    --btn-hover-bg: #c026d3;
+}
+
+.teal {
+    --btn-bg: #0ea5e9;
+    --btn-text: var(--white);
+    --btn-border: #0ea5e9;
+    --btn-shadow: 0 4px 10px rgb(14 165 233 / 25%);
+    --btn-hover-bg: #0284c7;
+}
+
+.darkDanger {
+    --btn-bg: #991b1b;
+    --btn-text: var(--white);
+    --btn-border: #991b1b;
+    --btn-shadow: 0 4px 10px rgb(153 27 27 / 30%);
+    --btn-hover-bg: #7f1d1d;
 }
 
 .outlineDanger {

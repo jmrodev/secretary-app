@@ -1,11 +1,10 @@
 .root {
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 4rem minmax(150px, 1.4fr) minmax(130px, 1fr) minmax(90px, 0.8fr) 105px;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
     min-height: 3.25rem;
-    padding: 0.75rem 1.25rem;
+    padding: 0.75rem 1rem;
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--border-color);
@@ -14,7 +13,8 @@
     user-select: none;
     color: var(--text-main);
     transition: all 0.15s ease;
-    gap: 1rem;
+    gap: 0.75rem;
+    overflow: hidden;
 }
 
 .root:hover {
@@ -23,7 +23,7 @@
     background: rgb(128, 128, 128, 0.06);
 }
 
-/* --- Status Modifiers (Subtle List Row Left Accents) --- */
+/* --- Status Modifiers --- */
 .completed  { border-left-color: #22c55e !important; }
 .attended   { border-left-color: #10b981 !important; }
 .cancelled  { border-left-color: #ef4444 !important; }
@@ -35,109 +35,125 @@
 .arrived    { border-left-color: #0ea5e9 !important; }
 .virtual    { border-left-color: #a855f7 !important; }
 
-/* --- Sub-elements --- */
+/* --- Grid Columns --- */
 .timeLineTop {
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 800;
     color: var(--text-main);
     margin: 0;
     padding: 0;
-    border: none;
-    min-width: 4.5rem;
-    flex-shrink: 0;
     font-family: var(--font-manrope);
+    white-space: nowrap;
 }
 
 .info {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1.5rem;
-    flex: 1;
-    min-width: 0;
+    display: contents;
 }
 
 .patientName {
     color: var(--text-main) !important;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    min-width: 180px;
+    gap: 0.4rem;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .patientNameText {
     display: flex;
     flex-direction: row;
-    gap: 0.35rem;
+    gap: 0.3rem;
     align-items: center;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .surname {
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 800;
     line-height: 1.2;
     text-transform: uppercase;
     color: var(--text-main);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .givenName {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 500;
     line-height: 1.2;
     color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .details {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    min-width: 0;
+    display: contents;
 }
 
 .doctor {
     font-weight: 600;
+    font-size: 0.85rem;
     color: var(--text-muted);
     display: flex;
     align-items: center;
     gap: 0.25rem;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .reason {
     color: var(--text-muted);
-    overflow-wrap: break-word;
+    font-size: 0.85rem;
     display: flex;
     align-items: center;
     gap: 0.25rem;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .reasonText {
-    margin-top: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-/* --- Status Area (Payment & Chips) --- */
+/* --- Dedicated Payment Amount Column --- */
+.paymentColumn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-width: 0;
+}
+
+/* --- Status Area (Chips) --- */
 .status {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.75rem;
-    margin-left: auto;
-    flex-shrink: 0;
+    justify-content: flex-end;
+    min-width: 0;
 }
 
 .statusChip {
     font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 0.25rem 0.6rem;
+    letter-spacing: 0.04em;
+    padding: 0.25rem 0.5rem;
     border-radius: var(--radius-sm);
     background: rgb(128, 128, 128, 0.12);
     color: var(--text-main);
     border: 1px solid var(--border-color);
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .statusChipCompleted { background: rgb(34, 197, 94, 0.12); color: #16a34a; border-color: rgb(34, 197, 94, 0.3); }
@@ -153,9 +169,12 @@
 .paymentInfo {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    justify-content: flex-end;
+    gap: 0.35rem;
     font-weight: 800;
     font-size: 0.95rem;
+    white-space: nowrap;
+    margin-right: 0.25rem;
 }
 
 .paymentInfoPaid { color: #16a34a; }

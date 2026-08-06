@@ -4,6 +4,23 @@ export const whatsapp_automation = {
     whatsapp_auto_respond_unknown_label: "Responder automáticamente a números desconocidos",
     whatsapp_auto_respond_unknown_hint: "Si está activado, la IA enviará automáticamente un saludo y el link de registro a cualquier número que no esté en tu agenda.",
 
+    // AI Provider Priority (AiSettings)
+    ai_provider_title: "Proveedor de IA",
+    ai_provider_hint: "Define qué proveedor se intenta primero y cuál actúa como respaldo al enviar solicitudes de IA.",
+    ai_provider_label: "Proveedor principal",
+    ai_provider_hint_detail: "El proveedor secundario se usa automáticamente si el principal falla.",
+    ai_provider_option_ollama: "Ollama (local) primero, Groq respaldo",
+    ai_provider_option_groq: "Groq (Llama) primero, Gemini respaldo",
+    ai_provider_option_gemini: "Gemini primero, Groq respaldo",
+    ai_ollama_model_label: "Modelo Ollama (Global)",
+    ai_ollama_model_hint: "Modelo usado para las sugerencias cuando Ollama es el proveedor principal o de respaldo.",
+    ai_groq_model_label: "Modelo Groq (Global)",
+    ai_groq_model_hint: "Modelo usado para las sugerencias cuando Groq es el proveedor principal o de respaldo.",
+    gemini_global_model_label: "Modelo Gemini (Global)",
+    gemini_global_model_hint: "El modelo utilizado para generar sugerencias de respuesta y automatizaciones.",
+    ai_gemini_section_title: "Modelos por proveedor",
+    ai_gemini_section_desc: "Configura el comportamiento global de la inteligencia artificial. Estos valores se usarán como base para todos los médicos del sistema.",
+
     // WhatsApp Page Config
     wa_config_doctor: "Médico",
     wa_config_prompt_label: "Prompt / Contexto de la IA",
@@ -36,4 +53,31 @@ export const whatsapp_automation = {
 
     // Copy button
     wa_copy_btn: "Copiar",
+
+    // Pending approvals queue (supervised auto-booking)
+    pending_approval_title: "Aprobaciones pendientes",
+    pending_approval_banner_one: "{count} aprobación pendiente",
+    pending_approval_banner_many: "{count} aprobaciones pendientes",
+    pending_approval_open: "Abrir aprobaciones pendientes",
+    pending_approval_close: "Cerrar aprobaciones pendientes",
+    pending_approval_empty: "No hay aprobaciones pendientes",
+    pending_approval_accept: "Aceptar",
+    pending_approval_suggest: "Sugerir alternativa",
+    pending_approval_reject: "Rechazar",
+    pending_approval_status_alternative: "Esperando respuesta del paciente",
+    pending_approval_accept_success: "Turno aprobado y confirmado ✅",
+    pending_approval_accept_error: "Error al aprobar el turno",
+    pending_approval_accept_taken: "Ya fue aprobado por otra persona",
+    pending_approval_accept_slot_taken: "El turno ya no está disponible",
+    pending_approval_accept_phone_changed: "El paciente cambió su número. El pedido fue rechazado.",
+    pending_approval_suggest_success: "Alternativa enviada al paciente",
+    pending_approval_suggest_error: "Error al enviar la alternativa",
+    pending_approval_reject_success: "Pedido rechazado",
+    pending_approval_reject_error: "Error al rechazar el pedido",
+    pending_approval_loading: "Cargando aprobaciones...",
+
+    // Pending-state AI response template
+    wa_config_pending_template_label: "Plantilla de respuesta en estado pendiente",
+    wa_config_pending_template_hint: "Mensaje que envía la IA cuando el paciente escribe mientras su turno espera aprobación.",
+    wa_config_pending_template_placeholder: "Ej: Tu solicitud está en revisión, te confirmamos a la brevedad.",
 };

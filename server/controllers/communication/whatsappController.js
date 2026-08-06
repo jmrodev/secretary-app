@@ -1,7 +1,12 @@
 const whatsappService = require('../../services/communication/whatsappService');
 const whatsappAiService = require('../../services/communication/whatsappAiService');
+const { AI_SETTING_KEYS } = require('../../services/communication/aiConfigResolver');
 const whatsappRepository = require('../../repositories/communication/whatsappRepository');
+const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
+const patientRepository = require('../../repositories/user/patientRepository');
+const bookingService = require('../../services/appointments/bookingService');
+const { ConflictError } = require('../../utils/core/errors');
 const defaultPool = require('../../db').pool;
 
 /**
@@ -98,7 +103,27 @@ const getPatientHistory = async (req, res) => {
 
 const getAiSuggestion = async (req, res) => {
     try {
-        const suggestion = await whatsappAiService.getAiSuggestion(req.body.patientId, req.doctorId, req.user?.user_id);
+        // AI provider/model settings: rows -> {key: value} map. On any read
+        // failure fall back to an empty map so provider/model resolve from
+        // env/built-in defaults (graceful degradation, no error for the user).
+        let aiSettings = {};
+        try {
+            const rows = await systemSettingsRepository.findManyByKeys(AI_SETTING_KEYS);
+            aiSettings = rows.reduce((map, row) => {
+                map[row.setting_key] = row.setting_value;
+                return map;
+            }, {});
+        } catch (settingsError) {
+            console.warn('[AI Suggestion] No se pudieron leer las configuraciones de IA, usando defaults de env:', settingsError.message);
+        }
+
+        const suggestion = await whatsappAiService.getAiSuggestion(
+            req.body.patientId,
+            req.body.phone,
+            req.doctorId,
+            req.user?.user_id,
+            aiSettings
+        );
         res.json({ success: true, suggestion });
     } catch (error) {
         console.error('[AI Suggestion Error]:', error);
@@ -191,7 +216,185 @@ const refreshBridge = async (req, res) => {
     }
 };
 
+const deleteConversation = async (req, res) => {
+    try {
+        const { patientId, phone } = req.body;
+        await whatsappRepository.deleteConversation(patientId, phone);
+        res.json({ success: true, message: 'Conversación eliminada con éxito.' });
+    } catch (error) {
+        console.error('Error al eliminar conversación:', error);
+        res.status(500).json({ success: false, error: 'Error al eliminar conversación' });
+    }
+};
+
+/**
+ * Lists active pending bookings (status pending / alternative_sent).
+ * Runs the 2h alternative-timeout cleanup on every poll so stale
+ * alternative questions are auto-timed-out without a background job.
+ */
+const listPending = async (req, res) => {
+    try {
+        await pendingBookingRepository.expireStaleAlternatives();
+        const data = await pendingBookingRepository.findActive();
+        res.json({ success: true, data });
+    } catch (error) {
+        console.error('[List Pending Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Accepts a pending booking: first-wins optimistic lock (WHERE status='pending'),
+ * then creates the appointment. Guards: patient changed phone → auto-reject;
+ * slot already taken → auto-reject with slot_taken so the secretary sees
+ * "Slot no longer available".
+ */
+const acceptPending = async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        const secretaryId = req.user?.user_id;
+
+        let pending = await pendingBookingRepository.findById(id);
+        if (!pending) {
+            return res.status(404).json({ success: false, error: 'Pending booking not found' });
+        }
+
+        if (pending.status !== 'pending') {
+            return res.status(409).json({
+                success: false,
+                status: 'taken',
+                accepted_by: pending.accepted_by_name || null,
+                message: pending.accepted_by_name
+                    ? `Already accepted by ${pending.accepted_by_name}`
+                    : 'This pending booking was already resolved'
+            });
+        }
+
+        // Phone-change guard: reject if the patient's current phone no longer
+        // matches the phone captured when the pending was created.
+        const patient = await patientRepository.findById(pending.patient_id);
+        const currentPhone = (patient?.phone || '').replace(/\D/g, '');
+        const pendingPhone = (pending.patient_phone || '').replace(/\D/g, '');
+        if (currentPhone && pendingPhone && !currentPhone.endsWith(pendingPhone.slice(-8))) {
+            await pendingBookingRepository.rejectById(id, null, 'phone_changed');
+            return res.status(409).json({
+                success: false,
+                status: 'phone_changed',
+                message: 'El paciente cambió su número de teléfono. El pedido fue rechazado.'
+            });
+        }
+
+        // Optimistic lock: only one secretary can win the transition pending → accepted
+        const affected = await pendingBookingRepository.acceptById(id, secretaryId);
+        if (affected === 0) {
+            pending = await pendingBookingRepository.findById(id);
+            return res.status(409).json({
+                success: false,
+                status: 'taken',
+                accepted_by: pending?.accepted_by_name || null,
+                message: pending?.accepted_by_name
+                    ? `Already accepted by ${pending.accepted_by_name}`
+                    : 'Already accepted'
+            });
+        }
+
+        try {
+            const result = await bookingService.createAppointment(secretaryId, 'secretary', {
+                patient_id: pending.patient_id,
+                doctor_id: pending.doctor_id,
+                appointment_date: `${pending.requested_slot_date} ${pending.requested_slot_time}:00`,
+                reason: 'Turno aprobado por Secretaría'
+            });
+
+            const formattedDate = new Date(pending.requested_slot_date + 'T12:00:00').toLocaleDateString('es-AR', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            await whatsappService.sendMessageDirect(
+                pending.patient_phone,
+                `✅ Turno confirmado: ${formattedDate} a las ${pending.requested_slot_time} hs con ${pending.doctor_name}. ¡Te esperamos! 🏥`,
+                pending.patient_id
+            );
+
+            res.json({ success: true, appointment_id: result.id });
+        } catch (err) {
+            // Slot-taken guard: the slot got booked before approval → auto-reject
+            await pendingBookingRepository.rejectById(id, null, 'slot_taken');
+            if (err instanceof ConflictError) {
+                return res.status(409).json({ success: false, status: 'slot_taken', message: 'Slot no longer available' });
+            }
+            throw err;
+        }
+    } catch (error) {
+        console.error('[Accept Pending Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Suggests an alternative slot: marks alternative_sent and asks the patient
+ * via WhatsApp. The patient's yes/no reply is handled by the AI service
+ * (Phase 4 integration).
+ */
+const suggestAlternative = async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        const { alternative_slot_iso, note } = req.body;
+        if (!alternative_slot_iso) {
+            return res.status(400).json({ success: false, error: 'alternative_slot_iso is required' });
+        }
+
+        const pending = await pendingBookingRepository.findById(id);
+        if (!pending) {
+            return res.status(404).json({ success: false, error: 'Pending booking not found' });
+        }
+
+        const affected = await pendingBookingRepository.suggestAlternative(id, alternative_slot_iso, note);
+        if (affected === 0) {
+            return res.status(409).json({
+                success: false,
+                status: 'taken',
+                message: 'This pending booking was already resolved'
+            });
+        }
+
+        const alternativeDate = new Date(alternative_slot_iso).toLocaleDateString('es-AR', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+        const alternativeTime = alternative_slot_iso.includes('T')
+            ? alternative_slot_iso.split('T')[1].slice(0, 5)
+            : alternative_slot_iso;
+
+        await whatsappService.sendMessageDirect(
+            pending.patient_phone,
+            `El turno que pediste no está disponible. ¿Te conviene este turno alternativo el ${alternativeDate} a las ${alternativeTime} hs? Respondé "sí" para confirmarlo. 🙋‍♀️`,
+            pending.patient_id
+        );
+
+        res.json({ success: true, message: 'Alternative sent to patient' });
+    } catch (error) {
+        console.error('[Suggest Alternative Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Rejects a pending booking without booking (optional reason).
+ */
+const rejectPending = async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        const { reason } = req.body;
+        await pendingBookingRepository.rejectById(id, req.user?.user_id, reason || null);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('[Reject Pending Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     sendMessage, broadcastMessage, broadcastDirect, broadcastPreview, testConnection, sendDirectMessage,
-    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion, logoutBridge, refreshBridge
+    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion, logoutBridge, refreshBridge, deleteConversation,
+    listPending, acceptPending, suggestAlternative, rejectPending
 };

@@ -41,17 +41,45 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) =
         onChange(phoneNumbers.filter((_, i) => i !== index));
     };
 
+    const formatForWhatsmeow = (rawPhone) => {
+        if (!rawPhone) return '';
+        let digits = rawPhone.toString().replace(/\D/g, '');
+        if (!digits) return '';
+
+        if (digits.startsWith('549')) {
+            digits = '54' + digits.slice(3);
+        } else if (digits.length === 10) {
+            digits = '54' + digits;
+        } else if (digits.startsWith('0') && digits.length === 11) {
+            digits = '54' + digits.slice(1);
+        }
+        return digits;
+    };
+
     const handleUpdate = (index, field, value) => {
         let currentList = (phoneNumbers && phoneNumbers.length > 0) 
             ? phoneNumbers.map(p => ({ ...p, id: p.id || generateId() })) 
-            : [{ id: generateId(), phone_number: '+549', label: tx.cellPhone, is_primary: true }];
+            : [{ id: generateId(), phone_number: '54', label: tx.cellPhone, is_primary: true }];
             
-        currentList[index] = { ...currentList[index], [field]: value };
+        let sanitizedValue = value;
+        if (field === 'phone_number') {
+            sanitizedValue = value.replace(/\D/g, '');
+        }
+
+        currentList[index] = { ...currentList[index], [field]: sanitizedValue };
         
         if (field === 'is_primary' && value === true) {
             currentList.forEach((p, i) => { if (i !== index) p.is_primary = false; });
         }
         onChange(currentList);
+    };
+
+    const handleBlurPhone = (index) => {
+        if (!phoneNumbers || !phoneNumbers[index]) return;
+        const formatted = formatForWhatsmeow(phoneNumbers[index].phone_number);
+        if (formatted) {
+            handleUpdate(index, 'phone_number', formatted);
+        }
     };
 
     return (
@@ -73,7 +101,8 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) =
                                 className={`${styles.inputNumber}`}
                                 value={pn.phone_number}
                                 onChange={(e) => handleUpdate(index, 'phone_number', e.target.value)}
-                                placeholder="+549..."
+                                onBlur={() => handleBlurPhone(index)}
+                                placeholder="542494521825..."
                                 required
                             />
                             

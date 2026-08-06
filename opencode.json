@@ -1,0 +1,35 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "git-manager": {
+      "description": "Git branch management, PR creation, sync operations, and cleanup across branches",
+      "mode": "subagent",
+      "permission": {
+        "bash": "allow",
+        "edit": "deny"
+      }
+    },
+    "code-fixer": {
+      "description": "Auto-fix ESLint, stylelint, CSS Modules/BEM issues across the codebase",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow"
+      }
+    },
+    "i18n-manager": {
+      "description": "Manage i18n translation files (en/es), add missing keys, validate consistency",
+      "mode": "subagent",
+      "permission": {
+        "read": "allow",
+        "edit": "allow"
+      }
+    },
+    "go-bridge-dev": {
+      "description": "Go development for whatsapp-bridge-go — build, test, fix, maintain WhatsApp WebSocket bridge",
+      "mode": "subagent",
+      "permission": {
+        "edit": "allow"
+      }
+    }
+  }
+}
