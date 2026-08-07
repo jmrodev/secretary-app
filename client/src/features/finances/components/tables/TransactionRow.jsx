@@ -76,7 +76,12 @@ const TransactionRow = ({
                         }
                     </Badge>
                     <span className="transactions-table__description">
-                        {highlightPatientName(translateDescription(tx.description), tx.patient_full_name)}
+                        {(() => {
+                            let cleanDesc = translateDescription(tx.description) || '';
+                            // Remove redundant prefixes matching the badge tag
+                            cleanDesc = cleanDesc.replace(/^(Turno|Retiro|Consulta|Solicitud)\s*[-:]\s*/i, '');
+                            return highlightPatientName(cleanDesc, tx.patient_full_name);
+                        })()}
                     </span>
                 </div>
             </td>
