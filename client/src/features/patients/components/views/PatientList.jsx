@@ -210,7 +210,6 @@ const PatientList = ({
     if (patients.length === 0) {
         return (
             <section className={`${styles.empty}`}>
-                <h2 className="visually-hidden">{t('patient_list')}</h2>
                 <p className={`${styles.emptyText}`}>{t('no_patients_found')}</p>
             </section>
         );
@@ -218,7 +217,6 @@ const PatientList = ({
 
     return (
         <section className={`${styles.root}`}>
-            <h2 className="visually-hidden">{t('patient_list')}</h2>
             <table className={`${styles.table}`}>
                 <thead>
                     <tr>

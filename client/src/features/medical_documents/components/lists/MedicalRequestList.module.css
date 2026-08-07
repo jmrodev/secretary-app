@@ -246,7 +246,84 @@
 .actions {
     display: flex;
     justify-content: flex-end;
-    gap: 0.25rem;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.actionBtn {
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 0.35rem 0.5rem !important;
+    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1) !important;
+    transition: all 0.15s ease-in-out !important;
+}
+
+.actionBtn:hover {
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2) !important;
+}
+
+.actionBtnPay {
+    background-color: #15803d !important;
+    color: #fff !important;
+}
+
+.actionBtnPay:hover {
+    background-color: #166534 !important;
+}
+
+.actionBtnBonify {
+    background-color: #0284c7 !important;
+    color: #fff !important;
+}
+
+.actionBtnBonify:hover {
+    background-color: #0369a1 !important;
+}
+
+.actionBtnDone {
+    background-color: #16a34a !important;
+    color: #fff !important;
+}
+
+.actionBtnDone:hover {
+    background-color: #15803d !important;
+}
+
+.actionBtnReject {
+    background-color: #dc2626 !important;
+    color: #fff !important;
+}
+
+.actionBtnReject:hover {
+    background-color: #b91c1c !important;
+}
+
+.actionBtnView {
+    background-color: #6366f1 !important;
+    color: #fff !important;
+}
+
+.actionBtnView:hover {
+    background-color: #4f46e5 !important;
+}
+
+.actionBtnEdit {
+    background-color: #334155 !important;
+    color: #fff !important;
+}
+
+.actionBtnEdit:hover {
+    background-color: #1e293b !important;
+}
+
+.actionBtnDelete {
+    background-color: #b91c1c !important;
+    color: #fff !important;
+}
+
+.actionBtnDelete:hover {
+    background-color: #991b1b !important;
 }
 
 .empty {

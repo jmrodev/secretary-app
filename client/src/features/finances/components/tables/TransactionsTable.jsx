@@ -129,7 +129,7 @@ const TransactionsTable = ({
     const canManagerFinance = user && (user.role === 'admin' || settings.enable_secretary_finance_crud === 'true');
 
     return (
-        <Card className={`${styles.container}`} noPadding as="article" title={t('transaction_log')}>
+        <Card className={`${styles.container}`} noPadding as="article">
             <div className={`${styles.wrapper}`}>
                 <table className={`${styles.table} table-base`}>
                     <thead>
@@ -137,10 +137,7 @@ const TransactionsTable = ({
                             <th className={`${styles.cellFirst}`}>{t('date_label')}</th>
                             <th className="transactions-table__header-cell--description">{t('description')}</th>
                             <th>{t('beneficiary')}</th>
-                            <th>{t('payment_method')}</th>
-                            <th>{t('status') || 'Estado'}</th>
                             <th className={`${styles.cellRight}`}>{t('amount')}</th>
-                            <th className={`${styles.cellCenter}`}>{t('proof')}</th>
                             {canManagerFinance && (
                                 <th className={`${styles.cellRight} ${styles.cellLast}`}>{t('actions')}</th>
                             )}
@@ -149,7 +146,7 @@ const TransactionsTable = ({
                     <tbody>
                         {groupedTransactions.length === 0 ? (
                             <tr>
-                                <td colSpan={canManagerFinance ? 8 : 7} className={`${styles.cellCenter} ${styles.cellEmptyState}`}>
+                                <td colSpan={canManagerFinance ? 5 : 4} className={`${styles.cellCenter} ${styles.cellEmptyState}`}>
                                     {t('no_transactions_found') || 'No hay transacciones registradas.'}
                                 </td>
                             </tr>

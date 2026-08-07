@@ -32,7 +32,6 @@ const MedicalRequestList = ({
     if (!loading && (!requests || requests.length === 0)) {
         return (
             <section className={`${styles.empty} animate-fade-in`}>
-                <h2 className="visually-hidden">{t('no_requests')}</h2>
                 <Icon name="description" size="3rem" className={`${styles.emptyIcon}`} />
                 {t('no_requests')}
             </section>
@@ -41,9 +40,7 @@ const MedicalRequestList = ({
 
     return (
         <section className={`${styles.root} ${loading ? 'medical-requests--loading' : 'animate-fade-in'}`}>
-            <h2 className="visually-hidden">{t('medical_requests')}</h2>
             <article className={`${styles.container}`}>
-                <h3 className="visually-hidden">{t('requests_list')}</h3>
                 <table className={`${styles.table} table-base`}>
                     <thead>
                         <tr>
@@ -143,6 +140,7 @@ const MedicalRequestList = ({
                                                     <Button
                                                         variant="ghost"
                                                         size="sm-compact"
+                                                        className={`${styles.actionBtn} ${styles.actionBtnPay}`}
                                                         onClick={() => setPaymentModal({
                                                             open: true,
                                                             initialData: {
@@ -164,6 +162,7 @@ const MedicalRequestList = ({
                                                     <Button
                                                         variant="ghost"
                                                         size="sm-compact"
+                                                        className={`${styles.actionBtn} ${styles.actionBtnBonify}`}
                                                         onClick={() => onBonify(r.id)}
                                                         title={t('bonify') || 'Bonificar'}
                                                         icon={<Icon name="card_giftcard" size="1rem" />}
@@ -175,6 +174,7 @@ const MedicalRequestList = ({
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
+                                                    className={`${styles.actionBtn} ${styles.actionBtnDone}`}
                                                     onClick={() => openActionModal('completed', r.id)}
                                                     title={t('mark_as_done')}
                                                     icon={<Icon name="task_alt" size="1rem" />}
@@ -185,6 +185,7 @@ const MedicalRequestList = ({
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
+                                                    className={`${styles.actionBtn} ${styles.actionBtnReject}`}
                                                     onClick={() => openActionModal('rejected', r.id)}
                                                     title={t('reject')}
                                                     icon={<Icon name="block" size="1rem" />}
@@ -194,6 +195,7 @@ const MedicalRequestList = ({
                                             <Button
                                                 variant="ghost"
                                                 size="sm-compact"
+                                                className={`${styles.actionBtn} ${styles.actionBtnView}`}
                                                 onClick={() => handleEditRequest({ ...r, _origin: 'request', _readOnly: true })}
                                                 title={t('view') || 'Ver'}
                                                 icon={<Icon name="visibility" size="1rem" />}
@@ -203,6 +205,7 @@ const MedicalRequestList = ({
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
+                                                    className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
                                                     onClick={() => handleEditRequest({ ...r, _origin: 'request' })}
                                                     title={t('edit') || 'Editar'}
                                                     icon={<Icon name="edit" size="1rem" />}
@@ -213,8 +216,9 @@ const MedicalRequestList = ({
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
+                                                    className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
                                                     onClick={() => handleDeleteRequest(r.id, r)}
-                                                    title="Eliminar"
+                                                    title={t('delete') || 'Eliminar'}
                                                     icon={<Icon name="delete" size="1rem" />}
                                                 />
                                             )}

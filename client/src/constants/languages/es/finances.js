@@ -29,5 +29,7 @@ export const finances = {
     patient_debt: "Deuda de Pacientes",
     doctor_rental_debt: "Deuda de Alquiler (Médicos)",
     total_debt: "Deuda Total Pendiente",
+    hide_summary: "Ocultar Resumen",
+    show_summary: "Mostrar Resumen",
 };
 
