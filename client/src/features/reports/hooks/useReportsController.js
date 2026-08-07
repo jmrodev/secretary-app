@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { useAppointments } from '@/features/appointments';
@@ -15,15 +15,16 @@ export const useReportsController = () => {
     const [month, setMonth] = useState(() => new Date().getMonth() + 1);
     const [year, setYear] = useState(() => new Date().getFullYear());
     const [reportData, setReportData] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const handleGenerateReport = async () => {
-        setReportData(null);
+    const handleGenerateReport = useCallback(async () => {
+        setIsLoading(true);
         setError(null);
         try {
             if (activeTab === 'appointments') {
                 const data = await getMonthlyReport(month, year, selectedDoctorId);
-                if (data) setReportData(data);
+                setReportData(data || { appointments: [] });
             } else if (activeTab === 'prescriptions') {
                 const params = { preview: true, month, year, type: 'prescription' };
                 if (selectedDoctorId) params.doctorId = selectedDoctorId;
@@ -64,8 +65,15 @@ export const useReportsController = () => {
         } catch (err) {
             console.error(`Error fetching ${activeTab} report:`, err);
             setError(err.message || 'Error fetching report data');
+        } finally {
+            setIsLoading(false);
         }
-    };
+    }, [activeTab, month, year, selectedDoctorId, getMonthlyReport]);
+
+    // Automatically load report data when filters or active tab change
+    useEffect(() => {
+        handleGenerateReport();
+    }, [handleGenerateReport]);
 
     const handleDownloadJson = useCallback(() => {
         if (!reportData) return;
@@ -109,7 +117,7 @@ export const useReportsController = () => {
         selectedDoctorId,
         reportData,
         error,
-        isSubmitting,
+        isSubmitting: isSubmitting || isLoading,
         doctors,
         handleGenerateReport,
         handleDownloadJson,
