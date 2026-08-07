@@ -18,5 +18,9 @@ export const finances = {
     patient_debt: "Patient Debts",
     doctor_rental_debt: "Doctor Rental Debts",
     total_debt: "Total Outstanding Debt",
+
+    // Reports Table Headers
+    weekly_total: "Weekly Total",
+    cumulative_monthly_total: "Cumulative Monthly Total",
 };
 
