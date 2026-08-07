@@ -127,20 +127,39 @@
     border-left: 4px solid #dc2626;
 }
 
-.rowIncome:hover {
-    background-color: rgba(220, 252, 231, 0.8) !important;
+.rowIncome:hover td {
+    background-color: #dcfce7 !important;
+    color: #0f172a !important;
 }
 
-.rowExpense:hover {
-    background-color: rgba(254, 226, 226, 0.8) !important;
+.rowExpense:hover td {
+    background-color: #fee2e2 !important;
+    color: #0f172a !important;
 }
 
-.rowWithdrawal:hover {
-    background-color: rgba(254, 249, 195, 0.8) !important;
+.rowWithdrawal:hover td {
+    background-color: #fef9c3 !important;
+    color: #0f172a !important;
 }
 
-.rowPending:hover {
-    background-color: rgba(254, 202, 202, 0.9) !important;
+.rowPending:hover td {
+    background-color: #fecaca !important;
+    color: #0f172a !important;
+}
+
+.rowIncome:hover .description,
+.rowExpense:hover .description,
+.rowWithdrawal:hover .description,
+.rowPending:hover .description,
+.rowIncome:hover .beneficiaryName,
+.rowExpense:hover .beneficiaryName,
+.rowWithdrawal:hover .beneficiaryName,
+.rowPending:hover .beneficiaryName,
+.rowIncome:hover .date,
+.rowExpense:hover .date,
+.rowWithdrawal:hover .date,
+.rowPending:hover .date {
+    color: #0f172a !important;
 }
 
 .row:hover:not(.rowGrouped) td {
