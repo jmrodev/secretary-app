@@ -2,6 +2,7 @@ import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
 import { useReportsController } from '@/features/reports/hooks/useReportsController';
 import ReportsDashboard from '@/features/reports/components/views/ReportsDashboard';
+import styles from './ReportsPage.module.css';
 
 /**
  * ReportsPage (Orchestrator).
@@ -12,7 +13,7 @@ const ReportsPage = () => {
 
     return (
         <MainLayout wide title={controller.t('reports')}>
-            <main className="reports-page-orchestrator animate-fade-in">
+            <main className={`${styles.reportsPageOrchestrator} animate-fade-in`}>
                 <ReportsDashboard {...controller} />
             </main>
         </MainLayout>
@@ -20,3 +21,4 @@ const ReportsPage = () => {
 };
 
 export default ReportsPage;
+

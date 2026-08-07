@@ -1,85 +1,179 @@
-/* PrescriptionReportTable Component Styles (BEM) */
+/* PrescriptionReportTable Component BEM Styles */
 
-.root {
+.prescriptionReport {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
+    width: 100%;
 }
 
-.summary {
-    background: var(--gray-50);
-    border-radius: var(--radius);
-    padding: 2rem;
-    border: 1px solid var(--border-color);
-    margin-bottom: 2rem;
+.prescriptionReport__empty {
+    padding: 4rem 2rem;
+    text-align: center;
+    background: var(--card-bg, #fff);
+    border-radius: var(--radius-lg, 12px);
+    color: var(--text-muted, #64748b);
+    border: 1px dashed var(--border-color, #cbd5e1);
+    font-weight: 500;
 }
 
-.summaryTitle {
-    font-size: 1.25rem;
+.prescriptionReport__summary {
+    background-color: var(--report-summary-bg, #f8fafc);
+    border-radius: var(--radius-lg, 12px);
+    padding: 1.5rem;
+    border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.prescriptionReport__summaryTitle {
+    font-size: 1.125rem;
     font-weight: 800;
-    color: var(--text-main);
+    color: var(--text-main, #0f172a);
+    margin: 0 0 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
 }
 
-.table {
+.prescriptionReport__tableContainer {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.prescriptionReport__table {
     width: 100%;
     border-collapse: collapse;
+    background-color: var(--card-bg, #fff);
+    border-radius: var(--radius-md, 8px);
+    overflow: hidden;
+    border: 1px solid var(--border-color, #e2e8f0);
 }
 
-.table th {
+.prescriptionReport__table th {
     text-align: left;
-    padding: 1rem 1.25rem;
-    background: var(--gray-100);
-    color: var(--text-muted);
+    padding: 0.875rem 1.25rem;
+    background-color: #0f172a;
+    color: #fff;
     font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
-    border-bottom: 2px solid var(--border-color);
+    letter-spacing: 0.08em;
+    border-bottom: 2px solid #334155;
 }
 
-.row {
-    border-bottom: 1px solid var(--gray-50);
+.prescriptionReport__row {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.15s ease-in-out;
 }
 
-.row td {
-    padding: 1rem 1.25rem;
+.prescriptionReport__row:hover {
+    background-color: #f1f5f9 !important;
+}
+
+.prescriptionReport__row:hover td {
+    color: #0f172a !important;
+}
+
+.prescriptionReport__row td {
+    padding: 0.875rem 1.25rem;
     font-size: 0.875rem;
+    color: var(--text-main, #1e293b);
 }
 
-.patientName {
+.prescriptionReport__dayName {
+    font-weight: 600;
+    color: var(--text-muted, #64748b);
+    margin-left: 0.25rem;
+}
+
+.prescriptionReport__footerSubtotal td {
+    background-color: #f8fafc;
     font-weight: 700;
 }
 
-.meds {
-    max-width: 300px;
-    white-space: nowrap;
+.prescriptionReport__footer td {
+    background-color: #f1f5f9;
+    font-weight: 800;
+    border-top: 2px solid #cbd5e1;
+}
+
+.prescriptionReport__group {
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: var(--radius-lg, 12px);
+    overflow: hidden;
+}
+
+.prescriptionReport__dateHeader {
+    background-color: #1e1b4b;
+    color: #fff;
+    padding: 0.875rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.prescriptionReport__patientInfo {
+    display: flex;
+    flex-direction: column;
+}
+
+.prescriptionReport__patientName {
+    font-weight: 700;
+}
+
+.prescriptionReport__patientDni {
+    font-size: 0.7rem;
+    color: var(--text-muted, #64748b);
+}
+
+.prescriptionReport__meds {
+    max-width: 250px;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
+    white-space: nowrap;
 }
 
-.badge {
+.prescriptionReport__methodBadge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background-color: var(--gray-100, #f1f5f9);
+    color: var(--text-muted, #475569);
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.prescriptionReport__badge {
     padding: 0.25rem 0.75rem;
-    border-radius: 2rem;
+    border-radius: 9999px;
     font-size: 0.65rem;
     font-weight: 800;
+    text-transform: uppercase;
+    display: inline-flex;
+    letter-spacing: 0.03em;
 }
 
-.badgePaid {
-    background: var(--green-100);
-    color: var(--green-700);
+.prescriptionReport__badge--paid {
+    background-color: #dcfce7;
+    color: #15803d;
 }
 
-.badgeDebt {
-    background: var(--red-100);
-    color: var(--red-700);
+.prescriptionReport__badge--debt {
+    background-color: #fee2e2;
+    color: #b91c1c;
 }
 
-.dateHeader {
-    background: var(--purple-700);
-    color: white;
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 800;
-    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+.prescriptionReport__badge--partial {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.prescriptionReport__badge--bonified {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.prescriptionReport__cellAmount {
+    font-weight: 700;
+    text-align: right;
+    color: var(--text-main, #0f172a);
+    white-space: nowrap;
 }

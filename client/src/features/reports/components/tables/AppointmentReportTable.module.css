@@ -1,159 +1,241 @@
-/* AppointmentReportTable Component Styles (BEM) */
+/* AppointmentReportTable Component BEM Styles */
 
-.root {
-    /* --- Local Component Tokens --- */
-    --report-card-bg: var(--white);
-    --report-card-border: var(--gray-300);
-    --report-summary-bg: var(--gray-50);
-    --report-header-bg: var(--gray-100);
-    --report-row-hover: var(--gray-50);
-    --report-accent-blue: var(--blue-50);
-    --report-accent-text: var(--blue-700);
-
-    /* ------------------------------ */
-
+.appointmentReport {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2.5rem;
+    width: 100%;
 }
 
-.summary {
-    background-color: var(--report-summary-bg);
-    border-radius: var(--radius);
-    padding: 2rem;
-    border: 1px solid var(--report-card-border);
+.appointmentReport__empty {
+    padding: 4rem 2rem;
+    text-align: center;
+    background: var(--card-bg, #fff);
+    border-radius: var(--radius-lg, 12px);
+    color: var(--text-muted, #64748b);
+    border: 1px dashed var(--border-color, #cbd5e1);
+    font-weight: 500;
 }
 
-.summaryTitle {
-    font-size: 1.25rem;
+.appointmentReport__summary {
+    background-color: var(--report-summary-bg, #f8fafc);
+    border-radius: var(--radius-lg, 12px);
+    padding: 1.5rem;
+    border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.appointmentReport__summaryHeader {
+    margin-bottom: 1rem;
+}
+
+.appointmentReport__summaryTitle {
+    font-size: 1.125rem;
     font-weight: 800;
-    color: var(--text-main);
-    margin-bottom: 1.5rem;
+    color: var(--text-main, #0f172a);
+    margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.025em;
 }
 
-.table {
+.appointmentReport__tableContainer {
     width: 100%;
-    border-collapse: collapse;
-    background-color: var(--report-card-bg);
-    border-radius: var(--radius);
-    overflow: hidden;
-    border: 1px solid var(--report-card-border);
+    overflow-x: auto;
 }
 
-.table th {
+.appointmentReport__table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--card-bg, #fff);
+    border-radius: var(--radius-md, 8px);
+    overflow: hidden;
+    border: 1px solid var(--border-color, #e2e8f0);
+}
+
+.appointmentReport__table th {
     text-align: left;
-    padding: 1rem 1.25rem;
-    background-color: var(--report-header-bg);
-    color: var(--text-muted);
+    padding: 0.875rem 1.25rem;
+    background-color: #0f172a;
+    color: #fff;
     font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    border-bottom: 2px solid var(--report-card-border);
+    letter-spacing: 0.08em;
+    border-bottom: 2px solid #334155;
 }
 
-.row {
-    border-bottom: 1px solid var(--gray-100);
-    transition: all 0.2s;
+.appointmentReport__row {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.15s ease-in-out;
 }
 
-.row:hover {
-    background: var(--gray-50);
+.appointmentReport__row:hover {
+    background-color: #f1f5f9 !important;
 }
 
-.row td {
-    padding: 1rem 1.25rem;
+.appointmentReport__row:hover td {
+    color: #0f172a !important;
+}
+
+.appointmentReport__row td {
+    padding: 0.875rem 1.25rem;
     font-size: 0.875rem;
-    color: var(--text-main);
+    color: var(--text-main, #1e293b);
 }
 
-.dayHeader td {
-    background: var(--blue-50);
+.appointmentReport__row--weekend {
+    background-color: #fffbeb;
+}
+
+.appointmentReport__row--holiday {
+    background-color: #fef2f2;
+}
+
+.appointmentReport__row--overturn {
+    background-color: #eff6ff;
+}
+
+.appointmentReport__dayHeader td {
+    background-color: #e0f2fe;
     font-weight: 800;
-    color: var(--blue-700);
+    color: #0369a1;
     padding: 0.75rem 1.25rem;
 }
 
-.dayHeaderWeekend td {
-    background: var(--amber-50);
-    color: var(--amber-700);
+.appointmentReport__dayHeader--weekend td {
+    background-color: #fef3c7;
+    color: #b45309;
 }
 
-.dayHeaderHoliday td {
-    background: var(--red-50);
-    color: var(--red-700);
+.appointmentReport__dayHeader--holiday td {
+    background-color: #fee2e2;
+    color: #b91c1c;
 }
 
-.cellPatient {
+.appointmentReport__cellDay {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.appointmentReport__cellPatient {
     font-weight: 700;
 }
 
-.cellTime {
+.appointmentReport__cellTime {
     font-size: 0.8rem;
-    color: var(--text-muted);
+    color: var(--text-muted, #64748b);
     font-weight: 600;
+    white-space: nowrap;
 }
 
-.cellAmount {
-    font-family: inherit;
+.appointmentReport__cellAmount {
     font-weight: 700;
     text-align: right;
-    color: var(--text-main);
+    color: var(--text-main, #0f172a);
+    white-space: nowrap;
 }
 
-.badge {
+.appointmentReport__cellBold {
+    font-weight: 800;
+}
+
+.appointmentReport__tagSmall {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.5rem;
+    color: #f59e0b;
+}
+
+.appointmentReport__dayName {
+    font-weight: 600;
+    color: var(--text-muted, #64748b);
+    margin-left: 0.25rem;
+}
+
+.appointmentReport__holidayTag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #dc2626;
+    background-color: #fef2f2;
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+}
+
+.appointmentReport__weekendNote {
+    margin-left: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #d97706;
+}
+
+.appointmentReport__badge {
     padding: 0.25rem 0.75rem;
-    border-radius: 2rem;
+    border-radius: 9999px;
     font-size: 0.65rem;
     font-weight: 800;
     text-transform: uppercase;
     display: inline-flex;
+    align-items: center;
+    letter-spacing: 0.03em;
 }
 
-.badgeStatusCompleted {
-    background-color: var(--green-100);
-    color: var(--green-700);
+.appointmentReport__badge--completed {
+    background-color: #dcfce7;
+    color: #15803d;
 }
 
-.badgeStatusCancelled {
-    background-color: var(--red-100);
-    color: var(--red-700);
+.appointmentReport__badge--cancelled {
+    background-color: #fee2e2;
+    color: #b91c1c;
 }
 
-.badgeStatusAbsent {
-    background-color: var(--amber-100);
-    color: var(--amber-700);
+.appointmentReport__badge--absent {
+    background-color: #fef3c7;
+    color: #b45309;
 }
 
-.footer {
-    background: var(--gray-100);
-    font-weight: 800;
-    border-top: 2px solid var(--gray-300);
+.appointmentReport__badge--paid {
+    background-color: #dcfce7;
+    color: #15803d;
 }
 
-.footerSubtotal {
-    background: var(--gray-50);
-    font-weight: 700;
+.appointmentReport__badge--pending {
+    background-color: #fee2e2;
+    color: #b91c1c;
 }
 
-.reportTableEmpty {
-    padding: 4rem;
-    text-align: center;
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    color: var(--text-muted);
-    border: 1px dashed var(--border-color);
-}
-
-.overturnBadge {
-    background: var(--blue-100);
-    color: var(--blue-700);
+.appointmentReport__overturnBadge {
+    background-color: #dbeafe;
+    color: #1d4ed8;
     font-size: 0.6rem;
     font-weight: 900;
     padding: 0.125rem 0.5rem;
-    border-radius: 0.25rem;
+    border-radius: 4px;
     margin-left: 0.5rem;
     text-transform: uppercase;
+}
+
+.appointmentReport__paymentInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.appointmentReport__methods {
+    font-size: 0.75rem;
+    color: var(--text-muted, #64748b);
+}
+
+.appointmentReport__footer {
+    background-color: #f1f5f9;
+    font-weight: 800;
+    border-top: 2px solid #cbd5e1;
+}
+
+.appointmentReport__footerSubtotal {
+    background-color: #f8fafc;
+    font-weight: 700;
 }

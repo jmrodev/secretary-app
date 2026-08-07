@@ -11,13 +11,15 @@ export const useReportsController = () => {
     const { getMonthlyReport, isSubmitting } = useAppointments();
     const { doctors, viewDoctorId: selectedDoctorId } = useDoctors();
 
-    const [activeTab, setActiveTab] = useState('appointments'); // appointments | prescriptions | balance
+    const [activeTab, setActiveTab] = useState('appointments'); // appointments | prescriptions | licenses | certificates | balance
     const [month, setMonth] = useState(() => new Date().getMonth() + 1);
     const [year, setYear] = useState(() => new Date().getFullYear());
     const [reportData, setReportData] = useState(null);
+    const [error, setError] = useState(null);
 
     const handleGenerateReport = async () => {
         setReportData(null);
+        setError(null);
         try {
             if (activeTab === 'appointments') {
                 const data = await getMonthlyReport(month, year, selectedDoctorId);
@@ -61,6 +63,7 @@ export const useReportsController = () => {
             }
         } catch (err) {
             console.error(`Error fetching ${activeTab} report:`, err);
+            setError(err.message || 'Error fetching report data');
         }
     };
 
@@ -76,6 +79,10 @@ export const useReportsController = () => {
         link.click();
         document.body.removeChild(link);
     }, [reportData, activeTab, month, year]);
+
+    const handlePrint = useCallback(() => {
+        window.print();
+    }, []);
 
     const changeMonth = (delta) => {
         let newMonth = month + delta;
@@ -101,11 +108,14 @@ export const useReportsController = () => {
         setYear,
         selectedDoctorId,
         reportData,
+        error,
         isSubmitting,
         doctors,
         handleGenerateReport,
         handleDownloadJson,
+        onPrint: handlePrint,
         changeMonth,
         alert
     };
 };
+
