@@ -124,6 +124,7 @@ const TransactionRow = ({
                         <Button
                             size="sm-compact"
                             variant="ghost"
+                            className={styles.actionBtnView}
                             onClick={() => alert(<InvoiceDetailContent tx={tx} formatDate={formatDateUnambiguous} />)}
                             title={t('view_details')}
                             icon={<Icon name="VIEW" size="1.1rem" />}
