@@ -56,8 +56,6 @@ const MedicalRequirementManager = ({
 
     return (
         <section className={styles.root}>
-            <h2 className="visually-hidden">{t('medical_requirements')}</h2>
-            
             {!hideTabs && (
                 <nav className="${styles.root}__tabs">
                     <TabButton isActive={activeTab === 'list'} onClick={() => setActiveTab('list')} variant="pill" icon={<Icon name="view_list" />}>

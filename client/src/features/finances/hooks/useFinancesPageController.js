@@ -113,7 +113,6 @@ export const useFinancesPageController = () => {
         fetchData, 
         setEditingTx: (val) => dispatch({ type: 'SET_EDITING_TX', payload: val }), 
         setModalOpen: (val) => dispatch({ type: 'SET_MODAL_OPEN', payload: val }),
-        setHistoricalWithdrawalOpen: () => {},
         setPendingClosuresOpen: (val) => dispatch({ type: 'SET_CLOSURES_OPEN', payload: val }),
         setCloseBoxModal: (val) => dispatch({ type: 'SET_CLOSE_BOX', payload: val }), 
         setCloseAmount: (val) => dispatch({ type: 'SET_CLOSE_AMOUNT', payload: val }), 

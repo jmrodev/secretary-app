@@ -29,7 +29,6 @@ const MedicalFileRepository = ({
         <div className={`${styles.root}`}>
             <section className="medical-file-repository__upload">
                 <div className="dashboard-card">
-                    <h3 className="dashboard-card__title">{t('upload_document')}</h3>
                     <form className="config-flex--column config-flex--gap-4" onSubmit={handleFileUpload}>
                         <div className="input-group">
                             <label className="input-label">{t('patient_label')}</label>
@@ -67,8 +66,6 @@ const MedicalFileRepository = ({
 
             <section className="medical-file-repository__list">
                 <div className="dashboard-card">
-                    <h3 className="dashboard-card__title">{t('repository_title')}</h3>
-
                     <div className={`${styles.tableWrapper}`}>
                         {files.filter(filterItem).length === 0 ? (
                             <p className="medical-file-repository__text-empty">{t('no_files_uploaded')}</p>

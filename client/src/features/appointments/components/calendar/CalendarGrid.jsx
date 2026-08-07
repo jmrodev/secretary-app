@@ -32,6 +32,8 @@ const CalendarGrid = ({
         
         const bookedInCount = (dayStats.bookedIn !== undefined) ? dayStats.bookedIn : dayAppts.filter(a => !a.is_out_of_hours).length;
         const bookedOutCount = (dayStats.bookedOut !== undefined) ? dayStats.bookedOut : dayAppts.filter(a => a.is_out_of_hours).length;
+        const freeInCount = (dayStats.freeIn !== undefined) ? dayStats.freeIn : 0;
+        const freeOutCount = (dayStats.freeOut !== undefined) ? dayStats.freeOut : 0;
         const count = (dayStats.bookedIn !== undefined && dayStats.bookedOut !== undefined) ? (dayStats.bookedIn + dayStats.bookedOut) : dayAppts.length;
         const isHolidayObj = holidaysByDate[dateStr];
 
@@ -51,6 +53,9 @@ const CalendarGrid = ({
                 appointmentCount={count} 
                 bookedInCount={bookedInCount} 
                 bookedOutCount={bookedOutCount}
+                freeInCount={freeInCount}
+                freeOutCount={freeOutCount}
+                showOutOfHours={showOutOfHours}
                 onClick={() => onDateSelect(currentDay)}
                 t={t}
             />

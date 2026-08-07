@@ -6,15 +6,12 @@ import MainLayout from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import { useFinancesPageController } from '@/features/finances/hooks/useFinancesPageController';
 import FinanceStatsCards from '@/features/finances/components/sections/FinanceStatsCards';
-import EditTransactionModal from '@/features/finances/components/modals/EditTransactionModal';
-import TransactionModal from '@/features/finances/components/modals/TransactionModal';
+import FinanceModalOrchestrator from '@/features/finances/components/FinanceModalOrchestrator';
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Badge from '@/components/atoms/Badge';
 import TransactionsTable from '@/features/finances/components/tables/TransactionsTable';
-import CashBoxDeliveryModal from '@/features/finances/components/modals/CashBoxDeliveryModal';
-import PendingClosuresModal from '@/features/finances/components/modals/PendingClosuresModal';
 
 import styles from './FinancesPage.module.css';
 
@@ -24,14 +21,10 @@ import styles from './FinancesPage.module.css';
  */
 const FinancesPage = ({ MedicationInputComponent }) => {
     const controller = useFinancesPageController();
+    const [showStats, setShowStats] = React.useState(false);
     const {
         stats,
         loading,
-        selectedDoctorFilter,
-        modalOpen,
-        closeBoxModal,
-        closeAmount,
-        editingTx,
         filteredTransactions,
         user,
         settings,
@@ -49,6 +42,15 @@ const FinancesPage = ({ MedicationInputComponent }) => {
                     actions={
                         isAdminOrSecretary && (
                             <div className="finances-page__toolbar-actions">
+                                <Button
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => setShowStats(!showStats)}
+                                    icon={<Icon name={showStats ? "visibility_off" : "visibility"} size="1.1rem" />}
+                                >
+                                    {showStats ? (t('hide_summary') || 'Ocultar Resumen') : (t('show_summary') || 'Mostrar Resumen')}
+                                </Button>
+
                                 <Button
                                     variant="primary"
                                     size="sm"
@@ -78,13 +80,11 @@ const FinancesPage = ({ MedicationInputComponent }) => {
                 />
 
                 <main className="finances-page-orchestrator__main">
-                    <h2 className="visually-hidden">{t('financial_operations_area') || 'Área de Operaciones Financieras'}</h2>
-                    
                     {loading && filteredTransactions.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || 'Cargando...'} />
                     ) : (
                         <div className="finances-page-orchestrator__content">
-                            {isAdminOrSecretary && stats.length > 0 && (
+                            {isAdminOrSecretary && showStats && stats.length > 0 && (
                                 <FinanceStatsCards 
                                     stats={stats} 
                                     totalDebt={controller.totalDebt}
@@ -94,7 +94,6 @@ const FinancesPage = ({ MedicationInputComponent }) => {
                             )}
 
                             <article className="dashboard-card no-padding">
-                                <h4 className="visually-hidden">{t('transactions_list') || 'Listado de Transacciones'}</h4>
                                 <TransactionsTable
                                     transactions={filteredTransactions}
                                     totalCount={controller.totalCount}
@@ -116,52 +115,10 @@ const FinancesPage = ({ MedicationInputComponent }) => {
                 </main>
             </div>
 
-                {/* --- Modals --- */}
-                <TransactionModal
-                    isOpen={modalOpen}
-                    initialData={selectedDoctorFilter && selectedDoctorFilter !== 'all' ? { doctorId: parseInt(selectedDoctorFilter) } : null}
-                    onClose={handlers.onCloseNewTransaction}
-                    onSuccess={handlers.onRefresh}
-                    MedicationInputComponent={MedicationInputComponent}
-                />
-
-                <CashBoxDeliveryModal
-                    isOpen={closeBoxModal.open}
-                    onClose={handlers.onCloseCloseBox}
-                    onConfirm={handlers.onCloseBox}
-                    doctorName={closeBoxModal.doctorName}
-                    balance={closeBoxModal.balance}
-                    amount={closeAmount}
-                    setAmount={handlers.setCloseAmount}
-                    t={t}
-                />
-
-                {
-                    editingTx && (
-                        <EditTransactionModal
-                            isOpen={!!editingTx}
-                            onClose={() => handlers.setEditingTx(null)}
-                            onSave={handlers.onUpdateTransaction}
-                            transaction={editingTx}
-                            setTransaction={handlers.setEditingTx}
-                            settings={settings}
-                            user={user}
-                            t={t}
-                        />
-                    )
-                }
-
-                <PendingClosuresModal
-                    isOpen={controller.pendingClosuresOpen}
-                    onClose={() => handlers.setPendingClosuresOpen(false)}
-                    pendingClosures={controller.pendingClosures}
-                    duplicateClosures={controller.duplicateClosures}
-                    onAutoClosure={handlers.handleAutoClosure}
-                    onCloseAll={handlers.handleCloseAllPending}
-                    onFixDuplicates={handlers.handleFixDuplicates}
-                    onResetDay={handlers.handleResetDay}
-                    t={t}
-                />
+            <FinanceModalOrchestrator
+                controller={controller}
+                MedicationInputComponent={MedicationInputComponent}
+            />
         </MainLayout>
     );
 };

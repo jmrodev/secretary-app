@@ -96,17 +96,6 @@ const DashboardPage = () => {
 
                             {/* Card 4: Main Activity Area (Requirements) */}
                             <article className={`${styles.bentoCard} ${styles.mainContentCard}`}>
-                                <header className={styles.bentoHeader} style={{ justifyContent: 'space-between' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                        <Icon name="description" className={styles.bentoHeaderIcon} />
-                                        {t('pending_requests')}
-                                    </div>
-                                    {(isAdminOrSecretary || isDoctor) && (
-                                        <Button variant="premium" size="sm" onClick={handleOpenNewRequest} icon={<Icon name="add_circle" />}>
-                                            {t('new_request')}
-                                        </Button>
-                                    )}
-                                </header>
                                 <div style={{ minHeight: '350px' }}>
                                     {shouldShowLoadingState ? <Loading variant="centered" /> : (
                                         <MedicalRequirementManager user={user} variant="compact" setPaymentModal={setPaymentModal} />

@@ -30,13 +30,6 @@ const MedicalHistoryTable = ({
 
     return (
         <section className={`${styles.root} ${loading ? 'medical-history--loading' : 'animate-fade-in'}`}>
-            <header className={`${styles.title}`}>
-                <span className="medical-history__title-icon">
-                    <Icon name={icon} size="1.2rem" />
-                </span>
-                <h2 className="medical-history__title-text">{title}</h2>
-            </header>
-
             <div className="medical-history__wrapper">
                 <table className={`${styles.table} table-base`}>
                     <thead>
@@ -92,6 +85,7 @@ const MedicalHistoryTable = ({
                                         <Button
                                             variant="ghost"
                                             size="sm-compact"
+                                            className={`${styles.actionBtn} ${styles.actionBtnView}`}
                                             onClick={() => onView({ ...item, _readOnly: true })}
                                             title={t('view')}
                                             icon={<Icon name="visibility" size="1rem" />}
@@ -100,6 +94,7 @@ const MedicalHistoryTable = ({
                                             <Button
                                                 variant="ghost"
                                                 size="sm-compact"
+                                                className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
                                                 onClick={() => onView(item)}
                                                 title={t('edit')}
                                                 icon={<Icon name="edit" size="1rem" />}
@@ -109,6 +104,7 @@ const MedicalHistoryTable = ({
                                             <Button
                                                 variant="ghost"
                                                 size="sm-compact"
+                                                className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
                                                 onClick={() => onDelete(item.id, item)}
                                                 title={t('delete')}
                                                 icon={<Icon name="delete" size="1rem" />}

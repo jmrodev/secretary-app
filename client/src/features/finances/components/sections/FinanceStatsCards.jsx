@@ -36,7 +36,6 @@ const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) => {
 
     return (
         <section className={`${styles.root}`}>
-            <h2 className="visually-hidden">{t('financial_summary_title')}</h2>
             {/* Breakdown Cards (Appointments, Prescriptions, Licenses, Certificates) */}
             {otherStats.map((s) => (
                 <Card key={s.type} className={`${styles.card}`}>
@@ -46,9 +45,8 @@ const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) => {
                             size="0.8rem" 
                             className={`${styles.icon} finance-stats__icon--${s.type}`} 
                         />
-                        {t(s.type) || s.type}
+                        {(t(s.type) || s.type).toUpperCase()}
                     </h3>
-
                     <div className={`${styles.breakdown}`}>
                         <table className={`${styles.table}`}>
                             <thead>
@@ -101,10 +99,10 @@ const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) => {
 
             {/* Combined Payment Methods Card with Financial Summary */}
             {(tableStats.length > 0 || financialSummary.length > 0) && (
-                <Card className={`${styles.card}`}>
+                <Card className={`${styles.card} ${styles.cardWide}`}>
                     <h3 className={`${styles.title}`}>
                         <Icon name="payments" size="0.8rem" className={`${styles.icon}`} />
-                        {t('payment_methods_summary')}
+                        {(t('payment_methods_summary') || 'Métodos de Pago y Saldos').toUpperCase()}
                     </h3>
                     <div className={`${styles.breakdown}`}>
                         <table className={`${styles.table}`}>
@@ -174,7 +172,7 @@ const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) => {
             <Card className={`${styles.card}`}>
                 <h3 className={`${styles.title}`}>
                     <Icon name="warning" size="0.8rem" className={`${styles.icon} finance-stats__icon--pending_debt`} />
-                    {t('outstanding_debts') || 'Resumen de Deudas'}
+                    {(t('outstanding_debts') || 'Resumen de Deudas').toUpperCase()}
                 </h3>
                 <div className={`${styles.breakdown}`}>
                     <div className={`${styles.row}`}>

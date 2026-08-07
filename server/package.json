@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@google/gemini-cli": "^0.41.2",
+    "@google/gemini-cli": "^0.53.0",
     "afip-apis": "^0.5.5",
     "axios": "^1.18.0",
     "bcrypt": "^6.0.0",
@@ -25,18 +25,18 @@
     "express-rate-limit": "^8.4.1",
     "googleapis": "^171.4.0",
     "jsonwebtoken": "^9.0.3",
-    "knex": "^3.2.10",
+    "knex": "^3.3.0",
     "mariadb": "3.5.2",
     "morgan": "^1.11.0",
     "multer": "^2.2.0",
-    "mysql2": "^3.22.3",
+"mysql2": "^3.23.2",
     "node-cron": "^4.2.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.3.0",
-    "globals": "^17.6.0",
+    "globals": "^17.8.0",
     "jest": "^30.4.2",
-    "node-mocks-http": "^1.17.2"
+    "node-mocks-http": "^1.18.1"
   }
 }
