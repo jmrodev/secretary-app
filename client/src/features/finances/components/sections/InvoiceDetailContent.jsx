@@ -57,7 +57,7 @@ const InvoiceDetailContent = ({ tx, formatDate }) => {
                 </p>
                 <p className={`${styles.row}`}>
                     <strong>Estado de Pago:</strong> 
-                    <span style={{ textTransform: 'uppercase', fontWeight: 800, color: tx.status === 'paid' ? '#16a34a' : (tx.status === 'pending' ? '#dc2626' : '#2563eb') }}>
+                    <span className={`${styles.statusBadge} ${tx.bonified === 1 ? styles.statusBonified : (tx.status === 'paid' ? styles.statusPaid : styles.statusPending)}`}>
                         {tx.bonified === 1 ? 'Bonificado' : (tx.status === 'paid' ? 'Pagado' : tx.status)}
                     </span>
                 </p>
@@ -69,7 +69,7 @@ const InvoiceDetailContent = ({ tx, formatDate }) => {
                 {tx.proof_file && (
                     <p className={`${styles.row}`}>
                         <strong>Comprobante Adjunto:</strong> 
-                        <a href={tx.proof_file} target="_blank" rel="noreferrer" style={{ color: '#0284c7', fontWeight: 700 }}>
+                        <a href={tx.proof_file} target="_blank" rel="noreferrer" style={{ color: '#0284c7', fontWeight: 700, textDecoration: 'underline' }}>
                             Ver Archivo
                         </a>
                     </p>
@@ -78,7 +78,7 @@ const InvoiceDetailContent = ({ tx, formatDate }) => {
                 {tx.invoice_number && (
                     <>
                         <hr className={`${styles.divider}`} />
-                        <h4 style={{ margin: '0.25rem 0', color: '#1e40af', fontSize: '0.875rem' }}>Factura Electrónica (AFIP)</h4>
+                        <h4 className={styles.afipHeader}>Factura Electrónica (AFIP)</h4>
                         <p className={`${styles.row}`}>
                             <strong>Comprobante:</strong> 
                             <span>Factura {tx.invoice_cbte_tipo === 11 ? 'C' : tx.invoice_cbte_tipo} N° {String(tx.invoice_punto_vta).padStart(4, '0')}-{String(tx.invoice_number).padStart(8, '0')}</span>
