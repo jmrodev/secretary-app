@@ -68,12 +68,12 @@ export const useReportsController = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [activeTab, month, year, selectedDoctorId, getMonthlyReport]);
+    }, [activeTab, month, year, selectedDoctorId]); // Removed getMonthlyReport from dependencies to prevent infinite loop
 
-    // Automatically load report data when filters or active tab change
+    // Fetch report data on initial mount or when explicit filter params change
     useEffect(() => {
         handleGenerateReport();
-    }, [handleGenerateReport]);
+    }, [activeTab, month, year, selectedDoctorId]);
 
     const handleDownloadJson = useCallback(() => {
         if (!reportData) return;
