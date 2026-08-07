@@ -13,18 +13,26 @@ const AppointmentReportTable = ({ data, t }) => {
 
     // Calculate summary by day and payment method
     const dailySummary = list.map(dayGroup => {
-        let cash = 0;
-        let others = 0;
-        let total = 0;
+        let cash = Number(dayGroup.total_efectivo || 0);
+        let total = Number(dayGroup.total_dia || dayGroup.total_paid || 0);
+        
+        // If appts exist, compute sums from mapped backend fields (paid_amount, monto_pagado)
+        if (dayGroup.appointments && dayGroup.appointments.length > 0) {
+            let apptCash = 0;
+            let apptTotal = 0;
+            dayGroup.appointments.forEach(appt => {
+                const paidAmount = Number(appt.paid_amount ?? appt.monto_pagado ?? 0);
+                const cashAmount = Number(appt.cash_amount ?? appt.monto_efectivo ?? (appt.payment_method === 'cash' ? paidAmount : 0));
+                apptCash += cashAmount;
+                apptTotal += paidAmount;
+            });
+            if (apptTotal > 0) {
+                cash = apptCash;
+                total = apptTotal;
+            }
+        }
 
-        dayGroup.appointments.forEach(appt => {
-            const paidAmount = Number(appt.monto_pagado || 0);
-            const cashAmount = Number(appt.monto_efectivo || 0);
-
-            cash += cashAmount;
-            others += (paidAmount - cashAmount);
-            total += paidAmount;
-        });
+        const others = Math.max(0, total - cash);
 
         return {
             date: dayGroup.date,
@@ -153,40 +161,46 @@ const AppointmentReportTable = ({ data, t }) => {
                                         )}
                                     </td>
                                 </tr>
-                                {dayGroup.appointments.map((appt) => (
-                                    <tr 
-                                        key={appt.id || `${dayGroup.date}-${appt.hora}-${appt.nombre}`} 
-                                        className={`${styles.appointmentReport__row} ${appt.is_overturn ? styles['appointmentReport__row--overturn'] : ''}`}
-                                    >
-                                        <td className={styles.appointmentReport__cellDay}>{appt.dia}</td>
-                                        <td>
-                                            {appt.info}
-                                            {appt.is_overturn && <span className={styles.appointmentReport__overturnBadge}>{t('overturn')}</span>}
-                                        </td>
-                                        <td className={styles.appointmentReport__cellPatient}>{appt.nombre}</td>
-                                        <td className={styles.appointmentReport__cellTime}>{appt.hora}</td>
-                                        <td>
-                                            <span className={`${styles.appointmentReport__badge} ${styles[`appointmentReport__badge--${appt.asistencia}`] || ''}`}>
-                                                {t(appt.asistencia) || appt.asistencia}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div className={styles.appointmentReport__paymentInfo}>
-                                                <span className={`${styles.appointmentReport__badge} ${styles[`appointmentReport__badge--${appt.pago}`] || ''}`}>
-                                                    {t(appt.pago) || appt.pago}
+                                {dayGroup.appointments.map((appt) => {
+                                    const patientName = appt.patient_name ?? appt.nombre ?? '-';
+                                    const timeStr = appt.appointment_date 
+                                        ? new Date(appt.appointment_date).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })
+                                        : (appt.hora ?? '-');
+                                    const infoStr = appt.reason ?? appt.info ?? appt.type ?? '-';
+                                    const statusStr = appt.status ?? appt.asistencia ?? 'pending';
+                                    const paymentStr = appt.payment_status ?? appt.pago ?? 'pending';
+                                    const paidAmount = Number(appt.paid_amount ?? appt.monto_pagado ?? 0);
+
+                                    return (
+                                        <tr 
+                                            key={appt.id || `${dayGroup.date}-${timeStr}-${patientName}`} 
+                                            className={`${styles.appointmentReport__row} ${appt.is_out_of_hours ? styles['appointmentReport__row--overturn'] : ''}`}
+                                        >
+                                            <td className={styles.appointmentReport__cellDay}>{dayGroup.date}</td>
+                                            <td>
+                                                {infoStr}
+                                                {appt.is_out_of_hours && <span className={styles.appointmentReport__overturnBadge}>{t('overturn')}</span>}
+                                            </td>
+                                            <td className={styles.appointmentReport__cellPatient}>{patientName}</td>
+                                            <td className={styles.appointmentReport__cellTime}>{timeStr}</td>
+                                            <td>
+                                                <span className={`${styles.appointmentReport__badge} ${styles[`appointmentReport__badge--${statusStr}`] || ''}`}>
+                                                    {t(statusStr) || statusStr}
                                                 </span>
-                                                {appt.metodos_pago && (
-                                                    <span className={styles.appointmentReport__methods}>
-                                                        {appt.metodos_pago}
+                                            </td>
+                                            <td>
+                                                <div className={styles.appointmentReport__paymentInfo}>
+                                                    <span className={`${styles.appointmentReport__badge} ${styles[`appointmentReport__badge--${paymentStr}`] || ''}`}>
+                                                        {t(paymentStr) || paymentStr}
                                                     </span>
-                                                )}
-                                            </div>
-                                        </td>
-                                        <td className={styles.appointmentReport__cellAmount}>
-                                            {Number(appt.monto_pagado) > 0 ? formatCurrency(appt.monto_pagado) : '-'}
-                                        </td>
-                                    </tr>
-                                ))}
+                                                </div>
+                                            </td>
+                                            <td className={styles.appointmentReport__cellAmount}>
+                                                {paidAmount > 0 ? formatCurrency(paidAmount) : '-'}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </React.Fragment>
                         ))}
                     </tbody>
