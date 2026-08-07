@@ -32,7 +32,6 @@ const MedicalRequestList = ({
     if (!loading && (!requests || requests.length === 0)) {
         return (
             <section className={`${styles.empty} animate-fade-in`}>
-                <h2 className="visually-hidden">{t('no_requests')}</h2>
                 <Icon name="description" size="3rem" className={`${styles.emptyIcon}`} />
                 {t('no_requests')}
             </section>
@@ -41,9 +40,7 @@ const MedicalRequestList = ({
 
     return (
         <section className={`${styles.root} ${loading ? 'medical-requests--loading' : 'animate-fade-in'}`}>
-            <h2 className="visually-hidden">{t('medical_requests')}</h2>
             <article className={`${styles.container}`}>
-                <h3 className="visually-hidden">{t('requests_list')}</h3>
                 <table className={`${styles.table} table-base`}>
                     <thead>
                         <tr>

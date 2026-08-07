@@ -3,6 +3,7 @@ import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Badge from '@/components/atoms/Badge';
 import InvoiceDetailContent from '@/features/finances/components/sections/InvoiceDetailContent';
+import styles from './TransactionsTable.module.css';
 
 /**
  * TransactionRow Feature Molecule.
@@ -27,6 +28,11 @@ const TransactionRow = ({
     const isIncome = tx.type.includes('income') && !tx.is_withdrawal;
     const isGrouped = groupLength > 1;
 
+    // Row color class logic
+    const rowColorClass = tx.is_withdrawal
+        ? styles.rowWithdrawal
+        : (isIncome ? styles.rowIncome : styles.rowExpense);
+
     // Normalizing status for Badge atom
     const getStatusVariant = (status, bonified) => {
         if (bonified === 1 || status === 'bonified') return 'blue';
@@ -37,7 +43,7 @@ const TransactionRow = ({
     };
 
     return (
-        <tr className={`transactions-table__row ${isGrouped ? 'transactions-table__row--grouped' : ''} animate-fade-in`}>
+        <tr className={`transactions-table__row ${rowColorClass} ${isGrouped ? 'transactions-table__row--grouped' : ''} animate-fade-in`}>
             <td className="transactions-table__cell--first">
                 <div className="transactions-table__date">{formatDateUnambiguous(tx.transaction_date)}</div>
                 <div className="transactions-table__time">{formatTime(tx.transaction_date)}</div>

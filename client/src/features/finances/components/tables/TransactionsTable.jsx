@@ -129,7 +129,7 @@ const TransactionsTable = ({
     const canManagerFinance = user && (user.role === 'admin' || settings.enable_secretary_finance_crud === 'true');
 
     return (
-        <Card className={`${styles.container}`} noPadding as="article" title={t('transaction_log')}>
+        <Card className={`${styles.container}`} noPadding as="article">
             <div className={`${styles.wrapper}`}>
                 <table className={`${styles.table} table-base`}>
                     <thead>

@@ -55,7 +55,6 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
             }
         >
             <section className={`${styles.root}`}>
-                <h2 className="visually-hidden">{t('prescription_details')}</h2>
                 <PrescriptionHabitualMeds
                     patientMeds={patientMeds}
                     historyMeds={historyMeds}

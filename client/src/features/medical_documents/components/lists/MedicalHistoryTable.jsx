@@ -30,13 +30,6 @@ const MedicalHistoryTable = ({
 
     return (
         <section className={`${styles.root} ${loading ? 'medical-history--loading' : 'animate-fade-in'}`}>
-            <header className={`${styles.title}`}>
-                <span className="medical-history__title-icon">
-                    <Icon name={icon} size="1.2rem" />
-                </span>
-                <h2 className="medical-history__title-text">{title}</h2>
-            </header>
-
             <div className="medical-history__wrapper">
                 <table className={`${styles.table} table-base`}>
                     <thead>

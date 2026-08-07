@@ -2,50 +2,54 @@
 
 .container {
     /* --- Local Component Tokens --- */
-    --ledger-bg: var(--white);
-    --ledger-border: var(--gray-300);
-    --ledger-row-hover: var(--gray-50);
-    --ledger-group-bg: var(--blue-50);
-    --ledger-header-bg: var(--gray-50);
+    --ledger-bg: var(--white, #ffffff);
+    --ledger-border: rgba(0, 0, 0, 0.08);
+    --ledger-row-hover: rgba(241, 245, 249, 0.7);
+    --ledger-group-bg: rgba(239, 246, 255, 0.5);
+    --ledger-header-bg: rgba(248, 250, 252, 0.95);
 
     /* ------------------------------ */
 
     padding: 0;
     overflow: hidden;
-    margin-top: 1rem;
+    margin-top: 1.25rem;
+    border-radius: var(--radius-lg, 12px);
+    border: 1px solid var(--ledger-border);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
 }
 
 .wrapper {
     overflow: auto;
     width: 100%;
-    max-height: 700px;
+    max-height: 720px;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     table-layout: fixed;
 }
 
 .table th {
     background-color: var(--ledger-header-bg);
-    padding: 1rem 0.5rem;
+    backdrop-filter: blur(8px);
+    padding: 0.875rem 0.75rem;
     text-align: left;
-    font-weight: 800;
-    color: var(--text-secondary);
+    font-weight: 700;
+    color: var(--text-secondary, #475569);
     border-bottom: 2px solid var(--ledger-border);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    font-size: 0.7rem;
     position: sticky;
     top: 0;
     z-index: 10;
 }
 
 .table td {
-    padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid var(--gray-100);
+    padding: 0.875rem 0.75rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     vertical-align: middle;
 }
 
@@ -100,6 +104,34 @@
 
 .rowGrouped {
     background-color: var(--ledger-group-bg);
+}
+
+/* Logical Row Color coding */
+.rowIncome {
+    background-color: rgba(240, 253, 244, 0.6);
+    border-left: 3px solid #22c55e;
+}
+
+.rowExpense {
+    background-color: rgba(254, 242, 242, 0.6);
+    border-left: 3px solid #ef4444;
+}
+
+.rowWithdrawal {
+    background-color: rgba(254, 252, 232, 0.6);
+    border-left: 3px solid #eab308;
+}
+
+.rowIncome:hover {
+    background-color: rgba(220, 252, 231, 0.8) !important;
+}
+
+.rowExpense:hover {
+    background-color: rgba(254, 226, 226, 0.8) !important;
+}
+
+.rowWithdrawal:hover {
+    background-color: rgba(254, 249, 195, 0.8) !important;
 }
 
 .row:hover:not(.rowGrouped) td {

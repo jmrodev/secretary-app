@@ -1,24 +1,27 @@
+import React from 'react';
+import Card from '@/components/atoms/Card';
 import styles from './BalanceFinancialSummary.module.css';
 
 /**
  * BalanceFinancialSummary Molecule.
- * Displays a detailed breakdown of income and net results for a specific period.
  */
-const BalanceFinancialSummary = ({
-    totalAppts,
-    totalPres,
-    totalLicenses,
-    totalCertificates,
-    otherOrPastIncome,
-    totalIncome,
-    totalWithdrawals,
-    netTotal,
-    t
-}) => {
-    return (
-        <section className={`${styles.root} animate-fade-in`}>
-            <h3 className={`${styles.title}`}>Resumen Financiero</h3>
+const BalanceFinancialSummary = ({ summary }) => {
+    if (!summary) return null;
 
+    const {
+        totalAppts,
+        totalPres,
+        totalLicenses,
+        totalCertificates,
+        otherOrPastIncome,
+        totalIncome,
+        totalWithdrawals,
+        netTotal,
+        t
+    } = summary;
+
+    return (
+        <Card className={`${styles.root}`}>
             <div className={`${styles.item}`}>
                 <span>Total Turnos:</span>
                 <span className={`${styles.amount} ${styles.amountPositive}`}>
@@ -70,7 +73,7 @@ const BalanceFinancialSummary = ({
                 <span>{t("result_neto")}:</span>
                 <span>$ {netTotal.toLocaleString()}</span>
             </div>
-        </section>
+        </Card>
     );
 };
 
