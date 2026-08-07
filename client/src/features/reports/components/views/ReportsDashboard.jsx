@@ -6,10 +6,8 @@ import LicenseReportTable from '@/features/reports/components/tables/LicenseRepo
 import CertificateReportTable from '@/features/reports/components/tables/CertificateReportTable';
 import BalanceView from '@/features/reports/components/views/BalanceView';
 import PageHeader from '@/components/ui/PageHeader';
-
-import styles from './ReportsDashboard.module.css';
-
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import styles from './ReportsDashboard.module.css';
 
 const ReportsDashboard = ({
     t,
@@ -22,6 +20,7 @@ const ReportsDashboard = ({
     selectedDoctorId: _selectedDoctorId,
     setSelectedDoctorId: _setSelectedDoctorId,
     reportData,
+    error,
     isSubmitting,
     doctors: _doctors,
     handleGenerateReport,
@@ -30,14 +29,14 @@ const ReportsDashboard = ({
     onPrint
 }) => {
     return (
-        <section className="reports-dashboard">
+        <section className={styles.reportsDashboard}>
             <PageHeader 
                 title={t('reports_page_title')}
                 subtitle={t('reports_page_subtitle')}
             />
 
             <FeatureToolbar
-                className="reports-dashboard-orchestrator__top-actions"
+                className={styles.reportsDashboard__topActions}
                 tabs={[
                     { id: 'appointments', label: t('appointments'), icon: 'event' },
                     { id: 'prescriptions', label: t('prescriptions'), icon: 'medication' },
@@ -65,10 +64,15 @@ const ReportsDashboard = ({
                 }
             />
 
-            <div className="dashboard-layout__grid animate-fade-in">
-                <main className="dashboard-layout__main dashboard-layout__main--full">
-                    <div className="dashboard-card no-padding">
-                        <div className={`${styles.results}`}>
+            <div className={`${styles.reportsDashboard__grid} animate-fade-in`}>
+                <main className={styles.reportsDashboard__main}>
+                    <div className={styles.reportsDashboard__card}>
+                        <div className={styles.results}>
+                            {error && (
+                                <div className={styles.errorState}>
+                                    {error}
+                                </div>
+                            )}
                             {activeTab === 'appointments' && (
                                 <AppointmentReportTable data={reportData} t={t} />
                             )}
@@ -93,3 +97,4 @@ const ReportsDashboard = ({
 };
 
 export default ReportsDashboard;
+

@@ -78,13 +78,16 @@ const BalanceView = ({ reportData, month, year, t }) => {
     const netTotal = totalIncome - totalWithdrawals;
     const totalDebt = allDebts.reduce((a, b) => a + b.amount, 0);
 
+    const monthName = t('months_array') ? t('months_array')[month - 1] : '';
+    const balanceTitle = t('balance_report') || t('general_balance') || 'Balance General';
+
     return (
-        <div className={`${styles.root}`}>
-            <h2 className={`${styles.title}`}>
-                Balance General - {t('months_array')[month - 1]} {year}
+        <div className={styles.balanceView}>
+            <h2 className={styles.balanceView__title}>
+                {balanceTitle} - {monthName} {year}
             </h2>
 
-            <div className={`${styles.grid}`}>
+            <div className={styles.balanceView__grid}>
                 <BalanceFinancialSummary
                     totalAppts={totalAppts}
                     totalPres={totalPres}
