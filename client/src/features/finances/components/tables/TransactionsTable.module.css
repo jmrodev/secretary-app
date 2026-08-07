@@ -303,7 +303,67 @@
 .actions {
     display: flex;
     justify-content: flex-end;
-    gap: 0.15rem;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.actionBtn {
+    color: #334155 !important;
+    background-color: rgba(255, 255, 255, 0.7) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.15s ease-in-out !important;
+}
+
+.actionBtn:hover {
+    transform: scale(1.08);
+}
+
+.actionBtnPay {
+    color: #16a34a !important;
+    border-color: rgba(22, 163, 74, 0.3) !important;
+}
+
+.actionBtnPay:hover {
+    background-color: #16a34a !important;
+    color: #ffffff !important;
+}
+
+.actionBtnInvoice {
+    color: #2563eb !important;
+    border-color: rgba(37, 99, 235, 0.3) !important;
+}
+
+.actionBtnInvoice:hover {
+    background-color: #2563eb !important;
+    color: #ffffff !important;
+}
+
+.actionBtnEdit {
+    color: #475569 !important;
+}
+
+.actionBtnEdit:hover {
+    background-color: #475569 !important;
+    color: #ffffff !important;
+}
+
+.actionBtnSync {
+    color: #0891b2 !important;
+}
+
+.actionBtnSync:hover {
+    background-color: #0891b2 !important;
+    color: #ffffff !important;
+}
+
+.actionBtnDelete {
+    color: #dc2626 !important;
+    border-color: rgba(220, 38, 38, 0.2) !important;
+}
+
+.actionBtnDelete:hover {
+    background-color: #dc2626 !important;
+    color: #ffffff !important;
 }
 
 .groupFooter {

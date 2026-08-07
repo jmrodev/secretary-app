@@ -141,16 +141,51 @@ const TransactionRow = ({
                 <td className="transactions-table__cell--right transactions-table__cell--last">
                     <div className="transactions-table__actions">
                         {tx.type === 'income_patient' && tx.status === 'paid' && !tx.invoice_number && (
-                            <Button size="sm-compact" variant="ghost" onClick={() => onGenerateInvoice(tx.id)} title={t('generate_invoice')} icon={<Icon name="REPORTS" />} />
+                            <Button 
+                                size="sm-compact" 
+                                variant="ghost" 
+                                className={`${styles.actionBtn} ${styles.actionBtnInvoice}`}
+                                onClick={() => onGenerateInvoice(tx.id)} 
+                                title={t('generate_invoice')} 
+                                icon={<Icon name="REPORTS" />} 
+                            />
                         )}
                         {tx.status === 'pending' && (
-                            <Button size="sm-compact" variant="ghost" onClick={() => onEdit({ ...tx, status: 'paid' })} title={t('pay')} icon={<Icon name="FINANCES" />} />
+                            <Button 
+                                size="sm-compact" 
+                                variant="ghost" 
+                                className={`${styles.actionBtn} ${styles.actionBtnPay}`}
+                                onClick={() => onEdit({ ...tx, status: 'paid' })} 
+                                title={t('pay')} 
+                                icon={<Icon name="FINANCES" />} 
+                            />
                         )}
-                        <Button size="sm-compact" variant="ghost" onClick={() => onEdit(tx)} title={t('edit')} icon={<Icon name="EDIT" />} />
+                        <Button 
+                            size="sm-compact" 
+                            variant="ghost" 
+                            className={`${styles.actionBtn} ${styles.actionBtnEdit}`}
+                            onClick={() => onEdit(tx)} 
+                            title={t('edit')} 
+                            icon={<Icon name="EDIT" />} 
+                        />
                         {tx.status === 'paid' && (
-                            <Button size="sm-compact" variant="ghost" onClick={() => onSync(tx.id)} title={t('sync_google')} icon={<Icon name="SYNC" />} />
+                            <Button 
+                                size="sm-compact" 
+                                variant="ghost" 
+                                className={`${styles.actionBtn} ${styles.actionBtnSync}`}
+                                onClick={() => onSync(tx.id)} 
+                                title={t('sync_google')} 
+                                icon={<Icon name="SYNC" />} 
+                            />
                         )}
-                        <Button size="sm-compact" variant="ghost" onClick={() => onDelete(tx.id)} title={t('delete')} icon={<Icon name="DELETE" />} />
+                        <Button 
+                            size="sm-compact" 
+                            variant="ghost" 
+                            className={`${styles.actionBtn} ${styles.actionBtnDelete}`}
+                            onClick={() => onDelete(tx.id)} 
+                            title={t('delete')} 
+                            icon={<Icon name="DELETE" />} 
+                        />
                     </div>
                 </td>
             )}
