@@ -31,5 +31,9 @@ export const finances = {
     total_debt: "Deuda Total Pendiente",
     hide_summary: "Ocultar Resumen",
     show_summary: "Mostrar Resumen",
+
+    // Reports Table Headers
+    weekly_total: "Total Semanal",
+    cumulative_monthly_total: "Total Mensual Acumulado",
 };
 

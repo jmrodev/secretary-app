@@ -11,12 +11,14 @@ const AppointmentReportTable = ({ data, t }) => {
         return <div className={styles.appointmentReport__empty}>{t('no_data_to_display')}</div>;
     }
 
-    // Calculate summary by day and payment method
-    const dailySummary = list.map(dayGroup => {
+    // Compute running totals for weekly and monthly progression
+    let currentWeeklySum = 0;
+    let currentMonthlySum = 0;
+
+    const dailySummaryWithTotals = list.map((dayGroup, index) => {
         let cash = Number(dayGroup.total_efectivo || 0);
         let total = Number(dayGroup.total_dia || dayGroup.total_paid || 0);
         
-        // If appts exist, compute sums from mapped backend fields (paid_amount, monto_pagado)
         if (dayGroup.appointments && dayGroup.appointments.length > 0) {
             let apptCash = 0;
             let apptTotal = 0;
@@ -33,20 +35,33 @@ const AppointmentReportTable = ({ data, t }) => {
         }
 
         const others = Math.max(0, total - cash);
+        const parsedDate = parseDate(dayGroup.date);
+        const dayOfWeek = parsedDate ? parsedDate.getDay() : 0;
+
+        // Reset weekly sum on Monday (dayOfWeek === 1) or at start of list
+        if (index === 0 || dayOfWeek === 1) {
+            currentWeeklySum = total;
+        } else {
+            currentWeeklySum += total;
+        }
+
+        currentMonthlySum += total;
 
         return {
             date: dayGroup.date,
             cash,
             others,
             total,
+            weeklyTotal: currentWeeklySum,
+            monthlyAccumulated: currentMonthlySum,
             is_weekend: dayGroup.is_weekend,
             is_holiday: dayGroup.is_holiday
         };
     });
 
-    const monthlyTotalCash = dailySummary.reduce((acc, day) => acc + day.cash, 0);
-    const monthlyTotalOthers = dailySummary.reduce((acc, day) => acc + day.others, 0);
-    const monthlyTotal = dailySummary.reduce((acc, day) => acc + day.total, 0);
+    const monthlyTotalCash = dailySummaryWithTotals.reduce((acc, day) => acc + day.cash, 0);
+    const monthlyTotalOthers = dailySummaryWithTotals.reduce((acc, day) => acc + day.others, 0);
+    const monthlyTotal = dailySummaryWithTotals.reduce((acc, day) => acc + day.total, 0);
 
     // Helper to get day of week
     const getDayOfWeek = (dateStr) => {
@@ -80,10 +95,12 @@ const AppointmentReportTable = ({ data, t }) => {
                                 <th className="text-right">{t('cash_cash_only')}</th>
                                 <th className="text-right">{t('other_methods')}</th>
                                 <th className="text-right">{t('daily_total')}</th>
+                                <th className="text-right">{t('weekly_total') || 'Total Semanal'}</th>
+                                <th className="text-right">{t('cumulative_monthly_total') || 'Total Mensual'}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {dailySummary.map((day) => (
+                            {dailySummaryWithTotals.map((day) => (
                                 <tr 
                                     key={day.date} 
                                     className={`${styles.appointmentReport__row} ${day.is_weekend ? styles['appointmentReport__row--weekend'] : ''} ${day.is_holiday ? styles['appointmentReport__row--holiday'] : ''}`}
@@ -100,25 +117,27 @@ const AppointmentReportTable = ({ data, t }) => {
                                     <td className={`text-right ${styles.appointmentReport__cellBold}`}>
                                         {formatCurrency(day.total)}
                                     </td>
+                                    <td className="text-right">{formatCurrency(day.weeklyTotal)}</td>
+                                    <td className={`text-right ${styles.appointmentReport__cellBold}`}>{formatCurrency(day.monthlyAccumulated)}</td>
                                 </tr>
                             ))}
                         </tbody>
                         <tfoot>
                             <tr className={styles.appointmentReport__footerSubtotal}>
                                 <td>{t('monthly_cash_total')}</td>
-                                <td colSpan="3" className="text-right">
+                                <td colSpan="5" className="text-right">
                                     {formatCurrency(monthlyTotalCash)}
                                 </td>
                             </tr>
                             <tr className={styles.appointmentReport__footerSubtotal}>
                                 <td>{t('monthly_others_total')}</td>
-                                <td colSpan="3" className="text-right">
+                                <td colSpan="5" className="text-right">
                                     {formatCurrency(monthlyTotalOthers)}
                                 </td>
                             </tr>
                             <tr className={styles.appointmentReport__footer}>
                                 <td>{t('monthly_accumulated_total')}</td>
-                                <td colSpan="3" className="text-right">
+                                <td colSpan="5" className="text-right">
                                     {formatCurrency(monthlyTotal)}
                                 </td>
                             </tr>
