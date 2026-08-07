@@ -23,8 +23,9 @@ export const useReportsController = () => {
         setError(null);
         try {
             if (activeTab === 'appointments') {
-                const data = await getMonthlyReport(month, year, selectedDoctorId);
-                setReportData(data || { appointments: [] });
+                const res = await getMonthlyReport(month, year, selectedDoctorId);
+                const actualData = res?.data ?? res;
+                setReportData(actualData || { appointments: [] });
             } else if (activeTab === 'prescriptions') {
                 const params = { preview: true, month, year, type: 'prescription' };
                 if (selectedDoctorId) params.doctorId = selectedDoctorId;
@@ -54,9 +55,10 @@ export const useReportsController = () => {
                     })
                 ]);
 
+                const actualApptData = apptData?.data ?? apptData;
                 setReportData({
-                    appointments: apptData?.appointments || [],
-                    withdrawals: apptData?.withdrawals || [],
+                    appointments: actualApptData?.appointments || [],
+                    withdrawals: actualApptData?.withdrawals || [],
                     prescriptions: presResponse.data?.prescriptions || [],
                     licenses: licResponse.data?.licenses || [],
                     certificates: certResponse.data?.certificates || []
