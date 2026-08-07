@@ -64,7 +64,7 @@
 }
 
 .appointmentReport__row {
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
     transition: background-color 0.15s ease-in-out;
 }
 
@@ -79,7 +79,8 @@
 .appointmentReport__row td {
     padding: 0.875rem 1.25rem;
     font-size: 0.875rem;
-    color: var(--text-main, #1e293b);
+    color: #0f172a;
+    font-weight: 500;
 }
 
 .appointmentReport__row--weekend {
@@ -95,20 +96,20 @@
 }
 
 .appointmentReport__dayHeader td {
-    background-color: #e0f2fe;
+    background-color: #0f172a;
     font-weight: 800;
-    color: #0369a1;
+    color: #fff;
     padding: 0.75rem 1.25rem;
 }
 
 .appointmentReport__dayHeader--weekend td {
-    background-color: #fef3c7;
-    color: #b45309;
+    background-color: #78350f;
+    color: #fff;
 }
 
 .appointmentReport__dayHeader--holiday td {
-    background-color: #fee2e2;
-    color: #b91c1c;
+    background-color: #991b1b;
+    color: #fff;
 }
 
 .appointmentReport__cellDay {
