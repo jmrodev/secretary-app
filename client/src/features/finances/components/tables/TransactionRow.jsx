@@ -25,11 +25,21 @@ const TransactionRow = ({
     alert,
     t
 }) => {
-    const isIncome = tx.type.includes('income') && !tx.is_withdrawal;
+    const isWithdrawal = Boolean(tx.is_withdrawal) || tx.type === 'withdrawal' || tx.type === 'expense_withdrawal';
+    const isIncome = !isWithdrawal && (
+        tx.type === 'income' || 
+        tx.type.includes('income') || 
+        tx.type === 'appointment' || 
+        tx.type === 'request' || 
+        Boolean(tx.appointment_id) || 
+        Boolean(tx.request_type) || 
+        Number(tx.amount) > 0
+    );
+
     const isGrouped = groupLength > 1;
 
     // Row color class logic
-    const rowColorClass = tx.is_withdrawal
+    const rowColorClass = isWithdrawal
         ? styles.rowWithdrawal
         : (isIncome ? styles.rowIncome : styles.rowExpense);
 
