@@ -26,7 +26,8 @@ const TransactionRow = ({
     t
 }) => {
     const isWithdrawal = Boolean(tx.is_withdrawal) || tx.type === 'withdrawal' || tx.type === 'expense_withdrawal';
-    const isIncome = !isWithdrawal && (
+    const isPending = tx.status === 'pending' || tx.payment_status === 'pending';
+    const isIncome = !isWithdrawal && !isPending && (
         tx.type === 'income' || 
         tx.type.includes('income') || 
         tx.type === 'appointment' || 
@@ -38,10 +39,12 @@ const TransactionRow = ({
 
     const isGrouped = groupLength > 1;
 
-    // Row color class logic
-    const rowColorClass = isWithdrawal
-        ? styles.rowWithdrawal
-        : (isIncome ? styles.rowIncome : styles.rowExpense);
+    // Row color class logic: Pending takes precedence over income to highlight unpaid items in red
+    const rowColorClass = isPending
+        ? styles.rowPending
+        : (isWithdrawal
+            ? styles.rowWithdrawal
+            : (isIncome ? styles.rowIncome : styles.rowExpense));
 
     // Normalizing status for Badge atom
     const getStatusVariant = (status, bonified) => {
