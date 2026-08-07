@@ -20,16 +20,15 @@ const ReportFilters = ({
     hasData,
     t
 }) => {
-    // We pass null for allLabelKey because ReportFilters specifically requires a month (no "All Months" option)
     const monthOptions = getMonthsOptions(t, null).map(opt => ({
         ...opt,
-        value: Number(opt.value) // ReportFilters uses numeric values
+        value: Number(opt.value)
     }));
 
     return (
-        <div className={`${styles.root} report-filters--horizontal`}>
-            <div className="report-filters__controls">
-                <div className="report-filters__field">
+        <div className={styles.reportFilters}>
+            <div className={styles.reportFilters__controls}>
+                <div className={styles.reportFilters__field}>
                     <Button
                         variant="ghost"
                         size="sm-compact"
@@ -41,7 +40,7 @@ const ReportFilters = ({
                         value={month}
                         onChange={(e) => onMonthChange(Number(e.target.value))}
                         options={monthOptions}
-                        className={`${styles.select} report-filters__select--month`}
+                        className={styles.reportFilters__selectMonth}
                     />
                     <Button
                         variant="ghost"
@@ -52,7 +51,7 @@ const ReportFilters = ({
                     </Button>
                 </div>
 
-                <div className="report-filters__field">
+                <div className={styles.reportFilters__field}>
                     <Button
                         variant="ghost"
                         size="sm-compact"
@@ -66,7 +65,7 @@ const ReportFilters = ({
                         onChange={(e) => onYearChange(Number(e.target.value))}
                         min="2020"
                         max="2035"
-                        className={`${styles.input}`}
+                        className={styles.reportFilters__inputYear}
                     />
                     <Button
                         variant="ghost"
@@ -78,7 +77,7 @@ const ReportFilters = ({
                 </div>
             </div>
 
-            <div className={`${styles.actions}`}>
+            <div className={styles.reportFilters__actions}>
                 <Button
                     onClick={onGenerate}
                     disabled={isSubmitting}
@@ -89,7 +88,7 @@ const ReportFilters = ({
                 </Button>
 
                 {hasData && (
-                    <div className="report-filters__export-group">
+                    <div className={styles.reportFilters__exportGroup}>
                         <Button
                             variant="secondary"
                             size="sm"
