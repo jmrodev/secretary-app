@@ -2,7 +2,7 @@
 
 .root {
     /* --- Local Component Tokens --- */
-    --stats-card-bg: #ffffff;
+    --stats-card-bg: #fff;
     --stats-card-border: #cbd5e1;
     --stats-header-color: #0f172a;
     --stats-summary-bg: #f8fafc;
@@ -30,7 +30,7 @@
     background-color: var(--stats-card-bg);
     border: 1px solid var(--stats-card-border);
     border-radius: var(--radius-lg, 12px);
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    box-shadow: 0 4px 12px rgb(15, 23, 42, 0.08);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -40,7 +40,7 @@
 }
 
 .card:hover {
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+    box-shadow: 0 8px 24px rgb(15, 23, 42, 0.12);
 }
 
 .title {

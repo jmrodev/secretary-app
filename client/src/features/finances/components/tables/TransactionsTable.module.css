@@ -2,11 +2,11 @@
 
 .container {
     /* --- Local Component Tokens --- */
-    --ledger-bg: var(--white, #ffffff);
-    --ledger-border: rgba(0, 0, 0, 0.08);
-    --ledger-row-hover: rgba(241, 245, 249, 0.7);
-    --ledger-group-bg: rgba(239, 246, 255, 0.5);
-    --ledger-header-bg: rgba(248, 250, 252, 0.95);
+    --ledger-bg: var(--white, #fff);
+    --ledger-border: rgb(0, 0, 0, 0.08);
+    --ledger-row-hover: rgb(241, 245, 249, 0.7);
+    --ledger-group-bg: rgb(239, 246, 255, 0.5);
+    --ledger-header-bg: rgb(248, 250, 252, 0.95);
 
     /* ------------------------------ */
 
@@ -15,7 +15,7 @@
     margin-top: 1.25rem;
     border-radius: var(--radius-lg, 12px);
     border: 1px solid var(--ledger-border);
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 20px -2px rgb(0, 0, 0, 0.04);
 }
 
 .wrapper {
@@ -36,7 +36,7 @@
     padding: 0.875rem 0.75rem;
     text-align: left;
     font-weight: 800;
-    color: #ffffff;
+    color: #fff;
     border-bottom: 2px solid #334155;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -48,7 +48,7 @@
 
 .table td {
     padding: 0.875rem 0.75rem;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgb(0, 0, 0, 0.05);
     vertical-align: middle;
 }
 
@@ -89,22 +89,22 @@
 
 /* Logical Row Color coding */
 .rowIncome {
-    background-color: rgba(240, 253, 244, 0.6);
+    background-color: rgb(240, 253, 244, 0.6);
     border-left: 3px solid #22c55e;
 }
 
 .rowExpense {
-    background-color: rgba(254, 242, 242, 0.6);
+    background-color: rgb(254, 242, 242, 0.6);
     border-left: 3px solid #ef4444;
 }
 
 .rowWithdrawal {
-    background-color: rgba(254, 252, 232, 0.6);
+    background-color: rgb(254, 252, 232, 0.6);
     border-left: 3px solid #eab308;
 }
 
 .rowPending {
-    background-color: rgba(254, 242, 242, 0.7);
+    background-color: rgb(254, 242, 242, 0.7);
     border-left: 4px solid #dc2626;
 }
 
@@ -272,18 +272,18 @@
 
 .actionBtnView {
     background-color: #6366f1 !important;
-    color: #ffffff !important;
+    color: #fff !important;
     border: none !important;
     border-radius: 6px !important;
     padding: 0.35rem 0.6rem !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1) !important;
     transition: all 0.15s ease-in-out !important;
 }
 
 .actionBtnView:hover {
     background-color: #4f46e5 !important;
     transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2) !important;
 }
 
 .proofLink {
@@ -294,15 +294,15 @@
     height: 32px;
     border-radius: 6px;
     background-color: #0284c7;
-    color: #ffffff !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: #fff !important;
+    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1);
     transition: all 0.15s ease-in-out;
 }
 
 .proofLink:hover {
     background-color: #0369a1;
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2);
 }
 
 .noProof {
@@ -328,18 +328,18 @@
     border: none !important;
     border-radius: 6px !important;
     padding: 0.35rem 0.5rem !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1) !important;
     transition: all 0.15s ease-in-out !important;
 }
 
 .actionBtn:hover {
     transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2) !important;
 }
 
 .actionBtnPay {
     background-color: #15803d !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnPay:hover {
@@ -348,7 +348,7 @@
 
 .actionBtnInvoice {
     background-color: #1d4ed8 !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnInvoice:hover {
@@ -357,7 +357,7 @@
 
 .actionBtnEdit {
     background-color: #334155 !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnEdit:hover {
@@ -366,7 +366,7 @@
 
 .actionBtnSync {
     background-color: #0e7490 !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnSync:hover {
@@ -375,7 +375,7 @@
 
 .actionBtnDelete {
     background-color: #b91c1c !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnDelete:hover {

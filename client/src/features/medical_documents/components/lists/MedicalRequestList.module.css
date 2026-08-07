@@ -254,18 +254,18 @@
     border: none !important;
     border-radius: 6px !important;
     padding: 0.35rem 0.5rem !important;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1) !important;
     transition: all 0.15s ease-in-out !important;
 }
 
 .actionBtn:hover {
     transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2) !important;
 }
 
 .actionBtnPay {
     background-color: #15803d !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnPay:hover {
@@ -274,7 +274,7 @@
 
 .actionBtnBonify {
     background-color: #0284c7 !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnBonify:hover {
@@ -283,7 +283,7 @@
 
 .actionBtnDone {
     background-color: #16a34a !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnDone:hover {
@@ -292,7 +292,7 @@
 
 .actionBtnReject {
     background-color: #dc2626 !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnReject:hover {
@@ -301,7 +301,7 @@
 
 .actionBtnView {
     background-color: #6366f1 !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnView:hover {
@@ -310,7 +310,7 @@
 
 .actionBtnEdit {
     background-color: #334155 !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnEdit:hover {
@@ -319,7 +319,7 @@
 
 .actionBtnDelete {
     background-color: #b91c1c !important;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 .actionBtnDelete:hover {
