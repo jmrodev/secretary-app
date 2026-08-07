@@ -328,11 +328,18 @@
     font-weight: 700;
 }
 
+.invoiceInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
 .actions {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.6rem;
 }
 
 .actionBtn {
