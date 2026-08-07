@@ -10,6 +10,7 @@ import styles from './InvoiceDetailContent.module.css';
  */
 const InvoiceDetailContent = ({ tx, formatDate }) => {
     const handlePrint = () => {
+        if (!tx.invoice_number) return;
         printInvoice({
             ptoVta: tx.invoice_punto_vta,
             number: tx.invoice_number,
@@ -27,49 +28,79 @@ const InvoiceDetailContent = ({ tx, formatDate }) => {
 
     return (
         <div className={`${styles.root} animate-fade-in`}>
-            <h3 className={`${styles.title}`}>Comprobante Electrónico</h3>
+            <h3 className={`${styles.title}`}>Detalle de Transacción</h3>
             <div className={`${styles.content}`}>
                 <p className={`${styles.row}`}>
-                    <strong>Tipo:</strong> 
-                    <span>Factura {tx.invoice_cbte_tipo === 11 ? 'C' : tx.invoice_cbte_tipo}</span>
+                    <strong>Fecha y Hora:</strong> 
+                    <span>{formatDate(tx.transaction_date, { fallback: '-' })}</span>
                 </p>
                 <p className={`${styles.row}`}>
-                    <strong>Número:</strong> 
-                    <span>{String(tx.invoice_punto_vta).padStart(4, '0')}-{String(tx.invoice_number).padStart(8, '0')}</span>
+                    <strong>Descripción:</strong> 
+                    <span>{tx.description}</span>
                 </p>
                 <p className={`${styles.row}`}>
-                    <strong>CAE:</strong> 
-                    <span>{tx.invoice_cae}</span>
+                    <strong>Beneficiario / Paciente:</strong> 
+                    <span>{tx.patient_full_name || tx.doctor_name || 'Clínica General'}</span>
                 </p>
-                <p className={`${styles.row}`}>
-                    <strong>Vto. CAE:</strong> 
-                    <span>{formatDate(tx.invoice_cae_vto, { fallback: '-' })}</span>
-                </p>
+                {tx.doctor_name && tx.patient_full_name && (
+                    <p className={`${styles.row}`}>
+                        <strong>Médico a cargo:</strong> 
+                        <span>Dr. {tx.doctor_name}</span>
+                    </p>
+                )}
                 
                 <hr className={`${styles.divider}`} />
-                
+
                 <p className={`${styles.row}`}>
-                    <strong>Paciente:</strong> 
-                    <span>{tx.patient_full_name}</span>
+                    <strong>Método de Pago:</strong> 
+                    <span style={{ textTransform: 'capitalize' }}>{tx.method || 'Efectivo'}</span>
                 </p>
                 <p className={`${styles.row}`}>
-                    <strong>Médico:</strong> 
-                    <span>{tx.doctor_name}</span>
+                    <strong>Estado de Pago:</strong> 
+                    <span style={{ textTransform: 'uppercase', fontWeight: 800, color: tx.status === 'paid' ? '#16a34a' : (tx.status === 'pending' ? '#dc2626' : '#2563eb') }}>
+                        {tx.bonified === 1 ? 'Bonificado' : (tx.status === 'paid' ? 'Pagado' : tx.status)}
+                    </span>
                 </p>
                 <p className={`${styles.row}`}>
                     <strong>Monto Total:</strong> 
                     <span className={`${styles.amount}`}>${Number(tx.amount).toLocaleString()}</span>
                 </p>
+
+                {tx.proof_file && (
+                    <p className={`${styles.row}`}>
+                        <strong>Comprobante Adjunto:</strong> 
+                        <a href={tx.proof_file} target="_blank" rel="noreferrer" style={{ color: '#0284c7', fontWeight: 700 }}>
+                            Ver Archivo
+                        </a>
+                    </p>
+                )}
+
+                {tx.invoice_number && (
+                    <>
+                        <hr className={`${styles.divider}`} />
+                        <h4 style={{ margin: '0.25rem 0', color: '#1e40af', fontSize: '0.875rem' }}>Factura Electrónica (AFIP)</h4>
+                        <p className={`${styles.row}`}>
+                            <strong>Comprobante:</strong> 
+                            <span>Factura {tx.invoice_cbte_tipo === 11 ? 'C' : tx.invoice_cbte_tipo} N° {String(tx.invoice_punto_vta).padStart(4, '0')}-{String(tx.invoice_number).padStart(8, '0')}</span>
+                        </p>
+                        <p className={`${styles.row}`}>
+                            <strong>CAE / Vencimiento:</strong> 
+                            <span>{tx.invoice_cae} (Vto: {formatDate(tx.invoice_cae_vto, { fallback: '-' })})</span>
+                        </p>
+                    </>
+                )}
             </div>
             <div className={`${styles.actions}`}>
-                <Button
-                    variant="primary"
-                    size="md"
-                    onClick={handlePrint}
-                    icon={<Icon name="PRINT" size="1.2rem" />}
-                >
-                    Imprimir Factura
-                </Button>
+                {tx.invoice_number && (
+                    <Button
+                        variant="primary"
+                        size="md"
+                        onClick={handlePrint}
+                        icon={<Icon name="PRINT" size="1.2rem" />}
+                    >
+                        Imprimir Factura
+                    </Button>
+                )}
             </div>
         </div>
     );

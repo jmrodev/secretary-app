@@ -102,45 +102,20 @@ const TransactionRow = ({
                     )}
                 </div>
             </td>
-            <td>
-                <div className="transactions-table__method">
-                    <span>{t(tx.method) || tx.method}</span>
-                </div>
-            </td>
-            <td>
-                <Badge variant={getStatusVariant(tx.status, tx.bonified)}>
-                    {(tx.bonified === 1 || tx.payment_status === 'bonified') ? (t('bonified') || 'Bonificado') : t(tx.status)}
-                </Badge>
-            </td>
             <td className={`transactions-table__amount ${tx.is_withdrawal ? 'transactions-table__amount--withdrawal' : (isIncome ? 'transactions-table__amount--income' : 'transactions-table__amount--expense')}`}>
                 {tx.is_withdrawal ? '↩' : (isIncome ? '+' : '-')}${Math.abs(tx.amount).toLocaleString()}
-            </td>
-            <td className="transactions-table__cell--center">
-                {tx.invoice_number ? (
-                    <div className="transactions-table__invoice-info">
-                        <span className="transactions-table__invoice-number">
-                            {String(tx.invoice_punto_vta).padStart(4, '0')}-{String(tx.invoice_number).padStart(8, '0')}
-                        </span>
-                        <Button
-                            size="sm-compact"
-                            variant="ghost"
-                            className={styles.actionBtnView}
-                            onClick={() => alert(<InvoiceDetailContent tx={tx} formatDate={formatDateUnambiguous} />)}
-                            title={t('view_details')}
-                            icon={<Icon name="VIEW" size="1.1rem" />}
-                        >
-                            {t('view_action')}
-                        </Button>
-                    </div>
-                ) : tx.proof_file ? (
-                    <a href={tx.proof_file} target="_blank" rel="noreferrer" className="transactions-table__proof-link" title={t('view')}>
-                        <Icon name="DOCUMENTS" size="1.2rem" />
-                    </a>
-                ) : <span className="transactions-table__no-proof">-</span>}
             </td>
             {canManagerFinance && (
                 <td className="transactions-table__cell--right transactions-table__cell--last">
                     <div className="transactions-table__actions">
+                        <Button 
+                            size="sm-compact" 
+                            variant="ghost" 
+                            className={`${styles.actionBtn} ${styles.actionBtnView}`}
+                            onClick={() => alert(<InvoiceDetailContent tx={tx} formatDate={formatDateUnambiguous} />)}
+                            title={t('view_details') || 'Ver Detalle'} 
+                            icon={<Icon name="VIEW" />} 
+                        />
                         {tx.type === 'income_patient' && tx.status === 'paid' && !tx.invoice_number && (
                             <Button 
                                 size="sm-compact" 

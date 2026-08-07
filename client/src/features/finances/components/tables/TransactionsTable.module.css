@@ -52,53 +52,35 @@
     vertical-align: middle;
 }
 
-/* Column Proportion Definitions */
+/* Column Proportion Definitions (5 Columns) */
 .table th:nth-child(1),
 .table td:nth-child(1) {
-    width: 12%;
-    min-width: 100px;
+    width: 15%;
+    min-width: 110px;
 }
 
 .table th:nth-child(2),
 .table td:nth-child(2) {
-    width: 28%;
-    min-width: 200px;
+    width: 35%;
+    min-width: 220px;
 }
 
 .table th:nth-child(3),
 .table td:nth-child(3) {
-    width: 20%;
+    width: 22%;
     min-width: 160px;
 }
 
 .table th:nth-child(4),
 .table td:nth-child(4) {
-    width: 10%;
-    min-width: 90px;
+    width: 13%;
+    min-width: 100px;
 }
 
 .table th:nth-child(5),
 .table td:nth-child(5) {
-    width: 10%;
-    min-width: 90px;
-}
-
-.table th:nth-child(6),
-.table td:nth-child(6) {
-    width: 10%;
-    min-width: 100px;
-}
-
-.table th:nth-child(7),
-.table td:nth-child(7) {
-    width: 10%;
-    min-width: 100px;
-}
-
-.table th:nth-child(8),
-.table td:nth-child(8) {
-    width: 14%;
-    min-width: 120px;
+    width: 15%;
+    min-width: 140px;
 }
 
 .rowGrouped {
