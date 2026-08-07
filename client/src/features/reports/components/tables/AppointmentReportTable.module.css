@@ -98,18 +98,18 @@
 .appointmentReport__dayHeader td {
     background-color: #0f172a;
     font-weight: 800;
-    color: #ffffff;
+    color: #fff;
     padding: 0.75rem 1.25rem;
 }
 
 .appointmentReport__dayHeader--weekend td {
     background-color: #78350f;
-    color: #ffffff;
+    color: #fff;
 }
 
 .appointmentReport__dayHeader--holiday td {
     background-color: #991b1b;
-    color: #ffffff;
+    color: #fff;
 }
 
 .appointmentReport__cellDay {
