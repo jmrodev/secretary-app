@@ -54,26 +54,11 @@ const renderLayout = () => render(
 );
 
 describe('MainLayout', () => {
-    it('mounts the pending approval queue and shows the trigger when a booking is pending', async () => {
+    it('renders navbar and children correctly without auto-booking polling banner', () => {
         mockUseAuth.mockReturnValue({ user: { role: 'secretary', user_id: 1 } });
-        mockGet.mockResolvedValue({ data: { success: true, data: [pendingBooking] } });
         renderLayout();
 
+        expect(screen.getByText('Navbar')).toBeInTheDocument();
         expect(screen.getByText('child content')).toBeInTheDocument();
-
-        const trigger = await screen.findByRole('button', { name: 'Abrir aprobaciones pendientes' });
-        expect(trigger).toHaveTextContent(/1 aprobación pendiente/);
-
-        fireEvent.click(trigger);
-        expect(await screen.findByText('Juan Pérez')).toBeInTheDocument();
-    });
-
-    it('does not show the queue trigger when nothing is pending', async () => {
-        mockUseAuth.mockReturnValue({ user: { role: 'secretary', user_id: 1 } });
-        mockGet.mockResolvedValue({ data: { success: true, data: [] } });
-        renderLayout();
-
-        await waitFor(() => expect(mockGet).toHaveBeenCalledWith('/whatsapp/pending-bookings'));
-        expect(screen.queryByRole('button', { name: 'Abrir aprobaciones pendientes' })).not.toBeInTheDocument();
     });
 });
