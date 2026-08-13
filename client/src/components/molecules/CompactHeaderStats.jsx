@@ -1,7 +1,8 @@
 import React from 'react';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats';
-import Icon from '@/components/atoms/Icon';
+import { HeaderStatPill } from '@/components/atoms/HeaderStatPill';
+import pillStyles from '@/components/atoms/HeaderStatPill.module.css';
 import styles from './CompactHeaderStats.module.css';
 
 const EMPTY_OBJECT = {};
@@ -26,9 +27,9 @@ const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
     if (loadingStats || !stats) {
         return (
             <div className={`${styles.root} compact-stats--loading`}>
-                <div className={`${styles.pill}`}><div className={`${styles.skeleton}`} /></div>
-                <div className={`${styles.pill}`}><div className={`${styles.skeleton}`} /></div>
-                <div className={`${styles.pill}`}><div className={`${styles.skeleton}`} /></div>
+                <div className={`${pillStyles.pill}`}><div className={`${styles.skeleton}`} /></div>
+                <div className={`${pillStyles.pill}`}><div className={`${styles.skeleton}`} /></div>
+                <div className={`${pillStyles.pill}`}><div className={`${styles.skeleton}`} /></div>
             </div>
         );
     }
@@ -36,40 +37,15 @@ const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
     return (
         <div className={`${styles.root}`}>
             <div className={`${styles.group}`}>
-                <div className={`${styles.pill}`} title={tx.today}>
-                    <div className={`${styles.iconWrapper}`} data-stat="appointments">
-                        <Icon name="CALENDAR_TODAY" size="0.9rem" />
-                    </div>
-                    <span className={`${styles.value}`}>{stats.appointments_today || 0}</span>
-                </div>
-                <div className={`${styles.pill}`} title={tx.week}>
-                    <div className={`${styles.iconWrapper}`} data-stat="week">
-                        <Icon name="VIEW_WEEK" size="0.9rem" />
-                    </div>
-                    <span className={`${styles.value}`}>{stats.appointments_week || 0}</span>
-                </div>
-                <div className={`${styles.pill}`} title={tx.month}>
-                    <div className={`${styles.iconWrapper}`} data-stat="month">
-                        <Icon name="DATE_RANGE" size="0.9rem" />
-                    </div>
-                    <span className={`${styles.value}`}>{stats.appointments_month || 0}</span>
-                </div>
-                <div className={`${styles.pill}`} title={tx.patients}>
-                    <div className={`${styles.iconWrapper}`} data-stat="patients">
-                        <Icon name="GROUPS" size="0.9rem" />
-                    </div>
-                    <span className={`${styles.value}`}>{stats.total_patients || 0}</span>
-                </div>
+                <HeaderStatPill icon="CALENDAR_TODAY" value={stats.appointments_today || 0} title={tx.today} tone="appointments" />
+                <HeaderStatPill icon="VIEW_WEEK" value={stats.appointments_week || 0} title={tx.week} tone="week" />
+                <HeaderStatPill icon="DATE_RANGE" value={stats.appointments_month || 0} title={tx.month} tone="month" />
+                <HeaderStatPill icon="GROUPS" value={stats.total_patients || 0} title={tx.patients} tone="patients" />
             </div>
 
             {isStaff && newPatientStats && (
                 <div className={`${styles.group}`}>
-                    <div className={`${styles.pill} compact-stats__pill--growth`} title={tx.growth}>
-                        <div className={`${styles.iconWrapper}`} data-stat="growth">
-                            <Icon name="TRENDING_UP" size="0.9rem" />
-                        </div>
-                        <span className={`${styles.value}`}>+{newPatientStats.currentDay || 0}</span>
-                    </div>
+                    <HeaderStatPill icon="TRENDING_UP" value={`+${newPatientStats.currentDay || 0}`} title={tx.growth} tone="growth" />
                 </div>
             )}
         </div>
