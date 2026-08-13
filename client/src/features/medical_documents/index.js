@@ -3,7 +3,6 @@
 // Following the Orchestrator vs. Executor pattern
 
 // Controllers and Hooks
-export { useMedicalDocumentsController } from '@/features/medical_documents/hooks/useMedicalDocumentsController';
 export { useMedicalRequest } from '@/features/medical_documents/hooks/useMedicalRequest';
 export { useRequirementManagerController } from '@/features/medical_documents/hooks/useRequirementManagerController';
 
@@ -13,15 +12,13 @@ export { default as RequestsPage } from '@/features/medical_documents/RequestsPa
 export { default as PublicRequestPage } from '@/features/medical_documents/PublicRequestPage';
 export { default as MedicalRequestForm } from '@/features/medical_documents/components/forms/MedicalRequestForm';
 export { default as MedicalHistoryTable } from '@/features/medical_documents/components/lists/MedicalHistoryTable';
-export { default as MedicalActionModals } from '@/features/medical_documents/components/modals/MedicalActionModals';
+
 export { default as MedicalRequestList } from '@/features/medical_documents/components/lists/MedicalRequestList';
 export { default as MedicalRequirementManager } from '@/features/medical_documents/components/ui/MedicalRequirementManager';
-export { default as MedicalFileRepository } from '@/features/medical_documents/components/lists/MedicalFileRepository';
 export { default as PrescriptionModal } from '@/features/medical_documents/components/modals/PrescriptionModal';
 
 // Molecules (if needed externally)
 export { default as StatusActionModal } from '@/features/medical_documents/components/modals/StatusActionModal';
-export { default as DeleteFileModal } from '@/features/medical_documents/components/modals/DeleteFileModal';
 export { default as EditPrescriptionModal } from '@/features/medical_documents/components/modals/EditPrescriptionModal';
 export { default as EditLicenseModal } from '@/features/medical_documents/components/modals/EditLicenseModal';
 export { default as EditRequestModal } from '@/features/medical_documents/components/modals/EditRequestModal';

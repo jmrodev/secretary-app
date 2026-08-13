@@ -70,6 +70,7 @@ class MedicalRequestService {
         const repoFilters = {
             doctorId,
             patientId: filters.patientId,
+            type: filters.type,
             status: filters.status,
             limit: filters.limit,
             offset: filters.offset,

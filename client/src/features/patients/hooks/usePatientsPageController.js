@@ -57,10 +57,11 @@ export const usePatientsPageController = () => {
     const doctors = doctorsData?.data?.doctors || doctorsData?.doctors || [];
     const insurances = insurancesData?.data?.insurances || insurancesData?.insurances || [];
     const institutions = institutionsData?.data?.institutions || institutionsData?.institutions || [];
-    const { data: recycleItems = [], refetch: fetchRecycleBin } = useFetch('/logs/recycle-bin', { 
+    const { data: recycleData = [], refetch: fetchRecycleBin } = useFetch('/logs/recycle-bin', { 
         initialData: [],
         immediate: isStaff // only fetch if user is staff
     });
+    const recycleItems = Array.isArray(recycleData) ? recycleData : (recycleData?.data || []);
 
     // Details View State
     const [selectedPatientId, setSelectedPatientId] = useState(null);

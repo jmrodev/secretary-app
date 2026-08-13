@@ -67,7 +67,7 @@ const MedicationAutocomplete = ({
                     // Use a more stable key by combining index and content
                     const chunkKey = `chunk-${i}-${chunk.length}`;
                     return regex.test(chunk) ? (
-                        <span key={chunkKey} className={`${baseClass}__highlight`}>{chunk}</span>
+                        <span key={chunkKey} className={styles.highlight}>{chunk}</span>
                     ) : (
                         <React.Fragment key={chunkKey}>{chunk}</React.Fragment>
                     );
@@ -112,11 +112,11 @@ const MedicationAutocomplete = ({
             </div>
 
             {showSuggestions && suggestions.length > 0 && (
-                <ul ref={listRef} className={`${styles.animateFadeIn} ${baseClass}__list`} role="listbox">
+                <ul ref={listRef} className={`${styles.animateFadeIn} ${styles.list}`} role="listbox">
                     {suggestions.map((med, idx) => (
                         <li
                             key={med.id || `med-suggestion-${idx}`}
-                            className={`${baseClass}__item ${cursor === idx ? `${baseClass}__item--active` : ''}`}
+                            className={`${styles.item} ${cursor === idx ? styles.itemActive : ''}`}
                             onClick={() => handleSelect(med)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
@@ -129,10 +129,10 @@ const MedicationAutocomplete = ({
                             aria-selected={cursor === idx}
                             tabIndex={0}
                         >
-                            <div className={`${baseClass}__item-title`}>
+                            <div className={styles.itemTitle}>
                                 {highlightMatch(med.name, searchTerm)}
                             </div>
-                            <div className={`${baseClass}__item-subtitle`}>
+                            <div className={styles.itemSubtitle}>
                                 {med.presentation && (
                                     <span style={{ color: 'rgb(255 255 255 / 70%)', fontStyle: 'italic', marginRight: '0.25rem' }}>
                                         {med.presentation}
@@ -141,16 +141,16 @@ const MedicationAutocomplete = ({
                                 <span>{highlightMatch(med.drug, searchTerm)}</span>
                                 {med.lab && (
                                     <>
-                                        <span className={`${baseClass}__separator`}>•</span>
-                                        <span className={`${baseClass}__lab`}>{highlightMatch(med.lab, searchTerm)}</span>
+                                        <span className={styles.separator}>•</span>
+                                        <span className={styles.lab}>{highlightMatch(med.lab, searchTerm)}</span>
                                     </>
                                 )}
                             </div>
                         </li>
                     ))}
-                    <li className={`${baseClass}__footer`}>
-                        <span className={`${baseClass}__footer-brand`}>{t('iosfa_vademecum')}</span>
-                        <span className={`${baseClass}__footer-count`}>
+                    <li className={styles.footer}>
+                        <span className={styles.footerBrand}>{t('iosfa_vademecum')}</span>
+                        <span className={styles.footerCount}>
                             {suggestions.length} {t('results')}
                         </span>
                     </li>

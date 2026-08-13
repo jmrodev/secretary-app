@@ -17,11 +17,7 @@
     overflow: hidden;
 }
 
-.root:hover {
-    transform: none;
-    box-shadow: none;
-    background: rgb(128, 128, 128, 0.06);
-}
+
 
 /* --- Status Modifiers --- */
 .completed  { border-left-color: #22c55e !important; }

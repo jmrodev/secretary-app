@@ -31,7 +31,9 @@ const PatientRecycleBin = ({
         return (
             <div className={`${styles.emptyState}`}>
                 <div className={`${styles.emptyIcon}`}><Icon name="delete" size="2rem" /></div>
-                <p className={`${styles.emptyTitle}`}>{t('recycle_bin_empty') || 'La papelera está vacía.'}</p>
+                <p className={`${styles.emptyTitle}`}>
+                    {t('recycle_bin_empty') && t('recycle_bin_empty') !== 'recycle_bin_empty' ? t('recycle_bin_empty') : 'La papelera está vacía.'}
+                </p>
                 <p className={`${styles.emptyText}`}>Los pacientes eliminados aparecerán aquí por 30 días.</p>
             </div>
         );

@@ -46,7 +46,7 @@ export const useUsers = (options = {}) => {
     const createUser = async (formData, onSuccess) => {
         try {
             setIsSubmitting(true);
-            const payload = { ...formData, fullName: formData.full_name };
+            const payload = { ...formData, fullName: formData.full_name, adminPassword: formData.adminPassword };
             await api.post('/users/admin/users', payload);
             showMessage(t('user_created'), 'success');
             if (onSuccess) onSuccess();
@@ -54,7 +54,7 @@ export const useUsers = (options = {}) => {
             return { success: true };
         } catch (err) {
             console.error(err);
-            const errMsg = err.response?.data || t('failed_create_user');
+            const errMsg = err.response?.data?.error || err.response?.data || t('failed_create_user');
             showMessage(errMsg, 'error');
             return { success: false, error: errMsg };
         } finally {
@@ -72,7 +72,7 @@ export const useUsers = (options = {}) => {
             return { success: true };
         } catch (err) {
             console.error(err);
-            const errMsg = err.response?.data || t('failed_update_user');
+            const errMsg = err.response?.data?.error || err.response?.data || t('failed_update_user');
             showMessage(errMsg, 'error');
             return { success: false, error: errMsg };
         } finally {
@@ -81,7 +81,7 @@ export const useUsers = (options = {}) => {
     };
 
     const deleteUser = async (id, name, options = {}) => {
-        const { securityCode, useDoubleConfirm, onSuccess } = options;
+        const { adminPassword, useDoubleConfirm, onSuccess } = options;
 
         if (useDoubleConfirm) {
             const isConfirmed = await doubleConfirm(
@@ -89,21 +89,18 @@ export const useUsers = (options = {}) => {
                 `¡AVISO! El usuario ${name} será eliminado del listado activo. ¿Deseas continuar?`
             );
             if (!isConfirmed) return { cancelled: true };
-        } else if (securityCode && securityCode !== '1234') {
-            showMessage("Invalid Security Code", 'error');
-            return { success: false };
         }
 
         try {
             setIsSubmitting(true);
-            await api.delete(`/users/admin/users/${id}`);
+            await api.delete(`/users/admin/users/${id}`, { data: { adminPassword } });
             showMessage(t('user_deleted'), 'success');
             if (onSuccess) onSuccess();
             fetchUsers();
             return { success: true };
         } catch (err) {
             console.error(err);
-            const errMsg = err.response?.data || t('failed_delete_user');
+            const errMsg = err.response?.data?.error || err.response?.data || t('failed_delete_user');
             showMessage(errMsg, 'error');
             return { success: false, error: errMsg };
         } finally {

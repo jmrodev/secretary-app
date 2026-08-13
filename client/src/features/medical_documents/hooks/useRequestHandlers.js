@@ -9,45 +9,17 @@ export const useRequestHandlers = ({
     confirm,
     doubleConfirm,
     canDeleteRequest,
-    reqType,
-    selectedPatient,
-    selectedDoctor,
-    reqNote,
-    sendToDoctor,
     requestEditData,
     selectedRequest,
-    setReqNote,
-    setSendToDoctor,
-    setIsSubmitting,
     setIsEditing,
     setSelectedRequest,
     setRequestEditData,
     setActionModal,
+    setActionNote,
+    setPaymentModal,
+    setRequestsPage,
     fetchRequests,
 }) => {
-    const handleCreateRequest = useCallback(async (e) => {
-        if (e) e.preventDefault();
-        setIsSubmitting(true);
-        try {
-            await api.post('/medical/requests', {
-                type: reqType,
-                patientId: selectedPatient,
-                doctor_id: user?.role === 'doctor' ? (user.user_id || user.id) : selectedDoctor,
-                request_note: reqNote,
-                status: sendToDoctor ? 'pending' : 'completed'
-            });
-            showMessage(sendToDoctor ? t('request_sent') : (t('request_saved_completed') || 'Guardado como Completado'), 'success');
-            setReqNote('');
-            setSendToDoctor(true);
-            fetchRequests();
-        } catch (err) {
-            const errorMsg = err.response?.data || err.message || t('request_failed');
-            showMessage(`${t('request_failed')}: ${errorMsg}`, 'error');
-        } finally {
-            setIsSubmitting(false);
-        }
-    }, [reqType, selectedPatient, user, selectedDoctor, reqNote, sendToDoctor, t, showMessage, fetchRequests, setIsSubmitting, setReqNote, setSendToDoctor]);
-
     const handleUpdateStatus = useCallback(async (id, status, note = '') => {
         try {
             await api.patch(`/medical/requests/${id}`, { status, doctor_note: note });
@@ -88,7 +60,7 @@ export const useRequestHandlers = ({
     const handleDeleteRequest = useCallback(async (id, r) => {
         if (user?.role !== 'admin' && !canDeleteRequest && (r.status === 'completed' || r.status === 'rejected')) {
             if (!isToday(r.completed_at || r.updated_at)) {
-                showMessage("Solo administradores pueden eliminar solicitudes finalizadas de días anteriores.", "warning");
+                showMessage(t('admin_only_delete_past_requests'), "warning");
                 return;
             }
         }
@@ -108,12 +80,34 @@ export const useRequestHandlers = ({
 
     const handleRequestEditDataChange = useCallback((field, val) => setRequestEditData(prev => ({ ...prev, [field]: val })), [setRequestEditData]);
 
+    const openActionModal = useCallback((type, id) => setActionModal({ open: true, type, id }), [setActionModal]);
+    const closeActionModal = useCallback(() => { setActionModal({ open: false, type: '', id: null }); setActionNote(''); }, [setActionModal, setActionNote]);
+
+    const openPaymentModal = useCallback((data) => setPaymentModal(data), [setPaymentModal]);
+    const closePaymentModal = useCallback(() => setPaymentModal({ open: false, initialData: {} }), [setPaymentModal]);
+
+    const handleEditItem = useCallback((r) => {
+        setSelectedRequest(r);
+        setRequestEditData({ request_note: r.request_note || '', doctor_note: r.doctor_note || '' });
+        setIsEditing(true);
+    }, [setSelectedRequest, setRequestEditData, setIsEditing]);
+
+    const handlePageChange = useCallback((page) => setRequestsPage(page), [setRequestsPage]);
+
     return {
-        handleCreateRequest,
         handleUpdateStatus,
         handleUpdateRequest,
         handleBonifyRequest,
         handleDeleteRequest,
-        handleRequestEditDataChange
+        handleRequestEditDataChange,
+        openActionModal,
+        closeActionModal,
+        openPaymentModal,
+        closePaymentModal,
+        handleEditItem,
+        handlePageChange,
+        setRequestEditData,
+        setActionNote,
+        fetchRequests
     };
 };

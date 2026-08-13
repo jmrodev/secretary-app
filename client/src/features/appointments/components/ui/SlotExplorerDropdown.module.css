@@ -2,7 +2,7 @@
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
-    width: 260px;
+    width: 450px; /* Much wider */
     background: #1e2533;
     border: 1px solid rgb(255, 255, 255, 0.1);
     border-radius: 12px;
@@ -14,26 +14,6 @@
     overflow: hidden;
 }
 
-.header {
-    padding: 0.6rem 0.75rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgb(255, 255, 255, 0.05);
-}
-
-.title {
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: var(--primary-color);
-    text-transform: uppercase;
-}
-
-.closeIcon {
-    cursor: pointer;
-    color: rgb(255, 255, 255, 0.2);
-}
-
 .monthBar {
     display: flex;
     padding: 2px;
@@ -43,8 +23,8 @@
 .monthItem {
     flex: 1;
     text-align: center;
-    padding: 6px 0;
-    font-size: 0.6rem;
+    padding: 14px 0;
+    font-size: 1rem;
     font-weight: 700;
     color: rgb(255, 255, 255, 0.25);
     cursor: pointer;
@@ -56,26 +36,72 @@
     color: #0b0c10;
 }
 
-.list {
-    max-height: 280px; /* Reduced height */
+.bodyWrapper {
+    display: flex;
+    max-height: 50vh;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 100px;
+    background: rgb(0, 0, 0, 0.2);
     overflow-y: auto;
-    padding: 0.5rem;
+    border-right: 1px solid rgb(255, 255, 255, 0.05);
+    scrollbar-width: none; /* Hide scrollbar for cleaner look */
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.sidebarItem {
+    padding: 12px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: rgb(255, 255, 255, 0.4);
+    cursor: pointer;
+    border-bottom: 1px solid rgb(255, 255, 255, 0.02);
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.sidebarItem:hover {
+    background: rgb(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+.sidebarItemActive {
+    background: var(--primary-color);
+    color: #0b0c10;
+}
+
+.sidebarItemActive:hover {
+    background: var(--primary-color);
+    color: #0b0c10;
+}
+
+.list {
+    flex: 1;
+    overflow: hidden auto;
+    padding: 0.75rem 1.5rem; /* slightly less padding so it fits well next to sidebar */
     scrollbar-width: thin;
+    scrollbar-gutter: stable;
+    scroll-behavior: smooth; /* Smooth scroll when clicking sidebar */
 }
 
 .dayHeader {
-    font-size: 0.6rem;
+    font-size: 0.95rem;
     font-weight: 800;
-    color: rgb(255, 255, 255, 0.2);
+    color: rgb(255, 255, 255, 0.4);
     text-transform: uppercase;
-    padding: 6px 4px 2px;
+    padding: 10px 8px 4px;
 }
 
 .slotRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 10px; /* More compact */
+    padding: 14px 18px; /* Extremely comfortable padding */
     background: rgb(255, 255, 255, 0.02);
     border-radius: 6px;
     margin-bottom: 3px;
@@ -92,7 +118,7 @@
 }
 
 .time {
-    font-size: 0.85rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #fff;
 }
@@ -105,45 +131,31 @@
 
 .waIcon {
     color: #25d366;
-    font-size: 0.8rem;
+    font-size: 1.2rem;
     opacity: 0.5;
 }
 
 .selectText {
-    font-size: 0.65rem;
+    font-size: 0.95rem;
     font-weight: 800;
     color: var(--primary-color);
 }
 
-.footer {
-    padding: 0.5rem 0.75rem;
-    background: rgb(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid rgb(255, 255, 255, 0.05);
-}
-
-.navBtn {
-    cursor: pointer;
-    color: rgb(255, 255, 255, 0.4);
-    display: flex;
-    align-items: center;
-}
-
-.navBtn:hover:not(.navBtnDisabled) {
-    color: #fff;
-}
-
-.navBtnDisabled {
-    opacity: 0.1;
-    cursor: not-allowed;
-}
-
-.pageInfo {
-    font-size: 0.65rem;
+.loadMoreBtn {
+    text-align: center;
+    padding: 12px;
+    margin-top: 10px;
+    background: rgb(255, 255, 255, 0.05);
+    border-radius: 6px;
+    font-size: 0.85rem;
     font-weight: 700;
-    color: rgb(255, 255, 255, 0.15);
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.loadMoreBtn:hover {
+    background: rgb(255, 255, 255, 0.1);
 }
 
 .empty {

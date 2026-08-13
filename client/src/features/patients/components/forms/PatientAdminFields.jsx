@@ -14,17 +14,14 @@ const EMPTY_ARRAY = [];
 const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggle, handleManualValueChange, updateAdminFields, t }) => {
     return (
         <article className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <Icon name="admin_panel_settings" size="1.25rem" />
-                <h3 className={`${styles.title}`}>{t('administrative_control')}</h3>
-            </header>
+            
 
             <div className={`${styles.bento}`}>
                 {/* Compact Doctor Section */}
                 <section className={`${styles.section} ${styles.groupSpan12}`}>
                     <header className={`${styles.miniHeader}`}>
                         <Icon name="medical_services" size="1.1rem" />
-                        <h4 className={`${styles.miniTitle}`}>{t('medical_staff_assignment')}</h4>
+                        <h4 className={`${styles.miniTitle}`}>Médicos Asignados</h4>
                         <span className={`${styles.count}`}>{formData.assignedDoctors?.length || 0}</span>
                     </header>
                     <div className={`${styles.doctorScroller}`}>
@@ -47,73 +44,89 @@ const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggl
                 </section>
 
                 {/* Tariff Section */}
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
-                    <label className={`${styles.label}`}>{t('tariff_adjustment_percent')}</label>
+                <div className={`${styles.group} ${styles.groupSpan3}`}>
+                    <label className={`${styles.label}`}>Ajuste Tarifa (%)</label>
                     <Input
                         type="number"
                         name="tariff_percent"
                         value={formData.tariff_percent || ''}
                         onChange={updateAdminFields}
-                        placeholder="10%"
+                        placeholder="10"
+                        min="0"
+                        max="100"
+                        step="1"
+                        style={{ width: '12ch', flexGrow: 0 }}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
-                    <label className={`${styles.label}`}>{t('fixed_tariff_override')}</label>
+                <div className={`${styles.group} ${styles.groupSpan3}`}>
+                    <label className={`${styles.label}`}>Tarifa Fija</label>
                     <CurrencyInput
                         value={formData.tariff_override || ''}
                         onChange={(e) => handleManualValueChange('tariff_override', e.target.value)}
                         placeholder="$ 5000"
+                        style={{ width: '16ch', flexGrow: 0 }}
                     />
                 </div>
 
                 {/* Intervals Section */}
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
-                    <label className={`${styles.label}`}>{t('visit_interval')}</label>
+                <div className={`${styles.group} ${styles.groupSpan3}`}>
+                    <label className={`${styles.label}`}>Intervalo Visitas (Días)</label>
                     <Input 
                         type="number" 
                         name="visit_interval_days" 
                         value={formData.visit_interval_days || ''} 
                         onChange={updateAdminFields} 
-                        placeholder="30 days"
+                        placeholder="30"
+                        min="0"
+                        max="730"
+                        step="1"
+                        style={{ width: '12ch', flexGrow: 0 }}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
-                    <label className={`${styles.label}`}>{t('prescription_interval')}</label>
+                <div className={`${styles.group} ${styles.groupSpan3}`}>
+                    <label className={`${styles.label}`}>Intervalo Recetas (Días)</label>
                     <Input 
                         type="number" 
                         name="prescription_interval_days" 
                         value={formData.prescription_interval_days || ''} 
                         onChange={updateAdminFields} 
-                        placeholder="90 days"
+                        placeholder="90"
+                        min="0"
+                        max="730"
+                        step="1"
+                        style={{ width: '12ch', flexGrow: 0 }}
                     />
                 </div>
 
                 {/* Dates Section */}
                 <div className={`${styles.group} ${styles.groupSpan4}`}>
-                    <label className={`${styles.label}`}>{t('next_visit')}</label>
+                    <label className={`${styles.label}`}>Próx. Visita</label>
                     <Input 
                         type="date" 
                         name="next_suggested_visit_date" 
                         value={formData.next_suggested_visit_date || ''} 
                         onChange={updateAdminFields} 
+                        style={{ width: '18ch', flexGrow: 0 }}
                     />
                 </div>
                 <div className={`${styles.group} ${styles.groupSpan4}`}>
-                    <label className={`${styles.label}`}>{t('next_prescription')}</label>
+                    <label className={`${styles.label}`}>Próx. Receta</label>
                     <Input 
                         type="date" 
                         name="next_suggested_prescription_date" 
                         value={formData.next_suggested_prescription_date || ''} 
                         onChange={updateAdminFields} 
+                        style={{ width: '18ch', flexGrow: 0 }}
                     />
                 </div>
                 <div className={`${styles.group} ${styles.groupSpan4}`}>
-                    <label className={`${styles.label}`}>{t('license_expiry')}</label>
+                    <label className={`${styles.label}`}>Venc. Carnet</label>
                     <Input 
                         type="date" 
                         name="license_expiry_date" 
                         value={formData.license_expiry_date || ''} 
                         onChange={updateAdminFields} 
+                        style={{ width: '18ch', flexGrow: 0 }}
                     />
                 </div>
             </div>

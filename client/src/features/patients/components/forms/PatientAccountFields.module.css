@@ -1,11 +1,4 @@
 .root {
-    --card-padding: 1.5rem;
-    
-    background-color: var(--dashboard-card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: var(--card-padding);
-    box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -52,8 +45,6 @@
     margin-top: 0.5rem;
     padding: 0.75rem 1rem;
     background-color: rgb(128, 128, 128, 0.08);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     gap: 0.75rem;

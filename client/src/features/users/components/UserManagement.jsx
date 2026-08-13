@@ -42,7 +42,7 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
     const openModal = (type, u = null) => {
         let initialData = {};
         if (type === 'CREATE') {
-            initialData = { username: '', password: '', role: role || 'doctor', full_name: '', dni: '', phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }], specialty: '' };
+            initialData = { username: '', password: '', role: role || 'doctor', full_name: '', dni: '', phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }], specialty: '', adminPassword: '' };
         } else if (type === 'EDIT') {
             initialData = {
                 username: u.username,
@@ -53,7 +53,7 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
                 specialty: u.specialty || ''
             };
         } else if (type === 'DELETE') {
-            initialData = { username: u.username, securityCode: '' };
+            initialData = { username: u.username, adminPassword: '' };
         } else if (type === 'RESET') {
             initialData = { username: u.username, dni: u.dni, password: u.dni || '' };
         }
@@ -73,7 +73,7 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
 
         if (type === 'CREATE') await createUser(formData, refresh);
         else if (type === 'EDIT') await updateUser(user.id, formData, refresh);
-        else if (type === 'DELETE') await deleteUser(user.id, user.full_name, { securityCode: formData.securityCode, onSuccess: refresh });
+        else if (type === 'DELETE') await deleteUser(user.id, user.full_name, { adminPassword: formData.adminPassword, onSuccess: refresh });
         else if (type === 'RESET_DNI' || type === 'RESET_MANUAL') await resetPassword(user.id, formData.password, close);
     };
 
@@ -99,9 +99,19 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
                     </div>
                 </div>
                 <div className="action-bar__tools">
-                    <Button variant="ghost" onClick={loadData} icon={<Icon name="sync" />} />
-                    <Button variant="primary" onClick={() => openModal('CREATE')}>
-                        <Icon name="auto_awesome" size="1rem" /> {t('new') || 'Nuevo'}
+                    <Button 
+                        variant="primary" 
+                        onClick={() => openModal('CREATE')}
+                        icon={<Icon name="add" size="1.1rem" />}
+                    >
+                        {t('add_user') || 'Agregar Usuario'}
+                    </Button>
+                    <Button 
+                        variant="outline" 
+                        onClick={loadData}
+                        icon={<Icon name="sync" size="1.1rem" />}
+                    >
+                        {t('refresh') || 'Actualizar'}
                     </Button>
                 </div>
             </section>
@@ -143,7 +153,10 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
                 <UserForm
                     type={modalState.type}
                     formData={modalState.formData}
-                    setFormData={(data) => setModalState(prev => ({ ...prev, formData: data }))}
+                    setFormData={(data) => setModalState(prev => ({ 
+                        ...prev, 
+                        formData: typeof data === 'function' ? data(prev.formData) : data 
+                    }))}
                 />
             </Modal>
         </div>

@@ -9,7 +9,6 @@ import PatientInsuranceFields from '@/features/patients/components/forms/Patient
 import PatientAccountFields from '@/features/patients/components/forms/PatientAccountFields';
 import PatientContactFields from '@/features/patients/components/forms/PatientContactFields';
 import PatientAddressFields from '@/features/patients/components/forms/PatientAddressFields';
-import PatientInstitutionFields from '@/features/patients/components/forms/PatientInstitutionFields';
 import PatientAdminFields from '@/features/patients/components/forms/PatientAdminFields';
 import PatientMedicalNotes from '@/features/patients/components/forms/PatientMedicalNotes';
 import styles from './PatientForm.module.css';
@@ -22,7 +21,7 @@ const STEPS = [
     { id: 'address', labelKey: 'step_address', icon: 'map' },
     { id: 'contact', labelKey: 'step_contact', icon: 'alternate_email' },
     { id: 'medical', labelKey: 'step_medical', icon: 'medical_services' },
-    { id: 'admin', labelKey: 'step_admin', icon: 'settings' }
+    { id: 'admin', labelKey: 'Administración', icon: 'settings' }
 ];
 
 /**
@@ -96,15 +95,7 @@ const PatientForm = ({
         ),
         medical: (
             <section className={`${styles.stepContent}`}>
-                <PatientInstitutionFields
-                    coveredByInstitution={coveredByInstitution}
-                    toggleInstitutionCoverage={toggleInstitutionCoverage}
-                    formData={formData}
-                    updatePatientData={updatePatientData}
-                    institutions={institutions}
-                    t={t}
-                />
-                <PatientMedicalNotes formData={formData} updatePatientData={updatePatientData} t={t} />
+                <PatientMedicalNotes formData={formData} updatePatientData={updatePatientData} institutions={institutions} t={t} />
             </section>
         ),
         admin: (
@@ -114,7 +105,7 @@ const PatientForm = ({
                     doctors={doctors}
                     handleDoctorToggle={toggleDoctorAssignment}
                     handleManualValueChange={setPatientValue}
-                    handleChange={updatePatientData}
+                    updateAdminFields={updatePatientData}
                     t={t}
                 />
             </section>

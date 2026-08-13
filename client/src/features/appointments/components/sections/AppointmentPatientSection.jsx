@@ -1,5 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
+import PhoneInput from '@/components/molecules/PhoneInput';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import styles from './AppointmentPatientSection.module.css';
 
@@ -17,22 +18,38 @@ const AppointmentPatientSection = ({
 
     return (
         <div className={styles.root}>
-            <div className={styles.searchGroup}>
-                <label className={styles.groupLabel}>{t('patients') || 'Paciente'}</label>
-                {PatientSearchSelect ? (
-                    <PatientSearchSelect
-                        value={selectedPatient}
-                        selectedData={selectedPatientData}
-                        placeholder="Buscar Paciente..."
-                        onCreatePatient={async (name) => {
-                            handlePatientChange(null, { full_name: capitalizeWords(name) });
-                            onOpenEditPatient();
-                        }}
-                        onChange={handlePatientChange}
+            <div className={styles.fieldsRow}>
+                <div className={styles.searchGroup}>
+                    <label className={styles.groupLabel}>{t('patients') || 'Paciente'}</label>
+                    {PatientSearchSelect ? (
+                        <div style={{ maxWidth: '35ch', width: '100%' }}>
+                            <PatientSearchSelect
+                                value={selectedPatient}
+                                selectedData={selectedPatientData}
+                                placeholder="Buscar Paciente..."
+                                onCreatePatient={async (name) => {
+                                    handlePatientChange(null, { full_name: capitalizeWords(name) });
+                                    onOpenEditPatient();
+                                }}
+                                onChange={handlePatientChange}
+                            />
+                        </div>
+                    ) : (
+                        <div className="error-placeholder">Error: PatientSearchSelectComponent missing</div>
+                    )}
+                </div>
+
+                <div className={styles.searchGroup} style={{ width: '18ch', flexShrink: 0 }}>
+                    <label className={styles.groupLabel}>
+                        <Icon name="phone" size="0.8rem" style={{ marginRight: '0.35rem' }} />
+                        Teléfono
+                    </label>
+                    <PhoneInput
+                        value={selectedPatientData?.phone || ''}
+                        onChange={newValue => handlePhoneChange(newValue)}
+                        disabled={!selectedPatient}
                     />
-                ) : (
-                    <div className="error-placeholder">Error: PatientSearchSelectComponent missing</div>
-                )}
+                </div>
             </div>
 
             {missingData.length > 0 && (
@@ -47,23 +64,7 @@ const AppointmentPatientSection = ({
                 </div>
             )}
 
-            {selectedPatient && (
-                <div className={styles.quickInfo}>
-                    <div className={styles.field}>
-                        <span className={styles.label}>
-                            <Icon name="phone" size="0.8rem" />
-                            Teléfono del Paciente
-                        </span>
-                        <input
-                            type="text"
-                            className={styles.input}
-                            value={selectedPatientData?.phone || ''}
-                            onChange={e => handlePhoneChange(e.target.value)}
-                            placeholder="Sin teléfono registrado"
-                        />
-                    </div>
-                </div>
-            )}
+
         </div>
     );
 };

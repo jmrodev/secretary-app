@@ -46,7 +46,7 @@ const PatientManagerModal = ({
             isOpen={isOpen}
             onClose={onClose}
             title={title}
-            size="xl"
+            size="lg"
         >
             <article className={`${baseClass} ${baseClass}--full-width`}>
                 {referenceInfo && !isEdit && (

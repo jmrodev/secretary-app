@@ -13,19 +13,17 @@ import styles from './PatientContactFields.module.css';
 const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers, t }) => {
     return (
         <article className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <Icon name="smartphone" size="1.25rem" />
-                <h3 className={`${styles.title}`}>{t('contact_phones')}</h3>
-            </header>
+            
 
             <div className={`${styles.bento}`}>
-                <div className={`${styles.group} ${styles.groupSpan12}`}>
+                <div className={`${styles.group} ${styles.groupSpan5}`}>
                     <label className={`${styles.label}`}>{t('primary_email')}</label>
                     <div className={`${styles.inputWithAction}`}>
                         <Input
                             type="email"
                             name="email"
                             className="patient-contact-fields__field"
+                            style={{ maxWidth: '40ch' }}
                             value={formData.email || ''}
                             onChange={updatePatientData}
                             placeholder="paciente@ejemplo.com"
@@ -42,7 +40,8 @@ const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers,
                     </div>
                 </div>
 
-                <div className={`${styles.phones} ${styles.groupSpan12}`}>
+                <div className={`${styles.group} ${styles.groupSpan7}`}>
+                    <label className={`${styles.label}`}>{t('contact_phones') || 'Teléfonos'}</label>
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
                         onChange={updatePhoneNumbers}

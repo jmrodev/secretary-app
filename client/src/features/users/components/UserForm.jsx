@@ -25,12 +25,12 @@ const UserForm = ({ type, formData, setFormData }) => {
                     <br />
                     <span className={`${styles.hintDanger}`}>{t('action_cannot_undone')}</span>
                 </p>
-                <FormGroup label="Código de Seguridad (1234)">
+                <FormGroup label="Contraseña de Administrador" required>
                     <Input
                         type="password"
-                        placeholder="Ingrese 1234 para confirmar"
-                        value={formData.securityCode || ''}
-                        onChange={e => handleUserUpdate('securityCode', e.target.value)}
+                        placeholder="Ingrese su contraseña"
+                        value={formData.adminPassword || ''}
+                        onChange={e => handleUserUpdate('adminPassword', e.target.value)}
                     />
                 </FormGroup>
             </div>
@@ -80,6 +80,18 @@ const UserForm = ({ type, formData, setFormData }) => {
                     </FormGroup>
                 )}
             </div>
+            {type === 'CREATE' && (
+                <div className={`${styles.row}`}>
+                    <FormGroup label="Su Contraseña (Admin)" required>
+                        <Input
+                            type="password"
+                            placeholder="Ingrese su contraseña"
+                            value={formData.adminPassword || ''}
+                            onChange={e => handleUserUpdate('adminPassword', e.target.value)}
+                        />
+                    </FormGroup>
+                </div>
+            )}
 
             <FormGroup label={t('role_header')}>
                 <Select
