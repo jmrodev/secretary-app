@@ -180,6 +180,25 @@
     }
 }
 
+/* Compact (<768px): stacked column, full-width rows, no overflow */
+@media (width <= 768px) {
+    .premium .content {
+        align-items: stretch;
+    }
+
+    .center {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem 1.5rem;
+    }
+
+    .statsContainer {
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+    }
+}
+
 /* Animations */
 @keyframes header-slow-zoom {
     from { transform: scale(1.02); }

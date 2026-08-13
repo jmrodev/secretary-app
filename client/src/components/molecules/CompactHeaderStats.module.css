@@ -56,3 +56,16 @@
         transform: translateY(0);
     }
 }
+
+/* Compact (<768px): wrap pills full-width, nothing hidden */
+@media (width <= 768px) {
+    .root,
+    .group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .root {
+        gap: 0.75rem var(--stats-gap);
+    }
+}
