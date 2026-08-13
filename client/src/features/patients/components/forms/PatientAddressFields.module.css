@@ -1,10 +1,4 @@
 .root {
-    
-    
-    
-    
-    
-    
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -55,8 +49,6 @@
 .mapCard {
     padding: 1rem;
     background-color: rgb(128, 128, 128, 0.08);
-    
-    
     display: flex;
     justify-content: space-between;
     align-items: center;

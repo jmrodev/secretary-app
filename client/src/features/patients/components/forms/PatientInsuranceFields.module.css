@@ -1,10 +1,4 @@
 .root {
-    
-    
-    
-    
-    
-    
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -51,9 +45,6 @@
 .select {
     width: 100%;
     padding: 0.625rem 0.75rem;
-    
-    
-    
     color: var(--text-main);
     font-size: 0.875rem;
     transition: all 0.2s ease;
@@ -69,7 +60,6 @@
     margin-top: 0.5rem;
     padding: 1rem;
     background-color: rgb(128, 128, 128, 0.08);
-    
     border-left: 0.25rem solid var(--primary-color);
 }
 

@@ -39,7 +39,7 @@ const MedicalDocumentsPage = () => {
 
                 <main className={`${styles.main} ${styles.animateFadeIn} ${styles.noPrint}`}>
                     <div className={`${styles.tabsContent}`}>
-                        <Suspense fallback={<div>Loading view...</div>}>
+                        <Suspense fallback={<div>Loading view…</div>}>
                             <Outlet />
                         </Suspense>
                     </div>

@@ -36,8 +36,6 @@
     letter-spacing: 0.05em;
     outline: none;
     cursor: pointer;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     appearance: none;
     box-shadow: none !important;
 }

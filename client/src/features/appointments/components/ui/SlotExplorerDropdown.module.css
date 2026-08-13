@@ -49,6 +49,7 @@
     border-right: 1px solid rgb(255, 255, 255, 0.05);
     scrollbar-width: none; /* Hide scrollbar for cleaner look */
 }
+
 .sidebar::-webkit-scrollbar {
     display: none;
 }
@@ -73,6 +74,7 @@
     background: var(--primary-color);
     color: #0b0c10;
 }
+
 .sidebarItemActive:hover {
     background: var(--primary-color);
     color: #0b0c10;
@@ -80,8 +82,7 @@
 
 .list {
     flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden auto;
     padding: 0.75rem 1.5rem; /* slightly less padding so it fits well next to sidebar */
     scrollbar-width: thin;
     scrollbar-gutter: stable;
