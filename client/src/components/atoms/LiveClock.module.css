@@ -1,6 +1,6 @@
 .root {
     --clock-font-size: 0.85rem;
-    --clock-color: var(--white);
+    --clock-color: var(--text-main);
     --clock-gap: 0.5rem;
     --clock-bg: transparent;
     --clock-padding: 0;
