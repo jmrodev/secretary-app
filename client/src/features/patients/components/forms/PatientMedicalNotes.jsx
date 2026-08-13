@@ -1,27 +1,48 @@
 import React from 'react';
 import Input from '@/components/atoms/Input';
+import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import styles from './PatientMedicalNotes.module.css';
 
 /**
  * PatientMedicalNotes Molecule.
- * Handles clinical history and medical observations.
+ * Handles clinical history and institution coverage.
  */
-const PatientMedicalNotes = ({ formData, updatePatientData, t }) => {
+const PatientMedicalNotes = ({ formData, updatePatientData, institutions, t }) => {
+    const institutionOptions = React.useMemo(() => {
+        const safeInstitutions = Array.isArray(institutions) ? institutions : (institutions?.institutions || []);
+        return [
+            { value: '', label: t('select_institution') },
+            ...safeInstitutions.reduce((acc, inst) => {
+                if (inst.status === 'active') {
+                    acc.push({ value: inst.id, label: inst.name });
+                }
+                return acc;
+            }, [])
+        ];
+    }, [institutions, t]);
+
     return (
         <article className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <Icon name="history_edu" size="1.25rem" />
-                <h3 className={`${styles.title}`}>{t('clinical_history')}</h3>
-            </header>
+            
 
             <div className={`${styles.content}`}>
+                <div className={`${styles.group} ${styles.groupInstitution}`}>
+                    <label className={`${styles.label}`}>{t('paying_institution')}</label>
+                    <Select
+                        name="institution_id"
+                        value={formData.institution_id || ''}
+                        options={institutionOptions}
+                        onChange={updatePatientData}
+                    />
+                </div>
+
                 <div className={`${styles.group}`}>
                     <label className={`${styles.label}`}>{t('medical_history_notes')}</label>
                     <Input
                         type="textarea"
                         name="medical_history"
-                        rows={6}
+                        rows={4}
                         value={formData.medical_history || ''}
                         onChange={updatePatientData}
                         placeholder={t('medical_history_placeholder')}
@@ -30,10 +51,6 @@ const PatientMedicalNotes = ({ formData, updatePatientData, t }) => {
                 </div>
             </div>
 
-            <footer className={`${styles.footer}`}>
-                <Icon name="lock" size="0.9rem" />
-                <span>{t('clinical_data_encrypted_notice')}</span>
-            </footer>
         </article>
     );
 };

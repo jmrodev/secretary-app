@@ -1,11 +1,10 @@
 .root {
-    --card-padding: 1.5rem;
     
-    background-color: var(--dashboard-card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: var(--card-padding);
-    box-shadow: var(--shadow-sm);
+    
+    
+    
+    
+    
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -43,6 +42,7 @@
 .groupSpan6 { grid-column: span 6; }
 .groupSpan4 { grid-column: span 4; }
 .groupSpan3 { grid-column: span 3; }
+.groupSpan2 { grid-column: span 2; }
 
 .label {
     font-size: 0.625rem;
@@ -53,15 +53,15 @@
 }
 
 .mapCard {
-    margin-top: 0.5rem;
     padding: 1rem;
     background-color: rgb(128, 128, 128, 0.08);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    
+    
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+    width: 100%;
 }
 
 .mapInfo {

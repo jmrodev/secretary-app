@@ -65,7 +65,7 @@ const AppointmentsPage = () => {
                         icon={<Icon name={showNextSlotModal ? "close" : "bolt"} size="1rem" />}
                         active={showNextSlotModal}
                     >
-                        {showNextSlotModal ? t('close') : (t('find_next_free') || 'Próximo Libre')}
+                        {t('find_next_free') || 'Próximo Libre'}
                     </Button>
                     
                     {/* ECC: Integrated Slot Explorer (No Modal) */}

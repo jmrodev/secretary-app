@@ -23,7 +23,7 @@ import SimpleRequestForm from '@/features/medical_documents/components/forms/Sim
  * MedicalRequestForm Organism (Feature-based).
  * Form to create new medical requests. Doctor is derived from global context.
  */
-const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSendToDoctor, noCard = false, PatientSearchSelectComponent }) => {
+const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, lockedType, initialSendToDoctor, noCard = false, PatientSearchSelectComponent }) => {
     const PatientSearchSelect = PatientSearchSelectComponent || DefaultPatientSearchSelect;
     const { user } = useAuth();
     const { t } = useLanguage();
@@ -57,16 +57,18 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, initialSen
     const formContent = (
         <form onSubmit={handleSubmit} className={styles.root}>
             <div className={`${styles.row} ${styles.row2}`}>
-                <Select
-                    value={reqType}
-                    onChange={e => setReqType(e.target.value)}
-                    options={[
-                        { value: '', label: t('request_type') || 'Tipo de solicitud' },
-                        { value: 'prescription', label: t('prescription') },
-                        { value: 'license', label: t('medical_license') },
-                        { value: 'certificate', label: t('certificate') || 'Certificado' }
-                    ]}
-                />
+                {!lockedType && (
+                    <Select
+                        value={reqType}
+                        onChange={e => setReqType(e.target.value)}
+                        options={[
+                            { value: '', label: t('request_type') || 'Tipo de solicitud' },
+                            { value: 'prescription', label: t('prescription') },
+                            { value: 'license', label: t('medical_license') },
+                            { value: 'certificate', label: t('certificate') || 'Certificado' }
+                        ]}
+                    />
+                )}
 
                 {/* ECC: Doctor selection removed from UI. It uses context automatically. */}
 

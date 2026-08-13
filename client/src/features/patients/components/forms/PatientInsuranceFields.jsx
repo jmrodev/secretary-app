@@ -1,5 +1,6 @@
 import React from 'react';
 import Input from '@/components/atoms/Input';
+import Select from '@/components/atoms/Select';
 import Icon from '@/components/atoms/Icon';
 import styles from './PatientInsuranceFields.module.css';
 
@@ -13,27 +14,23 @@ const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) 
 
     return (
         <article className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <Icon name="verified_user" size="1.25rem" />
-                <h3 className={`${styles.title}`}>{t('health_coverage')}</h3>
-            </header>
+            
 
             <div className={`${styles.bento}`}>
                 <div className={`${styles.group} ${styles.groupSpan7}`}>
-                    <label className={`${styles.label}`}>{t('insurance_entities')}</label>
-                    <select
+                    <label className={`${styles.label}`}>OS / Prepaga</label>
+                    <Select
                         name="insurance_id"
-                        className={`${styles.select}`}
                         value={formData.insurance_id || ''}
                         onChange={updatePatientData}
-                    >
-                        <option value="">{t('particular')}</option>
-                        {insurances.map(insurance => (
-                            <option key={insurance.id} value={insurance.id}>
-                                {insurance.name}
-                            </option>
-                        ))}
-                    </select>
+                        options={[
+                            { value: '', label: t('particular') },
+                            ...insurances.map(insurance => ({
+                                value: insurance.id,
+                                label: insurance.name
+                            }))
+                        ]}
+                    />
                 </div>
 
                 <div className={`${styles.group} ${styles.groupSpan5}`}>

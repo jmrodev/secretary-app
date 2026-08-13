@@ -36,8 +36,8 @@ eventBus.on(EVENTS.MEDICAL_REQUEST_DELETED, async (payload) => {
 
 eventBus.on(EVENTS.APPOINTMENT_CANCELLED, async (payload) => {
     try {
-        const { id, conn } = payload;
-        const activeConn = conn || pool;
+        const { id } = payload;
+        const activeConn = pool;
         // Solo borramos deudas pendientes al cancelar/ausente
         await activeConn.query("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'", [id]);
         await activeConn.query("CALL sp_sync_appointment_payment_status(?)", [id]);
@@ -48,8 +48,8 @@ eventBus.on(EVENTS.APPOINTMENT_CANCELLED, async (payload) => {
 
 eventBus.on(EVENTS.APPOINTMENT_DELETED, async (payload) => {
     try {
-        const { id, payment_status, conn } = payload;
-        const activeConn = conn || pool;
+        const { id, payment_status } = payload;
+        const activeConn = pool;
         if (payment_status === 'paid') {
             await activeConn.query("UPDATE transactions SET description = CONCAT('Saldo a favor (Turno Eliminado): ', description) WHERE appointment_id = ? AND status = 'paid'", [id]);
         } else {

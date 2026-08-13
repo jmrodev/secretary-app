@@ -90,7 +90,8 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             unstyled
             menuPortalTarget={document.body}
             styles={{
-                menuPortal: (base) => ({ ...base, zIndex: 9999 })
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                menu: (base) => ({ ...base, width: 'max-content', minWidth: '100%' })
             }}
         />
     );

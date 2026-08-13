@@ -40,94 +40,96 @@ const PrescriptionItemsList = ({
                     </thead>
                     <tbody>
                         {/* Inline Form Row */}
-                        <tr className={styles.formRow}>
-                            <td className={styles.formCell}>
-                                <MedicationAutocomplete
-                                    value={tempMed}
-                                    onChange={setTempMed}
-                                    placeholder={t('search_medication') || 'Buscar medicamento...'}
-                                    onSelectMedication={handleSelectMedication}
-                                />
-                            </td>
-                            <td className={styles.formCell}>
-                                <Input
-                                    placeholder={t('dose_placeholder') || 'Dosis'}
-                                    value={tempDose}
-                                    onChange={e => setTempDose(e.target.value)}
-                                    style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
-                                />
-                            </td>
-                            <td className={styles.formCell}>
-                                <select
-                                    className={`${inputStyles.root} ${inputStyles.sm}`}
-                                    style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
-                                    value={tempFreqPreset !== null ? tempFreqPreset : ''}
-                                    onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
-                                >
-                                    <option value="" disabled style={{ color: 'black' }}>Frecuencia…</option>
-                                    {freqPresets && freqPresets.map((p, idx) => {
-                                        const safeKey = p.label.replace('½', 'half').replace('¼', 'quarter').replace('¾', 'three_quarters').replace('/', '_per_').replace(' ', '_').toLowerCase();
-                                        const translationKey = `freq_${safeKey}`;
-                                        const labelText = t(translationKey) === translationKey ? (p.text.charAt(0).toUpperCase() + p.text.slice(1)) : t(translationKey);
-                                        return <option key={idx} value={idx} style={{ color: 'black' }}>{labelText}</option>;
-                                    })}
-                                </select>
-                            </td>
-                            <td className={styles.formCell}>
-                                <select
-                                    className={`${inputStyles.root} ${inputStyles.sm}`}
-                                    style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '100%', textAlign: 'center' }}
-                                    value={tempUnitsPerBox}
-                                    onChange={e => handleQuantityChange('units_per_box', e.target.value)}
-                                >
-                                    <option value="" style={{ color: 'black' }}>-</option>
-                                    {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
-                                        <option key={v} value={v} style={{ color: 'black' }}>{v}</option>
-                                    ))}
-                                </select>
-                            </td>
-                            <td className={styles.formCell}>
-                                <div className={styles.qtyInputs} style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'nowrap' }}>
+                        {!_readOnly && (
+                            <tr className={styles.formRow}>
+                                <td className={styles.formCell}>
+                                    <MedicationAutocomplete
+                                        value={tempMed}
+                                        onChange={setTempMed}
+                                        placeholder={t('search_medication') || 'Buscar medicamento...'}
+                                        onSelectMedication={handleSelectMedication}
+                                    />
+                                </td>
+                                <td className={styles.formCell}>
+                                    <Input
+                                        placeholder={t('dose_placeholder') || 'Dosis'}
+                                        value={tempDose}
+                                        onChange={e => setTempDose(e.target.value)}
+                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
+                                    />
+                                </td>
+                                <td className={styles.formCell}>
                                     <select
                                         className={`${inputStyles.root} ${inputStyles.sm}`}
-                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '55px', textAlign: 'center' }}
-                                        value={tempBoxes}
-                                        onChange={e => handleQuantityChange('boxes', e.target.value)}
-                                        title="Cantidad de envases"
+                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
+                                        value={tempFreqPreset !== null ? tempFreqPreset : ''}
+                                        onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
+                                    >
+                                        <option value="" disabled style={{ color: 'black' }}>Frecuencia…</option>
+                                        {freqPresets && freqPresets.map((p, idx) => {
+                                            const safeKey = p.label.replace('½', 'half').replace('¼', 'quarter').replace('¾', 'three_quarters').replace('/', '_per_').replace(' ', '_').toLowerCase();
+                                            const translationKey = `freq_${safeKey}`;
+                                            const labelText = t(translationKey) === translationKey ? (p.text.charAt(0).toUpperCase() + p.text.slice(1)) : t(translationKey);
+                                            return <option key={idx} value={idx} style={{ color: 'black' }}>{labelText}</option>;
+                                        })}
+                                    </select>
+                                </td>
+                                <td className={styles.formCell}>
+                                    <select
+                                        className={`${inputStyles.root} ${inputStyles.sm}`}
+                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '100%', textAlign: 'center' }}
+                                        value={tempUnitsPerBox}
+                                        onChange={e => handleQuantityChange('units_per_box', e.target.value)}
                                     >
                                         <option value="" style={{ color: 'black' }}>-</option>
-                                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(v => (
+                                        {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
                                             <option key={v} value={v} style={{ color: 'black' }}>{v}</option>
                                         ))}
                                     </select>
-                                </div>
-                            </td>
-                            <td className={styles.formCell} style={{ textAlign: 'center' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', justifyContent: 'center', flexWrap: 'nowrap' }}>
-                                    <Input
-                                        value={tempDays}
-                                        onChange={e => handleQuantityChange('days', e.target.value)}
-                                        placeholder="-"
+                                </td>
+                                <td className={styles.formCell}>
+                                    <div className={styles.qtyInputs} style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'nowrap' }}>
+                                        <select
+                                            className={`${inputStyles.root} ${inputStyles.sm}`}
+                                            style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '55px', textAlign: 'center' }}
+                                            value={tempBoxes}
+                                            onChange={e => handleQuantityChange('boxes', e.target.value)}
+                                            title="Cantidad de envases"
+                                        >
+                                            <option value="" style={{ color: 'black' }}>-</option>
+                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(v => (
+                                                <option key={v} value={v} style={{ color: 'black' }}>{v}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </td>
+                                <td className={styles.formCell} style={{ textAlign: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', justifyContent: 'center', flexWrap: 'nowrap' }}>
+                                        <Input
+                                            value={tempDays}
+                                            onChange={e => handleQuantityChange('days', e.target.value)}
+                                            placeholder="-"
+                                            size="sm"
+                                            style={{ width: '55px', textAlign: 'center', padding: '0.25rem' }}
+                                        />
+                                        <span style={{ fontSize: '0.75rem', color: 'rgb(255 255 255 / 50%)', whiteSpace: 'nowrap' }}>días</span>
+                                    </div>
+                                </td>
+                                <td className={styles.actionsCol}>
+                                    <Button
+                                        type="button"
+                                        variant="primary"
+                                        onClick={handleAddItem}
+                                        disabled={!canAdd}
                                         size="sm"
-                                        style={{ width: '55px', textAlign: 'center', padding: '0.25rem' }}
-                                    />
-                                    <span style={{ fontSize: '0.75rem', color: 'rgb(255 255 255 / 50%)', whiteSpace: 'nowrap' }}>días</span>
-                                </div>
-                            </td>
-                            <td className={styles.actionsCol}>
-                                <Button
-                                    type="button"
-                                    variant="primary"
-                                    onClick={handleAddItem}
-                                    disabled={!canAdd}
-                                    size="sm"
-                                    icon={<Icon name="ADD" />}
-                                    style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
-                                >
-                                    {t('add') || 'Añadir'}
-                                </Button>
-                            </td>
-                        </tr>
+                                        icon={<Icon name="ADD" />}
+                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
+                                    >
+                                        {t('add') || 'Añadir'}
+                                    </Button>
+                                </td>
+                            </tr>
+                        )}
 
                         {/* Added Items */}
                         {items && items.map((item, idx) => (

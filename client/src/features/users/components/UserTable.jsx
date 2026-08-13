@@ -44,10 +44,10 @@ const UserTable = ({ users, onEdit, onReset, onDelete }) => {
                             </td>
                             <td className={`${styles.cell}`}>
                                 <div className={`${styles.actions}`}>
-                                    <Button variant="secondary" size="sm" onClick={() => onEdit(u)} title={t('edit')} icon={<Icon name="edit" />} />
-                                    <Button variant="secondary" size="sm" onClick={() => onReset(u)} title={t('reset_pwd')} icon={<Icon name="key" />} />
+                                    <Button variant="ghost" size="sm-compact" onClick={() => onEdit(u)} title={t('edit')} icon={<Icon name="edit" />} />
+                                    <Button variant="ghost" size="sm-compact" onClick={() => onReset(u)} title={t('reset_pwd')} icon={<Icon name="key" />} />
                                     {u.role !== 'admin' && (
-                                        <Button variant="outline-danger" size="sm" onClick={() => onDelete(u)} title={t('delete')} icon={<Icon name="delete" />} />
+                                        <Button variant="ghost" size="sm-compact" className={`${styles.actionBtnDelete} text-danger`} onClick={() => onDelete(u)} title={t('delete')} icon={<Icon name="delete" />} />
                                     )}
                                 </div>
                             </td>

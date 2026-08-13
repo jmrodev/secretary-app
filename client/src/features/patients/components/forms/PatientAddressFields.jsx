@@ -12,13 +12,10 @@ import styles from './PatientAddressFields.module.css';
 const PatientAddressFields = ({ formData, updatePatientData, t }) => {
     return (
         <article className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <Icon name="location_on" size="1.25rem" />
-                <h3 className={`${styles.title}`}>{t('geographic_identity')}</h3>
-            </header>
+            
 
             <div className={`${styles.bento}`}>
-                <div className={`${styles.group} ${styles.groupSpan9}`}>
+                <div className={`${styles.group} ${styles.groupSpan6}`}>
                     <label className={`${styles.label}`}>{t('street_name')}</label>
                     <Input
                         name="street_name"
@@ -28,7 +25,7 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                         placeholder={t('street_placeholder')}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan3}`}>
+                <div className={`${styles.group} ${styles.groupSpan2}`}>
                     <label className={`${styles.label}`}>{t('street_number')}</label>
                     <Input
                         name="street_number"
@@ -39,7 +36,7 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
 
-                <div className={`${styles.group} ${styles.groupSpan4}`}>
+                <div className={`${styles.group} ${styles.groupSpan2}`}>
                     <label className={`${styles.label}`}>{t('floor')}</label>
                     <Input
                         name="floor"
@@ -49,7 +46,7 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                         placeholder="2"
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan8}`}>
+                <div className={`${styles.group} ${styles.groupSpan2}`}>
                     <label className={`${styles.label}`}>{t('apartment')}</label>
                     <Input
                         name="apartment"
@@ -60,7 +57,7 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
 
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
+                <div className={`${styles.group} ${styles.groupSpan3}`}>
                     <label className={`${styles.label}`}>{t('city')}</label>
                     <Input
                         name="city"
@@ -69,7 +66,7 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                         onChange={updatePatientData}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
+                <div className={`${styles.group} ${styles.groupSpan3}`}>
                     <label className={`${styles.label}`}>{t('province')}</label>
                     <Input
                         name="province"
@@ -78,10 +75,8 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                         onChange={updatePatientData}
                     />
                 </div>
-            </div>
-
             {formData.street_name && (
-                <footer className={`${styles.mapCard}`}>
+                <div className={`${styles.mapCard} ${styles.groupSpan6}`}>
                     <div className={`${styles.mapInfo}`}>
                         <Icon name="map" size="1.25rem" />
                         <div className={`${styles.mapText}`}>
@@ -104,8 +99,9 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     >
                         {t('verify_on_map')}
                     </Button>
-                </footer>
+                </div>
             )}
+            </div>
         </article>
     );
 };

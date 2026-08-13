@@ -11,10 +11,7 @@ import styles from './PatientAccountFields.module.css';
 const PatientAccountFields = ({ formData, updatePatientData, t }) => {
     return (
         <article className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <Icon name="vpn_key" size="1.25rem" />
-                <h3 className={`${styles.title}`}>{t('access_credentials')}</h3>
-            </header>
+            
 
             <div className={`${styles.bento}`}>
                 <div className={`${styles.group} ${styles.groupSpan6}`}>

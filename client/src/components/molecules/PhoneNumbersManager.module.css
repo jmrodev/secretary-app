@@ -4,46 +4,42 @@
     gap: 0.75rem;
 }
 
-.list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
+
 
 .row {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.5rem;
-    background-color: var(--gray-900);
-    border: 1px solid var(--dashboard-card-border);
-    border-radius: var(--radius-sm);
-    transition: all 0.2s ease;
-}
-
-.row:hover {
-    background-color: var(--gray-800);
+    padding: 0;
 }
 
 .rowPrimary {
     border-left: 3px solid var(--primary-color);
+    padding-left: 0.5rem;
 }
 
 .labelWrapper {
-    width: 6.25rem;
+    width: 14ch;
     flex-shrink: 0;
 }
 
 .inputLabel {
     width: 100%;
-    background: transparent;
-    border: none;
+    background: transparent !important;
+    border: none !important;
+    padding: 0;
+    margin: 0;
     font-size: 0.625rem;
     font-weight: 800;
     color: var(--gray-500);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     outline: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    box-shadow: none !important;
 }
 
 .numberWrapper {
@@ -110,14 +106,13 @@
 
 .add {
     background: transparent;
-    border: 1px dashed var(--dashboard-card-border);
-    border-radius: var(--radius-sm);
+    border: none;
     padding: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    color: var(--gray-500);
+    color: var(--primary-color);
     font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;
@@ -125,9 +120,8 @@
 }
 
 .add:hover {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-    background-color: var(--gray-900);
+    color: var(--primary-hover, var(--primary-color));
+    opacity: 0.8;
 }
 
 @media (width <= 48rem) {

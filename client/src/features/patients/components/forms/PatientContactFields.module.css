@@ -1,11 +1,10 @@
 .root {
-    --card-padding: 1.5rem;
     
-    background-color: var(--dashboard-card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: var(--card-padding);
-    box-shadow: var(--shadow-sm);
+    
+    
+    
+    
+    
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -39,6 +38,9 @@
 }
 
 .groupSpan12 { grid-column: span 12; }
+.groupSpan7 { grid-column: span 7; }
+.groupSpan6 { grid-column: span 6; }
+.groupSpan5 { grid-column: span 5; }
 
 .label {
     font-size: 0.625rem;
@@ -58,9 +60,6 @@
     flex: 1;
 }
 
-.phones {
-    margin-top: 0.5rem;
-}
 
 @media (width <= 48rem) {
     .bento {

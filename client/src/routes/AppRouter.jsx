@@ -11,6 +11,11 @@ import Loading from '@/components/atoms/Loading';
 const AppointmentsPage = lazy(() => import('@/features/appointments').then(m => ({ default: m.AppointmentsPage })));
 const PatientsPage = lazy(() => import('@/features/patients').then(m => ({ default: m.PatientsPage })));
 const MedicalDocumentsPage = lazy(() => import('@/features/medical_documents').then(m => ({ default: m.MedicalDocumentsPage })));
+const RequestsView = lazy(() => import('@/features/medical_documents/pages/RequestsView'));
+const PrescriptionsView = lazy(() => import('@/features/medical_documents/pages/PrescriptionsView'));
+const LicensesView = lazy(() => import('@/features/medical_documents/pages/LicensesView'));
+const CertificatesView = lazy(() => import('@/features/medical_documents/pages/CertificatesView'));
+
 const FinancesPage = lazy(() => import('@/features/finances').then(m => ({ default: m.FinancesPage })));
 const DashboardPage = lazy(() => import('@/features/dashboard').then(m => ({ default: m.DashboardPage })));
 const SystemConfigPage = lazy(() => import('@/features/config').then(m => ({ default: m.SystemConfigPage })));
@@ -99,7 +104,13 @@ const AppRouter = () => {
                 } />
 
                 <Route path="/rentals" element={<RentalsPage />} />
-                <Route path="/documents" element={<MedicalDocumentsPage />} />
+                <Route path="/documents" element={<MedicalDocumentsPage />}>
+                    <Route index element={<Navigate to="requests" replace />} />
+                    <Route path="requests" element={<RequestsView />} />
+                    <Route path="prescriptions" element={<PrescriptionsView />} />
+                    <Route path="licenses" element={<LicensesView />} />
+                    <Route path="certificates" element={<CertificatesView />} />
+                </Route>
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/doctors" element={<DoctorsPage />} />
                 <Route path="/holidays" element={

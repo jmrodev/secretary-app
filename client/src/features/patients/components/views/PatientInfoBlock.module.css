@@ -120,10 +120,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 2rem;
-    border: 1px solid var(--slate-200);
 }
 
 .contactIndicator {

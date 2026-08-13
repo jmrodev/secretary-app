@@ -1,11 +1,10 @@
 .root {
-    --card-padding: 1.5rem;
     
-    background-color: var(--dashboard-card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: var(--card-padding);
-    box-shadow: var(--shadow-sm);
+    
+    
+    
+    
+    
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -16,7 +15,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: var(--primary-color);
+    color: #10b981; /* Emerald green for medical vibe */
 }
 
 .title {
@@ -29,6 +28,7 @@
 .content {
     display: flex;
     flex-direction: column;
+    gap: 1.5rem;
 }
 
 .group {
@@ -50,11 +50,3 @@
     line-height: 1.6;
 }
 
-.footer {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
-    color: var(--gray-400);
-    margin-top: auto;
-}
