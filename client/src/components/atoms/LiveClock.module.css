@@ -62,3 +62,10 @@
 .premium:hover {
     border-color: transparent;
 }
+
+/* Compact (<768px): smaller clock font, stays readable */
+@media (width <= 768px) {
+    .root {
+        --clock-font-size: 0.75rem;
+    }
+}

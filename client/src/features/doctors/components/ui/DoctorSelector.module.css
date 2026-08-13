@@ -139,3 +139,15 @@
     font-size: 0.9rem;
     padding: 0.5rem;
 }
+
+/* Compact (<768px): full-width selector, dropdown right-aligned in viewport */
+@media (width <= 768px) {
+    .wrapper {
+        width: 100%;
+    }
+
+    .dropdown {
+        left: auto;
+        right: 0;
+    }
+}
