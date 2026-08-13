@@ -182,3 +182,21 @@
     --navbar-border: #cbd5e1;
     --navbar-link-color: #1e293b;
 }
+/* Dim Theme - Oscuro Suave (Intermedio) */
+:root[data-theme="dim"], html[data-theme="dim"], [data-theme="dim"], body.theme-dim {
+    --primary-color: #0d9488;
+    --primary-hover: #0f766e;
+    --accent-color: #3b82f6;         /* Blue 500 */
+    --background-bg: #1e293b;        /* Slate 800 - Fondo menos agresivo */
+    --bg-gradient-blue: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+    --dashboard-card-bg: #334155;    /* Slate 700 */
+    --dashboard-card-border: rgb(255, 255, 255, 0.1);
+    --modal-bg: #1e293b;
+    --modal-bg-dark: #334155;
+    --text-main: #f8fafc;
+    --text-muted: #cbd5e1;
+    --text-secondary: #e2e8f0;
+    --border-color: rgb(255, 255, 255, 0.1);
+    --navbar-bg: #334155;
+    --navbar-border: rgb(255, 255, 255, 0.1);
+}
