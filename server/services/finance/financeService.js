@@ -104,6 +104,52 @@ class FinanceService {
                 }
             }
 
+            if (data.request_id || data.requestId) {
+                const reqId = data.request_id || data.requestId;
+                const reqRows = await connection.query(
+                    "SELECT id, payment_status, resolved_debt_amount, paid_amount FROM v_medical_request_details WHERE id = ?",
+                    [reqId]
+                );
+                if (reqRows && reqRows.length > 0) {
+                    const req = reqRows[0];
+                    const effectiveCost = Number(req.resolved_debt_amount || 0);
+                    const currentPaid = Number(req.paid_amount || 0);
+                    const remainingDebt = Math.max(0, effectiveCost - currentPaid);
+
+                    if (req.payment_status === 'paid' || (effectiveCost > 0 && remainingDebt === 0)) {
+                        throw new Error("La solicitud/gestión ya se encuentra totalmente pagada.");
+                    }
+
+                    const incomingTotal = paymentsList.reduce((acc, p) => acc + (parseFloat(p.amount) || 0), 0);
+                    if (effectiveCost > 0 && incomingTotal > (remainingDebt + 0.01)) {
+                        throw new Error(`El monto a ingresar ($${incomingTotal}) supera el saldo pendiente de la solicitud ($${remainingDebt}).`);
+                    }
+                }
+            }
+
+            if (data.rental_id || data.rentalId) {
+                const rentId = data.rental_id || data.rentalId;
+                const rentRows = await connection.query(
+                    "SELECT r.id, r.cost, r.is_paid, COALESCE(SUM(t.amount), 0) AS paid_amount FROM office_rentals r LEFT JOIN transactions t ON r.id = t.rental_id AND t.status = 'paid' AND t.is_withdrawal = 0 WHERE r.id = ? GROUP BY r.id",
+                    [rentId]
+                );
+                if (rentRows && rentRows.length > 0) {
+                    const rent = rentRows[0];
+                    const effectiveCost = Number(rent.cost || 0);
+                    const currentPaid = Number(rent.paid_amount || 0);
+                    const remainingDebt = Math.max(0, effectiveCost - currentPaid);
+
+                    if (rent.is_paid || (effectiveCost > 0 && remainingDebt === 0)) {
+                        throw new Error("El alquiler ya se encuentra totalmente pagado.");
+                    }
+
+                    const incomingTotal = paymentsList.reduce((acc, p) => acc + (parseFloat(p.amount) || 0), 0);
+                    if (effectiveCost > 0 && incomingTotal > (remainingDebt + 0.01)) {
+                        throw new Error(`El monto a ingresar ($${incomingTotal}) supera el saldo pendiente del alquiler ($${remainingDebt}).`);
+                    }
+                }
+            }
+
             // Sequential processing with per-item idempotency
             for (let i = 0; i < paymentsList.length; i++) {
                 const p = paymentsList[i];
@@ -173,7 +219,7 @@ class FinanceService {
             }
             if (data.request_id || data.requestId) {
                 const reqId = data.request_id || data.requestId;
-                await connection.query("CALL sp_sync_request_payment_status(?)", [reqId]);
+                await this.syncRequestPaymentStatus(reqId, connection);
             }
             if (data.rental_id || data.rentalId) {
                 const rentId = data.rental_id || data.rentalId;
@@ -273,7 +319,43 @@ class FinanceService {
     }
 
     async syncRequestPaymentStatus(requestId, conn = pool) {
-        await conn.query("CALL sp_sync_request_payment_status(?)", [requestId]);
+        const [row] = await conn.query(
+            `SELECT
+                COUNT(*) AS total_rows,
+                COALESCE(SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END), 0) AS paid_amount,
+                COALESCE(SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END), 0) AS pending_amount,
+                COALESCE(SUM(CASE WHEN method = 'bonified' OR amount = 0 THEN 1 ELSE 0 END), 0) AS bonified_count
+            FROM transactions
+            WHERE request_id = ?`,
+            [requestId]
+        );
+        const summary = row || {};
+        const totalRows = Number(summary.total_rows || 0);
+        const paidAmount = Number(summary.paid_amount || 0);
+        const pendingAmount = Number(summary.pending_amount || 0);
+        const bonifiedCount = Number(summary.bonified_count || 0);
+
+        let newStatus;
+        let debtAmount = 0;
+        if (totalRows === 0) {
+            newStatus = 'pending';
+        } else if (bonifiedCount === totalRows) {
+            newStatus = 'bonified';
+        } else if (pendingAmount === 0) {
+            newStatus = 'paid';
+        } else if (paidAmount === 0) {
+            newStatus = 'debt';
+            debtAmount = pendingAmount;
+        } else {
+            newStatus = 'partial';
+            debtAmount = pendingAmount;
+        }
+
+        await conn.query(
+            "UPDATE medical_requests SET payment_status = ?, debt_amount = ? WHERE id = ?",
+            [newStatus, debtAmount, requestId]
+        );
+        return newStatus;
     }
 
     async markAsBonified(id, type, conn = pool) {

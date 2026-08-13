@@ -174,6 +174,94 @@ describe('FinanceService - createTransaction', () => {
         expect(result.id).toBe(202);
     });
 
+    it('should sync request payment status to paid when a paid transaction exists', async () => {
+        const transactionData = {
+            doctor_id: 1,
+            request_id: 55,
+            payments: [{ amount: 65000, method: 'cash' }],
+            description: 'Pago de licencia'
+        };
+
+        mockConnection.query.mockImplementation((sql, params) => {
+            if (sql.includes('SELECT id FROM users')) {
+                return Promise.resolve([{ id: 1 }]);
+            }
+            if (sql.includes('v_medical_request_details')) {
+                return Promise.resolve([{ id: 55, payment_status: 'pending', resolved_debt_amount: 65000, paid_amount: 0 }]);
+            }
+            if (sql.includes("SUM(CASE WHEN status = 'paid'")) {
+                return Promise.resolve([{ total_rows: 1, paid_amount: 65000, pending_amount: 0, bonified_count: 0 }]);
+            }
+            if (sql.includes('UPDATE medical_requests SET payment_status')) {
+                return Promise.resolve({ affectedRows: 1 });
+            }
+            return Promise.resolve([]);
+        });
+
+        transactionRepository.callSpCreateTransaction.mockResolvedValue(501);
+
+        const result = await financeService.createTransaction(transactionData, 1);
+
+        expect(result.id).toBe(501);
+        expect(mockConnection.query).toHaveBeenCalledWith(
+            expect.stringContaining('UPDATE medical_requests SET payment_status'),
+            expect.arrayContaining(['paid', 0, 55])
+        );
+    });
+
+    it('should sync request payment status to debt when only pending transactions exist', async () => {
+        const transactionData = {
+            doctor_id: 1,
+            request_id: 55,
+            payments: [{ amount: 65000, method: 'cash' }],
+            description: 'Pago de licencia'
+        };
+
+        mockConnection.query.mockImplementation((sql, params) => {
+            if (sql.includes('SELECT id FROM users')) {
+                return Promise.resolve([{ id: 1 }]);
+            }
+            if (sql.includes('v_medical_request_details')) {
+                return Promise.resolve([{ id: 55, payment_status: 'pending', resolved_debt_amount: 65000, paid_amount: 0 }]);
+            }
+            if (sql.includes("SUM(CASE WHEN status = 'paid'")) {
+                return Promise.resolve([{ total_rows: 1, paid_amount: 0, pending_amount: 65000, bonified_count: 0 }]);
+            }
+            if (sql.includes('UPDATE medical_requests SET payment_status')) {
+                return Promise.resolve({ affectedRows: 1 });
+            }
+            return Promise.resolve([]);
+        });
+
+        transactionRepository.callSpCreateTransaction.mockResolvedValue(501);
+
+        const result = await financeService.createTransaction(transactionData, 1);
+
+        expect(result.id).toBe(501);
+        expect(mockConnection.query).toHaveBeenCalledWith(
+            expect.stringContaining('UPDATE medical_requests SET payment_status'),
+            expect.arrayContaining(['debt', 65000, 55])
+        );
+    });
+
+    it('should sync request payment status via public method using the pool', async () => {
+        pool.query
+            .mockResolvedValueOnce([{ total_rows: 1, paid_amount: 65000, pending_amount: 0, bonified_count: 0 }])
+            .mockResolvedValueOnce({ affectedRows: 1 });
+
+        const newStatus = await financeService.syncRequestPaymentStatus(55);
+
+        expect(newStatus).toBe('paid');
+        expect(pool.query).toHaveBeenCalledWith(
+            expect.stringContaining("SUM(CASE WHEN status = 'paid'"),
+            [55]
+        );
+        expect(pool.query).toHaveBeenCalledWith(
+            expect.stringContaining('UPDATE medical_requests SET payment_status'),
+            expect.arrayContaining(['paid', 0, 55])
+        );
+    });
+
     describe('payDebt', () => {
         beforeEach(() => {
             jest.clearAllMocks();
