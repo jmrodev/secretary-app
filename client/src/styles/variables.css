@@ -182,6 +182,7 @@
     --navbar-border: #cbd5e1;
     --navbar-link-color: #1e293b;
 }
+
 /* Dim Theme - Oscuro Suave (Intermedio) */
 :root[data-theme="dim"], html[data-theme="dim"], [data-theme="dim"], body.theme-dim {
     --primary-color: #0d9488;
