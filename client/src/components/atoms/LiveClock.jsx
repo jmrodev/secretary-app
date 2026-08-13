@@ -5,7 +5,7 @@ import styles from './LiveClock.module.css';
 /**
  * LiveClock - Atom component to display real-time date and time.
  */
-const LiveClock = ({ className = '', hideDate = false }) => {
+const LiveClock = ({ className = '', hideDate = false, premium = false }) => {
     const time = useLiveClock();
 
     const dateLabel = time.toLocaleDateString('es-AR', {
@@ -22,8 +22,10 @@ const LiveClock = ({ className = '', hideDate = false }) => {
         hour12: false,
     });
 
+    const rootClass = [styles.root, premium ? styles.premium : '', className].filter(Boolean).join(' ');
+
     return (
-        <div className={`${styles.root} ${className}`}>
+        <div className={rootClass}>
             {!hideDate && <span className={`${styles.date}`}>{dateLabel}</span>}
             {!hideDate && <span className={`${styles.separator}`}>·</span>}
             <span className={`${styles.time}`}>{timeLabel}</span>
