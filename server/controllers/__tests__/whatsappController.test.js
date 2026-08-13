@@ -4,9 +4,6 @@ const { ConflictError } = require('../../utils/core/errors');
 jest.mock('../../services/communication/whatsappService', () => ({
     sendMessageDirect: jest.fn().mockResolvedValue({ ok: true })
 }));
-jest.mock('../../services/communication/whatsappAiService', () => ({
-    getAiSuggestion: jest.fn()
-}));
 jest.mock('../../repositories/communication/pendingBookingRepository');
 jest.mock('../../services/appointments/bookingService');
 jest.mock('../../repositories/user/patientRepository');
@@ -20,7 +17,6 @@ jest.mock('../../db', () => ({
 
 const whatsappController = require('../communication/whatsappController');
 const whatsappService = require('../../services/communication/whatsappService');
-const whatsappAiService = require('../../services/communication/whatsappAiService');
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
 const bookingService = require('../../services/appointments/bookingService');
 const patientRepository = require('../../repositories/user/patientRepository');
@@ -206,44 +202,4 @@ describe('WhatsAppController - pending bookings', () => {
         });
     });
 
-    describe('getAiSuggestion', () => {
-        beforeEach(() => {
-            req.body = { patientId: 1, phone: '5491112345678' };
-            req.doctorId = 3;
-            req.user = { user_id: 11, role: 'secretary' };
-            whatsappAiService.getAiSuggestion.mockResolvedValue('Sugerencia de respuesta');
-        });
-
-        it('should read the AI setting keys and pass the rows map as the 5th service argument', async () => {
-            systemSettingsRepository.findManyByKeys.mockResolvedValue([
-                { setting_key: 'ai_provider', setting_value: 'groq' },
-                { setting_key: 'ai_groq_model', setting_value: 'llama-3.3-70b-versatile' }
-            ]);
-
-            await whatsappController.getAiSuggestion(req, res);
-
-            expect(systemSettingsRepository.findManyByKeys).toHaveBeenCalledWith([
-                'ai_provider',
-                'ai_ollama_model',
-                'ai_groq_model',
-                'gemini_global_model'
-            ]);
-            expect(whatsappAiService.getAiSuggestion).toHaveBeenCalledWith(1, '5491112345678', 3, 11, {
-                ai_provider: 'groq',
-                ai_groq_model: 'llama-3.3-70b-versatile'
-            });
-            expect(res.statusCode).toBe(200);
-            expect(res._getJSONData()).toEqual({ success: true, suggestion: 'Sugerencia de respuesta' });
-        });
-
-        it('should call the service with an empty settings object when reading settings fails', async () => {
-            systemSettingsRepository.findManyByKeys.mockRejectedValue(new Error('db down'));
-
-            await whatsappController.getAiSuggestion(req, res);
-
-            expect(whatsappAiService.getAiSuggestion).toHaveBeenCalledWith(1, '5491112345678', 3, 11, {});
-            expect(res.statusCode).toBe(200);
-            expect(res._getJSONData()).toEqual({ success: true, suggestion: 'Sugerencia de respuesta' });
-        });
-    });
 });

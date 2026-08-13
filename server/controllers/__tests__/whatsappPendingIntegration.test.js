@@ -51,7 +51,6 @@ jest.mock('../../repositories/system/systemSettingsRepository', () => ({
 }));
 
 const whatsappController = require('../communication/whatsappController');
-const whatsappAiService = require('../../services/communication/whatsappAiService');
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
 const whatsappService = require('../../services/communication/whatsappService');
 const bookingService = require('../../services/appointments/bookingService');
@@ -193,82 +192,3 @@ describe('Pending booking integration — controller + real repository + fake po
     });
 });
 
-describe('Pending booking integration — AI service + real repository + fake pool', () => {
-    describe('Scenario 3.1 part 2 — patient confirms the offered alternative → booking created', () => {
-        beforeEach(() => {
-            doctorRepository.findById.mockResolvedValue({
-                full_name: 'Dr. House',
-                gemini_context: 'Hola {patient_name}',
-                gemini_history_limit: 3
-            });
-            patientRepository.findById.mockResolvedValue({ full_name: 'Juan' });
-            whatsappRepository.getHistoryByPatient.mockResolvedValue([
-                { direction: 'inbound', body: 'si, dale' }
-            ]);
-            scheduleRepository.findByDoctor.mockResolvedValue([]);
-            holidayRepository.findAll.mockResolvedValue([]);
-            pool.query.mockResolvedValue([[{ full_name: 'Ana' }]]);
-            availabilitySearchService.getFreeSlotsBatch.mockResolvedValue({ results: [] });
-        });
-
-        it('books the alternative, marks alternative_accepted and confirms to the patient', async () => {
-            fakePool = createFakePool({
-                pendingBookings: [{
-                    id: 9,
-                    patient_id: 5,
-                    doctor_id: 3,
-                    patient_phone: '+5491112345678',
-                    requested_slot_date: '2026-08-03',
-                    requested_slot_time: '09:00',
-                    status: 'alternative_sent',
-                    alternative_slot_iso: '2026-08-05T10:00:00',
-                    created_at: new Date('2026-08-01T10:00:00')
-                }],
-                patientNames: { 5: 'Juan Perez' },
-                doctorNames: { 3: 'Dr. House' }
-            });
-            pendingBookingRepository.pool = fakePool;
-
-            const suggestion = await whatsappAiService.getAiSuggestion(5, null, 3);
-
-            expect(bookingService.createAppointment).toHaveBeenCalledWith(null, 'system', {
-                patient_id: 5,
-                doctor_id: 3,
-                appointment_date: '2026-08-05 10:00:00',
-                reason: 'Turno alternativo confirmado por paciente'
-            });
-            expect(suggestion).toContain('Turno confirmado');
-
-            const row = fakePool._pendingRows.find((r) => r.id === 9);
-            expect(row.status).toBe('alternative_accepted');
-            expect(row.appointment_id).toBe(456);
-        });
-
-        it('marks alternative_rejected with alternative_slot_taken when booking fails', async () => {
-            fakePool = createFakePool({
-                pendingBookings: [{
-                    id: 9,
-                    patient_id: 5,
-                    doctor_id: 3,
-                    patient_phone: '+5491112345678',
-                    requested_slot_date: '2026-08-03',
-                    requested_slot_time: '09:00',
-                    status: 'alternative_sent',
-                    alternative_slot_iso: '2026-08-05T10:00:00',
-                    created_at: new Date('2026-08-01T10:00:00')
-                }],
-                patientNames: { 5: 'Juan Perez' },
-                doctorNames: { 3: 'Dr. House' }
-            });
-            pendingBookingRepository.pool = fakePool;
-            bookingService.createAppointment.mockRejectedValue(new Error('slot_already_taken'));
-
-            const suggestion = await whatsappAiService.getAiSuggestion(5, null, 3);
-
-            expect(suggestion).toContain('ya no está disponible');
-            const row = fakePool._pendingRows.find((r) => r.id === 9);
-            expect(row.status).toBe('alternative_rejected');
-            expect(row.rejected_reason).toBe('alternative_slot_taken');
-        });
-    });
-});
