@@ -1,6 +1,4 @@
 const whatsappService = require('../../services/communication/whatsappService');
-const whatsappAiService = require('../../services/communication/whatsappAiService');
-const { AI_SETTING_KEYS } = require('../../services/communication/aiConfigResolver');
 const whatsappRepository = require('../../repositories/communication/whatsappRepository');
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
@@ -12,7 +10,7 @@ const defaultPool = require('../../db').pool;
 /**
  * ECC-Pattern: WhatsAppController
  * Handles orchestration of WhatsApp communication.
- * Delegated complex logic to specialized services (whatsappService, whatsappAiService).
+ * Delegated complex logic to specialized services (whatsappService).
  */
 
 const sendMessage = async (req, res) => {
@@ -101,35 +99,7 @@ const getPatientHistory = async (req, res) => {
     } catch (error) { res.status(500).json({ error: error.message }); }
 };
 
-const getAiSuggestion = async (req, res) => {
-    try {
-        // AI provider/model settings: rows -> {key: value} map. On any read
-        // failure fall back to an empty map so provider/model resolve from
-        // env/built-in defaults (graceful degradation, no error for the user).
-        let aiSettings = {};
-        try {
-            const rows = await systemSettingsRepository.findManyByKeys(AI_SETTING_KEYS);
-            aiSettings = rows.reduce((map, row) => {
-                map[row.setting_key] = row.setting_value;
-                return map;
-            }, {});
-        } catch (settingsError) {
-            console.warn('[AI Suggestion] No se pudieron leer las configuraciones de IA, usando defaults de env:', settingsError.message);
-        }
 
-        const suggestion = await whatsappAiService.getAiSuggestion(
-            req.body.patientId,
-            req.body.phone,
-            req.doctorId,
-            req.user?.user_id,
-            aiSettings
-        );
-        res.json({ success: true, suggestion });
-    } catch (error) {
-        console.error('[AI Suggestion Error]:', error);
-        res.status(500).json({ error: error.message });
-    }
-};
 
 const getRecentConversations = async (req, res) => {
     try {
@@ -395,6 +365,6 @@ const rejectPending = async (req, res) => {
 
 module.exports = {
     sendMessage, broadcastMessage, broadcastDirect, broadcastPreview, testConnection, sendDirectMessage,
-    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getAiSuggestion, logoutBridge, refreshBridge, deleteConversation,
+    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, logoutBridge, refreshBridge, deleteConversation,
     listPending, acceptPending, suggestAlternative, rejectPending
 };
