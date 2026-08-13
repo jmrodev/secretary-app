@@ -4,8 +4,9 @@
     --stats-pill-border: var(--dashboard-card-border);
 
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--stats-gap);
+    gap: 0.75rem var(--stats-gap);
     animation: fade-in-down 0.6s cubic-bezier(0.2, 0, 0, 1) both;
 }
 
