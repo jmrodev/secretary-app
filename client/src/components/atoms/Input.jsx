@@ -20,6 +20,7 @@ const Input = ({
     rows = 3,
     variant = 'default', // 'default' | 'error' | 'success'
     size = 'md',         // 'sm' | 'md' | 'lg'
+    htmlSize,            // Native HTML size attribute
     ...rest              // forwards: checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.
 }) => {
     const baseClass = styles.root;
@@ -64,6 +65,7 @@ const Input = ({
             className={combinedClassName}
             disabled={disabled}
             required={required}
+            size={htmlSize}
             {...rest}
         />
     );

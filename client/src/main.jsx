@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import App from '@/App';
 import './index.css';
 import { AuthProvider } from '@/features/auth';
@@ -14,7 +14,7 @@ import { SearchProvider } from '@/context/SearchProvider';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <HashRouter>
+    <BrowserRouter>
       <AuthProvider>
         <LanguageProvider>
           <MessageProvider>
@@ -30,6 +30,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           </MessageProvider>
         </LanguageProvider>
       </AuthProvider>
-    </HashRouter>
+    </BrowserRouter>
   </React.StrictMode>
 );

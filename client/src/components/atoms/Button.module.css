@@ -70,8 +70,9 @@
     --btn-bg: var(--danger);
     --btn-text: var(--white);
     --btn-border: var(--danger);
-    --btn-shadow: 0 4px 10px rgb(249 55 93 / 20%);
+    --btn-shadow: none;
     --btn-hover-bg: #e02d54;
+    --btn-hover-shadow: var(--shadow-sm);
 }
 
 .info {
@@ -132,7 +133,7 @@
     --btn-bg: transparent;
     --btn-border: var(--red-700);
     --btn-text: var(--red-400);
-    --btn-shadow: var(--shadow-sm);
+    --btn-shadow: none;
     --btn-hover-bg: rgb(239 68 68 / 10%);
     --btn-hover-border: var(--red-500);
     --btn-hover-text: var(--red-300);
@@ -159,11 +160,14 @@
 }
 
 .ghost {
-    --btn-bg: transparent;
+    --btn-bg: rgb(255 255 255 / 4%);
+    --btn-border: transparent;
+    --btn-shadow: none;
     --btn-text: var(--text-muted);
-    --btn-hover-bg: rgb(128, 128, 128, 0.12);
+    --btn-hover-bg: rgb(255 255 255 / 10%);
     --btn-hover-text: var(--text-main);
     --btn-hover-y: 0;
+    --btn-hover-shadow: none;
 }
 
 .link {
@@ -220,7 +224,7 @@
     padding: 0;
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 50%;
+    border-radius: var(--radius-md);
 }
 
 .iconOnly.sm {
