@@ -73,7 +73,7 @@ const PageHeader = ({
                                 {doctorSelectorSlot}
                             </div>
                         )}
-                        {!hideClock && <LiveClock hideDate={!!doctorSelectorSlot} className="live-clock--premium" />}
+                        {!hideClock && <LiveClock hideDate={!!doctorSelectorSlot} premium />}
                     </div>
 
                     <div className={`${styles.statsContainer}`}>
