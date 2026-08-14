@@ -38,14 +38,14 @@ const InstitutionsPage = () => {
 
     return (
         <MainLayout wide flush title={t('institutions') || 'Instituciones'}>
-            <div className={`${styles.institutionsPageOrchestrator}`}>
-                <div className="layout-content-area animate-fade-in">
+            <div>
+                <div>
                     {loading && institutions.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
                         <>
                             <FeatureToolbar
-                                className="institutions-page-orchestrator__top-actions"
+                                className="__top-actions"
                                 tabs={institutions.map(inst => ({
                                     id: String(inst.id),
                                     label: inst.name,
@@ -85,9 +85,9 @@ const InstitutionsPage = () => {
                                 }
                             />
 
-                            <main className="dashboard-layout__main dashboard-layout__main--full">
+                            <section className="dashboard-layout__main dashboard-layout__main--full">
                                 <div className="dashboard-card no-padding">
-                                    <div className="institutions__content animate-fade-in">
+                                    <div className="institutions__content ">
                                         <InstitutionFinances
                                             institutions={institutions}
                                             selectedInstId={selectedInstId}
@@ -97,7 +97,7 @@ const InstitutionsPage = () => {
                                         />
                                     </div>
                                 </div>
-                            </main>
+                            </section>
                         </>
                     )}
                 </div>

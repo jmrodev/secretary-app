@@ -36,8 +36,8 @@ const DashboardPage = () => {
 
     return (
         <MainLayout wide flush title={t('dashboard')}>
-            <div className={`${styles.dashboardPageOrchestrator} ${styles.animateFadeIn}`}>
-                <main className="dashboard-page-orchestrator__main">
+            <div>
+                <section >
                     {shouldShowErrorState ? (
                         <article className={`${styles.bentoCard} ${styles.mainContentCard}`}>
                             <div className={styles.bentoHeader}><Icon name="error" /> Error</div>
@@ -121,7 +121,7 @@ const DashboardPage = () => {
                             </article>
                         </div>
                     )}
-                </main>
+                </section>
             </div>
 
             <DashboardModalOrchestrator controller={controller} />

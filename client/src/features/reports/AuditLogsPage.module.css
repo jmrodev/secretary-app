@@ -1,9 +1,6 @@
 /* AuditLogsPage Styles (BEM) */
 
-.auditLogsPageOrchestrator {
-    display: flex;
-    flex-direction: column;
-}
+
 
 .glassContainer {
     background: rgb(255 255 255 / 20%);

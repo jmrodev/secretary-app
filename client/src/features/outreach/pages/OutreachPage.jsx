@@ -88,7 +88,7 @@ export const OutreachPage = () => {
 
     return (
         <MainLayout wide flush title={t('outreach_title')}>
-            <main className={styles['outreach']}>
+            <section className={styles['outreach']}>
                 <h1 className={styles['outreach__title']}>
                     {t('outreach_title')}
                 </h1>
@@ -191,7 +191,7 @@ export const OutreachPage = () => {
                         />
                     </div>
                 )}
-            </main>
+            </section>
         </MainLayout>
     );
 };

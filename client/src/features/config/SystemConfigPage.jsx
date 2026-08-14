@@ -25,7 +25,7 @@ const SettingsContent = ({ activeTab, controller, registryLoaded }) => {
     const { metadata, Component } = section;
 
     return (
-        <section className="config-section animate-fade-in-up">
+        <section className="config-section -up">
             <header className="config-section__header">
                 <div className="config-section__icon">
                     <Icon name={metadata.icon} size="1.5rem" />
@@ -70,7 +70,7 @@ const SystemConfigPage = () => {
 
     return (
         <MainLayout wide flush title={t('config') || 'Configuración del Sistema'}>
-            <div className={`${styles.root} layout-content-area animate-fade-in`}>
+            <div className={`${styles.root}  `}>
                 <FeatureToolbar
                     tabs={tabs.length > 0 ? tabs : [
                         { id: 'general', label: t('general'), icon: 'settings' }
@@ -79,7 +79,7 @@ const SystemConfigPage = () => {
                     onTabChange={handlers.setActiveTab}
                 />
 
-                <main className={styles.systemConfigMain}>
+                <section className={styles.systemConfigMain}>
                     <div className={styles.systemConfigContainer}>
                         <Suspense fallback={<Loading variant="centered" />}>
                             <SettingsContent activeTab={activeTab} controller={controller} registryLoaded={registryLoaded} />
@@ -92,7 +92,7 @@ const SystemConfigPage = () => {
                             expiresAt={qrModal.expiry}
                         />
                     </div>
-                </main>
+                </section>
             </div>
         </MainLayout>
     );

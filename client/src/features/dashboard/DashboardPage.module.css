@@ -1,16 +1,6 @@
 /* Dashboard Glassmorphism Bento Grid */
 
-.dashboardPageOrchestrator {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    overflow: auto hidden;
-    position: relative;
-    background: var(--background-bg);
-    color: var(--text-main);
-    padding: 1.5rem; /* Generous padding */
-}
+
 
 .bentoGrid {
     display: grid;

@@ -16,9 +16,9 @@ const AuditLogsPage = () => {
     
     return (
         <MainLayout wide flush title={t('audit_logs')}>
-            <main className={`${styles.auditLogsPageOrchestrator} animate-fade-in`}>
+            <section>
                 <AuditLogManager {...controller} />
-            </main>
+            </section>
         </MainLayout>
     );
 };

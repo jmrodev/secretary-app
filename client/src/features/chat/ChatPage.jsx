@@ -29,8 +29,8 @@ const ChatPage = () => {
 
     return (
         <MainLayout wide flush title={t('whatsapp_history')}>
-            <main className={`${styles.chatPageOrchestrator} ${selectedConvo ? styles.chatPageOrchestratorConvoSelected : ''} animate-fade-in`}>
-                <div className="layout-content-area">
+            <section className={`${selectedConvo ? styles.ConvoSelected : ''} `}>
+                <div>
                     <div className="chat-page-container">
                         <ChatSidebar
                             className={`${styles.chatSidebar}`}
@@ -59,7 +59,7 @@ const ChatPage = () => {
                         />
                     </div>
                 </div>
-            </main>
+            </section>
         </MainLayout>
     );
 

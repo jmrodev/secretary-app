@@ -1,10 +1,6 @@
 /* ReportsPage Component Styles (BEM) */
 
-.reportsPageOrchestrator {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
+
 
 .glassContainer {
     background: rgb(255 255 255 / 20%);

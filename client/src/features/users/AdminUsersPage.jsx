@@ -31,8 +31,8 @@ const AdminUsersPage = () => {
 
     return (
         <MainLayout wide flush title={t('user_management') || 'Gestión de Usuarios'}>
-            <div className={`${styles.adminUsersPageOrchestrator}`}>
-                <div className="layout-content-area animate-fade-in">
+            <div>
+                <div>
                     <div className="dashboard-nav-bar">
                         <div className={`${styles.spacer}`}></div>
                         <div className={`${styles.navActions}`}>
@@ -67,13 +67,13 @@ const AdminUsersPage = () => {
                             </div>
                         </aside>
 
-                        <main className="dashboard-layout__main">
+                        <section className="dashboard-layout__main">
                             <section className={`${styles.tableWrapper}`}>
                                 <UserManagement
                                     excludeRoles={['patient']}
                                 />
                             </section>
-                        </main>
+                        </section>
                     </div>
                 </div>
             </div>

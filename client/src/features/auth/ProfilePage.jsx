@@ -13,9 +13,9 @@ const ProfilePage = () => {
 
     return (
         <MainLayout wide flush title={profileProps.t('profile')}>
-            <main className={`${styles.profilePage} layout-content-area animate-fade-in`}>
+            <section>
                 <ProfileEditor {...profileProps} />
-            </main>
+            </section>
         </MainLayout>
     );
 };

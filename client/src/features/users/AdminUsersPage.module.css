@@ -1,9 +1,6 @@
 /* AdminUsersPage Styles (BEM) */
 
-.adminUsersPageOrchestrator {
-    display: flex;
-    flex-direction: column;
-}
+
 
 .spacer {
     flex: 1;
