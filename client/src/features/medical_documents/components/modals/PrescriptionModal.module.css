@@ -8,7 +8,7 @@
     --modal-island-bg: var(--glass);
     --modal-border: var(--glass);
     --btn-active-bg: var(--primary-color);
-    --btn-hover-bg: rgb(255 255 255 / 15%);
+    --btn-hover-bg: var(--glass);
 
     /* ------------------------------ */
 
@@ -212,9 +212,9 @@
 }
 
 .habitualBtnActive {
-    background: rgb(72 128 255 / 20%);
+    background: rgb(var(--primary-rgb) / 20%);
     border-color: var(--primary-color);
-    color: var(--white);
+    color: var(--text-main);
 }
 
 .habitualName {
@@ -223,7 +223,7 @@
 
 .habitualDose {
     font-size: 0.7rem;
-    color: rgb(255 255 255 / 70%);
+    color: var(--text-muted);
     background: var(--border-color);
     padding: 0.1rem 0.4rem;
     border-radius: 99px;
@@ -248,7 +248,7 @@
     align-items: center;
     padding: 0.75rem 1rem;
     background: var(--border-color);
-    border: 1px solid rgb(255 255 255 / 20%);
+    border: 1px solid var(--glass-border);
     border-radius: 0.75rem;
     box-shadow: 0 6px 16px 0 var(--background-bg);
     backdrop-filter: blur(12px);
@@ -274,7 +274,7 @@
 
 .itemMeta {
     font-size: 0.8rem;
-    color: rgb(255 255 255 / 70%);
+    color: var(--text-muted);
 }
 
 .itemSupply {

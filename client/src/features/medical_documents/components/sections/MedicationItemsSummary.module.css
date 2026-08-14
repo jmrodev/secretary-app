@@ -42,5 +42,5 @@
 }
 
 .removeBtn:hover {
-    background-color: var(--gray-800);
+    background-color: var(--card-hover-bg);
 }
