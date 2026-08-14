@@ -15,7 +15,7 @@
 .label {
     font-size: 0.85rem;
     font-weight: 700;
-    color: white;
+    color: var(--text-main);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -44,7 +44,7 @@
 }
 
 .metaItem i {
-    color: rgb(255 255 255 / 90%);
+    color: var(--text-muted);
 }
 
 .daysSupply {
@@ -83,7 +83,7 @@
 }
 
 .rowSelected td {
-    background: rgb(72 128 255 / 10%) !important;
+    background: rgb(var(--primary-rgb) / 10%) !important;
 }
 
 .nameCell {
@@ -94,7 +94,7 @@
 
 .metaCell {
     font-size: 0.8rem;
-    color: rgb(255 255 255 / 70%);
+    color: var(--text-muted);
 }
 
 .actionsCol {

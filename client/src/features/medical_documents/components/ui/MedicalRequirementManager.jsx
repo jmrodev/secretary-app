@@ -57,20 +57,20 @@ const MedicalRequirementManager = ({
     return (
         <section className={styles.root}>
             {!hideTabs && (
-                <nav className="${styles.root}__tabs">
+                <nav className={styles.tabs}>
                     <TabButton isActive={activeTab === 'list'} onClick={() => setActiveTab('list')} variant="pill" icon={<Icon name="view_list" />}>
                         {t('request_status')}
                     </TabButton>
-                    <div className="${styles.root}__tab-wrapper">
+                    <div className={styles.tabWrapper}>
                         <TabButton isActive={activeTab === 'recycle'} onClick={() => setActiveTab('recycle')} variant="pill" icon={<Icon name="delete" />}>
                             {t('recycle_bin')}
                         </TabButton>
-                        {recycleRequests.length > 0 && <span className="${styles.root}__badge">{recycleRequests.length}</span>}
+                        {recycleRequests.length > 0 && <span className={styles.badge}>{recycleRequests.length}</span>}
                     </div>
                 </nav>
             )}
 
-            <article className="${styles.root}__content animate-fade-in">
+            <article className={`${styles.content} animate-fade-in`}>
                 {showLoader ? <Loading variant="centered" /> : (
                     activeTab === 'list' ? (
                         <MedicalRequirementTable

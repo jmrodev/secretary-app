@@ -208,23 +208,23 @@
 }
 
 .paymentBadgePaid {
-    background: #ecfdf5;
-    color: #059669;
+    background: var(--green-50);
+    color: var(--green-700);
 }
 
 .paymentBadgeDebt {
-    background: var(--text-main)1f2;
-    color: #e11d48;
+    background: var(--red-50);
+    color: var(--red-700);
 }
 
 .paymentBadgeBonified {
-    background: #eff6ff;
-    color: #2563eb;
+    background: var(--blue-50);
+    color: var(--blue-700);
 }
 
 .paymentBadgePending {
-    background: #f9fafb;
-    color: #6b7280;
+    background: var(--gray-100);
+    color: var(--gray-500);
 }
 
 .paymentDot {

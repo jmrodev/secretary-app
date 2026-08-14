@@ -2,6 +2,7 @@ import React from 'react';
 import Modal from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
+import styles from './MedicalRequirementActionModal.module.css';
 
 const MedicalRequirementActionModal = ({
     actionModal,
@@ -32,8 +33,8 @@ const MedicalRequirementActionModal = ({
                 </>
             }
         >
-            <div className="medical-requirement-manager__form-group">
-                <label className="medical-requirement-manager__form-label">
+            <div className={styles.formGroup}>
+                <label className={styles.formLabel}>
                     {actionModal.type === 'consult' ? t('your_question') :
                         (actionModal.type === 'reply' ? t('your_answer') : t('doctor_note'))}
                     {['rejected', 'consult', 'reply'].includes(actionModal.type) && <span className="text-danger">*</span>}
