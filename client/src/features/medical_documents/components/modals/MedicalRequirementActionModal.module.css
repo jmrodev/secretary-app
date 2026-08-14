@@ -1,1 +1,13 @@
 /* MedicalRequirementActionModal Component Styles (BEM) */
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.formLabel {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text-main);
+}

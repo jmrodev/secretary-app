@@ -78,7 +78,7 @@
 }
 
 .tableHeader {
-    background-color: var(--gray-800);
+    background-color: var(--card-surface-bg);
     padding: 0.5rem 0.75rem;
     font-size: 0.7rem;
     font-weight: 700;
