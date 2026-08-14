@@ -10,12 +10,12 @@
 }
 
 .root:hover:not(.grouped) td {
-    background-color: var(--gray-50);
+    background-color: var(--card-hover-bg);
 }
 
 .cell {
     padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--dashboard-card-border);
     vertical-align: middle;
 }
 

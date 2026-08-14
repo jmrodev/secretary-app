@@ -17,7 +17,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    background: white;
+    background: var(--dashboard-card-bg);
     padding: 0.75rem 1.25rem;
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
@@ -26,7 +26,7 @@
 
 .viewToggle {
     display: flex;
-    background: var(--gray-100);
+    background: var(--card-surface-bg);
     padding: 0.2rem;
     border-radius: var(--radius-sm);
     gap: 0.2rem;
@@ -48,7 +48,7 @@
 }
 
 .statItem {
-    background: white;
+    background: var(--dashboard-card-bg);
     padding: 1.25rem;
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
@@ -135,7 +135,7 @@
 
 /* Table Management */
 .tableContainer {
-    background: white;
+    background: var(--dashboard-card-bg);
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
@@ -146,7 +146,7 @@
 
 .tableHeader {
     padding: 1.25rem 1.5rem;
-    background: var(--gray-50);
+    background: var(--card-surface-bg);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
@@ -165,7 +165,7 @@
 }
 
 .tableBadge {
-    background: var(--gray-200);
+    background: var(--card-surface-bg);
     color: var(--text-muted);
     padding: 0.125rem 0.6rem;
     border-radius: 999px;
@@ -189,8 +189,8 @@
     font-weight: 800;
     color: var(--text-muted);
     text-transform: uppercase;
-    background-color: white;
-    border-bottom: 2px solid var(--gray-100);
+    background-color: var(--card-surface-bg);
+    border-bottom: 2px solid var(--dashboard-card-border);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -198,7 +198,7 @@
 
 .table td {
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--gray-50);
+    border-bottom: 1px solid var(--dashboard-card-border);
     font-size: 0.875rem;
     color: var(--text-main);
     vertical-align: middle;
@@ -215,7 +215,7 @@
 }
 
 .table tr:hover:not(.trSelected) td {
-    background-color: var(--gray-50);
+    background-color: var(--card-hover-bg);
 }
 
 .patientLink {
@@ -233,7 +233,7 @@
 .emptyState {
     padding: 6rem 2rem;
     text-align: center;
-    background: white;
+    background: var(--dashboard-card-bg);
     border-radius: var(--radius);
     border: 1px dashed var(--border-color);
     display: flex;

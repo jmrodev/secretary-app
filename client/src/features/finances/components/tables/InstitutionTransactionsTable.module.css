@@ -99,7 +99,7 @@
 }
 
 .table tr:hover:not(.trSelected) td {
-    background-color: var(--gray-50);
+    background-color: var(--card-hover-bg);
 }
 
 .cellRight {
