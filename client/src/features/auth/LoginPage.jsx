@@ -8,7 +8,7 @@ import styles from './LoginPage.module.css';
  */
 const LoginPage = () => {
     return (
-        <main className={`${styles.root} ${styles.hero} animate-fade-in`}>
+        <section className={`${styles.root} ${styles.hero} `}>
             <div className={`${styles.backgroundBlobs}`}>
                 <div className={`${styles.blob} ${styles.blobPrimary}`}></div>
                 <div className={`${styles.blob} ${styles.blobSecondary}`}></div>
@@ -17,7 +17,7 @@ const LoginPage = () => {
             <section className={`${styles.content}`}>
                 <LoginForm />
             </section>
-        </main>
+        </section>
     );
 };
 

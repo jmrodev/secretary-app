@@ -32,7 +32,7 @@
     align-items: center;
     gap: 0.75rem;
     padding-top: 0.75rem;
-    border-top: 1px solid rgb(255 255 255 / 8%);
+    border-top: 1px solid var(--border-color);
 }
 
 /* ── Controls bar ────────────────────────────────────────────────────────── */
@@ -40,10 +40,10 @@
     display: flex;
     align-items: center;
     padding: 0.75rem 1rem;
-    background-color: rgb(0 0 0 / 20%);
+    background-color: var(--background-bg);
     backdrop-filter: blur(16px);
     box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
-    border: 1px solid rgb(255 255 255 / 8%);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
 }
 
@@ -84,8 +84,8 @@
     justify-content: space-between;
     padding: 0.875rem 1rem;
     border-radius: var(--radius-md);
-    border: 1px solid rgb(255 255 255 / 8%);
-    background: rgb(0 0 0 / 20%);
+    border: 1px solid var(--border-color);
+    background: var(--background-bg);
     backdrop-filter: blur(16px);
     box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
     cursor: pointer;
@@ -95,7 +95,7 @@
 
 .item:hover,
 .item:focus-visible {
-    background: rgb(255 255 255 / 5%);
+    background: var(--dashboard-card-bg);
     border-color: var(--primary-color);
     transform: translateX(2px);
 }
@@ -135,7 +135,7 @@
 
 .dateLabel {
     font-size: 0.85rem;
-    color: #fff !important;
+    color: var(--text-main) !important;
     font-weight: 600;
 }
 
@@ -221,7 +221,7 @@
 
 .titleDate {
     font-weight: 700;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .body {
@@ -246,7 +246,7 @@
     text-transform: uppercase;
     letter-spacing: 0.06em;
     padding: 0.4rem 0;
-    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .sectionHeaderNormal {
@@ -263,12 +263,12 @@
 }
 
 .row {
-    border-bottom: 1px solid rgb(255 255 255 / 4%);
+    border-bottom: 1px solid var(--border-color);
     transition: background 0.15s ease;
 }
 
 .row:hover {
-    background: rgb(255 255 255 / 3%);
+    background: var(--dashboard-card-bg);
 }
 
 .cell {

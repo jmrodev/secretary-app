@@ -3,6 +3,7 @@ import { useAuditLogsController } from '@/features/reports/hooks/useAuditLogsCon
 import AuditLogManager from '@/features/reports/components/views/AuditLogManager';
 
 import MainLayout from '@/components/templates/MainLayout';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from './AuditLogsPage.module.css';
 
 /**
@@ -11,12 +12,13 @@ import styles from './AuditLogsPage.module.css';
  */
 const AuditLogsPage = () => {
     const controller = useAuditLogsController();
+    const { t } = useLanguage();
     
     return (
-        <MainLayout wide>
-            <main className={`${styles.auditLogsPageOrchestrator} animate-fade-in`}>
+        <MainLayout wide flush title={t('audit_logs')}>
+            <section>
                 <AuditLogManager {...controller} />
-            </main>
+            </section>
         </MainLayout>
     );
 };

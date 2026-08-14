@@ -36,9 +36,9 @@ const InsurancesPage = () => {
 
     return (
         <MainLayout wide flush title={t('insurances') || 'Obras Sociales'}>
-            <div className={`${styles.root} layout-content-area animate-fade-in`}>
+            <div className={`${styles.root}  `}>
                 <FeatureToolbar
-                    className="insurances-page-orchestrator__toolbar"
+                    className="__toolbar"
                     actions={
                         <Button
                             variant="primary"
@@ -51,12 +51,12 @@ const InsurancesPage = () => {
                     }
                 />
 
-                <main className={`${styles.main}`}>
+                <section className={`${styles.main}`}>
                     {loading && filteredInsurances.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
                         <Card noPadding>
-                            <div className={`${styles.content} animate-fade-in`}>
+                            <div className={`${styles.content} `}>
                                 <InsuranceList
                                     insurances={filteredInsurances}
                                     onEdit={handleOpenEdit}
@@ -66,7 +66,7 @@ const InsurancesPage = () => {
                             </div>
                         </Card>
                     )}
-                </main>
+                </section>
             </div>
 
                 <InsuranceFormModal

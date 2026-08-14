@@ -1,6 +1,7 @@
 import React from 'react';
 import { useMessagesPageController, ChatSidebar, ChatWindow } from '@/features/chat/index';
 import MainLayout from '@/components/templates/MainLayout';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from './ChatPage.module.css';
 
 
@@ -9,6 +10,7 @@ import styles from './ChatPage.module.css';
  * Full-screen chat experience for staff and admins.
  */
 const ChatPage = () => {
+    const { t } = useLanguage();
     const {
         user,
         conversations,
@@ -26,9 +28,9 @@ const ChatPage = () => {
     } = useMessagesPageController();
 
     return (
-        <MainLayout wide flush>
-            <main className={`${styles.chatPageOrchestrator} ${selectedConvo ? styles.chatPageOrchestratorConvoSelected : ''} animate-fade-in`}>
-                <div className="layout-content-area">
+        <MainLayout wide flush title={t('whatsapp_history')}>
+            <section className={`${selectedConvo ? styles.ConvoSelected : ''} `}>
+                <div>
                     <div className="chat-page-container">
                         <ChatSidebar
                             className={`${styles.chatSidebar}`}
@@ -57,7 +59,7 @@ const ChatPage = () => {
                         />
                     </div>
                 </div>
-            </main>
+            </section>
         </MainLayout>
     );
 

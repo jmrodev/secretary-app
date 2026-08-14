@@ -12,7 +12,7 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
     switch(step) {
         case 1:
             return (
-                <div className={`${styles.stepField} animate-fade-in`}>
+                <div className={`${styles.stepField} `}>
                     <label htmlFor="firstName" className={`${styles.accessibleLabel}`}>¿Cuál es tu NOMBRE?</label>
                     <input
                         id="firstName"
@@ -28,7 +28,7 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 2:
             return (
-                <div className={`${styles.stepField} animate-fade-in`}>
+                <div className={`${styles.stepField} `}>
                     <label htmlFor="lastName" className={`${styles.accessibleLabel}`}>¿Cuál es tu APELLIDO?</label>
                     <input
                         id="lastName"
@@ -44,7 +44,7 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 3:
             return (
-                <div className={`${styles.stepField} animate-fade-in`}>
+                <div className={`${styles.stepField} `}>
                     <label htmlFor="address" className={`${styles.accessibleLabel}`}>¿Cuál es tu DIRECCIÓN?</label>
                     <input
                         id="address"
@@ -60,7 +60,7 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 4:
             return (
-                <div className={`${styles.stepField} animate-fade-in`}>
+                <div className={`${styles.stepField} `}>
                     <label htmlFor="dni" className={`${styles.accessibleLabel}`}>¿Cuál es tu DNI?</label>
                     <input
                         id="dni"
@@ -78,7 +78,7 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 5:
             return (
-                <div className={`${styles.stepField} animate-fade-in`}>
+                <div className={`${styles.stepField} `}>
                     <label htmlFor="phone" className={`${styles.accessibleLabel}`}>Tu TELÉFONO es:</label>
                     <input
                         id="phone"
@@ -160,7 +160,7 @@ const PublicRegisterPage = () => {
     return (
         <div className={`${styles.publicRegisterPaginated}`}>
             {success ? (
-                <div className={`${styles.successCard} step-card animate-fade-in`}>
+                <div className={`${styles.successCard} step-card `}>
                     <span className={`${styles.successEmoji}`}>✅</span>
                     <h1 className={`${styles.accessibleTitle}`}>¡Todo Listo!</h1>
                     <p className={`${styles.accessibleText}`}>Tus datos se guardaron correctamente.</p>
@@ -175,7 +175,7 @@ const PublicRegisterPage = () => {
                         </div>
                     </div>
 
-                    <main className={`${styles.stepContainer}`}>
+                    <section className={`${styles.stepContainer}`}>
                         {error && <div className={`${styles.accessibleError}`}>{error}</div>}
                         
                         <StepField step={step} formData={formData} onChange={updateRegisterData} inputRef={inputRef} />
@@ -197,7 +197,7 @@ const PublicRegisterPage = () => {
                                 </button>
                             )}
                         </footer>
-                    </main>
+                    </section>
                 </>
             )}
         </div>

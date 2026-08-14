@@ -60,9 +60,8 @@ const TempAccessPage = () => {
     }
 
     return (
-        <div className={`${styles.tempAccessOrchestrator}`}>
-            <div className={`${styles.container}`}>
-                <article className={`${styles.card}`}>
+        <section className={`${styles.container}`}>
+            <article className={`${styles.card}`}>
                     <header className={`${styles.header}`}>
                         <h1 className={`${styles.title}`}>
                             {isNew ? 'Registro de Paciente' : 'Actualizar mis Datos'}
@@ -82,7 +81,7 @@ const TempAccessPage = () => {
                     </section>
                 </article>
 
-                <aside className={`${styles.downloadCard} animate-fade-in`}>
+                <aside className={`${styles.downloadCard} `}>
                     <div className={`${styles.downloadInfo}`}>
                         <h4 className={`${styles.downloadTitle}`}>
                             <Icon name="SMARTPHONE" className="mr-2" />
@@ -101,8 +100,7 @@ const TempAccessPage = () => {
                         {t('download_apk')}
                     </Button>
                 </aside>
-            </div>
-        </div>
+        </section>
     );
 };
 

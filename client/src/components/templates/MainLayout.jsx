@@ -23,7 +23,8 @@ const MainLayout = ({
     actionSlot,
     hideClock = false,
     hideSearch = false,
-    hideTitle = (variant === 'premium')
+    hideTitle = (variant === 'premium'),
+    noAnimation = false
 }) => {
     const { searchTerm, setSearchTerm } = useSearch();
     const { t } = useLanguage();
@@ -57,7 +58,7 @@ const MainLayout = ({
                         }}
                     />
                 )}
-                <div className={`${styles.inner}`}>
+                <div className={`layout-content-area ${!noAnimation ? 'animate-fade-in' : ''} ${styles.pageShell}`}>
                     {children}
                 </div>
             </main>

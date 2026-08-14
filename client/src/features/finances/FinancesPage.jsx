@@ -36,9 +36,9 @@ const FinancesPage = ({ MedicationInputComponent }) => {
 
     return (
         <MainLayout wide flush title={t('finances') || 'Finanzas'}>
-            <div className={`${styles.financesPageOrchestrator} layout-content-area animate-fade-in`}>
+            <div>
                 <FeatureToolbar
-                    className="finances-page-orchestrator__toolbar"
+                    className="__toolbar"
                     actions={
                         isAdminOrSecretary && (
                             <div className="finances-page__toolbar-actions">
@@ -79,11 +79,11 @@ const FinancesPage = ({ MedicationInputComponent }) => {
                     }
                 />
 
-                <main className="finances-page-orchestrator__main">
+                <section >
                     {loading && filteredTransactions.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || 'Cargando...'} />
                     ) : (
-                        <div className="finances-page-orchestrator__content">
+                        <div className="__content">
                             {isAdminOrSecretary && showStats && stats.length > 0 && (
                                 <FinanceStatsCards 
                                     stats={stats} 
@@ -112,7 +112,7 @@ const FinancesPage = ({ MedicationInputComponent }) => {
                             </article>
                         </div>
                     )}
-                </main>
+                </section>
             </div>
 
             <FinanceModalOrchestrator

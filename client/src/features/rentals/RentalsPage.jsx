@@ -35,10 +35,10 @@ const RentalsPage = () => {
 
     return (
         <MainLayout wide flush title={t('office_rentals') || 'Alquiler de Consultorios'}>
-            <div className="rentals-page-orchestrator">
-                <div className="layout-content-area animate-fade-in">
+            <div>
+                <div>
                     <FeatureToolbar
-                        className="rentals-page-orchestrator__top-actions"
+                        
                         actions={
                             <div className="rentals-page__toolbar-actions">
                                 <div className="rentals-page__status-info">
@@ -52,7 +52,7 @@ const RentalsPage = () => {
                     {loading ? (
                         <Loading variant="centered" text={t('loading_rentals')} />
                     ) : (
-                        <main className="rentals-page__content">
+                        <section className="rentals-page__content">
                             <div className="dashboard-layout__grid dashboard-layout__grid--full">
                                 {/* Booking Area */}
                                 {user && user.role === 'doctor' && (
@@ -175,7 +175,7 @@ const RentalsPage = () => {
                                     </section>
                                 )}
                             </div>
-                        </main>
+                        </section>
                     )}
                 </div>
             </div>

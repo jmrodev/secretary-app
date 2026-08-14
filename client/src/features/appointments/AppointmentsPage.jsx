@@ -91,12 +91,12 @@ const AppointmentsPage = () => {
                 </div>
             }
         >
-            <div className={`${styles.root} layout-content-area animate-fade-in`}>
+            <div className={`${styles.root}  `}>
                 <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={exitRescheduleMode} t={t} />
 
-                <main className={`${styles.main}`}>
+                <section className={`${styles.main}`}>
                     {searchPatientId || searchTerm ? (
-                        <section className={`${styles.panelSearch} animate-fade-in`}>
+                        <section className={`${styles.panelSearch} `}>
                             <PatientHistoryView
                                 patientAppointments={searchPatientId ? patientAppointments : appointments} 
                                 loading={searchLoading}
@@ -132,7 +132,7 @@ const AppointmentsPage = () => {
                             </section>
                         </div>
                     )}
-                </main>
+                </section>
             </div>
 
             {/* --- Modals --- */}

@@ -36,10 +36,10 @@
 
 /* ---------------------------------------- */
 
-.inner {
-    padding: 0.75rem 1.5rem;
+.pageShell {
+    padding: var(--spacing-md) var(--spacing-xl);
     width: 95%;
-    max-width: 1440px;
+    max-width: 1200px;
     margin: 0 auto;
     flex: 1;
     display: flex;
@@ -48,21 +48,22 @@
 }
 
 .root {
-    --content-padding: 0.75rem 1.5rem;
+    --content-padding: var(--spacing-md) var(--spacing-xl);
 }
 
-.root.dashboardWide .inner {
-    padding: 0.75rem 1.5rem;
-    max-width: 1440px;
+.root.dashboardWide .pageShell {
+    padding: var(--spacing-md) var(--spacing-xl);
+    max-width: 1200px;
 }
 
-.flush .inner {
-    padding: 0.75rem 1.5rem;
-    max-width: 1440px;
+.flush .pageShell {
+    padding: var(--spacing-md) var(--spacing-xl);
+    max-width: 1200px;
 }
 
 @media screen and (width <= 1024px) {
-    .inner {
-        padding: 1rem;
+    .pageShell {
+        padding: var(--spacing-lg);
+        width: 100%;
     }
 }

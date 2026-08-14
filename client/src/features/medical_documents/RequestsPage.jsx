@@ -21,9 +21,9 @@ const RequestsPage = () => {
 
     return (
         <MainLayout wide flush>
-            <div className={`${styles.requestsPageOrchestrator}`}>
+            <div>
                 <FeatureToolbar
-                    className="requests-page-orchestrator__top-actions"
+                    className="__top-actions"
                     actions={
                         <Button
                             variant="secondary"
@@ -36,14 +36,14 @@ const RequestsPage = () => {
                     }
                 />
 
-                <div className="layout-content-area animate-fade-in">
-                    <main className="dashboard-layout__main dashboard-layout__main--full">
+                <div>
+                    <section className="dashboard-layout__main dashboard-layout__main--full">
                         <article className="dashboard-card no-padding">
                             <section className={`${styles.section}`}>
                                 <MedicalRequirementManager user={user} />
                             </section>
                         </article>
-                    </main>
+                    </section>
                 </div>
             </div>
         </MainLayout>

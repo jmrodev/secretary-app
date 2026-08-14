@@ -29,7 +29,7 @@ const MedicalDocumentsPage = () => {
 
     return (
         <MainLayout wide flush title={t('medical_documents')}>
-            <div className={`${styles.medicalDocumentsPageOrchestrator} layout-content-area`}>
+            <div>
                 <MedicalDocumentsToolbar 
                     requestsSubTab="list"
                     handleExportJSON={handleExportJSON}
@@ -37,13 +37,13 @@ const MedicalDocumentsPage = () => {
                     t={t}
                 />
 
-                <main className={`${styles.main} ${styles.animateFadeIn} ${styles.noPrint}`}>
+                <section className={`${styles.main} ${styles.noPrint}`}>
                     <div className={`${styles.tabsContent}`}>
                         <Suspense fallback={<div>Loading view…</div>}>
                             <Outlet />
                         </Suspense>
                     </div>
-                </main>
+                </section>
             </div>
         </MainLayout>
     );

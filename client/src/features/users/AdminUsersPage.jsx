@@ -19,7 +19,7 @@ const AdminUsersPage = () => {
 
     if (!currentUser || currentUser.role !== 'admin') {
         return (
-            <MainLayout>
+            <MainLayout> {/* layout:exception — access denied state, no full page chrome needed */}
                 <div className={`${styles.accessDenied}`}>
                     <Icon name="block" size="3rem" className={`${styles.deniedIcon}`} />
                     <h2 className={`${styles.deniedTitle}`}>Access Denied</h2>
@@ -31,8 +31,8 @@ const AdminUsersPage = () => {
 
     return (
         <MainLayout wide flush title={t('user_management') || 'Gestión de Usuarios'}>
-            <div className={`${styles.adminUsersPageOrchestrator}`}>
-                <div className="layout-content-area animate-fade-in">
+            <div>
+                <div>
                     <div className="dashboard-nav-bar">
                         <div className={`${styles.spacer}`}></div>
                         <div className={`${styles.navActions}`}>
@@ -67,13 +67,13 @@ const AdminUsersPage = () => {
                             </div>
                         </aside>
 
-                        <main className="dashboard-layout__main">
+                        <section className="dashboard-layout__main">
                             <section className={`${styles.tableWrapper}`}>
                                 <UserManagement
                                     excludeRoles={['patient']}
                                 />
                             </section>
-                        </main>
+                        </section>
                     </div>
                 </div>
             </div>

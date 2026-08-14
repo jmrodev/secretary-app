@@ -84,7 +84,7 @@ const PatientsPage = () => {
 
     return (
         <MainLayout wide flush hideSearch title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
-            <div className="patients-page-orchestrator layout-content-area animate-fade-in">
+            <div>
                 {(selectedPatientId && patientDetails) ? (
                     // --- DETAILS VIEW ---
                     <PatientDetailsView
@@ -104,7 +104,7 @@ const PatientsPage = () => {
                     // --- LIST VIEW ---
                     <div className="patients-page__list-view">
                         <FeatureToolbar
-                            className="patients-page-orchestrator__toolbar"
+                            className="__toolbar"
                             tabs={[
                                 { id: 'list', label: t('active_list'), icon: 'groups' },
                                 { 
@@ -152,7 +152,7 @@ const PatientsPage = () => {
                             }
                         />
 
-                        <main className="patients-page-orchestrator__main">
+                        <section >
                             {activeTab === 'list' ? (
                                 <div className="patients-page__table-wrapper">
                                     <div className="patients-page__pagination-top" style={{ marginBottom: '0.75rem' }}>
@@ -195,7 +195,7 @@ const PatientsPage = () => {
                                     onRestore={handleRestorePatient}
                                 />
                             )}
-                        </main>
+                        </section>
                     </div>
                 )}
             </div>

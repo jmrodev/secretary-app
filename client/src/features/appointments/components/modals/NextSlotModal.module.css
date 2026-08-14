@@ -10,7 +10,7 @@
     display: flex;
     gap: 0.5rem;
     padding: 0.5rem;
-    background: rgb(255, 255, 255, 0.03);
+    background: var(--background-bg);
     border-radius: 12px;
     margin-bottom: 1rem;
     overflow-x: auto;
@@ -24,7 +24,7 @@
     cursor: pointer;
     font-weight: 700;
     font-size: 0.8rem;
-    color: rgb(255, 255, 255, 0.4);
+    color: var(--text-muted);
     text-transform: uppercase;
     transition: all 0.2s ease;
     white-space: nowrap;
@@ -32,20 +32,20 @@
 }
 
 .monthItem:hover {
-    background: rgb(255, 255, 255, 0.06);
-    color: #fff;
+    background: var(--dashboard-card-bg);
+    color: var(--text-main);
 }
 
 .monthActive {
     background: var(--primary-color) !important;
-    color: #0b0c10 !important;
+    color: var(--background-bg) !important;
 }
 
 /* 2. Options */
 .options {
     padding-bottom: 1rem;
     margin-bottom: 1rem;
-    border-bottom: 1px solid rgb(255, 255, 255, 0.08);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .checkboxLabel {
@@ -96,7 +96,7 @@
 .dayName {
     font-size: 0.9rem;
     font-weight: 600;
-    color: rgb(255, 255, 255, 0.3);
+    color: var(--text-muted);
     margin-left: auto;
 }
 
@@ -105,25 +105,25 @@
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem 1rem;
-    background: rgb(255, 255, 255, 0.04);
-    border: 1px solid rgb(255, 255, 255, 0.05);
+    background: var(--background-bg);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     transition: transform 0.2s, background 0.2s;
 }
 
 .slotItem:hover {
-    background: rgb(255, 255, 255, 0.07);
+    background: var(--dashboard-card-bg);
     transform: translateX(4px);
 }
 
 .slotExtra {
-    border-left: 4px solid orange;
+    border-left: 4px solid var(--warning);
 }
 
 .slotTime {
     font-size: 1.1rem;
     font-weight: 800;
-    color: #fff;
+    color: var(--text-main);
 }
 
 .slotActions {
