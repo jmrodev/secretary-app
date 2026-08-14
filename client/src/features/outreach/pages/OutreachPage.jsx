@@ -87,7 +87,7 @@ export const OutreachPage = () => {
     };
 
     return (
-        <MainLayout>
+        <MainLayout wide flush title={t('outreach_title')}>
             <main className={styles['outreach']}>
                 <h1 className={styles['outreach__title']}>
                     {t('outreach_title')}

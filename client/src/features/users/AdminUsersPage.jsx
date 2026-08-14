@@ -19,7 +19,7 @@ const AdminUsersPage = () => {
 
     if (!currentUser || currentUser.role !== 'admin') {
         return (
-            <MainLayout>
+            <MainLayout> {/* layout:exception — access denied state, no full page chrome needed */}
                 <div className={`${styles.accessDenied}`}>
                     <Icon name="block" size="3rem" className={`${styles.deniedIcon}`} />
                     <h2 className={`${styles.deniedTitle}`}>Access Denied</h2>
