@@ -32,7 +32,7 @@
 }
 
 .table th {
-    background-color: #0f172a;
+    background-color: var(--card-surface-bg);
     padding: 0.875rem 0.75rem;
     text-align: left;
     font-weight: 800;
