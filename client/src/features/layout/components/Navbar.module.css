@@ -192,8 +192,8 @@
     position: absolute;
     top: calc(100% + 8px); /* Acercado un poco más a la barra */
     right: 0;
-    background: #1e2533;
-    border: 1px solid rgb(255, 255, 255, 0.12);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
     border-radius: 14px;
     padding: 0.6rem;
     min-width: 220px;
