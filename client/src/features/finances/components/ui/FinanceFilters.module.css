@@ -23,7 +23,7 @@
 
 .searchInput {
     padding-left: 2.75rem;
-    background-color: var(--gray-50);
+    background-color: var(--card-surface-bg);
 }
 
 .groups {
@@ -49,6 +49,6 @@
 }
 
 .clear:hover {
-    background: var(--gray-100);
+    background: var(--card-hover-bg);
     border-color: var(--gray-300);
 }
