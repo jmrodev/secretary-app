@@ -1,13 +1,13 @@
 .root {
     /* --- Local Component Tokens --- */
-    --input-bg: var(--glass);
+    --input-bg: var(--background-bg);
     --input-border: var(--border-color);
     --input-text: var(--text-main);
     --input-focus-border: var(--primary-color);
     --input-focus-ring: rgb(72 128 255 / 15%);
     --input-error-border: var(--danger);
     --input-error-ring: rgb(249 55 93 / 10%);
-    --input-disabled-bg: var(--glass);
+    --input-disabled-bg: var(--background-bg);
     --input-disabled-text: var(--text-muted);
 
     /* ------------------------------ */

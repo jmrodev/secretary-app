@@ -90,11 +90,11 @@
 }
 
 .secondary {
-    --btn-bg: var(--gray-800, #2a2d3d);
-    --btn-border: var(--border-color, #3a3f55);
+    --btn-bg: var(--background-bg);
+    --btn-border: var(--border-color);
     --btn-text: var(--text-main);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: var(--gray-700, #363b52);
+    --btn-hover-bg: var(--dashboard-card-border);
 }
 
 .accent {
@@ -179,7 +179,7 @@
 }
 
 .status {
-    background: var(--gray-900);
+    background: var(--background-bg);
     border: 1px dashed var(--dashboard-card-border);
     color: var(--text-muted);
     font-size: 0.75rem;
@@ -187,7 +187,7 @@
 }
 
 .status:hover:not(:disabled) {
-    background: var(--gray-800);
+    background: var(--dashboard-card-border);
     border-style: solid;
     border-color: var(--primary-color);
     color: var(--text-main);
