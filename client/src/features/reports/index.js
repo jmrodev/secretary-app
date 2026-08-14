@@ -11,7 +11,6 @@ export { default as ReportsDashboard } from '@/features/reports/components/views
 export { default as ReportsPage } from '@/features/reports/ReportsPage';
 export { default as AuditLogManager } from '@/features/reports/components/views/AuditLogManager';
 export { default as AuditLogsPage } from '@/features/reports/AuditLogsPage';
-export { default as ReportTabs } from '@/features/reports/components/ui/ReportTabs';
 export { default as ReportFilters } from '@/features/reports/components/ui/ReportFilters';
 
 // Table Components (exported if needed separately)
