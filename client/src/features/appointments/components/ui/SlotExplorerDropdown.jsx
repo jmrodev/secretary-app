@@ -73,10 +73,14 @@ const SlotExplorerDropdown = ({
                 const itemTop = activeItem.offsetTop - sidebarRef.current.offsetTop;
                 const itemHeight = activeItem.clientHeight;
                 
-                sidebarRef.current.scrollTo({
-                    top: itemTop - (containerHeight / 2) + (itemHeight / 2),
-                    behavior: 'smooth'
-                });
+                // Guard against environments (e.g. jsdom) that don't implement scrollTo.
+                // Scrolling is a progressive enhancement, not a hard requirement.
+                if (typeof sidebarRef.current.scrollTo === 'function') {
+                    sidebarRef.current.scrollTo({
+                        top: itemTop - (containerHeight / 2) + (itemHeight / 2),
+                        behavior: 'smooth'
+                    });
+                }
             }
         }
     }, [activeDay]);
