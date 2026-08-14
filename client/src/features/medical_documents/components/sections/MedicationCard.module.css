@@ -45,7 +45,7 @@
     font-size: 0.75rem;
     font-weight: 600;
     padding: 2px 8px;
-    background: var(--gray-800);
+    background: var(--card-surface-bg);
     border-radius: 4px;
     color: var(--text-secondary);
 }

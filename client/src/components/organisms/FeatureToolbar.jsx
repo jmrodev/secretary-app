@@ -33,7 +33,7 @@ const FeatureToolbar = ({
                                 icon={tab.icon && <Icon name={tab.icon} size="1.1rem" />}
                             >
                                 {tab.label}
-                                {tab.badge && <span className="feature-toolbar__badge">{tab.badge}</span>}
+                                {tab.badge && <span className={styles.badge}>{tab.badge}</span>}
                             </TabButton>
                         ))}
                     </TabNav>
