@@ -100,7 +100,6 @@ const TempAccessPage = () => {
                         {t('download_apk')}
                     </Button>
                 </aside>
-            </div>
         </section>
     );
 };
