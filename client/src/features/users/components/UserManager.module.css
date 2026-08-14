@@ -15,7 +15,7 @@
 .title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--slate-800, #1e293b);
+    color: var(--slate-800, var(--background-bg));
 }
 
 .subtitle {

@@ -32,7 +32,7 @@
 
 .tabBtnActive {
     background-color: var(--tab-active-bg, var(--primary-color));
-    color: var(--tab-active-text, #fff) !important;
+    color: var(--tab-active-text, var(--text-main)) !important;
     font-weight: 700;
     box-shadow: 0 4px 12px var(--tab-active-shadow, rgb(72 128 255 / 30%));
     border: 1px solid var(--tab-active-border, var(--primary-color));
@@ -41,28 +41,28 @@
 /* Color Modifiers for active states */
 .tabBtnBlue.tabBtnActive {
     --tab-active-bg: var(--primary-color, #4880ff);
-    --tab-active-text: #fff;
+    --tab-active-text: var(--text-main);
     --tab-active-border: var(--primary-color, #4880ff);
     --tab-active-shadow: rgb(72 128 255 / 35%);
 }
 
 .tabBtnGreen.tabBtnActive {
     --tab-active-bg: #10b981;
-    --tab-active-text: #fff;
+    --tab-active-text: var(--text-main);
     --tab-active-border: #10b981;
     --tab-active-shadow: rgb(16 185 129 / 35%);
 }
 
 .tabBtnAmber.tabBtnActive {
     --tab-active-bg: #f59e0b;
-    --tab-active-text: #fff;
+    --tab-active-text: var(--text-main);
     --tab-active-border: #f59e0b;
     --tab-active-shadow: rgb(245 158 11 / 35%);
 }
 
 .tabBtnPurple.tabBtnActive {
     --tab-active-bg: #8b5cf6;
-    --tab-active-text: #fff;
+    --tab-active-text: var(--text-main);
     --tab-active-border: #8b5cf6;
     --tab-active-shadow: rgb(139 92 246 / 35%);
 }

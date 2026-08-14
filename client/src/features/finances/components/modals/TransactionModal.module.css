@@ -76,7 +76,7 @@
     backdrop-filter: blur(16px);
     border: 1px solid rgb(255 255 255 / 20%);
     border-radius: var(--radius);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     max-height: 15rem;
     overflow-y: auto;
     margin-top: 0.25rem;
@@ -109,10 +109,10 @@
 
 .paymentMethods {
     padding: 1rem 1.25rem;
-    background-color: rgb(255 255 255 / 4%);
+    background-color: var(--glass);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 10%);
-    box-shadow: 0 4px 20px 0 rgb(0 0 0 / 15%);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px 0 var(--background-bg);
     border-radius: var(--radius);
     display: flex;
     flex-direction: column;
@@ -189,7 +189,7 @@
     justify-content: center;
     min-width: 12rem;
     padding-left: 1rem;
-    border-left: 1px solid rgb(255 255 255 / 10%);
+    border-left: 1px solid var(--border-color);
 }
 
 @media (width <= 768px) {
@@ -200,7 +200,7 @@
 
     .summary {
         border-left: none;
-        border-top: 1px solid rgb(255 255 255 / 10%);
+        border-top: 1px solid var(--border-color);
         padding-left: 0;
         padding-top: 0.75rem;
         align-items: stretch;

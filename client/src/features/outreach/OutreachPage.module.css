@@ -33,7 +33,7 @@
     display: flex;
     gap: 0;
     background: rgb(255 255 255 / 6%);
-    border: 1px solid rgb(255 255 255 / 8%);
+    border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     overflow: hidden;
 }
@@ -62,12 +62,12 @@
     top: 25%;
     height: 50%;
     width: 1px;
-    background: rgb(255 255 255 / 8%);
+    background: var(--border-color);
 }
 
 .outreach__step:hover:not(:disabled) {
-    background: rgb(255 255 255 / 4%);
-    color: var(--color-text-secondary, #94a3b8);
+    background: var(--glass);
+    color: var(--color-text-secondary, var(--text-muted));
 }
 
 .outreach__step:disabled {
@@ -94,18 +94,18 @@
     border-radius: 50%;
     font-size: 0.75rem;
     font-weight: 700;
-    background: rgb(255 255 255 / 8%);
+    background: var(--border-color);
     flex-shrink: 0;
 }
 
 .outreach__step--active .outreach__step-number {
     background: #3b82f6;
-    color: #fff;
+    color: var(--text-main);
 }
 
 .outreach__step--completed .outreach__step-number {
     background: #22c55e;
-    color: #fff;
+    color: var(--text-main);
 }
 
 .outreach__step-label {
@@ -126,7 +126,7 @@
 .outreach__progress {
     width: 100%;
     height: 0.5rem;
-    background: rgb(255 255 255 / 8%);
+    background: var(--border-color);
     border-radius: 0.25rem;
     overflow: hidden;
 }

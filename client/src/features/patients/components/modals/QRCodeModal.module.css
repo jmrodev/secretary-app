@@ -19,7 +19,7 @@
     background-color: rgb(255 255 255 / 15%);
     backdrop-filter: blur(16px);
     border: 1px solid rgb(255 255 255 / 20%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 15%);
+    box-shadow: 0 8px 32px 0 var(--background-bg);
     border-radius: var(--radius);
 }
 

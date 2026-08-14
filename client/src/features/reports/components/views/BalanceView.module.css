@@ -21,7 +21,7 @@
 }
 
 .card {
-    background: var(--card-bg, #fff);
+    background: var(--card-bg, var(--text-main));
     border-radius: var(--radius-lg, 12px);
     padding: 2rem;
     box-shadow: var(--shadow-sm);
@@ -70,7 +70,7 @@
     margin-top: 1rem;
     padding: 1.25rem;
     background: #0f172a;
-    color: #fff;
+    color: var(--text-main);
     border-radius: var(--radius-sm, 6px);
     font-size: 1.25rem;
     font-weight: 900;
@@ -85,11 +85,11 @@
     text-align: left;
     padding: 0.75rem;
     font-size: 0.75rem;
-    color: #fff;
+    color: var(--text-main);
     background-color: #0f172a;
     text-transform: uppercase;
     font-weight: 800;
-    border-bottom: 2px solid #334155;
+    border-bottom: 2px solid var(--dashboard-card-bg);
 }
 
 .table td {
@@ -99,7 +99,7 @@
 }
 
 .tableFooter {
-    background: var(--gray-50, #f8fafc);
+    background: var(--gray-50, var(--text-main));
     font-weight: 800;
 }
 
@@ -116,7 +116,7 @@
     text-align: center;
     border: 2px dashed var(--gray-100, #e2e8f0);
     border-radius: var(--radius-lg, 12px);
-    background: var(--gray-50, #f8fafc);
+    background: var(--gray-50, var(--text-main));
 }
 
 .emptyMsg {

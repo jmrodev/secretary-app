@@ -2,10 +2,10 @@
 
 .root {
     /* --- Local Component Tokens --- */
-    --stats-card-bg: #fff;
-    --stats-card-border: #cbd5e1;
+    --stats-card-bg: var(--text-main);
+    --stats-card-border: var(--text-secondary);
     --stats-header-color: #0f172a;
-    --stats-summary-bg: #f8fafc;
+    --stats-summary-bg: var(--text-main);
 
     /* ------------------------------ */
 
@@ -90,7 +90,7 @@
 .tableHeader {
     font-size: 0.725rem;
     font-weight: 800;
-    color: #334155;
+    color: var(--dashboard-card-bg);
     text-transform: uppercase;
     padding-bottom: 0.6rem;
     text-align: left;
@@ -102,7 +102,7 @@
 
 .tableCell {
     padding: 0.55rem 0;
-    border-bottom: 1px solid #cbd5e1;
+    border-bottom: 1px solid var(--text-secondary);
 }
 
 .tableCellRight {
@@ -111,7 +111,7 @@
 
 .label {
     font-size: 0.8125rem;
-    color: #334155;
+    color: var(--dashboard-card-bg);
     font-weight: 600;
 }
 
@@ -130,7 +130,7 @@
 }
 
 .valueBlue { color: #1d4ed8; }
-.valueGray { color: #334155; }
+.valueGray { color: var(--dashboard-card-bg); }
 .valueMuted { color: #64748b; }
 .valueGreen { color: #15803d; }
 .valueRed { color: #b91c1c; }

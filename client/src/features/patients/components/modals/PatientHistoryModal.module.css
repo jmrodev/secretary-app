@@ -82,7 +82,7 @@
 
 .item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 40px 0 rgb(0 0 0 / 15%);
+    box-shadow: 0 12px 40px 0 var(--background-bg);
 }
 
 .item:hover::before {
@@ -128,7 +128,7 @@
     color: var(--text-secondary);
     line-height: 1.5;
     padding: 0.75rem;
-    background-color: rgb(255 255 255 / 10%);
+    background-color: var(--border-color);
     backdrop-filter: blur(12px);
     border-radius: 0.5rem;
     margin-top: 0.5rem;
@@ -175,7 +175,7 @@
 .record {
     padding: 1.25rem;
     border-radius: 1rem;
-    border: 1px solid rgb(255 255 255 / 10%);
+    border: 1px solid var(--border-color);
     background-color: rgb(255 255 255 / 15%);
     backdrop-filter: blur(16px);
     box-shadow: 0 8px 32px 0 rgb(0 0 0 / 10%);
@@ -225,7 +225,7 @@
     white-space: pre-wrap;
     font-family: inherit;
     padding: 0.5rem;
-    background: rgb(255 255 255 / 50%);
+    background: var(--text-muted);
     border-radius: 0.4rem;
 }
 
@@ -252,7 +252,7 @@
     padding: 4rem 2rem;
     text-align: center;
     color: var(--gray-400);
-    background-color: rgb(255 255 255 / 10%);
+    background-color: var(--border-color);
     backdrop-filter: blur(16px);
     border-radius: 1.5rem;
     border: 1px dashed rgb(255 255 255 / 15%);

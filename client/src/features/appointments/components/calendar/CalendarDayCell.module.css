@@ -85,8 +85,8 @@
     var(--border-color) 100%
   );
   mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+    linear-gradient(var(--text-main) 0 0) content-box,
+    linear-gradient(var(--text-main) 0 0);
   mask-composite: exclude;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -105,8 +105,8 @@
     var(--border-color) 100%
   );
   mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+    linear-gradient(var(--text-main) 0 0) content-box,
+    linear-gradient(var(--text-main) 0 0);
   mask-composite: exclude;
   pointer-events: none;
   opacity: 0;
@@ -144,7 +144,7 @@
 
 .selected .number {
   background: var(--primary-color);
-  color: #fff !important;
+  color: var(--text-main) !important;
   border-radius: 50%;
   display: inline-flex;
   align-items: center;

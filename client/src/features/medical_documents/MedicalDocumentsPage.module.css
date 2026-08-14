@@ -112,8 +112,8 @@
 
 .staticText {
     padding: 0.85rem 1rem;
-    background: rgb(255 255 255 / 5%);
-    border: 1px solid rgb(255 255 255 / 10%);
+    background: var(--glass);
+    border: 1px solid var(--border-color);
     backdrop-filter: blur(8px);
     border-radius: 12px;
     font-weight: 600;
@@ -126,8 +126,8 @@
     width: 100%;
     min-height: 110px;
     padding: 0.85rem 1rem;
-    background: rgb(255 255 255 / 5%);
-    border: 1px solid rgb(255 255 255 / 10%);
+    background: var(--glass);
+    border: 1px solid var(--border-color);
     backdrop-filter: blur(8px);
     border-radius: 12px;
     color: var(--text-main);
@@ -147,8 +147,8 @@
 .select {
     width: 100%;
     padding: 0.85rem 1rem;
-    background: rgb(255 255 255 / 5%);
-    border: 1px solid rgb(255 255 255 / 10%);
+    background: var(--glass);
+    border: 1px solid var(--border-color);
     backdrop-filter: blur(8px);
     border-radius: 12px;
     color: var(--text-main);
@@ -164,8 +164,8 @@
 
 .modalFooter {
     padding: 1.25rem 1.75rem;
-    background: rgb(255 255 255 / 5%);
-    border-top: 1px solid rgb(255 255 255 / 5%);
+    background: var(--glass);
+    border-top: 1px solid var(--glass);
     backdrop-filter: blur(8px);
     display: flex;
     justify-content: flex-end;

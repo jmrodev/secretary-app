@@ -7,7 +7,7 @@
     flex-direction: column;
     height: 75vh;
     overflow: hidden;
-    background: var(--bg-card, #fff);
+    background: var(--bg-card, var(--text-main));
 }
 
 .toolbar {
@@ -58,7 +58,7 @@
     transform: translateY(-50%);
     z-index: 10;
     background: rgb(0, 0, 0, 0.4);
-    color: #fff;
+    color: var(--text-main);
     border: none;
     border-radius: 50%;
     width: 3.5rem;
@@ -119,6 +119,6 @@
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    color: #fff;
+    color: var(--text-main);
     text-align: center;
 }
