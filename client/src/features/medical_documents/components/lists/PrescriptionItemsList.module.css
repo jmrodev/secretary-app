@@ -51,7 +51,7 @@
 }
 
 .table tr:hover td {
-    background: rgb(128, 128, 128, 0.08);
+    background: var(--dashboard-card-bg);
 }
 
 .nameWrap {
@@ -72,12 +72,12 @@
 
 .dose {
     font-size: 0.75rem;
-    color: rgb(255 255 255 / 70%);
+    color: var(--text-muted);
 }
 
 .metaCell {
     font-size: 0.8rem;
-    color: rgb(255 255 255 / 80%);
+    color: var(--text-muted);
 }
 
 .metaItem {
@@ -92,7 +92,7 @@
 }
 
 .metaItem i {
-    color: rgb(255 255 255 / 90%);
+    color: var(--text-secondary);
 }
 
 .daysSupply {
@@ -107,7 +107,7 @@
 
 .formRow {
     background: transparent;
-    border-bottom: 1px dashed rgb(255 255 255 / 15%);
+    border-bottom: 1px dashed var(--border-color);
 }
 
 .formCell {
