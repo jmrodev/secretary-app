@@ -161,6 +161,9 @@
     --glass-dark: rgb(15 23 42 / 40%);
     --glass-border: rgb(255 255 255 / 5%);
     --sidebar-bg: #273142; /* DashStack Sidebar Bg */
+
+    /* Tab Navigation Surface */
+    --tab-nav-bg: #0f172a;
 }
 
 /* Light Theme - Tonos Claros (Tiza / High Contrast Clinical Palette) */
@@ -181,6 +184,7 @@
     --navbar-bg: #fff;
     --navbar-border: #cbd5e1;
     --navbar-link-color: #1e293b;
+    --tab-nav-bg: #e2e8f0;
 }
 
 /* Dim Theme - Oscuro Suave (Intermedio) */
@@ -200,4 +204,5 @@
     --border-color: rgb(255, 255, 255, 0.1);
     --navbar-bg: #334155;
     --navbar-border: rgb(255, 255, 255, 0.1);
+    --tab-nav-bg: #334155;
 }
