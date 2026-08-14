@@ -33,7 +33,7 @@
     max-width: calc(100vw - 2rem);
     height: 600px; /* Taller for mobile feel */
     max-height: 85vh;
-    background: var(--white, #fff);
+    background: var(--white, var(--text-main));
     border-radius: var(--radius-xl, 16px);
     box-shadow: var(--shadow-2xl);
     display: flex; /* Flex instead of grid for single column */
@@ -315,7 +315,7 @@
 /* The global-wa-messenger__close-btn colors are handled above by header context */
 
 .actionBtn {
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     border: none;
     color: white;
     width: 32px;
@@ -474,7 +474,7 @@
     position: absolute;
     inset: 0;
     z-index: 20;
-    background: var(--surface-primary, #fff);
+    background: var(--surface-primary, var(--text-main));
     display: flex;
     flex-direction: column;
     overflow-y: auto;

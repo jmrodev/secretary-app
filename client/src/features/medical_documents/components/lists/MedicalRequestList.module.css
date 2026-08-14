@@ -213,7 +213,7 @@
 }
 
 .paymentBadgeDebt {
-    background: #fff1f2;
+    background: var(--text-main)1f2;
     color: #e11d48;
 }
 
@@ -260,12 +260,12 @@
 
 .actionBtn:hover {
     transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
 }
 
 .actionBtnPay {
     background-color: #15803d !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnPay:hover {
@@ -274,7 +274,7 @@
 
 .actionBtnBonify {
     background-color: #0284c7 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnBonify:hover {
@@ -283,7 +283,7 @@
 
 .actionBtnDone {
     background-color: #16a34a !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnDone:hover {
@@ -292,7 +292,7 @@
 
 .actionBtnReject {
     background-color: #dc2626 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnReject:hover {
@@ -301,7 +301,7 @@
 
 .actionBtnView {
     background-color: #6366f1 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnView:hover {
@@ -309,17 +309,17 @@
 }
 
 .actionBtnEdit {
-    background-color: #334155 !important;
-    color: #fff !important;
+    background-color: var(--dashboard-card-bg) !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnEdit:hover {
-    background-color: #1e293b !important;
+    background-color: var(--background-bg) !important;
 }
 
 .actionBtnDelete {
     background-color: #b91c1c !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnDelete:hover {

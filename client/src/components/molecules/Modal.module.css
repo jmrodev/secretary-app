@@ -28,7 +28,7 @@
 .content {
     background: var(--bg-card, rgb(20 24 33 / 95%));
     backdrop-filter: blur(20px);
-    color: var(--text-main, #fff);
+    color: var(--text-main, var(--text-main));
     border-radius: var(--radius-lg, 0.75rem);
     width: 100%;
     max-width: 42rem; /* default max-width for md (antes 31.25rem) */
@@ -56,8 +56,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    border-bottom: 1px solid rgb(255 255 255 / 5%);
-    background: rgb(255 255 255 / 5%);
+    border-bottom: 1px solid var(--glass);
+    background: var(--glass);
 }
 
 .title {
@@ -83,7 +83,7 @@
 
 .close:hover {
     color: var(--text-main);
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     transform: rotate(90deg);
 }
 
@@ -101,8 +101,8 @@
     justify-content: flex-end;
     gap: 1rem;
     padding: 1rem 1.5rem;
-    border-top: 1px solid rgb(255 255 255 / 5%);
-    background-color: rgb(255 255 255 / 5%);
+    border-top: 1px solid var(--glass);
+    background-color: var(--glass);
 }
 
 @keyframes modal-fade-in { from { opacity: 0; } to { opacity: 1; } }

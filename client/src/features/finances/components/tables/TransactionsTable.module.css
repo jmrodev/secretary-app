@@ -2,7 +2,7 @@
 
 .container {
     /* --- Local Component Tokens --- */
-    --ledger-bg: var(--white, #fff);
+    --ledger-bg: var(--white, var(--text-main));
     --ledger-border: rgb(0, 0, 0, 0.08);
     --ledger-row-hover: rgb(241, 245, 249, 0.7);
     --ledger-group-bg: rgb(239, 246, 255, 0.5);
@@ -36,8 +36,8 @@
     padding: 0.875rem 0.75rem;
     text-align: left;
     font-weight: 800;
-    color: #fff;
-    border-bottom: 2px solid #334155;
+    color: var(--text-main);
+    border-bottom: 2px solid var(--dashboard-card-bg);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     font-size: 0.75rem;
@@ -272,7 +272,7 @@
 
 .actionBtnView {
     background-color: #6366f1 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
     border: none !important;
     border-radius: 6px !important;
     padding: 0.35rem 0.6rem !important;
@@ -283,7 +283,7 @@
 .actionBtnView:hover {
     background-color: #4f46e5 !important;
     transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
 }
 
 .proofLink {
@@ -294,7 +294,7 @@
     height: 32px;
     border-radius: 6px;
     background-color: #0284c7;
-    color: #fff !important;
+    color: var(--text-main) !important;
     box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1);
     transition: all 0.15s ease-in-out;
 }
@@ -302,11 +302,11 @@
 .proofLink:hover {
     background-color: #0369a1;
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px var(--modal-bg-dark);
 }
 
 .noProof {
-    color: #94a3b8;
+    color: var(--text-muted);
     font-weight: 700;
 }
 
@@ -334,12 +334,12 @@
 
 .actionBtn:hover {
     transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
 }
 
 .actionBtnPay {
     background-color: #15803d !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnPay:hover {
@@ -348,7 +348,7 @@
 
 .actionBtnInvoice {
     background-color: #1d4ed8 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnInvoice:hover {
@@ -356,17 +356,17 @@
 }
 
 .actionBtnEdit {
-    background-color: #334155 !important;
-    color: #fff !important;
+    background-color: var(--dashboard-card-bg) !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnEdit:hover {
-    background-color: #1e293b !important;
+    background-color: var(--background-bg) !important;
 }
 
 .actionBtnSync {
     background-color: #0e7490 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnSync:hover {
@@ -375,7 +375,7 @@
 
 .actionBtnDelete {
     background-color: #b91c1c !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnDelete:hover {

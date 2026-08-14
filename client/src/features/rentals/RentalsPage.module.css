@@ -32,8 +32,8 @@
     background: rgb(255 255 255 / 20%);
     backdrop-filter: blur(16px);
     border-radius: var(--radius-md);
-    border: 1px solid rgb(255 255 255 / 8%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--slate-600);
@@ -62,14 +62,14 @@
     background: rgb(255 255 255 / 20%);
     backdrop-filter: blur(16px);
     border-radius: var(--radius-lg);
-    border: 1px solid rgb(255 255 255 / 8%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     overflow: hidden;
 }
 
 .cardHeader {
     padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -109,9 +109,9 @@
 
 .officeItem {
     padding: 1rem;
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 8%);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     box-shadow: 0 4px 16px 0 rgb(0 0 0 / 10%);
     transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
@@ -120,7 +120,7 @@
 .officeItem:hover {
     background: rgb(255 255 255 / 20%);
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
 .officeInfo {
@@ -153,7 +153,7 @@
 }
 
 .th {
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     backdrop-filter: blur(8px);
     padding: 1rem 1.5rem;
     text-align: left;
@@ -162,7 +162,7 @@
     color: var(--gray-500);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .thRight {
@@ -170,7 +170,7 @@
 }
 
 .tr {
-    border-bottom: 1px solid rgb(255 255 255 / 8%);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .td {

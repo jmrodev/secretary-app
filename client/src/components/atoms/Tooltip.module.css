@@ -23,7 +23,7 @@
     visibility: hidden;
     position: absolute;
     background-color: var(--grey-800, #1f2937);
-    color: #fff;
+    color: var(--text-main);
     text-align: center;
     padding: 8px 12px;
     border-radius: 6px;

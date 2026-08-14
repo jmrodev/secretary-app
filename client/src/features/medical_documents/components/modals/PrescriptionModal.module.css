@@ -4,9 +4,9 @@
 /* ── Root container ── */
 .root {
     /* --- Local Component Tokens --- */
-    --modal-bg: rgb(255 255 255 / 10%);
-    --modal-island-bg: rgb(255 255 255 / 5%);
-    --modal-border: rgb(255 255 255 / 5%);
+    --modal-bg: var(--border-color);
+    --modal-island-bg: var(--glass);
+    --modal-border: var(--glass);
     --btn-active-bg: var(--primary-color);
     --btn-hover-bg: rgb(255 255 255 / 15%);
 
@@ -16,7 +16,7 @@
     flex-direction: column;
     gap: 1.25rem;
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
 .group {
@@ -161,13 +161,13 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.6rem 0.9rem;
-    background: rgb(255 255 255 / 10%);
-    border: 1px solid rgb(255 255 255 / 5%);
+    background: var(--border-color);
+    border: 1px solid var(--glass);
     border-radius: 0.6rem;
     font-size: 0.8rem;
     color: var(--green-200);
     backdrop-filter: blur(16px);
-    box-shadow: 0 4px 16px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 4px 16px 0 var(--modal-bg-dark);
 }
 
 /* ── Habitual medications ── */
@@ -180,7 +180,7 @@
     border: 1px solid var(--modal-border);
     border-radius: 0.75rem;
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
 .habitualGrid {
@@ -197,9 +197,9 @@
     padding: 0.4rem 0.8rem;
     font-size: 0.8rem;
     font-weight: 500;
-    background: rgb(255 255 255 / 5%);
+    background: var(--glass);
     color: var(--text-main);
-    border: 1px solid rgb(255 255 255 / 10%);
+    border: 1px solid var(--border-color);
     border-radius: 99px;
     cursor: pointer;
     transition: all 0.15s ease;
@@ -207,8 +207,8 @@
 }
 
 .habitualBtn:hover {
-    background: rgb(255 255 255 / 10%);
-    border-color: rgb(255 255 255 / 30%);
+    background: var(--border-color);
+    border-color: var(--text-muted);
 }
 
 .habitualBtnActive {
@@ -224,7 +224,7 @@
 .habitualDose {
     font-size: 0.7rem;
     color: rgb(255 255 255 / 70%);
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     padding: 0.1rem 0.4rem;
     border-radius: 99px;
 }
@@ -239,7 +239,7 @@
     border: 1px solid var(--modal-border);
     border-radius: 0.75rem;
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
 .item {
@@ -247,17 +247,17 @@
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 1rem;
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     border: 1px solid rgb(255 255 255 / 20%);
     border-radius: 0.75rem;
-    box-shadow: 0 6px 16px 0 rgb(0 0 0 / 15%);
+    box-shadow: 0 6px 16px 0 var(--background-bg);
     backdrop-filter: blur(12px);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .item:hover {
     transform: translateY(-1px);
-    box-shadow: 0 8px 24px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 24px 0 var(--modal-bg-dark);
 }
 
 .itemInfo {

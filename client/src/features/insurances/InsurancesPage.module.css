@@ -3,11 +3,11 @@
 .root {
     display: flex;
     flex-direction: column;
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 5%);
+    border: 1px solid var(--glass);
     border-radius: 1rem;
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     padding: 1.5rem;
 }
 

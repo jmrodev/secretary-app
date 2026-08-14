@@ -37,10 +37,10 @@
     align-items: center;
     gap: 0.25rem;
     border-radius: var(--radius-sm);
-    border: 1px solid rgb(255 255 255 / 5%);
-    background: rgb(255 255 255 / 10%);
+    border: 1px solid var(--glass);
+    background: var(--border-color);
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     overflow: hidden;
     transition: border-color 0.2s, background 0.2s;
 }

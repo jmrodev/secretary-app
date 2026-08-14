@@ -2,13 +2,13 @@
 
 .root {
     /* --- Local Component Tokens --- */
-    --select-bg: rgb(255 255 255 / 5%);
-    --select-border: rgb(255 255 255 / 10%);
+    --select-bg: var(--glass);
+    --select-border: var(--border-color);
     --select-text: var(--text-main);
     --select-focus-border: var(--primary-color);
     --select-focus-ring: rgb(72 128 255 / 15%);
     --select-error-border: var(--error);
-    --select-disabled-bg: rgb(255 255 255 / 2%);
+    --select-disabled-bg: var(--glass);
     --select-disabled-text: var(--text-muted);
 
     /* ------------------------------ */
@@ -43,7 +43,7 @@
 }
 
 .root option {
-    background-color: var(--dashboard-card-bg, #1e293b);
+    background-color: var(--dashboard-card-bg, var(--background-bg));
     color: var(--text-main);
 }
 

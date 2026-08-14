@@ -163,12 +163,12 @@
 
 .actionBtn:hover {
     transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
 }
 
 .actionBtnView {
     background-color: #6366f1 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnView:hover {
@@ -176,17 +176,17 @@
 }
 
 .actionBtnEdit {
-    background-color: #334155 !important;
-    color: #fff !important;
+    background-color: var(--dashboard-card-bg) !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnEdit:hover {
-    background-color: #1e293b !important;
+    background-color: var(--background-bg) !important;
 }
 
 .actionBtnDelete {
     background-color: #b91c1c !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
 .actionBtnDelete:hover {

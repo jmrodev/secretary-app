@@ -80,12 +80,12 @@
 }
 
 .managerWrapper {
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     padding: 1.25rem;
     border-radius: var(--radius-md);
-    border: 1px solid rgb(255 255 255 / 5%);
+    border: 1px solid var(--glass);
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
 /* Enhancing global input-groups within this modal - NO OVERRIDES ALLOWED ON ATOMS/MOLECULES */

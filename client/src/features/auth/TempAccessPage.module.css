@@ -2,7 +2,7 @@
 
 .tempAccessOrchestrator {
     min-height: 100vh;
-    background-color: var(--slate-50, #f8fafc);
+    background-color: var(--slate-50, var(--text-main));
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -20,9 +20,9 @@
 .card {
     background: rgb(255 255 255 / 15%);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 8%);
+    border: 1px solid var(--border-color);
     border-radius: 1.5rem;
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     overflow: hidden;
 }
 
@@ -34,7 +34,7 @@
 .title {
     font-size: 1.75rem;
     font-weight: 900;
-    color: var(--slate-800, #1e293b);
+    color: var(--slate-800, var(--background-bg));
     margin-bottom: 0.5rem;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .downloadCard {
-    background: linear-gradient(135deg, rgb(255 255 255 / 15%) 60%, rgb(255 255 255 / 5%) 100%);
+    background: linear-gradient(135deg, rgb(255 255 255 / 15%) 60%, var(--glass) 100%);
     backdrop-filter: blur(16px);
     border-radius: 1.5rem;
     padding: 1.5rem 2rem;
@@ -56,8 +56,8 @@
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
-    border: 1px solid rgb(255 255 255 / 8%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
 .downloadInfo {
@@ -67,7 +67,7 @@
 .downloadTitle {
     font-size: 1.125rem;
     font-weight: 800;
-    color: var(--slate-800, #1e293b);
+    color: var(--slate-800, var(--background-bg));
     margin-bottom: 0.25rem;
     display: flex;
     align-items: center;

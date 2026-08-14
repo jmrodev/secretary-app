@@ -79,7 +79,7 @@
 
 .accent {
     --badge-bg: var(--primary-color);
-    --badge-color: #fff;
+    --badge-color: var(--text-main);
 
     box-shadow: var(--shadow-sm);
 }

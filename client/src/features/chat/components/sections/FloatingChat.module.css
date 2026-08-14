@@ -18,7 +18,7 @@
     width: 340px;
     background: white;
     border-radius: 12px 12px 0 0;
-    box-shadow: 0 10px 40px rgb(0 0 0 / 15%);
+    box-shadow: 0 10px 40px var(--background-bg);
     border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;

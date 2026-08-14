@@ -78,10 +78,10 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: #fff;
+    background: var(--text-main);
     border: 1px solid var(--gray-300, #ced4da);
     border-radius: 8px;
-    box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15);
+    box-shadow: 0 8px 24px var(--background-bg);
     max-height: 220px;
     overflow-y: auto;
     margin-top: 0.25rem;

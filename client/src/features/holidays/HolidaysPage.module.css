@@ -21,15 +21,15 @@
 }
 
 .card {
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 8%);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-lg, 1rem);
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
 .cardTitle {
@@ -38,7 +38,7 @@
     color: var(--text-color);
     margin: 0;
     padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--dashboard-card-border, rgb(255, 255, 255, 0.05));
+    border-bottom: 1px solid var(--dashboard-card-border, var(--glass));
 }
 
 .form {

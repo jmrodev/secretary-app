@@ -41,7 +41,7 @@
 
 .panel__collapse {
     cursor: pointer;
-    color: var(--text-muted, #94a3b8);
+    color: var(--text-muted, var(--text-muted));
 }
 
 .panel__body {

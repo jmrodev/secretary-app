@@ -10,15 +10,15 @@
 .appointmentReport__empty {
     padding: 4rem 2rem;
     text-align: center;
-    background: var(--card-bg, #fff);
+    background: var(--card-bg, var(--text-main));
     border-radius: var(--radius-lg, 12px);
     color: var(--text-muted, #64748b);
-    border: 1px dashed var(--border-color, #cbd5e1);
+    border: 1px dashed var(--border-color, var(--text-secondary));
     font-weight: 500;
 }
 
 .appointmentReport__summary {
-    background-color: var(--report-summary-bg, #f8fafc);
+    background-color: var(--report-summary-bg, var(--text-main));
     border-radius: var(--radius-lg, 12px);
     padding: 1.5rem;
     border: 1px solid var(--border-color, #e2e8f0);
@@ -45,7 +45,7 @@
 .appointmentReport__table {
     width: 100%;
     border-collapse: collapse;
-    background-color: var(--card-bg, #fff);
+    background-color: var(--card-bg, var(--text-main));
     border-radius: var(--radius-md, 8px);
     overflow: hidden;
     border: 1px solid var(--border-color, #e2e8f0);
@@ -55,12 +55,12 @@
     text-align: left;
     padding: 0.875rem 1.25rem;
     background-color: #0f172a;
-    color: #fff;
+    color: var(--text-main);
     font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    border-bottom: 2px solid #334155;
+    border-bottom: 2px solid var(--dashboard-card-bg);
 }
 
 .appointmentReport__row {
@@ -84,7 +84,7 @@
 }
 
 .appointmentReport__row--weekend {
-    background-color: #fffbeb;
+    background-color: var(--text-main)beb;
 }
 
 .appointmentReport__row--holiday {
@@ -98,18 +98,18 @@
 .appointmentReport__dayHeader td {
     background-color: #0f172a;
     font-weight: 800;
-    color: #fff;
+    color: var(--text-main);
     padding: 0.75rem 1.25rem;
 }
 
 .appointmentReport__dayHeader--weekend td {
     background-color: #78350f;
-    color: #fff;
+    color: var(--text-main);
 }
 
 .appointmentReport__dayHeader--holiday td {
     background-color: #991b1b;
-    color: #fff;
+    color: var(--text-main);
 }
 
 .appointmentReport__cellDay {
@@ -233,10 +233,10 @@
 .appointmentReport__footer {
     background-color: #f1f5f9;
     font-weight: 800;
-    border-top: 2px solid #cbd5e1;
+    border-top: 2px solid var(--text-secondary);
 }
 
 .appointmentReport__footerSubtotal {
-    background-color: #f8fafc;
+    background-color: var(--text-main);
     font-weight: 700;
 }
