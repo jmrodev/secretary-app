@@ -262,6 +262,17 @@ class FinanceService {
      */
     async performBalancing(data, userId) {
         const { doctor_id, balancing_date, theoretical_balance, physical_balance, notes } = data;
+        // The frontend may send balancing_date as a JS Date serialized to an ISO
+        // string with timezone (e.g. '2026-08-14T03:00:00.000Z') because the source
+        // view returns a TIMESTAMP. The column is DATE-only, so reduce it to
+        // YYYY-MM-DD before persisting to avoid MySQL "Incorrect date value".
+        const dateOnly = String(balancing_date).split('T')[0];
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(dateOnly)) {
+            throw new Error(`Invalid balancing_date: ${balancing_date}`);
+        }
+        for (const [key, value] of Object.entries({ theoretical_balance, physical_balance })) {
+            if (isNaN(Number(value))) throw new Error(`Invalid ${key}: ${value}`);
+        }
         const difference = parseFloat(physical_balance) - parseFloat(theoretical_balance);
         
         const conn = await pool.getConnection();
@@ -272,19 +283,19 @@ class FinanceService {
             await conn.query(`
                 INSERT INTO cash_box_balancings (doctor_id, balancing_date, theoretical_balance, physical_balance, difference, notes)
                 VALUES (?, ?, ?, ?, ?, ?)
-            `, [doctor_id, balancing_date, theoretical_balance, physical_balance, difference, notes]);
+            `, [doctor_id, dateOnly, theoretical_balance, physical_balance, difference, notes]);
 
             // 2. Create the withdrawal transaction to reset the balance
             await this.createTransaction({
                 type: 'withdrawal',
                 amount: parseFloat(physical_balance),
                 method: 'cash',
-                description: `Cierre de Caja: ${balancing_date} ${notes ? ' - ' + notes : ''}`,
+                description: `Cierre de Caja: ${dateOnly} ${notes ? ' - ' + notes : ''}`,
                 doctor_id: doctor_id,
                 status: 'paid',
                 is_withdrawal: true,
-                transaction_date: `${balancing_date} 23:59:59`,
-                idempotency_key: `closure_${doctor_id}_${balancing_date}`
+                transaction_date: `${dateOnly} 23:59:59`,
+                idempotency_key: `closure_${doctor_id}_${dateOnly}`
             }, userId, conn);
 
             await conn.commit();
