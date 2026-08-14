@@ -33,7 +33,7 @@ export default defineConfig([
     rules: {
       'max-lines': ['warn', { max: 350, skipBlankLines: true, skipComments: true }],
       'no-restricted-syntax': [
-        'error',
+        'warn',
         {
           selector: "Identifier[name=/^(handleClick|handleChange|handleEvent)$/]",
           message: "Use semantic handler names (e.g., handleSavePatient) instead of generic names like handleClick.",
@@ -41,6 +41,10 @@ export default defineConfig([
         {
           selector: "JSXText[value=/\\.{3}/]",
           message: "Use the real ellipsis character (…) instead of three dots (...).",
+        },
+        {
+          selector: 'ExportDefaultDeclaration',
+          message: 'Use named exports (export const / export function) instead of export default.',
         },
       ],
       'react/jsx-uses-vars': 'error',

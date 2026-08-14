@@ -34,10 +34,10 @@ Chain strategy: pending
 
 ## Phase 2: Enforce named exports + BEM (no new deps)
 
-- [ ] 2.1 Verify: no core rule/plugin bans default export; `react-refresh/only-export-components` does not forbid it.
-- [ ] 2.2 Add `no-restricted-syntax` selector `ExportDefaultDeclaration` → "use named exports" in `client/eslint.config.js`; keep `warn` while migrating, flip to `error` in Phase 5.
-- [ ] 2.3 Configure existing `stylelint-selector-bem-pattern` in `client/.stylelintrc.json` (componentName/componentSelectors) so BEM preset actually enforces; verify `pnpm lint`.
-- [ ] 2.4 Gate: `pnpm lint` fires rule but does not break build for migrated files.
+- [x] 2.1 Verify: no core rule/plugin bans default export; `react-refresh/only-export-components` does not forbid it.
+- [x] 2.2 Add `no-restricted-syntax` selector `ExportDefaultDeclaration` → "use named exports" in `client/eslint.config.js`; keep `warn` while migrating, flip to `error` in Phase 5.
+- [x] 2.3 Configure existing `stylelint-selector-bem-pattern` in `client/.stylelintrc.json` (componentName/componentSelectors) so BEM preset actually enforces; verify `pnpm lint`.
+- [x] 2.4 Gate: `pnpm lint` fires rule but does not break build for migrated files.
 
 ## Phase 3: Named-exports migration (smallest → largest), one PR each
 
