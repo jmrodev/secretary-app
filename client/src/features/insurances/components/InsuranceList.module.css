@@ -50,7 +50,7 @@
     transform: translateY(-4px);
     box-shadow: var(--shadow-premium);
     border-color: var(--primary-color);
-    background-color: var(--gray-800);
+    background-color: var(--card-hover-bg);
 }
 
 .header {
@@ -86,7 +86,7 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 800;
-    color: var(--white);
+    color: var(--text-main);
     line-height: 1.2;
     white-space: nowrap;
     overflow: hidden;
@@ -107,7 +107,7 @@
 
 .body {
     flex: 1;
-    background-color: var(--gray-900);
+    background-color: var(--card-surface-bg);
     padding: 1rem;
     border-radius: var(--radius-md);
     border: 1px solid var(--dashboard-card-border);
@@ -127,7 +127,7 @@
 
 .dataIcon {
     color: var(--primary-color);
-    background-color: rgb(72 128 255 / 10%);
+    background-color: rgb(var(--primary-rgb) / 10%);
     padding: 0.4rem;
     border-radius: 0.5rem;
     display: flex;
@@ -144,13 +144,13 @@
 }
 
 .link {
-    color: var(--blue-400);
+    color: var(--primary-color);
     text-decoration: none;
     transition: all 0.2s;
 }
 
 .link:hover {
-    color: var(--blue-300);
+    color: var(--primary-hover);
     text-decoration: underline;
 }
 
