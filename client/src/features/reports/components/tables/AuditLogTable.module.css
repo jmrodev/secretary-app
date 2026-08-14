@@ -1,8 +1,8 @@
 /* AuditLogTable Styles (BEM) */
 
 .auditLogTableContainer {
-    background-color: var(--card-bg, var(--text-main));
-    border: 1px solid var(--border-color, #e2e8f0);
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-lg, 12px);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
@@ -14,7 +14,7 @@
 }
 
 .thead {
-    background-color: #0f172a;
+    background-color: var(--gray-900);
 }
 
 .th {
@@ -25,7 +25,7 @@
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-main);
-    background-color: #0f172a;
+    background-color: var(--gray-900);
     border-bottom: 2px solid var(--dashboard-card-bg);
 }
 
@@ -34,20 +34,20 @@
 }
 
 .tbody {
-    background-color: var(--card-bg, var(--text-main));
+    background-color: var(--dashboard-card-bg);
 }
 
 .row {
-    border-bottom: 1px solid var(--gray-100, #f1f5f9);
+    border-bottom: 1px solid var(--gray-100, var(--gray-100));
     transition: background-color 0.15s ease-in-out;
 }
 
 .row:hover {
-    background-color: #f1f5f9 !important;
+    background-color: var(--gray-100) !important;
 }
 
 .row:hover .cell {
-    color: #0f172a !important;
+    color: var(--gray-900) !important;
 }
 
 .cell {
@@ -58,7 +58,7 @@
 
 .cellTime {
     white-space: nowrap;
-    color: var(--text-muted, #64748b);
+    color: var(--text-muted);
 }
 
 .cellUser {
@@ -84,18 +84,18 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: var(--text-muted, #64748b);
+    color: var(--text-muted);
 }
 
 .cellIp {
     font-size: 0.75rem;
-    color: var(--text-muted, #64748b);
+    color: var(--text-muted);
     font-family: var(--font-mono, monospace);
 }
 
 .empty {
     padding: 3rem 2rem;
     text-align: center;
-    color: var(--text-muted, #64748b);
+    color: var(--text-muted);
     font-weight: 500;
 }

@@ -19,10 +19,10 @@
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    background-color: var(--dashboard-card-bg-alt, rgb(0 0 0 / 2%));
+    background-color: var(--dashboard-card-bg);
     padding: 0.25rem;
     border-radius: var(--radius-md, 8px);
-    border: 1px solid var(--dashboard-card-border, var(--border-color, #e2e8f0));
+    border: 1px solid var(--border-color);
 }
 
 .reportFilters__selectMonth {
@@ -46,7 +46,7 @@
     align-items: center;
     gap: 0.5rem;
     padding-left: 0.75rem;
-    border-left: 1px solid var(--border-color, #e2e8f0);
+    border-left: 1px solid var(--border-color);
 }
 
 @media (width <= 1024px) {
