@@ -2,13 +2,13 @@
 
 .root {
     /* --- Local Component Tokens --- */
-    --select-bg: var(--glass);
+    --select-bg: var(--background-bg);
     --select-border: var(--border-color);
     --select-text: var(--text-main);
     --select-focus-border: var(--primary-color);
     --select-focus-ring: rgb(72 128 255 / 15%);
     --select-error-border: var(--error);
-    --select-disabled-bg: var(--glass);
+    --select-disabled-bg: var(--background-bg);
     --select-disabled-text: var(--text-muted);
 
     /* ------------------------------ */
@@ -31,7 +31,7 @@
 
     /* Basic reset for appearance */
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255, 255, 255, 0.6)'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.875rem center;
     background-size: 1.25rem;
@@ -82,8 +82,8 @@
     box-shadow: none;
     padding-left: 0;
 
-    /* White arrow for ghost variant */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    /* Arrow for ghost variant */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
 }
 
 .ghost:focus {
