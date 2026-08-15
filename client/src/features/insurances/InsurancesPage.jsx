@@ -13,7 +13,7 @@ import FeatureToolbar from '@/components/organisms/FeatureToolbar';
  * InsurancesPage (Orchestrator).
  * Manages healthcare providers and insurance schemes.
  */
-const InsurancesPage = () => {
+export const InsurancesPage = () => {
     const {
         filteredInsurances,
         loading,
@@ -36,7 +36,7 @@ const InsurancesPage = () => {
 
     return (
         <MainLayout wide flush title={t('insurances') || 'Obras Sociales'}>
-            <div className={`${styles.root}  `}>
+            <div className={`${styles.InsurancesPage__root}  `}>
                 <FeatureToolbar
                     className="__toolbar"
                     actions={
@@ -51,12 +51,12 @@ const InsurancesPage = () => {
                     }
                 />
 
-                <section className={`${styles.main}`}>
+                <section className={`${styles.InsurancesPage__main}`}>
                     {loading && filteredInsurances.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
                         <Card noPadding>
-                            <div className={`${styles.content} `}>
+                            <div className={`${styles.InsurancesPage__content} `}>
                                 <InsuranceList
                                     insurances={filteredInsurances}
                                     onEdit={handleOpenEdit}
@@ -80,5 +80,3 @@ const InsurancesPage = () => {
         </MainLayout>
     );
 };
-
-export default InsurancesPage;

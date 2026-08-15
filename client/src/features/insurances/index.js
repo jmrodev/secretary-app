@@ -2,6 +2,6 @@
 
 export { useInsurancesController } from '@/features/insurances/hooks/useInsurancesController';
 
-export { default as InsuranceFormModal } from '@/features/insurances/components/InsuranceFormModal';
-export { default as InsurancesPage } from '@/features/insurances/InsurancesPage';
-export { default as InsuranceList } from '@/features/insurances/components/InsuranceList';
+export { InsuranceFormModal } from '@/features/insurances/components/InsuranceFormModal';
+export { InsurancesPage } from '@/features/insurances/InsurancesPage';
+export { InsuranceList } from '@/features/insurances/components/InsuranceList';
