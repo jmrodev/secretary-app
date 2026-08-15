@@ -15,26 +15,26 @@ export const HolidayList = ({ holidays, onDelete }) => {
 
     if (!sortedHolidays || sortedHolidays.length === 0) {
         return (
-            <div className={`${styles.empty}`}>
-                <Icon name="beach_access" size="3rem" className={`${styles.emptyIcon}`} />
+            <div className={`${styles.HolidayList__empty}`}>
+                <Icon name="beach_access" size="3rem" className={`${styles.HolidayList__emptyIcon}`} />
                 No hay feriados configurados.
             </div>
         );
     }
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.HolidayList__root}`}>
             {sortedHolidays.map(h => (
-                <div key={h.id} className={`${styles.item} animate-fade-in`}>
-                    <div className={`${styles.info}`}>
-                        <span className={`${styles.date}`}>
+                <div key={h.id} className={`${styles.HolidayList__item} animate-fade-in`}>
+                    <div className={`${styles.HolidayList__info}`}>
+                        <span className={`${styles.HolidayList__date}`}>
                             <Icon name="calendar_today" size="0.9rem" />
                             {formatDate(h.date, { monthName: true })}
                         </span>
-                        <div className={`${styles.description}`}>{h.description}</div>
+                        <div className={`${styles.HolidayList__description}`}>{h.description}</div>
                     </div>
                     <Button
-                        variant="ghost" size="sm-compact" className={`${styles.deleteBtn}`}
+                        variant="ghost" size="sm-compact" className={`${styles.HolidayList__deleteBtn}`}
                         onClick={() => onDelete(h.id)} icon={<Icon name="DELETE" size="1rem" />}
                     />
                 </div>
