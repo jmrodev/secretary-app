@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import AiSettings from '@/features/config/components/sections/AiSettings';
+import { AiSettings } from '@/features/config/components/sections/AiSettings';
 
 // No LanguageProvider: useLanguage() falls back to t = (key) => key, so tests
 // assert on stable keys and prove no hardcoded literal fallback is rendered.

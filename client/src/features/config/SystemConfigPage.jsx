@@ -48,7 +48,7 @@ const SettingsContent = ({ activeTab, controller, registryLoaded }) => {
  * SystemConfigPage (Orchestrator).
  * Now fully decoupled using a Slot/Registry pattern.
  */
-const SystemConfigPage = () => {
+export const SystemConfigPage = () => {
     const controller = useSystemConfigController();
     const { t, activeTab, qrModal, handlers } = controller;
 
@@ -98,4 +98,3 @@ const SystemConfigPage = () => {
     );
 };
 
-export default SystemConfigPage;

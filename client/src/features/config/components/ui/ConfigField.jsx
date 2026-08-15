@@ -10,7 +10,7 @@ import styles from './ConfigField.module.css';
  */
 const EMPTY_OPTIONS = [];
 
-const ConfigField = ({
+export const ConfigField = ({
     label,
     hint,
     type = 'text',
@@ -61,4 +61,3 @@ const ConfigField = ({
     );
 };
 
-export default ConfigField;

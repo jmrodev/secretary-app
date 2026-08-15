@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import ConfigField from '@/features/config/components/ui/ConfigField';
+import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import Input from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
@@ -12,7 +12,7 @@ import { useModal } from '@/context/ModalContext';
  * BillingSettings Feature Component.
  * Handles AFIP (Argentine Tax Authority) integration, connection status, and certificate generation.
  */
-const BillingSettings = ({ user, settings, updateSetting }) => {
+export const BillingSettings = ({ user, settings, updateSetting }) => {
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { alert } = useModal();
@@ -192,4 +192,3 @@ const BillingSettings = ({ user, settings, updateSetting }) => {
     );
 };
 
-export default BillingSettings;

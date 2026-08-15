@@ -1,14 +1,14 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import ConfigField from '@/features/config/components/ui/ConfigField';
+import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import Select from '@/components/atoms/Select';
 
 /**
  * IntegrationRemoteAccess Feature Molecule.
  * Management of external access methods like DuckDNS or local-only mode.
  */
-const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loading, isAuthorized }) => {
+export const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loading, isAuthorized }) => {
     const method = settings.remote_access_method || 'none';
 
     return (
@@ -96,4 +96,3 @@ const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunnel, loa
     );
 };
 
-export default IntegrationRemoteAccess;

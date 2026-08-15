@@ -1,7 +1,7 @@
 import React from 'react';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
 import { Button } from '@/components/atoms/Button';
-import ConfigField from '@/features/config/components/ui/ConfigField';
+import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import styles from './MessageTemplateEditor.module.css';
 
 /**
@@ -29,7 +29,7 @@ const getFriendlyVarLabel = (variable, t) => {
 
 const EMPTY_ARRAY = [];
 
-const MessageTemplateEditor = ({
+export const MessageTemplateEditor = ({
     id,
     label,
     value,
@@ -116,4 +116,3 @@ const MessageTemplateEditor = ({
     );
 };
 
-export default MessageTemplateEditor;
