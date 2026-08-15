@@ -3,7 +3,7 @@ import { formatDate } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
 import styles from './MedicalReportTable.module.css';
 
-const LicenseReportTable = ({ data, t }) => {
+export const LicenseReportTable = ({ data, t }) => {
     const list = Array.isArray(data?.licenses) ? data.licenses : [];
 
     if (!list || list.length === 0) {
@@ -145,4 +145,4 @@ const LicenseReportTable = ({ data, t }) => {
     );
 };
 
-export default LicenseReportTable;
+

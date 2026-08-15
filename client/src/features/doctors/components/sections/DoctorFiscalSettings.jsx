@@ -11,7 +11,7 @@ import styles from './DoctorFiscalSettings.module.css';
  * Molecule for displaying Doctor's AFIP/Fiscal settings.
  * Pure Presentational Component.
  */
-const DoctorFiscalSettings = ({
+export const DoctorFiscalSettings = ({
     // Data Props
     data,
     generatedCsr,
@@ -182,4 +182,4 @@ const DoctorFiscalSettings = ({
     );
 };
 
-export default DoctorFiscalSettings;
+

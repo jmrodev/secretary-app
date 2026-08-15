@@ -3,7 +3,7 @@ import { formatDate, parseDate } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
 import styles from './PrescriptionReportTable.module.css';
 
-const PrescriptionReportTable = ({ data, t }) => {
+export const PrescriptionReportTable = ({ data, t }) => {
     const list = Array.isArray(data?.prescriptions) ? data.prescriptions : [];
 
     if (!list || list.length === 0) {
@@ -169,4 +169,4 @@ const PrescriptionReportTable = ({ data, t }) => {
     );
 };
 
-export default PrescriptionReportTable;
+

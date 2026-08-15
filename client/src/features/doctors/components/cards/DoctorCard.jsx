@@ -4,7 +4,7 @@ import Icon from '@/components/atoms/Icon';
 import { formatCurrency } from '@/utils/core/format';
 import styles from './DoctorCard.module.css';
 
-const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
+export const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
     return (
         <article className={`${styles.root} card animate-fade-in`}>
             <header className={`${styles.header}`}>
@@ -96,4 +96,4 @@ const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
     );
 };
 
-export default DoctorCard;
+

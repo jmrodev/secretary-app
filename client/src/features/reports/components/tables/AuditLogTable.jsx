@@ -4,7 +4,7 @@ import Badge from '@/components/atoms/Badge';
 import { formatDateTimeLong } from '@/utils/core/dateUtils';
 import styles from './AuditLogTable.module.css';
 
-const AuditLogTable = ({ logs, onSelectLog, t }) => {
+export const AuditLogTable = React.memo(({ logs, onSelectLog, t }) => {
 
     const formatAction = (action) => {
         let variant = 'gray';
@@ -72,6 +72,4 @@ const AuditLogTable = ({ logs, onSelectLog, t }) => {
             </table>
         </div>
     );
-};
-
-export default React.memo(AuditLogTable);
+});

@@ -1,15 +1,15 @@
 import React from 'react';
-import ReportFilters from '@/features/reports/components/ui/ReportFilters';
-import AppointmentReportTable from '@/features/reports/components/tables/AppointmentReportTable';
-import PrescriptionReportTable from '@/features/reports/components/tables/PrescriptionReportTable';
-import LicenseReportTable from '@/features/reports/components/tables/LicenseReportTable';
-import CertificateReportTable from '@/features/reports/components/tables/CertificateReportTable';
-import BalanceView from '@/features/reports/components/views/BalanceView';
+import { ReportFilters } from '@/features/reports/components/ui/ReportFilters';
+import { AppointmentReportTable } from '@/features/reports/components/tables/AppointmentReportTable';
+import { PrescriptionReportTable } from '@/features/reports/components/tables/PrescriptionReportTable';
+import { LicenseReportTable } from '@/features/reports/components/tables/LicenseReportTable';
+import { CertificateReportTable } from '@/features/reports/components/tables/CertificateReportTable';
+import { BalanceView } from '@/features/reports/components/views/BalanceView';
 import PageHeader from '@/components/ui/PageHeader';
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 import styles from './ReportsDashboard.module.css';
 
-const ReportsDashboard = ({
+export const ReportsDashboard = ({
     t,
     activeTab,
     setActiveTab,
@@ -96,5 +96,5 @@ const ReportsDashboard = ({
     );
 };
 
-export default ReportsDashboard;
+
 

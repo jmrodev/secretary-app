@@ -1,11 +1,11 @@
 import React from 'react';
-import AuditLogTable from '@/features/reports/components/tables/AuditLogTable';
+import { AuditLogTable } from '@/features/reports/components/tables/AuditLogTable';
 import { Button } from '@/components/atoms/Button';
 import Modal from '@/components/molecules/Modal';
 import { formatDate } from '@/utils/core/dateUtils';
 import styles from './AuditLogManager.module.css';
 
-const AuditLogManager = ({
+export const AuditLogManager = ({
     logs,
     selectedLog,
     setSelectedLog,
@@ -108,4 +108,4 @@ const AuditLogManager = ({
     );
 };
 
-export default AuditLogManager;
+

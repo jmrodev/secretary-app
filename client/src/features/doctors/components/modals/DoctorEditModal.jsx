@@ -7,15 +7,15 @@ import Input from '@/components/atoms/Input';
 import Switch from '@/components/atoms/Switch';
 import TabNav from '@/components/molecules/TabNav';
 import TabButton from '@/components/atoms/TabButton';
-import DoctorTariffsForm from '@/features/doctors/components/sections/DoctorTariffsForm';
-import DoctorGoogleSettings from '@/features/doctors/components/sections/DoctorGoogleSettings';
-import DoctorScheduleSettings from '@/features/doctors/components/sections/DoctorScheduleSettings';
-import DoctorFiscalSettings from '@/features/doctors/components/sections/DoctorFiscalSettings';
-import DoctorMessagesForm from '@/features/doctors/components/sections/DoctorMessagesForm';
+import { DoctorTariffsForm } from '@/features/doctors/components/sections/DoctorTariffsForm';
+import { DoctorGoogleSettings } from '@/features/doctors/components/sections/DoctorGoogleSettings';
+import { DoctorScheduleSettings } from '@/features/doctors/components/sections/DoctorScheduleSettings';
+import { DoctorFiscalSettings } from '@/features/doctors/components/sections/DoctorFiscalSettings';
+import { DoctorMessagesForm } from '@/features/doctors/components/sections/DoctorMessagesForm';
 import { useDoctorFiscalController } from '@/features/doctors/hooks/useDoctorFiscalController';
 import styles from './DoctorEditModal.module.css';
 
-const DoctorEditModal = ({
+export const DoctorEditModal = ({
     isOpen,
     onClose,
     activeTab,
@@ -234,4 +234,4 @@ const DoctorEditModal = ({
     );
 };
 
-export default DoctorEditModal;
+

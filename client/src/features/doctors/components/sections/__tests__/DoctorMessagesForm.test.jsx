@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import DoctorMessagesForm from '@/features/doctors/components/sections/DoctorMessagesForm';
+import { DoctorMessagesForm } from '@/features/doctors/components/sections/DoctorMessagesForm';
 
 // t stub: labels resolve to their keys, so tests assert on stable keys and
 // prove the form renders no hardcoded literals.

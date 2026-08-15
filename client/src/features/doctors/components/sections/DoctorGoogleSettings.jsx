@@ -4,7 +4,7 @@ import Badge from '@/components/atoms/Badge';
 import Icon from '@/components/atoms/Icon';
 import styles from './DoctorGoogleSettings.module.css';
 
-const DoctorGoogleSettings = ({
+export const DoctorGoogleSettings = ({
     connected,
     onConnect,
     onDisconnect,
@@ -82,4 +82,4 @@ const DoctorGoogleSettings = ({
     );
 };
 
-export default DoctorGoogleSettings;
+
