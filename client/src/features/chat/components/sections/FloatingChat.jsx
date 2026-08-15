@@ -6,8 +6,8 @@ import { Button } from '@/components/atoms/Button';
 import { formatTime } from '@/utils/core/dateUtils';
 
 // Local Components
-import ChatThread from '@/features/chat/components/sections/ChatThread';
-import ChatList from '@/features/chat/components/ui/ChatList';
+import { ChatThread } from '@/features/chat/components/sections/ChatThread';
+import { ChatList } from '@/features/chat/components/ui/ChatList';
 
 import styles from './FloatingChat.module.css';
 
@@ -16,7 +16,7 @@ import styles from './FloatingChat.module.css';
  * Minimized chat widget for quick messaging between users.
  * Orchestrates views between the conversation list and the active thread.
  */
-const FloatingChat = () => {
+export const FloatingChat = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
     const {
@@ -169,5 +169,3 @@ const FloatingChat = () => {
         </div>
     );
 };
-
-export default FloatingChat;

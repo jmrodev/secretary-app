@@ -6,7 +6,7 @@ import styles from './LoginPage.module.css';
  * LoginPage (Orchestrator).
  * Entry point for user authentication.
  */
-const LoginPage = () => {
+export const LoginPage = () => {
     return (
         <section className={`${styles.root} ${styles.hero} `}>
             <div className={`${styles.backgroundBlobs}`}>
@@ -20,5 +20,3 @@ const LoginPage = () => {
         </section>
     );
 };
-
-export default LoginPage;

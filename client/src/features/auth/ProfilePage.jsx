@@ -1,6 +1,6 @@
 import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
-import ProfileEditor from '@/features/auth/components/forms/ProfileEditor';
+import { ProfileEditor } from '@/features/auth/components/forms/ProfileEditor';
 import { useProfileController } from '@/features/auth/hooks/useProfileController';
 import styles from './ProfilePage.module.css';
 
@@ -8,7 +8,7 @@ import styles from './ProfilePage.module.css';
  * ProfilePage (Orchestrator).
  * User profile management interface.
  */
-const ProfilePage = () => {
+export const ProfilePage = () => {
     const profileProps = useProfileController();
 
     return (
@@ -19,5 +19,3 @@ const ProfilePage = () => {
         </MainLayout>
     );
 };
-
-export default ProfilePage;

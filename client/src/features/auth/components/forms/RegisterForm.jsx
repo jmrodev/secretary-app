@@ -11,7 +11,7 @@ import styles from './RegisterForm.module.css';
  * RegisterForm - Executor Component.
  * Implements the registration UI and connects it to the useRegisterController.
  */
-const RegisterForm = () => {
+export const RegisterForm = () => {
     const {
         formData,
         error,
@@ -151,5 +151,3 @@ const RegisterForm = () => {
         </div>
     );
 };
-
-export default RegisterForm;

@@ -13,7 +13,7 @@ import styles from './WhatsAppModal.module.css';
  * Facilitates sending direct WhatsApp messages to patients.
  * Handles phone normalization (Argentinian format) and message encoding/clipboard copy.
  */
-const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => {
+export const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => {
     const { t } = useLanguage();
     const { showMessage } = useMessage();
 
@@ -121,5 +121,3 @@ const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange }) => 
         </Modal>
     );
 };
-
-export default WhatsAppModal;

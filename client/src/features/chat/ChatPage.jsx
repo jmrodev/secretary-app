@@ -9,7 +9,7 @@ import styles from './ChatPage.module.css';
  * ChatPage (Orchestrator).
  * Full-screen chat experience for staff and admins.
  */
-const ChatPage = () => {
+export const ChatPage = () => {
     const { t } = useLanguage();
     const {
         user,
@@ -64,5 +64,3 @@ const ChatPage = () => {
     );
 
 };
-
-export default ChatPage;

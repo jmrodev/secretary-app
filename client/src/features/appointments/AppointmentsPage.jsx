@@ -16,8 +16,8 @@ import SlotExplorerDropdown from './components/ui/SlotExplorerDropdown';
 // Shared/Domain Modals (Injectable slots)
 import { PrescriptionModal, MedicationInput } from '@/features/medical_documents';
 import { PatientHistoryModal, PatientManagerModal, PatientSearchSelect } from '@/features/patients';
-import WhatsAppModal from '@/features/chat/components/ui/WhatsAppModal';
-import AdminAuthModal from '@/features/auth/components/modals/AdminAuthModal';
+import { WhatsAppModal } from '@/features/chat/components/ui/WhatsAppModal';
+import { AdminAuthModal } from '@/features/auth/components/modals/AdminAuthModal';
 import { TransactionModal } from '@/features/finances';
 
 import styles from './AppointmentsPage.module.css';
