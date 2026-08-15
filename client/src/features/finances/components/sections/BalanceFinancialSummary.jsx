@@ -5,7 +5,7 @@ import styles from './BalanceFinancialSummary.module.css';
 /**
  * BalanceFinancialSummary Molecule.
  */
-const BalanceFinancialSummary = ({ summary }) => {
+export const BalanceFinancialSummary = ({ summary }) => {
     if (!summary) return null;
 
     const {
@@ -77,4 +77,3 @@ const BalanceFinancialSummary = ({ summary }) => {
     );
 };
 
-export default BalanceFinancialSummary;

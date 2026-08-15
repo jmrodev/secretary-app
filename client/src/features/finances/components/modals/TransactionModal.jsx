@@ -26,7 +26,7 @@ import { TransactionPaymentsSection } from '../sections/TransactionPaymentsSecti
  * TransactionModal Molecule.
  * Orchestrates the creation and editing of financial records.
  */
-const TransactionModal = ({
+export const TransactionModal = ({
     isOpen,
     onClose,
     onSuccess,
@@ -207,4 +207,3 @@ const TransactionModal = ({
     );
 };
 
-export default TransactionModal;

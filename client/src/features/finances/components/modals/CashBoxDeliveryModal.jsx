@@ -10,7 +10,7 @@ import styles from './CashBoxDeliveryModal.module.css';
  * CashBoxDeliveryModal Feature Molecule.
  * Modal for recording physical cash delivery to doctors/owners.
  */
-const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance, amount, setAmount, t }) => {
+export const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance, amount, setAmount, t }) => {
     return (
         <Modal
             isOpen={isOpen}
@@ -47,6 +47,4 @@ const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, balance,
         </Modal>
     );
 };
-
-export default CashBoxDeliveryModal;
 

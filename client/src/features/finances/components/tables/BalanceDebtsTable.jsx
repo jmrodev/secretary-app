@@ -6,7 +6,7 @@ import styles from './BalanceDebtsTable.module.css';
  */
 const EMPTY_DEBTS = [];
 
-const BalanceDebtsTable = ({ debts = EMPTY_DEBTS, totalDebt, t }) => {
+export const BalanceDebtsTable = ({ debts = EMPTY_DEBTS, totalDebt, t }) => {
     return (
         <section className={`${styles.root} animate-fade-in`}>
             <h3 className={`${styles.title}`}>Deudas Pendientes</h3>
@@ -49,4 +49,3 @@ const BalanceDebtsTable = ({ debts = EMPTY_DEBTS, totalDebt, t }) => {
     );
 };
 
-export default BalanceDebtsTable;

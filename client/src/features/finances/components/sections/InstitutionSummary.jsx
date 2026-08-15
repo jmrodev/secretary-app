@@ -5,7 +5,7 @@ import Icon from '@/components/atoms/Icon';
  * InstitutionSummary Molecule.
  * Displays key financial metrics and controls for institution reports.
  */
-const InstitutionSummary = ({
+export const InstitutionSummary = ({
     report,
     selectedAmount = 0,
     t
@@ -65,4 +65,3 @@ const InstitutionSummary = ({
     );
 };
 
-export default InstitutionSummary;

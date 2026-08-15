@@ -10,7 +10,7 @@ import styles from './PendingClosuresModal.module.css';
  * CashBalancingModal Molecule.
  * Handles the actual balancing (Arqueo) of a specific day.
  */
-const CashBalancingModal = ({ isOpen, onClose, day, onConfirm, t }) => {
+const CashBalancingModalBase = ({ isOpen, onClose, day, onConfirm, t }) => {
     const [physicalBalance, setPhysicalBalance] = useState('');
     const [notes, setNotes] = useState('');
     const [loading, setLoading] = useState(false);
@@ -94,4 +94,4 @@ const CashBalancingModal = ({ isOpen, onClose, day, onConfirm, t }) => {
     );
 };
 
-export default React.memo(CashBalancingModal);
+export const CashBalancingModal = React.memo(CashBalancingModalBase);

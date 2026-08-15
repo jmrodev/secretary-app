@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Badge from '@/components/atoms/Badge';
-import InvoiceDetailContent from '@/features/finances/components/sections/InvoiceDetailContent';
+import { InvoiceDetailContent } from '@/features/finances/components/sections/InvoiceDetailContent';
 import styles from './TransactionsTable.module.css';
 
 /**
@@ -10,7 +10,7 @@ import styles from './TransactionsTable.module.css';
  * Renders a specialized row for the financial ledger in the finances domain.
  * Refactored to follow BEM and Atomic Design standards.
  */
-const TransactionRow = ({
+export const TransactionRow = ({
     tx,
     groupLength,
     canManagerFinance,
@@ -168,7 +168,4 @@ const TransactionRow = ({
         </tr>
     );
 };
-
-export default TransactionRow;
-
 

@@ -5,7 +5,7 @@ import styles from './InstitutionPatientsTable.module.css';
  * InstitutionPatientsTable Molecule.
  * Renders the roster of patients associated with an institution.
  */
-const InstitutionPatientsTable = ({
+export const InstitutionPatientsTable = ({
     patients,
     formatDate,
     t
@@ -61,6 +61,4 @@ const InstitutionPatientsTable = ({
         </section>
     );
 };
-
-export default InstitutionPatientsTable;
 

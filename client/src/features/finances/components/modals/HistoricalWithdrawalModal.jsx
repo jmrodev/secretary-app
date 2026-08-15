@@ -13,7 +13,7 @@ import styles from './HistoricalWithdrawalModal.module.css';
  * Allows administrative staff to record manual cash withdrawals from previous dates.
  * Refactored to follow BEM and Atomic Design standards.
  */
-const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) => {
+export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) => {
     const [state, dispatch] = React.useReducer((s, a) => ({ ...s, ...a }), {
         amount: '',
         date: '',
@@ -121,4 +121,3 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
     );
 };
 
-export default HistoricalWithdrawalModal;

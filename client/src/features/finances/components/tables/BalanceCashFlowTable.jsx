@@ -9,7 +9,7 @@ const EMPTY_ARRAY = [];
  * Detailed daily breakdown of income split by payment method (cash vs others).
  * Part of the analytical reporting within the finances domain.
  */
-const BalanceCashFlowTable = ({ appointments = EMPTY_ARRAY, t }) => {
+export const BalanceCashFlowTable = ({ appointments = EMPTY_ARRAY, t }) => {
     // Filter days up to today
     const filteredDays = React.useMemo(() => {
         const today = getToday();
@@ -73,4 +73,3 @@ const BalanceCashFlowTable = ({ appointments = EMPTY_ARRAY, t }) => {
     );
 };
 
-export default BalanceCashFlowTable;

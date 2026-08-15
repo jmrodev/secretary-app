@@ -60,7 +60,7 @@ const DoctorCard = ({ id, name, balances, compact, t }) => {
     );
 };
 
-const CashBoxSummary = ({
+export const CashBoxSummary = ({
     doctors,
     selectedDoctorFilter,
     onSelectDoctor,
@@ -118,6 +118,4 @@ const CashBoxSummary = ({
         </div>
     );
 };
-
-export default CashBoxSummary;
 

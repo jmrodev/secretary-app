@@ -9,7 +9,7 @@ import styles from './InstitutionTransactionsTable.module.css';
  * InstitutionTransactionsTable Molecule.
  * Renders the list of financial transactions for an institution.
  */
-const InstitutionTransactionsTable = ({
+export const InstitutionTransactionsTable = ({
     transactions,
     showPendingOnly,
     setShowPendingOnly,
@@ -151,6 +151,4 @@ const InstitutionTransactionsTable = ({
         </section>
     );
 };
-
-export default InstitutionTransactionsTable;
 

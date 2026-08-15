@@ -3,10 +3,10 @@ import { useInstitutionFinances } from '@/features/finances/hooks/useInstitution
 import { formatDate } from '@/utils/core/dateUtils';
 
 // Molecules
-import InstitutionSummary from '@/features/finances/components/sections/InstitutionSummary';
-import InstitutionTransactionsTable from '@/features/finances/components/tables/InstitutionTransactionsTable';
-import InstitutionPatientsTable from '@/features/finances/components/tables/InstitutionPatientsTable';
-import InstitutionPaymentModal from '@/features/finances/components/modals/InstitutionPaymentModal';
+import { InstitutionSummary } from '@/features/finances/components/sections/InstitutionSummary';
+import { InstitutionTransactionsTable } from '@/features/finances/components/tables/InstitutionTransactionsTable';
+import { InstitutionPatientsTable } from '@/features/finances/components/tables/InstitutionPatientsTable';
+import { InstitutionPaymentModal } from '@/features/finances/components/modals/InstitutionPaymentModal';
 
 // Atoms
 import { Button } from '@/components/atoms/Button';
@@ -19,7 +19,7 @@ import styles from './InstitutionFinances.module.css';
  * Orchestrates financial reports and patient data for health insurance institutions.
  * Institution selection is managed by the parent sidebar (Institutions.jsx).
  */
-const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMode, t }) => {
+export const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMode, t }) => {
     const {
         report,
         patients,
@@ -167,4 +167,3 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
     );
 };
 
-export default InstitutionFinances;
