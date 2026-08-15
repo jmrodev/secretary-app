@@ -33,7 +33,7 @@ export const ChatPage = () => {
                 <div>
                     <div className="chat-page-container">
                         <ChatSidebar
-                            className={`${styles.chatSidebar}`}
+                            className={`${styles.ChatPage__chatSidebar}`}
                             conversations={conversations}
                             selectedConvo={selectedConvo}
                             onSelectConvo={setSelectedConvo}
@@ -45,7 +45,7 @@ export const ChatPage = () => {
                         />
 
                         <ChatWindow
-                            className={`${styles.chatWindow}`}
+                            className={`${styles.ChatPage__chatWindow}`}
                             selectedConvo={selectedConvo}
                             thread={thread}
                             user={user}

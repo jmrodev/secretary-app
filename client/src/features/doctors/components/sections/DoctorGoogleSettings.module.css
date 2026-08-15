@@ -1,20 +1,20 @@
 /* DoctorGoogleSettings Component Styles */
 
-.root {
+.DoctorGoogleSettings__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.connectBtn {
+.DoctorGoogleSettings__connectBtn {
     width: 100%;
 }
 
-.disconnectBtn {
+.DoctorGoogleSettings__disconnectBtn {
     width: 100%;
 }
 
-.statusCard {
+.DoctorGoogleSettings__statusCard {
     background: var(--gray-50);
     padding: 1.5rem;
     border-radius: var(--radius);
@@ -24,58 +24,58 @@
     justify-content: space-between;
 }
 
-.info {
+.DoctorGoogleSettings__info {
     display: flex;
     flex-direction: column;
 }
 
-.title {
+.DoctorGoogleSettings__title {
     font-size: 1.125rem;
     font-weight: 800;
     color: var(--text-main);
     margin: 0 0 0.25rem;
 }
 
-.subtitle {
+.DoctorGoogleSettings__subtitle {
     font-size: 0.875rem;
     color: var(--text-muted);
     margin: 0;
 }
 
-.actions {
+.DoctorGoogleSettings__actions {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.helpText {
+.DoctorGoogleSettings__helpText {
     font-size: 0.7rem;
     color: var(--text-muted);
     text-align: center;
     font-style: italic;
 }
 
-.tools {
+.DoctorGoogleSettings__tools {
     display: grid;
     grid-template-columns: 1fr;
     gap: 0.75rem;
 }
 
-.divider {
+.DoctorGoogleSettings__divider {
     height: 1px;
     background: var(--border-color);
     margin: 0.5rem 0;
     opacity: 0.5;
 }
 
-.resetBox {
+.DoctorGoogleSettings__resetBox {
     background: var(--amber-50);
     padding: 1rem;
     border-radius: var(--radius);
     border: 1px solid var(--amber-100);
 }
 
-.resetNotice {
+.DoctorGoogleSettings__resetNotice {
     font-size: 0.7rem;
     text-align: center;
     color: var(--amber-700);
@@ -83,11 +83,11 @@
     font-weight: 600;
 }
 
-.resetBtn {
+.DoctorGoogleSettings__resetBtn {
     width: 100%;
     color: var(--amber-700);
 }
 
-.resetBtn:hover {
+.DoctorGoogleSettings__resetBtn:hover {
     background: var(--amber-100);
 }

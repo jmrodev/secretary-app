@@ -32,34 +32,34 @@ export const PendingClosuresModal = ({
             title={t('pending_closures_title').replace('{count}', pendingClosures.length)}
             size="lg"
             footer={
-                <div className={styles.pendingClosuresFooter}>
+                <div className={styles.PendingClosuresModal__pendingClosuresFooter}>
                     <Button variant="secondary" onClick={onClose}>
                         {t('close_action')}
                     </Button>
                 </div>
             }
         >
-            <div className={`${styles.pendingClosuresContainer} animate-fade-in`}>
-                <div className={styles.pendingClosuresHeaderActions}>
-                    <p className={styles.pendingClosuresDescription}>
+            <div className={`${styles.PendingClosuresModal__pendingClosuresContainer} animate-fade-in`}>
+                <div className={styles.PendingClosuresModal__pendingClosuresHeaderActions}>
+                    <p className={styles.PendingClosuresModal__pendingClosuresDescription}>
                         {t('pending_closures_desc') || 'Días con movimientos de dinero que aún no han sido entregados.'}
                     </p>
                 </div>
 
-                <div className={styles.pendingClosuresTableContainer}>
-                    <table className={styles.root}>
+                <div className={styles.PendingClosuresModal__pendingClosuresTableContainer}>
+                    <table className={styles.PendingClosuresModal__root}>
                         <thead>
                             <tr>
                                 <th>{t('date_label')}</th>
-                                <th className={styles.cellRight}>{t('cash_balance')}</th>
-                                <th className={styles.cellRight}>{t('virtual_balance')}</th>
-                                <th className={styles.cellCenter}>{t('actions')}</th>
+                                <th className={styles.PendingClosuresModal__cellRight}>{t('cash_balance')}</th>
+                                <th className={styles.PendingClosuresModal__cellRight}>{t('virtual_balance')}</th>
+                                <th className={styles.PendingClosuresModal__cellCenter}>{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {pendingClosures.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className={styles.empty}>
+                                    <td colSpan="4" className={styles.PendingClosuresModal__empty}>
                                         {t('all_caught_up')} {t('no_closures_pending')}
                                     </td>
                                 </tr>
@@ -70,18 +70,18 @@ export const PendingClosuresModal = ({
                                     return (
                                         <tr key={itemKey}>
                                             <td className="pending-closures-table__date">
-                                                <div className={styles.dateGroup}>
-                                                    <span className={styles.dateText}>{day.date}</span>
-                                                    <span className={styles.doctorText}>{day.doctor_name || 'General'}</span>
+                                                <div className={styles.PendingClosuresModal__dateGroup}>
+                                                    <span className={styles.PendingClosuresModal__dateText}>{day.date}</span>
+                                                    <span className={styles.PendingClosuresModal__doctorText}>{day.doctor_name || 'General'}</span>
                                                 </div>
                                             </td>
-                                            <td className={`${styles.balanceCash} ${styles.cellRight}`}>
+                                            <td className={`${styles.PendingClosuresModal__balanceCash} ${styles.PendingClosuresModal__cellRight}`}>
                                                 ${day.balance.toLocaleString()}
                                             </td>
-                                            <td className={`${styles.balanceVirtual} ${styles.cellRight}`}>
+                                            <td className={`${styles.PendingClosuresModal__balanceVirtual} ${styles.PendingClosuresModal__cellRight}`}>
                                                 ${(day.transferBalance || 0).toLocaleString()}
                                             </td>
-                                            <td className={styles.actions}>
+                                            <td className={styles.PendingClosuresModal__actions}>
                                                 <Button
                                                     size="sm-compact"
                                                     variant="primary"

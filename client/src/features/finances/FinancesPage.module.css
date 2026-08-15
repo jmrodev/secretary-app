@@ -4,7 +4,7 @@
 
 /* Include any refinement needed for the dashboard grid layout */
 
-.glassContainer {
+.FinancesPage__glassContainer {
     background: rgb(255 255 255 / 20%);
     backdrop-filter: blur(16px);
     border-radius: var(--radius-lg);
@@ -13,7 +13,7 @@
     padding: 1.5rem;
 }
 
-.glassCard {
+.FinancesPage__glassCard {
     background: var(--border-color);
     backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);

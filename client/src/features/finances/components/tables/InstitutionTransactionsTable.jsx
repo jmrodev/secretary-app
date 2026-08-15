@@ -26,14 +26,14 @@ export const InstitutionTransactionsTable = ({
     const allChecked = pendingTransactions.length > 0 && pendingTransactions.every(tr => selectedTrs.has(tr.transaction_id));
 
     return (
-        <section className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <h3 className={`${styles.title}`}>
+        <section className={`${styles.InstitutionTransactionsTable__root}`}>
+            <header className={`${styles.InstitutionTransactionsTable__header}`}>
+                <h3 className={`${styles.InstitutionTransactionsTable__title}`}>
                     <Icon name="REQUESTS" size="1.2rem" /> {t('transaction_log')}
-                    <span className={`${styles.badge}`}>{transactions.length}</span>
+                    <span className={`${styles.InstitutionTransactionsTable__badge}`}>{transactions.length}</span>
                 </h3>
-                <div className={`${styles.actions}`}>
-                    <div className={`${styles.viewToggle}`}>
+                <div className={`${styles.InstitutionTransactionsTable__actions}`}>
+                    <div className={`${styles.InstitutionTransactionsTable__viewToggle}`}>
                         <Button
                             variant={showPendingOnly ? 'primary' : 'ghost'}
                             size="sm-compact"
@@ -61,11 +61,11 @@ export const InstitutionTransactionsTable = ({
                 </div>
             </header>
 
-            <div className={`${styles.wrapper}`}>
-                <table className={`${styles.table}`}>
+            <div className={`${styles.InstitutionTransactionsTable__wrapper}`}>
+                <table className={`${styles.InstitutionTransactionsTable__table}`}>
                     <thead>
                         <tr>
-                            <th className={`${styles.cellCenter}`}>
+                            <th className={`${styles.InstitutionTransactionsTable__cellCenter}`}>
                                 <input
                                     type="checkbox"
                                     checked={allChecked}
@@ -75,10 +75,10 @@ export const InstitutionTransactionsTable = ({
                             <th>{t('date_label')}</th>
                             <th>{t('patient')}</th>
                             <th>{t('doctor')}</th>
-                            <th className={`${styles.cellCenter}`}>{t('status')}</th>
-                            <th className={`${styles.cellCenter}`}>{t('antiquity')}</th>
-                            <th className={`${styles.cellRight}`}>{t('amount')}</th>
-                            <th className={`${styles.cellCenter}`}>{t('payment')}</th>
+                            <th className={`${styles.InstitutionTransactionsTable__cellCenter}`}>{t('status')}</th>
+                            <th className={`${styles.InstitutionTransactionsTable__cellCenter}`}>{t('antiquity')}</th>
+                            <th className={`${styles.InstitutionTransactionsTable__cellRight}`}>{t('amount')}</th>
+                            <th className={`${styles.InstitutionTransactionsTable__cellCenter}`}>{t('payment')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -93,11 +93,11 @@ export const InstitutionTransactionsTable = ({
                                 <tr
                                     key={tr.transaction_id}
                                     className={`
-                                        ${isPending ? styles.trPending : ''} 
-                                        ${isChecked ? styles.trSelected : ''}
+                                        ${isPending ? styles.InstitutionTransactionsTable__trPending : ''} 
+                                        ${isChecked ? styles.InstitutionTransactionsTable__trSelected : ''}
                                     `.trim()}
                                 >
-                                    <td className={`${styles.cellCenter}`}>
+                                    <td className={`${styles.InstitutionTransactionsTable__cellCenter}`}>
                                         {isPending && (
                                             <input
                                                 type="checkbox"
@@ -109,28 +109,28 @@ export const InstitutionTransactionsTable = ({
                                     <td>{formatDate(displayDate)}</td>
                                     <td>
                                         {tr.patient_name ? (
-                                            <a href={`/patients?search=${encodeURIComponent(tr.patient_name)}`} className={`${styles.patientLink}`}>
+                                            <a href={`/patients?search=${encodeURIComponent(tr.patient_name)}`} className={`${styles.InstitutionTransactionsTable__patientLink}`}>
                                                 {tr.patient_name}
                                             </a>
                                         ) : (
-                                            <span className={`${styles.textMuted}`}>-</span>
+                                            <span className={`${styles.InstitutionTransactionsTable__textMuted}`}>-</span>
                                         )}
                                     </td>
                                     <td>{tr.doctor_name || 'N/A'}</td>
-                                    <td className={`${styles.cellCenter}`}>
+                                    <td className={`${styles.InstitutionTransactionsTable__cellCenter}`}>
                                         <Badge variant={tr.appointment_status === 'completed' ? 'green' : 'gray'}>
                                             {t(tr.appointment_status) || tr.appointment_status}
                                         </Badge>
                                     </td>
-                                    <td className={`${styles.cellCenter}`} suppressHydrationWarning>
+                                    <td className={`${styles.InstitutionTransactionsTable__cellCenter}`} suppressHydrationWarning>
                                         {isPending ? (
-                                            <span className={`${styles.ageBadge} ${diffDays > 30 ? styles.ageBadgeCritical : styles.ageBadgeWarning}`}>
+                                            <span className={`${styles.InstitutionTransactionsTable__ageBadge} ${diffDays > 30 ? styles.InstitutionTransactionsTable__ageBadgeCritical : styles.InstitutionTransactionsTable__ageBadgeWarning}`}>
                                                 {t('days_count').replace('{days}', diffDays)}
                                             </span>
                                         ) : '-'}
                                     </td>
-                                    <td className={`${styles.cellRight} ${styles.amountBold}`}>${Number(tr.amount).toLocaleString()}</td>
-                                    <td className={`${styles.cellCenter}`}>
+                                    <td className={`${styles.InstitutionTransactionsTable__cellRight} ${styles.InstitutionTransactionsTable__amountBold}`}>${Number(tr.amount).toLocaleString()}</td>
+                                    <td className={`${styles.InstitutionTransactionsTable__cellCenter}`}>
                                         <Badge variant={tr.payment_status === 'paid' ? 'green' : 'red'}>
                                             {t(tr.payment_status)}
                                         </Badge>
@@ -140,7 +140,7 @@ export const InstitutionTransactionsTable = ({
                         })}
                         {transactions.length === 0 && (
                             <tr>
-                                <td colSpan="8" className={`${styles.empty}`}>
+                                <td colSpan="8" className={`${styles.InstitutionTransactionsTable__empty}`}>
                                     {showPendingOnly ? t('no_debts_found') : t('no_movements_found')}
                                 </td>
                             </tr>

@@ -1,4 +1,4 @@
-.root {
+.FloatingChat__root {
     position: fixed;
     bottom: 0;
     right: 1.25rem;
@@ -10,11 +10,11 @@
     pointer-events: none;
 }
 
-.root>* {
+.FloatingChat__root>* {
     pointer-events: auto;
 }
 
-.window {
+.FloatingChat__window {
     width: 340px;
     background: white;
     border-radius: 12px 12px 0 0;
@@ -27,7 +27,7 @@
     margin-top: 0.75rem;
 }
 
-.header {
+.FloatingChat__header {
     padding: 0.75rem 1rem;
     background: white;
     border-bottom: 1px solid var(--border-color);
@@ -37,7 +37,7 @@
     cursor: pointer;
 }
 
-.title {
+.FloatingChat__title {
     margin: 0;
     font-size: 0.9rem;
     font-weight: 700;
@@ -47,7 +47,7 @@
     gap: 0.5rem;
 }
 
-.back {
+.FloatingChat__back {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -55,34 +55,34 @@
     transition: color 0.2s;
 }
 
-.back:hover {
+.FloatingChat__back:hover {
     color: var(--primary);
 }
 
-.controls {
+.FloatingChat__controls {
     display: flex;
     gap: 0.5rem;
 }
 
-.content {
+.FloatingChat__content {
     height: 420px;
     display: flex;
     flex-direction: column;
     background: var(--gray-50);
 }
 
-.list {
+.FloatingChat__list {
     flex: 1;
     overflow-y: auto;
 }
 
-.search {
+.FloatingChat__search {
     padding: 0.5rem 0.75rem;
     background: white;
     border-bottom: 1px solid var(--border-color);
 }
 
-.item {
+.FloatingChat__item {
     padding: 0.75rem 1rem;
     display: flex;
     align-items: center;
@@ -93,15 +93,15 @@
     border-bottom: 1px solid var(--gray-50);
 }
 
-.item:hover {
+.FloatingChat__item:hover {
     background: var(--gray-50);
 }
 
-.itemUnread {
+.FloatingChat__itemUnread {
     background: var(--blue-50);
 }
 
-.avatar {
+.FloatingChat__avatar {
     width: 36px;
     height: 36px;
     border-radius: 10px;
@@ -115,17 +115,17 @@
     flex-shrink: 0;
 }
 
-.avatarContact {
+.FloatingChat__avatarContact {
     background: var(--gray-200);
     color: var(--text-muted);
 }
 
-.itemInfo {
+.FloatingChat__itemInfo {
     flex: 1;
     min-width: 0;
 }
 
-.itemName {
+.FloatingChat__itemName {
     display: block;
     font-weight: 700;
     font-size: 0.85rem;
@@ -135,7 +135,7 @@
     text-overflow: ellipsis;
 }
 
-.itemLast {
+.FloatingChat__itemLast {
     display: block;
     font-size: 0.75rem;
     color: var(--text-muted);
@@ -144,12 +144,12 @@
     text-overflow: ellipsis;
 }
 
-.itemLastContact {
+.FloatingChat__itemLastContact {
     font-style: italic;
     color: var(--primary);
 }
 
-.messages {
+.FloatingChat__messages {
     flex: 1;
     padding: 0.75rem;
     overflow-y: auto;
@@ -158,7 +158,7 @@
     gap: 0.65rem;
 }
 
-.bubble {
+.FloatingChat__bubble {
     max-width: 85%;
     padding: 0.5rem 0.75rem;
     border-radius: 1rem;
@@ -168,14 +168,14 @@
     box-shadow: 0 1px 2px rgb(0 0 0 / 5%);
 }
 
-.bubbleSent {
+.FloatingChat__bubbleSent {
     align-self: flex-end;
     background: var(--blue-600);
     color: white;
     border-bottom-right-radius: 2px;
 }
 
-.bubbleReceived {
+.FloatingChat__bubbleReceived {
     align-self: flex-start;
     background: white;
     color: var(--text-main);
@@ -183,7 +183,7 @@
     border: 1px solid var(--border-color);
 }
 
-.bubbleFooter {
+.FloatingChat__bubbleFooter {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -191,12 +191,12 @@
     margin-top: 0.25rem;
 }
 
-.time {
+.FloatingChat__time {
     font-size: 0.65rem;
     opacity: 0.7;
 }
 
-.inputArea {
+.FloatingChat__inputArea {
     padding: 0.75rem;
     border-top: 1px solid var(--border-color);
     display: flex;
@@ -204,11 +204,11 @@
     background: white;
 }
 
-.inputWrapper {
+.FloatingChat__inputWrapper {
     flex: 1;
 }
 
-.minimized {
+.FloatingChat__minimized {
     background: var(--blue-600);
     color: white;
     padding: 0.65rem 1.25rem;
@@ -224,12 +224,12 @@
     pointer-events: auto;
 }
 
-.minimized:hover {
+.FloatingChat__minimized:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgb(59 130 246 / 40%);
 }
 
-.badge {
+.FloatingChat__badge {
     background: var(--error);
     color: white;
     font-size: 0.65rem;
@@ -241,7 +241,7 @@
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
-.sectionTitle {
+.FloatingChat__sectionTitle {
     padding: 0.5rem 1rem;
     font-size: 0.65rem;
     color: var(--text-muted);
@@ -251,32 +251,32 @@
     letter-spacing: 0.05em;
 }
 
-.ticks {
+.FloatingChat__ticks {
     display: flex;
     align-items: center;
 }
 
-.tick {
+.FloatingChat__tick {
     font-size: 0.65rem;
 }
 
-.tickBlue {
+.FloatingChat__tickBlue {
     color: #38bdf8;
 }
 
-.tickGrey {
+.FloatingChat__tickGrey {
     color: currentcolor;
     opacity: 0.6;
 }
 
-.loadingText {
+.FloatingChat__loadingText {
     text-align: center;
     padding: 1rem;
     color: var(--text-muted);
     font-size: 0.875rem;
 }
 
-.empty {
+.FloatingChat__empty {
     text-align: center;
     padding: 1rem;
     color: var(--text-muted);

@@ -13,18 +13,18 @@ export const DoctorGoogleSettings = ({
     onResetSpreadsheet
 }) => {
     return (
-        <div className={`${styles.root}`}>
-            <div className={`${styles.statusCard}`}>
-                <div className={`${styles.info}`}>
-                    <h4 className={`${styles.title}`}>Google Integration</h4>
-                    <p className={`${styles.subtitle}`}>Sincroniza calendar y contactos.</p>
+        <div className={`${styles.DoctorGoogleSettings__root}`}>
+            <div className={`${styles.DoctorGoogleSettings__statusCard}`}>
+                <div className={`${styles.DoctorGoogleSettings__info}`}>
+                    <h4 className={`${styles.DoctorGoogleSettings__title}`}>Google Integration</h4>
+                    <p className={`${styles.DoctorGoogleSettings__subtitle}`}>Sincroniza calendar y contactos.</p>
                 </div>
                 <Badge variant={connected ? 'success' : 'secondary'}>
                     {connected ? '● CONECTADO' : '○ DESCONECTADO'}
                 </Badge>
             </div>
 
-            <div className={`${styles.actions}`}>
+            <div className={`${styles.DoctorGoogleSettings__actions}`}>
                 {!connected ? (
                     <>
                         <Button
@@ -36,7 +36,7 @@ export const DoctorGoogleSettings = ({
                         >
                             Conectar Cuenta G-Suite
                         </Button>
-                        <p className={`${styles.helpText}`}>
+                        <p className={`${styles.DoctorGoogleSettings__helpText}`}>
                             * Asegúrate de estar logueado en la cuenta de Google del doctor en este navegador antes de conectar.
                         </p>
                     </>
@@ -54,22 +54,22 @@ export const DoctorGoogleSettings = ({
             </div>
 
             {connected && (
-                <div className={`${styles.tools}`}>
+                <div className={`${styles.DoctorGoogleSettings__tools}`}>
                     <Button variant="secondary" onClick={onVerifyCalendar} icon={<Icon name="calendar_today" />}>
                         Verificar Turnos en Calendar
                     </Button>
                     <Button variant="primary" onClick={onImportContacts} icon={<Icon name="file_download" />}>
                         Sincronizar Contactos
                     </Button>
-                    <div className={`${styles.divider}`} />
-                    <div className={`${styles.resetBox}`}>
-                        <p className={`${styles.resetNotice}`}>
+                    <div className={`${styles.DoctorGoogleSettings__divider}`} />
+                    <div className={`${styles.DoctorGoogleSettings__resetBox}`}>
+                        <p className={`${styles.DoctorGoogleSettings__resetNotice}`}>
                             <Icon name="warning" size="1rem" className="mr-1" />¿Problemas con la planilla? Si la borraste de Drive, usa este botón para que el sistema genere una nueva.
                         </p>
                         <Button
                             variant="ghost"
                             size="sm"
-                            className={`${styles.resetBtn}`}
+                            className={`${styles.DoctorGoogleSettings__resetBtn}`}
                             onClick={onResetSpreadsheet}
                             icon={<Icon name="restore" />}
                         >

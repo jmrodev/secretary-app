@@ -1,10 +1,10 @@
 /* IntegrationRemoteAccess Component Styles (BEM) */
 
-.root {
+.IntegrationRemoteAccess__root {
     /* Root styles */
 }
 
-.urlBox {
+.IntegrationRemoteAccess__urlBox {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -15,7 +15,7 @@
     border: 1px solid var(--border-color);
 }
 
-.urlText {
+.IntegrationRemoteAccess__urlText {
     flex: 1;
     font-family: var(--font-mono, monospace);
     font-size: 0.875rem;
@@ -23,7 +23,7 @@
     font-weight: 600;
 }
 
-.guide {
+.IntegrationRemoteAccess__guide {
     background-color: var(--blue-50);
     padding: 1.5rem;
     border-radius: var(--radius-md);
@@ -31,7 +31,7 @@
     margin-top: 2rem;
 }
 
-.guideTitle {
+.IntegrationRemoteAccess__guideTitle {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -42,7 +42,7 @@
     text-transform: uppercase;
 }
 
-.guideList {
+.IntegrationRemoteAccess__guideList {
     margin: 0;
     padding-left: 1.25rem;
     display: flex;
@@ -52,12 +52,12 @@
     color: var(--blue-900);
 }
 
-.guideList li::marker {
+.IntegrationRemoteAccess__guideList li::marker {
     font-weight: 800;
     color: var(--blue-600);
 }
 
-.link {
+.IntegrationRemoteAccess__link {
     color: var(--blue-600);
     text-decoration: underline;
     font-weight: 700;

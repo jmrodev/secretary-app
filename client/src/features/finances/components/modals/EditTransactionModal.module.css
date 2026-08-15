@@ -1,18 +1,18 @@
 /* EditTransactionModal Component Styles (BEM) */
 
-.root {
+.EditTransactionModal__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.footer {
+.EditTransactionModal__footer {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
 }
 
-.warning {
+.EditTransactionModal__warning {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -29,7 +29,7 @@
     line-height: 1.4;
 }
 
-.warningIcon {
+.EditTransactionModal__warningIcon {
     color: var(--amber-600);
     flex-shrink: 0;
 }

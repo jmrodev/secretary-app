@@ -1,6 +1,6 @@
 /* TransactionsTable Feature Styles (BEM) */
 
-.container {
+.TransactionsTable__container {
     /* --- Local Component Tokens --- */
     --ledger-bg: var(--white, var(--text-main));
     --ledger-border: rgb(0, 0, 0, 0.08);
@@ -18,20 +18,20 @@
     box-shadow: 0 4px 20px -2px rgb(0, 0, 0, 0.04);
 }
 
-.wrapper {
+.TransactionsTable__wrapper {
     overflow: auto;
     width: 100%;
     max-height: 720px;
 }
 
-.table {
+.TransactionsTable__table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.875rem;
     table-layout: fixed;
 }
 
-.table th {
+.TransactionsTable__table th {
     background-color: var(--card-surface-bg);
     padding: 0.875rem 0.75rem;
     text-align: left;
@@ -46,133 +46,133 @@
     z-index: 10;
 }
 
-.table td {
+.TransactionsTable__table td {
     padding: 0.875rem 0.75rem;
     border-bottom: 1px solid rgb(0, 0, 0, 0.05);
     vertical-align: middle;
 }
 
 /* Column Proportion Definitions (5 Columns) */
-.table th:nth-child(1),
-.table td:nth-child(1) {
+.TransactionsTable__table th:nth-child(1),
+.TransactionsTable__table td:nth-child(1) {
     width: 15%;
     min-width: 110px;
 }
 
-.table th:nth-child(2),
-.table td:nth-child(2) {
+.TransactionsTable__table th:nth-child(2),
+.TransactionsTable__table td:nth-child(2) {
     width: 35%;
     min-width: 220px;
 }
 
-.table th:nth-child(3),
-.table td:nth-child(3) {
+.TransactionsTable__table th:nth-child(3),
+.TransactionsTable__table td:nth-child(3) {
     width: 22%;
     min-width: 160px;
 }
 
-.table th:nth-child(4),
-.table td:nth-child(4) {
+.TransactionsTable__table th:nth-child(4),
+.TransactionsTable__table td:nth-child(4) {
     width: 13%;
     min-width: 100px;
 }
 
-.table th:nth-child(5),
-.table td:nth-child(5) {
+.TransactionsTable__table th:nth-child(5),
+.TransactionsTable__table td:nth-child(5) {
     width: 15%;
     min-width: 140px;
 }
 
-.rowGrouped {
+.TransactionsTable__rowGrouped {
     background-color: var(--ledger-group-bg);
 }
 
 /* Logical Row Color coding */
-.rowIncome {
+.TransactionsTable__rowIncome {
     background-color: rgb(240, 253, 244, 0.6);
     border-left: 3px solid #22c55e;
 }
 
-.rowExpense {
+.TransactionsTable__rowExpense {
     background-color: rgb(254, 242, 242, 0.6);
     border-left: 3px solid #ef4444;
 }
 
-.rowWithdrawal {
+.TransactionsTable__rowWithdrawal {
     background-color: rgb(254, 252, 232, 0.6);
     border-left: 3px solid #eab308;
 }
 
-.rowPending {
+.TransactionsTable__rowPending {
     background-color: rgb(254, 242, 242, 0.7);
     border-left: 4px solid #dc2626;
 }
 
-.rowIncome:hover td {
+.TransactionsTable__rowIncome:hover td {
     background-color: #dcfce7 !important;
     color: #0f172a !important;
 }
 
-.rowExpense:hover td {
+.TransactionsTable__rowExpense:hover td {
     background-color: #fee2e2 !important;
     color: #0f172a !important;
 }
 
-.rowWithdrawal:hover td {
+.TransactionsTable__rowWithdrawal:hover td {
     background-color: #fef9c3 !important;
     color: #0f172a !important;
 }
 
-.rowPending:hover td {
+.TransactionsTable__rowPending:hover td {
     background-color: #fecaca !important;
     color: #0f172a !important;
 }
 
-.rowIncome:hover .description,
-.rowExpense:hover .description,
-.rowWithdrawal:hover .description,
-.rowPending:hover .description,
-.rowIncome:hover .beneficiaryName,
-.rowExpense:hover .beneficiaryName,
-.rowWithdrawal:hover .beneficiaryName,
-.rowPending:hover .beneficiaryName,
-.rowIncome:hover .date,
-.rowExpense:hover .date,
-.rowWithdrawal:hover .date,
-.rowPending:hover .date {
+.TransactionsTable__rowIncome:hover .TransactionsTable__description,
+.TransactionsTable__rowExpense:hover .TransactionsTable__description,
+.TransactionsTable__rowWithdrawal:hover .TransactionsTable__description,
+.TransactionsTable__rowPending:hover .TransactionsTable__description,
+.TransactionsTable__rowIncome:hover .TransactionsTable__beneficiaryName,
+.TransactionsTable__rowExpense:hover .TransactionsTable__beneficiaryName,
+.TransactionsTable__rowWithdrawal:hover .TransactionsTable__beneficiaryName,
+.TransactionsTable__rowPending:hover .TransactionsTable__beneficiaryName,
+.TransactionsTable__rowIncome:hover .TransactionsTable__date,
+.TransactionsTable__rowExpense:hover .TransactionsTable__date,
+.TransactionsTable__rowWithdrawal:hover .TransactionsTable__date,
+.TransactionsTable__rowPending:hover .TransactionsTable__date {
     color: #0f172a !important;
 }
 
-.row:hover:not(.rowGrouped) td {
+.TransactionsTable__row:hover:not(.TransactionsTable__rowGrouped) td {
     background-color: var(--ledger-row-hover);
 }
 
-.date {
+.TransactionsTable__date {
     font-weight: 700;
     color: var(--text-main);
     font-size: 0.75rem;
     line-height: 1.2;
 }
 
-.time {
+.TransactionsTable__time {
     font-size: 0.65rem;
     color: var(--text-muted);
 }
 
-.descriptionWrapper {
+.TransactionsTable__descriptionWrapper {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
 }
 
-.typeTag {
+.TransactionsTable__typeTag {
     align-self: flex-start;
     font-size: 0.6rem;
     font-weight: 800;
     letter-spacing: 0.02em;
 }
 
-.description {
+.TransactionsTable__description {
     font-weight: 500;
     color: var(--text-main);
     font-size: 0.8125rem;
@@ -181,36 +181,36 @@
     text-overflow: ellipsis;
 }
 
-.highlight {
+.TransactionsTable__highlight {
     color: var(--blue-700);
     background-color: var(--blue-50);
     padding: 0 0.2rem;
     border-radius: 2px;
 }
 
-.cellFirst {
+.TransactionsTable__cellFirst {
     padding-left: 1.5rem;
 }
 
-.cellLast {
+.TransactionsTable__cellLast {
     padding-right: 1.5rem;
 }
 
-.cellCenter {
+.TransactionsTable__cellCenter {
     text-align: center;
 }
 
-.cellRight {
+.TransactionsTable__cellRight {
     text-align: right;
 }
 
-.beneficiary {
+.TransactionsTable__beneficiary {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
 }
 
-.beneficiaryName {
+.TransactionsTable__beneficiaryName {
     font-weight: 700;
     font-size: 0.875rem;
     color: var(--text-main);
@@ -219,48 +219,48 @@
     gap: 0.5rem;
 }
 
-.beneficiaryIcon {
+.TransactionsTable__beneficiaryIcon {
     color: var(--blue-600);
     opacity: 0.8;
 }
 
-.patient {
+.TransactionsTable__patient {
     font-size: 0.7rem;
     color: var(--text-muted);
     font-weight: 500;
 }
 
-.method {
+.TransactionsTable__method {
     font-weight: 500;
     color: var(--text-secondary);
 }
 
-.amount {
+.TransactionsTable__amount {
     font-weight: 800;
     font-size: 0.9375rem;
     white-space: nowrap;
 }
 
-.amountIncome {
+.TransactionsTable__amountIncome {
     color: var(--success);
 }
 
-.amountExpense {
+.TransactionsTable__amountExpense {
     color: var(--error);
 }
 
-.amountWithdrawal {
+.TransactionsTable__amountWithdrawal {
     color: var(--warning, #f59e0b);
 }
 
-.invoiceInfo {
+.TransactionsTable__invoiceInfo {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
 }
 
-.invoiceNumber {
+.TransactionsTable__invoiceNumber {
     font-size: 0.75rem;
     font-weight: 800;
     color: #1e40af;
@@ -270,7 +270,7 @@
     font-family: monospace;
 }
 
-.actionBtnView {
+.TransactionsTable__actionBtnView {
     background-color: #6366f1 !important;
     color: var(--text-main) !important;
     border: none !important;
@@ -280,13 +280,13 @@
     transition: all 0.15s ease-in-out !important;
 }
 
-.actionBtnView:hover {
+.TransactionsTable__actionBtnView:hover {
     background-color: #4f46e5 !important;
     transform: translateY(-2px) scale(1.05) !important;
     box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
 }
 
-.proofLink {
+.TransactionsTable__proofLink {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -299,32 +299,32 @@
     transition: all 0.15s ease-in-out;
 }
 
-.proofLink:hover {
+.TransactionsTable__proofLink:hover {
     background-color: #0369a1;
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 4px 8px var(--modal-bg-dark);
 }
 
-.noProof {
+.TransactionsTable__noProof {
     color: var(--text-muted);
     font-weight: 700;
 }
 
-.invoiceInfo {
+.TransactionsTable__invoiceInfo {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.4rem;
 }
 
-.actions {
+.TransactionsTable__actions {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 0.6rem;
 }
 
-.actionBtn {
+.TransactionsTable__actionBtn {
     border: none !important;
     border-radius: 6px !important;
     padding: 0.35rem 0.5rem !important;
@@ -332,61 +332,61 @@
     transition: all 0.15s ease-in-out !important;
 }
 
-.actionBtn:hover {
+.TransactionsTable__actionBtn:hover {
     transform: translateY(-2px) scale(1.05) !important;
     box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
 }
 
-.actionBtnPay {
+.TransactionsTable__actionBtnPay {
     background-color: #15803d !important;
     color: var(--text-main) !important;
 }
 
-.actionBtnPay:hover {
+.TransactionsTable__actionBtnPay:hover {
     background-color: #166534 !important;
 }
 
-.actionBtnInvoice {
+.TransactionsTable__actionBtnInvoice {
     background-color: #1d4ed8 !important;
     color: var(--text-main) !important;
 }
 
-.actionBtnInvoice:hover {
+.TransactionsTable__actionBtnInvoice:hover {
     background-color: #1e40af !important;
 }
 
-.actionBtnEdit {
+.TransactionsTable__actionBtnEdit {
     background-color: var(--dashboard-card-bg) !important;
     color: var(--text-main) !important;
 }
 
-.actionBtnEdit:hover {
+.TransactionsTable__actionBtnEdit:hover {
     background-color: var(--background-bg) !important;
 }
 
-.actionBtnSync {
+.TransactionsTable__actionBtnSync {
     background-color: #0e7490 !important;
     color: var(--text-main) !important;
 }
 
-.actionBtnSync:hover {
+.TransactionsTable__actionBtnSync:hover {
     background-color: #155e75 !important;
 }
 
-.actionBtnDelete {
+.TransactionsTable__actionBtnDelete {
     background-color: #b91c1c !important;
     color: var(--text-main) !important;
 }
 
-.actionBtnDelete:hover {
+.TransactionsTable__actionBtnDelete:hover {
     background-color: #991b1b !important;
 }
 
-.groupFooter {
+.TransactionsTable__groupFooter {
     background-color: var(--ledger-header-bg);
 }
 
-.groupTotal {
+.TransactionsTable__groupTotal {
     padding: 1rem 1.5rem;
     text-align: right;
     font-weight: 800;
@@ -395,7 +395,7 @@
     font-size: 0.875rem;
 }
 
-.cellEmptyState {
+.TransactionsTable__cellEmptyState {
     padding: 6rem;
     text-align: center;
     color: var(--text-muted);
@@ -403,19 +403,19 @@
 }
 
 /* Invoice Detail Overlay */
-.invoiceDetail {
+.TransactionsTable__invoiceDetail {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
 }
 
-.title {
+.TransactionsTable__title {
     font-size: 1.25rem;
     font-weight: 800;
     color: var(--text-main);
 }
 
-.content {
+.TransactionsTable__content {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;

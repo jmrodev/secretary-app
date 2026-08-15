@@ -1,25 +1,25 @@
 /* DoctorTariffsForm Component Styles */
 
-.root {
+.DoctorTariffsForm__root {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-.section {
+.DoctorTariffsForm__section {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.sectionRental {
+.DoctorTariffsForm__sectionRental {
     background: var(--dashboard-card-bg);
     padding: 1.5rem;
     border-radius: var(--radius);
     border: 1px solid var(--dashboard-card-border);
 }
 
-.title {
+.DoctorTariffsForm__title {
     font-size: 0.75rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -28,29 +28,29 @@
     margin: 0;
 }
 
-.grid {
+.DoctorTariffsForm__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
 }
 
-.grid3col {
+.DoctorTariffsForm__grid3col {
     grid-template-columns: repeat(3, 1fr);
 }
 
 @media (width <= 768px) {
-    .grid3col {
+    .DoctorTariffsForm__grid3col {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-.nestedGrid {
+.DoctorTariffsForm__nestedGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
 
-.bioField {
+.DoctorTariffsForm__bioField {
     min-height: 120px;
     resize: vertical;
 }

@@ -24,8 +24,8 @@ export const DoctorsManager = ({
     MessageTemplateEditorComponent
 }) => {
     return (
-        <section className={`${styles.root}`}>
-            <div className={`${styles.headerActions}`}>
+        <section className={`${styles.DoctorsManager__root}`}>
+            <div className={`${styles.DoctorsManager__headerActions}`}>
                 <Button
                     variant="primary"
                     size="sm"
@@ -34,7 +34,7 @@ export const DoctorsManager = ({
                 >
                     {t('new') || 'Nuevo'}
                 </Button>
-                <div className={`${styles.counter}`}>
+                <div className={`${styles.DoctorsManager__counter}`}>
                     <Icon name="medical_services" size="1.2rem" />
                     <span>{filteredDoctors.length} {t('doctors_count') || 'Médicos activos'}</span>
                 </div>
@@ -43,13 +43,13 @@ export const DoctorsManager = ({
             {loading ? (
                 <Loading variant="centered" text={t('loading_doctors') || "Cargando médicos..."} />
             ) : (
-                <div className={`${styles.grid} animate-fade-in`}>
+                <div className={`${styles.DoctorsManager__grid} animate-fade-in`}>
                     {filteredDoctors.length === 0 ? (
-                        <div className={`${styles.emptyState}`}>
-                            <div className={`${styles.emptyIcon}`}>
+                        <div className={`${styles.DoctorsManager__emptyState}`}>
+                            <div className={`${styles.DoctorsManager__emptyIcon}`}>
                                 <Icon name="medical_services" size="3rem" />
                             </div>
-                            <p className={`${styles.emptyText}`}>{t('no_doctors_found')}</p>
+                            <p className={`${styles.DoctorsManager__emptyText}`}>{t('no_doctors_found')}</p>
                         </div>
                     ) : filteredDoctors.map(doctor => (
                         <DoctorCard

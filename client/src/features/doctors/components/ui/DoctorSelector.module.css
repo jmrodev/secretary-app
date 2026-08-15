@@ -1,11 +1,11 @@
-.wrapper {
+.DoctorSelector__wrapper {
     position: relative;
     user-select: none;
     min-width: 200px;
     z-index: 1000;
 }
 
-.trigger {
+.DoctorSelector__trigger {
     display: flex;
     align-items: center;
     gap: 0.85rem;
@@ -17,17 +17,17 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.trigger:hover {
+.DoctorSelector__trigger:hover {
     background: rgb(128, 128, 128, 0.08);
     border-color: var(--primary-color);
 }
 
-.triggerOpen {
+.DoctorSelector__triggerOpen {
     background: rgb(128, 128, 128, 0.12);
     border-color: var(--primary-color);
 }
 
-.iconContainer {
+.DoctorSelector__iconContainer {
     width: 32px;
     height: 32px;
     background: rgb(13 148 136 / 10%);
@@ -37,13 +37,13 @@
     justify-content: center;
 }
 
-.labelGroup {
+.DoctorSelector__labelGroup {
     display: flex;
     flex-direction: column;
     flex: 1;
 }
 
-.label {
+.DoctorSelector__label {
     font-size: 0.65rem;
     font-weight: 700;
     color: var(--text-muted);
@@ -53,7 +53,7 @@
     margin-bottom: 2px;
 }
 
-.value {
+.DoctorSelector__value {
     font-size: 0.875rem;
     font-weight: 750;
     color: var(--text-main);
@@ -62,12 +62,12 @@
     text-overflow: ellipsis;
 }
 
-.chevron {
+.DoctorSelector__chevron {
     color: var(--text-muted);
 }
 
 /* --- Styled Cortina (Dropdown) --- */
-.dropdown {
+.DoctorSelector__dropdown {
     position: absolute;
     top: calc(100% + 8px);
     left: 0;
@@ -94,7 +94,7 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-.option {
+.DoctorSelector__option {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -107,17 +107,17 @@
     transition: all 0.2s;
 }
 
-.option:hover {
+.DoctorSelector__option:hover {
     background: rgb(128, 128, 128, 0.08);
     color: var(--text-main);
 }
 
-.optionActive {
+.DoctorSelector__optionActive {
     background: rgb(13 148 136 / 12%) !important;
     color: var(--primary-color) !important;
 }
 
-.optionAvatar {
+.DoctorSelector__optionAvatar {
     width: 24px;
     height: 24px;
     border-radius: var(--radius-sm);
@@ -130,7 +130,7 @@
     font-weight: 800;
 }
 
-.readonly {
+.DoctorSelector__readonly {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -142,11 +142,11 @@
 
 /* Compact (<768px): full-width selector, dropdown right-aligned in viewport */
 @media (width <= 768px) {
-    .wrapper {
+    .DoctorSelector__wrapper {
         width: 100%;
     }
 
-    .dropdown {
+    .DoctorSelector__dropdown {
         left: auto;
         right: 0;
     }

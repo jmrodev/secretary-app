@@ -19,34 +19,34 @@ export const AuditLogTable = React.memo(({ logs, onSelectLog, t }) => {
     };
 
     return (
-        <div className={styles.auditLogTableContainer}>
-            <table className={styles.root}>
-                <thead className={styles.thead}>
+        <div className={styles.AuditLogTable__auditLogTableContainer}>
+            <table className={styles.AuditLogTable__root}>
+                <thead className={styles.AuditLogTable__thead}>
                     <tr>
-                        <th className={styles.th}>{t('time_header')}</th>
-                        <th className={styles.th}>{t('user_header')}</th>
-                        <th className={styles.th}>{t('action_header')}</th>
-                        <th className={`${styles.th} ${styles.thDetails}`}>{t('details_header')}</th>
-                        <th className={styles.th}>{t('ip_header')}</th>
+                        <th className={styles.AuditLogTable__th}>{t('time_header')}</th>
+                        <th className={styles.AuditLogTable__th}>{t('user_header')}</th>
+                        <th className={styles.AuditLogTable__th}>{t('action_header')}</th>
+                        <th className={`${styles.AuditLogTable__th} ${styles.AuditLogTable__thDetails}`}>{t('details_header')}</th>
+                        <th className={styles.AuditLogTable__th}>{t('ip_header')}</th>
                     </tr>
                 </thead>
-                <tbody className={styles.tbody}>
+                <tbody className={styles.AuditLogTable__tbody}>
                     {logs.map(log => (
-                        <tr key={log.id} className={styles.row}>
-                            <td className={`${styles.cell} ${styles.cellTime}`}>
+                        <tr key={log.id} className={styles.AuditLogTable__row}>
+                            <td className={`${styles.AuditLogTable__cell} ${styles.AuditLogTable__cellTime}`}>
                                 {formatDateTimeLong(log.created_at)}
                             </td>
-                            <td className={`${styles.cell} ${styles.cellUser}`}>
+                            <td className={`${styles.AuditLogTable__cell} ${styles.AuditLogTable__cellUser}`}>
                                 {log.username}
                             </td>
-                            <td className={styles.cell}>
+                            <td className={styles.AuditLogTable__cell}>
                                 {formatAction(log.action)}
                             </td>
-                            <td className={`${styles.cell} ${styles.cellDetails}`} title={log.details}>
+                            <td className={`${styles.AuditLogTable__cell} ${styles.AuditLogTable__cellDetails}`} title={log.details}>
                                 {log.details ? (
                                     log.details.length > 60 ? (
-                                        <div className={styles.detailsWrapper}>
-                                            <span className={styles.detailsText}>{log.details}</span>
+                                        <div className={styles.AuditLogTable__detailsWrapper}>
+                                            <span className={styles.AuditLogTable__detailsText}>{log.details}</span>
                                             <Button
                                                 variant="link"
                                                 size="sm-compact"
@@ -55,17 +55,17 @@ export const AuditLogTable = React.memo(({ logs, onSelectLog, t }) => {
                                                 {t('view_more')}
                                             </Button>
                                         </div>
-                                    ) : <span className={styles.detailsText}>{log.details}</span>
-                                ) : <span className={styles.detailsText}>-</span>}
+                                    ) : <span className={styles.AuditLogTable__detailsText}>{log.details}</span>
+                                ) : <span className={styles.AuditLogTable__detailsText}>-</span>}
                             </td>
-                            <td className={`${styles.cell} ${styles.cellIp}`}>
+                            <td className={`${styles.AuditLogTable__cell} ${styles.AuditLogTable__cellIp}`}>
                                 {log.ip_address}
                             </td>
                         </tr>
                     ))}
                     {logs.length === 0 && (
                         <tr>
-                            <td colSpan="5" className={styles.empty}>{t('no_logs_found')}</td>
+                            <td colSpan="5" className={styles.AuditLogTable__empty}>{t('no_logs_found')}</td>
                         </tr>
                     )}
                 </tbody>

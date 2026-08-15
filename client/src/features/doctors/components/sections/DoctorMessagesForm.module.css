@@ -1,15 +1,15 @@
-.root {
+.DoctorMessagesForm__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.content {
+.DoctorMessagesForm__content {
     min-height: 400px;
 }
 
 /* Sub-tabs styling (BEM compliant) */
-.subtabs {
+.DoctorMessagesForm__subtabs {
     margin-bottom: 1.5rem;
     padding: 0.35rem;
     background: var(--slate-100);
@@ -19,37 +19,37 @@
     border: 1px solid var(--slate-200);
 }
 
-.tabButton {
+.DoctorMessagesForm__tabButton {
     padding: 0.5rem 1.25rem !important;
     font-size: 0.85rem !important;
     border-radius: var(--radius) !important;
     transition: all 0.2s ease !important;
 }
 
-.tabButton[data-active="true"] {
+.DoctorMessagesForm__tabButton[data-active="true"] {
     background: var(--dashboard-card-bg) !important;
     color: var(--primary-color) !important;
     box-shadow: var(--shadow-sm) !important;
 }
 
-.tabIcon {
+.DoctorMessagesForm__tabIcon {
     margin-right: 0.5rem;
 }
 
-.section {
+.DoctorMessagesForm__section {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.divider {
+.DoctorMessagesForm__divider {
     height: 1px;
     background: var(--slate-100);
     margin: 0.5rem 0;
 }
 
 /* AI Section Premium Look */
-.sectionAi {
+.DoctorMessagesForm__sectionAi {
     background: linear-gradient(to bottom right, var(--slate-50), var(--white));
     padding: 1.5rem;
     border-radius: var(--radius-lg);
@@ -57,7 +57,7 @@
     box-shadow: inset 0 0 20px rgb(var(--slate-200-rgb), 0.2);
 }
 
-.aiHeader {
+.DoctorMessagesForm__aiHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -66,30 +66,30 @@
     border-bottom: 1px solid var(--slate-200);
 }
 
-.aiTitleGroup {
+.DoctorMessagesForm__aiTitleGroup {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-.aiIcon {
+.DoctorMessagesForm__aiIcon {
     color: var(--purple-600);
 }
 
-.aiTitle {
+.DoctorMessagesForm__aiTitle {
     margin: 0;
     font-size: 1.1rem;
     font-weight: 700;
     color: var(--slate-800);
 }
 
-.aiGrid {
+.DoctorMessagesForm__aiGrid {
     display: grid;
     grid-template-columns: 1fr 220px;
     gap: 2rem;
 }
 
-.aiSidebar {
+.DoctorMessagesForm__aiSidebar {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -97,19 +97,19 @@
     border-left: 1px solid var(--slate-200);
 }
 
-.field {
+.DoctorMessagesForm__field {
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
 }
 
-.label {
+.DoctorMessagesForm__label {
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--slate-700);
 }
 
-.textarea {
+.DoctorMessagesForm__textarea {
     width: 100%;
     border: 1px solid var(--slate-300);
     border-radius: var(--radius);
@@ -123,13 +123,13 @@
     background: var(--white);
 }
 
-.textarea:focus {
+.DoctorMessagesForm__textarea:focus {
     outline: none;
     border-color: var(--purple-500);
     box-shadow: 0 0 0 3px rgb(var(--purple-500-rgb), 0.1);
 }
 
-.input {
+.DoctorMessagesForm__input {
     width: 100%;
     border: 1px solid var(--slate-300);
     border-radius: var(--radius);
@@ -138,14 +138,14 @@
     background: var(--white);
 }
 
-.vars {
+.DoctorMessagesForm__vars {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
 }
 
-.varBtn {
+.DoctorMessagesForm__varBtn {
     background: var(--white);
     color: var(--slate-600);
     border: 1px solid var(--slate-300);
@@ -157,14 +157,14 @@
     transition: all 0.2s;
 }
 
-.varBtn:hover {
+.DoctorMessagesForm__varBtn:hover {
     border-color: var(--primary-color);
     color: var(--primary-color);
     background: rgb(2, 132, 199, 0.08);
     transform: translateY(-1px);
 }
 
-.footer {
+.DoctorMessagesForm__footer {
     margin-top: 1.5rem;
     padding: 1rem 1.25rem;
     background: var(--blue-50);
@@ -175,11 +175,11 @@
     gap: 0.75rem;
 }
 
-.infoIcon {
+.DoctorMessagesForm__infoIcon {
     color: var(--blue-600);
 }
 
-.footerText {
+.DoctorMessagesForm__footerText {
     margin: 0;
     font-size: 0.8rem;
     color: var(--blue-800);
@@ -187,11 +187,11 @@
 }
 
 @media (width <= 900px) {
-    .aiGrid {
+    .DoctorMessagesForm__aiGrid {
         grid-template-columns: 1fr;
     }
     
-    .aiSidebar {
+    .DoctorMessagesForm__aiSidebar {
         padding-left: 0;
         padding-top: 1.5rem;
         border-left: none;

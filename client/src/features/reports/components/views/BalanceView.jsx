@@ -82,12 +82,12 @@ export const BalanceView = ({ reportData, month, year, t }) => {
     const balanceTitle = t('balance_report') || t('general_balance') || 'Balance General';
 
     return (
-        <div className={styles.balanceView}>
-            <h2 className={styles.balanceView__title}>
+        <div className={styles.BalanceView__balanceView}>
+            <h2 className={styles.BalanceView__balanceView__title}>
                 {balanceTitle} - {monthName} {year}
             </h2>
 
-            <div className={styles.balanceView__grid}>
+            <div className={styles.BalanceView__balanceView__grid}>
                 <BalanceFinancialSummary
                     totalAppts={totalAppts}
                     totalPres={totalPres}

@@ -71,20 +71,20 @@ export const FinanceFilters = ({
                              monthFilter !== 'all' || yearFilter !== 'all' || paymentMethodFilter !== 'all';
 
     return (
-        <div className={`${styles.root}`}>
-            <div className={`${styles.searchWrapper}`}>
-                <Icon name="SEARCH" className={`${styles.searchIcon}`} size="1.2rem" />
+        <div className={`${styles.FinanceFilters__root}`}>
+            <div className={`${styles.FinanceFilters__searchWrapper}`}>
+                <Icon name="SEARCH" className={`${styles.FinanceFilters__searchIcon}`} size="1.2rem" />
                 <Input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={t('search_placeholder') || "Buscar por paciente, descripción o monto..."}
-                    className={`${styles.searchInput}`}
+                    className={`${styles.FinanceFilters__searchInput}`}
                     size="sm"
                 />
             </div>
 
-            <div className={`${styles.groups}`}>
-                <FormGroup label={t('status')} className={`${styles.group}`}>
+            <div className={`${styles.FinanceFilters__groups}`}>
+                <FormGroup label={t('status')} className={`${styles.FinanceFilters__group}`}>
                     <Select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
@@ -93,7 +93,7 @@ export const FinanceFilters = ({
                     />
                 </FormGroup>
 
-                <FormGroup label={t('type')} className={`${styles.group}`}>
+                <FormGroup label={t('type')} className={`${styles.FinanceFilters__group}`}>
                     <Select
                         value={typeFilter}
                         onChange={(e) => setTypeFilter(e.target.value)}
@@ -102,7 +102,7 @@ export const FinanceFilters = ({
                     />
                 </FormGroup>
 
-                <FormGroup label={t('month')} className={`${styles.group}`}>
+                <FormGroup label={t('month')} className={`${styles.FinanceFilters__group}`}>
                     <Select
                         value={monthFilter}
                         onChange={(e) => setMonthFilter(e.target.value)}
@@ -111,7 +111,7 @@ export const FinanceFilters = ({
                     />
                 </FormGroup>
 
-                <FormGroup label={t('year')} className={`${styles.group}`}>
+                <FormGroup label={t('year')} className={`${styles.FinanceFilters__group}`}>
                     <Select
                         value={yearFilter}
                         onChange={(e) => setYearFilter(e.target.value)}
@@ -120,7 +120,7 @@ export const FinanceFilters = ({
                     />
                 </FormGroup>
 
-                <FormGroup label={t('payment_method') || 'Método de pago'} className={`${styles.group}`}>
+                <FormGroup label={t('payment_method') || 'Método de pago'} className={`${styles.FinanceFilters__group}`}>
                     <Select
                         value={paymentMethodFilter}
                         onChange={(e) => setPaymentMethodFilter(e.target.value)}
@@ -130,11 +130,11 @@ export const FinanceFilters = ({
                 </FormGroup>
 
                 {hasActiveFilters && (
-                    <div className={`${styles.group} ${styles.groupActions}`}>
+                    <div className={`${styles.FinanceFilters__group} ${styles.FinanceFilters__groupActions}`}>
                         <Button
                             variant="ghost"
                             size="sm"
-                            className={`${styles.clear}`}
+                            className={`${styles.FinanceFilters__clear}`}
                             onClick={() => {
                                 setSearchQuery('');
                                 setStatusFilter('all');

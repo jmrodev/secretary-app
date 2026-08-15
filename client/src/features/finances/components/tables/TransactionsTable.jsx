@@ -95,7 +95,7 @@ export const TransactionsTable = ({
         return parts.map((part, i) => {
             const partKey = `part-${i}-${part.length}`;
             return part.toLowerCase() === patientName.toLowerCase()
-                ? <strong key={partKey} className={`${styles.highlight}`}>{part}</strong>
+                ? <strong key={partKey} className={`${styles.TransactionsTable__highlight}`}>{part}</strong>
                 : part;
         });
     };
@@ -129,24 +129,24 @@ export const TransactionsTable = ({
     const canManagerFinance = user && (user.role === 'admin' || settings.enable_secretary_finance_crud === 'true');
 
     return (
-        <Card className={`${styles.container}`} noPadding as="article">
-            <div className={`${styles.wrapper}`}>
-                <table className={`${styles.table} table-base`}>
+        <Card className={`${styles.TransactionsTable__container}`} noPadding as="article">
+            <div className={`${styles.TransactionsTable__wrapper}`}>
+                <table className={`${styles.TransactionsTable__table} table-base`}>
                     <thead>
                         <tr>
-                            <th className={`${styles.cellFirst}`}>{t('date_label')}</th>
+                            <th className={`${styles.TransactionsTable__cellFirst}`}>{t('date_label')}</th>
                             <th className="transactions-table__header-cell--description">{t('description')}</th>
                             <th>{t('beneficiary')}</th>
-                            <th className={`${styles.cellRight}`}>{t('amount')}</th>
+                            <th className={`${styles.TransactionsTable__cellRight}`}>{t('amount')}</th>
                             {canManagerFinance && (
-                                <th className={`${styles.cellRight} ${styles.cellLast}`}>{t('actions')}</th>
+                                <th className={`${styles.TransactionsTable__cellRight} ${styles.TransactionsTable__cellLast}`}>{t('actions')}</th>
                             )}
                         </tr>
                     </thead>
                     <tbody>
                         {groupedTransactions.length === 0 ? (
                             <tr>
-                                <td colSpan={canManagerFinance ? 5 : 4} className={`${styles.cellCenter} ${styles.cellEmptyState}`}>
+                                <td colSpan={canManagerFinance ? 5 : 4} className={`${styles.TransactionsTable__cellCenter} ${styles.TransactionsTable__cellEmptyState}`}>
                                     {t('no_transactions_found') || 'No hay transacciones registradas.'}
                                 </td>
                             </tr>
@@ -179,8 +179,8 @@ export const TransactionsTable = ({
                                         />
                                     ))}
                                     {group.length > 1 && (
-                                        <tr className={`${styles.groupFooter}`}>
-                                            <td colSpan={canManagerFinance ? 8 : 7} className={`${styles.groupTotal}`}>
+                                        <tr className={`${styles.TransactionsTable__groupFooter}`}>
+                                            <td colSpan={canManagerFinance ? 8 : 7} className={`${styles.TransactionsTable__groupTotal}`}>
                                                 {t('group_total')}: ${group.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0).toLocaleString()}
                                             </td>
                                         </tr>

@@ -53,7 +53,7 @@ export const EditTransactionModal = ({
             onClose={onClose}
             title={t('edit_transaction') || "Editar Transacción"}
             footer={
-                <div className={`${styles.footer}`}>
+                <div className={`${styles.EditTransactionModal__footer}`}>
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
                     <Button onClick={onSave} variant="primary" icon={<Icon name="save" size="1.1rem" />}>
                         {t('save')}
@@ -61,7 +61,7 @@ export const EditTransactionModal = ({
                 </div>
             }
         >
-            <div className={`${styles.root}`}>
+            <div className={`${styles.EditTransactionModal__root}`}>
                 <FormGroup label={t('amount')}>
                     <CurrencyInput
                         value={transaction.amount}
@@ -105,12 +105,12 @@ export const EditTransactionModal = ({
                             onChange={e => handleTransactionChange('transaction_date', e.target.value)}
                             className="edit-transaction-modal__input"
                         />
-                        <div className={`${styles.warning}`}>
-                            <Icon name="WARNING" size="1rem" className={`${styles.warningIcon}`} />
+                        <div className={`${styles.EditTransactionModal__warning}`}>
+                            <Icon name="WARNING" size="1rem" className={`${styles.EditTransactionModal__warningIcon}`} />
                             <span>{t('date_browser_warning') || 'El formato depende de su navegador. Verifique el mes al seleccionar.'}</span>
                         </div>
-                        <div className={`${styles.warning}`}>
-                            <Icon name="WARNING" size="1rem" className={`${styles.warningIcon}`} />
+                        <div className={`${styles.EditTransactionModal__warning}`}>
+                            <Icon name="WARNING" size="1rem" className={`${styles.EditTransactionModal__warningIcon}`} />
                             <span>{t('date_order_warning') || 'Cuidado: Cambiar la fecha puede afectar el orden cronológico.'}</span>
                         </div>
                     </FormGroup>

@@ -29,7 +29,7 @@ export const ConfigField = ({
 
     return (
         <div className={rootClass}>
-            <label className={`${styles.label}`} htmlFor={id}>
+            <label className={`${styles.ConfigField__label}`} htmlFor={id}>
                 {label}
             </label>
             
@@ -55,7 +55,7 @@ export const ConfigField = ({
             )}
 
             {hint && (
-                <span className={`${styles.hint}`}>{hint}</span>
+                <span className={`${styles.ConfigField__hint}`}>{hint}</span>
             )}
         </div>
     );

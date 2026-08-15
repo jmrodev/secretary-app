@@ -45,26 +45,26 @@ export const MessageTemplateEditor = ({
     t
 }) => {
     return (
-        <div className={`${styles.root} animate-fade-in`}>
-            <label className={`${styles.label}`} htmlFor={id}>{label}</label>
+        <div className={`${styles.MessageTemplateEditor__root} animate-fade-in`}>
+            <label className={`${styles.MessageTemplateEditor__label}`} htmlFor={id}>{label}</label>
 
             <AutoTextarea
                 id={id}
-                className={`${styles.textarea}`}
+                className={`${styles.MessageTemplateEditor__textarea}`}
                 placeholder={placeholder}
                 value={value || ''}
                 onChange={(e) => updateSetting(settingKey, e.target.value)}
                 disabled={disabled}
             />
 
-            <div className={`${styles.variables}`}>
-                <p className={`${styles.variablesLabel}`}>{t('available_variables')}</p>
-                <div className={`${styles.buttons}`}>
+            <div className={`${styles.MessageTemplateEditor__variables}`}>
+                <p className={`${styles.MessageTemplateEditor__variablesLabel}`}>{t('available_variables')}</p>
+                <div className={`${styles.MessageTemplateEditor__buttons}`}>
                     {variables.map(v => (
                         <Button
                             key={v}
                             type="button"
-                            className={`${styles.variableBtn}`}
+                            className={`${styles.MessageTemplateEditor__variableBtn}`}
                             onClick={() => insertVariable(id, v, settingKey)}
                             title={t('insert_variable_title').replace('{variable}', v)}
                             disabled={disabled}
@@ -77,7 +77,7 @@ export const MessageTemplateEditor = ({
             </div>
 
             {(metaTemplateName !== undefined) && (
-                <div className={`${styles.metaGrid}`}>
+                <div className={`${styles.MessageTemplateEditor__metaGrid}`}>
                     <ConfigField
                         label={t('meta_template_name')}
                         type="text"
@@ -110,7 +110,7 @@ export const MessageTemplateEditor = ({
             )}
 
             {description && (
-                <span className={`${styles.hint}`}>{description}</span>
+                <span className={`${styles.MessageTemplateEditor__hint}`}>{description}</span>
             )}
         </div>
     );

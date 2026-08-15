@@ -1,19 +1,19 @@
 /* Institution Financing Component Styles (BEM) */
 
-.root {
+.InstitutionFinances__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.grid {
+.InstitutionFinances__grid {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
     animation: fade-in 0.3s ease-in-out;
 }
 
-.selectorBar {
+.InstitutionFinances__selectorBar {
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -24,7 +24,7 @@
     box-shadow: var(--shadow-sm);
 }
 
-.viewToggle {
+.InstitutionFinances__viewToggle {
     display: flex;
     background: var(--card-surface-bg);
     padding: 0.2rem;
@@ -32,7 +32,7 @@
     gap: 0.2rem;
 }
 
-.headerBar {
+.InstitutionFinances__headerBar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -40,14 +40,14 @@
     margin-bottom: 0.5rem;
 }
 
-.stats {
+.InstitutionFinances__stats {
     display: flex;
     gap: 1rem;
     flex: 1;
     flex-wrap: wrap;
 }
 
-.statItem {
+.InstitutionFinances__statItem {
     background: var(--dashboard-card-bg);
     padding: 1.25rem;
     border-radius: var(--radius);
@@ -61,18 +61,18 @@
     transition: all 0.2s;
 }
 
-.statItem:hover {
+.InstitutionFinances__statItem:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
     border-color: var(--blue-200);
 }
 
-.statItemSelected {
+.InstitutionFinances__statItemSelected {
     border: 2px solid var(--blue-500);
     background-color: var(--blue-50);
 }
 
-.statIcon {
+.InstitutionFinances__statIcon {
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 1rem;
@@ -83,33 +83,33 @@
     flex-shrink: 0;
 }
 
-.statIconBlue {
+.InstitutionFinances__statIconBlue {
     background: var(--blue-50);
     color: var(--blue-600);
 }
 
-.statIconRed {
+.InstitutionFinances__statIconRed {
     background: var(--red-50);
     color: var(--red-600);
 }
 
-.statIconOrange {
+.InstitutionFinances__statIconOrange {
     background: var(--orange-50);
     color: var(--orange-600);
 }
 
-.statIconGreen {
+.InstitutionFinances__statIconGreen {
     background: var(--success-bg, #dcfce7);
     color: var(--success);
 }
 
-.statInfo {
+.InstitutionFinances__statInfo {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.statLabel {
+.InstitutionFinances__statLabel {
     font-size: 0.72rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -118,23 +118,23 @@
     margin: 0;
 }
 
-.statValue {
+.InstitutionFinances__statValue {
     font-size: 1.5rem;
     font-weight: 900;
     color: var(--text-main);
     margin: 0;
 }
 
-.statValueRed {
+.InstitutionFinances__statValueRed {
     color: var(--error);
 }
 
-.statValueGreen {
+.InstitutionFinances__statValueGreen {
     color: var(--success);
 }
 
 /* Table Management */
-.tableContainer {
+.InstitutionFinances__tableContainer {
     background: var(--dashboard-card-bg);
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
@@ -144,7 +144,7 @@
     flex-direction: column;
 }
 
-.tableHeader {
+.InstitutionFinances__tableHeader {
     padding: 1.25rem 1.5rem;
     background: var(--card-surface-bg);
     border-bottom: 1px solid var(--border-color);
@@ -153,7 +153,7 @@
     align-items: center;
 }
 
-.tableTitle {
+.InstitutionFinances__tableTitle {
     font-size: 0.875rem;
     font-weight: 800;
     color: var(--text-secondary);
@@ -164,7 +164,7 @@
     gap: 0.75rem;
 }
 
-.tableBadge {
+.InstitutionFinances__tableBadge {
     background: var(--card-surface-bg);
     color: var(--text-muted);
     padding: 0.125rem 0.6rem;
@@ -173,16 +173,16 @@
     font-weight: 800;
 }
 
-.tableWrapper {
+.InstitutionFinances__tableWrapper {
     overflow-x: auto;
 }
 
-.table {
+.InstitutionFinances__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.table th {
+.InstitutionFinances__table th {
     padding: 1rem 1.5rem;
     text-align: left;
     font-size: 0.72rem;
@@ -196,7 +196,7 @@
     z-index: 10;
 }
 
-.table td {
+.InstitutionFinances__table td {
     padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--dashboard-card-border);
     font-size: 0.875rem;
@@ -204,33 +204,33 @@
     vertical-align: middle;
 }
 
-.trPending {
+.InstitutionFinances__trPending {
     background-color: var(--red-50);
 }
 
-.trSelected {
+.InstitutionFinances__trSelected {
     background-color: var(--blue-50);
     outline: 2px solid var(--blue-400);
     outline-offset: -2px;
 }
 
-.table tr:hover:not(.trSelected) td {
+.InstitutionFinances__table tr:hover:not(.InstitutionFinances__trSelected) td {
     background-color: var(--card-hover-bg);
 }
 
-.patientLink {
+.InstitutionFinances__patientLink {
     font-weight: 700;
     color: var(--accent-color);
     text-decoration: none;
     transition: color 0.2s;
 }
 
-.patientLink:hover {
+.InstitutionFinances__patientLink:hover {
     color: var(--blue-700);
     text-decoration: underline;
 }
 
-.emptyState {
+.InstitutionFinances__emptyState {
     padding: 6rem 2rem;
     text-align: center;
     background: var(--dashboard-card-bg);
@@ -242,20 +242,20 @@
     gap: 1.5rem;
 }
 
-.emptyIcon {
+.InstitutionFinances__emptyIcon {
     font-size: 3.5rem;
     filter: grayscale(0.5);
     opacity: 0.7;
 }
 
-.emptyText {
+.InstitutionFinances__emptyText {
     font-weight: 700;
     color: var(--text-muted);
     max-width: 300px;
     line-height: 1.5;
 }
 
-.loading {
+.InstitutionFinances__loading {
     padding: 4rem;
     text-align: center;
     color: var(--text-muted);
@@ -267,43 +267,43 @@
     gap: 1rem;
 }
 
-.amountBold {
+.InstitutionFinances__amountBold {
     font-weight: 800;
     font-family: inherit;
     color: var(--text-main);
 }
 
-.cellRight {
+.InstitutionFinances__cellRight {
     text-align: right;
 }
 
-.cellCenter {
+.InstitutionFinances__cellCenter {
     text-align: center;
 }
 
-.actions {
+.InstitutionFinances__actions {
     display: flex;
     gap: 0.75rem;
     align-items: center;
 }
 
-.ageBadge {
+.InstitutionFinances__ageBadge {
     padding: 0.125rem 0.6rem;
     border-radius: 999px;
     font-size: 0.72rem;
     font-weight: 800;
 }
 
-.ageBadgeWarning {
+.InstitutionFinances__ageBadgeWarning {
     background-color: var(--warning-bg, #fef3c7);
     color: var(--warning-text, #92400e);
 }
 
-.ageBadgeCritical {
+.InstitutionFinances__ageBadgeCritical {
     background-color: var(--error-bg, #fee2e2);
     color: var(--error, #b91c1c);
 }
 
-.textMuted {
+.InstitutionFinances__textMuted {
     color: var(--text-muted);
 }

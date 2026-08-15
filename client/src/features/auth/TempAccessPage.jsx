@@ -60,18 +60,18 @@ export const TempAccessPage = () => {
     }
 
     return (
-        <section className={`${styles.container}`}>
-            <article className={`${styles.card}`}>
-                    <header className={`${styles.header}`}>
-                        <h1 className={`${styles.title}`}>
+        <section className={`${styles.TempAccessPage__container}`}>
+            <article className={`${styles.TempAccessPage__card}`}>
+                    <header className={`${styles.TempAccessPage__header}`}>
+                        <h1 className={`${styles.TempAccessPage__title}`}>
                             {isNew ? 'Registro de Paciente' : 'Actualizar mis Datos'}
                         </h1>
-                        <p className={`${styles.subtitle}`}>
+                        <p className={`${styles.TempAccessPage__subtitle}`}>
                             Por favor completa los siguientes campos para continuar.
                         </p>
                     </header>
 
-                    <section className={`${styles.formSection}`}>
+                    <section className={`${styles.TempAccessPage__formSection}`}>
                         <TempAccessFormWrapper
                             initialData={initialData}
                             insurances={insurances}
@@ -81,19 +81,19 @@ export const TempAccessPage = () => {
                     </section>
                 </article>
 
-                <aside className={`${styles.downloadCard} `}>
-                    <div className={`${styles.downloadInfo}`}>
-                        <h4 className={`${styles.downloadTitle}`}>
+                <aside className={`${styles.TempAccessPage__downloadCard} `}>
+                    <div className={`${styles.TempAccessPage__downloadInfo}`}>
+                        <h4 className={`${styles.TempAccessPage__downloadTitle}`}>
                             <Icon name="SMARTPHONE" className="mr-2" />
                             {t('mobile_app')}
                         </h4>
-                        <p className={`${styles.downloadText}`}>
+                        <p className={`${styles.TempAccessPage__downloadText}`}>
                             Descarga nuestra aplicación para gestionar tus turnos y recetas más rápido.
                         </p>
                     </div>
                     <Button
                         variant="secondary"
-                        className={`${styles.downloadButton}`}
+                        className={`${styles.TempAccessPage__downloadButton}`}
                         icon={<Icon name="DOWNLOAD" size="1.1rem" />}
                         onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
                     >

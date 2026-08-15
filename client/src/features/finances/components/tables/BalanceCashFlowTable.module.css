@@ -1,7 +1,7 @@
 
 /* BalanceCashFlowTable Molecule Styles (BEM) */
 
-.root {
+.BalanceCashFlowTable__root {
     background: var(--dashboard-card-bg);
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
@@ -12,7 +12,7 @@
     gap: 1.25rem;
 }
 
-.title {
+.BalanceCashFlowTable__title {
     font-size: 0.875rem;
     font-weight: 800;
     color: var(--text-secondary);
@@ -21,22 +21,22 @@
     margin: 0;
 }
 
-.subtitle {
+.BalanceCashFlowTable__subtitle {
     font-size: 0.75rem;
     color: var(--text-muted);
     margin: -1rem 0 0.5rem;
 }
 
-.tableWrapper {
+.BalanceCashFlowTable__tableWrapper {
     overflow-x: auto;
 }
 
-.table {
+.BalanceCashFlowTable__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.table th {
+.BalanceCashFlowTable__table th {
     text-align: left;
     font-size: 0.72rem;
     font-weight: 800;
@@ -46,28 +46,28 @@
     border-bottom: 2px solid var(--dashboard-card-border);
 }
 
-.table td {
+.BalanceCashFlowTable__table td {
     padding: 0.85rem 0.5rem;
     border-bottom: 1px solid var(--dashboard-card-border);
     font-size: 0.875rem;
 }
 
-.cellRight {
+.BalanceCashFlowTable__cellRight {
     text-align: right;
 }
 
-.cellBold {
+.BalanceCashFlowTable__cellBold {
     font-weight: 700;
     color: var(--text-main);
 }
 
-.table tfoot tr {
+.BalanceCashFlowTable__table tfoot tr {
     background-color: var(--card-surface-bg);
     font-weight: 800;
     color: var(--text-main);
 }
 
-.table tfoot td {
+.BalanceCashFlowTable__table tfoot td {
     border-top: 2px solid var(--dashboard-card-border);
     border-bottom: none;
     padding: 1rem 0.5rem;

@@ -54,7 +54,7 @@ export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm,
             onClose={onClose}
             title={t('manual_withdrawal') || "Registro de Retiro Manual / Pasado"}
             footer={
-                <div className={`${styles.footer}`}>
+                <div className={`${styles.HistoricalWithdrawalModal__footer}`}>
                     <Button variant="secondary" onClick={onClose}>
                         {t('cancel')}
                     </Button>
@@ -64,7 +64,7 @@ export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm,
                 </div>
             }
         >
-            <div className={`${styles.root}`}>
+            <div className={`${styles.HistoricalWithdrawalModal__root}`}>
                 <FormGroup label={t('doctor') || 'Doctor'}>
                     <Select
                         value={doctorId}
@@ -87,7 +87,7 @@ export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm,
                     />
                 </FormGroup>
 
-                <div className={`${styles.grid}`}>
+                <div className={`${styles.HistoricalWithdrawalModal__grid}`}>
                     <FormGroup label={t('date') || 'Fecha'}>
                         <Input
                             type="date"

@@ -27,7 +27,7 @@ export const DoctorSelector = () => {
 
     if (!isStaff) {
         return doctorDisplayName ? (
-            <div className={styles.readonly}>
+            <div className={styles.DoctorSelector__readonly}>
                 <Icon name="medical_services" size="1rem" />
                 <span>{doctorDisplayName}</span>
             </div>
@@ -37,41 +37,41 @@ export const DoctorSelector = () => {
     const currentDoctor = doctors.find(d => String(d.id) === String(viewDoctorId));
 
     return (
-        <div className={styles.wrapper} ref={dropdownRef}>
+        <div className={styles.DoctorSelector__wrapper} ref={dropdownRef}>
             <div 
-                className={`${styles.trigger} ${isOpen ? styles.triggerOpen : ''}`} 
+                className={`${styles.DoctorSelector__trigger} ${isOpen ? styles.DoctorSelector__triggerOpen : ''}`} 
                 onClick={() => setIsOpen(!isOpen)}
                 role="button"
                 tabIndex={0}
             >
-                <div className={styles.iconContainer}>
+                <div className={styles.DoctorSelector__iconContainer}>
                     <Icon name="medical_services" size="1rem" color="var(--primary-color)" />
                 </div>
-                <div className={styles.labelGroup}>
-                    <span className={styles.label}>{t('doctor') || 'Médico'}</span>
-                    <span className={styles.value}>
+                <div className={styles.DoctorSelector__labelGroup}>
+                    <span className={styles.DoctorSelector__label}>{t('doctor') || 'Médico'}</span>
+                    <span className={styles.DoctorSelector__value}>
                         {currentDoctor ? currentDoctor.full_name : (t('all_doctors') || 'Todos los médicos')}
                     </span>
                 </div>
-                <Icon name={isOpen ? 'expand_less' : 'expand_more'} size="1.2rem" className={styles.chevron} />
+                <Icon name={isOpen ? 'expand_less' : 'expand_more'} size="1.2rem" className={styles.DoctorSelector__chevron} />
             </div>
 
             {isOpen && (
-                <div className={styles.dropdown}>
+                <div className={styles.DoctorSelector__dropdown}>
                     <div 
-                        className={`${styles.option} ${!viewDoctorId ? styles.optionActive : ''}`}
+                        className={`${styles.DoctorSelector__option} ${!viewDoctorId ? styles.DoctorSelector__optionActive : ''}`}
                         onClick={() => { setViewDoctorId(''); setIsOpen(false); }}
                     >
-                        <span className={styles.optionAvatar}>*</span>
+                        <span className={styles.DoctorSelector__optionAvatar}>*</span>
                         {t('all_doctors') || 'Todos los médicos'}
                     </div>
                     {doctors.map(d => (
                         <div 
                             key={d.id}
-                            className={`${styles.option} ${String(d.id) === String(viewDoctorId) ? styles.optionActive : ''}`}
+                            className={`${styles.DoctorSelector__option} ${String(d.id) === String(viewDoctorId) ? styles.DoctorSelector__optionActive : ''}`}
                             onClick={() => { setViewDoctorId(String(d.id)); setIsOpen(false); }}
                         >
-                            <span className={styles.optionAvatar}>{d.full_name.charAt(0)}</span>
+                            <span className={styles.DoctorSelector__optionAvatar}>{d.full_name.charAt(0)}</span>
                             {d.full_name}
                         </div>
                     ))}

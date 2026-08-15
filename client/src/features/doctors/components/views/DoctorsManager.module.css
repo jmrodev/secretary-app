@@ -1,10 +1,10 @@
 /* Doctors-specific Styles */
 
-.root {
+.DoctorsManager__root {
     /* Root BEM class */
 }
 
-.headerActions {
+.DoctorsManager__headerActions {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -13,7 +13,7 @@
     border-bottom: 1px solid var(--dashboard-card-border);
 }
 
-.counter {
+.DoctorsManager__counter {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -22,42 +22,42 @@
     color: var(--text-muted);
 }
 
-.actionsGroup {
+.DoctorsManager__actionsGroup {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.addBtn {
+.DoctorsManager__addBtn {
     justify-content: flex-start;
     width: 100%;
 }
 
-.grid {
+.DoctorsManager__grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
 }
 
 @media (width >= 768px) {
-    .grid {
+    .DoctorsManager__grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (width >= 1280px) {
-    .grid {
+    .DoctorsManager__grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (width >= 1600px) {
-    .grid {
+    .DoctorsManager__grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-.emptyState {
+.DoctorsManager__emptyState {
     grid-column: 1 / -1;
     display: flex;
     flex-direction: column;
@@ -70,14 +70,14 @@
     text-align: center;
 }
 
-.emptyIcon {
+.DoctorsManager__emptyIcon {
     font-size: 3.5rem;
     margin-bottom: 1rem;
     opacity: 0.5;
     color: var(--gray-400);
 }
 
-.emptyText {
+.DoctorsManager__emptyText {
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--text-muted);
