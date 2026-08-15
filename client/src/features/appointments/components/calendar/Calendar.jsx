@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import CalendarHeader from './CalendarHeader.jsx';
-import CalendarGrid from './CalendarGrid.jsx';
-import DayHeaders from '../schedule/DayHeaders.jsx';
+import { CalendarHeader } from './CalendarHeader.jsx';
+import { CalendarGrid } from './CalendarGrid.jsx';
+import { DayHeaders } from '../schedule/DayHeaders.jsx';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getNow, parseDate, createDate, getDaysInMonth, formatKeyDate } from '@/utils/core/dateUtils';
 import styles from './Calendar.module.css';
@@ -14,7 +14,7 @@ import styles from './Calendar.module.css';
 const EMPTY_ARRAY = [];
 const EMPTY_OBJECT = {};
 
-const Calendar = ({ 
+export const Calendar = ({ 
     selectedDate, 
     onDateSelect, 
     appointments = EMPTY_ARRAY, 
@@ -99,4 +99,3 @@ const Calendar = ({
     );
 };
 
-export default Calendar;

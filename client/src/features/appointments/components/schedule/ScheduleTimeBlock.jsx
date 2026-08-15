@@ -9,7 +9,7 @@ import styles from './ScheduleTimeBlock.module.css';
  * ScheduleTimeBlock Feature Molecule.
  * Represents a single configurable time interval within a doctor's availability schedule.
  */
-const ScheduleTimeBlock = ({
+export const ScheduleTimeBlock = ({
     block, onFocus, onBlur, onChange, onRemove, t
 }) => {
     const typeOptions = [
@@ -78,4 +78,3 @@ const ScheduleTimeBlock = ({
     );
 };
 
-export default ScheduleTimeBlock;

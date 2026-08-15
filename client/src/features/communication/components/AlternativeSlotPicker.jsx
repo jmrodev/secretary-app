@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import SlotExplorerDropdown from '@/features/appointments/components/ui/SlotExplorerDropdown';
+import { SlotExplorerDropdown } from '@/features/appointments/components/ui/SlotExplorerDropdown';
 import { useNextFreeSlot } from '@/features/appointments/hooks/useNextFreeSlot';
 
 /**

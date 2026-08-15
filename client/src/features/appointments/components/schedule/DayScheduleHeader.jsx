@@ -10,7 +10,7 @@ import styles from './DayScheduleHeader.module.css';
  * DayScheduleHeader (Internal to feature).
  * Manages daily navigation and view controls.
  */
-const DayScheduleHeader = ({
+export const DayScheduleHeader = ({
     date, holiday, showOutOfHours, setShowOutOfHours, showCancelled, setShowCancelled,
     onPrevDay, onToday, onNextDay, onPrint, onNextFreeSlot: _onNextFreeSlot, t
 }) => {
@@ -47,4 +47,3 @@ const DayScheduleHeader = ({
     );
 };
 
-export default DayScheduleHeader;

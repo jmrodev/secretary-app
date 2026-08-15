@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import AppointmentCard from '../cards/AppointmentCard';
+import { AppointmentCard } from '../cards/AppointmentCard';
 import Icon from '@/components/atoms/Icon';
 import { formatTime } from '@/utils/core/dateUtils';
 import styles from './ScheduleTimeline.module.css';
@@ -8,7 +8,7 @@ import styles from './ScheduleTimeline.module.css';
  * ScheduleTimeline (Executor Component).
  * Renders the list of time slots and their associated appointments.
  */
-const ScheduleTimeline = ({
+export const ScheduleTimeline = ({
     timeSlots, showOutOfHours, showCancelled, onSlotClick, onSlotAction, getAppointmentsForSlot, t,
     isLoading = false
 }) => {
@@ -148,4 +148,3 @@ const ScheduleTimeline = ({
     );
 };
 
-export default ScheduleTimeline;

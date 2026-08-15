@@ -8,7 +8,7 @@ import styles from './AppointmentHeader.module.css';
  * AppointmentHeader Molecule (Internal to feature).
  * Displays patient info and quick actions for an appointment.
  */
-const AppointmentHeader = ({ appt, t }) => {
+export const AppointmentHeader = ({ appt, t }) => {
     const getStatusVariant = (status) => {
         switch (status) {
             case 'completed':
@@ -115,4 +115,3 @@ const AppointmentHeader = ({ appt, t }) => {
     );
 };
 
-export default AppointmentHeader;

@@ -7,7 +7,7 @@ import styles from './CalendarHeader.module.css';
  * CalendarHeader (Internal to feature).
  * Small header with month navigation for the Mini-Calendar.
  */
-const CalendarHeader = ({ month, year, onPrevMonth, onNextMonth }) => {
+export const CalendarHeader = ({ month, year, onPrevMonth, onNextMonth }) => {
   return (
     <div className={`${styles.root}`}>
       <Button className={`${styles.navButton}`} onClick={onPrevMonth} aria-label="Previous month" unstyled>
@@ -21,4 +21,3 @@ const CalendarHeader = ({ month, year, onPrevMonth, onNextMonth }) => {
   );
 };
 
-export default CalendarHeader;

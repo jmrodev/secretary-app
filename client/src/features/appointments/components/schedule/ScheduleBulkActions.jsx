@@ -8,7 +8,7 @@ import styles from './ScheduleBulkActions.module.css';
  * Orchestrates applying specific time ranges to multiple days simultaneously in the schedule setup.
  * Centralized logic for rapid availability planning within the appointments domain.
  */
-const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkEnd, onApplyBulk, t }) => {
+export const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkEnd, onApplyBulk, t }) => {
     return (
         <div className={`${styles.root}`}>
             <h4 className={`${styles.title}`}>
@@ -52,4 +52,3 @@ const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkEnd, onA
     );
 };
 
-export default ScheduleBulkActions;

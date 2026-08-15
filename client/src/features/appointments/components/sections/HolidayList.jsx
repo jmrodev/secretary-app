@@ -7,7 +7,7 @@ import styles from './HolidayList.module.css';
 /**
  * HolidayList (Internal to feature).
  */
-const HolidayList = ({ holidays, onDelete }) => {
+export const HolidayList = ({ holidays, onDelete }) => {
     const sortedHolidays = useMemo(() => {
         if (!holidays) return [];
         return holidays.toSorted((a, b) => compareDates(a.date, b.date));
@@ -43,4 +43,3 @@ const HolidayList = ({ holidays, onDelete }) => {
     );
 };
 
-export default HolidayList;

@@ -9,7 +9,7 @@ import styles from './AppointmentPatientSection.module.css';
  * Compact version for the appointment form.
  * Decoupled via PatientSearchSelectComponent injection.
  */
-const AppointmentPatientSection = ({
+export const AppointmentPatientSection = ({
     selectedPatient, selectedPatientData, missingData, handlePatientChange, handlePhoneChange, onOpenEditPatient, t,
     PatientSearchSelectComponent
 }) => {
@@ -69,4 +69,3 @@ const AppointmentPatientSection = ({
     );
 };
 
-export default AppointmentPatientSection;

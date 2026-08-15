@@ -11,7 +11,7 @@ import styles from './AppointmentAdminPanel.module.css';
  * AppointmentAdminPanel Molecule (Internal to feature).
  * Orchestrates administrative actions for an appointment using a tabbed interface.
  */
-const AppointmentAdminPanel = ({
+export const AppointmentAdminPanel = ({
     appt, user: _user, isGoogle, canUnrestricted, t, onPay, onUpdateStatus, onReschedule, onCancel, onDelete, onClose, onUpdateType, onHardEdit, onBonify, note, onWhatsApp, onWhatsAppConfirmation
 }) => {
     const [activeTab, setActiveTab] = useState('attendance');
@@ -292,4 +292,3 @@ const AppointmentAdminPanel = ({
 };
 
 
-export default AppointmentAdminPanel;

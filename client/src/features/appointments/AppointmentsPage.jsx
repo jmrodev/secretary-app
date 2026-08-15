@@ -6,12 +6,12 @@ import Icon from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 
 // Feature Components
-import CalendarSection from './components/calendar/CalendarSection';
-import ScheduleSection from './components/schedule/ScheduleSection';
-import RescheduleBanner from './components/ui/RescheduleBanner';
-import PatientHistoryView from './components/views/PatientHistoryView';
+import { CalendarSection } from './components/calendar/CalendarSection';
+import { ScheduleSection } from './components/schedule/ScheduleSection';
+import { RescheduleBanner } from './components/ui/RescheduleBanner';
+import { PatientHistoryView } from './components/views/PatientHistoryView';
 import { AppointmentsModals } from './components/sections/AppointmentsModals';
-import SlotExplorerDropdown from './components/ui/SlotExplorerDropdown';
+import { SlotExplorerDropdown } from './components/ui/SlotExplorerDropdown';
 
 // Shared/Domain Modals (Injectable slots)
 import { PrescriptionModal, MedicationInput } from '@/features/medical_documents';
@@ -26,7 +26,7 @@ import styles from './AppointmentsPage.module.css';
  * AppointmentsPage (ECC-Pattern Orchestrator).
  * Main page for managing the clinic's agenda and appointments.
  */
-const AppointmentsPage = () => {
+export const AppointmentsPage = () => {
     const controller = useAppointmentsPageController();
     const {
         t, user, loading, agendaLoading, showOutOfHours,
@@ -212,4 +212,3 @@ const AppointmentsPage = () => {
     );
 };
 
-export default AppointmentsPage;

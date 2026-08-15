@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import AppointmentHeader from '../AppointmentHeader';
+import { AppointmentHeader } from '../AppointmentHeader';
 
 // Mocks
 vi.mock('@/hooks/useLanguage', () => ({

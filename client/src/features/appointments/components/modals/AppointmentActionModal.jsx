@@ -7,16 +7,16 @@ import { useAuth } from '@/features/auth';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
 import { usePermissions } from '@/hooks/usePermissions';
-import AppointmentHeader from '../sections/AppointmentHeader.jsx';
-import AppointmentMedicalPanel from '../sections/AppointmentMedicalPanel.jsx';
-import AppointmentAdminPanel from '../sections/AppointmentAdminPanel.jsx';
+import { AppointmentHeader } from '../sections/AppointmentHeader.jsx';
+import { AppointmentMedicalPanel } from '../sections/AppointmentMedicalPanel.jsx';
+import { AppointmentAdminPanel } from '../sections/AppointmentAdminPanel.jsx';
 import styles from './AppointmentActionModal.module.css';
 
 /**
  * Executor component that renders the action modal for a specific appointment.
  * Shows medical or admin panels based on user role and permissions.
  */
-const AppointmentActionModal = ({
+export const AppointmentActionModal = ({
     isOpen, onClose, appt, onHistory, onPrescribe, onUpdateStatus, onReschedule,
     onCancel, onDelete, onSync, onPay, onWhatsApp, onWhatsAppConfirmation, onUpdateType, onHardEdit,
     onBonify, onSaveNote, fetchAppointments: _fetchAppointments
@@ -82,4 +82,3 @@ const AppointmentActionModal = ({
     );
 };
 
-export default AppointmentActionModal;
