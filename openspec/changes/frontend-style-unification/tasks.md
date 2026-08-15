@@ -43,7 +43,7 @@ Chain strategy: pending
 
 Per PR: convert `export default` → `export const` per JSX, update ALL importers, then `pnpm build` + `pnpm lint`.
 
-- [ ] 3.1 holidays (1); 3.2 rentals (1); 3.3 insurances (3)
+- [x] 3.1 holidays (1); 3.2 rentals (1); 3.3 insurances (3)
 - [ ] 3.4 layout, dashboard, whatsapp (3–4); 3.5 users, communication (5)
 - [ ] 3.6 institutions (6); 3.7 outreach (8)
 - [ ] 3.8 auth, chat (9); 3.9 doctors, reports (11)

@@ -1,12 +1,12 @@
 /* InsuranceList.css - Premium Bento Box Style */
 
-.insuranceList {
+.InsuranceList__insuranceList {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.empty {
+.InsuranceList__empty {
     text-align: center;
     padding: 4rem 2rem;
     background-color: var(--dashboard-card-bg);
@@ -19,19 +19,19 @@
     gap: 1rem;
 }
 
-.emptyText {
+.InsuranceList__emptyText {
     color: var(--text-muted);
     font-size: 1.125rem;
     font-weight: 500;
 }
 
-.grid {
+.InsuranceList__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 1.5rem;
 }
 
-.root {
+.InsuranceList__root {
     /* Bento Box Strategy: High contrast borders on dark background */
     background-color: var(--dashboard-card-bg);
     border-radius: var(--radius-lg);
@@ -46,20 +46,20 @@
     overflow: hidden;
 }
 
-.root:hover {
+.InsuranceList__root:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-premium);
     border-color: var(--primary-color);
     background-color: var(--card-hover-bg);
 }
 
-.header {
+.InsuranceList__header {
     display: flex;
     align-items: center;
     gap: 1.25rem;
 }
 
-.avatar {
+.InsuranceList__avatar {
     width: 4rem;
     height: 4rem;
     border-radius: var(--radius-md);
@@ -75,14 +75,14 @@
     letter-spacing: 1px;
 }
 
-.info {
+.InsuranceList__info {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     min-width: 0; /* For ellipsis */
 }
 
-.name {
+.InsuranceList__name {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 800;
@@ -93,7 +93,7 @@
     text-overflow: ellipsis;
 }
 
-.cuit {
+.InsuranceList__cuit {
     margin: 0;
     font-size: 0.813rem;
     color: var(--text-muted);
@@ -101,11 +101,11 @@
     letter-spacing: 0.5px;
 }
 
-.badge {
+.InsuranceList__badge {
     align-self: flex-start;
 }
 
-.body {
+.InsuranceList__body {
     flex: 1;
     background-color: var(--card-surface-bg);
     padding: 1rem;
@@ -113,19 +113,19 @@
     border: 1px solid var(--dashboard-card-border);
 }
 
-.dataList {
+.InsuranceList__dataList {
     display: flex;
     flex-direction: column;
     gap: 0.875rem;
 }
 
-.dataRow {
+.InsuranceList__dataRow {
     display: flex;
     align-items: flex-start;
     gap: 0.75rem;
 }
 
-.dataIcon {
+.InsuranceList__dataIcon {
     color: var(--primary-color);
     background-color: rgb(var(--primary-rgb) / 10%);
     padding: 0.4rem;
@@ -135,7 +135,7 @@
     justify-content: center;
 }
 
-.dataValue {
+.InsuranceList__dataValue {
     font-size: 0.875rem;
     color: var(--text-secondary);
     font-weight: 600;
@@ -143,31 +143,31 @@
     padding-top: 0.25rem;
 }
 
-.link {
+.InsuranceList__link {
     color: var(--primary-color);
     text-decoration: none;
     transition: all 0.2s;
 }
 
-.link:hover {
+.InsuranceList__link:hover {
     color: var(--primary-hover);
     text-decoration: underline;
 }
 
-.phones {
+.InsuranceList__phones {
     display: flex;
     flex-direction: column;
     gap: 0.375rem;
 }
 
-.phoneTag {
+.InsuranceList__phoneTag {
     font-size: 0.75rem;
     color: var(--gray-400);
     font-weight: 400;
     margin-left: 0.25rem;
 }
 
-.morePhones {
+.InsuranceList__morePhones {
     font-size: 0.75rem;
     color: var(--primary-color);
     font-weight: 700;
@@ -175,7 +175,7 @@
     cursor: pointer;
 }
 
-.footer {
+.InsuranceList__footer {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
