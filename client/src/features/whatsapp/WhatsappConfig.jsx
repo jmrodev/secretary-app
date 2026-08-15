@@ -135,7 +135,7 @@ export const WhatsappConfig = ({ t }) => {
     };
 
     return (
-        <div className="tab-panel animate-fade-in">
+        <div className={styles.tabPanel}>
             {message && (
                 <div className={`${styles.message} ${styles[message.type === 'success' ? 'message--success' : 'message--error']}`}>
                     {message.text}
@@ -143,12 +143,12 @@ export const WhatsappConfig = ({ t }) => {
             )}
 
             {/* Doctor selector */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="person" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('wa_config_doctor')}</h4>
+            <div className={styles.configSection}>
+                <div className={styles.configSectionHeader}>
+                    <Icon name="person" size="1.2rem" className={styles.configSectionIcon} />
+                    <h4 className={styles.configSectionTitle}>{t('wa_config_doctor')}</h4>
                 </div>
-                <div className="config-section__body">
+                <div className={styles.configSectionBody}>
                     <select
                         className={styles['var-btn']}
                         value={selectedDoctorId}
@@ -161,16 +161,16 @@ export const WhatsappConfig = ({ t }) => {
                 </div>
             </div>
 
-            <div className="config-section__divider"></div>
+            <div className={styles.configSectionDivider}></div>
 
             {/* AI Prompt */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="psychology" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('wa_config_prompt_label')}</h4>
+            <div className={styles.configSection}>
+                <div className={styles.configSectionHeader}>
+                    <Icon name="psychology" size="1.2rem" className={styles.configSectionIcon} />
+                    <h4 className={styles.configSectionTitle}>{t('wa_config_prompt_label')}</h4>
                 </div>
-                <div className="config-section__body">
-                    <p className="config-section__description" style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
+                <div className={styles.configSectionBody}>
+                    <p className={styles.configSectionDescription} style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
                         {t('wa_config_prompt_hint')}
                     </p>
                     <div className={styles.vars}>
@@ -204,16 +204,16 @@ export const WhatsappConfig = ({ t }) => {
                 </div>
             </div>
 
-            <div className="config-section__divider"></div>
+            <div className={styles.configSectionDivider}></div>
 
             {/* Pending-state response template */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="NOTIFICATIONS" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('wa_config_pending_template_label')}</h4>
+            <div className={styles.configSection}>
+                <div className={styles.configSectionHeader}>
+                    <Icon name="NOTIFICATIONS" size="1.2rem" className={styles.configSectionIcon} />
+                    <h4 className={styles.configSectionTitle}>{t('wa_config_pending_template_label')}</h4>
                 </div>
-                <div className="config-section__body">
-                    <p className="config-section__description" style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
+                <div className={styles.configSectionBody}>
+                    <p className={styles.configSectionDescription} style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
                         {t('wa_config_pending_template_hint')}
                     </p>
                     <textarea
@@ -227,15 +227,15 @@ export const WhatsappConfig = ({ t }) => {
                 </div>
             </div>
 
-            <div className="config-section__divider"></div>
+            <div className={styles.configSectionDivider}></div>
 
             {/* Model config */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="tune" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('wa_config_model_label')}</h4>
+            <div className={styles.configSection}>
+                <div className={styles.configSectionHeader}>
+                    <Icon name="tune" size="1.2rem" className={styles.configSectionIcon} />
+                    <h4 className={styles.configSectionTitle}>{t('wa_config_model_label')}</h4>
                 </div>
-                <div className="config-section__body">
+                <div className={styles.configSectionBody}>
                     <div className={styles.row}>
                         <div className={styles.field}>
                             <label className={styles['field-label']}>{t('wa_config_model')}</label>
@@ -265,16 +265,16 @@ export const WhatsappConfig = ({ t }) => {
                 </div>
             </div>
 
-            <div className="config-section__divider"></div>
+            <div className={styles.configSectionDivider}></div>
 
             {/* Quick responses */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="quickreply" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('wa_config_quick_label')}</h4>
+            <div className={styles.configSection}>
+                <div className={styles.configSectionHeader}>
+                    <Icon name="quickreply" size="1.2rem" className={styles.configSectionIcon} />
+                    <h4 className={styles.configSectionTitle}>{t('wa_config_quick_label')}</h4>
                 </div>
-                <div className="config-section__body">
-                    <p className="config-section__description" style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
+                <div className={styles.configSectionBody}>
+                    <p className={styles.configSectionDescription} style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
                         {t('wa_config_quick_hint')}
                     </p>
                     <div className={styles.responses}>
@@ -296,9 +296,9 @@ export const WhatsappConfig = ({ t }) => {
                 </div>
             </div>
 
-            <div className="config-section__divider"></div>
+            <div className={styles.configSectionDivider}></div>
 
-            <div className="config-actions config-actions--right">
+            <div className={styles.configActions}>
                 <Button
                     variant="primary"
                     onClick={handleSave}
