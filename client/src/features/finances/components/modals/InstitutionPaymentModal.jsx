@@ -13,7 +13,7 @@ import styles from './InstitutionPaymentModal.module.css';
  * Modal for registering payments from institutions.
  * Refactored to use Atomic Design components and BEM.
  */
-const InstitutionPaymentModal = ({
+export const InstitutionPaymentModal = ({
     isOpen,
     onClose,
     paymentData,
@@ -79,6 +79,4 @@ const InstitutionPaymentModal = ({
         </Modal>
     );
 };
-
-export default InstitutionPaymentModal;
 

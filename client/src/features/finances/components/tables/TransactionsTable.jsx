@@ -4,7 +4,7 @@ import { formatTime, parseDate } from '@/utils/core/dateUtils';
 import Pagination from '@/components/atoms/Pagination';
 
 // Local Feature Components
-import TransactionRow from '@/features/finances/components/tables/TransactionRow';
+import { TransactionRow } from '@/features/finances/components/tables/TransactionRow';
 
 import styles from './TransactionsTable.module.css';
 
@@ -13,7 +13,7 @@ import styles from './TransactionsTable.module.css';
  * Main ledger display for financial audit and cash control.
  * Handles grouping of fractional payments and system descriptions.
  */
-const TransactionsTable = ({
+export const TransactionsTable = ({
     transactions,
     currentPage,
     totalPages,
@@ -204,4 +204,3 @@ const TransactionsTable = ({
     );
 };
 
-export default TransactionsTable;

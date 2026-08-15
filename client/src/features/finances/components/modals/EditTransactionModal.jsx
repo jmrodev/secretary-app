@@ -15,7 +15,7 @@ import styles from './EditTransactionModal.module.css';
  * Simplified modal for quick editing of existing transactions.
  * Refactored to follow BEM and Atomic Design standards.
  */
-const EditTransactionModal = ({
+export const EditTransactionModal = ({
     isOpen,
     onClose,
     onSave,
@@ -119,6 +119,4 @@ const EditTransactionModal = ({
         </Modal>
     );
 };
-
-export default EditTransactionModal;
 

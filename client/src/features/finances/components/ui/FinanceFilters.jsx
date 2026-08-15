@@ -12,7 +12,7 @@ import styles from './FinanceFilters.module.css';
  * Provides search and filtering capabilities for the finance ledger.
  * Refactored to use BEM and Atomic Design components.
  */
-const FinanceFilters = ({
+export const FinanceFilters = ({
     filters,
     handlers,
     t
@@ -154,4 +154,3 @@ const FinanceFilters = ({
     );
 };
 
-export default FinanceFilters;

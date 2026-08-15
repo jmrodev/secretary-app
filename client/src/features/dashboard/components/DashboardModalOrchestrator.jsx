@@ -2,7 +2,7 @@ import React from 'react';
 import AppointmentActionModal from '@/features/appointments/components/modals/AppointmentActionModal';
 import PrescriptionModal from '@/features/medical_documents/components/modals/PrescriptionModal';
 import PatientHistoryModal from '@/features/patients/components/modals/PatientHistoryModal';
-import TransactionModal from '@/features/finances/components/modals/TransactionModal';
+import { TransactionModal } from '@/features/finances/components/modals/TransactionModal';
 import MedicalRequestModal from '@/features/medical_documents/components/modals/MedicalRequestModal';
 import MedicationInput from '@/features/medical_documents/components/forms/MedicationInput';
 

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Modal from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import CashBalancingModal from './CashBalancingModal';
+import { CashBalancingModal } from './CashBalancingModal';
 
 import styles from './PendingClosuresModal.module.css';
 
@@ -11,7 +11,7 @@ import styles from './PendingClosuresModal.module.css';
  * Displays a list of unclosed cash box days.
  * Integrated with the new Automatic Balancing (Arqueo) system.
  */
-const PendingClosuresModal = ({ 
+export const PendingClosuresModal = ({ 
     isOpen, 
     onClose, 
     pendingClosures, 
@@ -121,4 +121,3 @@ const PendingClosuresModal = ({
     );
 };
 
-export default PendingClosuresModal;

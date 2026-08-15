@@ -3,8 +3,8 @@ import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Card from '@/components/atoms/Card';
 import Badge from '@/components/atoms/Badge';
-import CashBoxSummary from '@/features/finances/components/sections/CashBoxSummary';
-import FinanceFilters from '@/features/finances/components/ui/FinanceFilters';
+import { CashBoxSummary } from '@/features/finances/components/sections/CashBoxSummary';
+import { FinanceFilters } from '@/features/finances/components/ui/FinanceFilters';
 import styles from './FinanceSidebar.module.css';
 
 /**
@@ -12,7 +12,7 @@ import styles from './FinanceSidebar.module.css';
  * Encapsulates all sidebar actions, filters, and summaries for the Finance page.
  * Refactored to follow BEM and Atomic Design standards.
  */
-const FinanceSidebar = ({
+export const FinanceSidebar = ({
     user,
     doctors,
     selectedDoctorFilter,
@@ -114,7 +114,4 @@ const FinanceSidebar = ({
         </aside >
     );
 };
-
-export default FinanceSidebar;
-
 

@@ -8,7 +8,7 @@ import styles from './FinanceStatsCards.module.css';
  * Displays financial breakdown by category and payment methods.
  * Refactored to follow BEM and Atomic Design standards.
  */
-const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) => {
+export const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) => {
     // Separate different types of stats
     const tableStats = stats.filter(s => ['cash', 'transfer', 'withdrawal', 'expenses'].includes(s.type));
     const financialSummary = stats.filter(s => ['cash_balance', 'transfer_balance', 'total_net', 'net_cash'].includes(s.type));
@@ -198,6 +198,4 @@ const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) => {
         </section>
     );
 };
-
-export default FinanceStatsCards;
 

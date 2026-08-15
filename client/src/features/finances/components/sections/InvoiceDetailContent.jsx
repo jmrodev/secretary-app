@@ -8,7 +8,7 @@ import styles from './InvoiceDetailContent.module.css';
  * InvoiceDetailContent Feature Molecule.
  * Modal content for viewing and printing generated invoices within the finances domain.
  */
-const InvoiceDetailContent = ({ tx, formatDate }) => {
+export const InvoiceDetailContent = ({ tx, formatDate }) => {
     const handlePrint = () => {
         if (!tx.invoice_number) return;
         printInvoice({
@@ -106,4 +106,3 @@ const InvoiceDetailContent = ({ tx, formatDate }) => {
     );
 };
 
-export default InvoiceDetailContent;
