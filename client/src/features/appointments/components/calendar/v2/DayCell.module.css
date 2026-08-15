@@ -1,6 +1,6 @@
 /* DayCell.module.css */
 
-.DayCell__dayCell {
+.DayCell {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -26,7 +26,7 @@
 }
 
 /* Hover state */
-.DayCell__dayCell:hover {
+.DayCell:hover {
   background: rgb(128, 128, 128, 0.08);
   border-color: var(--primary-color);
   transform: translateY(-2px);
@@ -34,13 +34,13 @@
 }
 
 /* Selected state */
-.DayCell__dayCell.selected {
+.DayCell.selected {
   background: rgb(var(--accent-rgb, 99, 102, 241), 0.15);
   border-color: rgb(var(--accent-rgb, 99, 102, 241), 0.6);
   box-shadow: 0 0 12px rgb(var(--accent-rgb, 99, 102, 241), 0.25);
 }
 
-.DayCell__dayCell.selected::before {
+.DayCell.selected::before {
   content: '';
   position: absolute;
   top: 0;
@@ -52,33 +52,33 @@
 }
 
 /* Today state */
-.DayCell__dayCell.today {
+.DayCell.today {
   border-color: var(--primary-color);
   background: rgb(13, 148, 136, 0.08);
 }
 
 /* Holiday state */
-.DayCell__dayCell.holiday {
+.DayCell.holiday {
   background: rgb(239, 68, 68, 0.05);
   border-color: rgb(239, 68, 68, 0.3);
 }
 
 /* Inactive / Past / Outside month states */
-.DayCell__dayCell.past {
+.DayCell.past {
   background-color: rgb(0, 0, 0, 0.04);
 }
 
-:root[data-theme="dark"] .DayCell__dayCell.past,
-html[data-theme="dark"] .DayCell__dayCell.past,
-body:not(.DayCell__theme-light) .DayCell__dayCell.past {
+:root[data-theme="dark"] .DayCell.past,
+html[data-theme="dark"] .DayCell.past,
+body:not(.DayCell__theme-light) .DayCell.past {
   background-color: rgb(0, 0, 0, 0.25);
 }
 
-.DayCell__dayCell.past .DayCell__number {
+.DayCell.past .DayCell__number {
   color: var(--text-muted);
 }
 
-.DayCell__dayCell.outsideMonth {
+.DayCell.outsideMonth {
   opacity: 0.4;
 }
 
@@ -108,7 +108,7 @@ body:not(.DayCell__theme-light) .DayCell__dayCell.past {
 }
 
 /* Keyboard focus state */
-.DayCell__dayCell:focus-visible {
+.DayCell:focus-visible {
   outline: 2px solid var(--accent, #6366f1);
   outline-offset: 2px;
 }

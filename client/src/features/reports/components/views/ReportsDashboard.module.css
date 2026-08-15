@@ -1,27 +1,27 @@
 /* ReportsDashboard Organism BEM Styles */
 
-.ReportsDashboard__reportsDashboard {
+.ReportsDashboard {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     width: 100%;
 }
 
-.ReportsDashboard__reportsDashboard__topActions {
+.ReportsDashboard__topActions {
     margin-bottom: 1.5rem;
 }
 
-.ReportsDashboard__reportsDashboard__grid {
+.ReportsDashboard__grid {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-.ReportsDashboard__reportsDashboard__main {
+.ReportsDashboard__main {
     width: 100%;
 }
 
-.ReportsDashboard__reportsDashboard__card {
+.ReportsDashboard__card {
     background: var(--dashboard-card-bg, var(--card-bg, var(--text-main)));
     border-radius: var(--radius-lg, 12px);
     border: 1px solid var(--dashboard-card-border, var(--border-color, #e2e8f0));

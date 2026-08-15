@@ -33,7 +33,7 @@ export default defineConfig([
     rules: {
       'max-lines': ['warn', { max: 350, skipBlankLines: true, skipComments: true }],
       'no-restricted-syntax': [
-        'warn',
+        'error',
         {
           selector: "Identifier[name=/^(handleClick|handleChange|handleEvent)$/]",
           message: "Use semantic handler names (e.g., handleSavePatient) instead of generic names like handleClick.",

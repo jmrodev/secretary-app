@@ -1,6 +1,6 @@
 /* AuditLogManager Styles (BEM) */
 
-.AuditLogManager__auditLogManager {
+.AuditLogManager {
     height: 100%;
     display: flex;
     flex-direction: column;

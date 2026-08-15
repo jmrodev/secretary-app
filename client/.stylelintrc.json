@@ -9,7 +9,7 @@
         "componentSelectors": "^\\.{componentName}(?:__[a-zA-Z0-9]+)?(?:--[a-zA-Z0-9]+)?$",
         "implicitComponents": "**/*.module.css"
       },
-      { "severity": "warning" }
+      { "severity": "error" }
     ],
     "selector-class-pattern": null,
     "no-descending-specificity": null,
