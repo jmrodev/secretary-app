@@ -8,7 +8,7 @@ import styles from './PatientIdentityFields.module.css';
  * Contains primary identification: first name, last name, DNI, and DOB.
  * Optimized for Bento Box layout.
  */
-const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
+export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
     return (
         <article className={`${styles.root}`}>
             
@@ -77,4 +77,3 @@ const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
     );
 };
 
-export default PatientIdentityFields;

@@ -10,7 +10,7 @@ import styles from './PatientContactFields.module.css';
  * Manages email and multiple phone numbers through PhoneNumbersManager.
  * Optimized for Bento Box layout.
  */
-const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers, t }) => {
+export const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers, t }) => {
     return (
         <article className={`${styles.root}`}>
             
@@ -52,4 +52,3 @@ const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers,
     );
 };
 
-export default PatientContactFields;

@@ -5,7 +5,7 @@ import { Button } from '@/components/atoms/Button';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PatientSearchSelect.module.css';
 
-const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus: _autoFocus = false, selectedData }) => {
+export const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus: _autoFocus = false, selectedData }) => {
     const { t } = useLanguage();
     const finalPlaceholder = placeholder || t('search_placeholder');
     const [internalSelected, setInternalSelected] = useState(null);
@@ -98,4 +98,3 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
 };
 
 
-export default PatientSearchSelect;

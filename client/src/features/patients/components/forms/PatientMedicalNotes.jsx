@@ -8,7 +8,7 @@ import styles from './PatientMedicalNotes.module.css';
  * PatientMedicalNotes Molecule.
  * Handles clinical history and institution coverage.
  */
-const PatientMedicalNotes = ({ formData, updatePatientData, institutions, t }) => {
+export const PatientMedicalNotes = ({ formData, updatePatientData, institutions, t }) => {
     const institutionOptions = React.useMemo(() => {
         const safeInstitutions = Array.isArray(institutions) ? institutions : (institutions?.institutions || []);
         return [
@@ -55,4 +55,3 @@ const PatientMedicalNotes = ({ formData, updatePatientData, institutions, t }) =
     );
 };
 
-export default PatientMedicalNotes;

@@ -11,7 +11,7 @@ import { formatTime } from '@/utils/core/dateUtils';
 
 import styles from './QRCodeModal.module.css';
 
-const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhone, type }) => {
+export const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhone, type }) => {
     const { t } = useLanguage();
     const { alert } = useModal();
     const { settings } = useConfig();
@@ -83,4 +83,3 @@ const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhon
     );
 };
 
-export default QRCodeModal;

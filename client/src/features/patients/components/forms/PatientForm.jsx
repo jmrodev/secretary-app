@@ -4,13 +4,13 @@ import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
 // Local Feature Components
-import PatientIdentityFields from '@/features/patients/components/forms/PatientIdentityFields';
-import PatientInsuranceFields from '@/features/patients/components/forms/PatientInsuranceFields';
-import PatientAccountFields from '@/features/patients/components/forms/PatientAccountFields';
-import PatientContactFields from '@/features/patients/components/forms/PatientContactFields';
-import PatientAddressFields from '@/features/patients/components/forms/PatientAddressFields';
-import PatientAdminFields from '@/features/patients/components/forms/PatientAdminFields';
-import PatientMedicalNotes from '@/features/patients/components/forms/PatientMedicalNotes';
+import { PatientIdentityFields } from '@/features/patients/components/forms/PatientIdentityFields';
+import { PatientInsuranceFields } from '@/features/patients/components/forms/PatientInsuranceFields';
+import { PatientAccountFields } from '@/features/patients/components/forms/PatientAccountFields';
+import { PatientContactFields } from '@/features/patients/components/forms/PatientContactFields';
+import { PatientAddressFields } from '@/features/patients/components/forms/PatientAddressFields';
+import { PatientAdminFields } from '@/features/patients/components/forms/PatientAdminFields';
+import { PatientMedicalNotes } from '@/features/patients/components/forms/PatientMedicalNotes';
 import styles from './PatientForm.module.css';
 
 
@@ -29,7 +29,7 @@ const STEPS = [
  * Orchestrates various molecules to provide a comprehensive patient management form.
  * Follows Arquitectura.md: Atomic Design, BEM, and Bento Box contrast.
  */
-const PatientForm = ({
+export const PatientForm = ({
     controller,
     onCancel,
     isEdit = false,
@@ -203,4 +203,3 @@ const PatientForm = ({
     );
 };
 
-export default PatientForm;

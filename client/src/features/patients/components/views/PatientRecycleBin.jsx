@@ -12,7 +12,7 @@ const EMPTY_ARRAY = [];
  * PatientRecycleBin (Executor).
  * Renders a list of deleted patients for restoration.
  */
-const PatientRecycleBin = ({
+const PatientRecycleBinBase = ({
     recycleItems = EMPTY_ARRAY,
     onRestore,
     loading
@@ -120,4 +120,4 @@ const PatientRecycleBin = ({
     );
 };
 
-export default React.memo(PatientRecycleBin);
+export const PatientRecycleBin = React.memo(PatientRecycleBinBase);

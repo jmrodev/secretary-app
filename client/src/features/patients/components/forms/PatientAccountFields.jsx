@@ -8,7 +8,7 @@ import styles from './PatientAccountFields.module.css';
  * Contains username and password fields for new patient account creation.
  * Optimized for Bento Box layout.
  */
-const PatientAccountFields = ({ formData, updatePatientData, t }) => {
+export const PatientAccountFields = ({ formData, updatePatientData, t }) => {
     return (
         <article className={`${styles.root}`}>
             
@@ -50,4 +50,3 @@ const PatientAccountFields = ({ formData, updatePatientData, t }) => {
     );
 };
 
-export default PatientAccountFields;

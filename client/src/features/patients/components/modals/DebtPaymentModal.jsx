@@ -11,7 +11,7 @@ import styles from './DebtPaymentModal.module.css';
  * DebtPaymentModal Molecule (Executor).
  * Renders the dialog to process a patient's debt payment.
  */
-const DebtPaymentModal = ({
+export const DebtPaymentModal = ({
     isOpen,
     onClose,
     onConfirm,
@@ -56,4 +56,3 @@ const DebtPaymentModal = ({
     );
 };
 
-export default DebtPaymentModal;

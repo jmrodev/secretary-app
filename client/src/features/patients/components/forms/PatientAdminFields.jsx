@@ -11,7 +11,7 @@ const EMPTY_ARRAY = [];
  * Contains advanced settings only visible to administrators: doctor assignments, tariffs, and intervals.
  * Optimized for Bento Box layout.
  */
-const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggle, handleManualValueChange, updateAdminFields, t }) => {
+export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggle, handleManualValueChange, updateAdminFields, t }) => {
     return (
         <article className={`${styles.root}`}>
             
@@ -134,4 +134,3 @@ const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggl
     );
 };
 
-export default PatientAdminFields;

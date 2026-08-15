@@ -9,7 +9,7 @@ import styles from './PatientFinancialSidebar.module.css';
  * Renders the full patient financial ledger, including appointments, prescription requests,
  * total paid contribution, current debt, and line-by-line transaction breakdown.
  */
-const PatientFinancialSidebar = ({
+export const PatientFinancialSidebar = ({
     details,
     allPrescriptions = [],
     t,
@@ -258,4 +258,3 @@ const PatientFinancialSidebar = ({
     );
 };
 
-export default PatientFinancialSidebar;
