@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
 import { WhatsappBroadcast } from '@/components/molecules/WhatsappBroadcast';
 import { WhatsappConfig } from './WhatsappConfig';

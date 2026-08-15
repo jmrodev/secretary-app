@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMessagesPageController, ChatSidebar, ChatWindow } from '@/features/chat/index';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './ChatPage.module.css';
 

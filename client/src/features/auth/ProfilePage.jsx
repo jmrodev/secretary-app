@@ -1,5 +1,5 @@
 import React from 'react';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { ProfileEditor } from '@/features/auth/components/forms/ProfileEditor';
 import { useProfileController } from '@/features/auth/hooks/useProfileController';
 import styles from './ProfilePage.module.css';

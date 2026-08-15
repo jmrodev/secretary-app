@@ -103,7 +103,7 @@ export const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMar
                             <div className={`${styles.DashboardReminders__itemInfo}`}>
                                 <h4 className={`${styles.DashboardReminders__itemName}`}>{task.full_name}</h4>
                                 <div className={`${styles.DashboardReminders__itemDetails}`}>
-                                    <span className={`${styles.DashboardReminders__badge} dashboard-reminders__badge--${task.badgeClass}`}>
+                                    <span className={`${styles.DashboardReminders__badge} ${styles['DashboardReminders__badge' + task.badgeClass.charAt(0).toUpperCase() + task.badgeClass.slice(1)] || ''}`}>
                                         {task.label}
                                     </span>
                                 </div>

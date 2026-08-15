@@ -4,7 +4,7 @@ import { getConfigSections, getConfigSection } from './registry/configRegistry';
 import { loadDefaultConfigSections } from './components/ConfigRegistryLoader';
 
 // Global Atomic Components
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';

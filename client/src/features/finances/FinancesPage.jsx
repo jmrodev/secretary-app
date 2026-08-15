@@ -2,7 +2,7 @@
 import React from 'react';
 
 // Atomic Design Components
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import { useFinancesPageController } from '@/features/finances/hooks/useFinancesPageController';
 import { FinanceStatsCards } from '@/features/finances/components/sections/FinanceStatsCards';

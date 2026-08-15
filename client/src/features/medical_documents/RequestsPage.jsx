@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
 import { MedicalRequirementManager } from './components/ui/MedicalRequirementManager';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 
