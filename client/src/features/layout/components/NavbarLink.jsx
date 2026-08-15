@@ -6,8 +6,8 @@ import styles from './Navbar.module.css';
  * NavbarLink (Atom).
  * Standardized link for the top navigation.
  */
-const NavbarLink = ({ to, label, isActive, onClick, icon }) => {
-    const className = `${styles.link} ${isActive ? styles.linkActive : ''}`;
+export const NavbarLink = React.memo(({ to, label, isActive, onClick, icon }) => {
+    const className = `${styles.Navbar__link} ${isActive ? styles.Navbar__linkActive : ''}`;
     
     return (
         <Link to={to} className={className} onClick={onClick}>
@@ -15,6 +15,4 @@ const NavbarLink = ({ to, label, isActive, onClick, icon }) => {
             {label}
         </Link>
     );
-};
-
-export default React.memo(NavbarLink);
+});

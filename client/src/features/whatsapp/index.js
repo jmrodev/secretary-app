@@ -1,1 +1,1 @@
-export { default as WhatsappPage } from './WhatsappPage';
+export { WhatsappPage } from './WhatsappPage';

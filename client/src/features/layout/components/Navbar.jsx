@@ -5,15 +5,15 @@ import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import LanguageSelector from '@/components/atoms/LanguageSelector';
 import ThemeToggle from '@/components/atoms/ThemeToggle';
-import NavbarLink from './NavbarLink';
-import NavbarDropdown from './NavbarDropdown';
+import { NavbarLink } from './NavbarLink';
+import { NavbarDropdown } from './NavbarDropdown';
 import styles from './Navbar.module.css';
 
 /**
  * ECC-Pattern: Refactored Navbar (Orchestrator).
  * Uses Atomic Design (Atoms/Molecules) and clean separation of navigation logic.
  */
-const Navbar = () => {
+export const Navbar = () => {
     const {
         user, logout, t, settings,
         location, doctors,
@@ -39,20 +39,20 @@ const Navbar = () => {
     const handleToggle = (key) => setOpenDropdown(prev => prev === key ? null : key);
 
     return (
-        <header className={styles.root}>
-            <div className={styles.container}>
+        <header className={styles.Navbar__root}>
+            <div className={styles.Navbar__container}>
                 {/* --- Left: Branding --- */}
-                <div className={styles.left}>
-                    <Link to="/dashboard" className={styles.logo}>
-                        <div className={styles.logoIcon}>
+                <div className={styles.Navbar__left}>
+                    <Link to="/dashboard" className={styles.Navbar__logo}>
+                        <div className={styles.Navbar__logoIcon}>
                             <Icon name="DASHBOARD" size="1.5rem" color="var(--primary-color)" />
                         </div>
-                        <span className={styles.logoText}>{t('app_name')}</span>
+                        <span className={styles.Navbar__logoText}>{t('app_name')}</span>
                     </Link>
                 </div>
 
                 {/* --- Center: Main Navigation (Refactored) --- */}
-                <nav className={styles.nav}>
+                <nav className={styles.Navbar__nav}>
                     {navLinks.map(link => (
                         <NavbarLink 
                             key={link.path}
@@ -71,7 +71,7 @@ const Navbar = () => {
                         >
                             {doctors.filter(d => d.spreadsheet_id && (!isDoctor || d.user_id === (user.user_id || user.id))).map(d => (
                                 <a key={d.id} href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`} 
-                                   target="_blank" rel="noopener noreferrer" className={styles.link}>
+                                   target="_blank" rel="noopener noreferrer" className={styles.Navbar__link}>
                                     <Icon name="SPREADSHEETS" />
                                     {isDoctor ? (t('my_spreadsheet') || 'Mi Planilla') : d.full_name.split(' ')[0]}
                                 </a>
@@ -103,10 +103,10 @@ const Navbar = () => {
                 </nav>
 
                 {/* --- Right: User & Actions --- */}
-                <div className={styles.right}>
-                    <div className={styles.actions}>
+                <div className={styles.Navbar__right}>
+                    <div className={styles.Navbar__actions}>
                         <ThemeToggle />
-                        <div className={styles.actionIcon}>
+                        <div className={styles.Navbar__actionIcon}>
                             <Icon name="NOTIFICATIONS" size="1.2rem" />
                             <span className={styles.badge}></span>
                         </div>
@@ -116,13 +116,13 @@ const Navbar = () => {
                         />
                     </div>
                     
-                    <div className={styles.navbarUser}>
-                        <div className={styles.avatar}>
+                    <div className={styles.Navbar__navbarUser}>
+                        <div className={styles.Navbar__avatar}>
                             {user?.username?.charAt(0)?.toUpperCase() || 'U'}
                         </div>
-                        <div className={styles.info}>
-                            <span className={styles.name}>{user?.full_name || user?.username}</span>
-                            <span className={styles.role}>{user?.role}</span>
+                        <div className={styles.Navbar__info}>
+                            <span className={styles.Navbar__name}>{user?.full_name || user?.username}</span>
+                            <span className={styles.Navbar__role}>{user?.role}</span>
                         </div>
                     </div>
 
@@ -132,5 +132,3 @@ const Navbar = () => {
         </header>
     );
 };
-
-export default Navbar;

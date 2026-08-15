@@ -10,7 +10,7 @@ import MedicationInput from '@/features/medical_documents/components/forms/Medic
  * DashboardModalOrchestrator.
  * Centralizes all domain modals for the DashboardPage to reduce coupling in the main page.
  */
-const DashboardModalOrchestrator = ({ controller }) => {
+export const DashboardModalOrchestrator = ({ controller }) => {
     const {
         t,
         actionModal,
@@ -116,5 +116,3 @@ const DashboardModalOrchestrator = ({ controller }) => {
         </>
     );
 };
-
-export default DashboardModalOrchestrator;

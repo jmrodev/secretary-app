@@ -2,7 +2,7 @@
 
 
 
-.bentoGrid {
+.DashboardPage__bentoGrid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-auto-rows: minmax(120px, auto);
@@ -11,7 +11,7 @@
     width: 100%;
 }
 
-.bentoCard {
+.DashboardPage__bentoCard {
     position: relative;
     background: var(--dashboard-card-bg);
     border: 1px solid var(--dashboard-card-border);
@@ -25,43 +25,43 @@
     min-height: 0;
 }
 
-.bentoCard:hover {
+.DashboardPage__bentoCard:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgb(0, 0, 0, 0.05); /* Nordic soft hover shadow */
     border-color: var(--border-color);
 }
 
-.cashMonitorCard {
+.DashboardPage__cashMonitorCard {
     grid-column: span 4;
     grid-row: span 1;
     order: 1;
 }
 
-.statsOverviewCard {
+.DashboardPage__statsOverviewCard {
     grid-column: span 4;
     grid-row: span 1;
     order: 2;
 }
 
-.patientGrowthCard {
+.DashboardPage__patientGrowthCard {
     grid-column: span 4;
     grid-row: span 1;
     order: 3;
 }
 
-.mainContentCard {
+.DashboardPage__mainContentCard {
     grid-column: span 8;
     grid-row: span 3;
     order: 4;
 }
 
-.remindersCard {
+.DashboardPage__remindersCard {
     grid-column: span 4;
     grid-row: span 3;
     order: 5;
 }
 
-.bentoHeader {
+.DashboardPage__bentoHeader {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -73,28 +73,28 @@
     letter-spacing: 0.05em;
 }
 
-.bentoHeaderIcon {
+.DashboardPage__bentoHeaderIcon {
     color: var(--primary-color);
 }
 
-.bentoHeaderIconPurple {
+.DashboardPage__bentoHeaderIconPurple {
     color: var(--primary-color); /* Uniform accent color under sage green */
 }
 
-.statsRow {
+.DashboardPage__statsRow {
     display: flex;
     gap: 1rem;
     flex: 1;
 }
 
-.statItem {
+.DashboardPage__statItem {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
-.statValue {
+.DashboardPage__statValue {
     font-size: 1.75rem;
     font-weight: 800;
     line-height: 1;
@@ -102,7 +102,7 @@
     color: var(--text-main);
 }
 
-.statValuePurple {
+.DashboardPage__statValuePurple {
     font-size: 1.75rem;
     font-weight: 800;
     line-height: 1;
@@ -110,7 +110,7 @@
     color: var(--text-main);
 }
 
-.statLabel {
+.DashboardPage__statLabel {
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-muted);
@@ -119,9 +119,9 @@
 }
 
 @media (width <= 1024px) {
-    .bentoGrid { grid-template-columns: 1fr; }
+    .DashboardPage__bentoGrid { grid-template-columns: 1fr; }
 
-    .cashMonitorCard, .statsOverviewCard, .patientGrowthCard, .mainContentCard, .remindersCard {
+    .DashboardPage__cashMonitorCard, .DashboardPage__statsOverviewCard, .DashboardPage__patientGrowthCard, .DashboardPage__mainContentCard, .DashboardPage__remindersCard {
         grid-column: span 12;
     }
 }
