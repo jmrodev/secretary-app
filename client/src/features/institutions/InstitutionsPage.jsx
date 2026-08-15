@@ -13,7 +13,7 @@ import FeatureToolbar from '@/components/organisms/FeatureToolbar';
  * InstitutionsPage (Orchestrator).
  * Manages institutional payers and agreements.
  */
-const InstitutionsPage = () => {
+export const InstitutionsPage = () => {
     const {
         institutions,
         loading,
@@ -115,5 +115,3 @@ const InstitutionsPage = () => {
         </MainLayout>
     );
 };
-
-export default InstitutionsPage;

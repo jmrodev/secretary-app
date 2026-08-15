@@ -7,7 +7,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import styles from './InstitutionForm.module.css';
 
-const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting = false }) => {
+export const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting = false }) => {
     const { t } = useLanguage();
 
     const statusOptions = [
@@ -16,9 +16,9 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
     ];
 
     return (
-        <form onSubmit={onSubmit} className={`${styles.root}`}>
-            <div className={`${styles.group}`}>
-                <label className={`${styles.label}`}>{t('institution_name')} *</label>
+        <form onSubmit={onSubmit} className={`${styles.InstitutionForm__root}`}>
+            <div className={`${styles.InstitutionForm__group}`}>
+                <label className={`${styles.InstitutionForm__label}`}>{t('institution_name')} *</label>
                 <Input
                     type="text"
                     className="institution-form__input"
@@ -28,8 +28,8 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
                 />
             </div>
 
-            <div className={`${styles.group}`}>
-                <label className={`${styles.label}`}>{t('base_amount_label')}</label>
+            <div className={`${styles.InstitutionForm__group}`}>
+                <label className={`${styles.InstitutionForm__label}`}>{t('base_amount_label')}</label>
                 <Input
                     type="number"
                     className="institution-form__input"
@@ -46,8 +46,8 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
                 />
             </div>
 
-            <div className={`${styles.group}`}>
-                <label className={`${styles.label}`}>{t('description')}</label>
+            <div className={`${styles.InstitutionForm__group}`}>
+                <label className={`${styles.InstitutionForm__label}`}>{t('description')}</label>
                 <Input
                     type="textarea"
                     rows={3}
@@ -57,8 +57,8 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
                 />
             </div>
 
-            <div className={`${styles.group}`}>
-                <label className={`${styles.label}`}>{t('status')}</label>
+            <div className={`${styles.InstitutionForm__group}`}>
+                <label className={`${styles.InstitutionForm__label}`}>{t('status')}</label>
                 <Select
                     className="institution-form__input"
                     value={formData.status}
@@ -67,7 +67,7 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
                 />
             </div>
 
-            <div className={`${styles.footer}`}>
+            <div className={`${styles.InstitutionForm__footer}`}>
                 {onCancel && (
                     <Button variant="secondary" onClick={onCancel} type="button">
                         {t('cancel')}
@@ -81,5 +81,5 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
     );
 };
 
-export default InstitutionForm;
+
 
