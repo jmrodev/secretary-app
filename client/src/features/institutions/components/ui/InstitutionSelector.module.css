@@ -1,6 +1,6 @@
 /* InstitutionSelector Feature Molecule - BEM Styles */
 
-.root {
+.InstitutionSelector__root {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -13,13 +13,13 @@
     box-shadow: var(--shadow-sm);
 }
 
-.group {
+.InstitutionSelector__group {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.label {
+.InstitutionSelector__label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -30,7 +30,7 @@
     letter-spacing: 0.05em;
 }
 
-.select {
+.InstitutionSelector__select {
     min-width: 240px;
     padding: 0.5rem 1rem;
     border-radius: var(--radius-sm);
@@ -41,12 +41,12 @@
     background-color: var(--gray-900);
 }
 
-.select:focus {
+.InstitutionSelector__select:focus {
     border-color: var(--accent-color);
     outline: none;
 }
 
-.viewToggle {
+.InstitutionSelector__viewToggle {
     display: flex;
     background-color: var(--gray-900);
     padding: 0.25rem;
@@ -54,7 +54,7 @@
     border: 1px solid var(--dashboard-card-border);
 }
 
-.toggleBtn {
+.InstitutionSelector__toggleBtn {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -71,11 +71,11 @@
     color: var(--gray-500);
 }
 
-.toggleBtn:hover:not(.toggleBtnActive) {
+.InstitutionSelector__toggleBtn:hover:not(.InstitutionSelector__toggleBtn--active) {
     color: var(--text-main);
 }
 
-.toggleBtnActive {
+.InstitutionSelector__toggleBtn--active {
     background-color: var(--accent-color);
     color: white;
     box-shadow: var(--shadow-md);

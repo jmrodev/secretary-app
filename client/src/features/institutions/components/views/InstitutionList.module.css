@@ -1,14 +1,14 @@
-.root {
+.InstitutionList__root {
     width: 100%;
     background: white;
 }
 
-.table {
+.InstitutionList__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.th {
+.InstitutionList__th {
     padding: 1.25rem 1rem;
     text-align: left;
     background: var(--gray-50);
@@ -20,32 +20,32 @@
     letter-spacing: 0.05em;
 }
 
-.thRight {
+.InstitutionList__thRight {
     text-align: right;
 }
 
-.td {
+.InstitutionList__td {
     padding: 1.25rem 1rem;
     border-bottom: 1px solid var(--gray-50);
     vertical-align: middle;
 }
 
-.tdRight {
+.InstitutionList__tdRight {
     text-align: right;
 }
 
-.name {
+.InstitutionList__name {
     font-weight: 700;
     color: var(--text-main);
     font-size: 1rem;
 }
 
-.price {
+.InstitutionList__price {
     font-weight: 600;
     color: var(--text-secondary);
 }
 
-.debt {
+.InstitutionList__debt {
     font-weight: 800;
     color: var(--red-600);
     background: var(--red-50);
@@ -55,23 +55,23 @@
     display: inline-block;
 }
 
-.actions {
+.InstitutionList__actions {
     display: flex;
     gap: 0.5rem;
     justify-content: flex-end;
 }
 
-.row {
+.InstitutionList__row {
     transition: all 0.2s ease;
 }
 
-.row:hover {
+.InstitutionList__row:hover {
     background-color: var(--gray-50);
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
 }
 
-.empty {
+.InstitutionList__empty {
     padding: 3rem;
     text-align: center;
     color: var(--text-main);
@@ -84,11 +84,11 @@
     border: 1px solid var(--border-color);
 }
 
-.emptyIcon {
+.InstitutionList__emptyIcon {
     opacity: 0.2;
 }
 
-.emptyText {
+.InstitutionList__emptyText {
     font-size: 1.125rem;
     font-weight: 500;
     opacity: 0.5;
