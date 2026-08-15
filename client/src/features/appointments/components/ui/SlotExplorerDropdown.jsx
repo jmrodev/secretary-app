@@ -9,7 +9,7 @@ import styles from './SlotExplorerDropdown.module.css';
  * SlotExplorerDropdown (Minimal ECC Version).
  * Integrated, high-efficiency explorer.
  */
-const SlotExplorerDropdown = ({
+const SlotExplorerDropdownBase = ({
     isOpen, onClose, loading, nextSlotData, includeOutOfHours, onToggleOutOfHours,
     slotsPage, setSlotsPage, slotPages, onSelect, onWhatsApp, jumpToMonth,
     fetchNextFreeSlots, hasNextGroup
@@ -181,4 +181,4 @@ const SlotExplorerDropdown = ({
     );
 };
 
-export default React.memo(SlotExplorerDropdown);
+export const SlotExplorerDropdown = React.memo(SlotExplorerDropdownBase);

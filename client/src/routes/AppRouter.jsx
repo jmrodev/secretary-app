@@ -37,7 +37,7 @@ const ProfilePage = lazy(() => import('@/features/auth').then(m => ({ default: m
 const DoctorsPage = lazy(() => import('@/features/doctors').then(m => ({ default: m.DoctorsPage })));
 const ReportsPage = lazy(() => import('@/features/reports').then(m => ({ default: m.ReportsPage })));
 
-import DayCellPlayground from '@/features/appointments/components/calendar/v2/DayCellPlayground';
+import { DayCellPlayground } from '@/features/appointments/components/calendar/v2/DayCellPlayground';
 
 const PublicRegisterPage = lazy(() => import('@/features/patients').then(m => ({ default: m.PublicRegisterPage })));
 

@@ -11,7 +11,7 @@ import styles from './NextSlotModal.module.css';
  * NextSlotModal (ECC Redesign).
  * Features: Horizontal Month Navigation + Vertical Timeline.
  */
-const NextSlotModal = ({
+export const NextSlotModal = ({
     isOpen, onClose, loading, nextSlotData, includeOutOfHours, onToggleOutOfHours,
     slotsPage, setSlotsPage, slotPages, onSelect, onWhatsApp, jumpToMonth,
     fetchNextFreeSlots, hasNextGroup
@@ -152,4 +152,3 @@ const NextSlotModal = ({
     );
 };
 
-export default NextSlotModal;

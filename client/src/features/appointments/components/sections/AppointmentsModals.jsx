@@ -1,6 +1,6 @@
 import React from 'react';
-import AppointmentActionModal from '../modals/AppointmentActionModal';
-import AppointmentFormModal from '../modals/AppointmentFormModal';
+import { AppointmentActionModal } from '../modals/AppointmentActionModal';
+import { AppointmentFormModal } from '../modals/AppointmentFormModal';
 
 export const AppointmentsModals = ({
     doctors, institutions, booking, nextSlot,

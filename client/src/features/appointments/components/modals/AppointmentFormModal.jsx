@@ -5,7 +5,7 @@ import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/features/auth';
 
-import AppointmentSyncAlert from '../ui/AppointmentSyncAlert.jsx';
+import { AppointmentSyncAlert } from '../ui/AppointmentSyncAlert.jsx';
 import { AppointmentFormFields } from '../sections/AppointmentFormFields.jsx';
 
 import styles from './AppointmentFormModal.module.css';
@@ -14,7 +14,7 @@ import styles from './AppointmentFormModal.module.css';
  * AppointmentFormModal (ECC Optimized).
  * Minimalist version, removed redundant traps and headers.
  */
-const AppointmentFormModal = ({
+export const AppointmentFormModal = ({
     isOpen, onClose, onSubmit, selectedDoctor, doctors, type, selectedPatient, selectedPatientData,
     date, reason, bonified, selectedInstitution, institutions, syncReferenceInfo, onOpenEditPatient,
     missingData, editModeId, isOutOfHours, handlers,
@@ -72,4 +72,3 @@ const AppointmentFormModal = ({
     );
 };
 
-export default AppointmentFormModal;

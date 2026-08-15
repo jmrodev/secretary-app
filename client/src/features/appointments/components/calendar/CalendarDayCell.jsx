@@ -8,7 +8,7 @@ const EMPTY_OBJECT = {};
  * CalendarDayCell (Internal to feature).
  * Represents a single day in the monthly calendar grid.
  */
-const CalendarDayCell = ({
+export const CalendarDayCell = ({
   day,
   status = EMPTY_OBJECT, // { isCurrentMonth, isSelected, isToday, isHoliday, isPast, disabled, compact }
   holidayDescription = '',
@@ -117,6 +117,4 @@ const CalendarDayCell = ({
     </div>
   );
 };
-
-export default CalendarDayCell;
 

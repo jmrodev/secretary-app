@@ -1,5 +1,5 @@
 import React from 'react';
-import CalendarDayCell from './CalendarDayCell.jsx';
+import { CalendarDayCell } from './CalendarDayCell.jsx';
 import { isPastDay, isSameDay, getNow, parseDate, createDate, formatKeyDate } from '@/utils/core/dateUtils';
 import styles from './Calendar.module.css';
 
@@ -7,7 +7,7 @@ import styles from './Calendar.module.css';
  * CalendarGrid (Executor Component).
  * Renders the actual days of the month.
  */
-const CalendarGrid = ({ 
+export const CalendarGrid = ({ 
     viewDate, selectedDate, days, firstDay, calendarStats, 
     appointmentsByDate, holidaysByDate, showOutOfHours, compact, onDateSelect, t 
 }) => {
@@ -65,4 +65,3 @@ const CalendarGrid = ({
     return <>{dayElements}</>;
 };
 
-export default CalendarGrid;

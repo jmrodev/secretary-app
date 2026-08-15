@@ -22,7 +22,7 @@ import { SlotSection } from '../sections/NextSlotSection';
 import { DayListItem } from '../sections/NextSlotDayItem';
 
 /* ─── Main Component ──────────────────────────────────────────────────────── */
-const NextSlotCalendarModal = ({
+export const NextSlotCalendarModal = ({
     isOpen, onClose, loading, nextSlotData, includeOutOfHours, onToggleOutOfHours,
     onSelect, onWhatsApp, onLoadMore, hasMore
 }) => {
@@ -237,4 +237,3 @@ const NextSlotCalendarModal = ({
     );
 };
 
-export default NextSlotCalendarModal;

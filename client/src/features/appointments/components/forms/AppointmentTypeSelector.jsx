@@ -7,7 +7,7 @@ import styles from './AppointmentTypeSelector.module.css';
  * AppointmentTypeSelector Molecule (Internal to feature).
  * Simple toggle between consultation (presencial) and virtual appointments.
  */
-const AppointmentTypeSelector = ({ type, onChange, t }) => {
+export const AppointmentTypeSelector = ({ type, onChange, t }) => {
     const isVirtual = type === 'virtual';
 
     return (
@@ -34,4 +34,3 @@ const AppointmentTypeSelector = ({ type, onChange, t }) => {
     );
 };
 
-export default AppointmentTypeSelector;

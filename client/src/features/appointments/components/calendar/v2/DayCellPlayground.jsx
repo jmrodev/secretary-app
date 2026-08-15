@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import DayCell from './DayCell';
+import { DayCell } from './DayCell';
 import styles from './DayCellPlayground.module.css';
 
 /**
@@ -7,7 +7,7 @@ import styles from './DayCellPlayground.module.css';
  * Showcases all possible states of our atomic DayCell component
  * to demonstrate how it can be replicated with different data inputs.
  */
-const DayCellPlayground = () => {
+export const DayCellPlayground = () => {
   const [selectedDay, setSelectedDay] = useState(15);
 
   const handleDayClick = (day) => {
@@ -111,4 +111,3 @@ const DayCellPlayground = () => {
   );
 };
 
-export default DayCellPlayground;

@@ -1,5 +1,5 @@
 import React from 'react';
-import AppointmentActionModal from '@/features/appointments/components/modals/AppointmentActionModal';
+import { AppointmentActionModal } from '@/features/appointments/components/modals/AppointmentActionModal';
 import { PrescriptionModal } from '@/features/medical_documents/components/modals/PrescriptionModal';
 import { PatientHistoryModal } from '@/features/patients/components/modals/PatientHistoryModal';
 import { TransactionModal } from '@/features/finances/components/modals/TransactionModal';

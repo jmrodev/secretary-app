@@ -7,7 +7,7 @@ import styles from './RescheduleBanner.module.css';
  * RescheduleBanner (Executor Component).
  * Floating banner indicating that the user is in reschedule mode for a specific patient.
  */
-const RescheduleBanner = ({ rescheduleAppt, onExit, t }) => {
+export const RescheduleBanner = ({ rescheduleAppt, onExit, t }) => {
     if (!rescheduleAppt) return null;
 
     return (
@@ -31,4 +31,3 @@ const RescheduleBanner = ({ rescheduleAppt, onExit, t }) => {
     );
 };
 
-export default RescheduleBanner;

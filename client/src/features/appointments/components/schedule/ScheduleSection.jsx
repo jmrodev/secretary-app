@@ -1,5 +1,5 @@
 import React from 'react';
-import DaySchedule from './DaySchedule.jsx';
+import { DaySchedule } from './DaySchedule.jsx';
 import styles from './ScheduleSection.module.css';
 
 const EMPTY_ARRAY = [];
@@ -8,7 +8,7 @@ const EMPTY_ARRAY = [];
  * ScheduleSection (Executor Component).
  * Main content area for viewing the daily agenda or management lists.
  */
-const ScheduleSection = ({
+export const ScheduleSection = ({
     activeTab: _activeTab, selectedDate, selectedDoctor, viewDoctorId, appointments = EMPTY_ARRAY,
     doctorSchedule = EMPTY_ARRAY, holidays = EMPTY_ARRAY, onSlotClick,
     onDateSelect, showOutOfHours, setShowOutOfHours, onNextFreeSlot, className,
@@ -32,4 +32,3 @@ const ScheduleSection = ({
     );
 };
 
-export default ScheduleSection;

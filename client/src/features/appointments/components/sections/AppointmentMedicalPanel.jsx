@@ -7,7 +7,7 @@ import styles from './AppointmentMedicalPanel.module.css';
 /**
  * AppointmentMedicalPanel Molecule (Internal to feature).
  */
-const AppointmentMedicalPanel = ({
+export const AppointmentMedicalPanel = ({
     appt, user, permissions, t, onHistory, onPrescribe, onUpdateStatus, note, setNote, onSaveNote, confirm, onClose
 }) => {
     const { canDeletePrescription, canDeleteFile } = permissions;
@@ -72,4 +72,3 @@ const AppointmentMedicalPanel = ({
     );
 };
 
-export default AppointmentMedicalPanel;

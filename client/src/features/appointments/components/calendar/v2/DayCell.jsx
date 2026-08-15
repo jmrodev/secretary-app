@@ -1,14 +1,14 @@
 import React from 'react';
-import DayNumber from './atoms/DayNumber';
-import HolidayBadge from './atoms/HolidayBadge';
-import AppointmentsBadge from './atoms/AppointmentsBadge';
+import { DayNumber } from './atoms/DayNumber';
+import { HolidayBadge } from './atoms/HolidayBadge';
+import { AppointmentsBadge } from './atoms/AppointmentsBadge';
 import styles from './DayCell.module.css';
 
 /**
  * DayCell (Molecule Component)
  * Represents a single day in the calendar grid, composed of atomic elements.
  */
-const DayCell = ({
+export const DayCell = ({
   day,
   isSelected = false,
   isToday = false,
@@ -72,4 +72,3 @@ const DayCell = ({
   );
 };
 
-export default DayCell;

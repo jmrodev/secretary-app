@@ -6,7 +6,7 @@ import styles from './AppointmentSyncAlert.module.css';
  * AppointmentSyncAlert Molecule (Internal to feature).
  * Displays info when an appointment is being synced from Google Calendar.
  */
-const AppointmentSyncAlert = ({ info }) => {
+export const AppointmentSyncAlert = ({ info }) => {
     if (!info) return null;
     return (
         <div className={`${styles.root}`}>
@@ -19,4 +19,3 @@ const AppointmentSyncAlert = ({ info }) => {
     );
 };
 
-export default AppointmentSyncAlert;
