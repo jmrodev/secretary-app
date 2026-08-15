@@ -15,11 +15,11 @@ export const ScheduleSection = ({
     loading = false
 }) => {
     const getDoctorThemeModifier = () => viewDoctorId ? `schedule-section--doctor-${Number(viewDoctorId) % 10}` : '';
-    const variantClass = styles.container;
+    const variantClass = styles.ScheduleSection__container;
     const themedClass = viewDoctorId ? "schedule-section__container--themed" : "";
 
     return (
-        <section className={`${styles.root} ${variantClass} ${getDoctorThemeModifier()} ${themedClass} ${className || ''}`}>
+        <section className={`${styles.ScheduleSection__root} ${variantClass} ${getDoctorThemeModifier()} ${themedClass} ${className || ''}`}>
             <DaySchedule
                 date={selectedDate} onDateSelect={onDateSelect}
                 appointments={selectedDoctor ? appointments.filter(a => a.doctor_id === selectedDoctor.id) : appointments}

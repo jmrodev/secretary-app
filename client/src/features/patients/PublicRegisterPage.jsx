@@ -12,12 +12,12 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
     switch(step) {
         case 1:
             return (
-                <div className={`${styles.stepField} `}>
-                    <label htmlFor="firstName" className={`${styles.accessibleLabel}`}>¿Cuál es tu NOMBRE?</label>
+                <div className={`${styles.PublicRegisterPage__stepField} `}>
+                    <label htmlFor="firstName" className={`${styles.PublicRegisterPage__accessibleLabel}`}>¿Cuál es tu NOMBRE?</label>
                     <input
                         id="firstName"
                         name="firstName"
-                        className={`${styles.accessibleInput}`}
+                        className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.firstName}
                         onChange={onChange}
                         placeholder="Escribí tu nombre..."
@@ -28,12 +28,12 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 2:
             return (
-                <div className={`${styles.stepField} `}>
-                    <label htmlFor="lastName" className={`${styles.accessibleLabel}`}>¿Cuál es tu APELLIDO?</label>
+                <div className={`${styles.PublicRegisterPage__stepField} `}>
+                    <label htmlFor="lastName" className={`${styles.PublicRegisterPage__accessibleLabel}`}>¿Cuál es tu APELLIDO?</label>
                     <input
                         id="lastName"
                         name="lastName"
-                        className={`${styles.accessibleInput}`}
+                        className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.lastName}
                         onChange={onChange}
                         placeholder="Escribí tu apellido..."
@@ -44,12 +44,12 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 3:
             return (
-                <div className={`${styles.stepField} `}>
-                    <label htmlFor="address" className={`${styles.accessibleLabel}`}>¿Cuál es tu DIRECCIÓN?</label>
+                <div className={`${styles.PublicRegisterPage__stepField} `}>
+                    <label htmlFor="address" className={`${styles.PublicRegisterPage__accessibleLabel}`}>¿Cuál es tu DIRECCIÓN?</label>
                     <input
                         id="address"
                         name="address"
-                        className={`${styles.accessibleInput}`}
+                        className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.address}
                         onChange={onChange}
                         placeholder="Calle y número..."
@@ -60,14 +60,14 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 4:
             return (
-                <div className={`${styles.stepField} `}>
-                    <label htmlFor="dni" className={`${styles.accessibleLabel}`}>¿Cuál es tu DNI?</label>
+                <div className={`${styles.PublicRegisterPage__stepField} `}>
+                    <label htmlFor="dni" className={`${styles.PublicRegisterPage__accessibleLabel}`}>¿Cuál es tu DNI?</label>
                     <input
                         id="dni"
                         name="dni"
                         type="number"
                         inputMode="numeric"
-                        className={`${styles.accessibleInput}`}
+                        className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.dni}
                         onChange={onChange}
                         placeholder="Sólo números..."
@@ -78,12 +78,12 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
             );
         case 5:
             return (
-                <div className={`${styles.stepField} `}>
-                    <label htmlFor="phone" className={`${styles.accessibleLabel}`}>Tu TELÉFONO es:</label>
+                <div className={`${styles.PublicRegisterPage__stepField} `}>
+                    <label htmlFor="phone" className={`${styles.PublicRegisterPage__accessibleLabel}`}>Tu TELÉFONO es:</label>
                     <input
                         id="phone"
                         name="phone"
-                        className={`${styles.accessibleInput} ${styles.accessibleInputDisabled}`}
+                        className={`${styles.PublicRegisterPage__accessibleInput} ${styles.PublicRegisterPage__accessibleInputDisabled}`}
                         value={formData.phone}
                         readOnly
                         disabled
@@ -158,41 +158,41 @@ export const PublicRegisterPage = () => {
     };
 
     return (
-        <div className={`${styles.publicRegisterPaginated}`}>
+        <div className={`${styles.PublicRegisterPage__publicRegisterPaginated}`}>
             {success ? (
-                <div className={`${styles.successCard} step-card `}>
-                    <span className={`${styles.successEmoji}`}>✅</span>
-                    <h1 className={`${styles.accessibleTitle}`}>¡Todo Listo!</h1>
-                    <p className={`${styles.accessibleText}`}>Tus datos se guardaron correctamente.</p>
-                    <p className={`${styles.accessibleSubtext}`}>Ya podés cerrar esta página y volver al WhatsApp.</p>
+                <div className={`${styles.PublicRegisterPage__successCard} step-card `}>
+                    <span className={`${styles.PublicRegisterPage__successEmoji}`}>✅</span>
+                    <h1 className={`${styles.PublicRegisterPage__accessibleTitle}`}>¡Todo Listo!</h1>
+                    <p className={`${styles.PublicRegisterPage__accessibleText}`}>Tus datos se guardaron correctamente.</p>
+                    <p className={`${styles.PublicRegisterPage__accessibleSubtext}`}>Ya podés cerrar esta página y volver al WhatsApp.</p>
                 </div>
             ) : (
                 <>
-                    <div className={`${styles.stepHeader}`}>
-                        <div className={`${styles.progressText}`}>Paso {step} de {totalSteps}</div>
-                        <div className={`${styles.progressBar}`}>
-                            <div className={`${styles.progressFill}`} style={{ width: `${(step / totalSteps) * 100}%` }}></div>
+                    <div className={`${styles.PublicRegisterPage__stepHeader}`}>
+                        <div className={`${styles.PublicRegisterPage__progressText}`}>Paso {step} de {totalSteps}</div>
+                        <div className={`${styles.PublicRegisterPage__progressBar}`}>
+                            <div className={`${styles.PublicRegisterPage__progressFill}`} style={{ width: `${(step / totalSteps) * 100}%` }}></div>
                         </div>
                     </div>
 
-                    <section className={`${styles.stepContainer}`}>
-                        {error && <div className={`${styles.accessibleError}`}>{error}</div>}
+                    <section className={`${styles.PublicRegisterPage__stepContainer}`}>
+                        {error && <div className={`${styles.PublicRegisterPage__accessibleError}`}>{error}</div>}
                         
                         <StepField step={step} formData={formData} onChange={updateRegisterData} inputRef={inputRef} />
 
-                        <footer className={`${styles.stepFooter}`}>
+                        <footer className={`${styles.PublicRegisterPage__stepFooter}`}>
                             {step > 1 && (
-                                <button className={`${styles.btnHuge} ${styles.btnHugeSecondary}`} onClick={prevStep} disabled={loading}>
+                                <button className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugeSecondary}`} onClick={prevStep} disabled={loading}>
                                     ATRÁS
                                 </button>
                             )}
                             
                             {step < totalSteps ? (
-                                <button className={`${styles.btnHuge} ${styles.btnHugePrimary}`} onClick={nextStep}>
+                                <button className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugePrimary}`} onClick={nextStep}>
                                     SIGUIENTE
                                 </button>
                             ) : (
-                                <button className={`${styles.btnHuge} ${styles.btnHugeSuccess}`} onClick={handleSubmit} disabled={loading}>
+                                <button className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugeSuccess}`} onClick={handleSubmit} disabled={loading}>
                                     {loading ? 'GUARDANDO...' : 'FINALIZAR'}
                                 </button>
                             )}

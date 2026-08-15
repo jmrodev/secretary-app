@@ -1,6 +1,6 @@
 /* DayCellPlayground.module.css */
 
-.playground {
+.DayCellPlayground__playground {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -12,12 +12,12 @@
   max-width: 100%;
 }
 
-.header {
+.DayCellPlayground__header {
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 1rem;
 }
 
-.title {
+.DayCellPlayground__title {
   font-size: 1.4rem;
   font-weight: 800;
   color: var(--text-main);
@@ -25,26 +25,26 @@
   letter-spacing: -0.01em;
 }
 
-.subtitle {
+.DayCellPlayground__subtitle {
   font-size: 0.9rem;
   color: var(--text-muted);
   margin: 0;
 }
 
-.grid {
+.DayCellPlayground__grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 1rem;
   width: 100%;
 }
 
-.cellWrapper {
+.DayCellPlayground__cellWrapper {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.label {
+.DayCellPlayground__label {
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -53,7 +53,7 @@
   text-align: center;
 }
 
-.footer {
+.DayCellPlayground__footer {
   border-top: 1px solid var(--border-color);
   padding-top: 1rem;
   display: flex;
@@ -61,12 +61,12 @@
   align-items: center;
 }
 
-.footerText {
+.DayCellPlayground__footerText {
   font-size: 0.9rem;
   color: rgb(255, 255, 255, 0.7);
 }
 
-.highlight {
+.DayCellPlayground__highlight {
   color: var(--accent, #6366f1);
   font-size: 1rem;
 }

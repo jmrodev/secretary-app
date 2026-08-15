@@ -2,7 +2,7 @@
 /* PrescriptionModal Styles – BEM compliant */
 
 /* ── Root container ── */
-.root {
+.PrescriptionModal__root {
     /* --- Local Component Tokens --- */
     --modal-bg: var(--border-color);
     --modal-island-bg: var(--glass);
@@ -19,14 +19,14 @@
     box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.group {
+.PrescriptionModal__group {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
 /* ── Label shared style (uppercase micro-label) ── */
-.label {
+.PrescriptionModal__label {
     font-weight: 700;
     color: var(--text-main);
     font-size: 0.7rem;
@@ -37,7 +37,7 @@
     gap: 0.25rem;
 }
 
-.subLabel {
+.PrescriptionModal__subLabel {
     font-size: 0.65rem;
     color: var(--text-main);
     font-weight: 500;
@@ -45,7 +45,7 @@
 }
 
 /* ── Panel specific styles ── */
-.panel {
+.PrescriptionModal__panel {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
@@ -55,13 +55,13 @@
     border: 1px solid var(--modal-border);
 }
 
-.panelItem {
+.PrescriptionModal__panelItem {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-.panelLabel {
+.PrescriptionModal__panelLabel {
     font-size: 0.8rem;
     font-weight: 500;
     color: var(--text-main);
@@ -70,7 +70,7 @@
 }
 
 /* ── Single field wrapper (label + control stacked) ── */
-.fieldWrapper {
+.PrescriptionModal__fieldWrapper {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
@@ -78,7 +78,7 @@
 }
 
 /* ── Frequency presets pill-row ── */
-.freqPresets {
+.PrescriptionModal__freqPresets {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -87,11 +87,11 @@
     scrollbar-width: none; /* Firefox */
 }
 
-.freqPresets::-webkit-scrollbar {
+.PrescriptionModal__freqPresets::-webkit-scrollbar {
     display: none; /* Chrome/Safari */
 }
 
-.freqBtn {
+.PrescriptionModal__freqBtn {
     padding: 0.5rem 0.875rem;
     font-size: 0.875rem;
     font-weight: 600;
@@ -104,59 +104,59 @@
     transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.freqBtn:hover {
+.PrescriptionModal__freqBtn:hover {
     background-color: var(--btn-hover-bg);
     color: var(--text-main);
     border-color: var(--dashboard-card-border);
 }
 
-.freqBtnActive {
+.PrescriptionModal__freqBtnActive {
     background-color: var(--btn-active-bg);
     color: var(--text-main);
     border-color: var(--primary-color);
 }
 
 /* ── Medicamento and Dose Row ── */
-.medDoseRow {
+.PrescriptionModal__medDoseRow {
     display: grid;
     grid-template-columns: 2.5fr 1fr;
     gap: 0.75rem;
 }
 
 /* ── Numeric fields row (3 inputs + add btn) ── */
-.numericRow {
+.PrescriptionModal__numericRow {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr auto;
     gap: 0.4rem;
 }
 
-.numericField {
+.PrescriptionModal__numericField {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
 }
 
-.addCol {
+.PrescriptionModal__addCol {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
 }
 
-.addColSpacer {
+.PrescriptionModal__addColSpacer {
     /* empty label placeholder */
     display: block;
     height: 1.1rem;
 }
 
 /* ── Quick lists container ── */
-.quickLists {
+.PrescriptionModal__quickLists {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
 /* ── Days-supply preview banner ── */
-.supplyPreview {
+.PrescriptionModal__supplyPreview {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -171,7 +171,7 @@
 }
 
 /* ── Habitual medications ── */
-.habitual {
+.PrescriptionModal__habitual {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -183,13 +183,13 @@
     box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.habitualGrid {
+.PrescriptionModal__habitualGrid {
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
 }
 
-.habitualBtn {
+.PrescriptionModal__habitualBtn {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -206,22 +206,22 @@
     text-align: left;
 }
 
-.habitualBtn:hover {
+.PrescriptionModal__habitualBtn:hover {
     background: var(--border-color);
     border-color: var(--text-muted);
 }
 
-.habitualBtnActive {
+.PrescriptionModal__habitualBtnActive {
     background: rgb(var(--primary-rgb) / 20%);
     border-color: var(--primary-color);
     color: var(--text-main);
 }
 
-.habitualName {
+.PrescriptionModal__habitualName {
     font-weight: 600;
 }
 
-.habitualDose {
+.PrescriptionModal__habitualDose {
     font-size: 0.7rem;
     color: var(--text-muted);
     background: var(--border-color);
@@ -230,7 +230,7 @@
 }
 
 /* ── Items list (added medications) ── */
-.itemsList {
+.PrescriptionModal__itemsList {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -242,7 +242,7 @@
     box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.item {
+.PrescriptionModal__item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -255,46 +255,46 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.item:hover {
+.PrescriptionModal__item:hover {
     transform: translateY(-1px);
     box-shadow: 0 8px 24px 0 var(--modal-bg-dark);
 }
 
-.itemInfo {
+.PrescriptionModal__itemInfo {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
 }
 
-.itemName {
+.PrescriptionModal__itemName {
     font-weight: 700;
     font-size: 0.95rem;
     color: var(--text-main);
 }
 
-.itemMeta {
+.PrescriptionModal__itemMeta {
     font-size: 0.8rem;
     color: var(--text-muted);
 }
 
-.itemSupply {
+.PrescriptionModal__itemSupply {
     font-weight: 700;
     color: var(--green-400);
 }
 
 /* ── Textarea (preview and instructions) ── */
-.textarea {
+.PrescriptionModal__textarea {
     min-height: 60px;
     resize: vertical;
 }
 
 /* ── Responsive: stack numeric row on small screens ── */
 @media (width <= 480px) {
-    .numericRow {
+    .PrescriptionModal__numericRow {
         grid-template-columns: 1fr 1fr;
     }
 
-    .addCol {
+    .PrescriptionModal__addCol {
         grid-column: span 2;
     }
 }

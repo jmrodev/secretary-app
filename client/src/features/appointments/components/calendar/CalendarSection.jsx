@@ -16,7 +16,7 @@ export const CalendarSection = ({
 }) => {
 
     return (
-        <div className={`${styles.root} ${className}`}>
+        <div className={`${styles.CalendarSection__root} ${className}`}>
             <Calendar
                 selectedDate={selectedDate} onDateSelect={onDateSelect}
                 appointments={appointments} calendarStats={calendarStats}

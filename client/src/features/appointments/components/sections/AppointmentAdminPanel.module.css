@@ -1,6 +1,6 @@
 /* AppointmentAdminPanel Molecule Styles (BEM) - Dark Mode Standard */
 
-.root {
+.AppointmentAdminPanel__root {
     /* --- Local Component Tokens --- */
     --panel-group-bg: var(--dashboard-card-bg);
     --panel-group-border: var(--border-color);
@@ -20,21 +20,21 @@
     padding: 0.25rem 0;
 }
 
-.tabs {
+.AppointmentAdminPanel__tabs {
     margin-bottom: 0.75rem;
     overflow-x: auto;
     scrollbar-width: none;
 }
 
-.tabs::-webkit-scrollbar {
+.AppointmentAdminPanel__tabs::-webkit-scrollbar {
     display: none;
 }
 
-.content {
+.AppointmentAdminPanel__content {
     min-height: 180px;
 }
 
-.horizontalGroups {
+.AppointmentAdminPanel__horizontalGroups {
     display: flex;
     flex-direction: row;
     gap: 1rem;
@@ -43,18 +43,18 @@
     margin-bottom: 1.25rem;
 }
 
-.horizontalGroups .group {
+.AppointmentAdminPanel__horizontalGroups .AppointmentAdminPanel__group {
     flex: 1;
     margin-bottom: 0;
 }
 
 @media (width <= 640px) {
-    .horizontalGroups {
+    .AppointmentAdminPanel__horizontalGroups {
         flex-direction: column;
     }
 }
 
-.group {
+.AppointmentAdminPanel__group {
     background-color: var(--panel-group-bg);
     border-radius: var(--radius-md);
     padding: 1.25rem;
@@ -68,28 +68,28 @@
     transition: all 0.2s ease;
 }
 
-.group:hover {
+.AppointmentAdminPanel__group:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
 
-.group:last-child {
+.AppointmentAdminPanel__group:last-child {
     margin-bottom: 0;
 }
 
-.groupHighlight {
+.AppointmentAdminPanel__groupHighlight {
     background-color: var(--panel-highlight-bg);
     border-color: var(--panel-highlight-border);
     border-left-color: var(--panel-highlight-border-left);
 }
 
-.groupDanger {
+.AppointmentAdminPanel__groupDanger {
     background-color: var(--panel-danger-bg);
     border-color: var(--panel-danger-border);
     border-left-color: var(--panel-danger-border-left);
 }
 
-.groupTitle {
+.AppointmentAdminPanel__groupTitle {
     font-size: 0.65rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -98,18 +98,18 @@
     font-weight: 800;
 }
 
-.groupDanger .groupTitle {
+.AppointmentAdminPanel__groupDanger .AppointmentAdminPanel__groupTitle {
     color: var(--danger);
 }
 
-.grid {
+.AppointmentAdminPanel__grid {
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
     align-items: center;
 }
 
-.action {
+.AppointmentAdminPanel__action {
     width: auto !important;
     flex: 0 0 auto !important;
     padding: 0.45rem 0.85rem !important;
@@ -118,7 +118,7 @@
     justify-content: center;
 }
 
-.phoneDisplay {
+.AppointmentAdminPanel__phoneDisplay {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -129,7 +129,7 @@
     margin-bottom: 1rem;
 }
 
-.phoneNumber {
+.AppointmentAdminPanel__phoneNumber {
     font-family: var(--font-mono, monospace);
     font-size: 1.1rem;
     font-weight: 700;
@@ -137,7 +137,7 @@
 }
 
 @media (width <= 480px) {
-    .grid {
+    .AppointmentAdminPanel__grid {
         flex-direction: column;
     }
 }

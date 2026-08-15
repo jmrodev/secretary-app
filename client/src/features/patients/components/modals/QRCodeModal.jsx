@@ -41,14 +41,14 @@ export const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, pati
             title={title}
             size="sm"
             footer={
-                <div className={`${styles.qrModalFooter}`}>
+                <div className={`${styles.QRCodeModal__qrModalFooter}`}>
                     <Button variant="secondary" onClick={onClose}>{t('close')}</Button>
                     {patientPhone && (
                         <a
                             href={`https://wa.me/${patientPhone.replace(/\D/g, '')}?text=${encodeURIComponent(waMessage)}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`${styles.whatsapp}`}
+                            className={`${styles.QRCodeModal__whatsapp}`}
                         >
                             <Icon name="smartphone" size="1.1rem" />
                             WhatsApp
@@ -58,13 +58,13 @@ export const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, pati
                 </div>
             }
         >
-            <div className={`${styles.root}`}>
-                <p className={`${styles.text}`}>
+            <div className={`${styles.QRCodeModal__root}`}>
+                <p className={`${styles.QRCodeModal__text}`}>
                     {isPrescription
                         ? t('send_link_instruction')
                         : t('show_qr_instruction')}
                 </p>
-                <div className={`${styles.wrapper}`} id="qr-wrapper">
+                <div className={`${styles.QRCodeModal__wrapper}`} id="qr-wrapper">
                     <QRCodeSVG
                         id="qr-code-svg"
                         value={url}
@@ -74,7 +74,7 @@ export const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, pati
                     />
                 </div>
                 {expiresAt && (
-                    <p className={`${styles.expiry}`} suppressHydrationWarning>
+                    <p className={`${styles.QRCodeModal__expiry}`} suppressHydrationWarning>
                         {t('expires_label')}: {formatTime(expiresAt)}
                     </p>
                 )}

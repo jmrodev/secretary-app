@@ -1,23 +1,23 @@
 /* StatusDot.module.css */
 
-.dot {
+.StatusDot__dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   display: inline-block;
 }
 
-.low {
+.StatusDot__low {
   background-color: #10b981;
   box-shadow: 0 0 6px rgb(16, 185, 129, 0.4);
 }
 
-.medium {
+.StatusDot__medium {
   background-color: #f59e0b;
   box-shadow: 0 0 6px rgb(245, 158, 11, 0.4);
 }
 
-.high {
+.StatusDot__high {
   background-color: #ef4444;
   box-shadow: 0 0 6px rgb(239, 68, 68, 0.4);
 }

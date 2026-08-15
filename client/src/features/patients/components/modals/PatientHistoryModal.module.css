@@ -1,6 +1,6 @@
 /* PatientHistoryModal Styles (BEM) - Premium Medical Theme */
 
-.root {
+.PatientHistoryModal__root {
     /* --- Local Component Tokens (Theme Adaptive) --- */
     --history-item-bg: var(--dashboard-card-bg);
     --history-item-border: var(--border-color);
@@ -24,7 +24,7 @@
     height: 100%;
 }
 
-.nav {
+.PatientHistoryModal__nav {
     display: flex;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
@@ -33,7 +33,7 @@
     border-bottom: 1px solid var(--border-color);
 }
 
-.body {
+.PatientHistoryModal__body {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
@@ -41,20 +41,20 @@
     backdrop-filter: blur(16px);
 }
 
-.list {
+.PatientHistoryModal__list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 1.25rem;
 }
 
 /* Specific list layout for medical tab to keep sections vertical but items grid if needed */
-.listVertical {
+.PatientHistoryModal__listVertical {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-.item {
+.PatientHistoryModal__item {
     padding: 1.25rem;
     border-radius: 1rem;
     border: 1px solid var(--history-item-border);
@@ -68,7 +68,7 @@
     overflow: hidden;
 }
 
-.item::before {
+.PatientHistoryModal__item::before {
     content: '';
     position: absolute;
     left: 0;
@@ -80,40 +80,40 @@
     transition: opacity 0.2s;
 }
 
-.item:hover {
+.PatientHistoryModal__item:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 40px 0 var(--background-bg);
 }
 
-.item:hover::before {
+.PatientHistoryModal__item:hover::before {
     opacity: 1;
 }
 
-.itemCancelled {
+.PatientHistoryModal__itemCancelled {
     background-color: var(--history-cancelled-bg);
     border-color: var(--history-cancelled-border);
 }
 
-.itemCancelled::before {
+.PatientHistoryModal__itemCancelled::before {
     background-color: #f56565;
     opacity: 1;
 }
 
-.itemHeader {
+.PatientHistoryModal__itemHeader {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 0.75rem;
 }
 
-.date {
+.PatientHistoryModal__date {
     font-size: 1rem;
     font-weight: 800;
     color: var(--text-main);
     letter-spacing: -0.01em;
 }
 
-.doctor {
+.PatientHistoryModal__doctor {
     font-size: 0.875rem;
     color: var(--accent-blue);
     font-weight: 700;
@@ -123,7 +123,7 @@
     gap: 0.25rem;
 }
 
-.reason {
+.PatientHistoryModal__reason {
     font-size: 0.9rem;
     color: var(--text-secondary);
     line-height: 1.5;
@@ -135,7 +135,7 @@
     border: 1px dashed rgb(255 255 255 / 15%);
 }
 
-.cancellation {
+.PatientHistoryModal__cancellation {
     margin-top: 0.75rem;
     padding: 0.75rem;
     background: rgb(255 245 245 / 20%);
@@ -149,11 +149,11 @@
     align-items: center;
 }
 
-.section {
+.PatientHistoryModal__section {
     margin-bottom: 2.5rem;
 }
 
-.sectionTitle {
+.PatientHistoryModal__sectionTitle {
     font-size: 0.85rem;
     font-weight: 900;
     color: var(--gray-400);
@@ -165,14 +165,14 @@
     margin-bottom: 1.25rem;
 }
 
-.sectionTitle::after {
+.PatientHistoryModal__sectionTitle::after {
     content: '';
     flex: 1;
     height: 1px;
     background: linear-gradient(to right, var(--gray-200), transparent);
 }
 
-.record {
+.PatientHistoryModal__record {
     padding: 1.25rem;
     border-radius: 1rem;
     border: 1px solid var(--border-color);
@@ -181,22 +181,22 @@
     box-shadow: 0 8px 32px 0 rgb(0 0 0 / 10%);
 }
 
-.recordRx {
+.PatientHistoryModal__recordRx {
     background-color: var(--record-rx-bg);
     border-color: var(--record-rx-border);
 }
 
-.recordReq {
+.PatientHistoryModal__recordReq {
     background-color: var(--record-req-bg);
     border-color: var(--record-req-border);
 }
 
-.recordLic {
+.PatientHistoryModal__recordLic {
     background-color: var(--record-lic-bg);
     border-color: var(--record-lic-border);
 }
 
-.recordHeader {
+.PatientHistoryModal__recordHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -204,7 +204,7 @@
     font-weight: 800;
 }
 
-.recordType {
+.PatientHistoryModal__recordType {
     font-size: 0.7rem;
     text-transform: uppercase;
     font-weight: 900;
@@ -215,13 +215,13 @@
     border: 1px solid currentcolor;
 }
 
-.recordText {
+.PatientHistoryModal__recordText {
     font-size: 0.95rem;
     line-height: 1.6;
     color: var(--text-main);
 }
 
-.recordTextPre {
+.PatientHistoryModal__recordTextPre {
     white-space: pre-wrap;
     font-family: inherit;
     padding: 0.5rem;
@@ -229,7 +229,7 @@
     border-radius: 0.4rem;
 }
 
-.recordStatus {
+.PatientHistoryModal__recordStatus {
     margin-top: 0.75rem;
     font-size: 0.75rem;
     font-weight: 700;
@@ -237,7 +237,7 @@
     opacity: 0.8;
 }
 
-.loading {
+.PatientHistoryModal__loading {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -247,7 +247,7 @@
     color: var(--accent-blue);
 }
 
-.empty {
+.PatientHistoryModal__empty {
     grid-column: 1 / -1;
     padding: 4rem 2rem;
     text-align: center;
@@ -258,7 +258,7 @@
     border: 1px dashed rgb(255 255 255 / 15%);
 }
 
-.rating {
+.PatientHistoryModal__rating {
     margin-top: auto;
     padding-top: 1rem;
     font-size: 0.85rem;
@@ -269,7 +269,7 @@
     gap: 0.4rem;
 }
 
-.recordList {
+.PatientHistoryModal__recordList {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1rem;

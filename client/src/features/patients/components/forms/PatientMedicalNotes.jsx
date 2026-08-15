@@ -23,12 +23,12 @@ export const PatientMedicalNotes = ({ formData, updatePatientData, institutions,
     }, [institutions, t]);
 
     return (
-        <article className={`${styles.root}`}>
+        <article className={`${styles.PatientMedicalNotes__root}`}>
             
 
-            <div className={`${styles.content}`}>
-                <div className={`${styles.group} ${styles.groupInstitution}`}>
-                    <label className={`${styles.label}`}>{t('paying_institution')}</label>
+            <div className={`${styles.PatientMedicalNotes__content}`}>
+                <div className={`${styles.PatientMedicalNotes__group} ${styles.groupInstitution}`}>
+                    <label className={`${styles.PatientMedicalNotes__label}`}>{t('paying_institution')}</label>
                     <Select
                         name="institution_id"
                         value={formData.institution_id || ''}
@@ -37,8 +37,8 @@ export const PatientMedicalNotes = ({ formData, updatePatientData, institutions,
                     />
                 </div>
 
-                <div className={`${styles.group}`}>
-                    <label className={`${styles.label}`}>{t('medical_history_notes')}</label>
+                <div className={`${styles.PatientMedicalNotes__group}`}>
+                    <label className={`${styles.PatientMedicalNotes__label}`}>{t('medical_history_notes')}</label>
                     <Input
                         type="textarea"
                         name="medical_history"
@@ -46,7 +46,7 @@ export const PatientMedicalNotes = ({ formData, updatePatientData, institutions,
                         value={formData.medical_history || ''}
                         onChange={updatePatientData}
                         placeholder={t('medical_history_placeholder')}
-                        className={`${styles.textarea}`}
+                        className={`${styles.PatientMedicalNotes__textarea}`}
                     />
                 </div>
             </div>

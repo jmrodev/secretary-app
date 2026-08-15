@@ -1,6 +1,6 @@
 /* RescheduleBanner Molecule Styles (BEM) - Dark Premium Theme */
 
-.root {
+.RescheduleBanner__root {
     position: fixed;
     bottom: 2rem;
     left: 50%;
@@ -21,7 +21,7 @@
     min-width: 400px;
 }
 
-.content {
+.RescheduleBanner__content {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -29,20 +29,20 @@
     font-weight: 500;
 }
 
-.icon {
+.RescheduleBanner__icon {
     color: var(--primary-color);
 }
 
-.patient {
+.RescheduleBanner__patient {
     font-weight: 800;
     color: var(--primary-color);
 }
 
-.instruction {
+.RescheduleBanner__instruction {
     opacity: 0.8;
 }
 
-.exitBtn {
+.RescheduleBanner__exitBtn {
     font-weight: 800;
     color: var(--danger);
 }
@@ -53,7 +53,7 @@
 }
 
 @media (width <= 600px) {
-    .root {
+    .RescheduleBanner__root {
         min-width: 90%;
         bottom: 1rem;
         flex-direction: column;

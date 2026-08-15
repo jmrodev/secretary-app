@@ -9,12 +9,12 @@ import styles from './CalendarHeader.module.css';
  */
 export const CalendarHeader = ({ month, year, onPrevMonth, onNextMonth }) => {
   return (
-    <div className={`${styles.root}`}>
-      <Button className={`${styles.navButton}`} onClick={onPrevMonth} aria-label="Previous month" unstyled>
+    <div className={`${styles.CalendarHeader__root}`}>
+      <Button className={`${styles.CalendarHeader__navButton}`} onClick={onPrevMonth} aria-label="Previous month" unstyled>
         <Icon name="chevron_left" />
       </Button>
-      <h3 className={`${styles.title}`}>{month} {year}</h3>
-      <Button className={`${styles.navButton}`} onClick={onNextMonth} aria-label="Next month" unstyled>
+      <h3 className={`${styles.CalendarHeader__title}`}>{month} {year}</h3>
+      <Button className={`${styles.CalendarHeader__navButton}`} onClick={onNextMonth} aria-label="Next month" unstyled>
         <Icon name="chevron_right" />
       </Button>
     </div>

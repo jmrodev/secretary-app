@@ -1,5 +1,5 @@
 /* MedicationCard Feature Styles */
-.root {
+.MedicationCard__root {
     padding: 12px;
     border-radius: var(--radius-sm);
     background: var(--dashboard-card-bg);
@@ -7,41 +7,41 @@
     transition: all 0.2s ease;
 }
 
-.unknown {
+.MedicationCard__unknown {
     border-left: 4px solid var(--error);
     background-color: var(--red-900);
 }
 
-.known {
+.MedicationCard__known {
     border-left: 4px solid var(--success);
 }
 
-.header {
+.MedicationCard__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 8px;
 }
 
-.name {
+.MedicationCard__name {
     font-weight: 700;
     font-size: 0.95rem;
     color: var(--text-main);
 }
 
-.statusIcon {
+.MedicationCard__statusIcon {
     color: var(--success);
     font-size: 1.1rem;
 }
 
-.details {
+.MedicationCard__details {
     display: flex;
     gap: 8px;
     align-items: center;
     flex-wrap: wrap;
 }
 
-.badge {
+.MedicationCard__badge {
     font-size: 0.75rem;
     font-weight: 600;
     padding: 2px 8px;
@@ -50,7 +50,7 @@
     color: var(--text-secondary);
 }
 
-.duration {
+.MedicationCard__duration {
     display: flex;
     align-items: center;
     gap: 4px;

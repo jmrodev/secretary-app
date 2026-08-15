@@ -19,8 +19,8 @@ export const MedicationList = ({
     }
 
     return (
-        <div className={`${styles.root} ${className} animate-fade-in`}>
-            <div className={`${styles.items}`}>
+        <div className={`${styles.MedicationList__root} ${className} animate-fade-in`}>
+            <div className={`${styles.MedicationList__items}`}>
                 {medications.map((med, index) => (
                     <MedicationTag
                         key={med.id || med.medication_id || `med-${index}`}

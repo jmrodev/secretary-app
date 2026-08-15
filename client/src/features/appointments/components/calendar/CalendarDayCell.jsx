@@ -34,13 +34,13 @@ export const CalendarDayCell = ({
   const handleSelectDay = () => { if (!disabled && onClick) onClick(day); };
 
   const cellClasses = [
-    styles.root,
-    isSelected && styles.selected,
-    isToday && styles.today,
-    isWeekend && styles.weekend,
-    isHoliday && styles.holiday,
-    isPast && styles.past,
-    compact && styles.compact
+    styles.CalendarDayCell__root,
+    isSelected && styles.CalendarDayCell__selected,
+    isToday && styles.CalendarDayCell__today,
+    isWeekend && styles.CalendarDayCell__weekend,
+    isHoliday && styles.CalendarDayCell__holiday,
+    isPast && styles.CalendarDayCell__past,
+    compact && styles.CalendarDayCell__compact
   ].filter(Boolean).join(' ');
 
   const handleKeyDown = (e) => {
@@ -83,32 +83,32 @@ export const CalendarDayCell = ({
       tabIndex={disabled ? -1 : 0}
       aria-label={`${t('day')} ${day}${isHoliday ? `, ${holidayDescription}` : ''}`}
     >
-      <div className={`${styles.content}`}>
-        <div className={styles.numberWrapper} style={ringStyles}>
+      <div className={`${styles.CalendarDayCell__content}`}>
+        <div className={styles.CalendarDayCell__numberWrapper} style={ringStyles}>
           {showExtraRing && (
-            <svg className={styles.extraRing} viewBox="0 0 100 100" aria-hidden="true">
+            <svg className={styles.CalendarDayCell__extraRing} viewBox="0 0 100 100" aria-hidden="true">
               <circle
-                className={styles.extraRingTrack}
+                className={styles.CalendarDayCell__extraRingTrack}
                 cx="50" cy="50" r={EXTRA_RADIUS}
               />
               <circle
-                className={styles.extraRingFill}
+                className={styles.CalendarDayCell__extraRingFill}
                 cx="50" cy="50" r={EXTRA_RADIUS}
                 strokeDasharray={extraDashPattern}
                 transform="rotate(-90 50 50)"
               />
             </svg>
           )}
-          <span className={`${styles.number}`}>{day}</span>
+          <span className={`${styles.CalendarDayCell__number}`}>{day}</span>
         </div>
-        <div className={styles.markers}>
+        <div className={styles.CalendarDayCell__markers}>
           {isHoliday && (
-            <span className={`${styles.holidayMarker}`} title={holidayDescription}>
+            <span className={`${styles.CalendarDayCell__holidayMarker}`} title={holidayDescription}>
               <Icon name="event_busy" size="0.7rem" />
             </span>
           )}
           {isToday && (
-            <span className={`${styles.todayMarker}`}>
+            <span className={`${styles.CalendarDayCell__todayMarker}`}>
               {t('today') || 'Hoy'}
             </span>
           )}

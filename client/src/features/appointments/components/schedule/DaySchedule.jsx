@@ -48,7 +48,7 @@ export const DaySchedule = ({
     };
 
     return (
-        <div className={styles.root} data-scroll-container>
+        <div className={styles.DaySchedule__root} data-scroll-container>
             <DayScheduleHeader
                 date={date} holiday={null} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
                 showCancelled={showCancelled} setShowCancelled={setShowCancelled}

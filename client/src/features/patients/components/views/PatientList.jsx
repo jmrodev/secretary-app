@@ -8,7 +8,7 @@ const EMPTY_ARRAY = [];
 
 const RatingStars = ({ rating, colorClass }) => {
     return (
-        <div className={`${styles.stars} patient-list__stars--${colorClass}`}>
+        <div className={`${styles.PatientList__stars} patient-list__stars--${colorClass}`}>
             {[1, 2, 3, 4, 5].map(s => (
                 <Icon
                     key={s}
@@ -23,11 +23,11 @@ const RatingStars = ({ rating, colorClass }) => {
 const InstitutionRow = ({ inst, t }) => {
     if (Number(inst.total_debt) <= 0) return null;
     return (
-        <tr className={`${styles.row} ${styles.rowInstitution}`}>
+        <tr className={`${styles.PatientList__row} ${styles.PatientList__rowInstitution}`}>
             <td>
                 <div className={`${styles.nameCell}`}>
-                    <Icon name="account_balance" size="1.1rem" className={`${styles.instIcon}`} />
-                    <span className={`${styles.instName}`}>
+                    <Icon name="account_balance" size="1.1rem" className={`${styles.PatientList__instIcon}`} />
+                    <span className={`${styles.PatientList__instName}`}>
                         [INSTITUCIÓN] {inst.name}
                     </span>
                 </div>
@@ -40,7 +40,7 @@ const InstitutionRow = ({ inst, t }) => {
             <td>
                 <Badge variant="warning">${Number(inst.total_debt).toLocaleString()}</Badge>
             </td>
-            <td className={`${styles.actions}`}>
+            <td className={`${styles.PatientList__actions}`}>
                 <Button
                     size="sm-compact"
                     variant="link"
@@ -65,17 +65,17 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                     onViewDetails(p.id);
                 }
             }}
-            className={`${styles.row}`}
+            className={`${styles.PatientList__row}`}
             role="button"
             tabIndex={0}
         >
             <td>
-                <div className={`${styles.patientCol}`}>
-                    <strong className={`${styles.name}`}>
+                <div className={`${styles.PatientList__patientCol}`}>
+                    <strong className={`${styles.PatientList__name}`}>
                         {p.full_name || `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'N/A'}
                     </strong>
                     {((Boolean(p.is_new_patient) || Number(p.is_new_patient) === 1) || Number(p.attended_appointments) > 0) && (
-                        <div className={`${styles.badgeRow}`}>
+                        <div className={`${styles.PatientList__badgeRow}`}>
                             {(Boolean(p.is_new_patient) || Number(p.is_new_patient) === 1) && (
                                 <Badge variant="blue" size="sm">NUEVO</Badge>
                             )}
@@ -90,15 +90,15 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                 </div>
             </td>
             <td>
-                <div className={`${styles.idInfo}`}>
-                    {p.dni && <span><span className={`${styles.idLabel}`}>DNI:</span> {p.dni}</span>}
-                    {(p.insurance_name || p.insurance) && <span><span className={`${styles.idLabel}`}>OS:</span> {p.insurance_name || p.insurance}</span>}
+                <div className={`${styles.PatientList__idInfo}`}>
+                    {p.dni && <span><span className={`${styles.PatientList__idLabel}`}>DNI:</span> {p.dni}</span>}
+                    {(p.insurance_name || p.insurance) && <span><span className={`${styles.PatientList__idLabel}`}>OS:</span> {p.insurance_name || p.insurance}</span>}
                 </div>
             </td>
             <td>
-                <div className={`${styles.contactInfo}`}>
+                <div className={`${styles.PatientList__contactInfo}`}>
                     {p.phone ? (
-                        <div className={`${styles.contactRow}`}>
+                        <div className={`${styles.PatientList__contactRow}`}>
                             <Button
                                 to={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
                                 target="_blank"
@@ -112,7 +112,7 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                                 to={`tel:${p.phone.replace(/[^0-9+]/g, '')}`}
                                 variant="phone"
                                 size="sm"
-                                className={`${styles.contactLink}`}
+                                className={`${styles.PatientList__contactLink}`}
                                 onClick={(e) => e.stopPropagation()}
                                 title="Llamar"
                                 icon={<Icon name="call" size="0.9rem" />}
@@ -137,17 +137,17 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                 </div>
             </td>
             <td>
-                <div className={`${styles.ratingGroup}`}>
-                    <div className={`${styles.ratingItem}`} title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
-                        <span className={`${styles.ratingLabel}`}>FIN</span>
+                <div className={`${styles.PatientList__ratingGroup}`}>
+                    <div className={`${styles.PatientList__ratingItem}`} title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
+                        <span className={`${styles.PatientList__ratingLabel}`}>FIN</span>
                         <RatingStars rating={p.financial_rating} colorClass="gold" />
                     </div>
-                    <div className={`${styles.ratingItem}`} title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
-                        <span className={`${styles.ratingLabel}`}>ASIST</span>
+                    <div className={`${styles.PatientList__ratingItem}`} title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
+                        <span className={`${styles.PatientList__ratingLabel}`}>ASIST</span>
                         <RatingStars rating={p.attendance_rating} colorClass="blue" />
                     </div>
                     <div
-                        className={`${styles.ratingItem} patient-list__rating-item--interactive`}
+                        className={`${styles.PatientList__ratingItem} patient-list__rating-item--interactive`}
                         onClick={(e) => onToggleRating(e, p.id, p.behavior_rating)}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
@@ -159,7 +159,7 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                         role="button"
                         tabIndex={0}
                     >
-                        <span className={`${styles.ratingLabel}`}>COND</span>
+                        <span className={`${styles.PatientList__ratingLabel}`}>COND</span>
                         <RatingStars rating={p.behavior_rating} colorClass="pink" />
                     </div>
                 </div>
@@ -170,20 +170,20 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                         size="sm-compact"
                         variant="warning"
                         onClick={(e) => onOpenDebt(e, p.id, p.total_debt)}
-                        className={`${styles.debtBadge}`}
+                        className={`${styles.PatientList__debtBadge}`}
                         icon={<Icon name="payments" size="0.9rem" />}
                     >
                         ${Number(p.total_debt).toLocaleString()}
                     </Button>
                 ) : (
-                    <span className={`${styles.zeroDebt}`}>$0.00</span>
+                    <span className={`${styles.PatientList__zeroDebt}`}>$0.00</span>
                 )}
             </td>
-            <td className={`${styles.actions}`}>
+            <td className={`${styles.PatientList__actions}`}>
                 <Button
                     variant="info"
                     size="sm-compact"
-                    className={`${styles.viewBtn}`}
+                    className={`${styles.PatientList__viewBtn}`}
                     icon={<Icon name="badge" />}
                 >
                     {t('view_details') || 'Ficha'}
@@ -209,15 +209,15 @@ const PatientListBase = ({
 
     if (patients.length === 0) {
         return (
-            <section className={`${styles.empty}`}>
-                <p className={`${styles.emptyText}`}>{t('no_patients_found')}</p>
+            <section className={`${styles.PatientList__empty}`}>
+                <p className={`${styles.PatientList__emptyText}`}>{t('no_patients_found')}</p>
             </section>
         );
     }
 
     return (
-        <section className={`${styles.root}`}>
-            <table className={`${styles.table}`}>
+        <section className={`${styles.PatientList__root}`}>
+            <table className={`${styles.PatientList__table}`}>
                 <thead>
                     <tr>
                         <th>{t('patient')}</th>
@@ -225,7 +225,7 @@ const PatientListBase = ({
                         <th>{t('contact')}</th>
                         <th>{t('ratings')}</th>
                         <th>{t('debt')}</th>
-                        <th className={`${styles.actions}`}>{t('actions')}</th>
+                        <th className={`${styles.PatientList__actions}`}>{t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>

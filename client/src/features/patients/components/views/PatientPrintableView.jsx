@@ -114,7 +114,7 @@ const PatientPrintableViewBase = ({
                 const parsed = JSON.parse(cleanStr);
                 if (Array.isArray(parsed)) {
                     return (
-                        <ul className={`${styles.printableSublist}`}>
+                        <ul className={`${styles.PatientPrintableView__printableSublist}`}>
                             {parsed.map((m) => <li key={m.name}>{m.name}</li>)}
                         </ul>
                     );
@@ -125,16 +125,16 @@ const PatientPrintableViewBase = ({
         const lines = cleanStr.split(/[\r\n]+/).filter(l => l.trim().length > 0);
         if (lines.length > 1) {
             return (
-                <ul className={`${styles.printableSublist}`}>
+                <ul className={`${styles.PatientPrintableView__printableSublist}`}>
                     {lines.map((line) => <li key={line}>{line.trim()}</li>)}
                 </ul>
             );
         }
-        return <p className={`${styles.printableText} text-preline`}>{cleanStr}</p>;
+        return <p className={`${styles.PatientPrintableView__printableText} text-preline`}>{cleanStr}</p>;
     };
 
     return (
-        <div className={`${styles.fullscreen} printable-patient-sheet animate-fade-in`}>
+        <div className={`${styles.PatientPrintableView__fullscreen} printable-patient-sheet animate-fade-in`}>
             <PatientPrintableFilters
                 printOptions={printOptions}
                 fromDate={fromDate}

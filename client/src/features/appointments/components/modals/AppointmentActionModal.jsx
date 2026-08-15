@@ -45,7 +45,7 @@ export const AppointmentActionModal = ({
             title={t('appointment_details') || 'Detalles del Turno'}
             size="lg"
         >
-            <div className={`${styles.content}`}>
+            <div className={`${styles.AppointmentActionModal__content}`}>
                 <AppointmentHeader appt={appt} t={t} />
 
                 {showMedicalPanel && (
@@ -60,7 +60,7 @@ export const AppointmentActionModal = ({
                 {isGoogle && (
                     <Button
                         variant="accent"
-                        className={`${styles.syncBtn}`}
+                        className={`${styles.AppointmentActionModal__syncBtn}`}
                         onClick={() => onSync(appt)}
                         icon={<Icon name="auto_awesome" size="1.1rem" />}
                     >

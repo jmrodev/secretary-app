@@ -51,10 +51,10 @@ export const MedicalRequirementDetailModal = ({
             onClose={onClose}
             title={t('request_detail') || "Detalle de Solicitud"}
         >
-            <div className={`${styles.root}`}>
+            <div className={`${styles.MedicalRequirementDetailModal__root}`}>
                 <RequirementDetailHeader selectedRequest={selectedRequest} />
 
-                <div className={`${styles.infoBar}`}>
+                <div className={`${styles.MedicalRequirementDetailModal__infoBar}`}>
                     <Badge variant={selectedRequest.type === 'prescription' ? 'blue' : 'green'}>
                         {typeLabels[selectedRequest.type] || selectedRequest.type}
                     </Badge>
@@ -65,10 +65,10 @@ export const MedicalRequirementDetailModal = ({
                     )}
                 </div>
 
-                <div className={`${styles.body} ${isEditing ? styles.bodyEditing : ''}`}>
+                <div className={`${styles.MedicalRequirementDetailModal__body} ${isEditing ? styles.MedicalRequirementDetailModal__bodyEditing : ''}`}>
                     {isEditing ? (
-                        <div className={`${styles.requirementsEdit}`}>
-                            <h4 className={`${styles.sectionTitle}`}>
+                        <div className={`${styles.MedicalRequirementDetailModal__requirementsEdit}`}>
+                            <h4 className={`${styles.MedicalRequirementDetailModal__sectionTitle}`}>
                                 <Icon name="edit_note" />
                                 {t('editing_medication') || 'Editando Medicación'}
                             </h4>
@@ -81,7 +81,7 @@ export const MedicalRequirementDetailModal = ({
                                 onAddMed={handleAddMed}
                                 t={t}
                             />
-                            <div className={`${styles.notes}`}>
+                            <div className={`${styles.MedicalRequirementDetailModal__notes}`}>
                                 <FormGroup label={t('request_note') || 'Nota del Paciente'}>
                                     <Input
                                         type="textarea"
@@ -101,7 +101,7 @@ export const MedicalRequirementDetailModal = ({
                                     />
                                 </FormGroup>
                             </div>
-                            <div className={`${styles.actions}`}>
+                            <div className={`${styles.MedicalRequirementDetailModal__actions}`}>
                                 <Button variant="ghost" onClick={handleCancelEdit}>
                                     {t('cancel')}
                                 </Button>
@@ -127,7 +127,7 @@ export const MedicalRequirementDetailModal = ({
                     t={t}
                 />
 
-                <div className={`${styles.footer}`}>
+                <div className={`${styles.MedicalRequirementDetailModal__footer}`}>
                     <Button onClick={onClose} variant="secondary">
                         {t('close')}
                     </Button>

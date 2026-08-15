@@ -17,10 +17,10 @@ export const AppointmentPatientSection = ({
     const PatientSearchSelect = PatientSearchSelectComponent;
 
     return (
-        <div className={styles.root}>
-            <div className={styles.fieldsRow}>
-                <div className={styles.searchGroup}>
-                    <label className={styles.groupLabel}>{t('patients') || 'Paciente'}</label>
+        <div className={styles.AppointmentPatientSection__root}>
+            <div className={styles.AppointmentPatientSection__fieldsRow}>
+                <div className={styles.AppointmentPatientSection__searchGroup}>
+                    <label className={styles.AppointmentPatientSection__groupLabel}>{t('patients') || 'Paciente'}</label>
                     {PatientSearchSelect ? (
                         <div style={{ maxWidth: '35ch', width: '100%' }}>
                             <PatientSearchSelect
@@ -39,8 +39,8 @@ export const AppointmentPatientSection = ({
                     )}
                 </div>
 
-                <div className={styles.searchGroup} style={{ width: '18ch', flexShrink: 0 }}>
-                    <label className={styles.groupLabel}>
+                <div className={styles.AppointmentPatientSection__searchGroup} style={{ width: '18ch', flexShrink: 0 }}>
+                    <label className={styles.AppointmentPatientSection__groupLabel}>
                         <Icon name="phone" size="0.8rem" style={{ marginRight: '0.35rem' }} />
                         Teléfono
                     </label>
@@ -53,12 +53,12 @@ export const AppointmentPatientSection = ({
             </div>
 
             {missingData.length > 0 && (
-                <div className={styles.missingAlert}>
-                    <span className={styles.missingText}>
+                <div className={styles.AppointmentPatientSection__missingAlert}>
+                    <span className={styles.AppointmentPatientSection__missingText}>
                         <Icon name="warning" size="0.9rem" />
                         <strong>Falta:</strong> {missingData.join(', ')}
                     </span>
-                    <button type="button" className={styles.missingAction} onClick={onOpenEditPatient}>
+                    <button type="button" className={styles.AppointmentPatientSection__missingAction} onClick={onOpenEditPatient}>
                         Completar
                     </button>
                 </div>

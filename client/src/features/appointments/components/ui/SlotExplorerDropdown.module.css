@@ -1,4 +1,4 @@
-.dropdown {
+.SlotExplorerDropdown__dropdown {
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
@@ -14,13 +14,13 @@
     overflow: hidden;
 }
 
-.monthBar {
+.SlotExplorerDropdown__monthBar {
     display: flex;
     padding: 2px;
     background: var(--background-bg);
 }
 
-.monthItem {
+.SlotExplorerDropdown__monthItem {
     flex: 1;
     text-align: center;
     padding: 14px 0;
@@ -31,18 +31,18 @@
     border-radius: 4px;
 }
 
-.monthActive {
+.SlotExplorerDropdown__monthActive {
     background: var(--primary-color);
     color: var(--background-bg);
 }
 
-.bodyWrapper {
+.SlotExplorerDropdown__bodyWrapper {
     display: flex;
     max-height: 50vh;
     overflow: hidden;
 }
 
-.sidebar {
+.SlotExplorerDropdown__sidebar {
     width: 100px;
     background: var(--modal-bg-dark);
     overflow-y: auto;
@@ -50,11 +50,11 @@
     scrollbar-width: none; /* Hide scrollbar for cleaner look */
 }
 
-.sidebar::-webkit-scrollbar {
+.SlotExplorerDropdown__sidebar::-webkit-scrollbar {
     display: none;
 }
 
-.sidebarItem {
+.SlotExplorerDropdown__sidebarItem {
     padding: 12px 10px;
     font-size: 0.8rem;
     font-weight: 700;
@@ -65,22 +65,22 @@
     text-align: center;
 }
 
-.sidebarItem:hover {
+.SlotExplorerDropdown__sidebarItem:hover {
     background: var(--background-bg);
     color: var(--text-main);
 }
 
-.sidebarItemActive {
+.SlotExplorerDropdown__sidebarItemActive {
     background: var(--primary-color);
     color: var(--background-bg);
 }
 
-.sidebarItemActive:hover {
+.SlotExplorerDropdown__sidebarItemActive:hover {
     background: var(--primary-color);
     color: var(--background-bg);
 }
 
-.list {
+.SlotExplorerDropdown__list {
     flex: 1;
     overflow: hidden auto;
     padding: 0.75rem 1.5rem; /* slightly less padding so it fits well next to sidebar */
@@ -89,7 +89,7 @@
     scroll-behavior: smooth; /* Smooth scroll when clicking sidebar */
 }
 
-.dayHeader {
+.SlotExplorerDropdown__dayHeader {
     font-size: 0.95rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -97,7 +97,7 @@
     padding: 10px 8px 4px;
 }
 
-.slotRow {
+.SlotExplorerDropdown__slotRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -109,39 +109,39 @@
     transition: background 0.2s;
 }
 
-.slotRow:hover {
+.SlotExplorerDropdown__slotRow:hover {
     background: var(--dashboard-card-bg);
 }
 
-.slotExtra {
+.SlotExplorerDropdown__slotExtra {
     border-left: 2px solid var(--warning);
 }
 
-.time {
+.SlotExplorerDropdown__time {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-main);
 }
 
-.actions {
+.SlotExplorerDropdown__actions {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.waIcon {
+.SlotExplorerDropdown__waIcon {
     color: var(--success);
     font-size: 1.2rem;
     opacity: 0.8;
 }
 
-.selectText {
+.SlotExplorerDropdown__selectText {
     font-size: 0.95rem;
     font-weight: 800;
     color: var(--primary-color);
 }
 
-.loadMoreBtn {
+.SlotExplorerDropdown__loadMoreBtn {
     text-align: center;
     padding: 12px;
     margin-top: 10px;
@@ -154,11 +154,11 @@
     transition: background 0.2s;
 }
 
-.loadMoreBtn:hover {
+.SlotExplorerDropdown__loadMoreBtn:hover {
     background: var(--dashboard-card-bg);
 }
 
-.empty {
+.SlotExplorerDropdown__empty {
     padding: 2rem 0;
     text-align: center;
     color: var(--text-muted);

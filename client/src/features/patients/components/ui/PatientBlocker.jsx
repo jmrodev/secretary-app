@@ -13,20 +13,20 @@ export const PatientBlocker = () => {
     };
 
     return (
-        <div className={`${styles.root}`}>
-            <div className={`${styles.card}`}>
-                <div className={`${styles.iconContainer}`}>
-                    <Icon name="check_circle" size="4rem" className={`${styles.iconSuccess}`} />
+        <div className={`${styles.PatientBlocker__root}`}>
+            <div className={`${styles.PatientBlocker__card}`}>
+                <div className={`${styles.PatientBlocker__iconContainer}`}>
+                    <Icon name="check_circle" size="4rem" className={`${styles.PatientBlocker__iconSuccess}`} />
                 </div>
-                <h2 className={`${styles.title}`}>Registro Completado</h2>
-                <p className={`${styles.message}`}>
+                <h2 className={`${styles.PatientBlocker__title}`}>Registro Completado</h2>
+                <p className={`${styles.PatientBlocker__message}`}>
                     Tu información ha sido recibida correctamente.
                     <br /><br />
                     Esta sección es de uso administrativo. Si necesitas realizar otra gestión, por favor utiliza el enlace enviado a tu dispositivo o escanea el QR en el consultorio.
                 </p>
                 <Button
                     variant="secondary"
-                    className={`${styles.button}`}
+                    className={`${styles.PatientBlocker__button}`}
                     onClick={handleLogout}
                 >
                     Cerrar Sesión

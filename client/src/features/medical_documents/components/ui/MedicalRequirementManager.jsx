@@ -55,22 +55,22 @@ export const MedicalRequirementManager = ({
     const showLoader = loading && !fetched;
 
     return (
-        <section className={styles.root}>
+        <section className={styles.MedicalRequirementManager__root}>
             {!hideTabs && (
-                <nav className={styles.tabs}>
+                <nav className={styles.MedicalRequirementManager__tabs}>
                     <TabButton isActive={activeTab === 'list'} onClick={() => setActiveTab('list')} variant="pill" icon={<Icon name="view_list" />}>
                         {t('request_status')}
                     </TabButton>
-                    <div className={styles.tabWrapper}>
+                    <div className={styles.MedicalRequirementManager__tabWrapper}>
                         <TabButton isActive={activeTab === 'recycle'} onClick={() => setActiveTab('recycle')} variant="pill" icon={<Icon name="delete" />}>
                             {t('recycle_bin')}
                         </TabButton>
-                        {recycleRequests.length > 0 && <span className={styles.badge}>{recycleRequests.length}</span>}
+                        {recycleRequests.length > 0 && <span className={styles.MedicalRequirementManager__badge}>{recycleRequests.length}</span>}
                     </div>
                 </nav>
             )}
 
-            <article className={`${styles.content} animate-fade-in`}>
+            <article className={`${styles.MedicalRequirementManager__content} animate-fade-in`}>
                 {showLoader ? <Loading variant="centered" /> : (
                     activeTab === 'list' ? (
                         <MedicalRequirementTable

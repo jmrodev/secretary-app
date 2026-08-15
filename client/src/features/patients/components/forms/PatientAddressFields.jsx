@@ -11,12 +11,12 @@ import styles from './PatientAddressFields.module.css';
  */
 export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
     return (
-        <article className={`${styles.root}`}>
+        <article className={`${styles.PatientAddressFields__root}`}>
             
 
-            <div className={`${styles.bento}`}>
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
-                    <label className={`${styles.label}`}>{t('street_name')}</label>
+            <div className={`${styles.PatientAddressFields__bento}`}>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan6}`}>
+                    <label className={`${styles.PatientAddressFields__label}`}>{t('street_name')}</label>
                     <Input
                         name="street_name"
                         className="patient-address-fields__field"
@@ -25,8 +25,8 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                         placeholder={t('street_placeholder')}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan2}`}>
-                    <label className={`${styles.label}`}>{t('street_number')}</label>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan2}`}>
+                    <label className={`${styles.PatientAddressFields__label}`}>{t('street_number')}</label>
                     <Input
                         name="street_number"
                         className="patient-address-fields__field"
@@ -36,8 +36,8 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
 
-                <div className={`${styles.group} ${styles.groupSpan2}`}>
-                    <label className={`${styles.label}`}>{t('floor')}</label>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan2}`}>
+                    <label className={`${styles.PatientAddressFields__label}`}>{t('floor')}</label>
                     <Input
                         name="floor"
                         className="patient-address-fields__field"
@@ -46,8 +46,8 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                         placeholder="2"
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan2}`}>
-                    <label className={`${styles.label}`}>{t('apartment')}</label>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan2}`}>
+                    <label className={`${styles.PatientAddressFields__label}`}>{t('apartment')}</label>
                     <Input
                         name="apartment"
                         className="patient-address-fields__field"
@@ -57,8 +57,8 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
 
-                <div className={`${styles.group} ${styles.groupSpan3}`}>
-                    <label className={`${styles.label}`}>{t('city')}</label>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan3}`}>
+                    <label className={`${styles.PatientAddressFields__label}`}>{t('city')}</label>
                     <Input
                         name="city"
                         className="patient-address-fields__field"
@@ -66,8 +66,8 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                         onChange={updatePatientData}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan3}`}>
-                    <label className={`${styles.label}`}>{t('province')}</label>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan3}`}>
+                    <label className={`${styles.PatientAddressFields__label}`}>{t('province')}</label>
                     <Input
                         name="province"
                         className="patient-address-fields__field"
@@ -76,12 +76,12 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
             {formData.street_name && (
-                <div className={`${styles.mapCard} ${styles.groupSpan6}`}>
-                    <div className={`${styles.mapInfo}`}>
+                <div className={`${styles.PatientAddressFields__mapCard} ${styles.PatientAddressFields__groupSpan6}`}>
+                    <div className={`${styles.PatientAddressFields__mapInfo}`}>
                         <Icon name="map" size="1.25rem" />
-                        <div className={`${styles.mapText}`}>
-                            <span className={`${styles.mapLabel}`}>{t('geolocalized_address')}</span>
-                            <p className={`${styles.mapAddress}`}>
+                        <div className={`${styles.PatientAddressFields__mapText}`}>
+                            <span className={`${styles.PatientAddressFields__mapLabel}`}>{t('geolocalized_address')}</span>
+                            <p className={`${styles.PatientAddressFields__mapAddress}`}>
                                 {formData.street_name} {formData.street_number}, {formData.city}
                             </p>
                         </div>

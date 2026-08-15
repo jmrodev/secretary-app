@@ -1,6 +1,6 @@
 /* AppointmentsPage Styles (Orchestrator) - BEM Strict & Dark Mode Glassmorphism */
 
-.root {
+.AppointmentsPage__root {
     /* --- Local Component Tokens --- */
     --appointments-surface: var(--dashboard-card-bg);
     --appointments-panel-bg: var(--dashboard-card-bg);
@@ -20,20 +20,20 @@
     background: transparent;
 }
 
-.toolbarActions {
+.AppointmentsPage__toolbarActions {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.mainActions {
+.AppointmentsPage__mainActions {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 /* --- Live Indicator --- */
-.liveIndicator {
+.AppointmentsPage__liveIndicator {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -44,7 +44,7 @@
     backdrop-filter: blur(5px);
 }
 
-.liveDot {
+.AppointmentsPage__liveDot {
     width: 0.6rem;
     height: 0.6rem;
     background-color: var(--live-indicator-dot);
@@ -53,7 +53,7 @@
     animation: dot-pulse 2s infinite;
 }
 
-.liveText {
+.AppointmentsPage__liveText {
     font-size: 0.65rem;
     font-weight: 800;
     color: var(--live-indicator-text);
@@ -62,7 +62,7 @@
 }
 
 /* --- Layout Sections --- */
-.header {
+.AppointmentsPage__header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -70,7 +70,7 @@
     margin-bottom: 1.5rem;
 }
 
-.title {
+.AppointmentsPage__title {
     font-size: 1.8rem;
     font-weight: 900;
     color: var(--text-main);
@@ -78,13 +78,13 @@
     margin: 0;
 }
 
-.subtitle {
+.AppointmentsPage__subtitle {
     font-size: 0.95rem;
     color: var(--text-muted);
     margin-top: 0.25rem;
 }
 
-.body {
+.AppointmentsPage__body {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -93,7 +93,7 @@
     min-height: 0;
 }
 
-.main {
+.AppointmentsPage__main {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -102,7 +102,7 @@
     padding: 0;
 }
 
-.mainGrid {
+.AppointmentsPage__mainGrid {
     flex: 1;
     display: grid;
     grid-template-columns: minmax(34rem, 40rem) minmax(0, 1fr);
@@ -118,30 +118,30 @@
     margin-bottom: 0;
 }
 
-.mainGridMonthly {
+.AppointmentsPage__mainGridMonthly {
     grid-template-columns: 1fr;
 }
 
 /* Context panels */
 
-.panelCalendar {
+.AppointmentsPage__panelCalendar {
     background: transparent;
     border-right: 1px solid var(--border-color);
     padding: 0.5rem;
     overflow: hidden auto;
 }
 
-.panelCalendar::-webkit-scrollbar {
+.AppointmentsPage__panelCalendar::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 
-.panelCalendar::-webkit-scrollbar-thumb {
+.AppointmentsPage__panelCalendar::-webkit-scrollbar-thumb {
     background: rgb(128, 128, 128, 0.15);
     border-radius: 10px;
 }
 
-.panelAgenda {
+.AppointmentsPage__panelAgenda {
     background: transparent;
     overflow: hidden auto;
     padding: 0.5rem;
@@ -149,17 +149,17 @@
     flex-direction: column;
 }
 
-.panelAgenda::-webkit-scrollbar {
+.AppointmentsPage__panelAgenda::-webkit-scrollbar {
     width: 6px;
     height: 6px;
 }
 
-.panelAgenda::-webkit-scrollbar-thumb {
+.AppointmentsPage__panelAgenda::-webkit-scrollbar-thumb {
     background: rgb(128, 128, 128, 0.15);
     border-radius: 10px;
 }
 
-.panelSearch, .panelUpcoming {
+.AppointmentsPage__panelSearch, .AppointmentsPage__panelUpcoming {
     background: var(--dashboard-card-bg);
     backdrop-filter: blur(24px);
     border: 1px solid var(--border-color);
@@ -175,21 +175,21 @@
 }
 
 /* --- Context Info --- */
-.context {
+.AppointmentsPage__context {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 0.75rem;
     min-width: 20rem;
 }
 
-.contextItem {
+.AppointmentsPage__contextItem {
     padding: 0.75rem 1rem;
     background: rgb(0, 0, 0, 0.02);
     border: 1px solid var(--dashboard-card-border);
     border-radius: var(--radius-md);
 }
 
-.contextLabel {
+.AppointmentsPage__contextLabel {
     font-size: 0.65rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -197,7 +197,7 @@
     letter-spacing: 0.05em;
 }
 
-.contextValue {
+.AppointmentsPage__contextValue {
     font-size: 0.9rem;
     font-weight: 700;
     color: var(--text-main);
@@ -217,11 +217,11 @@
 }
 
 @media (width <= 1024px) {
-    .mainGrid {
+    .AppointmentsPage__mainGrid {
         grid-template-columns: 1fr;
     }
 
-    .header {
+    .AppointmentsPage__header {
         flex-direction: column;
     }
 }

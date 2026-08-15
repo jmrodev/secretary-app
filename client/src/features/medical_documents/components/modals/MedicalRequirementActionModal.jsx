@@ -33,8 +33,8 @@ export const MedicalRequirementActionModal = ({
                 </>
             }
         >
-            <div className={styles.formGroup}>
-                <label className={styles.formLabel}>
+            <div className={styles.MedicalRequirementActionModal__formGroup}>
+                <label className={styles.MedicalRequirementActionModal__formLabel}>
                     {actionModal.type === 'consult' ? t('your_question') :
                         (actionModal.type === 'reply' ? t('your_answer') : t('doctor_note'))}
                     {['rejected', 'consult', 'reply'].includes(actionModal.type) && <span className="text-danger">*</span>}

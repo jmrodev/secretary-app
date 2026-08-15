@@ -1,21 +1,21 @@
 /* MedicationAutocomplete Feature Styles */
-.root {
+.MedicationAutocomplete__root {
     position: relative;
     width: 100%;
 }
 
-.inputWrapper {
+.MedicationAutocomplete__inputWrapper {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.input {
+.MedicationAutocomplete__input {
     width: 100%;
     padding-right: 40px;
 }
 
-.actions {
+.MedicationAutocomplete__actions {
     position: absolute;
     right: 12px;
     display: flex;
@@ -23,7 +23,7 @@
     justify-content: center;
 }
 
-.actions button {
+.MedicationAutocomplete__actions button {
     background: transparent;
     border: none;
     cursor: pointer;
@@ -36,15 +36,15 @@
     transition: color 0.2s ease;
 }
 
-.actions button:hover {
+.MedicationAutocomplete__actions button:hover {
     color: var(--text-main);
 }
 
-.actions button:hover {
+.MedicationAutocomplete__actions button:hover {
     color: var(--text-main);
 }
 
-.list {
+.MedicationAutocomplete__list {
     position: absolute;
     top: calc(100% + 4px);
     left: 0;
@@ -61,19 +61,19 @@
     margin: 0;
 }
 
-.item {
+.MedicationAutocomplete__item {
     padding: 10px 12px;
     border-radius: var(--radius-sm);
     cursor: pointer;
     transition: background-color 0.15s ease;
 }
 
-.item:hover,
-.itemActive {
+.MedicationAutocomplete__item:hover,
+.MedicationAutocomplete__itemActive {
     background-color: var(--card-hover-bg);
 }
 
-.itemTitle {
+.MedicationAutocomplete__itemTitle {
     font-weight: 700;
     font-size: 0.95rem;
     color: var(--text-main);
@@ -81,7 +81,7 @@
     margin-bottom: 2px;
 }
 
-.itemSubtitle {
+.MedicationAutocomplete__itemSubtitle {
     font-size: 0.8rem;
     color: var(--text-muted);
     display: flex;
@@ -90,13 +90,13 @@
     flex-wrap: wrap;
 }
 
-.highlight {
+.MedicationAutocomplete__highlight {
     color: var(--accent-color);
     font-weight: 800;
     background: transparent;
 }
 
-.footer {
+.MedicationAutocomplete__footer {
     padding: 8px 12px;
     border-top: 1px solid var(--dashboard-card-border);
     margin-top: 4px;
@@ -108,7 +108,7 @@
     background: var(--dashboard-card-bg);
 }
 
-.footerBrand {
+.MedicationAutocomplete__footerBrand {
     font-weight: 800;
     color: var(--text-secondary);
 }
@@ -129,6 +129,6 @@
     }
 }
 
-.animateFadeIn {
+.MedicationAutocomplete__animateFadeIn {
     animation: fade-in 0.2s ease-out;
 }

@@ -18,7 +18,7 @@ export const MedicationEditor = ({
     onAddMed,
     t
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.MedicationEditor__root;
 
     return (
         <div className={`${baseClass} animate-fade-in`}>

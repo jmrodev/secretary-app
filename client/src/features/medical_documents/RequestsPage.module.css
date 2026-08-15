@@ -3,35 +3,35 @@
 
 
 
-.spacer {
+.RequestsPage__spacer {
     flex: 1;
 }
 
-.navActions {
+.RequestsPage__navActions {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.actions {
+.RequestsPage__actions {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.actionBtn {
+.RequestsPage__actionBtn {
     width: 100%;
     justify-content: flex-start;
 }
 
-.infoText {
+.RequestsPage__infoText {
     font-size: 0.85rem;
     color: var(--slate-500);
     line-height: 1.6;
     margin: 0;
 }
 
-.section {
+.RequestsPage__section {
     width: 100%;
     height: 100%;
     overflow: hidden;

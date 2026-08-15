@@ -12,13 +12,13 @@ import styles from './PatientContactFields.module.css';
  */
 export const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers, t }) => {
     return (
-        <article className={`${styles.root}`}>
+        <article className={`${styles.PatientContactFields__root}`}>
             
 
-            <div className={`${styles.bento}`}>
-                <div className={`${styles.group} ${styles.groupSpan5}`}>
-                    <label className={`${styles.label}`}>{t('primary_email')}</label>
-                    <div className={`${styles.inputWithAction}`}>
+            <div className={`${styles.PatientContactFields__bento}`}>
+                <div className={`${styles.PatientContactFields__group} ${styles.PatientContactFields__groupSpan5}`}>
+                    <label className={`${styles.PatientContactFields__label}`}>{t('primary_email')}</label>
+                    <div className={`${styles.PatientContactFields__inputWithAction}`}>
                         <Input
                             type="email"
                             name="email"
@@ -40,8 +40,8 @@ export const PatientContactFields = ({ formData, updatePatientData, updatePhoneN
                     </div>
                 </div>
 
-                <div className={`${styles.group} ${styles.groupSpan7}`}>
-                    <label className={`${styles.label}`}>{t('contact_phones') || 'Teléfonos'}</label>
+                <div className={`${styles.PatientContactFields__group} ${styles.PatientContactFields__groupSpan7}`}>
+                    <label className={`${styles.PatientContactFields__label}`}>{t('contact_phones') || 'Teléfonos'}</label>
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
                         onChange={updatePhoneNumbers}

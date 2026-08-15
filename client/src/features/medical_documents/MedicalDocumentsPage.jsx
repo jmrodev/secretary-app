@@ -37,8 +37,8 @@ export const MedicalDocumentsPage = () => {
                     t={t}
                 />
 
-                <section className={`${styles.main} ${styles.noPrint}`}>
-                    <div className={`${styles.tabsContent}`}>
+                <section className={`${styles.MedicalDocumentsPage__main} ${styles.MedicalDocumentsPage__noPrint}`}>
+                    <div className={`${styles.MedicalDocumentsPage__tabsContent}`}>
                         <Suspense fallback={<div>Loading view…</div>}>
                             <Outlet />
                         </Suspense>

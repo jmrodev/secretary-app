@@ -1,6 +1,6 @@
 /* DayCell.module.css */
 
-.dayCell {
+.DayCell__dayCell {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -18,7 +18,7 @@
 }
 
 /* Placeholder for empty cells at the start/end of the month */
-.placeholder {
+.DayCell__placeholder {
   min-height: 5.5rem;
   background: transparent;
   border: 1px solid transparent;
@@ -26,7 +26,7 @@
 }
 
 /* Hover state */
-.dayCell:hover {
+.DayCell__dayCell:hover {
   background: rgb(128, 128, 128, 0.08);
   border-color: var(--primary-color);
   transform: translateY(-2px);
@@ -34,13 +34,13 @@
 }
 
 /* Selected state */
-.dayCell.selected {
+.DayCell__dayCell.selected {
   background: rgb(var(--accent-rgb, 99, 102, 241), 0.15);
   border-color: rgb(var(--accent-rgb, 99, 102, 241), 0.6);
   box-shadow: 0 0 12px rgb(var(--accent-rgb, 99, 102, 241), 0.25);
 }
 
-.dayCell.selected::before {
+.DayCell__dayCell.selected::before {
   content: '';
   position: absolute;
   top: 0;
@@ -52,45 +52,45 @@
 }
 
 /* Today state */
-.dayCell.today {
+.DayCell__dayCell.today {
   border-color: var(--primary-color);
   background: rgb(13, 148, 136, 0.08);
 }
 
 /* Holiday state */
-.dayCell.holiday {
+.DayCell__dayCell.holiday {
   background: rgb(239, 68, 68, 0.05);
   border-color: rgb(239, 68, 68, 0.3);
 }
 
 /* Inactive / Past / Outside month states */
-.dayCell.past {
+.DayCell__dayCell.past {
   background-color: rgb(0, 0, 0, 0.04);
 }
 
-:root[data-theme="dark"] .dayCell.past,
-html[data-theme="dark"] .dayCell.past,
-body:not(.theme-light) .dayCell.past {
+:root[data-theme="dark"] .DayCell__dayCell.past,
+html[data-theme="dark"] .DayCell__dayCell.past,
+body:not(.DayCell__theme-light) .DayCell__dayCell.past {
   background-color: rgb(0, 0, 0, 0.25);
 }
 
-.dayCell.past .number {
+.DayCell__dayCell.past .DayCell__number {
   color: var(--text-muted);
 }
 
-.dayCell.outsideMonth {
+.DayCell__dayCell.outsideMonth {
   opacity: 0.4;
 }
 
 /* Header, Content, Footer */
-.header {
+.DayCell__header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
-.content {
+.DayCell__content {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -99,7 +99,7 @@ body:not(.theme-light) .dayCell.past {
   width: 100%;
 }
 
-.footer {
+.DayCell__footer {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -108,7 +108,7 @@ body:not(.theme-light) .dayCell.past {
 }
 
 /* Keyboard focus state */
-.dayCell:focus-visible {
+.DayCell__dayCell:focus-visible {
   outline: 2px solid var(--accent, #6366f1);
   outline-offset: 2px;
 }

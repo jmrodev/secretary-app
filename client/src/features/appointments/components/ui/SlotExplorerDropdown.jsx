@@ -113,12 +113,12 @@ const SlotExplorerDropdownBase = ({
     if (!isOpen) return null;
 
     return (
-        <div className={styles.dropdown} onClick={(e) => e.stopPropagation()}>
-            <nav className={styles.monthBar}>
+        <div className={styles.SlotExplorerDropdown__dropdown} onClick={(e) => e.stopPropagation()}>
+            <nav className={styles.SlotExplorerDropdown__monthBar}>
                 {navMonths.map((m, idx) => (
                     <div 
                         key={`m-${idx}`} 
-                        className={[styles.monthItem, currentMonth === m.month && styles.monthActive].filter(Boolean).join(' ')}
+                        className={[styles.SlotExplorerDropdown__monthItem, currentMonth === m.month && styles.SlotExplorerDropdown__monthActive].filter(Boolean).join(' ')}
                         onClick={() => jumpToMonth(m.month, m.year)}
                     >
                         {m.label}
@@ -126,14 +126,14 @@ const SlotExplorerDropdownBase = ({
                 ))}
             </nav>
 
-            <div className={styles.bodyWrapper}>
+            <div className={styles.SlotExplorerDropdown__bodyWrapper}>
                 {/* Left Sidebar for Days */}
-                <div className={styles.sidebar} ref={sidebarRef}>
+                <div className={styles.SlotExplorerDropdown__sidebar} ref={sidebarRef}>
                     {uniqueDays.map(day => (
                         <div 
                             key={`sb-${day.date}`} 
                             data-sidebar-day={day.date}
-                            className={[styles.sidebarItem, activeDay === day.date && styles.sidebarItemActive].filter(Boolean).join(' ')}
+                            className={[styles.SlotExplorerDropdown__sidebarItem, activeDay === day.date && styles.SlotExplorerDropdown__sidebarItemActive].filter(Boolean).join(' ')}
                             onClick={() => scrollToDay(day.date)}
                         >
                             {day.label}
@@ -142,7 +142,7 @@ const SlotExplorerDropdownBase = ({
                 </div>
 
                 {/* Main Slots List */}
-                <div className={styles.list} ref={listRef} onScroll={handleScroll}>
+                <div className={styles.SlotExplorerDropdown__list} ref={listRef} onScroll={handleScroll}>
                     {loading && slotsPage === 0 ? <Loading variant="centered" /> : (
                         currentSlots.length > 0 ? (
                             <div className={styles.timeline}>
@@ -153,18 +153,18 @@ const SlotExplorerDropdownBase = ({
                                         <React.Fragment key={`s-${slot.iso}-${idx}`}>
                                             {showHeader && (
                                                 <div 
-                                                    className={styles.dayHeader} 
+                                                    className={styles.SlotExplorerDropdown__dayHeader} 
                                                     data-day={slot.dayDate}
                                                 >
                                                     {dateObj.getDate()} {monthNames[dateObj.getMonth()]}
                                                 </div>
                                             )}
-                                            <div className={[styles.slotRow, slot.is_out_of_hours && styles.slotExtra].filter(Boolean).join(' ')}
+                                            <div className={[styles.SlotExplorerDropdown__slotRow, slot.is_out_of_hours && styles.SlotExplorerDropdown__slotExtra].filter(Boolean).join(' ')}
                                                  onClick={() => onSelect(slot.iso, slot.is_out_of_hours)}>
-                                                <span className={styles.time}>{slot.time} hs</span>
-                                                <div className={styles.actions}>
-                                                    <Icon name="chat" className={styles.waIcon} onClick={(e) => { e.stopPropagation(); onWhatsApp(slot); }} />
-                                                    <span className={styles.selectText}>
+                                                <span className={styles.SlotExplorerDropdown__time}>{slot.time} hs</span>
+                                                <div className={styles.SlotExplorerDropdown__actions}>
+                                                    <Icon name="chat" className={styles.SlotExplorerDropdown__waIcon} onClick={(e) => { e.stopPropagation(); onWhatsApp(slot); }} />
+                                                    <span className={styles.SlotExplorerDropdown__selectText}>
                                                         {t('select_short') && t('select_short') !== 'select_short' ? t('select_short') : 'Elegir'}
                                                     </span>
                                                 </div>
@@ -173,7 +173,7 @@ const SlotExplorerDropdownBase = ({
                                     );
                                 })}
                             </div>
-                        ) : <div className={styles.empty}>{t('no_slots_found')}</div>
+                        ) : <div className={styles.SlotExplorerDropdown__empty}>{t('no_slots_found')}</div>
                     )}
                 </div>
             </div>

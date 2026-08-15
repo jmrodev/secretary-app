@@ -69,18 +69,18 @@ export const DayCellPlayground = () => {
   ];
 
   return (
-    <div className={styles.playground}>
-      <header className={styles.header}>
-        <h3 className={styles.title}>Visualizador de Componente Atómico: DayCell</h3>
-        <p className={styles.subtitle}>
+    <div className={styles.DayCellPlayground__playground}>
+      <header className={styles.DayCellPlayground__header}>
+        <h3 className={styles.DayCellPlayground__title}>Visualizador de Componente Atómico: DayCell</h3>
+        <p className={styles.DayCellPlayground__subtitle}>
           Muestra de los diferentes estados del día replicables para el calendario mensual.
         </p>
       </header>
 
-      <section className={styles.grid}>
+      <section className={styles.DayCellPlayground__grid}>
         {sampleDays.map((item) => (
-          <div key={item.id} className={styles.cellWrapper}>
-            <span className={styles.label}>
+          <div key={item.id} className={styles.DayCellPlayground__cellWrapper}>
+            <span className={styles.DayCellPlayground__label}>
               {item.isToday && 'Hoy'}
               {item.isHoliday && 'Feriado'}
               {!item.isCurrentMonth && 'Mes anterior'}
@@ -102,9 +102,9 @@ export const DayCellPlayground = () => {
         ))}
       </section>
 
-      <footer className={styles.footer}>
-        <span className={styles.footerText}>
-          Día seleccionado actualmente: <strong className={styles.highlight}>{selectedDay}</strong>
+      <footer className={styles.DayCellPlayground__footer}>
+        <span className={styles.DayCellPlayground__footerText}>
+          Día seleccionado actualmente: <strong className={styles.DayCellPlayground__highlight}>{selectedDay}</strong>
         </span>
       </footer>
     </div>

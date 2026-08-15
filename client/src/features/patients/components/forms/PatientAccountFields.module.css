@@ -1,39 +1,39 @@
-.root {
+.PatientAccountFields__root {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
     grid-column: span 5;
 }
 
-.header {
+.PatientAccountFields__header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     color: var(--primary-color);
 }
 
-.title {
+.PatientAccountFields__title {
     font-size: 1rem;
     font-weight: 700;
     margin: 0;
     letter-spacing: -0.02em;
 }
 
-.bento {
+.PatientAccountFields__bento {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 1.25rem;
 }
 
-.group {
+.PatientAccountFields__group {
     display: flex;
     flex-direction: column;
     gap: 0.125rem;
 }
 
-.groupSpan6 { grid-column: span 6; }
+.PatientAccountFields__groupSpan6 { grid-column: span 6; }
 
-.label {
+.PatientAccountFields__label {
     font-size: 0.625rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -41,7 +41,7 @@
     letter-spacing: 0.05em;
 }
 
-.securityNote {
+.PatientAccountFields__securityNote {
     margin-top: 0.5rem;
     padding: 0.75rem 1rem;
     background-color: rgb(128, 128, 128, 0.08);
@@ -51,14 +51,14 @@
     color: var(--text-muted);
 }
 
-.securityNote p {
+.PatientAccountFields__securityNote p {
     font-size: 0.75rem;
     margin: 0;
     line-height: 1.4;
 }
 
 @media (width <= 48rem) {
-    .group {
+    .PatientAccountFields__group {
         grid-column: span 12 !important;
     }
 }

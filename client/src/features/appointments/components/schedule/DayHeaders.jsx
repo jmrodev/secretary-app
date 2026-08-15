@@ -7,9 +7,9 @@ import styles from './DayHeaders.module.css';
  */
 export const DayHeaders = ({ daysOfWeek }) => {
   return (
-    <div className={`${styles.root}`}>
+    <div className={`${styles.DayHeaders__root}`}>
       {daysOfWeek.map((day) => (
-        <div key={day} className={`${styles.day}`}>{day}</div>
+        <div key={day} className={`${styles.DayHeaders__day}`}>{day}</div>
       ))}
     </div>
   );

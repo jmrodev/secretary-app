@@ -19,7 +19,7 @@ const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) =>
     const [activeTab, setActiveTab] = useState('appointments');
     const { history, loading } = usePatientHistoryController(patientId, isOpen);
 
-    const baseClass = styles.root;
+    const baseClass = styles.PatientHistoryModal__root;
 
     return (
         <Modal

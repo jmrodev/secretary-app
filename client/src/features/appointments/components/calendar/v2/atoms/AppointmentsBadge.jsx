@@ -8,9 +8,9 @@ import styles from './AppointmentsBadge.module.css';
  */
 export const AppointmentsBadge = ({ count }) => {
   return (
-    <div className={styles.badge} title={`${count} turnos`}>
+    <div className={styles.AppointmentsBadge__badge} title={`${count} turnos`}>
       <StatusDot count={count} />
-      <span className={styles.count}>{count}</span>
+      <span className={styles.AppointmentsBadge__count}>{count}</span>
     </div>
   );
 };

@@ -13,25 +13,25 @@ const EMPTY_ARRAY = [];
  */
 export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggle, handleManualValueChange, updateAdminFields, t }) => {
     return (
-        <article className={`${styles.root}`}>
+        <article className={`${styles.PatientAdminFields__root}`}>
             
 
-            <div className={`${styles.bento}`}>
+            <div className={`${styles.PatientAdminFields__bento}`}>
                 {/* Compact Doctor Section */}
-                <section className={`${styles.section} ${styles.groupSpan12}`}>
-                    <header className={`${styles.miniHeader}`}>
+                <section className={`${styles.PatientAdminFields__section} ${styles.PatientAdminFields__groupSpan12}`}>
+                    <header className={`${styles.PatientAdminFields__miniHeader}`}>
                         <Icon name="medical_services" size="1.1rem" />
-                        <h4 className={`${styles.miniTitle}`}>Médicos Asignados</h4>
-                        <span className={`${styles.count}`}>{formData.assignedDoctors?.length || 0}</span>
+                        <h4 className={`${styles.PatientAdminFields__miniTitle}`}>Médicos Asignados</h4>
+                        <span className={`${styles.PatientAdminFields__count}`}>{formData.assignedDoctors?.length || 0}</span>
                     </header>
-                    <div className={`${styles.doctorScroller}`}>
+                    <div className={`${styles.PatientAdminFields__doctorScroller}`}>
                         {doctors.map(doc => {
                             const isSelected = formData.assignedDoctors?.includes(doc.id);
                             return (
-                                <label key={doc.id} className={`${styles.doctorTextTag} ${isSelected ? styles.doctorTextTagActive : ''}`}>
+                                <label key={doc.id} className={`${styles.PatientAdminFields__doctorTextTag} ${isSelected ? styles.PatientAdminFields__doctorTextTagActive : ''}`}>
                                     <input
                                         type="checkbox"
-                                        className={`${styles.doctorCheckbox}`}
+                                        className={`${styles.PatientAdminFields__doctorCheckbox}`}
                                         checked={isSelected}
                                         onChange={() => handleDoctorToggle(doc.id)}
                                     />
@@ -44,8 +44,8 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                 </section>
 
                 {/* Tariff Section */}
-                <div className={`${styles.group} ${styles.groupSpan3}`}>
-                    <label className={`${styles.label}`}>Ajuste Tarifa (%)</label>
+                <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan3}`}>
+                    <label className={`${styles.PatientAdminFields__label}`}>Ajuste Tarifa (%)</label>
                     <Input
                         type="number"
                         name="tariff_percent"
@@ -58,8 +58,8 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                         style={{ width: '12ch', flexGrow: 0 }}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan3}`}>
-                    <label className={`${styles.label}`}>Tarifa Fija</label>
+                <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan3}`}>
+                    <label className={`${styles.PatientAdminFields__label}`}>Tarifa Fija</label>
                     <CurrencyInput
                         value={formData.tariff_override || ''}
                         onChange={(e) => handleManualValueChange('tariff_override', e.target.value)}
@@ -69,8 +69,8 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                 </div>
 
                 {/* Intervals Section */}
-                <div className={`${styles.group} ${styles.groupSpan3}`}>
-                    <label className={`${styles.label}`}>Intervalo Visitas (Días)</label>
+                <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan3}`}>
+                    <label className={`${styles.PatientAdminFields__label}`}>Intervalo Visitas (Días)</label>
                     <Input 
                         type="number" 
                         name="visit_interval_days" 
@@ -83,8 +83,8 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                         style={{ width: '12ch', flexGrow: 0 }}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan3}`}>
-                    <label className={`${styles.label}`}>Intervalo Recetas (Días)</label>
+                <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan3}`}>
+                    <label className={`${styles.PatientAdminFields__label}`}>Intervalo Recetas (Días)</label>
                     <Input 
                         type="number" 
                         name="prescription_interval_days" 
@@ -99,8 +99,8 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                 </div>
 
                 {/* Dates Section */}
-                <div className={`${styles.group} ${styles.groupSpan4}`}>
-                    <label className={`${styles.label}`}>Próx. Visita</label>
+                <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan4}`}>
+                    <label className={`${styles.PatientAdminFields__label}`}>Próx. Visita</label>
                     <Input 
                         type="date" 
                         name="next_suggested_visit_date" 
@@ -109,8 +109,8 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                         style={{ width: '18ch', flexGrow: 0 }}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan4}`}>
-                    <label className={`${styles.label}`}>Próx. Receta</label>
+                <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan4}`}>
+                    <label className={`${styles.PatientAdminFields__label}`}>Próx. Receta</label>
                     <Input 
                         type="date" 
                         name="next_suggested_prescription_date" 
@@ -119,8 +119,8 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                         style={{ width: '18ch', flexGrow: 0 }}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan4}`}>
-                    <label className={`${styles.label}`}>Venc. Carnet</label>
+                <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan4}`}>
+                    <label className={`${styles.PatientAdminFields__label}`}>Venc. Carnet</label>
                     <Input 
                         type="date" 
                         name="license_expiry_date" 

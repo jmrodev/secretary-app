@@ -51,7 +51,7 @@ export const NextSlotModal = ({
             title={t('search_free_slots') || "Explorador de Turnos Libres"}
             size="md"
             footer={
-                <div className={styles.footer}>
+                <div className={styles.NextSlotModal__footer}>
                     <Button 
                         variant="secondary" 
                         onClick={() => setSlotsPage(p => Math.max(0, p - 1))}
@@ -61,7 +61,7 @@ export const NextSlotModal = ({
                         {t('prev') || 'Ant.'}
                     </Button>
                     
-                    <div className={styles.pageInfo}>
+                    <div className={styles.NextSlotModal__pageInfo}>
                         {slotsPage + 1} / {slotPages.length || 1}
                     </div>
 
@@ -76,13 +76,13 @@ export const NextSlotModal = ({
                 </div>
             }
         >
-            <div className={styles.root}>
+            <div className={styles.NextSlotModal__root}>
                 {/* 1. Horizontal Month Bar */}
-                <nav className={styles.monthBar}>
+                <nav className={styles.NextSlotModal__monthBar}>
                     {navMonths.map((m, idx) => (
                         <div 
                             key={`month-${idx}`} 
-                            className={`${styles.monthItem} ${currentMonth === m.month ? styles.monthActive : ''}`}
+                            className={`${styles.NextSlotModal__monthItem} ${currentMonth === m.month ? styles.NextSlotModal__monthActive : ''}`}
                             onClick={() => jumpToMonth(m.month, m.year)}
                         >
                             {m.label}
@@ -91,8 +91,8 @@ export const NextSlotModal = ({
                 </nav>
 
                 {/* 2. Extra Options */}
-                <div className={styles.options}>
-                    <label className={styles.checkboxLabel}>
+                <div className={styles.NextSlotModal__options}>
+                    <label className={styles.NextSlotModal__checkboxLabel}>
                         <input 
                             type="checkbox" 
                             checked={includeOutOfHours} 
@@ -103,13 +103,13 @@ export const NextSlotModal = ({
                 </div>
 
                 {/* 3. Slot Timeline List */}
-                <div className={styles.content}>
+                <div className={styles.NextSlotModal__content}>
                     {loading && <Loading variant="centered" />}
                     {!loading && currentSlots.length === 0 && (
-                        <div className={styles.empty}>{t('no_slots_found')}</div>
+                        <div className={styles.NextSlotModal__empty}>{t('no_slots_found')}</div>
                     )}
                     
-                    <div className={styles.timeline}>
+                    <div className={styles.NextSlotModal__timeline}>
                         {currentSlots.map((slot, idx) => {
                             const date = new Date(slot.dayDate + 'T12:00:00');
                             const showDateHeader = idx === 0 || currentSlots[idx-1].dayDate !== slot.dayDate;
@@ -117,15 +117,15 @@ export const NextSlotModal = ({
                             return (
                                 <React.Fragment key={`slot-${slot.iso}-${idx}`}>
                                     {showDateHeader && (
-                                        <div className={styles.dateHeader}>
-                                            <span className={styles.dayNum}>{date.getDate()}</span>
-                                            <span className={styles.dayMonth}>{monthNames[date.getMonth()]}</span>
-                                            <span className={styles.dayName}>{slot.dayName}</span>
+                                        <div className={styles.NextSlotModal__dateHeader}>
+                                            <span className={styles.NextSlotModal__dayNum}>{date.getDate()}</span>
+                                            <span className={styles.NextSlotModal__dayMonth}>{monthNames[date.getMonth()]}</span>
+                                            <span className={styles.NextSlotModal__dayName}>{slot.dayName}</span>
                                         </div>
                                     )}
-                                    <div className={`${styles.slotItem} ${slot.is_out_of_hours ? styles.slotExtra : ''}`}>
-                                        <div className={styles.slotTime}>{slot.time} hs</div>
-                                        <div className={styles.slotActions}>
+                                    <div className={`${styles.NextSlotModal__slotItem} ${slot.is_out_of_hours ? styles.NextSlotModal__slotExtra : ''}`}>
+                                        <div className={styles.NextSlotModal__slotTime}>{slot.time} hs</div>
+                                        <div className={styles.NextSlotModal__slotActions}>
                                             <Button 
                                                 variant="whatsapp" 
                                                 size="sm" 
