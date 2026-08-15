@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { useOutreach } from '@/features/outreach/hooks/useOutreach';
 import { SegmentSelector } from '@/features/outreach/components/SegmentSelector';
 import { MessageComposer } from '@/features/outreach/components/MessageComposer';

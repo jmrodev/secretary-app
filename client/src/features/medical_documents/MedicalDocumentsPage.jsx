@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { MedicalDocumentsToolbar } from './components/sections/MedicalDocumentsToolbar';
 import styles from './MedicalDocumentsPage.module.css';
 

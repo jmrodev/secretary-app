@@ -1,5 +1,5 @@
 import React from 'react';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import Loading from '@/components/atoms/Loading';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';

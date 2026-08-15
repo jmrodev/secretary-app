@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MessageProvider } from '@/context/MessageContext';
 import { LanguageProvider } from '@/context/LanguageProvider';
 import { SearchProvider } from '@/context/SearchProvider';
-import MainLayout from './MainLayout';
+import { MainLayout } from './MainLayout';
 
 const { mockGet } = vi.hoisted(() => ({ mockGet: vi.fn() }));
 const { mockUseAuth } = vi.hoisted(() => ({ mockUseAuth: vi.fn() }));

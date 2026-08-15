@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useHolidays } from '@/features/appointments/hooks/useHolidays';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import { HolidayList } from '@/features/appointments/components/sections/HolidayList';

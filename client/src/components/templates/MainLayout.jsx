@@ -11,7 +11,7 @@ import styles from './MainLayout.module.css';
  * MainLayout Template.
  * Orchestrates the primary application structure: Navbar + PageHeader + Content.
  */
-const MainLayout = ({ 
+export const MainLayout = ({ 
     children, 
     wide = false, 
     flush = false,
@@ -30,9 +30,9 @@ const MainLayout = ({
     const { t } = useLanguage();
 
     return (
-        <div className={`${styles.appLayout}`}>
+        <div className={`${styles.MainLayout__appLayout}`}>
             <Navbar />
-            <main className={`${styles.root} ${wide ? styles.dashboardWide : ''} ${flush ? styles.flush : ''}`}>
+            <main className={`${styles.MainLayout__root} ${wide ? styles['MainLayout--dashboardWide'] : ''} ${flush ? styles['MainLayout--flush'] : ''}`}>
                 {title && (
                     <PageHeader 
                         title={title}
@@ -58,12 +58,10 @@ const MainLayout = ({
                         }}
                     />
                 )}
-                <div className={`layout-content-area ${!noAnimation ? 'animate-fade-in' : ''} ${styles.pageShell}`}>
+                <div className={`layout-content-area ${!noAnimation ? 'animate-fade-in' : ''} ${styles.MainLayout__pageShell}`}>
                     {children}
                 </div>
             </main>
         </div>
     );
 };
-
-export default MainLayout;

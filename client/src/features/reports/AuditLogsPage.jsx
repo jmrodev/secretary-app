@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuditLogsController } from '@/features/reports/hooks/useAuditLogsController';
 import { AuditLogManager } from '@/features/reports/components/views/AuditLogManager';
 
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './AuditLogsPage.module.css';
 
