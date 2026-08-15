@@ -6,7 +6,7 @@ import Icon from '@/components/atoms/Icon';
 import { getMonthsOptions } from '@/utils/core/dateUtils';
 import styles from './ReportFilters.module.css';
 
-const ReportFilters = ({
+export const ReportFilters = ({
     month,
     year,
     onMonthChange,
@@ -110,4 +110,4 @@ const ReportFilters = ({
     );
 };
 
-export default ReportFilters;
+

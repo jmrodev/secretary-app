@@ -8,7 +8,7 @@ import styles from './DoctorSelector.module.css';
  * ECC-Pattern: Optimized DoctorSelector.
  * Custom dropdown for better aesthetics and integrated header look.
  */
-const DoctorSelector = () => {
+export const DoctorSelector = () => {
     const { t } = useLanguage();
     const { viewDoctorId, setViewDoctorId, doctors, isStaff, doctorDisplayName } = useDoctors();
     const [isOpen, setIsOpen] = useState(false);
@@ -81,4 +81,4 @@ const DoctorSelector = () => {
     );
 };
 
-export default DoctorSelector;
+

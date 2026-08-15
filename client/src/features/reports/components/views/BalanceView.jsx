@@ -11,7 +11,7 @@ import styles from './BalanceView.module.css';
  * Orchestrates financial reporting by aggregating data for a specific period and 
  * presenting summaries of income, cash flow, and outstanding debts.
  */
-const BalanceView = ({ reportData, month, year, t }) => {
+export const BalanceView = ({ reportData, month, year, t }) => {
     if (!reportData) return null;
 
     const appts = Array.isArray(reportData?.appointments) ? reportData.appointments : [];
@@ -115,4 +115,4 @@ const BalanceView = ({ reportData, month, year, t }) => {
     );
 };
 
-export default BalanceView;
+

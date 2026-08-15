@@ -6,7 +6,7 @@ import CurrencyInput from '@/components/atoms/CurrencyInput';
 import AutoTextarea from '@/components/atoms/AutoTextarea';
 import styles from './DoctorTariffsForm.module.css';
 
-const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
+export const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
     // Helper to update specific field
     const handleTariffChange = (field, value) => onChange({ ...data, [field]: value });
 
@@ -86,4 +86,4 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
     );
 };
 
-export default DoctorTariffsForm;
+

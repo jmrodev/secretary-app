@@ -11,7 +11,7 @@ import styles from './DoctorMessagesForm.module.css';
  * 
  * Allows a doctor to customize their specific message templates and AI context.
  */
-const DoctorMessagesForm = ({ data, onChange, settings, t, MessageTemplateEditorComponent }) => {
+export const DoctorMessagesForm = ({ data, onChange, settings, t, MessageTemplateEditorComponent }) => {
     const [activeSubTab, setActiveSubTab] = useState('templates'); // 'templates', 'confirmation', 'ai'
 
     const commonVars = useMemo(() => [
@@ -288,4 +288,4 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
     );
 };
 
-export default DoctorMessagesForm;
+

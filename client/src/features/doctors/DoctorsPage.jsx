@@ -1,13 +1,13 @@
 import React from 'react';
 import MainLayout from '@/components/templates/MainLayout';
-import DoctorsManager from '@/features/doctors/components/views/DoctorsManager';
+import { DoctorsManager } from '@/features/doctors/components/views/DoctorsManager';
 import { useDoctorsPageController } from '@/features/doctors/hooks/useDoctorsPageController';
 
 /**
  * DoctorsPage (Orchestrator).
  * Main interface for managing the medical staff and their schedules.
  */
-const DoctorsPage = () => {
+export const DoctorsPage = () => {
     const controller = useDoctorsPageController();
 
     return (
@@ -18,5 +18,3 @@ const DoctorsPage = () => {
         </MainLayout>
     );
 };
-
-export default DoctorsPage;

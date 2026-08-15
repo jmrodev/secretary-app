@@ -4,7 +4,7 @@ import { parseDate } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
 import styles from './AppointmentReportTable.module.css';
 
-const AppointmentReportTable = ({ data, t }) => {
+export const AppointmentReportTable = ({ data, t }) => {
     const list = Array.isArray(data?.appointments) ? data.appointments : (Array.isArray(data) ? data : []);
 
     if (!list || list.length === 0) {
@@ -229,4 +229,4 @@ const AppointmentReportTable = ({ data, t }) => {
     );
 };
 
-export default AppointmentReportTable;
+

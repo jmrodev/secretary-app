@@ -19,7 +19,7 @@ const DAYS = [
  * DoctorScheduleSettings Organism.
  * Provides a specialized interface for configuring a doctor's weekly work schedule.
  */
-const DoctorScheduleSettings = ({
+export const DoctorScheduleSettings = ({
     doctorId: _doctorId,
     schedule = EMPTY_SCHEDULE,
     setSchedule,
@@ -193,4 +193,4 @@ const DoctorScheduleSettings = ({
     );
 };
 
-export default DoctorScheduleSettings;
+
