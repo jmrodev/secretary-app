@@ -9,13 +9,13 @@ import Icon from '@/components/atoms/Icon';
 import Modal from '@/components/molecules/Modal';
 
 // Feature Components
-import UserTable from '@/features/users/components/UserTable';
-import UserForm from '@/features/users/components/UserForm';
+import { UserTable } from '@/features/users/components/UserTable';
+import { UserForm } from '@/features/users/components/UserForm';
 import styles from './UserManagement.module.css';
 
 const EMPTY_EXCLUDE = [];
 
-const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
+export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
     const { t } = useLanguage();
     const {
         users,
@@ -84,7 +84,7 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
     );
 
     return (
-        <div className={`${styles.userManagementOrganism}`}>
+        <div className={`${styles.UserManagement__userManagementOrganism}`}>
             <section className="action-bar">
                 <div className="action-bar__search">
                     <div className="search-box__wrapper">
@@ -116,9 +116,9 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
                 </div>
             </section>
 
-            <Card className={`${styles.tableContainer}`}>
+            <Card className={`${styles.UserManagement__tableContainer}`}>
                 {loading ? (
-                    <div className={`${styles.loader}`}>{t('loading_users')}</div>
+                    <div className={`${styles.UserManagement__loader}`}>{t('loading_users')}</div>
                 ) : (
                     <UserTable
                         users={filteredUsers}
@@ -162,5 +162,3 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
         </div>
     );
 };
-
-export default UserManagement;

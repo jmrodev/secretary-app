@@ -7,7 +7,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import styles from './UserForm.module.css';
 
-const UserForm = ({ type, formData, setFormData }) => {
+export const UserForm = ({ type, formData, setFormData }) => {
     const { t } = useLanguage();
 
     const handleUserUpdate = (field, value) => {
@@ -19,11 +19,11 @@ const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'DELETE') {
         return (
-            <div className={`${styles.root} animate-fade-in`}>
-                <p className={`${styles.hint}`}>
+            <div className={`${styles.UserForm__root} animate-fade-in`}>
+                <p className={`${styles.UserForm__hint}`}>
                     {t('delete_confirmation') || '¿Eliminar usuario?'} <strong>{formData.username}</strong>?
                     <br />
-                    <span className={`${styles.hintDanger}`}>{t('action_cannot_undone')}</span>
+                    <span className={`${styles.UserForm__hintDanger}`}>{t('action_cannot_undone')}</span>
                 </p>
                 <FormGroup label="Contraseña de Administrador" required>
                     <Input
@@ -39,8 +39,8 @@ const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'RESET_DNI') {
         return (
-            <div className={`${styles.alert} animate-fade-in`}>
-                <p className={`${styles.alertText}`}>
+            <div className={`${styles.UserForm__alert} animate-fade-in`}>
+                <p className={`${styles.UserForm__alertText}`}>
                     ¿Reiniciar contraseña de <strong>{formData.username}</strong> al DNI (<strong>{formData.dni}</strong>)?
                 </p>
             </div>
@@ -49,7 +49,7 @@ const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'RESET_MANUAL') {
         return (
-            <div className={`${styles.root} animate-fade-in`}>
+            <div className={`${styles.UserForm__root} animate-fade-in`}>
                 <FormGroup label={t('new_password')}>
                     <Input
                         value={formData.password}
@@ -62,8 +62,8 @@ const UserForm = ({ type, formData, setFormData }) => {
     }
 
     return (
-        <div className={`${styles.root} animate-fade-in`}>
-            <div className={`${styles.row}`}>
+        <div className={`${styles.UserForm__root} animate-fade-in`}>
+            <div className={`${styles.UserForm__row}`}>
                 <FormGroup label={t('username')} required>
                     <Input
                         value={formData.username}
@@ -81,7 +81,7 @@ const UserForm = ({ type, formData, setFormData }) => {
                 )}
             </div>
             {type === 'CREATE' && (
-                <div className={`${styles.row}`}>
+                <div className={`${styles.UserForm__row}`}>
                     <FormGroup label="Su Contraseña (Admin)" required>
                         <Input
                             type="password"
@@ -119,7 +119,7 @@ const UserForm = ({ type, formData, setFormData }) => {
                 />
             </FormGroup>
 
-            <div className={`${styles.divider}`}>
+            <div className={`${styles.UserForm__divider}`}>
                 <PhoneNumbersManager
                     phoneNumbers={formData.phoneNumbers}
                     onChange={(newPhones) => handleUserUpdate('phoneNumbers', newPhones)}
@@ -138,5 +138,3 @@ const UserForm = ({ type, formData, setFormData }) => {
         </div>
     );
 };
-
-export default UserForm;

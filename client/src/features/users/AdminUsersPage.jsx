@@ -13,17 +13,17 @@ import styles from './AdminUsersPage.module.css';
  * AdminUsersPage (Orchestrator).
  * Management interface for administrative and medical staff accounts.
  */
-const AdminUsersPage = () => {
+export const AdminUsersPage = () => {
     const { user: currentUser } = useAuth();
     const { t } = useLanguage();
 
     if (!currentUser || currentUser.role !== 'admin') {
         return (
             <MainLayout> {/* layout:exception — access denied state, no full page chrome needed */}
-                <div className={`${styles.accessDenied}`}>
-                    <Icon name="block" size="3rem" className={`${styles.deniedIcon}`} />
-                    <h2 className={`${styles.deniedTitle}`}>Access Denied</h2>
-                    <p className={`${styles.deniedText}`}>No tiene permisos para gestionar usuarios.</p>
+                <div className={`${styles.AdminUsersPage__accessDenied}`}>
+                    <Icon name="block" size="3rem" className={`${styles.AdminUsersPage__deniedIcon}`} />
+                    <h2 className={`${styles.AdminUsersPage__deniedTitle}`}>Access Denied</h2>
+                    <p className={`${styles.AdminUsersPage__deniedText}`}>No tiene permisos para gestionar usuarios.</p>
                 </div>
             </MainLayout>
         );
@@ -34,8 +34,8 @@ const AdminUsersPage = () => {
             <div>
                 <div>
                     <div className="dashboard-nav-bar">
-                        <div className={`${styles.spacer}`}></div>
-                        <div className={`${styles.navActions}`}>
+                        <div className={`${styles.AdminUsersPage__spacer}`}></div>
+                        <div className={`${styles.AdminUsersPage__navActions}`}>
                         </div>
                     </div>
 
@@ -46,10 +46,10 @@ const AdminUsersPage = () => {
                                     <Icon name="build" size="1.2rem" />
                                     {t('actions') || 'Acciones'}
                                 </h3>
-                                <div className={`${styles.actionsGroup}`}>
+                                <div className={`${styles.AdminUsersPage__actionsGroup}`}>
                                     <Button
                                         variant="primary"
-                                        className={`${styles.btn}`}
+                                        className={`${styles.AdminUsersPage__btn}`}
                                         onClick={() => window.dispatchEvent(new CustomEvent('OPEN_USER_MODAL', { detail: 'CREATE' }))}
                                         icon={<Icon name="add" size="1.1rem" />}
                                     >
@@ -57,7 +57,7 @@ const AdminUsersPage = () => {
                                     </Button>
                                     <Button
                                         variant="outline"
-                                        className={`${styles.btn}`}
+                                        className={`${styles.AdminUsersPage__btn}`}
                                         onClick={() => window.location.reload()}
                                         icon={<Icon name="sync" size="1.1rem" />}
                                     >
@@ -68,7 +68,7 @@ const AdminUsersPage = () => {
                         </aside>
 
                         <section className="dashboard-layout__main">
-                            <section className={`${styles.tableWrapper}`}>
+                            <section className={`${styles.AdminUsersPage__tableWrapper}`}>
                                 <UserManagement
                                     excludeRoles={['patient']}
                                 />
@@ -80,5 +80,3 @@ const AdminUsersPage = () => {
         </MainLayout>
     );
 };
-
-export default AdminUsersPage;
