@@ -1,6 +1,6 @@
 /* AuditLogTable Styles (BEM) */
 
-.auditLogTableContainer {
+.AuditLogTable__auditLogTableContainer {
     background-color: var(--dashboard-card-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg, 12px);
@@ -8,16 +8,16 @@
     overflow: hidden;
 }
 
-.root {
+.AuditLogTable__root {
     width: 100%;
     border-collapse: collapse;
 }
 
-.thead {
+.AuditLogTable__thead {
     background-color: var(--gray-900);
 }
 
-.th {
+.AuditLogTable__th {
     padding: 0.875rem 1rem;
     text-align: left;
     font-size: 0.75rem;
@@ -29,56 +29,56 @@
     border-bottom: 2px solid var(--dashboard-card-bg);
 }
 
-.thDetails {
+.AuditLogTable__thDetails {
     width: 33.333%;
 }
 
-.tbody {
+.AuditLogTable__tbody {
     background-color: var(--dashboard-card-bg);
 }
 
-.row {
+.AuditLogTable__row {
     border-bottom: 1px solid var(--gray-100, var(--gray-100));
     transition: background-color 0.15s ease-in-out;
 }
 
-.row:hover {
+.AuditLogTable__row:hover {
     background-color: var(--gray-100) !important;
 }
 
-.row:hover .cell {
+.AuditLogTable__row:hover .AuditLogTable__cell {
     color: var(--gray-900) !important;
 }
 
-.cell {
+.AuditLogTable__cell {
     padding: 0.875rem 1rem;
     font-size: 0.875rem;
     color: var(--text-main, var(--background-bg));
 }
 
-.cellTime {
+.AuditLogTable__cellTime {
     white-space: nowrap;
     color: var(--text-muted);
 }
 
-.cellUser {
+.AuditLogTable__cellUser {
     font-weight: 600;
 }
 
-.cellDetails {
+.AuditLogTable__cellDetails {
     max-width: 320px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.detailsWrapper {
+.AuditLogTable__detailsWrapper {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.detailsText {
+.AuditLogTable__detailsText {
     display: block;
     max-width: 200px;
     overflow: hidden;
@@ -87,13 +87,13 @@
     color: var(--text-muted);
 }
 
-.cellIp {
+.AuditLogTable__cellIp {
     font-size: 0.75rem;
     color: var(--text-muted);
     font-family: var(--font-mono, monospace);
 }
 
-.empty {
+.AuditLogTable__empty {
     padding: 3rem 2rem;
     text-align: center;
     color: var(--text-muted);

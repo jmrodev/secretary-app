@@ -80,10 +80,10 @@ export const InstitutionFinances = ({ institutions, selectedInstId, viewMode, se
 
     if (!selectedInstId) {
         return (
-            <div className={`${styles.root}`}>
-                <div className={`${styles.emptyState}`}>
-                    <span className={`${styles.emptyIcon}`}><Icon name="local_hospital" size="2rem" /></span>
-                    <p className={`${styles.emptyText}`}>
+            <div className={`${styles.InstitutionFinances__root}`}>
+                <div className={`${styles.InstitutionFinances__emptyState}`}>
+                    <span className={`${styles.InstitutionFinances__emptyIcon}`}><Icon name="local_hospital" size="2rem" /></span>
+                    <p className={`${styles.InstitutionFinances__emptyText}`}>
                         {t('select_institution_desc') || 'Seleccioná una institución del panel izquierdo'}
                     </p>
                 </div>
@@ -92,10 +92,10 @@ export const InstitutionFinances = ({ institutions, selectedInstId, viewMode, se
     }
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.InstitutionFinances__root}`}>
             {/* View mode toggle: Finanzas / Pacientes */}
-            <div className={`${styles.selectorBar}`}>
-                <div className={`${styles.viewToggle}`}>
+            <div className={`${styles.InstitutionFinances__selectorBar}`}>
+                <div className={`${styles.InstitutionFinances__viewToggle}`}>
                     <Button
                         variant={viewMode === 'transactions' ? 'primary' : 'ghost'}
                         size="sm-compact"
@@ -115,10 +115,10 @@ export const InstitutionFinances = ({ institutions, selectedInstId, viewMode, se
                 </div>
             </div>
 
-            {loadingReport && <div className={`${styles.loading}`}>{t('loading_report')}</div>}
+            {loadingReport && <div className={`${styles.InstitutionFinances__loading}`}>{t('loading_report')}</div>}
 
             {report && viewMode === 'transactions' && (
-                <div className={`${styles.grid}`}>
+                <div className={`${styles.InstitutionFinances__grid}`}>
                     <InstitutionSummary
                         report={report}
                         selectedAmount={selectedAmount}
@@ -146,7 +146,7 @@ export const InstitutionFinances = ({ institutions, selectedInstId, viewMode, se
             )}
 
             {report && viewMode === 'patients' && (
-                <div className={`${styles.grid}`}>
+                <div className={`${styles.InstitutionFinances__grid}`}>
                     <InstitutionPatientsTable
                         patients={patients}
                         formatDate={(d) => formatDate(d, { monthName: true })}

@@ -1,6 +1,6 @@
 /* ChatWindow Component Styles (BEM) */
 
-.root {
+.ChatWindow__root {
     /* --- Local Component Tokens --- */
     --chat-bg: var(--gray-50);
     --chat-header-bg: var(--white);
@@ -19,7 +19,7 @@
     min-width: 0;
 }
 
-.empty {
+.ChatWindow__empty {
     align-items: center;
     justify-content: center;
     background-color: var(--chat-bg);
@@ -28,26 +28,26 @@
     gap: 1.5rem;
 }
 
-.emptyIcon {
+.ChatWindow__emptyIcon {
     opacity: 0.15;
     color: var(--text-muted);
 }
 
-.emptyTitle {
+.ChatWindow__emptyTitle {
     font-size: 1.75rem;
     font-weight: 800;
     color: var(--text-main);
     margin: 0;
 }
 
-.emptyText {
+.ChatWindow__emptyText {
     color: var(--text-muted);
     max-width: 30rem;
     font-size: 1rem;
     line-height: 1.6;
 }
 
-.header {
+.ChatWindow__header {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -58,7 +58,7 @@
     box-shadow: var(--shadow-sm);
 }
 
-.convoAvatar {
+.ChatWindow__convoAvatar {
     width: 2.75rem;
     height: 2.75rem;
     font-size: 1.25rem;
@@ -71,25 +71,25 @@
     font-weight: 700;
 }
 
-.headerInfo {
+.ChatWindow__headerInfo {
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
-.headerTitle {
+.ChatWindow__headerTitle {
     font-size: 1.125rem;
     font-weight: 700;
     color: var(--text-main);
     margin: 0;
 }
 
-.headerSubtitle {
+.ChatWindow__headerSubtitle {
     color: var(--text-muted);
     font-size: 0.8rem;
 }
 
-.messages {
+.ChatWindow__messages {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
@@ -99,35 +99,35 @@
     gap: 1rem;
 }
 
-.messagesStatus {
+.ChatWindow__messagesStatus {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100%;
 }
 
-.messagesStatusEmpty {
+.ChatWindow__messagesStatusEmpty {
     flex-direction: column;
     opacity: 0.5;
     gap: 1rem;
 }
 
 /* Bubbles */
-.bubble {
+.ChatWindow__bubble {
     max-width: 75%;
     display: flex;
     flex-direction: column;
 }
 
-.bubbleSent {
+.ChatWindow__bubbleSent {
     align-self: flex-end;
 }
 
-.bubbleReceived {
+.ChatWindow__bubbleReceived {
     align-self: flex-start;
 }
 
-.bubbleContent {
+.ChatWindow__bubbleContent {
     padding: 0.75rem 1rem;
     border-radius: 1.25rem;
     font-size: 0.9375rem;
@@ -136,13 +136,13 @@
     box-shadow: var(--shadow-sm);
 }
 
-.bubbleSent .bubbleContent {
+.ChatWindow__bubbleSent .ChatWindow__bubbleContent {
     background-color: var(--primary);
     color: var(--white);
     border-bottom-right-radius: 0.25rem;
 }
 
-.bubbleReceived .bubbleContent {
+.ChatWindow__bubbleReceived .ChatWindow__bubbleContent {
     background-color: var(--white);
     color: var(--text-main);
     border: 1px solid var(--border-color);
@@ -150,7 +150,7 @@
     border-left: 3px solid var(--primary);
 }
 
-.bubbleTime {
+.ChatWindow__bubbleTime {
     font-size: 0.7rem;
     margin-top: 0.25rem;
     opacity: 0.7;
@@ -158,28 +158,28 @@
     text-align: right;
 }
 
-.bubbleReceived .bubbleTime {
+.ChatWindow__bubbleReceived .ChatWindow__bubbleTime {
     color: var(--text-muted);
 }
 
 /* Footer / Input Area */
-.footer {
+.ChatWindow__footer {
     padding: 1.25rem 1.5rem;
     background-color: var(--chat-input-bg);
     border-top: 1px solid var(--chat-border);
 }
 
-.inputArea {
+.ChatWindow__inputArea {
     display: flex;
     gap: 0.75rem;
     align-items: center;
 }
 
-.inputWrapper {
+.ChatWindow__inputWrapper {
     flex: 1;
 }
 
-.input {
+.ChatWindow__input {
     width: 100%;
     padding: 0.75rem 1.25rem;
     border-radius: 2rem;
@@ -190,13 +190,13 @@
     font-size: 0.9375rem;
 }
 
-.input:focus {
+.ChatWindow__input:focus {
     background-color: var(--white);
     border-color: var(--primary-light);
     box-shadow: 0 0 0 4px rgb(59 130 246 / 10%);
 }
 
-.sendButton {
+.ChatWindow__sendButton {
     width: 3.25rem;
     height: 3.25rem;
     border-radius: 50%;
@@ -207,7 +207,7 @@
     flex-shrink: 0;
 }
 
-.backButton {
+.ChatWindow__backButton {
     display: none; /* Hidden by default on desktop */
     background: none;
     border: none;
@@ -219,13 +219,13 @@
     margin-right: 0.5rem;
 }
 
-.backButton:hover {
+.ChatWindow__backButton:hover {
     background: var(--gray-100);
     color: var(--text-main);
 }
 
 @media (width <= 768px) {
-    .backButton {
+    .ChatWindow__backButton {
         display: flex;
     }
 }

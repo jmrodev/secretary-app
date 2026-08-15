@@ -1,13 +1,13 @@
 /* AppointmentReportTable Component BEM Styles */
 
-.appointmentReport {
+.AppointmentReportTable__appointmentReport {
     display: flex;
     flex-direction: column;
     gap: 2.5rem;
     width: 100%;
 }
 
-.appointmentReport__empty {
+.AppointmentReportTable__appointmentReport__empty {
     padding: 4rem 2rem;
     text-align: center;
     background: var(--dashboard-card-bg);
@@ -17,18 +17,18 @@
     font-weight: 500;
 }
 
-.appointmentReport__summary {
+.AppointmentReportTable__appointmentReport__summary {
     background-color: var(--dashboard-card-bg);
     border-radius: var(--radius-lg, 12px);
     padding: 1.5rem;
     border: 1px solid var(--border-color);
 }
 
-.appointmentReport__summaryHeader {
+.AppointmentReportTable__appointmentReport__summaryHeader {
     margin-bottom: 1rem;
 }
 
-.appointmentReport__summaryTitle {
+.AppointmentReportTable__appointmentReport__summaryTitle {
     font-size: 1.125rem;
     font-weight: 800;
     color: var(--text-main);
@@ -37,12 +37,12 @@
     letter-spacing: 0.025em;
 }
 
-.appointmentReport__tableContainer {
+.AppointmentReportTable__appointmentReport__tableContainer {
     width: 100%;
     overflow-x: auto;
 }
 
-.appointmentReport__table {
+.AppointmentReportTable__appointmentReport__table {
     width: 100%;
     border-collapse: collapse;
     background-color: var(--dashboard-card-bg);
@@ -51,7 +51,7 @@
     border: 1px solid var(--border-color);
 }
 
-.appointmentReport__table th {
+.AppointmentReportTable__appointmentReport__table th {
     text-align: left;
     padding: 0.875rem 1.25rem;
     background-color: var(--gray-900);
@@ -63,96 +63,96 @@
     border-bottom: 2px solid var(--dashboard-card-bg);
 }
 
-.appointmentReport__row {
+.AppointmentReportTable__appointmentReport__row {
     border-bottom: 1px solid var(--border-color);
     transition: background-color 0.15s ease-in-out;
 }
 
-.appointmentReport__row:hover {
+.AppointmentReportTable__appointmentReport__row:hover {
     background-color: var(--gray-100) !important;
 }
 
-.appointmentReport__row:hover td {
+.AppointmentReportTable__appointmentReport__row:hover td {
     color: var(--gray-900) !important;
 }
 
-.appointmentReport__row td {
+.AppointmentReportTable__appointmentReport__row td {
     padding: 0.875rem 1.25rem;
     font-size: 0.875rem;
     color: var(--gray-900);
     font-weight: 500;
 }
 
-.appointmentReport__row--weekend {
+.AppointmentReportTable__appointmentReport__row--weekend {
     background-color: var(--text-main)beb;
 }
 
-.appointmentReport__row--holiday {
+.AppointmentReportTable__appointmentReport__row--holiday {
     background-color: var(--red-50);
 }
 
-.appointmentReport__row--overturn {
+.AppointmentReportTable__appointmentReport__row--overturn {
     background-color: var(--blue-50);
 }
 
-.appointmentReport__dayHeader td {
+.AppointmentReportTable__appointmentReport__dayHeader td {
     background-color: var(--gray-900);
     font-weight: 800;
     color: var(--text-main);
     padding: 0.75rem 1.25rem;
 }
 
-.appointmentReport__dayHeader--weekend td {
+.AppointmentReportTable__appointmentReport__dayHeader--weekend td {
     background-color: var(--amber-900);
     color: var(--text-main);
 }
 
-.appointmentReport__dayHeader--holiday td {
+.AppointmentReportTable__appointmentReport__dayHeader--holiday td {
     background-color: var(--red-800);
     color: var(--text-main);
 }
 
-.appointmentReport__cellDay {
+.AppointmentReportTable__appointmentReport__cellDay {
     font-weight: 600;
     white-space: nowrap;
 }
 
-.appointmentReport__cellPatient {
+.AppointmentReportTable__appointmentReport__cellPatient {
     font-weight: 700;
 }
 
-.appointmentReport__cellTime {
+.AppointmentReportTable__appointmentReport__cellTime {
     font-size: 0.8rem;
     color: var(--text-muted);
     font-weight: 600;
     white-space: nowrap;
 }
 
-.appointmentReport__cellAmount {
+.AppointmentReportTable__appointmentReport__cellAmount {
     font-weight: 700;
     text-align: right;
     color: var(--text-main);
     white-space: nowrap;
 }
 
-.appointmentReport__cellBold {
+.AppointmentReportTable__appointmentReport__cellBold {
     font-weight: 800;
 }
 
-.appointmentReport__tagSmall {
+.AppointmentReportTable__appointmentReport__tagSmall {
     display: inline-flex;
     align-items: center;
     margin-left: 0.5rem;
     color: var(--amber-500);
 }
 
-.appointmentReport__dayName {
+.AppointmentReportTable__appointmentReport__dayName {
     font-weight: 600;
     color: var(--text-muted);
     margin-left: 0.25rem;
 }
 
-.appointmentReport__holidayTag {
+.AppointmentReportTable__appointmentReport__holidayTag {
     display: inline-flex;
     align-items: center;
     gap: 0.25rem;
@@ -165,14 +165,14 @@
     border-radius: 4px;
 }
 
-.appointmentReport__weekendNote {
+.AppointmentReportTable__appointmentReport__weekendNote {
     margin-left: 0.5rem;
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--amber-600);
 }
 
-.appointmentReport__badge {
+.AppointmentReportTable__appointmentReport__badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.65rem;
@@ -183,32 +183,32 @@
     letter-spacing: 0.03em;
 }
 
-.appointmentReport__badge--completed {
+.AppointmentReportTable__appointmentReport__badge--completed {
     background-color: var(--green-100);
     color: var(--green-700);
 }
 
-.appointmentReport__badge--cancelled {
+.AppointmentReportTable__appointmentReport__badge--cancelled {
     background-color: var(--red-100);
     color: var(--red-700);
 }
 
-.appointmentReport__badge--absent {
+.AppointmentReportTable__appointmentReport__badge--absent {
     background-color: var(--amber-100);
     color: var(--amber-700);
 }
 
-.appointmentReport__badge--paid {
+.AppointmentReportTable__appointmentReport__badge--paid {
     background-color: var(--green-100);
     color: var(--green-700);
 }
 
-.appointmentReport__badge--pending {
+.AppointmentReportTable__appointmentReport__badge--pending {
     background-color: var(--red-100);
     color: var(--red-700);
 }
 
-.appointmentReport__overturnBadge {
+.AppointmentReportTable__appointmentReport__overturnBadge {
     background-color: var(--blue-100);
     color: var(--blue-700);
     font-size: 0.6rem;
@@ -219,24 +219,24 @@
     text-transform: uppercase;
 }
 
-.appointmentReport__paymentInfo {
+.AppointmentReportTable__appointmentReport__paymentInfo {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.appointmentReport__methods {
+.AppointmentReportTable__appointmentReport__methods {
     font-size: 0.75rem;
     color: var(--text-muted);
 }
 
-.appointmentReport__footer {
+.AppointmentReportTable__appointmentReport__footer {
     background-color: var(--gray-100);
     font-weight: 800;
     border-top: 2px solid var(--text-secondary);
 }
 
-.appointmentReport__footerSubtotal {
+.AppointmentReportTable__appointmentReport__footerSubtotal {
     background-color: var(--text-main);
     font-weight: 700;
 }

@@ -1,7 +1,7 @@
 
 /* BalanceFinancialSummary Molecule Styles (BEM) */
 
-.root {
+.BalanceFinancialSummary__root {
     background: var(--dashboard-card-bg);
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
@@ -9,7 +9,7 @@
     box-shadow: var(--shadow-sm);
 }
 
-.title {
+.BalanceFinancialSummary__title {
     font-size: 0.875rem;
     font-weight: 800;
     color: var(--text-secondary);
@@ -20,7 +20,7 @@
     padding-bottom: 0.75rem;
 }
 
-.item {
+.BalanceFinancialSummary__item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -28,7 +28,7 @@
     border-bottom: 1px dashed var(--dashboard-card-border);
 }
 
-.itemSubtotal {
+.BalanceFinancialSummary__itemSubtotal {
     margin-top: 1rem;
     padding-top: 1rem;
     border-top: 2px solid var(--dashboard-card-border);
@@ -37,13 +37,13 @@
     color: var(--text-main);
 }
 
-.itemWithdrawals {
+.BalanceFinancialSummary__itemWithdrawals {
     border-bottom: none;
     color: var(--error);
     font-weight: 600;
 }
 
-.itemNet {
+.BalanceFinancialSummary__itemNet {
     margin-top: 0.5rem;
     padding: 1rem;
     background: var(--blue-50);
@@ -54,15 +54,15 @@
     color: var(--blue-700);
 }
 
-.amount {
+.BalanceFinancialSummary__amount {
     font-family: var(--font-mono, monospace);
     font-weight: 700;
 }
 
-.amountPositive {
+.BalanceFinancialSummary__amountPositive {
     color: var(--success);
 }
 
-.amountNegative {
+.BalanceFinancialSummary__amountNegative {
     color: var(--error);
 }

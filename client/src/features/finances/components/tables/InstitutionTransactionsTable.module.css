@@ -1,7 +1,7 @@
 
 /* InstitutionTransactionsTable Molecule Styles (BEM) */
 
-.root {
+.InstitutionTransactionsTable__root {
     background: var(--dashboard-card-bg);
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
@@ -11,7 +11,7 @@
     flex-direction: column;
 }
 
-.header {
+.InstitutionTransactionsTable__header {
     padding: 1.25rem 1.5rem;
     background: var(--card-surface-bg);
     border-bottom: 1px solid var(--border-color);
@@ -20,7 +20,7 @@
     align-items: center;
 }
 
-.title {
+.InstitutionTransactionsTable__title {
     font-size: 0.875rem;
     font-weight: 800;
     color: var(--text-secondary);
@@ -31,7 +31,7 @@
     gap: 0.75rem;
 }
 
-.badge {
+.InstitutionTransactionsTable__badge {
     background: var(--gray-200);
     color: var(--text-muted);
     padding: 0.125rem 0.6rem;
@@ -40,13 +40,13 @@
     font-weight: 800;
 }
 
-.actions {
+.InstitutionTransactionsTable__actions {
     display: flex;
     gap: 0.75rem;
     align-items: center;
 }
 
-.viewToggle {
+.InstitutionTransactionsTable__viewToggle {
     display: flex;
     background: var(--gray-100);
     padding: 0.2rem;
@@ -54,16 +54,16 @@
     gap: 0.2rem;
 }
 
-.wrapper {
+.InstitutionTransactionsTable__wrapper {
     overflow-x: auto;
 }
 
-.table {
+.InstitutionTransactionsTable__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.table th {
+.InstitutionTransactionsTable__table th {
     padding: 1rem 1.5rem;
     text-align: left;
     font-size: 0.72rem;
@@ -77,7 +77,7 @@
     z-index: 10;
 }
 
-.table td {
+.InstitutionTransactionsTable__table td {
     padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--gray-50);
     font-size: 0.875rem;
@@ -85,70 +85,70 @@
     vertical-align: middle;
 }
 
-.trPending td {
+.InstitutionTransactionsTable__trPending td {
     background-color: var(--red-50);
 }
 
-.trSelected td {
+.InstitutionTransactionsTable__trSelected td {
     background-color: var(--blue-50);
 }
 
-.trSelected {
+.InstitutionTransactionsTable__trSelected {
     outline: 2px solid var(--blue-400);
     outline-offset: -2px;
 }
 
-.table tr:hover:not(.trSelected) td {
+.InstitutionTransactionsTable__table tr:hover:not(.InstitutionTransactionsTable__trSelected) td {
     background-color: var(--card-hover-bg);
 }
 
-.cellRight {
+.InstitutionTransactionsTable__cellRight {
     text-align: right;
 }
 
-.cellCenter {
+.InstitutionTransactionsTable__cellCenter {
     text-align: center;
 }
 
-.patientLink {
+.InstitutionTransactionsTable__patientLink {
     font-weight: 700;
     color: var(--accent-color);
     text-decoration: none;
     transition: color 0.2s;
 }
 
-.patientLink:hover {
+.InstitutionTransactionsTable__patientLink:hover {
     color: var(--blue-700);
     text-decoration: underline;
 }
 
-.amountBold {
+.InstitutionTransactionsTable__amountBold {
     font-weight: 800;
     color: var(--text-main);
 }
 
-.ageBadge {
+.InstitutionTransactionsTable__ageBadge {
     padding: 0.125rem 0.6rem;
     border-radius: 999px;
     font-size: 0.72rem;
     font-weight: 800;
 }
 
-.ageBadgeWarning {
+.InstitutionTransactionsTable__ageBadgeWarning {
     background-color: var(--warning-bg, #fef3c7);
     color: var(--warning-text, #92400e);
 }
 
-.ageBadgeCritical {
+.InstitutionTransactionsTable__ageBadgeCritical {
     background-color: var(--error-bg, #fee2e2);
     color: var(--error, #b91c1c);
 }
 
-.textMuted {
+.InstitutionTransactionsTable__textMuted {
     color: var(--text-muted);
 }
 
-.empty {
+.InstitutionTransactionsTable__empty {
     padding: 2rem;
     text-align: center;
     color: var(--text-muted);

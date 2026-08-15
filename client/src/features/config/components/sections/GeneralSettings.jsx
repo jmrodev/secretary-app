@@ -80,11 +80,11 @@ const UrlConfiguration = ({ settings, updateSetting, isAdmin, onShowQr }) => {
                 <label className="config-field__label" htmlFor="staff-base-url">
                     URL Local (Red Clínica)
                 </label>
-                <div className={`${styles.urlGroup}`}>
+                <div className={`${styles.GeneralSettings__urlGroup}`}>
                     <Input
                         type="text"
                         id="staff-base-url"
-                        className={`${styles.urlInput}`}
+                        className={`${styles.GeneralSettings__urlInput}`}
                         placeholder="http://192.168.0.x:5173"
                         value={settings.staff_base_url || ''}
                         onChange={(e) => updateSetting('staff_base_url', e.target.value)}
@@ -111,7 +111,7 @@ export const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => 
     const isAdmin = user?.role === 'admin';
 
     return (
-        <div className={`${styles.root} tab-panel animate-fade-in`}>
+        <div className={`${styles.GeneralSettings__root} tab-panel animate-fade-in`}>
             {/* Functionalities and Permissions */}
             <article className="config-section">
                 <header className="config-section__header">
@@ -176,10 +176,10 @@ export const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => 
                 </header>
 
                 <div className="config-section__body">
-                    <article className={`${styles.appCard}`}>
-                        <header className={`${styles.appInfo}`}>
-                            <h4 className={`${styles.appTitle}`}>Descargar APK para Android</h4>
-                            <p className={`${styles.appDescription}`}>Instala la aplicación nativa para una gestión más rápida desde el celular.</p>
+                    <article className={`${styles.GeneralSettings__appCard}`}>
+                        <header className={`${styles.GeneralSettings__appInfo}`}>
+                            <h4 className={`${styles.GeneralSettings__appTitle}`}>Descargar APK para Android</h4>
+                            <p className={`${styles.GeneralSettings__appDescription}`}>Instala la aplicación nativa para una gestión más rápida desde el celular.</p>
                         </header>
                         <Button
                             variant="primary"

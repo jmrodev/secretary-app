@@ -20,13 +20,13 @@ export const ProfileEditor = ({
     isAdmin, isDoctor, isPatient
 }) => {
     const { handleProfileChange, handleUpdate } = handlers;
-    if (loading || !user) return <div className={`${styles.loading}`}>{t('loading') || 'Cargando...'}</div>;
+    if (loading || !user) return <div className={`${styles.ProfileEditor__loading}`}>{t('loading') || 'Cargando...'}</div>;
 
     if (isAdmin) {
         return (
-            <div className={`${styles.root} animate-fade-in`}>
-                <div className={`${styles.card}`}>
-                    <div className={`${styles.sectionTitle}`}>
+            <div className={`${styles.ProfileEditor__root} animate-fade-in`}>
+                <div className={`${styles.ProfileEditor__card}`}>
+                    <div className={`${styles.ProfileEditor__sectionTitle}`}>
                         <Icon name="USERS" size="1.2rem" />
                         {t('admin_account_msg')}
                     </div>
@@ -38,13 +38,13 @@ export const ProfileEditor = ({
     }
 
     return (
-        <div className={`${styles.root} animate-fade-in`}>
+        <div className={`${styles.ProfileEditor__root} animate-fade-in`}>
 
             <form onSubmit={handleUpdate}>
-                <div className={`${styles.grid}`}>
+                <div className={`${styles.ProfileEditor__grid}`}>
                     {/* PERSONAL INFORMATION SECTION */}
-                    <div className={`${styles.card}`}>
-                        <div className={`${styles.sectionTitle}`}>
+                    <div className={`${styles.ProfileEditor__card}`}>
+                        <div className={`${styles.ProfileEditor__sectionTitle}`}>
                             <Icon name="PROFILE" size="1.2rem" />
                             {t('personal_information')}
                         </div>
@@ -70,7 +70,7 @@ export const ProfileEditor = ({
                             />
                         </FormGroup>
 
-                        <div className={`${styles.phoneSection}`}>
+                        <div className={`${styles.ProfileEditor__phoneSection}`}>
                             <PhoneNumbersManager
                                 phoneNumbers={formData.phoneNumbers}
                                 onChange={(val) => handleProfileChange('phoneNumbers', val)}
@@ -79,8 +79,8 @@ export const ProfileEditor = ({
                     </div>
 
                     {/* ROLE-SPECIFIC INFORMATION SECTION */}
-                    <div className={`${styles.card}`}>
-                        <div className={`${styles.sectionTitle}`}>
+                    <div className={`${styles.ProfileEditor__card}`}>
+                        <div className={`${styles.ProfileEditor__sectionTitle}`}>
                             <Icon name={isDoctor ? 'DOCTORS' : 'DOCUMENTS'} size="1.2rem" />
                             {isDoctor ? t('professional_details') : t('medical_data')}
                         </div>
@@ -105,7 +105,7 @@ export const ProfileEditor = ({
                     </div>
                 </div>
 
-                <div className={`${styles.actions}`}>
+                <div className={`${styles.ProfileEditor__actions}`}>
                     <Button type="submit" variant="primary" size="lg" icon={<Icon name="SAVE" />}>
                         {t('save_changes')}
                     </Button>

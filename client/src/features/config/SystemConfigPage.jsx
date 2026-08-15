@@ -70,7 +70,7 @@ export const SystemConfigPage = () => {
 
     return (
         <MainLayout wide flush title={t('config') || 'Configuración del Sistema'}>
-            <div className={`${styles.root}  `}>
+            <div className={`${styles.SystemConfigPage__root}  `}>
                 <FeatureToolbar
                     tabs={tabs.length > 0 ? tabs : [
                         { id: 'general', label: t('general'), icon: 'settings' }
@@ -79,8 +79,8 @@ export const SystemConfigPage = () => {
                     onTabChange={handlers.setActiveTab}
                 />
 
-                <section className={styles.systemConfigMain}>
-                    <div className={styles.systemConfigContainer}>
+                <section className={styles.SystemConfigPage__systemConfigMain}>
+                    <div className={styles.SystemConfigPage__systemConfigContainer}>
                         <Suspense fallback={<Loading variant="centered" />}>
                             <SettingsContent activeTab={activeTab} controller={controller} registryLoaded={registryLoaded} />
                         </Suspense>

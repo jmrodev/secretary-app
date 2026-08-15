@@ -1,7 +1,7 @@
 
 /* InstitutionPatientsTable Molecule Styles (BEM) */
 
-.root {
+.InstitutionPatientsTable__root {
     background: var(--dashboard-card-bg);
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
@@ -11,7 +11,7 @@
     flex-direction: column;
 }
 
-.header {
+.InstitutionPatientsTable__header {
     padding: 1.25rem 1.5rem;
     background: var(--card-surface-bg);
     border-bottom: 1px solid var(--border-color);
@@ -20,7 +20,7 @@
     align-items: center;
 }
 
-.title {
+.InstitutionPatientsTable__title {
     font-size: 2rem;
     font-weight: 800;
     color: var(--text-secondary);
@@ -31,7 +31,7 @@
     gap: 0.75rem;
 }
 
-.badge {
+.InstitutionPatientsTable__badge {
     background: var(--card-surface-bg);
     color: var(--text-muted);
     padding: 0.125rem 0.6rem;
@@ -40,16 +40,16 @@
     font-weight: 800;
 }
 
-.wrapper {
+.InstitutionPatientsTable__wrapper {
     overflow-x: auto;
 }
 
-.table {
+.InstitutionPatientsTable__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.table th {
+.InstitutionPatientsTable__table th {
     padding: 1rem 1.5rem;
     text-align: left;
     font-size: 0.72rem;
@@ -63,7 +63,7 @@
     z-index: 10;
 }
 
-.table td {
+.InstitutionPatientsTable__table td {
     padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--dashboard-card-border);
     font-size: 0.875rem;
@@ -71,39 +71,39 @@
     vertical-align: middle;
 }
 
-.table tr:hover td {
+.InstitutionPatientsTable__table tr:hover td {
     background-color: var(--card-hover-bg);
 }
 
-.patientLink {
+.InstitutionPatientsTable__patientLink {
     font-weight: 700;
     color: var(--accent-color);
     text-decoration: none;
     transition: color 0.2s;
 }
 
-.patientLink:hover {
+.InstitutionPatientsTable__patientLink:hover {
     color: var(--blue-700);
     text-decoration: underline;
 }
 
-.cellRight {
+.InstitutionPatientsTable__cellRight {
     text-align: right;
 }
 
-.cellCenter {
+.InstitutionPatientsTable__cellCenter {
     text-align: center;
 }
 
-.amountBold {
+.InstitutionPatientsTable__amountBold {
     font-weight: 800;
 }
 
-.textMuted {
+.InstitutionPatientsTable__textMuted {
     color: var(--text-muted);
 }
 
-.empty {
+.InstitutionPatientsTable__empty {
     padding: 2rem;
     text-align: center;
     color: var(--text-muted);

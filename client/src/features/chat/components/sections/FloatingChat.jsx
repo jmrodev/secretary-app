@@ -49,18 +49,18 @@ export const FloatingChat = () => {
      */
     const renderTicks = (status) => {
         if (status === 0) return (
-            <div className={`${styles.ticks}`}>
-                <Icon name="check" size="0.75rem" className={`${styles.tickGrey}`} />
+            <div className={`${styles.FloatingChat__ticks}`}>
+                <Icon name="check" size="0.75rem" className={`${styles.FloatingChat__tickGrey}`} />
             </div>
         );
         if (status === 1) return (
-            <div className={`${styles.ticks}`}>
-                <Icon name="done_all" size="0.75rem" className={`${styles.tickGrey}`} />
+            <div className={`${styles.FloatingChat__ticks}`}>
+                <Icon name="done_all" size="0.75rem" className={`${styles.FloatingChat__tickGrey}`} />
             </div>
         );
         if (status === 2) return (
-            <div className={`${styles.ticks}`}>
-                <Icon name="done_all" size="0.75rem" className={`${styles.tickBlue}`} />
+            <div className={`${styles.FloatingChat__ticks}`}>
+                <Icon name="done_all" size="0.75rem" className={`${styles.FloatingChat__tickBlue}`} />
             </div>
         );
         return null;
@@ -68,7 +68,7 @@ export const FloatingChat = () => {
 
     if (!user || user.role === 'patient') return null;
 
-    const baseClass = styles.root;
+    const baseClass = styles.FloatingChat__root;
 
     return (
         <div className={baseClass}>

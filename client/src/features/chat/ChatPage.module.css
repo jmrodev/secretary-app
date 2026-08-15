@@ -3,7 +3,7 @@
 
 
 @media (width <= 768px) {
-    .chatPageOrchestrator .chatSidebar {
+    .ChatPage__chatPageOrchestrator .ChatPage__chatSidebar {
         width: 100%;
         position: absolute;
         inset: 0;
@@ -11,7 +11,7 @@
         transition: transform 0.3s ease;
     }
 
-    .chatPageOrchestrator .chatWindow {
+    .ChatPage__chatPageOrchestrator .ChatPage__chatWindow {
         width: 100%;
         position: absolute;
         inset: 0;
@@ -19,11 +19,11 @@
     }
 
     /* When a convo is selected, slide out the sidebar */
-    .chatPageOrchestratorConvoSelected .chatSidebar {
+    .ChatPage__chatPageOrchestratorConvoSelected .ChatPage__chatSidebar {
         transform: translateX(-100%);
     }
 
-    .chatPageOrchestratorConvoSelected .chatWindow {
+    .ChatPage__chatPageOrchestratorConvoSelected .ChatPage__chatWindow {
         z-index: 30;
     }
 }

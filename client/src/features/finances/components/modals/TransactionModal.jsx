@@ -78,7 +78,7 @@ export const TransactionModal = ({
             title={t('record_payment')}
             size="lg"
             footer={
-                <div className={styles.footerButtons}>
+                <div className={styles.TransactionModal__footerButtons}>
                     <Button variant="secondary" onClick={onClose} icon={<Icon name="close" size="1.1rem" />}>
                         {t('cancel')}
                     </Button>
@@ -88,8 +88,8 @@ export const TransactionModal = ({
                 </div>
             }
         >
-            <div className={`${styles.root}`}>
-                <div className={styles.fieldFull}>
+            <div className={`${styles.TransactionModal__root}`}>
+                <div className={styles.TransactionModal__fieldFull}>
                     <TransactionSummaryHeader 
                         requestId={requestId} 
                         patientSearch={patientSearch} 
@@ -100,9 +100,9 @@ export const TransactionModal = ({
                 </div>
 
                 {!requestId && formData.type === 'income_patient' && (
-                    <div className={styles.fieldThird}>
+                    <div className={styles.TransactionModal__fieldThird}>
                         <FormGroup label={t('patient')}>
-                            <div className={`${styles.autocomplete}`}>
+                            <div className={`${styles.TransactionModal__autocomplete}`}>
                                 <Input
                                     value={patientSearch}
                                     onChange={e => { setPatientSearch(e.target.value); setShowPatientList(true); updateField('related_user_id', ''); }}
@@ -111,15 +111,15 @@ export const TransactionModal = ({
                                     icon={<Icon name="search" size="1.1rem" />} className="transaction-modal__input"
                                 />
                                 {showPatientList && patientSearch && !formData.related_user_id && (
-                                    <ul className={`${styles.results}`} role="listbox">
+                                    <ul className={`${styles.TransactionModal__results}`} role="listbox">
                                         {filteredPatients.map(p => (
                                             <li
                                                 key={p.id} onClick={() => selectPatient(p)}
                                                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectPatient(p); } }}
-                                                className={`${styles.item}`} role="option" aria-selected={false} tabIndex={0}
+                                                className={`${styles.TransactionModal__item}`} role="option" aria-selected={false} tabIndex={0}
                                             >
                                                 <span className="transaction-modal__item-name">{p.full_name}</span>
-                                                <span className={`${styles.hint}`}>{p.dni}</span>
+                                                <span className={`${styles.TransactionModal__hint}`}>{p.dni}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -130,7 +130,7 @@ export const TransactionModal = ({
                 )}
 
                 {formData.type === 'income_rental' && (
-                    <div className={styles.fieldThird}>
+                    <div className={styles.TransactionModal__fieldThird}>
                         <FormGroup label={t('doctor_payer')}>
                             <Select
                                 value={formData.related_user_id}
@@ -143,7 +143,7 @@ export const TransactionModal = ({
                 )}
 
                 {!requestId && (
-                    <div className={styles.fieldThird}>
+                    <div className={styles.TransactionModal__fieldThird}>
                         <FormGroup label={t('beneficiary_doctor_cash_box')}>
                             <Select
                                 value={formData.doctor_id}
@@ -156,7 +156,7 @@ export const TransactionModal = ({
                 )}
 
                 {!requestId && formData.type === 'income_patient' && (
-                    <div className={styles.fieldThird}>
+                    <div className={styles.TransactionModal__fieldThird}>
                         <FormGroup label={t('service_type')}>
                             <Select
                                 value={formData.service_type}
@@ -172,7 +172,7 @@ export const TransactionModal = ({
 
 
 
-                <div className={styles.fieldFull}>
+                <div className={styles.TransactionModal__fieldFull}>
                     <TransactionPaymentsSection 
                         pricingInfo={pricingInfo} totalPrice={totalPrice} setTotalPrice={setTotalPrice}
                         payments={formData.payments} handlePaymentChange={handlePaymentChange}
@@ -182,7 +182,7 @@ export const TransactionModal = ({
                     />
                 </div>
 
-                <div className={styles.fieldFull}>
+                <div className={styles.TransactionModal__fieldFull}>
                     <FormGroup label={t('description')}>
                         <AutoTextarea
                             value={formData.description}
@@ -193,7 +193,7 @@ export const TransactionModal = ({
                     </FormGroup>
                 </div>
 
-                <div className={styles.fieldHalf}>
+                <div className={styles.TransactionModal__fieldHalf}>
                     <FormGroup label={t('proof_payment_optional')}>
                         <Input
                             type="file"

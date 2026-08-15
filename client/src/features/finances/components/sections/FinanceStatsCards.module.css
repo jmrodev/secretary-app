@@ -1,6 +1,6 @@
 /* FinanceStatsCards Component Styles (BEM) */
 
-.root {
+.FinanceStatsCards__root {
     /* --- Local Component Tokens --- */
     --stats-card-bg: var(--dashboard-card-bg);
     --stats-card-border: var(--dashboard-card-border);
@@ -20,7 +20,7 @@
     -webkit-overflow-scrolling: touch;
 }
 
-.card {
+.FinanceStatsCards__card {
     flex: 0 0 340px;
     min-width: 320px;
     scroll-snap-align: start;
@@ -34,16 +34,16 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.cardWide {
+.FinanceStatsCards__cardWide {
     flex: 0 0 520px;
     min-width: 480px;
 }
 
-.card:hover {
+.FinanceStatsCards__card:hover {
     box-shadow: 0 8px 24px rgb(15, 23, 42, 0.12);
 }
 
-.title {
+.FinanceStatsCards__title {
     font-size: 0.875rem;
     font-weight: 800;
     color: var(--stats-header-color);
@@ -57,37 +57,37 @@
     padding-bottom: 0.6rem;
 }
 
-.icon {
+.FinanceStatsCards__icon {
     opacity: 1;
 }
 
 /* Semantic Icon Colors (BEM Modifiers) */
-.iconCash { color: #15803d; }
-.iconTransfer { color: #1d4ed8; }
-.iconWithdrawal { color: #c2410c; }
-.iconExpenses { color: #b91c1c; }
-.iconAppointments { color: var(--indigo-600, #4338ca); }
-.iconPrescriptions { color: var(--pink-600, #be185d); }
-.iconLicenses { color: var(--sky-600, #0369a1); }
-.iconCertificates { color: var(--amber-600, #b45309); }
-.iconNet_cash { color: var(--yellow-600, #a16207); }
-.iconCash_balance { color: #15803d; }
-.iconTransfer_balance { color: #1d4ed8; }
-.iconTotal_net { color: #7e22ce; }
-.iconPending_debt { color: #dc2626; }
+.FinanceStatsCards__iconCash { color: #15803d; }
+.FinanceStatsCards__iconTransfer { color: #1d4ed8; }
+.FinanceStatsCards__iconWithdrawal { color: #c2410c; }
+.FinanceStatsCards__iconExpenses { color: #b91c1c; }
+.FinanceStatsCards__iconAppointments { color: var(--indigo-600, #4338ca); }
+.FinanceStatsCards__iconPrescriptions { color: var(--pink-600, #be185d); }
+.FinanceStatsCards__iconLicenses { color: var(--sky-600, #0369a1); }
+.FinanceStatsCards__iconCertificates { color: var(--amber-600, #b45309); }
+.FinanceStatsCards__iconNet_cash { color: var(--yellow-600, #a16207); }
+.FinanceStatsCards__iconCash_balance { color: #15803d; }
+.FinanceStatsCards__iconTransfer_balance { color: #1d4ed8; }
+.FinanceStatsCards__iconTotal_net { color: #7e22ce; }
+.FinanceStatsCards__iconPending_debt { color: #dc2626; }
 
-.breakdown {
+.FinanceStatsCards__breakdown {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.table {
+.FinanceStatsCards__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.tableHeader {
+.FinanceStatsCards__tableHeader {
     font-size: 0.725rem;
     font-weight: 800;
     color: var(--dashboard-card-bg);
@@ -96,69 +96,69 @@
     text-align: left;
 }
 
-.tableHeaderRight {
+.FinanceStatsCards__tableHeaderRight {
     text-align: right;
 }
 
-.tableCell {
+.FinanceStatsCards__tableCell {
     padding: 0.55rem 0;
     border-bottom: 1px solid var(--text-secondary);
 }
 
-.tableCellRight {
+.FinanceStatsCards__tableCellRight {
     text-align: right;
 }
 
-.label {
+.FinanceStatsCards__label {
     font-size: 0.8125rem;
     color: var(--text-secondary);
     font-weight: 600;
 }
 
-.labelBold {
+.FinanceStatsCards__labelBold {
     font-weight: 800;
     color: var(--text-main);
 }
 
-.value {
+.FinanceStatsCards__value {
     font-size: 0.875rem;
     font-weight: 700;
 }
 
-.valueBold {
+.FinanceStatsCards__valueBold {
     font-weight: 800;
 }
 
-.valueBlue { color: #1d4ed8; }
-.valueGray { color: var(--text-muted); }
-.valueMuted { color: #64748b; }
-.valueGreen { color: #15803d; }
-.valueRed { color: #b91c1c; }
-.valuePurple { color: #7e22ce; }
+.FinanceStatsCards__valueBlue { color: #1d4ed8; }
+.FinanceStatsCards__valueGray { color: var(--text-muted); }
+.FinanceStatsCards__valueMuted { color: #64748b; }
+.FinanceStatsCards__valueGreen { color: #15803d; }
+.FinanceStatsCards__valueRed { color: #b91c1c; }
+.FinanceStatsCards__valuePurple { color: #7e22ce; }
 
-.row {
+.FinanceStatsCards__row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.6rem 0;
 }
 
-.rowDivider {
+.FinanceStatsCards__rowDivider {
     border-top: 2px solid var(--dashboard-card-border);
     margin-top: 0.35rem;
     padding-top: 0.75rem;
 }
 
-.rowDivider .label,
-.rowDivider .value {
+.FinanceStatsCards__rowDivider .FinanceStatsCards__label,
+.FinanceStatsCards__rowDivider .FinanceStatsCards__value {
     font-size: 0.875rem;
 }
 
-.summaryRow {
+.FinanceStatsCards__summaryRow {
     background-color: var(--stats-summary-bg);
 }
 
-.summaryRow td {
+.FinanceStatsCards__summaryRow td {
     padding: 0.6rem 0.4rem;
     font-weight: 800;
 }

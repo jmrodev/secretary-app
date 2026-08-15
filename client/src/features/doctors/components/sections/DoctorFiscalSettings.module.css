@@ -1,63 +1,63 @@
 /* DoctorFiscalSettings Component Styles */
 
-.root {
+.DoctorFiscalSettings__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     animation: fade-in 0.3s ease-in-out;
 }
 
-.card {
+.DoctorFiscalSettings__card {
     background-color: var(--gray-50);
     padding: 1.5rem;
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
 }
 
-.header {
+.DoctorFiscalSettings__header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
 }
 
-.grid {
+.DoctorFiscalSettings__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
 }
 
-.section {
+.DoctorFiscalSettings__section {
     border-top: 1px solid var(--border-color);
     padding-top: 1.5rem;
 }
 
-.title {
+.DoctorFiscalSettings__title {
     font-size: 0.875rem;
     font-weight: 800;
     color: var(--text-main);
     margin-bottom: 0.5rem;
 }
 
-.description {
+.DoctorFiscalSettings__description {
     font-size: 0.75rem;
     color: var(--text-muted);
     margin-bottom: 1.25rem;
     line-height: 1.5;
 }
 
-.actions {
+.DoctorFiscalSettings__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
 
-.fileInput {
+.DoctorFiscalSettings__fileInput {
     display: none;
 }
 
-.csrBox {
+.DoctorFiscalSettings__csrBox {
     background-color: white;
     padding: 1.25rem;
     border: 1px solid var(--border-color);
@@ -66,20 +66,20 @@
     box-shadow: var(--shadow-sm);
 }
 
-.csrHeader {
+.DoctorFiscalSettings__csrHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
 }
 
-.csrTitle {
+.DoctorFiscalSettings__csrTitle {
     font-size: 0.75rem;
     font-weight: 800;
     color: var(--text-main);
 }
 
-.csrClose {
+.DoctorFiscalSettings__csrClose {
     font-size: 0.75rem;
     color: var(--error);
     cursor: pointer;
@@ -88,11 +88,11 @@
     font-weight: 700;
 }
 
-.csrClose:hover {
+.DoctorFiscalSettings__csrClose:hover {
     text-decoration: underline;
 }
 
-.textarea {
+.DoctorFiscalSettings__textarea {
     width: 100%;
     height: 10rem;
     font-size: 0.7rem;
@@ -106,39 +106,39 @@
     color: var(--text-main);
 }
 
-.textarea:focus {
+.DoctorFiscalSettings__textarea:focus {
     border-color: var(--accent-color);
     box-shadow: 0 0 0 2px var(--blue-100);
 }
 
-.csrFooter {
+.DoctorFiscalSettings__csrFooter {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     margin-top: 1rem;
 }
 
-.hint {
+.DoctorFiscalSettings__hint {
     font-size: 0.65rem;
     color: var(--text-muted);
     font-style: italic;
     margin-right: 1rem;
 }
 
-.statusSection {
+.DoctorFiscalSettings__statusSection {
     border-top: 1px solid var(--border-color);
     margin-top: 1.5rem;
     padding-top: 1.5rem;
 }
 
-.statusHeader {
+.DoctorFiscalSettings__statusHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.25rem;
 }
 
-.statusBox {
+.DoctorFiscalSettings__statusBox {
     display: flex;
     gap: 1rem;
     padding: 1.25rem;
@@ -148,24 +148,24 @@
     margin-bottom: 1.5rem;
 }
 
-.statusBoxSuccess {
+.DoctorFiscalSettings__statusBoxSuccess {
     background-color: var(--green-50);
     border-color: var(--green-100);
     color: var(--green-700);
 }
 
-.statusBoxError {
+.DoctorFiscalSettings__statusBoxError {
     background-color: var(--red-50);
     border-color: var(--red-100);
     color: var(--red-700);
 }
 
-.statusIcon {
+.DoctorFiscalSettings__statusIcon {
     font-size: 1.5rem;
     flex-shrink: 0;
 }
 
-.statusContent {
+.DoctorFiscalSettings__statusContent {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -173,7 +173,7 @@
     width: 100%;
 }
 
-.statusDetails {
+.DoctorFiscalSettings__statusDetails {
     margin-top: 0.75rem;
     font-size: 0.75rem;
     font-family: var(--font-mono);
@@ -184,19 +184,19 @@
     word-break: break-all;
 }
 
-.statusMessage {
+.DoctorFiscalSettings__statusMessage {
     margin-top: 0.25rem;
     line-height: 1.4;
 }
 
-.guide {
+.DoctorFiscalSettings__guide {
     margin-top: 1rem;
     padding: 1rem;
     background: var(--slate-50);
     border-radius: var(--radius);
 }
 
-.guideSummary {
+.DoctorFiscalSettings__guideSummary {
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-secondary);
@@ -207,7 +207,7 @@
     gap: 0.5rem;
 }
 
-.guideList {
+.DoctorFiscalSettings__guideList {
     margin-top: 1rem;
     padding-left: 1.5rem;
     font-size: 0.75rem;

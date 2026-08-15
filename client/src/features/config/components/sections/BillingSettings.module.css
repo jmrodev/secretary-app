@@ -1,11 +1,11 @@
 /* BillingSettings Component Styles (BEM) */
 
-.root {
+.BillingSettings__root {
     /* Root styles */
 }
 
 /* AFIP Status Display */
-.status {
+.BillingSettings__status {
     padding: 1rem;
     border-radius: var(--radius-sm);
     background-color: var(--white);
@@ -17,17 +17,17 @@
     font-weight: 500;
 }
 
-.statusSuccess {
+.BillingSettings__statusSuccess {
     border-left: 4px solid var(--green-500);
     color: var(--green-700);
 }
 
-.statusError {
+.BillingSettings__statusError {
     border-left: 4px solid var(--error);
     color: var(--red-700);
 }
 
-.statusHeader {
+.BillingSettings__statusHeader {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -35,7 +35,7 @@
 }
 
 /* CSR Generation Result */
-.csrBox {
+.BillingSettings__csrBox {
     margin-top: 2rem;
     padding-top: 1.5rem;
     border-top: 1px dashed var(--border-color);
@@ -44,7 +44,7 @@
     gap: 1rem;
 }
 
-#root .csrTextarea {
+#root .BillingSettings__csrTextarea {
     font-family: var(--font-mono, monospace);
     font-size: 0.75rem;
     background-color: var(--slate-50);

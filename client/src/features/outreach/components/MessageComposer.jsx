@@ -21,20 +21,20 @@ export const MessageComposer = ({
     const charCount = body.length;
 
     return (
-        <section className={styles['message-composer']}>
-            <h3 className={styles['message-composer__title']}>
+        <section className={styles['MessageComposer__message-composer']}>
+            <h3 className={styles['MessageComposer__message-composer__title']}>
                 {t('outreach_step_2')}
             </h3>
 
-            <div className={styles['message-composer__form']}>
-                <div className={styles['message-composer__field']}>
+            <div className={styles['MessageComposer__message-composer__form']}>
+                <div className={styles['MessageComposer__message-composer__field']}>
                     <label
-                        className={styles['message-composer__label']}
+                        className={styles['MessageComposer__message-composer__label']}
                         htmlFor="outreach-body"
                     >
                         {t('outreach_composer_label')}
                     </label>
-                    <div className={styles['message-composer__input-wrapper']}>
+                    <div className={styles['MessageComposer__message-composer__input-wrapper']}>
                         <Input
                             id="outreach-body"
                             type="textarea"
@@ -44,19 +44,19 @@ export const MessageComposer = ({
                             placeholder={t('outreach_composer_placeholder')}
                             variant={showEmptyError ? 'error' : 'default'}
                         />
-                        <span className={styles['message-composer__char-count']}>
+                        <span className={styles['MessageComposer__message-composer__char-count']}>
                             {t('outreach_composer_char_count')}
                         </span>
                     </div>
                 </div>
 
                 {showEmptyError && (
-                    <div className={styles['message-composer__error']} role="alert">
+                    <div className={styles['MessageComposer__message-composer__error']} role="alert">
                         {t('outreach_composer_empty_error')}
                     </div>
                 )}
 
-                <div className={styles['message-composer__actions']}>
+                <div className={styles['MessageComposer__message-composer__actions']}>
                     <Button
                         onClick={onGenerateVariants}
                         disabled={!body || !body.trim()}
@@ -69,7 +69,7 @@ export const MessageComposer = ({
                 </div>
             </div>
 
-            <p className={styles['message-composer__hint']}>
+            <p className={styles['MessageComposer__message-composer__hint']}>
                 {t('outreach_composer_hint')}
             </p>
         </section>

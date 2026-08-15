@@ -1,18 +1,18 @@
 /* CashBoxDeliveryModal Component Styles (BEM) */
 
-.root {
+.CashBoxDeliveryModal__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.footer {
+.CashBoxDeliveryModal__footer {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
 }
 
-.balanceInfo {
+.CashBoxDeliveryModal__balanceInfo {
     font-size: 1rem;
     color: var(--text-secondary);
     display: flex;
@@ -26,17 +26,17 @@
     box-shadow: 0 8px 32px 0 rgb(0 0 0 / 10%);
 }
 
-.label {
+.CashBoxDeliveryModal__label {
     font-weight: 600;
 }
 
-.value {
+.CashBoxDeliveryModal__value {
     font-weight: 800;
     color: var(--blue-700);
     font-size: 1.15rem;
 }
 
-.warning {
+.CashBoxDeliveryModal__warning {
     color: var(--amber-700);
     background: rgb(245 158 11 / 10%);
     backdrop-filter: blur(16px);

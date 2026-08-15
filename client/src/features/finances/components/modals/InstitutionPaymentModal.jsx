@@ -36,7 +36,7 @@ export const InstitutionPaymentModal = ({
             onClose={onClose}
             title={t('register_inst_payment')}
         >
-            <div className={`${styles.root}`}>
+            <div className={`${styles.InstitutionPaymentModal__root}`}>
                 <Alert
                     variant={hasTransactions ? 'success' : 'info'}
                     message={
@@ -63,7 +63,7 @@ export const InstitutionPaymentModal = ({
                     />
                 </FormGroup>
 
-                <div className={`${styles.footer}`}>
+                <div className={`${styles.InstitutionPaymentModal__footer}`}>
                     <Button variant="secondary" onClick={onClose}>
                         {t('cancel')}
                     </Button>

@@ -17,7 +17,7 @@ export const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, b
             onClose={onClose}
             title={`${t('close_box')}: ${doctorName}`}
             footer={
-                <div className={`${styles.footer}`}>
+                <div className={`${styles.CashBoxDeliveryModal__footer}`}>
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
                     <Button variant="primary" onClick={onConfirm} icon={<Icon name="FINANCES" size="1.1rem" />}>
                         {t('confirm_delivery')}
@@ -25,10 +25,10 @@ export const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, b
                 </div>
             }
         >
-            <div className={`${styles.root} animate-fade-in`}>
-                <div className={`${styles.balanceInfo}`}>
-                    <span className={`${styles.label}`}>{t('current_system_balance')}:</span>
-                    <span className={`${styles.value}`}>${balance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <div className={`${styles.CashBoxDeliveryModal__root} animate-fade-in`}>
+                <div className={`${styles.CashBoxDeliveryModal__balanceInfo}`}>
+                    <span className={`${styles.CashBoxDeliveryModal__label}`}>{t('current_system_balance')}:</span>
+                    <span className={`${styles.CashBoxDeliveryModal__value}`}>${balance?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
 
                 <FormGroup label={t('amount_delivered')}>
@@ -39,7 +39,7 @@ export const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, b
                     />
                 </FormGroup>
 
-                <div className={`${styles.warning}`}>
+                <div className={`${styles.CashBoxDeliveryModal__warning}`}>
                     <Icon name="WARNING" size="1.1rem" />
                     <span>{t('close_box_warning') || 'Esta acción registrará una salida de efectivo en la caja del profesional y ajustará el saldo.'}</span>
                 </div>

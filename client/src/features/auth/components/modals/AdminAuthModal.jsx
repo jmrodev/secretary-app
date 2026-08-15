@@ -31,28 +31,28 @@ export const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
             isOpen={isOpen}
             onClose={onClose}
             title={
-                <div className={`${styles.title}`}>
+                <div className={`${styles.AdminAuthModal__title}`}>
                     <Icon name="lock" size="1.2rem" />
                     Autorización de Administrador
                 </div>
             }
         >
-            <form onSubmit={handleSubmit} className={`${styles.body}`}>
-                <p className={`${styles.instruction}`}>
+            <form onSubmit={handleSubmit} className={`${styles.AdminAuthModal__body}`}>
+                <p className={`${styles.AdminAuthModal__instruction}`}>
                     <Icon name="warning" size="1.1rem" color="var(--warning)" className="inline-icon" />
                     Esta acción está restringida por seguridad. Por favor, ingrese la contraseña maestra de administrador para continuar con el proceso.
                 </p>
-                <div className={`${styles.inputGroup}`}>
+                <div className={`${styles.AdminAuthModal__inputGroup}`}>
                     <input
                         type="password"
-                        className={`${styles.passwordInput} input-field`}
+                        className={`${styles.AdminAuthModal__passwordInput} input-field`}
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         ref={inputRef}
                     />
                 </div>
-                <div className={`${styles.footer}`}>
+                <div className={`${styles.AdminAuthModal__footer}`}>
                     <Button
                         type="button" 
                         variant="ghost"

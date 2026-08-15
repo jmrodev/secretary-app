@@ -28,55 +28,55 @@ export const LoginForm = () => {
 
     return (
         <Card
-            className={`${styles.loginForm} animate-fade-in`}
+            className={`${styles.LoginForm__loginForm} animate-fade-in`}
             title={
-                <div className={`${styles.header}`}>
-                    <h1 className={`${styles.title}`}>{t('welcome_back')}</h1>
-                    <p className={`${styles.subtitle}`}>{t('sign_in_subtitle')}</p>
+                <div className={`${styles.LoginForm__header}`}>
+                    <h1 className={`${styles.LoginForm__title}`}>{t('welcome_back')}</h1>
+                    <p className={`${styles.LoginForm__subtitle}`}>{t('sign_in_subtitle')}</p>
                 </div>
             }
             footer={
-                <div className={`${styles.footer}`}>
-                    <div className={`${styles.download}`}>
+                <div className={`${styles.LoginForm__footer}`}>
+                    <div className={`${styles.LoginForm__download}`}>
                         <Button
                             variant="outline"
                             size="sm"
-                            className={`${styles.downloadBtn}`}
+                            className={`${styles.LoginForm__downloadBtn}`}
                             icon={<Icon name="DOWNLOAD" size="1.1rem" />}
                             onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
                         >
                             {t('download_apk')}
                         </Button>
                     </div>
-                    <p className={`${styles.footerText}`} suppressHydrationWarning>
+                    <p className={`${styles.LoginForm__footerText}`} suppressHydrationWarning>
                         © {CURRENT_YEAR} {t('app_name')}
                     </p>
                 </div>
             }
         >
-            {error && <div className={`${styles.error}`}>{error}</div>}
+            {error && <div className={`${styles.LoginForm__error}`}>{error}</div>}
 
-            <form className={`${styles.form}`} onSubmit={handlers.handleSubmit}>
-                <FormGroup label={t('username')} className={styles.loginFormGroup}>
+            <form className={`${styles.LoginForm__form}`} onSubmit={handlers.handleSubmit}>
+                <FormGroup label={t('username')} className={styles.LoginForm__loginFormGroup}>
                     <Input
                         type="text"
                         value={username}
                         onChange={(e) => handlers.setUsername(e.target.value)}
                         placeholder={t('username_placeholder')}
                         disabled={loading}
-                        className={styles.loginInput}
+                        className={styles.LoginForm__loginInput}
                         required
                     />
                 </FormGroup>
 
-                <FormGroup label={t('password')} className={styles.loginFormGroup}>
+                <FormGroup label={t('password')} className={styles.LoginForm__loginFormGroup}>
                     <Input
                         type="password"
                         value={password}
                         onChange={(e) => handlers.setPassword(e.target.value)}
                         placeholder="••••••••"
                         disabled={loading}
-                        className={styles.loginInput}
+                        className={styles.LoginForm__loginInput}
                         required
                     />
                 </FormGroup>
@@ -84,7 +84,7 @@ export const LoginForm = () => {
                 <Button
                     type="submit"
                     variant="primary"
-                    className={`${styles.buttonSubmit}`}
+                    className={`${styles.LoginForm__buttonSubmit}`}
                 >
                     {loading ? (
                         <Loading variant="inline" size="sm" text={t('signing_in')} />
