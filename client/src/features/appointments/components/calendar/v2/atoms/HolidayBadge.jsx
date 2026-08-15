@@ -7,7 +7,7 @@ import styles from './HolidayBadge.module.css';
  */
 export const HolidayBadge = ({ title = '' }) => {
   return (
-    <span className={styles.badge} title={title}>
+    <span className={`${styles.HolidayBadge__root}`} title={title}>
       Feriado
     </span>
   );

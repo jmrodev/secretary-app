@@ -1,12 +1,12 @@
 /* HolidayList.css */
-.root { display: flex; flex-direction: column; gap: 0.75rem; }
+.HolidayList__root { display: flex; flex-direction: column; gap: 0.75rem; }
 
-.empty {
+.HolidayList__empty {
     text-align: center; padding: 2rem; color: var(--text-muted); font-style: italic;
     background: var(--glass); border-radius: var(--radius-md); border: 1px dashed var(--border-color);
 }
 
-.item {
+.HolidayList__item {
     display: flex; justify-content: space-between; align-items: center; 
     background: var(--glass);
     padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);
@@ -14,29 +14,29 @@
     backdrop-filter: blur(10px);
 }
 
-.item:hover { transform: translateX(4px); border-color: rgb(239, 68, 68, 0.4); background: rgb(239, 68, 68, 0.1); }
+.HolidayList__item:hover { transform: translateX(4px); border-color: rgb(239, 68, 68, 0.4); background: rgb(239, 68, 68, 0.1); }
 
-.info { display: flex; flex-direction: column; gap: 0.25rem; }
+.HolidayList__info { display: flex; flex-direction: column; gap: 0.25rem; }
 
-.date {
+.HolidayList__date {
     font-size: 0.75rem; font-weight: 800; color: var(--red-400); text-transform: uppercase;
     display: flex; align-items: center; gap: 0.5rem;
 }
-.description { font-size: 0.9375rem; font-weight: 600; color: var(--text-main); }
+.HolidayList__description { font-size: 0.9375rem; font-weight: 600; color: var(--text-main); }
 
-.emptyIcon {
+.HolidayList__emptyIcon {
     color: var(--slate-300);
     margin-bottom: 0.5rem;
     display: block;
 }
 
-.deleteBtn {
+.HolidayList__deleteBtn {
     color: var(--red-400, #f87171);
     background: var(--glass);
     border: 1px solid var(--glass);
 }
 
-.deleteBtn:hover {
+.HolidayList__deleteBtn:hover {
     background-color: rgb(239, 68, 68, 0.2);
     color: white;
 }

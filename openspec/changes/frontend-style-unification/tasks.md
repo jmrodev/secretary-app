@@ -55,7 +55,7 @@ Per PR: convert `export default` → `export const` per JSX, update ALL importer
 
 Rename flat classes to `block__element--modifier` in each feature's `.module.css`, update JSX classNames; gate `pnpm build` + `pnpm lint`.
 
-- [ ] 4.1 groups 3.1–3.3; 4.2 groups 3.4–3.5
+- [x] 4.1 groups 3.1–3.3 (✅ holidays, rentals, insurances); 4.2 groups 3.4–3.5
 - [ ] 4.3 groups 3.6–3.8; 4.4 groups 3.9–3.10
 - [ ] 4.5 groups 3.11–3.12; 4.6 groups 3.13–3.14
 
