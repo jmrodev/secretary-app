@@ -2,7 +2,7 @@
 
 /* LoginForm Component Styles (BEM) - Nordic Ultra-clean */
 
-.LoginForm__loginForm {
+.LoginForm {
     background: var(--dashboard-card-bg); /* Adapts to dark slate in dark mode, white in light mode */
     padding: 0;
     border-radius: 6px; /* 6px sharp corners for high precision */
@@ -13,24 +13,24 @@
     overflow: visible;
 }
 
-.LoginForm__loginForm:hover {
+.LoginForm:hover {
     border-color: var(--text-muted); /* Darken border on hover */
 }
 
-/* Style child selectors within .LoginForm__loginForm using attribute matchers to override Card CSS Module classes */
-.LoginForm__loginForm [class*="header"] {
+/* Style child selectors within .LoginForm using attribute matchers to override Card CSS Module classes */
+.LoginForm [class*="header"] {
     background: transparent !important;
     border-bottom: none !important;
     padding: 0 !important;
 }
 
-.LoginForm__loginForm [class*="footer"] {
+.LoginForm [class*="footer"] {
     background: transparent !important;
     border-top: none !important;
     padding: 0 !important;
 }
 
-.LoginForm__loginForm [class*="content"] {
+.LoginForm [class*="content"] {
     padding: 2.5rem 2.25rem !important; /* Spacious but structured */
 }
 

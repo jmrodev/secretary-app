@@ -23,40 +23,40 @@ export const VariantPreview = ({
 
     return (
         <section className={styles['VariantPreview__variant-preview']}>
-            <h3 className={styles['VariantPreview__variant-preview__title']}>
+            <h3 className={styles['VariantPreview__title']}>
                 {t('outreach_step_3')}
             </h3>
 
             {!hasVariants && (
-                <div className={styles['VariantPreview__variant-preview__empty']}>
+                <div className={styles['VariantPreview__empty']}>
                     {t('outreach_variant_preview_header')}
                 </div>
             )}
 
             {hasVariants && (
                 <>
-                    <div className={styles['VariantPreview__variant-preview__grid']}>
+                    <div className={styles['VariantPreview__grid']}>
                         {variants.map((variant, i) => (
-                            <article key={i} className={styles['VariantPreview__variant-preview__card']}>
-                                <span className={styles['VariantPreview__variant-preview__card-number']}>
+                            <article key={i} className={styles['VariantPreview__card']}>
+                                <span className={styles['VariantPreview__card-number']}>
                                     {t('outreach_variant_title', { number: i + 1 })}
                                 </span>
-                                <p className={styles['VariantPreview__variant-preview__header']}>
+                                <p className={styles['VariantPreview__header']}>
                                     {variant.header}
                                 </p>
-                                <p className={styles['VariantPreview__variant-preview__body']}>
+                                <p className={styles['VariantPreview__body']}>
                                     {variant.body}
                                 </p>
-                                <p className={styles['VariantPreview__variant-preview__footer']}>
+                                <p className={styles['VariantPreview__footer']}>
                                     {variant.footer}
                                 </p>
                             </article>
                         ))}
                     </div>
 
-                    <div className={styles['VariantPreview__variant-preview__actions']}>
+                    <div className={styles['VariantPreview__actions']}>
                         {!hasPatients && (
-                            <p className={styles['VariantPreview__variant-preview__no-patients']}>
+                            <p className={styles['VariantPreview__no-patients']}>
                                 {t('outreach_variant_no_patients')}
                             </p>
                         )}
@@ -77,16 +77,16 @@ export const VariantPreview = ({
 
             {sendResult && (
                 <div
-                    className={styles['VariantPreview__variant-preview__result']}
+                    className={styles['VariantPreview__result']}
                     role="status"
                 >
-                    <span className={`${styles['VariantPreview__variant-preview__result-icon']} ${sendResult.total_failed > 0 ? styles['VariantPreview__variant-preview__result-icon--failed'] : styles['VariantPreview__variant-preview__result-icon--success']}`}>
+                    <span className={`${styles['VariantPreview__result-icon']} ${sendResult.total_failed > 0 ? styles['VariantPreview__result-icon--failed'] : styles['VariantPreview__result-icon--success']}`}>
                     </span>
                     <div>
-                        <p className={styles['VariantPreview__variant-preview__result-title']}>
+                        <p className={styles['VariantPreview__result-title']}>
                             {t('outreach_variant_sent')}
                         </p>
-                        <p className={styles['VariantPreview__variant-preview__result-detail']}>
+                        <p className={styles['VariantPreview__result-detail']}>
                             {t('outreach_variant_sent_detail')}
                         </p>
                     </div>

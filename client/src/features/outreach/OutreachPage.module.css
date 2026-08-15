@@ -20,7 +20,7 @@
     }
 }
 
-.OutreachPage__outreach__title {
+.OutreachPage__title {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-text-primary, #e2e8f0);
@@ -29,7 +29,7 @@
 
 /* Step Indicator */
 
-.OutreachPage__outreach__steps {
+.OutreachPage__steps {
     display: flex;
     gap: 0;
     background: rgb(255 255 255 / 6%);
@@ -38,7 +38,7 @@
     overflow: hidden;
 }
 
-.OutreachPage__outreach__step {
+.OutreachPage__step {
     flex: 1;
     display: flex;
     align-items: center;
@@ -55,7 +55,7 @@
     position: relative;
 }
 
-.OutreachPage__outreach__step:not(:last-child)::after {
+.OutreachPage__step:not(:last-child)::after {
     content: '';
     position: absolute;
     right: 0;
@@ -65,27 +65,27 @@
     background: var(--border-color);
 }
 
-.OutreachPage__outreach__step:hover:not(:disabled) {
+.OutreachPage__step:hover:not(:disabled) {
     background: var(--glass);
     color: var(--color-text-secondary, var(--text-muted));
 }
 
-.OutreachPage__outreach__step:disabled {
+.OutreachPage__step:disabled {
     cursor: not-allowed;
     opacity: 0.5;
 }
 
-.OutreachPage__outreach__step--active {
+.OutreachPage__step--active {
     background: rgb(59 130 246 / 15%);
     color: #60a5fa;
     font-weight: 600;
 }
 
-.OutreachPage__outreach__step--completed {
+.OutreachPage__step--completed {
     color: #86efac;
 }
 
-.OutreachPage__outreach__step-number {
+.OutreachPage__step-number {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -98,23 +98,23 @@
     flex-shrink: 0;
 }
 
-.OutreachPage__outreach__step--active .OutreachPage__outreach__step-number {
+.OutreachPage__step--active .OutreachPage__step-number {
     background: #3b82f6;
     color: var(--text-main);
 }
 
-.OutreachPage__outreach__step--completed .OutreachPage__outreach__step-number {
+.OutreachPage__step--completed .OutreachPage__step-number {
     background: #22c55e;
     color: var(--text-main);
 }
 
-.OutreachPage__outreach__step-label {
+.OutreachPage__step-label {
     white-space: nowrap;
 }
 
 /* Step Content */
 
-.OutreachPage__outreach__content {
+.OutreachPage__content {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -123,7 +123,7 @@
 
 /* Send Progress */
 
-.OutreachPage__outreach__progress {
+.OutreachPage__progress {
     width: 100%;
     height: 0.5rem;
     background: var(--border-color);
@@ -131,7 +131,7 @@
     overflow: hidden;
 }
 
-.OutreachPage__outreach__progress-bar {
+.OutreachPage__progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #22c55e);
     border-radius: 0.25rem;
@@ -139,7 +139,7 @@
 }
 
 @media (width <= 640px) {
-    .OutreachPage__outreach__step-label {
+    .OutreachPage__step-label {
         display: none;
     }
 }

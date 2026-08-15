@@ -1,6 +1,6 @@
 /* InsuranceList.css - Premium Bento Box Style */
 
-.InsuranceList__insuranceList {
+.InsuranceList {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;

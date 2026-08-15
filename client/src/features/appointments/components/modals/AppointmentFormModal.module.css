@@ -97,7 +97,7 @@
 }
 
 /* ECC: Utility to remove padding from the parent modal body if needed */
-.AppointmentFormModal__compactModalBody :global(.AppointmentFormModal__modal__body) {
+.AppointmentFormModal__compactModalBody :global(.AppointmentFormModal__body) {
     padding: 0.5rem !important;
 }
 
