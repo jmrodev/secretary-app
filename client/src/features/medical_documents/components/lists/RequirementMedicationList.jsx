@@ -1,6 +1,6 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
-import MedicationCard from '@/features/medical_documents/components/sections/MedicationCard';
+import { MedicationCard } from '@/features/medical_documents/components/sections/MedicationCard';
 import { calculateDuration } from '@/features/medical_documents/utils/medicationHelpers';
 
 /**
@@ -8,7 +8,7 @@ import { calculateDuration } from '@/features/medical_documents/utils/medication
  * Displays the list of requested medications, separating known/habitual from unknown items.
  * Used within the RequirementDetailModal to present prescription data to the doctor.
  */
-const RequirementMedicationList = ({
+export const RequirementMedicationList = ({
     meds,
     notes,
     checkIsKnown,
@@ -87,4 +87,3 @@ const RequirementMedicationList = ({
     );
 };
 
-export default RequirementMedicationList;

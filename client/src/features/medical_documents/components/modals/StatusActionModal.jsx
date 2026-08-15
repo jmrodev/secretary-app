@@ -7,7 +7,7 @@ import { Button } from '@/components/atoms/Button';
  * StatusActionModal Molecule.
  * Modal for approving or rejecting a request with an optional note.
  */
-const StatusActionModal = ({
+export const StatusActionModal = ({
     isOpen,
     onClose,
     type,
@@ -47,4 +47,3 @@ const StatusActionModal = ({
     );
 };
 
-export default StatusActionModal;

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { usePrescriptionsController } from '../hooks/usePrescriptionsController';
-import MedicalHistoryTable from '../components/lists/MedicalHistoryTable';
-import EditPrescriptionModal from '../components/modals/EditPrescriptionModal';
-import MedicalRequestForm from '../components/forms/MedicalRequestForm';
+import { MedicalHistoryTable } from '../components/lists/MedicalHistoryTable';
+import { EditPrescriptionModal } from '../components/modals/EditPrescriptionModal';
+import { MedicalRequestForm } from '../components/forms/MedicalRequestForm';
 import { PatientSearchSelect } from '@/features/patients';
 import Modal from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
-const PrescriptionsView = () => {
+export const PrescriptionsView = () => {
     const controller = usePrescriptionsController();
     const [isCreating, setIsCreating] = useState(false);
     
@@ -71,4 +71,3 @@ const PrescriptionsView = () => {
     );
 };
 
-export default PrescriptionsView;

@@ -16,14 +16,14 @@ import styles from './MedicalRequestForm.module.css';
 import { useMedicalRequest } from '@/features/medical_documents/hooks/useMedicalRequest';
 
 // Sub-components
-import PrescriptionForm from '@/features/medical_documents/components/forms/PrescriptionForm';
-import SimpleRequestForm from '@/features/medical_documents/components/forms/SimpleRequestForm';
+import { PrescriptionForm } from '@/features/medical_documents/components/forms/PrescriptionForm';
+import { SimpleRequestForm } from '@/features/medical_documents/components/forms/SimpleRequestForm';
 
 /**
  * MedicalRequestForm Organism (Feature-based).
  * Form to create new medical requests. Doctor is derived from global context.
  */
-const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, lockedType, initialSendToDoctor, noCard = false, PatientSearchSelectComponent }) => {
+export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, lockedType, initialSendToDoctor, noCard = false, PatientSearchSelectComponent }) => {
     const PatientSearchSelect = PatientSearchSelectComponent || DefaultPatientSearchSelect;
     const { user } = useAuth();
     const { t } = useLanguage();
@@ -165,4 +165,3 @@ const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, lockedType
     );
 };
 
-export default MedicalRequestForm;

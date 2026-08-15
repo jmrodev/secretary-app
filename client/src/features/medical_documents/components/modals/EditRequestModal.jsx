@@ -3,14 +3,14 @@ import React from 'react';
 import Modal from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import PrescriptionItemsList from '@/features/medical_documents/components/lists/PrescriptionItemsList';
+import { PrescriptionItemsList } from '@/features/medical_documents/components/lists/PrescriptionItemsList';
 import styles from './EditRequestModal.module.css';
 
 /**
  * EditRequestModal Molecule.
  * Modal for editing general medical requests and their replies.
  */
-const EditRequestModal = ({
+export const EditRequestModal = ({
     isOpen,
     onClose,
     request,
@@ -123,4 +123,3 @@ const EditRequestModal = ({
     );
 };
 
-export default EditRequestModal;

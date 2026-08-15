@@ -13,7 +13,7 @@ import styles from './MedicalRequestList.module.css';
  * MedicalRequestList Organism (Feature-based).
  * Renders a list of medical requests (prescriptions, licenses, certificates).
  */
-const MedicalRequestList = ({
+export const MedicalRequestList = ({
     requests,
     loading,
     handleDeleteRequest,
@@ -245,4 +245,3 @@ const MedicalRequestList = ({
     );
 };
 
-export default MedicalRequestList;

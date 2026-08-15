@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
-import MedicalRequirementManager from './components/ui/MedicalRequirementManager';
+import { MedicalRequirementManager } from './components/ui/MedicalRequirementManager';
 import MainLayout from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
@@ -15,7 +15,7 @@ import FeatureToolbar from '@/components/organisms/FeatureToolbar';
  * RequestsPage (Orchestrator).
  * Main entry point for the medical requirements workflow (Staff view).
  */
-const RequestsPage = () => {
+export const RequestsPage = () => {
     const { user } = useAuth();
     const { t } = useLanguage();
 
@@ -50,4 +50,3 @@ const RequestsPage = () => {
     );
 };
 
-export default RequestsPage;

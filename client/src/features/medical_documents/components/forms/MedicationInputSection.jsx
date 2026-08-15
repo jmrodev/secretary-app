@@ -1,5 +1,5 @@
 import React from 'react';
-import MedicationAutocomplete from '@/features/medical_documents/components/ui/MedicationAutocomplete';
+import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
 import Input from '@/components/atoms/Input';
 import Select from '@/components/atoms/Select';
 import Tooltip from '@/components/atoms/Tooltip';
@@ -12,7 +12,7 @@ import Icon from '@/components/atoms/Icon';
  * Orchestrates the search, dosage, and frequency fields for adding medications.
  * The primary interface for data entry in the medical_documents prescription workflow.
  */
-const MedicationInputSection = ({
+export const MedicationInputSection = ({
     tempMed, setTempMed,
     tempDose, setTempDose,
     tempFreqPreset, setTempFreqPreset,
@@ -175,4 +175,3 @@ const MedicationInputSection = ({
     );
 };
 
-export default MedicationInputSection;

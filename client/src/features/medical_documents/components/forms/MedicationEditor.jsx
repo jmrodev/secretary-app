@@ -9,7 +9,7 @@ import styles from './MedicationEditor.module.css';
  * Interactive form to add and edit medications in a list (e.g. for a prescription).
  * Part of the prescription drafting workflow in medical_documents.
  */
-const MedicationEditor = ({
+export const MedicationEditor = ({
     meds,
     onMedChange,
     onRemoveMed,
@@ -108,4 +108,3 @@ const MedicationEditor = ({
     );
 };
 
-export default MedicationEditor;

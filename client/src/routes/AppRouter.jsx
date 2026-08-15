@@ -11,10 +11,10 @@ import Loading from '@/components/atoms/Loading';
 const AppointmentsPage = lazy(() => import('@/features/appointments').then(m => ({ default: m.AppointmentsPage })));
 const PatientsPage = lazy(() => import('@/features/patients').then(m => ({ default: m.PatientsPage })));
 const MedicalDocumentsPage = lazy(() => import('@/features/medical_documents').then(m => ({ default: m.MedicalDocumentsPage })));
-const RequestsView = lazy(() => import('@/features/medical_documents/pages/RequestsView'));
-const PrescriptionsView = lazy(() => import('@/features/medical_documents/pages/PrescriptionsView'));
-const LicensesView = lazy(() => import('@/features/medical_documents/pages/LicensesView'));
-const CertificatesView = lazy(() => import('@/features/medical_documents/pages/CertificatesView'));
+const RequestsView = lazy(() => import('@/features/medical_documents/pages/RequestsView').then(module => ({ default: module.MedicalDocumentsPage })));
+const PrescriptionsView = lazy(() => import('@/features/medical_documents/pages/PrescriptionsView').then(module => ({ default: module.MedicalDocumentsPage })));
+const LicensesView = lazy(() => import('@/features/medical_documents/pages/LicensesView').then(module => ({ default: module.MedicalDocumentsPage })));
+const CertificatesView = lazy(() => import('@/features/medical_documents/pages/CertificatesView').then(module => ({ default: module.MedicalDocumentsPage })));
 
 const FinancesPage = lazy(() => import('@/features/finances').then(m => ({ default: m.FinancesPage })));
 const DashboardPage = lazy(() => import('@/features/dashboard').then(m => ({ default: m.DashboardPage })));

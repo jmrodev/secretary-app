@@ -5,7 +5,7 @@ import { formatDate, formatDateTimeLong } from '@/utils/core/dateUtils';
 import managerStyles from '@/features/medical_documents/components/ui/MedicalRequirementManager.module.css';
 import itemStyles from '@/features/medical_documents/components/sections/RequirementItem.module.css';
 
-const MedicalRequirementRecycleBin = ({ recycleRequests, handleRestore, t }) => {
+export const MedicalRequirementRecycleBin = ({ recycleRequests, handleRestore, t }) => {
     if (recycleRequests.length === 0) {
         return (
             <div className={managerStyles.empty}>
@@ -54,4 +54,3 @@ const MedicalRequirementRecycleBin = ({ recycleRequests, handleRestore, t }) => 
     );
 };
 
-export default MedicalRequirementRecycleBin;

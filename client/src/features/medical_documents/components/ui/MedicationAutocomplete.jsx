@@ -12,7 +12,7 @@ import styles from './MedicationAutocomplete.module.css';
  * Search bar with live suggestions from the medical vademecum.
  * Part of the prescription and medical request management workflow.
  */
-const MedicationAutocomplete = ({
+export const MedicationAutocomplete = ({
     value,
     onChange,
     placeholder,
@@ -160,4 +160,3 @@ const MedicationAutocomplete = ({
     );
 };
 
-export default MedicationAutocomplete;

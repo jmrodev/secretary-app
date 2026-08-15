@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDashboardController } from './hooks/useDashboardController';
 import { DashboardReminders } from '@/features/dashboard/components/DashboardReminders';
-import MedicalRequirementManager from '@/features/medical_documents/components/ui/MedicalRequirementManager';
+import { MedicalRequirementManager } from '@/features/medical_documents/components/ui/MedicalRequirementManager';
 import { DashboardModalOrchestrator } from './components/DashboardModalOrchestrator';
 import MainLayout from '@/components/templates/MainLayout';
 import { Button } from '@/components/atoms/Button';

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useLicensesController } from '../hooks/useLicensesController';
-import MedicalHistoryTable from '../components/lists/MedicalHistoryTable';
-import EditLicenseModal from '../components/modals/EditLicenseModal';
-import MedicalRequestForm from '../components/forms/MedicalRequestForm';
+import { MedicalHistoryTable } from '../components/lists/MedicalHistoryTable';
+import { EditLicenseModal } from '../components/modals/EditLicenseModal';
+import { MedicalRequestForm } from '../components/forms/MedicalRequestForm';
 import { PatientSearchSelect } from '@/features/patients';
 import Modal from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
-const LicensesView = () => {
+export const LicensesView = () => {
     const controller = useLicensesController();
     const [isCreating, setIsCreating] = useState(false);
     
@@ -70,4 +70,3 @@ const LicensesView = () => {
     );
 };
 
-export default LicensesView;

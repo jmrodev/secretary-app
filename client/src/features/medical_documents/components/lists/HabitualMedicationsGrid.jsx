@@ -6,7 +6,7 @@ import { Button } from '@/components/atoms/Button';
  * Displays a grid of habitual medications for quick selection during prescription drafting.
  * Part of the item selection workflow in medical_documents.
  */
-const HabitualMedicationsGrid = ({ patientMeds, medicationItems, onSelect, baseClass, t }) => {
+export const HabitualMedicationsGrid = ({ patientMeds, medicationItems, onSelect, baseClass, t }) => {
     if (!patientMeds || patientMeds.length === 0) return null;
 
     return (
@@ -39,4 +39,3 @@ const HabitualMedicationsGrid = ({ patientMeds, medicationItems, onSelect, baseC
     );
 };
 
-export default HabitualMedicationsGrid;

@@ -4,7 +4,7 @@ import { Button } from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
 import styles from './MedicalRequirementActionModal.module.css';
 
-const MedicalRequirementActionModal = ({
+export const MedicalRequirementActionModal = ({
     actionModal,
     onClose,
     t,
@@ -50,4 +50,3 @@ const MedicalRequirementActionModal = ({
     );
 };
 
-export default MedicalRequirementActionModal;
