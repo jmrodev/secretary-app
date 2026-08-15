@@ -39,7 +39,7 @@ export const PatientManagerModal = ({
     } = controller;
 
     const title = isEdit ? t('edit_patient') : t('register_new_patient');
-    const baseClass = styles.root;
+    const baseClass = styles.PatientManagerModal__root;
 
     return (
         <Modal

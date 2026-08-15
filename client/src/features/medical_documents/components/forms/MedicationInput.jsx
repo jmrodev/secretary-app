@@ -27,12 +27,12 @@ export const MedicationInput = ({
     };
 
     return (
-        <div className={`${styles.root} ${className} animate-fade-in`}>
-            <div className={`${styles.header}`}>
-                <label className={`${styles.label}`}>
+        <div className={`${styles.MedicationInput__root} ${className} animate-fade-in`}>
+            <div className={`${styles.MedicationInput__header}`}>
+                <label className={`${styles.MedicationInput__label}`}>
                     {label}
                     {optional && (
-                        <span className={`${styles.optionalBadge}`}>Optional</span>
+                        <span className={`${styles.MedicationInput__optionalBadge}`}>Optional</span>
                     )}
                 </label>
             </div>
@@ -42,13 +42,13 @@ export const MedicationInput = ({
                 onChange={setSearchValue}
                 onSelectMedication={handleSelectMedication}
                 placeholder={placeholder}
-                className={`${styles.autocomplete}`}
+                className={`${styles.MedicationInput__autocomplete}`}
             />
 
             <MedicationList
                 medications={medications}
                 onRemove={onRemove}
-                className={`${styles.list}`}
+                className={`${styles.MedicationInput__list}`}
             />
         </div>
     );

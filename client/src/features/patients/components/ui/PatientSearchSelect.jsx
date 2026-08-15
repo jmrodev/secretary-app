@@ -50,13 +50,13 @@ export const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePati
         <AsyncSelect
             value={selectedOption}
             classNames={{
-                control: ({ isFocused }) => `${styles.control} ${isFocused ? styles.controlFocused : ''}`,
-                input: () => styles.input,
-                menu: () => styles.menu,
-                option: ({ isFocused, isSelected }) => `${styles.option} ${isFocused ? styles.optionFocused : ''} ${isSelected ? styles.optionSelected : ''}`,
-                placeholder: () => styles.placeholder,
-                singleValue: () => styles.singleValue,
-                valueContainer: () => styles.valueContainer
+                control: ({ isFocused }) => `${styles.PatientSearchSelect__control} ${isFocused ? styles.PatientSearchSelect__controlFocused : ''}`,
+                input: () => styles.PatientSearchSelect__input,
+                menu: () => styles.PatientSearchSelect__menu,
+                option: ({ isFocused, isSelected }) => `${styles.PatientSearchSelect__option} ${isFocused ? styles.PatientSearchSelect__optionFocused : ''} ${isSelected ? styles.PatientSearchSelect__optionSelected : ''}`,
+                placeholder: () => styles.PatientSearchSelect__placeholder,
+                singleValue: () => styles.PatientSearchSelect__singleValue,
+                valueContainer: () => styles.PatientSearchSelect__valueContainer
             }}
             defaultOptions={true}
             loadOptions={loadOptions}
@@ -64,7 +64,7 @@ export const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePati
             placeholder={finalPlaceholder}
             isClearable={true}
             noOptionsMessage={({ inputValue }) => (
-                <div className={`${styles.formSelectNoResults}`}>
+                <div className={`${styles.PatientSearchSelect__formSelectNoResults}`}>
                     <p>
                         {t('no_results_for')} "{inputValue}"
                     </p>

@@ -65,7 +65,7 @@ export const Calendar = ({
     };
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.Calendar__root}`}>
             {!hideNavigation && (
                 <CalendarHeader
                     month={months[viewDate.getMonth()]} year={viewDate.getFullYear()}
@@ -73,13 +73,13 @@ export const Calendar = ({
                 />
             )}
             {hideNavigation && (
-                <div className={`${styles.simpleTitle}`}>
+                <div className={`${styles.Calendar__simpleTitle}`}>
                     {months[viewDate.getMonth()]} {viewDate.getFullYear()}
                 </div>
             )}
-            <div className={`${styles.mainContainer}`}>
+            <div className={`${styles.Calendar__mainContainer}`}>
                 <DayHeaders daysOfWeek={daysOfWeek} />
-                <div className={`${styles.body}`}>
+                <div className={`${styles.Calendar__body}`}>
                     <CalendarGrid 
                         viewDate={viewDate}
                         selectedDate={selectedDate}

@@ -19,7 +19,7 @@ export const MedicationCard = ({
     canEdit,
     t
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.MedicationCard__root;
     const variantClass = isKnown ? `${baseClass}--known` : `${baseClass}--unknown`;
 
     return (

@@ -10,12 +10,12 @@ import styles from './PatientIdentityFields.module.css';
  */
 export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
     return (
-        <article className={`${styles.root}`}>
+        <article className={`${styles.PatientIdentityFields__root}`}>
             
 
-            <div className={`${styles.bento}`}>
-                <div className={`${styles.group} ${styles.groupSpan3}`}>
-                    <label className={`${styles.label}`}>{t('first_name')}</label>
+            <div className={`${styles.PatientIdentityFields__bento}`}>
+                <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan3}`}>
+                    <label className={`${styles.PatientIdentityFields__label}`}>{t('first_name')}</label>
                     <Input
                         name="first_name"
                         className="patient-identity-fields__field"
@@ -29,8 +29,8 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                         title="Debe contener solo letras y espacios"
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan3}`}>
-                    <label className={`${styles.label}`}>{t('last_name')}</label>
+                <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan3}`}>
+                    <label className={`${styles.PatientIdentityFields__label}`}>{t('last_name')}</label>
                     <Input
                         name="last_name"
                         className="patient-identity-fields__field"
@@ -44,8 +44,8 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                         title="Debe contener solo letras y espacios"
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan2}`}>
-                    <label className={`${styles.label}`}>{t('dni')}</label>
+                <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan2}`}>
+                    <label className={`${styles.PatientIdentityFields__label}`}>{t('dni')}</label>
                     <Input
                         name="dni"
                         className="patient-identity-fields__field"
@@ -60,8 +60,8 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                         title="Solo números y puntos. Ej: 12.345.678 o 12345678"
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan4}`}>
-                    <label className={`${styles.label}`}>{t('dob')}</label>
+                <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan4}`}>
+                    <label className={`${styles.PatientIdentityFields__label}`}>{t('dob')}</label>
                     <Input
                         type="date"
                         name="dob"

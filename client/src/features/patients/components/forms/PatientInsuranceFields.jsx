@@ -13,12 +13,12 @@ export const PatientInsuranceFields = ({ formData, updatePatientData, insurances
     const selectedInsurance = insurances.find(i => i.id === parseInt(formData.insurance_id));
 
     return (
-        <article className={`${styles.root}`}>
+        <article className={`${styles.PatientInsuranceFields__root}`}>
             
 
-            <div className={`${styles.bento}`}>
-                <div className={`${styles.group} ${styles.groupSpan7}`}>
-                    <label className={`${styles.label}`}>OS / Prepaga</label>
+            <div className={`${styles.PatientInsuranceFields__bento}`}>
+                <div className={`${styles.PatientInsuranceFields__group} ${styles.PatientInsuranceFields__groupSpan7}`}>
+                    <label className={`${styles.PatientInsuranceFields__label}`}>OS / Prepaga</label>
                     <Select
                         name="insurance_id"
                         value={formData.insurance_id || ''}
@@ -33,8 +33,8 @@ export const PatientInsuranceFields = ({ formData, updatePatientData, insurances
                     />
                 </div>
 
-                <div className={`${styles.group} ${styles.groupSpan5}`}>
-                    <label className={`${styles.label}`}>{t('affiliate_number')}</label>
+                <div className={`${styles.PatientInsuranceFields__group} ${styles.PatientInsuranceFields__groupSpan5}`}>
+                    <label className={`${styles.PatientInsuranceFields__label}`}>{t('affiliate_number')}</label>
                     <Input
                         name="affiliate_number"
                         className="patient-insurance-fields__field"
@@ -46,12 +46,12 @@ export const PatientInsuranceFields = ({ formData, updatePatientData, insurances
             </div>
 
             {formData.insurance_id && (
-                <div className={`${styles.statusCard}`}>
-                    <div className={`${styles.statusInfo}`}>
+                <div className={`${styles.PatientInsuranceFields__statusCard}`}>
+                    <div className={`${styles.PatientInsuranceFields__statusInfo}`}>
                         <Icon name="info" size="1.1rem" />
                         <div>
-                            <span className={`${styles.statusLabel}`}>{t('coverage_active')}</span>
-                            <p className={`${styles.statusDetail}`}>
+                            <span className={`${styles.PatientInsuranceFields__statusLabel}`}>{t('coverage_active')}</span>
+                            <p className={`${styles.PatientInsuranceFields__statusDetail}`}>
                                 {selectedInsurance?.name} - {t('requires_order_verification')}
                             </p>
                         </div>

@@ -39,7 +39,7 @@ export const RequestsPage = () => {
                 <div>
                     <section className="dashboard-layout__main dashboard-layout__main--full">
                         <article className="dashboard-card no-padding">
-                            <section className={`${styles.section}`}>
+                            <section className={`${styles.RequestsPage__section}`}>
                                 <MedicalRequirementManager user={user} />
                             </section>
                         </article>

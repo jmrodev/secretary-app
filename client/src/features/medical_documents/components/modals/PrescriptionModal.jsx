@@ -54,7 +54,7 @@ export const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onS
                 </div>
             }
         >
-            <section className={`${styles.root}`}>
+            <section className={`${styles.PrescriptionModal__root}`}>
                 <PrescriptionHabitualMeds
                     patientMeds={patientMeds}
                     historyMeds={historyMeds}

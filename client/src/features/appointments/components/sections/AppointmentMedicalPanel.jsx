@@ -15,7 +15,7 @@ export const AppointmentMedicalPanel = ({
     const showPrescribe = user.role === 'doctor' || user.role === 'admin' || canDeletePrescription;
     const isDoctorOrAdmin = user.role === 'doctor' || user.role === 'admin';
 
-    const baseClass = styles.root;
+    const baseClass = styles.AppointmentMedicalPanel__root;
 
     return (
         <section className={baseClass}>

@@ -148,35 +148,35 @@ export const PatientMedicationFormModal = ({
             title={initialData ? (t('edit_medication') || 'Editar Medicación') : (t('add_medication') || 'Agregar Medicación Habitual')}
             size="md"
         >
-            <form onSubmit={handleSubmit} className={styles.root}>
+            <form onSubmit={handleSubmit} className={styles.PatientMedicationFormModal__root}>
                 {/* Vademecum Autocomplete */}
-                <div className={styles.fieldGroup} ref={dropdownRef}>
-                    <label className={styles.label}>
+                <div className={styles.PatientMedicationFormModal__fieldGroup} ref={dropdownRef}>
+                    <label className={styles.PatientMedicationFormModal__label}>
                         {t('medication_name') || 'Nombre del Medicamento / Vademécum'} *
                     </label>
-                    <div className={styles.inputWrapper}>
+                    <div className={styles.PatientMedicationFormModal__inputWrapper}>
                         <input
                             type="text"
-                            className={styles.input}
+                            className={styles.PatientMedicationFormModal__input}
                             value={medName}
                             onChange={(e) => handleSearchVademecum(e.target.value)}
                             placeholder={t('search_medication_placeholder') || 'Buscar en Vademécum (ej: Atenix, Clonagin...)'}
                             required
                             autoComplete="off"
                         />
-                        {isSearching && <span className={styles.searchingSpinner} />}
+                        {isSearching && <span className={styles.PatientMedicationFormModal__searchingSpinner} />}
                     </div>
 
                     {showDropdown && (
-                        <ul className={styles.dropdown}>
+                        <ul className={styles.PatientMedicationFormModal__dropdown}>
                             {vademecumResults.map((item) => (
                                 <li
                                     key={item.id}
-                                    className={styles.dropdownItem}
+                                    className={styles.PatientMedicationFormModal__dropdownItem}
                                     onClick={() => handleSelectVademecumItem(item)}
                                 >
-                                    <div className={styles.itemTitle}>{item.name}</div>
-                                    <div className={styles.itemMeta}>
+                                    <div className={styles.PatientMedicationFormModal__itemTitle}>{item.name}</div>
+                                    <div className={styles.PatientMedicationFormModal__itemMeta}>
                                         {item.presentation} {item.drug ? `(${item.drug})` : ''} [{item.lab}]
                                     </div>
                                 </li>
@@ -186,22 +186,22 @@ export const PatientMedicationFormModal = ({
                 </div>
 
                 {/* Dose & Frequency Grid */}
-                <div className={styles.gridTwoCols}>
-                    <div className={styles.fieldGroup}>
-                        <label className={styles.label}>{t('dosage') || 'Dosis (ej: 50 mg, 1 comp.)'}</label>
+                <div className={styles.PatientMedicationFormModal__gridTwoCols}>
+                    <div className={styles.PatientMedicationFormModal__fieldGroup}>
+                        <label className={styles.PatientMedicationFormModal__label}>{t('dosage') || 'Dosis (ej: 50 mg, 1 comp.)'}</label>
                         <input
                             type="text"
-                            className={styles.input}
+                            className={styles.PatientMedicationFormModal__input}
                             value={dose}
                             onChange={(e) => setDose(e.target.value)}
                             placeholder="ej: 50 mg"
                         />
                     </div>
-                    <div className={styles.fieldGroup}>
-                        <label className={styles.label}>{t('frequency') || 'Frecuencia (ej: Cada 12 hs)'}</label>
+                    <div className={styles.PatientMedicationFormModal__fieldGroup}>
+                        <label className={styles.PatientMedicationFormModal__label}>{t('frequency') || 'Frecuencia (ej: Cada 12 hs)'}</label>
                         <input
                             type="text"
-                            className={styles.input}
+                            className={styles.PatientMedicationFormModal__input}
                             value={frequency}
                             onChange={(e) => setFrequency(e.target.value)}
                             placeholder="ej: Cada 24 hs por la mañana"
@@ -210,20 +210,20 @@ export const PatientMedicationFormModal = ({
                 </div>
 
                 {/* Boxes count & Chronic Checkbox */}
-                <div className={styles.gridTwoCols}>
-                    <div className={styles.fieldGroup}>
-                        <label className={styles.label}>{t('boxes_count') || 'Cantidad de Cajas'}</label>
+                <div className={styles.PatientMedicationFormModal__gridTwoCols}>
+                    <div className={styles.PatientMedicationFormModal__fieldGroup}>
+                        <label className={styles.PatientMedicationFormModal__label}>{t('boxes_count') || 'Cantidad de Cajas'}</label>
                         <input
                             type="number"
                             min="1"
                             max="10"
-                            className={styles.input}
+                            className={styles.PatientMedicationFormModal__input}
                             value={boxesCount}
                             onChange={(e) => setBoxesCount(e.target.value)}
                         />
                     </div>
-                    <div className={styles.fieldGroupCheck}>
-                        <label className={styles.checkLabel}>
+                    <div className={styles.PatientMedicationFormModal__fieldGroupCheck}>
+                        <label className={styles.PatientMedicationFormModal__checkLabel}>
                             <input
                                 type="checkbox"
                                 checked={isChronic}
@@ -235,10 +235,10 @@ export const PatientMedicationFormModal = ({
                 </div>
 
                 {/* Notes */}
-                <div className={styles.fieldGroup}>
-                    <label className={styles.label}>{t('notes') || 'Indicaciones / Observaciones'}</label>
+                <div className={styles.PatientMedicationFormModal__fieldGroup}>
+                    <label className={styles.PatientMedicationFormModal__label}>{t('notes') || 'Indicaciones / Observaciones'}</label>
                     <textarea
-                        className={styles.textarea}
+                        className={styles.PatientMedicationFormModal__textarea}
                         rows="2"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
@@ -247,7 +247,7 @@ export const PatientMedicationFormModal = ({
                 </div>
 
                 {/* Actions */}
-                <div className={styles.actions}>
+                <div className={styles.PatientMedicationFormModal__actions}>
                     <Button type="button" variant="secondary" onClick={onClose} disabled={saving}>
                         {t('cancel') || 'Cancelar'}
                     </Button>

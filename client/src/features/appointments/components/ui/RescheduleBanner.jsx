@@ -11,18 +11,18 @@ export const RescheduleBanner = ({ rescheduleAppt, onExit, t }) => {
     if (!rescheduleAppt) return null;
 
     return (
-        <div className={`${styles.root}`}>
-            <div className={`${styles.content}`}>
-                <Icon name="rocket_launch" className={`${styles.icon}`} />
+        <div className={`${styles.RescheduleBanner__root}`}>
+            <div className={`${styles.RescheduleBanner__content}`}>
+                <Icon name="rocket_launch" className={`${styles.RescheduleBanner__icon}`} />
                 <span>
-                    {t('rescheduling_mode')}: <strong className={`${styles.patient}`}>{rescheduleAppt.patient_name}</strong>. 
-                    <span className={`${styles.instruction}`}> {t('reschedule_instruction')}</span>
+                    {t('rescheduling_mode')}: <strong className={`${styles.RescheduleBanner__patient}`}>{rescheduleAppt.patient_name}</strong>. 
+                    <span className={`${styles.RescheduleBanner__instruction}`}> {t('reschedule_instruction')}</span>
                 </span>
             </div>
             <Button
                 variant="ghost"
                 size="sm"
-                className={`${styles.exitBtn}`}
+                className={`${styles.RescheduleBanner__exitBtn}`}
                 onClick={(e) => { e.preventDefault(); onExit(); }}
             >
                 {t('exit_reschedule')}

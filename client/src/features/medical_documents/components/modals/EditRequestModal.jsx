@@ -29,7 +29,7 @@ export const EditRequestModal = ({
             onClose={onClose}
             size="xl"
             title={
-                <div className={`${styles.titleFlex}`}>
+                <div className={`${styles.EditRequestModal__titleFlex}`}>
                     <Icon name="edit_note" size="1.5rem" color="var(--accent-color)" />
                     {t('edit_request')}
                 </div>
@@ -53,10 +53,10 @@ export const EditRequestModal = ({
                 )
             }
         >
-            <div className={`${styles.body}`}>
+            <div className={`${styles.EditRequestModal__body}`}>
                 {request.type === 'prescription' && editData.items && editData.items.length > 0 && (
-                    <div className={`${styles.section}`}>
-                        <div className={`${styles.prescriptions}`}>
+                    <div className={`${styles.EditRequestModal__section}`}>
+                        <div className={`${styles.EditRequestModal__prescriptions}`}>
                             <PrescriptionItemsList
                                 items={editData.items}
                                 handleRemoveItem={() => { }}
@@ -103,8 +103,8 @@ export const EditRequestModal = ({
                             <Icon name="payments" size="1rem" />
                             {t('appointment_payment')}
                         </label>
-                        <div className={`${styles.paymentStatus}`}>
-                            <label className={`${styles.checkboxContainer}`}>
+                        <div className={`${styles.EditRequestModal__paymentStatus}`}>
+                            <label className={`${styles.EditRequestModal__checkboxContainer}`}>
                                 <input
                                     type="checkbox"
                                     checked={editData.payment_status === 'bonified'}

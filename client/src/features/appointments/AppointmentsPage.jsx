@@ -91,12 +91,12 @@ export const AppointmentsPage = () => {
                 </div>
             }
         >
-            <div className={`${styles.root}  `}>
+            <div className={`${styles.AppointmentsPage__root}  `}>
                 <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={exitRescheduleMode} t={t} />
 
-                <section className={`${styles.main}`}>
+                <section className={`${styles.AppointmentsPage__main}`}>
                     {searchPatientId || searchTerm ? (
-                        <section className={`${styles.panelSearch} `}>
+                        <section className={`${styles.AppointmentsPage__panelSearch} `}>
                             <PatientHistoryView
                                 patientAppointments={searchPatientId ? patientAppointments : appointments} 
                                 loading={searchLoading}
@@ -107,8 +107,8 @@ export const AppointmentsPage = () => {
                             />
                         </section>
                     ) : (
-                        <div className={`${styles.mainGrid}`}>
-                            <section className={`${styles.panelCalendar}`}>
+                        <div className={`${styles.AppointmentsPage__mainGrid}`}>
+                            <section className={`${styles.AppointmentsPage__panelCalendar}`}>
                                 <CalendarSection
                                     selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
                                     appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
@@ -120,7 +120,7 @@ export const AppointmentsPage = () => {
                                 />
                             </section>
 
-                            <section className={`${styles.panelAgenda}`}>
+                            <section className={`${styles.AppointmentsPage__panelAgenda}`}>
                                 <ScheduleSection
                                     selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
                                     selectedDoctor={currentDoctor} viewDoctorId={viewDoctorId} appointments={appointments}

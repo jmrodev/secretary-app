@@ -21,7 +21,7 @@ const MessageBody = ({ body }) => {
                     href={href} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className={styles.link}
+                    className={styles.WhatsappChatHistory__link}
                 >
                     {part}
                 </a>
@@ -60,16 +60,16 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
     };
 
     return (
-        <section className={`${styles.root} ${hideHeader ? 'whatsapp-chat--no-header' : ''}`}>
-            <header className={`${styles.header}`}>
-                <div className={`${styles.headerInfo}`}>
+        <section className={`${styles.WhatsappChatHistory__root} ${hideHeader ? 'whatsapp-chat--no-header' : ''}`}>
+            <header className={`${styles.WhatsappChatHistory__header}`}>
+                <div className={`${styles.WhatsappChatHistory__headerInfo}`}>
                     <Icon name="whatsapp" size="1.2rem" />
-                    <h3 className={`${styles.title}`}>{t('whatsapp_history')}</h3>
-                    <div className={styles.phoneInputContainer} title="Teléfono WhatsMeow (ej: 54249...)">
+                    <h3 className={`${styles.WhatsappChatHistory__title}`}>{t('whatsapp_history')}</h3>
+                    <div className={styles.WhatsappChatHistory__phoneInputContainer} title="Teléfono WhatsMeow (ej: 54249...)">
                         <Icon name="edit" size="0.85rem" />
                         <input
                             type="text"
-                            className={styles.targetPhoneInput}
+                            className={styles.WhatsappChatHistory__targetPhoneInput}
                             value={targetPhoneInput}
                             onChange={(e) => handleTargetPhoneChange(e.target.value)}
                             placeholder="542494521825..."
@@ -85,26 +85,26 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                 </div>
             </header>
             
-            <div className={`${styles.messages}`}>
+            <div className={`${styles.WhatsappChatHistory__messages}`}>
                 {loading && messages.length === 0 ? (
                     <div className="whatsapp-chat__loading">{t('loading')}</div>
                 ) : messages.length === 0 ? (
-                    <div className={`${styles.empty}`}>{t('no_messages_yet')}</div>
+                    <div className={`${styles.WhatsappChatHistory__empty}`}>{t('no_messages_yet')}</div>
                 ) : (
                     messages.map((msg, index) => {
                         const showDate = index === 0 || formatDate(messages[index - 1].created_at) !== formatDate(msg.created_at);
                         const isOutbound = msg.direction === 'outbound';
                         return (
                             <React.Fragment key={msg.id}>
-                                {showDate && <div className={styles.dateDivider}><span>{formatDate(msg.created_at)}</span></div>}
-                                <div className={`${styles.bubbleWrapper} ${isOutbound ? styles.bubbleWrapperOutbound : styles.bubbleWrapperInbound}`}>
-                                    <div className={`${styles.bubble} ${isOutbound ? styles.bubbleOutbound : styles.bubbleInbound}`}>
-                                        <p className={styles.text}><MessageBody body={msg.body} /></p>
-                                        <div className={styles.meta}>
-                                            <span className={styles.time}>{formatTime(msg.created_at)}</span>
+                                {showDate && <div className={styles.WhatsappChatHistory__dateDivider}><span>{formatDate(msg.created_at)}</span></div>}
+                                <div className={`${styles.WhatsappChatHistory__bubbleWrapper} ${isOutbound ? styles.WhatsappChatHistory__bubbleWrapperOutbound : styles.WhatsappChatHistory__bubbleWrapperInbound}`}>
+                                    <div className={`${styles.WhatsappChatHistory__bubble} ${isOutbound ? styles.WhatsappChatHistory__bubbleOutbound : styles.WhatsappChatHistory__bubbleInbound}`}>
+                                        <p className={styles.WhatsappChatHistory__text}><MessageBody body={msg.body} /></p>
+                                        <div className={styles.WhatsappChatHistory__meta}>
+                                            <span className={styles.WhatsappChatHistory__time}>{formatTime(msg.created_at)}</span>
                                             {isOutbound && (
                                                 <span 
-                                                    className={`${styles.status} ${msg.status === 'delivered' ? styles.statusDelivered : msg.status === 'failed' ? styles.statusFailed : ''}`}
+                                                    className={`${styles.WhatsappChatHistory__status} ${msg.status === 'delivered' ? styles.WhatsappChatHistory__statusDelivered : msg.status === 'failed' ? styles.WhatsappChatHistory__statusFailed : ''}`}
                                                     title={msg.status === 'failed' ? 'Error al enviar por WhatsApp' : ''}
                                                 >
                                                     <Icon name={msg.status === 'delivered' ? 'done_all' : msg.status === 'failed' ? 'error_outline' : 'done'} size="12px" />
@@ -120,10 +120,10 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                 <div ref={messagesEndRef} />
             </div>
 
-            <form className={`${styles.inputArea}`} onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
+            <form className={`${styles.WhatsappChatHistory__inputArea}`} onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
                 <input
                     type="text"
-                    className={`${styles.input}`}
+                    className={`${styles.WhatsappChatHistory__input}`}
                     placeholder={t('write_message')}
                     value={newMessage}
                     onChange={(e) => dispatch({ type: 'SET_NEW_MESSAGE', payload: e.target.value })}
@@ -131,14 +131,14 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                 />
                 <button 
                     type="button" 
-                    className={`${styles.aiBtn} ${aiLoading ? styles.aiBtnLoading : ''}`}
+                    className={`${styles.WhatsappChatHistory__aiBtn} ${aiLoading ? styles.WhatsappChatHistory__aiBtnLoading : ''}`}
                     onClick={handleGetAiSuggestion}
                     title={t('ai_suggestion')}
                     disabled={aiLoading || sending}
                 >
                     <Icon name="auto_awesome" size="1.2rem" />
                 </button>
-                <button type="submit" className={`${styles.sendBtn}`} disabled={sending || !newMessage.trim()}>
+                <button type="submit" className={`${styles.WhatsappChatHistory__sendBtn}`} disabled={sending || !newMessage.trim()}>
                     <Icon name="send" size="1.2rem" />
                 </button>
             </form>

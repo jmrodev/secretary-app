@@ -12,7 +12,7 @@ export const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
     if (!items || items.length === 0) return null;
 
     return (
-        <ul className={`${baseClass ? `${baseClass}__med-list` : styles.root} animate-fade-in`}>
+        <ul className={`${baseClass ? `${baseClass}__med-list` : styles.MedicationItemsSummary__root} animate-fade-in`}>
             {items.map((item, idx) => (
                 <li key={item.id || `${item.name}-${idx}`} className={`${baseClass ? `${baseClass}__med-item` : ''} medication-items-summary__item`}>
                     <div className={`${baseClass ? `${baseClass}__med-info` : ''} medication-items-summary__info`}>
@@ -26,7 +26,7 @@ export const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
                         size="sm-compact"
                         onClick={() => onRemove(idx)}
                         icon={<Icon name="close" size="1.1rem" color="var(--error)" />}
-                        className={`${styles.removeBtn}`}
+                        className={`${styles.MedicationItemsSummary__removeBtn}`}
                     />
                 </li>
             ))}

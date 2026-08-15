@@ -1,6 +1,6 @@
 /* DayScheduleHeader Block Styles (BEM) - Dark Mode Standard */
 
-.root {
+.DayScheduleHeader__root {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -12,13 +12,13 @@
     flex-wrap: wrap;
 }
 
-.titleGroup {
+.DayScheduleHeader__titleGroup {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-.title {
+.DayScheduleHeader__title {
     margin: 0;
     font-family: var(--font-newsreader);
     font-size: 1.25rem;
@@ -28,7 +28,7 @@
     font-style: italic;
 }
 
-.clock {
+.DayScheduleHeader__clock {
     font-size: 1rem;
     font-weight: 500;
     color: var(--text-muted);
@@ -37,7 +37,7 @@
 }
 
 
-.holidayBadge {
+.DayScheduleHeader__holidayBadge {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -52,7 +52,7 @@
     letter-spacing: 0.05em;
 }
 
-.nav {
+.DayScheduleHeader__nav {
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -60,14 +60,14 @@
     /* Container only manages layout, not child styling */
 }
 
-.toolbar {
+.DayScheduleHeader__toolbar {
     display: flex;
     align-items: center;
     gap: 1.5rem;
     margin-left: auto;
 }
 
-.controls {
+.DayScheduleHeader__controls {
     display: flex;
     align-items: center;
     gap: 1.25rem;
@@ -75,12 +75,12 @@
 
 
 @media (width <= 1024px) {
-    .root {
+    .DayScheduleHeader__root {
         flex-direction: column;
         align-items: flex-start;
     }
     
-    .toolbar {
+    .DayScheduleHeader__toolbar {
         margin-left: 0;
         width: 100%;
         justify-content: space-between;

@@ -1,6 +1,6 @@
 /* DaySchedule Styles (BEM Orchestrator) */
 
-.root {
+.DaySchedule__root {
     display: flex;
     flex-direction: column;
     padding: 0;
@@ -17,17 +17,17 @@
 */
 
 /* Table view overrides within DaySchedule context */
-.tableEmpty {
+.DaySchedule__tableEmpty {
     padding: 4rem 2rem;
 }
 
-.tableContainer {
+.DaySchedule__tableContainer {
     margin-top: 0.5rem;
 }
 
 
 @media (width <= 600px) {
-    .root {
+    .DaySchedule__root {
         gap: 1rem;
     }
 }

@@ -1,4 +1,4 @@
-.content {
+.AppointmentActionModal__content {
     /* --- Local Component Tokens --- */
     --modal-panel-bg: var(--glass);
     --modal-panel-border: var(--border-color);
@@ -13,7 +13,7 @@
 }
 
 /* Grouping panels to match Form Modal */
-.reason {
+.AppointmentActionModal__reason {
     background-color: var(--modal-panel-bg);
     backdrop-filter: blur(16px);
     padding: 1rem; /* Compact padding */
@@ -24,14 +24,14 @@
     transition: all 0.2s ease;
 }
 
-.text {
+.AppointmentActionModal__text {
     font-size: 0.9rem; /* Slightly smaller text */
     color: var(--text-main);
     margin: 0;
     line-height: 1.4;
 }
 
-.strong {
+.AppointmentActionModal__strong {
     font-weight: 900;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -41,11 +41,11 @@
     margin-bottom: 0.2rem;
 }
 
-.syncContainer {
+.AppointmentActionModal__syncContainer {
     padding-top: 0.25rem;
 }
 
-.syncBtn {
+.AppointmentActionModal__syncBtn {
     width: 100%;
     padding: 0.5rem !important;
 }

@@ -45,7 +45,7 @@ export const ScheduleTimeline = ({
 
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.ScheduleTimeline__root}`}>
             {filteredSlots.map((slot, index) => {
                 const { slotApps, type, isBlockedByGoogle, time } = slot;
                 const isSlotClosed = type === 'closed';
@@ -88,13 +88,13 @@ export const ScheduleTimeline = ({
                 return (
                     <div key={timeKey} style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
                         {isCurrentSlot && (
-                            <div ref={markerRef} className={styles.currentTimeLine} style={{ top: `${progressPercent}%`, left: 0, right: 0 }}>
-                                <div className={styles.currentTimeLineLabel}>AHORA</div>
-                                <div className={styles.currentTimeLineBar}></div>
+                            <div ref={markerRef} className={styles.ScheduleTimeline__currentTimeLine} style={{ top: `${progressPercent}%`, left: 0, right: 0 }}>
+                                <div className={styles.ScheduleTimeline__currentTimeLineLabel}>AHORA</div>
+                                <div className={styles.ScheduleTimeline__currentTimeLineBar}></div>
                             </div>
                         )}
                         {isBlockedByGoogle ? (
-                            <div className={`${styles.googleBlocked}`}>
+                            <div className={`${styles.ScheduleTimeline__googleBlocked}`}>
                                 <Icon name="lock" size="1.2rem" />
                                 <span>Bloqueado</span>
                             </div>
@@ -113,21 +113,21 @@ export const ScheduleTimeline = ({
                             })
                         ) : !isBlocked && (
                             <div
-                                className={`${styles.availableCard} ${isSlotClosed ? styles.availableClosed : ''}`}
+                                className={`${styles.ScheduleTimeline__availableCard} ${isSlotClosed ? styles.ScheduleTimeline__availableClosed : ''}`}
                                 onClick={() => onSlotAction(slot)}
                                 onKeyDown={handleKeyDown}
                                 role="button"
                                 tabIndex={0}
                                 aria-label={`${t('available')} ${formatTime(time)}`}
                             >
-                                <div className={styles.availableTimeTop}>
+                                <div className={styles.ScheduleTimeline__availableTimeTop}>
                                     {formatTime(time)}
                                 </div>
-                                <div className={styles.availableBody}>
-                                    <span className={`${styles.availableIcon}`}>
+                                <div className={styles.ScheduleTimeline__availableBody}>
+                                    <span className={`${styles.ScheduleTimeline__availableIcon}`}>
                                         <Icon name={isSlotClosed ? 'lock' : 'add'} size="1.5rem" />
                                     </span>
-                                    <span className={`${styles.availableLabel}`}>
+                                    <span className={`${styles.ScheduleTimeline__availableLabel}`}>
                                         {isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
                                     </span>
                                 </div>
@@ -139,9 +139,9 @@ export const ScheduleTimeline = ({
             
             {/* If it's today and marker was never rendered, it means all slots are in the past. Render at the very end. */}
             {isTodaySchedule && !timeMarkerRendered && (
-                <div ref={markerRef} className={styles.currentTimeLine}>
-                    <div className={styles.currentTimeLineLabel}>AHORA</div>
-                    <div className={styles.currentTimeLineBar}></div>
+                <div ref={markerRef} className={styles.ScheduleTimeline__currentTimeLine}>
+                    <div className={styles.ScheduleTimeline__currentTimeLineLabel}>AHORA</div>
+                    <div className={styles.ScheduleTimeline__currentTimeLineBar}></div>
                 </div>
             )}
         </div>

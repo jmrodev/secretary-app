@@ -1,26 +1,26 @@
 /* AppointmentPatientSection Molecule Styles (BEM) - Dark Mode Standard */
 
-.root {
+.AppointmentPatientSection__root {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     grid-column: 1 / -1;
 }
 
-.fieldsRow {
+.AppointmentPatientSection__fieldsRow {
     display: flex;
     gap: 1.5rem;
     align-items: flex-start;
     flex-wrap: wrap;
 }
 
-.searchGroup {
+.AppointmentPatientSection__searchGroup {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.groupLabel {
+.AppointmentPatientSection__groupLabel {
     font-size: 0.75rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -29,7 +29,7 @@
 }
 
 /* Missing Data Alert */
-.missingAlert {
+.AppointmentPatientSection__missingAlert {
     display: flex; 
     justify-content: space-between; 
     align-items: center;
@@ -42,7 +42,7 @@
     animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 
-.missingText { 
+.AppointmentPatientSection__missingText { 
     color: var(--danger); 
     font-weight: 600;
     display: flex;
@@ -50,7 +50,7 @@
     gap: 0.5rem;
 }
 
-.missingAction { 
+.AppointmentPatientSection__missingAction { 
     background: none; 
     border: none; 
     font-weight: 800; 

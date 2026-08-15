@@ -1,27 +1,27 @@
 /* PatientManagerModal Styles (BEM) - Feature Specific */
 
-.root {
+.PatientManagerModal__root {
     display: flex;
     flex-direction: column;
 }
 
 /* Eliminar márgenes del modal body para que el formulario use todo el ancho */
-.modalBody {
+.PatientManagerModal__modalBody {
     padding: 0 !important;
 }
 
-.fullWidth {
+.PatientManagerModal__fullWidth {
     width: 100%;
 }
 
-.loading {
+.PatientManagerModal__loading {
     padding: 3rem;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.reference {
+.PatientManagerModal__reference {
     margin: 1rem;
     padding: 1rem;
     background-color: rgb(255 251 235 / 20%);
@@ -32,7 +32,7 @@
     animation: fade-in 0.4s ease-out;
 }
 
-.referenceLabel {
+.PatientManagerModal__referenceLabel {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -43,7 +43,7 @@
     margin-bottom: 0.5rem;
 }
 
-.referenceContent {
+.PatientManagerModal__referenceContent {
     font-size: 0.9rem;
     color: var(--amber-900);
     line-height: 1.5;

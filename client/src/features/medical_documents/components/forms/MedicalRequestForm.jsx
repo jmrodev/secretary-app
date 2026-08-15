@@ -55,8 +55,8 @@ export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, loc
     if (user?.role !== 'secretary' && user?.role !== 'doctor') return null;
 
     const formContent = (
-        <form onSubmit={handleSubmit} className={styles.root}>
-            <div className={`${styles.row} ${styles.row2}`}>
+        <form onSubmit={handleSubmit} className={styles.MedicalRequestForm__root}>
+            <div className={`${styles.MedicalRequestForm__row} ${styles.MedicalRequestForm__row2}`}>
                 {!lockedType && (
                     <Select
                         value={reqType}
@@ -84,7 +84,7 @@ export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, loc
                     />
 
                     {isExpired && reqType === 'prescription' && (
-                        <div className={styles.badgeWrapper}>
+                        <div className={styles.MedicalRequestForm__badgeWrapper}>
                             <Badge variant="warning">
                                 <Icon name="warning" size="1rem" />
                                 {t('patient_has_valid_until') || 'Cobertura sugerida hasta'}: {formatDate(patientData.next_suggested_prescription_date)}
@@ -101,7 +101,7 @@ export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, loc
                         patientMeds={patientMeds}
                         medicationItems={medicationItems}
                         setMedicationItems={setMedicationItems}
-                        baseClass={styles.root}
+                        baseClass={styles.MedicalRequestForm__root}
                         {...tempMedsProps}
                     />
                 ) : (
@@ -110,40 +110,40 @@ export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, loc
                         reqNote={reqNote}
                         setReqNote={setReqNote}
                         t={t}
-                        baseClass={styles.root}
+                        baseClass={styles.MedicalRequestForm__root}
                     />
                 )}
             </div>
 
-            <div className={styles.panel}>
-                <div className={styles.panelItem}>
+            <div className={styles.MedicalRequestForm__panel}>
+                <div className={styles.MedicalRequestForm__panelItem}>
                     <input
                         type="checkbox"
                         id="req-forward"
-                        className={styles.checkbox}
+                        className={styles.MedicalRequestForm__checkbox}
                         checked={sendToDoctor}
                         onChange={e => setSendToDoctor(e.target.checked)}
                     />
-                    <label htmlFor="req-forward" className={styles.panelLabel}>
+                    <label htmlFor="req-forward" className={styles.MedicalRequestForm__panelLabel}>
                         {t('send_to_doctor') === 'send_to_doctor' ? 'Enviar a revisión médica' : t('send_to_doctor')}
                     </label>
                 </div>
 
-                <div className={styles.panelItem}>
+                <div className={styles.MedicalRequestForm__panelItem}>
                     <input
                         type="checkbox"
                         id="bonified-req"
-                        className={styles.checkbox}
+                        className={styles.MedicalRequestForm__checkbox}
                         checked={bonified}
                         onChange={e => setBonified(e.target.checked)}
                     />
-                    <label htmlFor="bonified-req" className={styles.panelLabel}>
+                    <label htmlFor="bonified-req" className={styles.MedicalRequestForm__panelLabel}>
                         {t('bonified_request') === 'bonified_request' ? 'Solicitud Bonificada' : t('bonified_request')}
                     </label>
                 </div>
             </div>
 
-            <footer className={styles.footer}>
+            <footer className={styles.MedicalRequestForm__footer}>
                 <Button
                     type="submit"
                     disabled={isSubmitting}
@@ -159,7 +159,7 @@ export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, loc
     if (noCard) return formContent;
 
     return (
-        <Card title={t('new_request')} className={`${styles.medicalRequestCard}`}>
+        <Card title={t('new_request')} className={`${styles.MedicalRequestForm__medicalRequestCard}`}>
             {formContent}
         </Card>
     );

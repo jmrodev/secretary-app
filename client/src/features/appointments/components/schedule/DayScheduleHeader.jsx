@@ -15,29 +15,29 @@ export const DayScheduleHeader = ({
     onPrevDay, onToday, onNextDay, onPrint, onNextFreeSlot: _onNextFreeSlot, t
 }) => {
     return (
-        <header className={`${styles.root}`}>
-            <div className={`${styles.titleGroup}`}>
-                <h3 className={`${styles.title}`}>
+        <header className={`${styles.DayScheduleHeader__root}`}>
+            <div className={`${styles.DayScheduleHeader__titleGroup}`}>
+                <h3 className={`${styles.DayScheduleHeader__title}`}>
                     {formatDate(date, { weekday: true, monthName: true, hideYear: true })}
                 </h3>
-                <LiveClock hideDate={true} className={`${styles.clock}`} />
+                <LiveClock hideDate={true} className={`${styles.DayScheduleHeader__clock}`} />
                 {holiday && (
-                    <span className={`${styles.holidayBadge}`}>
+                    <span className={`${styles.DayScheduleHeader__holidayBadge}`}>
                         <Icon name="beach_access" />
                         <span>{holiday.description}</span>
                     </span>
                 )}
             </div>
 
-            <div className={`${styles.nav}`}>
+            <div className={`${styles.DayScheduleHeader__nav}`}>
                 <Button variant="ghost" size="sm-compact" onClick={onPrevDay} icon={<Icon name="chevron_left" />} />
                 <Button variant="ghost" size="sm-compact" onClick={onToday}>{t('today')}</Button>
                 <Button variant="ghost" size="sm-compact" onClick={onNextDay} icon={<Icon name="chevron_right" />} />
             </div>
 
-            <div className={`${styles.toolbar}`}>
+            <div className={`${styles.DayScheduleHeader__toolbar}`}>
 
-                <div className={`${styles.controls}`}>
+                <div className={`${styles.DayScheduleHeader__controls}`}>
                     <Switch label={t('show_out_of_hours')} checked={showOutOfHours} onChange={setShowOutOfHours} />
                     <Switch label={t('show_cancelled')} checked={showCancelled} onChange={setShowCancelled} />
                 </div>

@@ -22,9 +22,9 @@ export const PatientHistoryTable = ({ details, t, onPayDebt }) => {
             </header>
             <div className="patient-details__block-content">
                 {details.appointments && details.appointments.length > 0 ? (
-                    <div className={`${styles.historyContainer}`}>
-                        <table className={`${styles.historyTable}`}>
-                            <thead className={`${styles.historyHeader}`}>
+                    <div className={`${styles.PatientHistoryTable__historyContainer}`}>
+                        <table className={`${styles.PatientHistoryTable__historyTable}`}>
+                            <thead className={`${styles.PatientHistoryTable__historyHeader}`}>
                                 <tr>
                                     <th className="patient-details__history-th">{t('appointment_date')}</th>
                                     <th className="patient-details__history-th">{t('appointment_doctor')}</th>
@@ -42,33 +42,33 @@ export const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                     const pendingVal = isPaid ? 0 : Math.max(0, costVal - paidVal);
 
                                     return (
-                                        <tr key={app.id} className={`${styles.historyRow}`}>
-                                            <td className={`${styles.historyCell}`}>
-                                                <div className={`${styles.tableCellDateBox}`}>
-                                                    <div className={`${styles.tableCellDateMain}`}>{formatDate(app.appointment_date)}</div>
-                                                    <div className={`${styles.tableCellDateSub}`}>
+                                        <tr key={app.id} className={`${styles.PatientHistoryTable__historyRow}`}>
+                                            <td className={`${styles.PatientHistoryTable__historyCell}`}>
+                                                <div className={`${styles.PatientHistoryTable__tableCellDateBox}`}>
+                                                    <div className={`${styles.PatientHistoryTable__tableCellDateMain}`}>{formatDate(app.appointment_date)}</div>
+                                                    <div className={`${styles.PatientHistoryTable__tableCellDateSub}`}>
                                                         {formatTime(app.appointment_date)}
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className={`${styles.historyCell}`}>{app.doctor_name || '—'}</td>
-                                            <td className={`${styles.historyCell}`}>
-                                                <span className={`${styles.statusTag} status-${app.status}`}>
+                                            <td className={`${styles.PatientHistoryTable__historyCell}`}>{app.doctor_name || '—'}</td>
+                                            <td className={`${styles.PatientHistoryTable__historyCell}`}>
+                                                <span className={`${styles.PatientHistoryTable__statusTag} status-${app.status}`}>
                                                     {t(app.status) || app.status}
                                                 </span>
                                             </td>
-                                            <td className={`${styles.historyCell} ${isPaid ? styles.historyCellSuccess : ''} ${styles.tableCellBold}`}>
+                                            <td className={`${styles.PatientHistoryTable__historyCell} ${isPaid ? styles.PatientHistoryTable__historyCellSuccess : ''} ${styles.PatientHistoryTable__tableCellBold}`}>
                                                 {isPaid ? `$${costVal.toLocaleString()}` : (paidVal > 0 ? `$${paidVal.toLocaleString()}` : '-')}
                                             </td>
-                                            <td className={`${styles.historyCell}`}>
-                                                <div className={`${styles.tableCellBold} ${pendingVal > 0 ? styles.tableCellBoldDanger : styles.tableCellBoldMuted}`}>
+                                            <td className={`${styles.PatientHistoryTable__historyCell}`}>
+                                                <div className={`${styles.PatientHistoryTable__tableCellBold} ${pendingVal > 0 ? styles.PatientHistoryTable__tableCellBoldDanger : styles.PatientHistoryTable__tableCellBoldMuted}`}>
                                                     {pendingVal > 0 ? `$${pendingVal.toLocaleString()}` : '$0'}
                                                     {pendingVal > 0 && (
-                                                        <div className={`${styles.payAction}`}>
+                                                        <div className={`${styles.PatientHistoryTable__payAction}`}>
                                                             <Button
                                                                 size="sm-compact"
                                                                 variant="ghost"
-                                                                className={`${styles.payBtnMini}`}
+                                                                className={`${styles.PatientHistoryTable__payBtnMini}`}
                                                                 onClick={() => onPayDebt(null, details.id, pendingVal)}
                                                                 icon={<Icon name="payments" size="0.8rem" />}
                                                             >
@@ -78,18 +78,18 @@ export const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                     )}
                                                 </div>
                                             </td>
-                                        <td className={`${styles.historyCell}`}>
-                                            <div className={`${styles.tableCellReason}`}>
+                                        <td className={`${styles.PatientHistoryTable__historyCell}`}>
+                                            <div className={`${styles.PatientHistoryTable__tableCellReason}`}>
                                                 {app.reason}
                                                 {app.cancellation_reason && (
-                                                    <div className={`${styles.cancelReason}`}>
+                                                    <div className={`${styles.PatientHistoryTable__cancelReason}`}>
                                                         <Icon name="block" size="0.8rem" />
                                                         {app.cancellation_reason}
                                                     </div>
                                                 )}
                                                 {app.rescheduled_from_date && (
                                                     <div 
-                                                        className={`${styles.rescheduleInfo}`} 
+                                                        className={`${styles.PatientHistoryTable__rescheduleInfo}`} 
                                                         title={`${t('originally_for') || 'Originalmente para'} ${formatDateTimeLong(app.rescheduled_from_date)}`}
                                                         suppressHydrationWarning
                                                     >
@@ -106,7 +106,7 @@ export const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                         </table>
                     </div>
                 ) : (
-                    <div className={`${styles.historyEmptyState}`}>
+                    <div className={`${styles.PatientHistoryTable__historyEmptyState}`}>
                         {t('no_history')}
                     </div>
                 )}

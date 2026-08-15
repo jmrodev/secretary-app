@@ -9,11 +9,11 @@ import styles from './AppointmentSyncAlert.module.css';
 export const AppointmentSyncAlert = ({ info }) => {
     if (!info) return null;
     return (
-        <div className={`${styles.root}`}>
-            <Icon name="auto_awesome" size="1.2rem" className={`${styles.icon}`} />
-            <div className={`${styles.content}`}>
-                <span className={`${styles.title}`}>Ajuste de Calendario Google</span>
-                <p className={`${styles.text}`}>Completando turno para: <em>{info}</em></p>
+        <div className={`${styles.AppointmentSyncAlert__root}`}>
+            <Icon name="auto_awesome" size="1.2rem" className={`${styles.AppointmentSyncAlert__icon}`} />
+            <div className={`${styles.AppointmentSyncAlert__content}`}>
+                <span className={`${styles.AppointmentSyncAlert__title}`}>Ajuste de Calendario Google</span>
+                <p className={`${styles.AppointmentSyncAlert__text}`}>Completando turno para: <em>{info}</em></p>
             </div>
         </div>
     );

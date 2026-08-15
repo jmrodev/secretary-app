@@ -24,9 +24,9 @@ export const PrescriptionItemsList = ({
     canAdd, daysSupply: _daysSupply, refillDateStr: _refillDateStr, freqPresets
 }) => {
     return (
-        <div className={styles.container}>
-            <div className={styles.tableWrapper} style={{ overflow: 'visible' }}>
-                <table className={styles.table}>
+        <div className={styles.PrescriptionItemsList__container}>
+            <div className={styles.PrescriptionItemsList__tableWrapper} style={{ overflow: 'visible' }}>
+                <table className={styles.PrescriptionItemsList__table}>
                     <thead>
                         <tr>
                             <th style={{ width: '32%' }}>Medicamento</th>
@@ -35,14 +35,14 @@ export const PrescriptionItemsList = ({
                             <th style={{ width: '15%' }}>Cant/Caja</th>
                             <th style={{ width: '15%' }}>Envases</th>
                             <th style={{ width: '15%' }}>Duración</th>
-                            <th className={styles.actionsCol}></th>
+                            <th className={styles.PrescriptionItemsList__actionsCol}></th>
                         </tr>
                     </thead>
                     <tbody>
                         {/* Inline Form Row */}
                         {!_readOnly && (
-                            <tr className={styles.formRow}>
-                                <td className={styles.formCell}>
+                            <tr className={styles.PrescriptionItemsList__formRow}>
+                                <td className={styles.PrescriptionItemsList__formCell}>
                                     <MedicationAutocomplete
                                         value={tempMed}
                                         onChange={setTempMed}
@@ -50,7 +50,7 @@ export const PrescriptionItemsList = ({
                                         onSelectMedication={handleSelectMedication}
                                     />
                                 </td>
-                                <td className={styles.formCell}>
+                                <td className={styles.PrescriptionItemsList__formCell}>
                                     <Input
                                         placeholder={t('dose_placeholder') || 'Dosis'}
                                         value={tempDose}
@@ -58,7 +58,7 @@ export const PrescriptionItemsList = ({
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
                                     />
                                 </td>
-                                <td className={styles.formCell}>
+                                <td className={styles.PrescriptionItemsList__formCell}>
                                     <select
                                         className={`${inputStyles.root} ${inputStyles.sm}`}
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
@@ -74,7 +74,7 @@ export const PrescriptionItemsList = ({
                                         })}
                                     </select>
                                 </td>
-                                <td className={styles.formCell}>
+                                <td className={styles.PrescriptionItemsList__formCell}>
                                     <select
                                         className={`${inputStyles.root} ${inputStyles.sm}`}
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '100%', textAlign: 'center' }}
@@ -87,8 +87,8 @@ export const PrescriptionItemsList = ({
                                         ))}
                                     </select>
                                 </td>
-                                <td className={styles.formCell}>
-                                    <div className={styles.qtyInputs} style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'nowrap' }}>
+                                <td className={styles.PrescriptionItemsList__formCell}>
+                                    <div className={styles.PrescriptionItemsList__qtyInputs} style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'nowrap' }}>
                                         <select
                                             className={`${inputStyles.root} ${inputStyles.sm}`}
                                             style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '55px', textAlign: 'center' }}
@@ -103,7 +103,7 @@ export const PrescriptionItemsList = ({
                                         </select>
                                     </div>
                                 </td>
-                                <td className={styles.formCell} style={{ textAlign: 'center' }}>
+                                <td className={styles.PrescriptionItemsList__formCell} style={{ textAlign: 'center' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', justifyContent: 'center', flexWrap: 'nowrap' }}>
                                         <Input
                                             value={tempDays}
@@ -115,7 +115,7 @@ export const PrescriptionItemsList = ({
                                         <span style={{ fontSize: '0.75rem', color: 'rgb(255 255 255 / 50%)', whiteSpace: 'nowrap' }}>días</span>
                                     </div>
                                 </td>
-                                <td className={styles.actionsCol}>
+                                <td className={styles.PrescriptionItemsList__actionsCol}>
                                     <Button
                                         type="button"
                                         variant="primary"
@@ -134,37 +134,37 @@ export const PrescriptionItemsList = ({
                         {/* Added Items */}
                         {items && items.map((item, idx) => (
                             <tr key={item._id || idx} className="animate-slide-in">
-                                <td className={styles.nameCell}>
-                                    <span className={styles.name}>{item.name}</span>
+                                <td className={styles.PrescriptionItemsList__nameCell}>
+                                    <span className={styles.PrescriptionItemsList__name}>{item.name}</span>
                                 </td>
-                                <td className={styles.metaCell}>
-                                    {item.dose && <span className={styles.dose}>{item.dose}</span>}
+                                <td className={styles.PrescriptionItemsList__metaCell}>
+                                    {item.dose && <span className={styles.PrescriptionItemsList__dose}>{item.dose}</span>}
                                 </td>
-                                <td className={styles.metaCell}>
-                                    <div className={styles.metaItem}>
+                                <td className={styles.PrescriptionItemsList__metaCell}>
+                                    <div className={styles.PrescriptionItemsList__metaItem}>
                                         <Icon name="schedule" size="0.9rem" />
                                         {item.frequency}
                                     </div>
                                 </td>
-                                <td className={styles.metaCell}>
+                                <td className={styles.PrescriptionItemsList__metaCell}>
                                     {item.units_per_box ? `${item.units_per_box} u.` : '-'}
                                 </td>
-                                <td className={styles.metaCell}>
+                                <td className={styles.PrescriptionItemsList__metaCell}>
                                     {item.quantity && item.quantity !== '0' && (
-                                        <div className={styles.metaItem}>
+                                        <div className={styles.PrescriptionItemsList__metaItem}>
                                             <Icon name="inventory_2" size="0.9rem" />
                                             {item.quantity} {parseInt(item.quantity) === 1 ? (t('box') || 'caja') : (t('boxes_plural') || 'cajas')}
                                         </div>
                                     )}
                                 </td>
-                                <td className={styles.metaCell} style={{ textAlign: 'center' }}>
+                                <td className={styles.PrescriptionItemsList__metaCell} style={{ textAlign: 'center' }}>
                                     {item.days_supply && (
-                                        <div className={`${styles.metaItem} ${styles.daysSupply}`} style={{ justifyContent: 'center' }}>
+                                        <div className={`${styles.PrescriptionItemsList__metaItem} ${styles.PrescriptionItemsList__daysSupply}`} style={{ justifyContent: 'center' }}>
                                             ~{item.days_supply} {t('days') || 'días'}
                                         </div>
                                     )}
                                 </td>
-                                <td className={styles.actionsCol}>
+                                <td className={styles.PrescriptionItemsList__actionsCol}>
                                     <Button
                                         variant="danger"
                                         size="sm"

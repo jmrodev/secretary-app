@@ -10,12 +10,12 @@ import styles from './PatientAccountFields.module.css';
  */
 export const PatientAccountFields = ({ formData, updatePatientData, t }) => {
     return (
-        <article className={`${styles.root}`}>
+        <article className={`${styles.PatientAccountFields__root}`}>
             
 
-            <div className={`${styles.bento}`}>
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
-                    <label className={`${styles.label}`}>{t('username')}</label>
+            <div className={`${styles.PatientAccountFields__bento}`}>
+                <div className={`${styles.PatientAccountFields__group} ${styles.PatientAccountFields__groupSpan6}`}>
+                    <label className={`${styles.PatientAccountFields__label}`}>{t('username')}</label>
                     <Input
                         type="text"
                         name="username"
@@ -27,8 +27,8 @@ export const PatientAccountFields = ({ formData, updatePatientData, t }) => {
                         placeholder={t('username_placeholder')}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
-                    <label className={`${styles.label}`}>{t('password')}</label>
+                <div className={`${styles.PatientAccountFields__group} ${styles.PatientAccountFields__groupSpan6}`}>
+                    <label className={`${styles.PatientAccountFields__label}`}>{t('password')}</label>
                     <Input
                         type="password"
                         name="password"
@@ -42,7 +42,7 @@ export const PatientAccountFields = ({ formData, updatePatientData, t }) => {
                 </div>
             </div>
 
-            <footer className={`${styles.securityNote}`}>
+            <footer className={`${styles.PatientAccountFields__securityNote}`}>
                 <Icon name="security" size="1rem" />
                 <p>{t('account_security_note')}</p>
             </footer>

@@ -8,14 +8,14 @@ import styles from './RequirementDetailHeader.module.css';
  */
 export const RequirementDetailHeader = ({ selectedRequest }) => {
     return (
-        <header className={`${styles.header} animate-fade-in`}>
-            <div className={`${styles.patient}`}>
-                <span className={`${styles.patientName}`}>{selectedRequest.patient_name}</span>
+        <header className={`${styles.RequirementDetailHeader__header} animate-fade-in`}>
+            <div className={`${styles.RequirementDetailHeader__patient}`}>
+                <span className={`${styles.RequirementDetailHeader__patientName}`}>{selectedRequest.patient_name}</span>
                 {selectedRequest.patient_dni && (
-                    <small className={`${styles.patientDni}`}>DNI: {selectedRequest.patient_dni}</small>
+                    <small className={`${styles.RequirementDetailHeader__patientDni}`}>DNI: {selectedRequest.patient_dni}</small>
                 )}
             </div>
-            <div className={`${styles.doctor}`}>
+            <div className={`${styles.RequirementDetailHeader__doctor}`}>
                 <Icon name="medical_services" size="1.1rem" color="var(--accent-color)" />
                 <span className="requirements-detail__doctor-name">Dr. {selectedRequest.doctor_name}</span>
             </div>

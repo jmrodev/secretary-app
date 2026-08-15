@@ -11,23 +11,23 @@ export const AppointmentTypeSelector = ({ type, onChange, t }) => {
     const isVirtual = type === 'virtual';
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.AppointmentTypeSelector__root}`}>
             <Button
                 type="button"
-                className={`${styles.btn} ${!isVirtual ? styles.btnActive : ''}`}
+                className={`${styles.AppointmentTypeSelector__btn} ${!isVirtual ? styles.AppointmentTypeSelector__btnActive : ''}`}
                 onClick={() => onChange('consultation')}
                 unstyled
             >
-                <Icon name="person" size="1.2rem" className={`${styles.icon}`} />
+                <Icon name="person" size="1.2rem" className={`${styles.AppointmentTypeSelector__icon}`} />
                 <span>{t('in_person') || 'Presencial'}</span>
             </Button>
             <Button
                 type="button"
-                className={`${styles.btn} ${isVirtual ? styles.btnActive : ''}`}
+                className={`${styles.AppointmentTypeSelector__btn} ${isVirtual ? styles.AppointmentTypeSelector__btnActive : ''}`}
                 onClick={() => onChange('virtual')}
                 unstyled
             >
-                <Icon name="videocam" size="1.2rem" className={`${styles.icon}`} />
+                <Icon name="videocam" size="1.2rem" className={`${styles.AppointmentTypeSelector__icon}`} />
                 <span>{t('virtual_type') || 'Virtual'}</span>
             </Button>
         </div>

@@ -1,18 +1,18 @@
 /* PrescriptionHabitualMeds Component Styles (BEM) */
 
-.wrapper {
+.PrescriptionHabitualMeds__wrapper {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.container {
+.PrescriptionHabitualMeds__container {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.label {
+.PrescriptionHabitualMeds__label {
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-main);
@@ -20,7 +20,7 @@
     letter-spacing: 0.05em;
 }
 
-.tableWrapper {
+.PrescriptionHabitualMeds__tableWrapper {
     background: transparent;
     border: none;
     border-radius: 0;
@@ -28,36 +28,36 @@
     box-shadow: none;
 }
 
-.actionBtn {
+.PrescriptionHabitualMeds__actionBtn {
     width: 100%;
 }
 
-.metaItem {
+.PrescriptionHabitualMeds__metaItem {
     display: flex;
     align-items: center;
     gap: 0.35rem;
     margin-bottom: 0.2rem;
 }
 
-.metaItem:last-child {
+.PrescriptionHabitualMeds__metaItem:last-child {
     margin-bottom: 0;
 }
 
-.metaItem i {
+.PrescriptionHabitualMeds__metaItem i {
     color: var(--text-muted);
 }
 
-.daysSupply {
+.PrescriptionHabitualMeds__daysSupply {
     color: var(--green-300);
 }
 
-.table {
+.PrescriptionHabitualMeds__table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
 }
 
-.table th {
+.PrescriptionHabitualMeds__table th {
     padding: 0.25rem 0.5rem;
     font-size: 0.7rem;
     font-weight: 500;
@@ -67,37 +67,37 @@
     background: transparent;
 }
 
-.table td {
+.PrescriptionHabitualMeds__table td {
     padding: 0.5rem;
     vertical-align: middle;
     border-bottom: 1px dashed var(--glass);
     color: var(--text-main);
 }
 
-.table tr:last-child td {
+.PrescriptionHabitualMeds__table tr:last-child td {
     border-bottom: none;
 }
 
-.table tr:hover td {
+.PrescriptionHabitualMeds__table tr:hover td {
     background: var(--glass);
 }
 
-.rowSelected td {
+.PrescriptionHabitualMeds__rowSelected td {
     background: rgb(var(--primary-rgb) / 10%) !important;
 }
 
-.nameCell {
+.PrescriptionHabitualMeds__nameCell {
     font-weight: 600;
     font-size: 0.85rem;
     width: 50%;
 }
 
-.metaCell {
+.PrescriptionHabitualMeds__metaCell {
     font-size: 0.8rem;
     color: var(--text-muted);
 }
 
-.actionsCol {
+.PrescriptionHabitualMeds__actionsCol {
     text-align: right;
     width: 1%;
     white-space: nowrap;

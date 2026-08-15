@@ -37,7 +37,7 @@ export const MedicationAutocomplete = ({
         setCursor
     } = useMedicationAutocomplete(value, onChange, onSelectMedication);
 
-    const baseClass = styles.root;
+    const baseClass = styles.MedicationAutocomplete__root;
 
     // Handle clicks outside to close suggestions
     useEffect(() => {
@@ -67,7 +67,7 @@ export const MedicationAutocomplete = ({
                     // Use a more stable key by combining index and content
                     const chunkKey = `chunk-${i}-${chunk.length}`;
                     return regex.test(chunk) ? (
-                        <span key={chunkKey} className={styles.highlight}>{chunk}</span>
+                        <span key={chunkKey} className={styles.MedicationAutocomplete__highlight}>{chunk}</span>
                     ) : (
                         <React.Fragment key={chunkKey}>{chunk}</React.Fragment>
                     );
@@ -77,10 +77,10 @@ export const MedicationAutocomplete = ({
     };
 
     return (
-        <div className={`${styles.animateFadeIn} ${styles.root} ${className}`} ref={wrapperRef}>
-            <div className={styles.inputWrapper}>
+        <div className={`${styles.MedicationAutocomplete__animateFadeIn} ${styles.MedicationAutocomplete__root} ${className}`} ref={wrapperRef}>
+            <div className={styles.MedicationAutocomplete__inputWrapper}>
                 <Input
-                    className={styles.input}
+                    className={styles.MedicationAutocomplete__input}
                     value={searchTerm}
                     onChange={(e) => handleSearch(e.target.value)}
                     onFocus={() => searchTerm.length >= 2 && setShowSuggestions(true)}
@@ -90,7 +90,7 @@ export const MedicationAutocomplete = ({
                     size="sm"
                     style={{ minHeight: '30px' }}
                 />
-                <div className={styles.actions}>
+                <div className={styles.MedicationAutocomplete__actions}>
                     {loading ? (
                         <Loading size="sm" variant="inline" />
                     ) : searchTerm ? (
@@ -112,11 +112,11 @@ export const MedicationAutocomplete = ({
             </div>
 
             {showSuggestions && suggestions.length > 0 && (
-                <ul ref={listRef} className={`${styles.animateFadeIn} ${styles.list}`} role="listbox">
+                <ul ref={listRef} className={`${styles.MedicationAutocomplete__animateFadeIn} ${styles.MedicationAutocomplete__list}`} role="listbox">
                     {suggestions.map((med, idx) => (
                         <li
                             key={med.id || `med-suggestion-${idx}`}
-                            className={`${styles.item} ${cursor === idx ? styles.itemActive : ''}`}
+                            className={`${styles.MedicationAutocomplete__item} ${cursor === idx ? styles.MedicationAutocomplete__itemActive : ''}`}
                             onClick={() => handleSelect(med)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
@@ -129,10 +129,10 @@ export const MedicationAutocomplete = ({
                             aria-selected={cursor === idx}
                             tabIndex={0}
                         >
-                            <div className={styles.itemTitle}>
+                            <div className={styles.MedicationAutocomplete__itemTitle}>
                                 {highlightMatch(med.name, searchTerm)}
                             </div>
-                            <div className={styles.itemSubtitle}>
+                            <div className={styles.MedicationAutocomplete__itemSubtitle}>
                                 {med.presentation && (
                                     <span style={{ color: 'rgb(255 255 255 / 70%)', fontStyle: 'italic', marginRight: '0.25rem' }}>
                                         {med.presentation}
@@ -148,8 +148,8 @@ export const MedicationAutocomplete = ({
                             </div>
                         </li>
                     ))}
-                    <li className={styles.footer}>
-                        <span className={styles.footerBrand}>{t('iosfa_vademecum')}</span>
+                    <li className={styles.MedicationAutocomplete__footer}>
+                        <span className={styles.MedicationAutocomplete__footerBrand}>{t('iosfa_vademecum')}</span>
                         <span className={styles.footerCount}>
                             {suggestions.length} {t('results')}
                         </span>

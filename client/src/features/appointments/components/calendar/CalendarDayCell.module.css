@@ -1,4 +1,4 @@
-.root {
+.CalendarDayCell__root {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -18,15 +18,15 @@
   box-shadow: var(--shadow-sm);
 }
 
-.compact {
+.CalendarDayCell__compact {
   min-height: 3.5rem;
 }
 
-.root:not(.compact) {
+.CalendarDayCell__root:not(.CalendarDayCell__compact) {
   min-height: 3.5rem;
 }
 
-.root:hover {
+.CalendarDayCell__root:hover {
   background: rgb(128, 128, 128, 0.08) !important;
   border-color: var(--primary-color) !important;
   box-shadow: var(--shadow-md);
@@ -34,25 +34,25 @@
   z-index: 5;
 }
 
-.today {
+.CalendarDayCell__today {
   background-color: rgb(14, 165, 233, 0.12) !important;
   border: 2px solid #0284c7 !important;
   z-index: 2;
 }
 
-.today .number {
+.CalendarDayCell__today .CalendarDayCell__number {
   color: #0284c7 !important;
   font-weight: 900;
 }
 
-.selected {
+.CalendarDayCell__selected {
   background: rgb(13, 148, 136, 0.15) !important;
   border: 1px solid var(--primary-color) !important;
   z-index: 3;
   box-shadow: var(--shadow-sm);
 }
 
-.selected::before {
+.CalendarDayCell__selected::before {
   content: '';
   position: absolute;
   top: 0;
@@ -62,7 +62,7 @@
   background: var(--primary-color);
 }
 
-.numberWrapper {
+.CalendarDayCell__numberWrapper {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -72,7 +72,7 @@
   border-radius: 50%;
 }
 
-.numberWrapper::before {
+.CalendarDayCell__numberWrapper::before {
   content: '';
   position: absolute;
   inset: -3px;
@@ -92,7 +92,7 @@
   transition: opacity 0.3s ease;
 }
 
-.numberWrapper::after {
+.CalendarDayCell__numberWrapper::after {
   content: '';
   position: absolute;
   inset: -7px;
@@ -113,7 +113,7 @@
   transition: opacity 0.3s ease;
 }
 
-.extraRing {
+.CalendarDayCell__extraRing {
   position: absolute;
   inset: -7px;
   width: calc(100% + 14px);
@@ -123,26 +123,26 @@
   transition: opacity 0.3s ease;
 }
 
-.extraRingTrack {
+.CalendarDayCell__extraRingTrack {
   fill: none;
   stroke: var(--border-color);
   stroke-width: 2;
 }
 
-.extraRingFill {
+.CalendarDayCell__extraRingFill {
   fill: none;
   stroke: var(--warning);
   stroke-width: 2;
   stroke-linecap: round;
 }
 
-.selected .numberWrapper::before,
-.selected .numberWrapper::after,
-.selected .extraRing {
+.CalendarDayCell__selected .CalendarDayCell__numberWrapper::before,
+.CalendarDayCell__selected .CalendarDayCell__numberWrapper::after,
+.CalendarDayCell__selected .CalendarDayCell__extraRing {
   opacity: 0;
 }
 
-.selected .number {
+.CalendarDayCell__selected .CalendarDayCell__number {
   background: var(--primary-color);
   color: var(--text-main) !important;
   border-radius: 50%;
@@ -155,42 +155,42 @@
   font-weight: 800;
 }
 
-.holiday {
+.CalendarDayCell__holiday {
   background-color: rgb(var(--danger-rgb), 0.02);
   border-style: dashed;
   border-color: rgb(var(--danger-rgb), 0.25);
 }
 
-.holiday:hover {
+.CalendarDayCell__holiday:hover {
   border-color: rgb(var(--danger-rgb), 0.5);
   background-color: rgb(var(--danger-rgb), 0.04);
 }
 
-.weekend {
+.CalendarDayCell__weekend {
   background-color: rgb(99, 102, 241, 0.05) !important;
 }
 
-:root[data-theme="dark"] .weekend,
-html[data-theme="dark"] .weekend,
-body:not(.theme-light) .weekend {
+:root[data-theme="dark"] .CalendarDayCell__weekend,
+html[data-theme="dark"] .CalendarDayCell__weekend,
+body:not(.CalendarDayCell__theme-light) .CalendarDayCell__weekend {
   background-color: rgb(99, 102, 241, 0.1) !important;
 }
 
-.past {
+.CalendarDayCell__past {
   background-color: rgb(0, 0, 0, 0.04) !important;
 }
 
-:root[data-theme="dark"] .past,
-html[data-theme="dark"] .past,
-body:not(.theme-light) .past {
+:root[data-theme="dark"] .CalendarDayCell__past,
+html[data-theme="dark"] .CalendarDayCell__past,
+body:not(.CalendarDayCell__theme-light) .CalendarDayCell__past {
   background-color: rgb(0, 0, 0, 0.25) !important;
 }
 
-.past .number {
+.CalendarDayCell__past .CalendarDayCell__number {
   color: var(--text-muted);
 }
 
-.content {
+.CalendarDayCell__content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -201,7 +201,7 @@ body:not(.theme-light) .past {
   padding: 0.5rem;
 }
 
-.date {
+.CalendarDayCell__date {
   position: absolute;
   top: 0.4rem;
   left: 0.5rem;
@@ -212,7 +212,7 @@ body:not(.theme-light) .past {
   z-index: 2;
 }
 
-.markers {
+.CalendarDayCell__markers {
   position: absolute;
   top: 0.35rem;
   right: 0.35rem;
@@ -222,7 +222,7 @@ body:not(.theme-light) .past {
   gap: 0.2rem;
 }
 
-.number {
+.CalendarDayCell__number {
   font-weight: 800;
   font-size: 1.8rem;
   color: var(--text-main);
@@ -235,37 +235,37 @@ body:not(.theme-light) .past {
   justify-content: center;
 }
 
-.compact .numberWrapper {
+.CalendarDayCell__compact .CalendarDayCell__numberWrapper {
   width: 2.5rem;
   height: 2.5rem;
 }
 
-.compact .number {
+.CalendarDayCell__compact .CalendarDayCell__number {
   font-size: 1.25rem;
 }
 
-.compact.selected .number {
+.CalendarDayCell__compact.selected .CalendarDayCell__number {
   width: 2.5rem;
   height: 2.5rem;
 }
 
-.compact .content {
+.CalendarDayCell__compact .CalendarDayCell__content {
   padding: 0.2rem;
 }
 
-.compact .date {
+.CalendarDayCell__compact .CalendarDayCell__date {
   top: 0.2rem;
   left: 0.35rem;
   right: 0.35rem;
 }
 
-.compact .todayMarker,
-.compact .holidayMarker {
+.CalendarDayCell__compact .CalendarDayCell__todayMarker,
+.CalendarDayCell__compact .CalendarDayCell__holidayMarker {
   font-size: 0.5rem;
 }
 
-.todayMarker,
-.holidayMarker {
+.CalendarDayCell__todayMarker,
+.CalendarDayCell__holidayMarker {
   font-size: 0.58rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -273,12 +273,12 @@ body:not(.theme-light) .past {
   font-family: var(--font-manrope);
 }
 
-.todayMarker {
+.CalendarDayCell__todayMarker {
   color: #0284c7;
   font-weight: 800;
 }
 
-.holidayMarker {
+.CalendarDayCell__holidayMarker {
   color: var(--danger);
   background-color: rgb(var(--danger-rgb), 0.12);
   display: flex;

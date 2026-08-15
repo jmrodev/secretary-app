@@ -1,4 +1,4 @@
-.root {
+.NextSlotModal__root {
     display: flex;
     flex-direction: column;
     height: 600px;
@@ -6,7 +6,7 @@
 }
 
 /* 1. Month Bar */
-.monthBar {
+.NextSlotModal__monthBar {
     display: flex;
     gap: 0.5rem;
     padding: 0.5rem;
@@ -16,7 +16,7 @@
     overflow-x: auto;
 }
 
-.monthItem {
+.NextSlotModal__monthItem {
     flex: 1;
     text-align: center;
     padding: 0.6rem;
@@ -31,24 +31,24 @@
     min-width: 60px;
 }
 
-.monthItem:hover {
+.NextSlotModal__monthItem:hover {
     background: var(--dashboard-card-bg);
     color: var(--text-main);
 }
 
-.monthActive {
+.NextSlotModal__monthActive {
     background: var(--primary-color) !important;
     color: var(--background-bg) !important;
 }
 
 /* 2. Options */
-.options {
+.NextSlotModal__options {
     padding-bottom: 1rem;
     margin-bottom: 1rem;
     border-bottom: 1px solid var(--border-color);
 }
 
-.checkboxLabel {
+.NextSlotModal__checkboxLabel {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -58,19 +58,19 @@
 }
 
 /* 3. Timeline List */
-.content {
+.NextSlotModal__content {
     flex: 1;
     overflow-y: auto;
     padding-right: 0.5rem;
 }
 
-.timeline {
+.NextSlotModal__timeline {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.dateHeader {
+.NextSlotModal__dateHeader {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -79,13 +79,13 @@
     padding-left: 0.5rem;
 }
 
-.dayNum {
+.NextSlotModal__dayNum {
     font-size: 1.5rem;
     font-weight: 900;
     color: var(--primary-color);
 }
 
-.dayMonth {
+.NextSlotModal__dayMonth {
     font-size: 0.7rem;
     text-transform: uppercase;
     font-weight: 800;
@@ -93,14 +93,14 @@
     letter-spacing: 1px;
 }
 
-.dayName {
+.NextSlotModal__dayName {
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-muted);
     margin-left: auto;
 }
 
-.slotItem {
+.NextSlotModal__slotItem {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -111,41 +111,41 @@
     transition: transform 0.2s, background 0.2s;
 }
 
-.slotItem:hover {
+.NextSlotModal__slotItem:hover {
     background: var(--dashboard-card-bg);
     transform: translateX(4px);
 }
 
-.slotExtra {
+.NextSlotModal__slotExtra {
     border-left: 4px solid var(--warning);
 }
 
-.slotTime {
+.NextSlotModal__slotTime {
     font-size: 1.1rem;
     font-weight: 800;
     color: var(--text-main);
 }
 
-.slotActions {
+.NextSlotModal__slotActions {
     display: flex;
     gap: 0.75rem;
 }
 
 /* 4. Footer */
-.footer {
+.NextSlotModal__footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
 }
 
-.pageInfo {
+.NextSlotModal__pageInfo {
     font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-muted);
 }
 
-.empty {
+.NextSlotModal__empty {
     padding: 3rem;
     text-align: center;
     color: var(--text-muted);

@@ -29,16 +29,16 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
     // --- Conditional Render AFTER Hooks ---
     if (isLoading) {
         return (
-            <div className={`${styles.root} ${styles.skeleton}`}>
-                <div className={`${styles.info}`}>
-                    <div className={`${styles.patientName}`}>Loading…</div>
-                    <div className={`${styles.details}`}>
+            <div className={`${styles.AppointmentCard__root} ${styles.AppointmentCard__skeleton}`}>
+                <div className={`${styles.AppointmentCard__info}`}>
+                    <div className={`${styles.AppointmentCard__patientName}`}>Loading…</div>
+                    <div className={`${styles.AppointmentCard__details}`}>
                         <span className={`${styles.timeLine}`}>00:00</span>
-                        <span className={`${styles.doctor}`}>Loading details…</span>
+                        <span className={`${styles.AppointmentCard__doctor}`}>Loading details…</span>
                     </div>
                 </div>
-                <div className={`${styles.status}`}>
-                    <div className={`${styles.statusChip}`}>…</div>
+                <div className={`${styles.AppointmentCard__status}`}>
+                    <div className={`${styles.AppointmentCard__statusChip}`}>…</div>
                 </div>
             </div>
         );
@@ -56,9 +56,9 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
     };
 
     const cardClasses = [
-        styles.root,
+        styles.AppointmentCard__root,
         appt.status && styles[appt.status.toLowerCase()],
-        appt.type === 'virtual' && styles.virtual,
+        appt.type === 'virtual' && styles.AppointmentCard__virtual,
         isExternal && styles.external,
         isAnonymous && styles.anonymous
     ].filter(Boolean).join(' ');
@@ -71,21 +71,21 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
             role="button"
             tabIndex={0}
         >
-            <div className={`${styles.timeLineTop}`}>
+            <div className={`${styles.AppointmentCard__timeLineTop}`}>
                 {clientTime}
             </div>
-            <div className={`${styles.info}`}>
-                <div className={`${styles.patientName}`}>
+            <div className={`${styles.AppointmentCard__info}`}>
+                <div className={`${styles.AppointmentCard__patientName}`}>
                     {appt.type === 'virtual' && <Icon name="videocam" size="1.1rem" />}
-                    <div className={`${styles.patientNameText}`}>
+                    <div className={`${styles.AppointmentCard__patientNameText}`}>
                         {(() => {
                             const parts = (appt.patient_name || 'S/N').split(' ').filter(Boolean);
                             if (parts.length === 1) {
-                                return <span className={styles.surname}>{parts[0]}</span>;
+                                return <span className={styles.AppointmentCard__surname}>{parts[0]}</span>;
                             }
                             const surnameIndex = parts.length - 1;
                             return parts.map((part, index) => (
-                                <span key={index} className={index === surnameIndex ? styles.surname : styles.givenName}>
+                                <span key={index} className={index === surnameIndex ? styles.AppointmentCard__surname : styles.AppointmentCard__givenName}>
                                     {part}
                                 </span>
                             ));
@@ -102,14 +102,14 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
                     )}
                 </div>
                 
-                <div className={`${styles.details}`}>
-                    <span className={`${styles.doctor}`}>
+                <div className={`${styles.AppointmentCard__details}`}>
+                    <span className={`${styles.AppointmentCard__doctor}`}>
                         {appt.doctor_name}
                     </span>
                     {(appt.reason_for_visit || appt.notes) && (
-                        <span className={`${styles.reason}`}>
+                        <span className={`${styles.AppointmentCard__reason}`}>
                             <Icon name="event_note" size="1rem" />
-                            <span className={`${styles.reasonText}`}>
+                            <span className={`${styles.AppointmentCard__reasonText}`}>
                                 {appt.reason_for_visit || appt.notes}
                             </span>
                         </span>
@@ -123,7 +123,7 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
                 </div>
             </div>
 
-            <div className={`${styles.paymentColumn}`}>
+            <div className={`${styles.AppointmentCard__paymentColumn}`}>
                 {(() => {
                     const isAttended = ['arrived', 'attended', 'completed'].includes(appt.status);
                     const paid = Number(appt.paid_amount || 0);
@@ -137,7 +137,7 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
 
                     if (appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') {
                         return (
-                            <div className={`${styles.paymentInfo} ${styles.paymentInfoBonified}`}>
+                            <div className={`${styles.AppointmentCard__paymentInfo} ${styles.AppointmentCard__paymentInfoBonified}`}>
                                 <span>{t('bonified') || 'Bonif.'}</span>
                                 <Icon name="verified" className={styles.paymentIcon} />
                             </div>
@@ -178,7 +178,7 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
 
                     return (
                         <div 
-                            className={`${styles.paymentInfo} ${styles['paymentInfo' + colorModifier.charAt(0).toUpperCase() + colorModifier.slice(1)]}`}
+                            className={`${styles.AppointmentCard__paymentInfo} ${styles['paymentInfo' + colorModifier.charAt(0).toUpperCase() + colorModifier.slice(1)]}`}
                             title={titleTooltip}
                         >
                             {paid > 0 && paid < effectiveTotal && (
@@ -193,8 +193,8 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
                 })()}
             </div>
 
-            <div className={`${styles.status}`}>
-                <span className={`${styles.statusChip} ${styles['statusChip' + appt.status.charAt(0).toUpperCase() + appt.status.slice(1)]}`}>
+            <div className={`${styles.AppointmentCard__status}`}>
+                <span className={`${styles.AppointmentCard__statusChip} ${styles['statusChip' + appt.status.charAt(0).toUpperCase() + appt.status.slice(1)]}`}>
                     {t(appt.status) || appt.status}
                 </span>
             </div>

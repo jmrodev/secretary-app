@@ -22,7 +22,7 @@ export const DayCell = ({
 }) => {
   // Render placeholder for dates not falling in the current month bounds
   if (!day) {
-    return <div className={`${styles.placeholder} ${className}`} />;
+    return <div className={`${styles.DayCell__placeholder} ${className}`} />;
   }
 
   const handleSelect = () => {
@@ -37,12 +37,12 @@ export const DayCell = ({
   };
 
   const cellClasses = [
-    styles.dayCell,
-    isSelected && styles.selected,
-    isToday && styles.today,
-    isHoliday && styles.holiday,
-    isPast && styles.past,
-    !isCurrentMonth && styles.outsideMonth,
+    styles.DayCell__dayCell,
+    isSelected && styles.DayCell__selected,
+    isToday && styles.DayCell__today,
+    isHoliday && styles.DayCell__holiday,
+    isPast && styles.DayCell__past,
+    !isCurrentMonth && styles.DayCell__outsideMonth,
     className
   ].filter(Boolean).join(' ');
 
@@ -55,15 +55,15 @@ export const DayCell = ({
       tabIndex={0}
       aria-label={`Día ${day}${isToday ? ', Hoy' : ''}${isHoliday ? `, Feriado: ${holidayName}` : ''}${appointmentsCount ? `, ${appointmentsCount} turnos` : ''}`}
     >
-      <div className={styles.header}>
+      <div className={styles.DayCell__header}>
         <DayNumber day={day} isToday={isToday} />
       </div>
 
-      <div className={styles.content}>
+      <div className={styles.DayCell__content}>
         {isHoliday && <HolidayBadge title={holidayName} />}
       </div>
 
-      <div className={styles.footer}>
+      <div className={styles.DayCell__footer}>
         {appointmentsCount > 0 && (
           <AppointmentsBadge count={appointmentsCount} />
         )}
