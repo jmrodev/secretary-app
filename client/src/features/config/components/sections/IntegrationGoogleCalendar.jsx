@@ -2,15 +2,15 @@ import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import StatusIndicator from '@/components/atoms/StatusIndicator';
-import ConfigToggle from '@/features/config/components/ui/ConfigToggle';
-import ConfigField from '@/features/config/components/ui/ConfigField';
+import { ConfigToggle } from '@/features/config/components/ui/ConfigToggle';
+import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import Alert from '@/components/atoms/Alert';
 
 /**
  * IntegrationGoogleCalendar Feature Molecule.
  * Manages Google Calendar connection, sync status, and financial spreadsheet IDs.
  */
-const IntegrationGoogleCalendar = ({
+export const IntegrationGoogleCalendar = ({
     googleUnlinked,
     settings,
     updateSetting,
@@ -117,4 +117,3 @@ const IntegrationGoogleCalendar = ({
     );
 };
 
-export default IntegrationGoogleCalendar;

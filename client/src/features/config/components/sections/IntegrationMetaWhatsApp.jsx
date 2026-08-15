@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
-import ConfigField from '@/features/config/components/ui/ConfigField';
+import { ConfigField } from '@/features/config/components/ui/ConfigField';
 
 /**
  * IntegrationMetaWhatsApp Feature Molecule.
  * Configuration panel for official Meta WhatsApp Cloud API credentials.
  */
-const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading, isAuthorized }) => {
+export const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading, isAuthorized }) => {
     return (
         <div className="config-section animate-fade-in">
             <div className="config-section__header">
@@ -61,4 +61,3 @@ const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading,
     );
 };
 
-export default IntegrationMetaWhatsApp;

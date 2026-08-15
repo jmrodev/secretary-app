@@ -1,6 +1,6 @@
 import React from 'react';
-import ConfigToggle from '@/features/config/components/ui/ConfigToggle';
-import ConfigField from '@/features/config/components/ui/ConfigField';
+import { ConfigToggle } from '@/features/config/components/ui/ConfigToggle';
+import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
@@ -107,7 +107,7 @@ const UrlConfiguration = ({ settings, updateSetting, isAdmin, onShowQr }) => {
     );
 };
 
-const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
+export const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
     const isAdmin = user?.role === 'admin';
 
     return (
@@ -195,4 +195,3 @@ const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => {
     );
 };
 
-export default GeneralSettings;

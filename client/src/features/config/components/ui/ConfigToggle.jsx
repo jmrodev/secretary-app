@@ -5,7 +5,7 @@ import Switch from '@/components/atoms/Switch';
  * ConfigToggle Molecule (Feature Component).
  * Renders a switch with a label and hint description for dashboard settings.
  */
-const ConfigToggle = ({
+export const ConfigToggle = ({
     id,
     label,
     description,
@@ -34,4 +34,3 @@ const ConfigToggle = ({
     );
 };
 
-export default ConfigToggle;

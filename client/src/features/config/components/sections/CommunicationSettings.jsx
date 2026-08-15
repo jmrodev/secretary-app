@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import ConfigField from '@/features/config/components/ui/ConfigField';
+import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import Icon from '@/components/atoms/Icon';
-import MessageTemplateEditor from '@/features/config/components/forms/MessageTemplateEditor';
+import { MessageTemplateEditor } from '@/features/config/components/forms/MessageTemplateEditor';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './CommunicationSettings.module.css';
 
@@ -9,7 +9,7 @@ import styles from './CommunicationSettings.module.css';
  * CommunicationSettings Feature Component.
  * Manages official clinic address and automated WhatsApp messaging templates.
  */
-const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }) => {
+export const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }) => {
     const { t } = useLanguage();
     const isAdmin = user?.role === 'admin' || user?.role === 'secretary';
     const commonVars = useMemo(() => [
@@ -232,4 +232,3 @@ const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }
     );
 };
 
-export default CommunicationSettings;

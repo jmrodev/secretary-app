@@ -1,5 +1,5 @@
 import React from 'react';
-import ConfigField from '@/features/config/components/ui/ConfigField';
+import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import Icon from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { AI_PROVIDERS, DEFAULT_AI_MODELS, normalizeGeminiModel } from '@/constants/aiModels';
@@ -9,7 +9,7 @@ import { AI_PROVIDERS, DEFAULT_AI_MODELS, normalizeGeminiModel } from '@/constan
  * Dedicated space for AI-related configurations: primary provider, per-provider
  * models (persisted to system settings) and WhatsApp automation.
  */
-const AiSettings = ({ user, settings, updateSetting }) => {
+export const AiSettings = ({ user, settings, updateSetting }) => {
     const { t } = useLanguage();
     const isAdmin = user?.role === 'admin' || user?.role === 'secretary';
 
@@ -116,4 +116,3 @@ const AiSettings = ({ user, settings, updateSetting }) => {
     );
 };
 
-export default AiSettings;

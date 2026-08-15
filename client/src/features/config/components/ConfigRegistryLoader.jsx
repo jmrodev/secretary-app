@@ -21,7 +21,7 @@ const AuditLogManager = lazy(() => import('@/features/reports').then(m => ({ def
 import { ScheduleBulkActions, ScheduleTimeBlock } from '@/features/appointments';
 import { UserForm } from '@/features/users';
 import { InstitutionFinances } from '@/features/finances';
-import MessageTemplateEditor from './forms/MessageTemplateEditor';
+import { MessageTemplateEditor } from './forms/MessageTemplateEditor';
 
 // Eager imports for hooks to avoid undef require at runtime/eslint
 import { useProfileController } from '@/features/auth/hooks/useProfileController';

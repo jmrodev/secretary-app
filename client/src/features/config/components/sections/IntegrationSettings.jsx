@@ -1,15 +1,15 @@
 import React from 'react';
 
 // Feature Molecules
-import IntegrationGoogleCalendar from '@/features/config/components/sections/IntegrationGoogleCalendar';
-import IntegrationMetaWhatsApp from '@/features/config/components/sections/IntegrationMetaWhatsApp';
-import IntegrationRemoteAccess from '@/features/config/components/sections/IntegrationRemoteAccess';
+import { IntegrationGoogleCalendar } from '@/features/config/components/sections/IntegrationGoogleCalendar';
+import { IntegrationMetaWhatsApp } from '@/features/config/components/sections/IntegrationMetaWhatsApp';
+import { IntegrationRemoteAccess } from '@/features/config/components/sections/IntegrationRemoteAccess';
 
 /**
  * IntegrationSettings Feature Organism.
  * Orchestrates third-party service configurations within the config domain.
  */
-const IntegrationSettings = ({
+export const IntegrationSettings = ({
     user,
     settings,
     updateSetting,
@@ -57,4 +57,3 @@ const IntegrationSettings = ({
     );
 };
 
-export default IntegrationSettings;
