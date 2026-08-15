@@ -46,7 +46,7 @@ function printReducer(state, action) {
  * Renders a clean printable view of patient records.
  * Provides filters for specific sections and date ranges.
  */
-const PatientPrintableView = ({ 
+const PatientPrintableViewBase = ({ 
     details, 
     chronicMeds, 
     recentRequests, 
@@ -160,4 +160,4 @@ const PatientPrintableView = ({
     );
 };
 
-export default React.memo(PatientPrintableView);
+export const PatientPrintableView = React.memo(PatientPrintableViewBase);

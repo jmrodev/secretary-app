@@ -197,7 +197,7 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
  * PatientList (Executor).
  * Renders a tabular list of patients with search filtering and actions.
  */
-const PatientList = ({
+const PatientListBase = ({
     patients,
     institutions: rawInstitutions = EMPTY_ARRAY,
     onViewDetails,
@@ -249,4 +249,4 @@ const PatientList = ({
     );
 };
 
-export default React.memo(PatientList);
+export const PatientList = React.memo(PatientListBase);

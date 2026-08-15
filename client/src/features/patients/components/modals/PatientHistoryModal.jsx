@@ -14,7 +14,7 @@ import styles from './PatientHistoryModal.module.css';
 const DateTimeDisplay = ({ date }) => formatDate(date, { time: true });
 const SimpleDateDisplay = ({ date }) => formatDate(date);
 
-const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
+const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) => {
     const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState('appointments');
     const { history, loading } = usePatientHistoryController(patientId, isOpen);
@@ -216,4 +216,4 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     );
 };
 
-export default React.memo(PatientHistoryModal);
+export const PatientHistoryModal = React.memo(PatientHistoryModalBase);

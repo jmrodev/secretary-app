@@ -31,7 +31,7 @@ const MessageBody = ({ body }) => {
     });
 };
 
-const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
+export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
     const { showMessage } = useMessage();
     const {
         state,
@@ -146,4 +146,3 @@ const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false }) => {
     );
 };
 
-export default WhatsappChatHistory;

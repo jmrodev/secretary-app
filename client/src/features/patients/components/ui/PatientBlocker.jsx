@@ -4,7 +4,7 @@ import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import styles from './PatientBlocker.module.css';
 
-const PatientBlocker = () => {
+export const PatientBlocker = () => {
     const { logout } = useAuth();
 
     const handleLogout = () => {
@@ -36,4 +36,3 @@ const PatientBlocker = () => {
     );
 };
 
-export default PatientBlocker;

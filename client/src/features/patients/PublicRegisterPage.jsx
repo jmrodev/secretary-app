@@ -95,7 +95,7 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
     }
 };
 
-const PublicRegisterPage = () => {
+export const PublicRegisterPage = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const { request, loading } = useFetch();
@@ -204,4 +204,3 @@ const PublicRegisterPage = () => {
     );
 };
 
-export default PublicRegisterPage;

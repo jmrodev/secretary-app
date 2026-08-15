@@ -10,24 +10,24 @@ import Loading from '@/components/atoms/Loading';
 import Icon from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
-import QRCodeModal from '@/features/patients/components/modals/QRCodeModal';
+import { QRCodeModal } from '@/features/patients/components/modals/QRCodeModal';
 import Pagination from '@/components/atoms/Pagination';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 import SearchBar from '@/components/ui/SearchBar';
 
 // Feature Components
-import PatientList from './components/views/PatientList';
-import PatientRecycleBin from './components/views/PatientRecycleBin';
-import PatientDetailsView from './components/views/PatientDetailsView';
-import PatientManagerModal from './components/modals/PatientManagerModal';
-import DebtPaymentModal from './components/modals/DebtPaymentModal';
+import { PatientList } from './components/views/PatientList';
+import { PatientRecycleBin } from './components/views/PatientRecycleBin';
+import { PatientDetailsView } from './components/views/PatientDetailsView';
+import { PatientManagerModal } from './components/modals/PatientManagerModal';
+import { DebtPaymentModal } from './components/modals/DebtPaymentModal';
 
 /**
  * PatientsPage (Orchestrator).
  * Coordinates patient listing, search, details, and recycle bin.
  */
-const PatientsPage = () => {
+export const PatientsPage = () => {
     const { isStaff, user: authUser } = usePermissions();
     const controller = usePatientsPageController();
     const {
@@ -233,4 +233,3 @@ const PatientsPage = () => {
     );
 };
 
-export default PatientsPage;

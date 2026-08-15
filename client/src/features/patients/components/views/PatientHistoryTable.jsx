@@ -11,7 +11,7 @@ import styles from './PatientHistoryTable.module.css';
  * PatientHistoryTable (Executor).
  * Renders the appointment and payment history for a specific patient.
  */
-const PatientHistoryTable = ({ details, t, onPayDebt }) => {
+export const PatientHistoryTable = ({ details, t, onPayDebt }) => {
     return (
         <section className="patient-details__block patient-details__block--history">
             <header className="patient-details__block-header">
@@ -115,4 +115,3 @@ const PatientHistoryTable = ({ details, t, onPayDebt }) => {
     );
 };
 
-export default PatientHistoryTable;

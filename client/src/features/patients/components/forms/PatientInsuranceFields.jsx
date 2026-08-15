@@ -9,7 +9,7 @@ import styles from './PatientInsuranceFields.module.css';
  * Handles insurance selection and affiliate number.
  * Optimized for Bento Box layout.
  */
-const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) => {
+export const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) => {
     const selectedInsurance = insurances.find(i => i.id === parseInt(formData.insurance_id));
 
     return (
@@ -62,4 +62,3 @@ const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) 
     );
 };
 
-export default PatientInsuranceFields;

@@ -9,7 +9,7 @@ import styles from './PatientAddressFields.module.css';
  * Contains street, city, province, country and notes with Google Maps integration.
  * Optimized for Bento Box layout.
  */
-const PatientAddressFields = ({ formData, updatePatientData, t }) => {
+export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
     return (
         <article className={`${styles.root}`}>
             
@@ -106,4 +106,3 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
     );
 };
 
-export default PatientAddressFields;

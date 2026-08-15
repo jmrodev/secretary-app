@@ -6,11 +6,11 @@ import { formatDate } from '@/utils/core/dateUtils';
 import api from '@/api/axios';
 
 // Local Feature & Molecule Components
-import PatientInfoBlock from '@/features/patients/components/views/PatientInfoBlock';
-import PatientHistoryTable from '@/features/patients/components/views/PatientHistoryTable';
-import PatientFinancialSidebar from '@/features/patients/components/views/PatientFinancialSidebar';
-import PatientPrintableView from '@/features/patients/components/views/PatientPrintableView';
-import WhatsappChatHistory from '@/features/patients/components/views/WhatsappChatHistory';
+import { PatientInfoBlock } from '@/features/patients/components/views/PatientInfoBlock';
+import { PatientHistoryTable } from '@/features/patients/components/views/PatientHistoryTable';
+import { PatientFinancialSidebar } from '@/features/patients/components/views/PatientFinancialSidebar';
+import { PatientPrintableView } from '@/features/patients/components/views/PatientPrintableView';
+import { WhatsappChatHistory } from '@/features/patients/components/views/WhatsappChatHistory';
 import Modal from '@/components/molecules/Modal';
 import { DocumentViewerModal } from '@/components/molecules/DocumentViewerModal';
 import { PatientMedicationFormModal } from '@/features/patients/components/modals/PatientMedicationFormModal';
@@ -21,7 +21,7 @@ import styles from './PatientDetailsView.module.css';
  * PatientDetailsView (Executor/Sub-Orchestrator).
  * Renders the full patient profile including history, financial status, medications, and document history.
  */
-const PatientDetailsView = ({
+export const PatientDetailsView = ({
     details,
     t,
     user,
@@ -628,4 +628,3 @@ const PatientDetailsView = ({
     );
 };
 
-export default PatientDetailsView;
