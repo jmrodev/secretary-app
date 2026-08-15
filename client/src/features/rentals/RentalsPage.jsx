@@ -15,7 +15,7 @@ import FeatureToolbar from '@/components/organisms/FeatureToolbar';
  * RentalsPage (Orchestrator).
  * Interface for doctors to book offices and for staff to manage availability.
  */
-const RentalsPage = () => {
+export const RentalsPage = () => {
     const {
         user,
         t,
@@ -102,14 +102,14 @@ const RentalsPage = () => {
                                             </h3>
                                             <div className="rentals-page__offices-list">
                                                 {consultorios.map(c => (
-                                                    <div key={c.id} className={`${styles.officeItem}`}>
+                                                    <div key={c.id} className={`${styles.RentalsPage__officeItem}`}>
                                                         <div className="rentals-page__office-header">
-                                                            <strong className={`${styles.officeName}`}>{c.name}</strong>
+                                                            <strong className={`${styles.RentalsPage__officeName}`}>{c.name}</strong>
                                                             <span className={`rentals-page__status-badge rentals-page__status-badge--${c.status}`}>
                                                                 {t(c.status) || c.status}
                                                             </span>
                                                         </div>
-                                                        <p className={`${styles.officeDesc}`}>{c.description || 'Sin descripción'}</p>
+                                                        <p className={`${styles.RentalsPage__officeDesc}`}>{c.description || 'Sin descripción'}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -182,5 +182,3 @@ const RentalsPage = () => {
         </MainLayout>
     );
 };
-
-export default RentalsPage;

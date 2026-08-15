@@ -1,30 +1,30 @@
 /* RentalsPage.css */
 
-.root {
+.RentalsPage__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     padding-bottom: 2rem;
 }
 
-.header {
+.RentalsPage__header {
     margin-bottom: 1rem;
 }
 
-.title {
+.RentalsPage__title {
     font-size: 1.875rem;
     font-weight: 800;
     color: var(--slate-800);
     margin: 0 0 0.5rem;
 }
 
-.subtitle {
+.RentalsPage__subtitle {
     font-size: 0.9375rem;
     color: var(--slate-500);
     margin: 0;
 }
 
-.summary {
+.RentalsPage__summary {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -39,26 +39,26 @@
     color: var(--slate-600);
 }
 
-.grid {
+.RentalsPage__grid {
     display: grid;
     grid-template-columns: 320px 1fr;
     gap: 1.5rem;
     align-items: flex-start;
 }
 
-.sidebar {
+.RentalsPage__sidebar {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.main {
+.RentalsPage__main {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.card {
+.RentalsPage__card {
     background: rgb(255 255 255 / 20%);
     backdrop-filter: blur(16px);
     border-radius: var(--radius-lg);
@@ -67,7 +67,7 @@
     overflow: hidden;
 }
 
-.cardHeader {
+.RentalsPage__cardHeader {
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid var(--border-color);
     display: flex;
@@ -75,7 +75,7 @@
     justify-content: space-between;
 }
 
-.cardTitle {
+.RentalsPage__cardTitle {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -87,27 +87,27 @@
     letter-spacing: 0.025em;
 }
 
-.bookingForm {
+.RentalsPage__bookingForm {
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
 }
 
-.formRow {
+.RentalsPage__formRow {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
 }
 
-.officeList {
+.RentalsPage__officeList {
     padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.officeItem {
+.RentalsPage__officeItem {
     padding: 1rem;
     background: var(--border-color);
     backdrop-filter: blur(16px);
@@ -117,42 +117,42 @@
     transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
-.officeItem:hover {
+.RentalsPage__officeItem:hover {
     background: rgb(255 255 255 / 20%);
     transform: translateY(-2px);
     box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.officeInfo {
+.RentalsPage__officeInfo {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
 }
 
-.officeName {
+.RentalsPage__officeName {
     font-weight: 700;
     color: var(--slate-800);
     font-size: 0.875rem;
 }
 
-.officeDesc {
+.RentalsPage__officeDesc {
     font-size: 0.75rem;
     color: var(--slate-500);
     margin: 0;
     line-height: 1.4;
 }
 
-.tableContainer {
+.RentalsPage__tableContainer {
     overflow-x: auto;
 }
 
-.table {
+.RentalsPage__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.th {
+.RentalsPage__th {
     background: var(--border-color);
     backdrop-filter: blur(8px);
     padding: 1rem 1.5rem;
@@ -165,39 +165,39 @@
     border-bottom: 1px solid var(--border-color);
 }
 
-.thRight {
+.RentalsPage__thRight {
     text-align: right;
 }
 
-.tr {
+.RentalsPage__tr {
     border-bottom: 1px solid var(--border-color);
 }
 
-.td {
+.RentalsPage__td {
     padding: 1rem 1.5rem;
     font-size: 0.9375rem;
     color: var(--slate-700);
 }
 
-.tdBold {
+.RentalsPage__tdBold {
     font-weight: 700;
     color: var(--slate-800);
 }
 
-.tdPrice {
+.RentalsPage__tdPrice {
     font-family: var(--font-mono);
     color: var(--green-600);
     font-weight: 700;
     text-align: right;
 }
 
-.emptyState {
+.RentalsPage__emptyState {
     padding: 5rem 2rem;
     text-align: center;
     color: var(--slate-400);
 }
 
-.staffPlaceholder {
+.RentalsPage__staffPlaceholder {
     padding: 5rem 2rem;
     text-align: center;
     color: var(--slate-400);
@@ -208,7 +208,7 @@
 }
 
 @media (width <= 1024px) {
-    .grid {
+    .RentalsPage__grid {
         grid-template-columns: 1fr;
     }
 }
