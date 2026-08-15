@@ -8,7 +8,7 @@ import styles from './ChatSidebar.module.css';
  * ChatSidebar Component (Feature Component).
  * Renders the sidebar for the full-screen chat page.
  */
-const ChatSidebar = ({
+export const ChatSidebar = ({
     conversations,
     selectedConvo,
     onSelectConvo,
@@ -132,5 +132,3 @@ const ChatSidebar = ({
         </div>
     );
 };
-
-export default ChatSidebar;

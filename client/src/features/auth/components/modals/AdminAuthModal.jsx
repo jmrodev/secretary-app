@@ -10,7 +10,7 @@ import Icon from '@/components/atoms/Icon';
  */
 import styles from './AdminAuthModal.module.css';
 
-const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
+export const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
     const [password, setPassword] = useState('');
     const inputRef = React.useRef(null);
 
@@ -72,5 +72,3 @@ const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
         </Modal>
     );
 };
-
-export default AdminAuthModal;

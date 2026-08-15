@@ -5,12 +5,10 @@ import { RegisterForm } from '@/features/auth/index';
  * RegisterPage (Orchestrator).
  * Entry point for new user registration.
  */
-const RegisterPage = () => {
+export const RegisterPage = () => {
     return (
         <section>
             <RegisterForm />
         </section>
     );
 };
-
-export default RegisterPage;

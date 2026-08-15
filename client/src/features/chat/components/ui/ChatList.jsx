@@ -1,13 +1,13 @@
 import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import Input from '@/components/atoms/Input';
-import ChatConversationItem from '@/features/chat/components/ui/ChatConversationItem';
+import { ChatConversationItem } from '@/features/chat/components/ui/ChatConversationItem';
 
 /**
  * ChatList Molecule (Feature Component).
  * Renders the searchable list of conversations and potential recipients.
  */
-const ChatList = ({
+export const ChatList = ({
     conversations,
     recipients,
     searchTerm,
@@ -75,5 +75,3 @@ const ChatList = ({
         </div>
     );
 };
-
-export default ChatList;

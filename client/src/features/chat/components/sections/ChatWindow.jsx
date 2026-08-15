@@ -9,7 +9,7 @@ import styles from './ChatWindow.module.css';
  * ChatWindow Component (Feature Component).
  * Renders the full-screen view of a chat thread.
  */
-const ChatWindow = ({
+export const ChatWindow = ({
     selectedConvo,
     thread,
     user,
@@ -106,5 +106,3 @@ const ChatWindow = ({
         </section>
     );
 };
-
-export default ChatWindow;

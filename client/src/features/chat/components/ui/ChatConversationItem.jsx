@@ -5,7 +5,7 @@ import { useLanguage } from '@/hooks/useLanguage';
  * ChatConversationItem Molecule (Feature Component).
  * Renders a single conversation or contact in the chat list.
  */
-const ChatConversationItem = ({
+export const ChatConversationItem = ({
     convo,
     isContact = false,
     onClick,
@@ -45,5 +45,3 @@ const ChatConversationItem = ({
         </article>
     );
 };
-
-export default ChatConversationItem;

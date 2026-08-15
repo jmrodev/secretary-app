@@ -11,7 +11,7 @@ import styles from './ProfileEditor.module.css';
  * Unified interface for managing personal and professional user data.
  * Refactored to follow BEM and Atomic Design standards.
  */
-const ProfileEditor = ({
+export const ProfileEditor = ({
     user,
     t,
     formData,
@@ -114,5 +114,3 @@ const ProfileEditor = ({
         </div>
     );
 };
-
-export default ProfileEditor;

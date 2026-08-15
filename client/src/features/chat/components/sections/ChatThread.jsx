@@ -2,14 +2,14 @@ import React from 'react';
 import Icon from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
-import ChatMessageBubble from '@/features/chat/components/ui/ChatMessageBubble';
+import { ChatMessageBubble } from '@/features/chat/components/ui/ChatMessageBubble';
 import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * ChatThread Molecule (Feature Component).
  * Renders the active message thread and the input area to send new messages.
  */
-const ChatThread = ({
+export const ChatThread = ({
     thread,
     user,
     loading,
@@ -76,5 +76,3 @@ const ChatThread = ({
         </>
     );
 };
-
-export default ChatThread;

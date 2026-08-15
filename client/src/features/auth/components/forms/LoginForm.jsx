@@ -16,7 +16,7 @@ import { getNow } from '../../../../utils/core/dateUtils';
 
 const CURRENT_YEAR = getNow().getFullYear();
 
-const LoginForm = () => {
+export const LoginForm = () => {
     const {
         username,
         password,
@@ -96,5 +96,3 @@ const LoginForm = () => {
         </Card>
     );
 };
-
-export default LoginForm;

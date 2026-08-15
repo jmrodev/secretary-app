@@ -22,7 +22,7 @@ const TempAccessFormWrapper = ({ initialData, insurances, onSubmit, isEdit }) =>
  * TempAccessPage (Orchestrator).
  * Allows patients to register or update their data via a temporary link.
  */
-const TempAccessPage = () => {
+export const TempAccessPage = () => {
     const {
         loading,
         error,
@@ -103,5 +103,3 @@ const TempAccessPage = () => {
         </section>
     );
 };
-
-export default TempAccessPage;
