@@ -11,36 +11,36 @@
     backdrop-filter: blur(8px);
 }
 
-.MessageComposer__message-composer__title {
+.MessageComposer__title {
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--color-text-primary, #e2e8f0);
     margin: 0;
 }
 
-.MessageComposer__message-composer__form {
+.MessageComposer__form {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.MessageComposer__message-composer__field {
+.MessageComposer__field {
     display: flex;
     flex-direction: column;
     gap: 0.375rem;
 }
 
-.MessageComposer__message-composer__label {
+.MessageComposer__label {
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--color-text-secondary, var(--text-muted));
 }
 
-.MessageComposer__message-composer__input-wrapper {
+.MessageComposer__input-wrapper {
     position: relative;
 }
 
-.MessageComposer__message-composer__char-count {
+.MessageComposer__char-count {
     position: absolute;
     bottom: 0.625rem;
     right: 0.75rem;
@@ -49,7 +49,7 @@
     pointer-events: none;
 }
 
-.MessageComposer__message-composer__error {
+.MessageComposer__error {
     padding: 0.625rem 0.875rem;
     background: rgb(239 68 68 / 15%);
     border: 1px solid rgb(239 68 68 / 30%);
@@ -58,12 +58,12 @@
     font-size: 0.8125rem;
 }
 
-.MessageComposer__message-composer__actions {
+.MessageComposer__actions {
     display: flex;
     justify-content: flex-end;
 }
 
-.MessageComposer__message-composer__hint {
+.MessageComposer__hint {
     margin: 0;
     font-size: 0.8125rem;
     color: var(--color-text-tertiary, #64748b);

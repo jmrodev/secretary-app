@@ -103,7 +103,7 @@ export const AppointmentReportTable = ({ data, t }) => {
                             {dailySummaryWithTotals.map((day) => (
                                 <tr 
                                     key={day.date} 
-                                    className={`${styles.AppointmentReportTable__appointmentReport__row} ${day.is_weekend ? styles['AppointmentReportTable__appointmentReport__row--weekend'] : ''} ${day.is_holiday ? styles['AppointmentReportTable__appointmentReport__row--holiday'] : ''}`}
+                                    className={`${styles.AppointmentReportTable__appointmentReport__row} ${day.is_weekend ? styles['AppointmentReportTable__row--weekend'] : ''} ${day.is_holiday ? styles['AppointmentReportTable__row--holiday'] : ''}`}
                                 >
                                     <td>
                                         {day.date}
@@ -163,7 +163,7 @@ export const AppointmentReportTable = ({ data, t }) => {
                     <tbody>
                         {list.map((dayGroup) => (
                             <React.Fragment key={dayGroup.date}>
-                                <tr className={`${styles.AppointmentReportTable__appointmentReport__dayHeader} ${dayGroup.is_weekend ? styles['AppointmentReportTable__appointmentReport__dayHeader--weekend'] : ''} ${dayGroup.is_holiday ? styles['AppointmentReportTable__appointmentReport__dayHeader--holiday'] : ''}`}>
+                                <tr className={`${styles.AppointmentReportTable__appointmentReport__dayHeader} ${dayGroup.is_weekend ? styles['AppointmentReportTable__dayHeader--weekend'] : ''} ${dayGroup.is_holiday ? styles['AppointmentReportTable__dayHeader--holiday'] : ''}`}>
                                     <td colSpan="7">
                                         <Icon name="calendar_today" size="1rem" className="mr-1" /> {dayGroup.date}
                                         {dayGroup.is_holiday && (
@@ -193,7 +193,7 @@ export const AppointmentReportTable = ({ data, t }) => {
                                     return (
                                         <tr 
                                             key={appt.id || `${dayGroup.date}-${timeStr}-${patientName}`} 
-                                            className={`${styles.AppointmentReportTable__appointmentReport__row} ${appt.is_out_of_hours ? styles['AppointmentReportTable__appointmentReport__row--overturn'] : ''}`}
+                                            className={`${styles.AppointmentReportTable__appointmentReport__row} ${appt.is_out_of_hours ? styles['AppointmentReportTable__row--overturn'] : ''}`}
                                         >
                                             <td className={styles.AppointmentReportTable__appointmentReport__cellDay}>{dayGroup.date}</td>
                                             <td>

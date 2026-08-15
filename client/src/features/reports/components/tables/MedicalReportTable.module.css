@@ -7,7 +7,7 @@
     width: 100%;
 }
 
-.MedicalReportTable__medicalReport__empty {
+.MedicalReportTable__empty {
     padding: 4rem 2rem;
     text-align: center;
     background: var(--dashboard-card-bg);
@@ -17,14 +17,14 @@
     font-weight: 500;
 }
 
-.MedicalReportTable__medicalReport__summary {
+.MedicalReportTable__summary {
     background-color: var(--dashboard-card-bg);
     border-radius: var(--radius-lg, 12px);
     padding: 1.5rem;
     border: 1px solid var(--border-color);
 }
 
-.MedicalReportTable__medicalReport__summaryTitle {
+.MedicalReportTable__summaryTitle {
     font-size: 1.125rem;
     font-weight: 800;
     color: var(--text-main);
@@ -33,12 +33,12 @@
     letter-spacing: 0.025em;
 }
 
-.MedicalReportTable__medicalReport__tableContainer {
+.MedicalReportTable__tableContainer {
     width: 100%;
     overflow-x: auto;
 }
 
-.MedicalReportTable__medicalReport__table {
+.MedicalReportTable__table {
     width: 100%;
     border-collapse: collapse;
     background-color: var(--dashboard-card-bg);
@@ -47,7 +47,7 @@
     border: 1px solid var(--border-color);
 }
 
-.MedicalReportTable__medicalReport__table th {
+.MedicalReportTable__table th {
     text-align: left;
     padding: 0.875rem 1.25rem;
     background-color: var(--gray-900);
@@ -59,51 +59,51 @@
     border-bottom: 2px solid var(--dashboard-card-bg);
 }
 
-.MedicalReportTable__medicalReport__row {
+.MedicalReportTable__row {
     border-bottom: 1px solid var(--gray-100);
     transition: background-color 0.15s ease-in-out;
 }
 
-.MedicalReportTable__medicalReport__row:hover {
+.MedicalReportTable__row:hover {
     background-color: var(--gray-100) !important;
 }
 
-.MedicalReportTable__medicalReport__row:hover td {
+.MedicalReportTable__row:hover td {
     color: var(--gray-900) !important;
 }
 
-.MedicalReportTable__medicalReport__row td {
+.MedicalReportTable__row td {
     padding: 0.875rem 1.25rem;
     font-size: 0.875rem;
     color: var(--text-main, var(--background-bg));
 }
 
-.MedicalReportTable__medicalReport__cellRight {
+.MedicalReportTable__cellRight {
     text-align: right;
 }
 
-.MedicalReportTable__medicalReport__cellBold {
+.MedicalReportTable__cellBold {
     font-weight: 700;
 }
 
-.MedicalReportTable__medicalReport__footerSubtotal td {
+.MedicalReportTable__footerSubtotal td {
     background-color: var(--text-main);
     font-weight: 700;
 }
 
-.MedicalReportTable__medicalReport__footer td {
+.MedicalReportTable__footer td {
     background-color: var(--gray-100);
     font-weight: 800;
     border-top: 2px solid var(--text-secondary);
 }
 
-.MedicalReportTable__medicalReport__group {
+.MedicalReportTable__group {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-lg, 12px);
     overflow: hidden;
 }
 
-.MedicalReportTable__medicalReport__dateHeader {
+.MedicalReportTable__dateHeader {
     background-color: var(--background-bg);
     color: var(--text-main);
     padding: 0.875rem 1.25rem;
@@ -112,21 +112,21 @@
     margin: 0;
 }
 
-.MedicalReportTable__medicalReport__patientInfo {
+.MedicalReportTable__patientInfo {
     display: flex;
     flex-direction: column;
 }
 
-.MedicalReportTable__medicalReport__patientName {
+.MedicalReportTable__patientName {
     font-weight: 700;
 }
 
-.MedicalReportTable__medicalReport__patientDni {
+.MedicalReportTable__patientDni {
     font-size: 0.7rem;
     color: var(--text-muted);
 }
 
-.MedicalReportTable__medicalReport__methodBadge {
+.MedicalReportTable__methodBadge {
     font-size: 0.65rem;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
@@ -136,7 +136,7 @@
     text-transform: uppercase;
 }
 
-.MedicalReportTable__medicalReport__badge {
+.MedicalReportTable__badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.65rem;
@@ -146,22 +146,22 @@
     letter-spacing: 0.03em;
 }
 
-.MedicalReportTable__medicalReport__badge--paid {
+.MedicalReportTable__badge--paid {
     background-color: var(--green-100);
     color: var(--green-700);
 }
 
-.MedicalReportTable__medicalReport__badge--debt {
+.MedicalReportTable__badge--debt {
     background-color: var(--red-100);
     color: var(--red-700);
 }
 
-.MedicalReportTable__medicalReport__badge--partial {
+.MedicalReportTable__badge--partial {
     background-color: var(--amber-100);
     color: var(--amber-700);
 }
 
-.MedicalReportTable__medicalReport__badge--bonified {
+.MedicalReportTable__badge--bonified {
     background-color: var(--blue-100);
     color: var(--blue-700);
 }

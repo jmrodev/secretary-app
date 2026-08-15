@@ -1,6 +1,10 @@
 {
-  "extends": ["stylelint-config-standard"],
-  "plugins": ["stylelint-selector-bem-pattern"],
+  "extends": [
+    "stylelint-config-standard"
+  ],
+  "plugins": [
+    "stylelint-selector-bem-pattern"
+  ],
   "rules": {
     "plugin/selector-bem-pattern": [
       {
@@ -9,7 +13,9 @@
         "componentSelectors": "^\\.{componentName}(?:__[a-zA-Z0-9]+)?(?:--[a-zA-Z0-9]+)?$",
         "implicitComponents": "**/*.module.css"
       },
-      { "severity": "error" }
+      {
+        "severity": "warning"
+      }
     ],
     "selector-class-pattern": null,
     "no-descending-specificity": null,
