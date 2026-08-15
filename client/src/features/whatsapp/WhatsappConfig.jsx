@@ -58,7 +58,7 @@ const COMMON_VARS = [
     '{cbu}', '{alias}', '{bio}', '{horarios}', '{feriados}'
 ];
 
-const WhatsappConfig = ({ t }) => {
+export const WhatsappConfig = ({ t }) => {
     const [doctors, setDoctors] = useState([]);
     const [selectedDoctorId, setSelectedDoctorId] = useState('');
     const [aiContext, setAiContext] = useState('');
@@ -310,5 +310,3 @@ const WhatsappConfig = ({ t }) => {
         </div>
     );
 };
-
-export default WhatsappConfig;

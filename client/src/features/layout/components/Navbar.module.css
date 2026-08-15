@@ -1,4 +1,4 @@
-.root {
+.Navbar__root {
     /* --- Local Component Tokens --- */
     --navbar-bg: var(--dashboard-card-bg);
     --navbar-height: 64px;
@@ -17,7 +17,7 @@
     padding: 0 1.5rem;
 }
 
-.container {
+.Navbar__container {
     width: 100%;
     display: flex;
     align-items: center;
@@ -26,20 +26,20 @@
     margin: 0 auto;
 }
 
-.left {
+.Navbar__left {
     display: flex;
     align-items: center;
     min-width: 200px;
 }
 
-.logo {
+.Navbar__logo {
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-.logoIcon {
+.Navbar__logoIcon {
     width: 36px;
     height: 36px;
     background: rgb(13, 148, 136, 0.12);
@@ -50,7 +50,7 @@
     border: 1px solid rgb(13, 148, 136, 0.25);
 }
 
-.logoText {
+.Navbar__logoText {
     font-family: var(--font-manrope);
     font-size: 1.25rem;
     font-weight: 800;
@@ -58,7 +58,7 @@
     letter-spacing: -0.02em;
 }
 
-.nav {
+.Navbar__nav {
     flex: 1;
     display: flex;
     flex-direction: row;
@@ -68,7 +68,7 @@
     padding: 0 2rem;
 }
 
-.link {
+.Navbar__link {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -82,19 +82,19 @@
     white-space: nowrap;
 }
 
-.link:hover {
+.Navbar__link:hover {
     color: var(--text-main);
     background: rgb(128, 128, 128, 0.08);
     transform: translateY(-1px);
 }
 
-.linkActive {
+.Navbar__linkActive {
     color: var(--primary-color) !important;
     font-weight: 750;
     background: rgb(0 206 209 / 8%);
 }
 
-.right {
+.Navbar__right {
     display: flex;
     align-items: center;
     gap: 1.5rem;
@@ -102,7 +102,7 @@
     justify-content: flex-end;
 }
 
-.actions {
+.Navbar__actions {
     display: flex;
     align-items: center;
     gap: 1.25rem;
@@ -110,17 +110,17 @@
     border-right: 1px solid var(--border-color);
 }
 
-.actionIcon {
+.Navbar__actionIcon {
     color: var(--text-muted);
     cursor: pointer;
     transition: color 0.2s;
 }
 
-.actionIcon:hover {
+.Navbar__actionIcon:hover {
     color: var(--text-main);
 }
 
-.navbarUser {
+.Navbar__navbarUser {
     display: flex;
     align-items: center;
     gap: 0.85rem;
@@ -128,7 +128,7 @@
     border-radius: 12px;
 }
 
-.avatar {
+.Navbar__avatar {
     width: 36px;
     height: 36px;
     border-radius: 10px;
@@ -140,19 +140,19 @@
     font-weight: 800;
 }
 
-.info {
+.Navbar__info {
     display: flex;
     flex-direction: column;
 }
 
-.name {
+.Navbar__name {
     font-weight: 700;
     font-size: 0.85rem;
     color: var(--text-main);
     line-height: 1.2;
 }
 
-.role {
+.Navbar__role {
     font-size: 0.65rem;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -161,11 +161,11 @@
 }
 
 /* --- Dropdown Specific --- */
-.dropdown {
+.Navbar__dropdown {
     position: relative;
 }
 
-.dropdownTrigger {
+.Navbar__dropdownTrigger {
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -178,17 +178,17 @@
     transition: all 0.2s ease;
 }
 
-.dropdownTrigger:hover {
+.Navbar__dropdownTrigger:hover {
     color: var(--text-main);
     background: rgb(128, 128, 128, 0.08);
 }
 
-.dropdownOpen .dropdownTrigger {
+.Navbar__dropdownOpen .Navbar__dropdownTrigger {
     background: rgb(128, 128, 128, 0.12);
     color: var(--text-main);
 }
 
-.dropdownContent {
+.Navbar__dropdownContent {
     position: absolute;
     top: calc(100% + 8px); /* Acercado un poco más a la barra */
     right: 0;
@@ -205,11 +205,11 @@
 }
 
 @media screen and (width <= 1400px) {
-    .nav { gap: 0.5rem; }
-    .link, .dropdownTrigger { padding: 0.5rem 0.75rem; font-size: 0.82rem; }
-    .left, .right { min-width: auto; }
+    .Navbar__nav { gap: 0.5rem; }
+    .Navbar__link, .Navbar__dropdownTrigger { padding: 0.5rem 0.75rem; font-size: 0.82rem; }
+    .Navbar__left, .Navbar__right { min-width: auto; }
 }
 
 @media screen and (width <= 1100px) {
-    .nav { display: none; }
+    .Navbar__nav { display: none; }
 }

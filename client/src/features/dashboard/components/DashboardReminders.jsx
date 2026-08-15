@@ -10,7 +10,7 @@ import styles from './DashboardReminders.module.css';
  * Displays two lists of reminders: Pending and Notified.
  * Follows BEM methodology.
  */
-const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotified, onViewProfile }) => {
+export const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotified, onViewProfile }) => {
     const [activeSection, setActiveSection] = useState('pending');
 
     // Flatten reminders into individual tasks
@@ -64,16 +64,16 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
     const currentTasks = activeSection === 'pending' ? pendingTasks : notifiedTasks;
 
     return (
-        <section className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <nav className={`${styles.tabs}`}>
+        <section className={`${styles.DashboardReminders__root}`}>
+            <header className={`${styles.DashboardReminders__header}`}>
+                <nav className={`${styles.DashboardReminders__tabs}`}>
                     <TabButton
                         isActive={activeSection === 'pending'}
                         onClick={() => setActiveSection('pending')}
                         variant="pill"
                     >
                         {t('pending')}
-                        <span className={`${styles.count}`}>{pendingTasks.length}</span>
+                        <span className={`${styles.DashboardReminders__count}`}>{pendingTasks.length}</span>
                     </TabButton>
                     <TabButton
                         isActive={activeSection === 'notified'}
@@ -81,14 +81,14 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                         variant="pill"
                     >
                         {t('notified')}
-                        <span className={`${styles.count}`}>{notifiedTasks.length}</span>
+                        <span className={`${styles.DashboardReminders__count}`}>{notifiedTasks.length}</span>
                     </TabButton>
                 </nav>
             </header>
 
-            <div className={`${styles.list}`}>
+            <div className={`${styles.DashboardReminders__list}`}>
                 {currentTasks.length === 0 ? (
-                    <div className={`${styles.empty}`}>
+                    <div className={`${styles.DashboardReminders__empty}`}>
                         <Icon name="info" size="3rem" color="var(--slate-300)" />
                         <p>
                             {activeSection === 'pending'
@@ -99,16 +99,16 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
                     </div>
                 ) : (
                     currentTasks.map((task) => (
-                        <article key={`${task.id}-${task.taskType}`} className={`${styles.item} animate-fade-in`}>
-                            <div className={`${styles.itemInfo}`}>
-                                <h4 className={`${styles.itemName}`}>{task.full_name}</h4>
-                                <div className={`${styles.itemDetails}`}>
-                                    <span className={`${styles.badge} dashboard-reminders__badge--${task.badgeClass}`}>
+                        <article key={`${task.id}-${task.taskType}`} className={`${styles.DashboardReminders__item} animate-fade-in`}>
+                            <div className={`${styles.DashboardReminders__itemInfo}`}>
+                                <h4 className={`${styles.DashboardReminders__itemName}`}>{task.full_name}</h4>
+                                <div className={`${styles.DashboardReminders__itemDetails}`}>
+                                    <span className={`${styles.DashboardReminders__badge} dashboard-reminders__badge--${task.badgeClass}`}>
                                         {task.label}
                                     </span>
                                 </div>
                             </div>
-                            <div className={`${styles.itemActions}`}>
+                            <div className={`${styles.DashboardReminders__itemActions}`}>
                                 <Button
                                     variant="whatsapp"
                                     size="sm-compact"
@@ -166,5 +166,3 @@ const DashboardReminders = ({ reminders, t, onWhatsApp, onComplete, onMarkNotifi
         </section>
     );
 };
-
-export default DashboardReminders;

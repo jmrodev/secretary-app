@@ -1,4 +1,4 @@
-.root {
+.DashboardReminders__root {
     /* --- Local Component Tokens --- */
     --reminders-tabs-bg: var(--border-color);
     --reminders-item-bg: var(--dashboard-card-bg);
@@ -20,13 +20,13 @@
     gap: 1.5rem;
 }
 
-.header {
+.DashboardReminders__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.tabs {
+.DashboardReminders__tabs {
     display: flex;
     gap: 0.5rem;
     background-color: var(--reminders-tabs-bg);
@@ -34,7 +34,7 @@
     border-radius: 100px;
 }
 
-.count {
+.DashboardReminders__count {
     margin-left: 0.5rem;
     padding: 0 0.5rem;
     background: var(--dashboard-card-bg);
@@ -44,7 +44,7 @@
     font-size: 0.75rem;
 }
 
-.list {
+.DashboardReminders__list {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -53,7 +53,7 @@
     overflow: hidden;
 }
 
-.item {
+.DashboardReminders__item {
     background-color: var(--reminders-item-bg);
     padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--reminders-item-border);
@@ -63,65 +63,65 @@
     transition: all 0.2s;
 }
 
-.item:last-child {
+.DashboardReminders__item:last-child {
     border-bottom: none;
 }
 
-.item:hover {
+.DashboardReminders__item:hover {
     background-color: var(--reminders-item-hover);
 }
 
-.itemInfo {
+.DashboardReminders__itemInfo {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.itemName {
+.DashboardReminders__itemName {
     font-weight: 700;
     color: var(--text-main);
     font-size: 0.95rem;
 }
 
-.itemDetails {
+.DashboardReminders__itemDetails {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.badge {
+.DashboardReminders__badge {
     padding: 0.2rem 0.6rem;
     border-radius: 6px;
     font-size: 0.75rem;
     font-weight: 600;
 }
 
-.badgeVisit {
+.DashboardReminders__badgeVisit {
     background-color: var(--badge-visit-bg);
     color: var(--badge-visit-text);
 }
 
-.badgePrescription {
+.DashboardReminders__badgePrescription {
     background-color: var(--badge-prescription-bg);
     color: var(--badge-prescription-text);
 }
 
-.badgeMedication {
+.DashboardReminders__badgeMedication {
     background-color: var(--badge-medication-bg);
     color: var(--badge-medication-text);
 }
 
-.badgeLicense {
+.DashboardReminders__badgeLicense {
     background-color: var(--badge-license-bg);
     color: var(--badge-license-text);
 }
 
-.itemActions {
+.DashboardReminders__itemActions {
     display: flex;
     gap: 0.5rem;
 }
 
-.empty {
+.DashboardReminders__empty {
     text-align: center;
     padding: 3rem;
     color: var(--text-muted);

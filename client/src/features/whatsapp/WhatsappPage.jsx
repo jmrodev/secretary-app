@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import MainLayout from '@/components/templates/MainLayout';
 import Icon from '@/components/atoms/Icon';
 import { WhatsappBroadcast } from '@/components/molecules/WhatsappBroadcast';
-import WhatsappConfig from './WhatsappConfig';
+import { WhatsappConfig } from './WhatsappConfig';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './WhatsappPage.module.css';
 
-const WhatsappPage = () => {
+export const WhatsappPage = () => {
     const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState('config');
 
@@ -43,5 +43,3 @@ const WhatsappPage = () => {
         </MainLayout>
     );
 };
-
-export default WhatsappPage;
