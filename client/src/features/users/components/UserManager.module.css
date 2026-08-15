@@ -1,40 +1,40 @@
 /* UserManager Styles (BEM) */
 
-.root {
+.UserManager__root {
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.header {
+.UserManager__header {
     margin-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 1rem;
 }
 
-.title {
+.UserManager__title {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--slate-800, var(--background-bg));
 }
 
-.subtitle {
+.UserManager__subtitle {
     color: var(--slate-500, #64748b);
     font-size: 0.875rem;
 }
 
-.actions {
+.UserManager__actions {
     display: flex;
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
 
-.content {
+.UserManager__content {
     flex: 1;
     overflow: hidden;
 }
 
-.scrollable {
+.UserManager__scrollable {
     height: 100%;
     overflow-y: auto;
 }

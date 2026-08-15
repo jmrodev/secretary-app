@@ -1,4 +1,4 @@
-.userTableWrapper {
+.UserTable__userTableWrapper {
     /* --- Local Component Tokens --- */
     --user-table-header-bg: var(--background-bg);
     --user-table-border: rgb(255, 255, 255, 0.12);
@@ -11,13 +11,13 @@
     background-color: #0f172a;
 }
 
-.table {
+.UserTable__table {
     width: 100%;
     border-collapse: collapse;
     background-color: #0f172a;
 }
 
-.headerCell {
+.UserTable__headerCell {
     text-align: left;
     padding: 14px 18px;
     background-color: var(--user-table-header-bg);
@@ -29,41 +29,41 @@
     border-bottom: 2px solid var(--user-table-border);
 }
 
-.row {
+.UserTable__row {
     border-bottom: 1px solid var(--user-table-border);
     transition: background-color 0.15s ease;
 }
 
-.row:hover {
+.UserTable__row:hover {
     background-color: var(--background-bg);
 }
 
-.cell {
+.UserTable__cell {
     padding: 14px 18px;
     vertical-align: middle;
     color: var(--text-main);
 }
 
-.username {
+.UserTable__username {
     font-weight: 700;
     color: var(--text-main);
     font-size: 1rem;
 }
 
-.dni {
+.UserTable__dni {
     font-size: 0.85rem;
     color: var(--text-muted);
     font-weight: 500;
     margin-top: 2px;
 }
 
-.fullName {
+.UserTable__fullName {
     color: var(--text-main);
     font-size: 0.95rem;
     font-weight: 600;
 }
 
-.phoneContainer {
+.UserTable__phoneContainer {
     font-size: 0.85rem;
     color: var(--text-secondary);
     display: flex;
@@ -72,12 +72,12 @@
     margin-top: 2px;
 }
 
-.actions {
+.UserTable__actions {
     display: flex;
     gap: 8px;
 }
 
-.countBadge {
+.UserTable__countBadge {
     font-size: 11px;
     padding: 2px 6px;
 }
