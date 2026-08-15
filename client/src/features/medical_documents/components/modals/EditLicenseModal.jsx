@@ -7,7 +7,7 @@ import { Button } from '@/components/atoms/Button';
  * Modal for viewing/editing a medical license stored in medical_requests.
  * Fields: request_note (patient description) and doctor_note (doctor's note).
  */
-const EditLicenseModal = ({
+export const EditLicenseModal = ({
     isOpen,
     onClose,
     license,
@@ -60,4 +60,3 @@ const EditLicenseModal = ({
     );
 };
 
-export default EditLicenseModal;

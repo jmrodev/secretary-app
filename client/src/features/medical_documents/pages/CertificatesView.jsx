@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useCertificatesController } from '../hooks/useCertificatesController';
-import MedicalHistoryTable from '../components/lists/MedicalHistoryTable';
-import EditRequestModal from '../components/modals/EditRequestModal';
-import MedicalRequestForm from '../components/forms/MedicalRequestForm';
+import { MedicalHistoryTable } from '../components/lists/MedicalHistoryTable';
+import { EditRequestModal } from '../components/modals/EditRequestModal';
+import { MedicalRequestForm } from '../components/forms/MedicalRequestForm';
 import { PatientSearchSelect } from '@/features/patients';
 import Modal from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 
-const CertificatesView = () => {
+export const CertificatesView = () => {
     const controller = useCertificatesController();
     const [isCreating, setIsCreating] = useState(false);
     
@@ -71,4 +71,3 @@ const CertificatesView = () => {
     );
 };
 
-export default CertificatesView;

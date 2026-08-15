@@ -10,7 +10,7 @@ import styles from './RequirementItem.module.css';
  * Represents a single row in the documentary requirements table.
  * Orchestrates status transitions and administrative actions for medical requests.
  */
-const RequirementItem = ({
+export const RequirementItem = ({
     request,
     typeLabel,
     onSelect,
@@ -132,4 +132,3 @@ const RequirementItem = ({
     );
 };
 
-export default RequirementItem;

@@ -9,7 +9,7 @@ import styles from './MedicationList.module.css';
  */
 const EMPTY_ARRAY = [];
 
-const MedicationList = ({
+export const MedicationList = ({
     medications = EMPTY_ARRAY,
     onRemove,
     className = ''
@@ -33,4 +33,3 @@ const MedicationList = ({
     );
 };
 
-export default MedicationList;

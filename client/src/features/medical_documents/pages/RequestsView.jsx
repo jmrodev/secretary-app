@@ -1,12 +1,12 @@
 import React from 'react';
 import { useMedicalRequestsController } from '../hooks/useMedicalRequestsController';
-import MedicalRequestList from '../components/lists/MedicalRequestList';
-import StatusActionModal from '../components/modals/StatusActionModal';
-import EditRequestModal from '../components/modals/EditRequestModal';
+import { MedicalRequestList } from '../components/lists/MedicalRequestList';
+import { StatusActionModal } from '../components/modals/StatusActionModal';
+import { EditRequestModal } from '../components/modals/EditRequestModal';
 import { TransactionModal } from '@/features/finances';
-import MedicationInput from '@/features/medical_documents/components/forms/MedicationInput';
+import { MedicationInput } from '@/features/medical_documents/components/forms/MedicationInput';
 
-const RequestsView = () => {
+export const RequestsView = () => {
     const controller = useMedicalRequestsController();
     const {
         user, t, requestsSubTab,
@@ -72,4 +72,3 @@ const RequestsView = () => {
     );
 };
 
-export default RequestsView;

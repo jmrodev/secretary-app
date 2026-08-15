@@ -78,7 +78,7 @@ const QuickSelectTable = ({ meds, label, items, onSelect, t }) => {
 
 const EMPTY_ARRAY = [];
 
-const PrescriptionHabitualMeds = ({ patientMeds, historyMeds = EMPTY_ARRAY, items, handleSelectMedication, t }) => {
+export const PrescriptionHabitualMeds = ({ patientMeds, historyMeds = EMPTY_ARRAY, items, handleSelectMedication, t }) => {
     const hasHabitual = patientMeds && patientMeds.length > 0;
     const hasHistory = historyMeds && historyMeds.length > 0;
 
@@ -104,4 +104,3 @@ const PrescriptionHabitualMeds = ({ patientMeds, historyMeds = EMPTY_ARRAY, item
     );
 };
 
-export default PrescriptionHabitualMeds;

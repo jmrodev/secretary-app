@@ -8,7 +8,7 @@ import styles from './MedicationCard.module.css';
  * Displays medication information with status indicators and quick-save actions.
  * Part of the treatment tracking and prescription management in medical_documents.
  */
-const MedicationCard = ({
+export const MedicationCard = ({
     name,
     dose,
     frequency,
@@ -61,4 +61,3 @@ const MedicationCard = ({
     );
 };
 
-export default MedicationCard;

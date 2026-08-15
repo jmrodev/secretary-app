@@ -8,7 +8,7 @@ import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import styles from './MedicalHistoryTable.module.css';
 
-const MedicalHistoryTable = ({ 
+export const MedicalHistoryTable = ({ 
     items, 
     loading,
     onView, 
@@ -138,4 +138,3 @@ const MedicalHistoryTable = ({
     );
 };
 
-export default MedicalHistoryTable;

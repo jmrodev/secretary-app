@@ -5,13 +5,13 @@ import Badge from '@/components/atoms/Badge';
 import Input from '@/components/atoms/Input';
 import Icon from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
-import MedicationEditor from '@/features/medical_documents/components/forms/MedicationEditor';
+import { MedicationEditor } from '@/features/medical_documents/components/forms/MedicationEditor';
 import { extractMedicationDetails } from '@/features/medical_documents/utils/medicationHelpers';
 
 // Molecules
-import RequirementDetailHeader from '@/features/medical_documents/components/sections/RequirementDetailHeader';
-import RequirementMedicationList from '@/features/medical_documents/components/lists/RequirementMedicationList';
-import RequirementFeedback from '@/features/medical_documents/components/sections/RequirementFeedback';
+import { RequirementDetailHeader } from '@/features/medical_documents/components/sections/RequirementDetailHeader';
+import { RequirementMedicationList } from '@/features/medical_documents/components/lists/RequirementMedicationList';
+import { RequirementFeedback } from '@/features/medical_documents/components/sections/RequirementFeedback';
 
 // Styles
 import styles from './MedicalRequirementDetailModal.module.css';
@@ -20,7 +20,7 @@ import styles from './MedicalRequirementDetailModal.module.css';
  * MedicalRequirementDetailModal Organism (Feature-based).
  * Orchestrates the display and editing of medical request details.
  */
-const MedicalRequirementDetailModal = ({
+export const MedicalRequirementDetailModal = ({
     selectedRequest,
     onClose,
     t,
@@ -137,4 +137,3 @@ const MedicalRequirementDetailModal = ({
     );
 };
 
-export default MedicalRequirementDetailModal;

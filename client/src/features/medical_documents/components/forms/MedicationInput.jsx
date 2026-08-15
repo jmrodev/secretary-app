@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import MedicationAutocomplete from '@/features/medical_documents/components/ui/MedicationAutocomplete';
-import MedicationList from '@/features/medical_documents/components/lists/MedicationList';
+import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
+import { MedicationList } from '@/features/medical_documents/components/lists/MedicationList';
 import styles from './MedicationInput.module.css';
 
 const EMPTY_ARRAY = [];
@@ -10,7 +10,7 @@ const EMPTY_ARRAY = [];
  * Higher-level input that combines autocomplete search and a list of selected items.
  * Used across various medical forms within the medical_documents domain.
  */
-const MedicationInput = ({
+export const MedicationInput = ({
     medications = EMPTY_ARRAY,
     onAdd,
     onRemove,
@@ -54,4 +54,3 @@ const MedicationInput = ({
     );
 };
 
-export default MedicationInput;

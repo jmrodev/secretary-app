@@ -10,7 +10,7 @@ import styles from './PublicRequestPage.module.css';
  * PublicRequestPage (Orchestrator).
  * Patient-facing portal for requesting prescriptions.
  */
-const PublicRequestPage = () => {
+export const PublicRequestPage = () => {
     const {
         loading,
         error,
@@ -183,4 +183,3 @@ const PublicRequestPage = () => {
     );
 };
 
-export default PublicRequestPage;

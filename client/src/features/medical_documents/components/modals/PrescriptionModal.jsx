@@ -5,9 +5,9 @@ import Icon from '@/components/atoms/Icon';
 import { useMessage } from '@/context/MessageContext';
 
 // Local Feature Components
-import PrescriptionHabitualMeds from '@/features/medical_documents/components/sections/PrescriptionHabitualMeds';
-import PrescriptionItemsList from '@/features/medical_documents/components/lists/PrescriptionItemsList';
-import PrescriptionExtraFields from '@/features/medical_documents/components/sections/PrescriptionExtraFields';
+import { PrescriptionHabitualMeds } from '@/features/medical_documents/components/sections/PrescriptionHabitualMeds';
+import { PrescriptionItemsList } from '@/features/medical_documents/components/lists/PrescriptionItemsList';
+import { PrescriptionExtraFields } from '@/features/medical_documents/components/sections/PrescriptionExtraFields';
 import { usePrescriptionModalController, FREQ_PRESETS } from '../../hooks/usePrescriptionModalController';
 
 import styles from './PrescriptionModal.module.css';
@@ -16,7 +16,7 @@ import styles from './PrescriptionModal.module.css';
  * PrescriptionModal Organism (Feature-based).
  * Orchestrates habitual meds, form entry, and item listing for medical prescriptions.
  */
-const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, t, isSubmitting }) => {
+export const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, t, isSubmitting }) => {
     const { showMessage } = useMessage();
     const { state, handlers, computed } = usePrescriptionModalController(patientId, onSubmit, showMessage, t);
 
@@ -94,4 +94,3 @@ const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onSubmit, 
     );
 };
 
-export default PrescriptionModal;

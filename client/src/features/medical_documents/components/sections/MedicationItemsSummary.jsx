@@ -8,7 +8,7 @@ import styles from './MedicationItemsSummary.module.css';
  * Compact list view for medications already added to a prescription or request.
  * Part of the item review and deletion workflow in medical_documents.
  */
-const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
+export const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
     if (!items || items.length === 0) return null;
 
     return (
@@ -34,4 +34,3 @@ const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
     );
 };
 
-export default MedicationItemsSummary;

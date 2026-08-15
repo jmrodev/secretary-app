@@ -6,7 +6,7 @@ import styles from './RequirementDetailHeader.module.css';
  * Displays critical patient and doctor information at the top of a requirement detail view.
  * Part of the documentary review workflow in medical_documents.
  */
-const RequirementDetailHeader = ({ selectedRequest }) => {
+export const RequirementDetailHeader = ({ selectedRequest }) => {
     return (
         <header className={`${styles.header} animate-fade-in`}>
             <div className={`${styles.patient}`}>
@@ -23,4 +23,3 @@ const RequirementDetailHeader = ({ selectedRequest }) => {
     );
 };
 
-export default RequirementDetailHeader;

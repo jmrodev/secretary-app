@@ -3,10 +3,10 @@ import Pagination from '@/components/atoms/Pagination';
 import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
-import RequirementItem from '@/features/medical_documents/components/sections/RequirementItem';
+import { RequirementItem } from '@/features/medical_documents/components/sections/RequirementItem';
 import managerStyles from '@/features/medical_documents/components/ui/MedicalRequirementManager.module.css';
 
-const MedicalRequirementTable = ({
+export const MedicalRequirementTable = ({
     requests,
     filter,
     setFilter,
@@ -106,4 +106,3 @@ const MedicalRequirementTable = ({
     );
 };
 
-export default MedicalRequirementTable;

@@ -6,11 +6,11 @@ import { useRequirementManagerController } from '@/features/medical_documents/ho
 import TabButton from '@/components/atoms/TabButton';
 import Icon from '@/components/atoms/Icon';
 import Loading from '@/components/atoms/Loading';
-import MedicalRequirementTable from '@/features/medical_documents/components/lists/MedicalRequirementTable';
-import MedicalRequirementRecycleBin from '@/features/medical_documents/components/lists/MedicalRequirementRecycleBin';
-import MedicalRequirementDetailModal from '@/features/medical_documents/components/modals/MedicalRequirementDetailModal';
-import MedicalRequirementActionModal from '@/features/medical_documents/components/modals/MedicalRequirementActionModal';
-import MedicalRequestModal from '@/features/medical_documents/components/modals/MedicalRequestModal';
+import { MedicalRequirementTable } from '@/features/medical_documents/components/lists/MedicalRequirementTable';
+import { MedicalRequirementRecycleBin } from '@/features/medical_documents/components/lists/MedicalRequirementRecycleBin';
+import { MedicalRequirementDetailModal } from '@/features/medical_documents/components/modals/MedicalRequirementDetailModal';
+import { MedicalRequirementActionModal } from '@/features/medical_documents/components/modals/MedicalRequirementActionModal';
+import { MedicalRequestModal } from '@/features/medical_documents/components/modals/MedicalRequestModal';
 
 import styles from './MedicalRequirementManager.module.css';
 
@@ -18,7 +18,7 @@ import styles from './MedicalRequirementManager.module.css';
  * MedicalRequirementManager Organism (Feature-based).
  * ECC-Pattern: Standard Orchestrator without early returns to protect Hooks.
  */
-const MedicalRequirementManager = ({ 
+export const MedicalRequirementManager = ({ 
     user, 
     variant = 'full', 
     setPaymentModal 
@@ -101,4 +101,3 @@ const MedicalRequirementManager = ({
     );
 };
 
-export default MedicalRequirementManager;

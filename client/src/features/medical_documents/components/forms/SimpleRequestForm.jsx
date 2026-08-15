@@ -5,7 +5,7 @@ import React from 'react';
  * SimpleRequestForm Molecule.
  * Form used for medical licenses and certificates.
  */
-const SimpleRequestForm = ({ reqType, reqNote, setReqNote, t, baseClass }) => {
+export const SimpleRequestForm = ({ reqType, reqNote, setReqNote, t, baseClass }) => {
     return (
         <div className={`${baseClass}__simple-form`}>
             <div className="input-group">
@@ -25,4 +25,3 @@ const SimpleRequestForm = ({ reqType, reqNote, setReqNote, t, baseClass }) => {
     );
 };
 
-export default SimpleRequestForm;

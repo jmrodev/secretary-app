@@ -4,14 +4,14 @@ import Icon from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import Input from '@/components/atoms/Input';
 import inputStyles from '@/components/atoms/Input.module.css';
-import MedicationAutocomplete from '@/features/medical_documents/components/ui/MedicationAutocomplete';
+import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
 import styles from './PrescriptionItemsList.module.css';
 
 /**
  * PrescriptionItemsList Molecule.
  * Displays the current medications added to the batch prescription.
  */
-const PrescriptionItemsList = ({
+export const PrescriptionItemsList = ({
     items, handleRemoveItem, t, readOnly: _readOnly,
     tempMed, setTempMed,
     tempDose, setTempDose,
@@ -181,4 +181,3 @@ const PrescriptionItemsList = ({
     );
 };
 
-export default PrescriptionItemsList;

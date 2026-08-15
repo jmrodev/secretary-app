@@ -9,7 +9,7 @@ import styles from './MedicalDocumentsPage.module.css';
  * MedicalDocumentsPage (Layout Orchestrator).
  * Acts as the layout shell for the nested Medical Document views.
  */
-const MedicalDocumentsPage = () => {
+export const MedicalDocumentsPage = () => {
     const { t } = useLanguage();
 
     // The sub-tab state for requests could be lifted here or handled via URL.
@@ -49,4 +49,3 @@ const MedicalDocumentsPage = () => {
     );
 };
 
-export default MedicalDocumentsPage;

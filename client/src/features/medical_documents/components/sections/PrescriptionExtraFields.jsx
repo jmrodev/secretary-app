@@ -1,7 +1,7 @@
 import React from 'react';
 import { capitalizeFirst } from '@/utils/core/stringUtils';
 
-const PrescriptionExtraFields = ({ instructions, setInstructions, bonified, setBonified, t }) => {
+export const PrescriptionExtraFields = ({ instructions, setInstructions, bonified, setBonified, t }) => {
     return (
         <>
             <article className="prescription-modal__group">
@@ -33,4 +33,3 @@ const PrescriptionExtraFields = ({ instructions, setInstructions, bonified, setB
     );
 };
 
-export default PrescriptionExtraFields;
