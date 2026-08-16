@@ -2,7 +2,7 @@ import { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Layout & Guards
-import ProtectedRoute from '@/components/atoms/ProtectedRoute';
+import { ProtectedRoute } from '@/components/templates/ProtectedRoute';
 import RoleGuard from '@/components/auth/RoleGuard';
 import Loading from '@/components/atoms/Loading';
 
@@ -11,10 +11,10 @@ import Loading from '@/components/atoms/Loading';
 const AppointmentsPage = lazy(() => import('@/features/appointments').then(m => ({ default: m.AppointmentsPage })));
 const PatientsPage = lazy(() => import('@/features/patients').then(m => ({ default: m.PatientsPage })));
 const MedicalDocumentsPage = lazy(() => import('@/features/medical_documents').then(m => ({ default: m.MedicalDocumentsPage })));
-const RequestsView = lazy(() => import('@/features/medical_documents/pages/RequestsView').then(module => ({ default: module.MedicalDocumentsPage })));
-const PrescriptionsView = lazy(() => import('@/features/medical_documents/pages/PrescriptionsView').then(module => ({ default: module.MedicalDocumentsPage })));
-const LicensesView = lazy(() => import('@/features/medical_documents/pages/LicensesView').then(module => ({ default: module.MedicalDocumentsPage })));
-const CertificatesView = lazy(() => import('@/features/medical_documents/pages/CertificatesView').then(module => ({ default: module.MedicalDocumentsPage })));
+const RequestsView = lazy(() => import('@/features/medical_documents/pages/RequestsView').then(module => ({ default: module.RequestsView })));
+const PrescriptionsView = lazy(() => import('@/features/medical_documents/pages/PrescriptionsView').then(module => ({ default: module.PrescriptionsView })));
+const LicensesView = lazy(() => import('@/features/medical_documents/pages/LicensesView').then(module => ({ default: module.LicensesView })));
+const CertificatesView = lazy(() => import('@/features/medical_documents/pages/CertificatesView').then(module => ({ default: module.CertificatesView })));
 
 const FinancesPage = lazy(() => import('@/features/finances').then(m => ({ default: m.FinancesPage })));
 const DashboardPage = lazy(() => import('@/features/dashboard').then(m => ({ default: m.DashboardPage })));
@@ -37,7 +37,7 @@ const ProfilePage = lazy(() => import('@/features/auth').then(m => ({ default: m
 const DoctorsPage = lazy(() => import('@/features/doctors').then(m => ({ default: m.DoctorsPage })));
 const ReportsPage = lazy(() => import('@/features/reports').then(m => ({ default: m.ReportsPage })));
 
-import { DayCellPlayground } from '@/features/appointments/components/calendar/v2/DayCellPlayground';
+const DayCellPlayground = lazy(() => import('@/features/appointments/components/calendar/v2/DayCellPlayground').then(m => ({ default: m.DayCellPlayground })));
 
 const PublicRegisterPage = lazy(() => import('@/features/patients').then(m => ({ default: m.PublicRegisterPage })));
 
@@ -45,7 +45,7 @@ const PublicRegisterPage = lazy(() => import('@/features/patients').then(m => ({
  * AppRouter Component.
  * Pure Executor component that defines the routing tree.
  */
-const AppRouter = () => {
+export const AppRouter = () => {
     return (
         <Suspense fallback={<Loading variant="full-page" />}>
             <Routes>
@@ -141,5 +141,3 @@ const AppRouter = () => {
         </Suspense>
     );
 };
-
-export default AppRouter;
