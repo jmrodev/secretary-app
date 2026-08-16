@@ -50,7 +50,7 @@ export const DoctorSelector = () => {
                 <div className={styles.DoctorSelector__labelGroup}>
                     <span className={styles.DoctorSelector__label}>{t('doctor') || 'Médico'}</span>
                     <span className={styles.DoctorSelector__value}>
-                        {currentDoctor ? currentDoctor.full_name : (t('all_doctors') || 'Todos los médicos')}
+                        {currentDoctor ? currentDoctor.full_name : (t('please_select_doctor') || 'Seleccionar profesional')}
                     </span>
                 </div>
                 <Icon name={isOpen ? 'expand_less' : 'expand_more'} size="1.2rem" className={styles.DoctorSelector__chevron} />
@@ -58,13 +58,6 @@ export const DoctorSelector = () => {
 
             {isOpen && (
                 <div className={styles.DoctorSelector__dropdown}>
-                    <div 
-                        className={`${styles.DoctorSelector__option} ${!viewDoctorId ? styles.DoctorSelector__optionActive : ''}`}
-                        onClick={() => { setViewDoctorId(''); setIsOpen(false); }}
-                    >
-                        <span className={styles.DoctorSelector__optionAvatar}>*</span>
-                        {t('all_doctors') || 'Todos los médicos'}
-                    </div>
                     {doctors.map(d => (
                         <div 
                             key={d.id}
