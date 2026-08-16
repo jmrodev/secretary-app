@@ -122,7 +122,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: var(--gray-950);
+    background-color: var(--card-surface-bg);
     border: 1px solid var(--dashboard-card-border);
     padding: 1rem 1.25rem;
     border-radius: var(--radius-md);
