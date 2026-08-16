@@ -3,7 +3,7 @@ import { Button } from '@/components/atoms/Button';
 import Icon from '@/components/atoms/Icon';
 import styles from './ErrorBoundary.module.css';
 
-class ErrorBoundary extends React.Component {
+export class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
     this.state = { hasError: false, error: null, errorInfo: null, copied: false };
@@ -77,5 +77,3 @@ class ErrorBoundary extends React.Component {
     return this.props.children;
   }
 }
-
-export default ErrorBoundary;

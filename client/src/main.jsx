@@ -1,7 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import App from '@/App';
+import { App } from '@/App';
+// Deliberate exception to the CSS Modules rule: index.css is the root-level
+// global stylesheet (tokens, resets, theme variables). Component styles live
+// in *.module.css; only this root file and App.css are global on purpose.
 import './index.css';
 import { AuthProvider } from '@/features/auth';
 import { MessageProvider } from '@/context/MessageContext';
