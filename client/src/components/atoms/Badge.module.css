@@ -1,7 +1,7 @@
 .root {
     /* --- Local Component Tokens --- */
-    --badge-bg: var(--gray-800);
-    --badge-color: var(--gray-300);
+    --badge-bg: var(--card-surface-bg);
+    --badge-color: var(--text-muted);
 
     /* ------------------------------ */
 

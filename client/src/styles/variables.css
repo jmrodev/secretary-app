@@ -191,6 +191,11 @@
     --tab-nav-bg: #e2e8f0;
     --card-surface-bg: #f1f5f9;   /* interior claro de cards */
     --card-hover-bg: #e2e8f0;     /* hover claro de cards */
+
+    /* Glass surfaces (translucent tints for light backgrounds) */
+    --glass: rgb(15 23 42 / 5%);
+    --glass-dark: rgb(15 23 42 / 8%);
+    --glass-border: rgb(15 23 42 / 10%);
 }
 
 /* Dim Theme - Oscuro Suave (Intermedio) */
