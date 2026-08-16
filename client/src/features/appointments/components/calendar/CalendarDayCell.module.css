@@ -75,14 +75,14 @@
 .CalendarDayCell__numberWrapper::before {
   content: '';
   position: absolute;
-  inset: -3px;
+  inset: -4px;
   border-radius: 50%;
-  padding: 3px;
+  padding: 4px;
   background: conic-gradient(
     var(--primary-color) 0%,
     var(--primary-color) var(--occupancy-normal, 0%),
-    var(--border-color) var(--occupancy-normal, 0%),
-    var(--border-color) 100%
+    color-mix(in srgb, var(--text-main) 18%, transparent) var(--occupancy-normal, 0%),
+    color-mix(in srgb, var(--text-main) 18%, transparent) 100%
   );
   mask:
     linear-gradient(var(--text-main) 0 0) content-box,
@@ -95,64 +95,27 @@
 .CalendarDayCell__numberWrapper::after {
   content: '';
   position: absolute;
-  inset: -7px;
+  inset: -8px;
   border-radius: 50%;
   padding: 2px;
   background: conic-gradient(
-    var(--warning) 0%,
-    var(--warning) var(--occupancy-extra, 0%),
-    var(--border-color) var(--occupancy-extra, 0%),
-    var(--border-color) 100%
+    var(--overtime-color, var(--warning)) 0%,
+    var(--overtime-color, var(--warning)) var(--occupancy-extra, 0%),
+    color-mix(in srgb, var(--text-main) 18%, transparent) var(--occupancy-extra, 0%),
+    color-mix(in srgb, var(--text-main) 18%, transparent) 100%
   );
   mask:
     linear-gradient(var(--text-main) 0 0) content-box,
     linear-gradient(var(--text-main) 0 0);
   mask-composite: exclude;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.CalendarDayCell__extraRing {
-  position: absolute;
-  inset: -7px;
-  width: calc(100% + 14px);
-  height: calc(100% + 14px);
-  pointer-events: none;
   opacity: var(--extra-opacity, 0);
   transition: opacity 0.3s ease;
 }
 
-.CalendarDayCell__extraRingTrack {
-  fill: none;
-  stroke: var(--border-color);
-  stroke-width: 2;
-}
-
-.CalendarDayCell__extraRingFill {
-  fill: none;
-  stroke: var(--warning);
-  stroke-width: 2;
-  stroke-linecap: round;
-}
-
-.CalendarDayCell__selected .CalendarDayCell__numberWrapper::before,
-.CalendarDayCell__selected .CalendarDayCell__numberWrapper::after,
-.CalendarDayCell__selected .CalendarDayCell__extraRing {
-  opacity: 0;
-}
-
 .CalendarDayCell__selected .CalendarDayCell__number {
-  background: var(--primary-color);
-  color: var(--text-main) !important;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.5rem;
-  height: 3.5rem;
-  box-shadow: var(--shadow-sm);
-  font-weight: 800;
+  color: var(--primary-color) !important;
+  font-weight: 900;
 }
 
 .CalendarDayCell__holiday {
@@ -244,11 +207,6 @@ body:not(.CalendarDayCell__theme-light) .CalendarDayCell__past {
   font-size: 1.25rem;
 }
 
-.CalendarDayCell__compact.selected .CalendarDayCell__number {
-  width: 2.5rem;
-  height: 2.5rem;
-}
-
 .CalendarDayCell__compact .CalendarDayCell__content {
   padding: 0.2rem;
 }
@@ -287,4 +245,19 @@ body:not(.CalendarDayCell__theme-light) .CalendarDayCell__past {
   width: 1.15rem;
   height: 1.15rem;
   border-radius: var(--radius-full);
+}
+
+/* Overtime: the day has appointments in the doctor's configured overtime window.
+   The number turns amber to reinforce the visible outer ring. */
+.CalendarDayCell__overtime .CalendarDayCell__number {
+  color: var(--warning) !important;
+}
+
+/* Full day: every official slot is booked. The inner ring turns solid green so
+   fully-booked days stand out from partially occupied ones. */
+.CalendarDayCell__full .CalendarDayCell__numberWrapper::before {
+  background: conic-gradient(
+    var(--success) 0%,
+    var(--success) 100%
+  );
 }
