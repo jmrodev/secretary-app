@@ -61,5 +61,5 @@ Rename flat classes to `block__element--modifier` in each feature's `.module.css
 
 ## Phase 5: Final verification
 
-- [ ] 5.1 Flip `ExportDefaultDeclaration`/BEM rules to `error`; full-repo `pnpm lint` + `pnpm build`.
-- [ ] 5.2 Confirm success criteria: 0 orphaned 1-line CSS, `export default` ≈ 0 migrated, all classes BEM.
+- [x] 5.1 Flip `ExportDefaultDeclaration`/BEM rules to `error`; full-repo `pnpm lint` + `pnpm build`.
+- [x] 5.2 Confirm success criteria: 0 orphaned 1-line CSS, `export default` ≈ 0 migrated, all classes BEM.
