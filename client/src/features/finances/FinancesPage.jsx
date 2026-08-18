@@ -13,8 +13,6 @@ import { Icon } from '@/components/atoms/Icon';
 import { Badge } from '@/components/atoms/Badge';
 import { TransactionsTable } from '@/features/finances/components/tables/TransactionsTable';
 
-import styles from './FinancesPage.module.css';
-
 /**
  * FinancesPage (Orchestrator).
  * Coordinates financial stats, transactions, and cash box management.

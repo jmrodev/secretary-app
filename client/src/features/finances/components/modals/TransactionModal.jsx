@@ -5,8 +5,6 @@ import { useConfig } from '@/context/ConfigContext';
 import { useTransactionForm } from '@/features/finances/hooks/useTransactionForm';
 import { formatCurrency } from '@/utils/core/format';
 import {
-    getTransactionTypes,
-    getStatusOptions,
     getServiceTypes
 } from '@/constants/transactionOptions';
 
@@ -41,15 +39,13 @@ export const TransactionModal = ({
     const {
         formData, loading, patients, doctors, pricingInfo, totalPrice, patientSearch, showPatientList,
         setPatientSearch, setShowPatientList, updateField, updateServiceType, updateDoctor, selectPatient,
-        handlePaymentChange, addPaymentMethod, removePaymentMethod, saveTransaction, medications,
-        selectedPatient, addMedication, removeMedication, setTotalPrice
+        handlePaymentChange, addPaymentMethod, removePaymentMethod, saveTransaction,
+        setTotalPrice
     } = useTransactionForm(isOpen, initialData, requestId, onSuccess, onClose);
 
     const currentPaidTotal = formData.payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
     const debtAmount = Math.max(0, totalPrice - currentPaidTotal);
 
-    const transactionTypes = getTransactionTypes(t);
-    const statusOptions = getStatusOptions(t);
     const serviceTypes = getServiceTypes(t);
 
     const doctorOptions = React.useMemo(() => [

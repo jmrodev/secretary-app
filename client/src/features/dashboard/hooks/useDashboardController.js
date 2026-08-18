@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -39,12 +39,16 @@ export const useDashboardController = () => {
         statsHook.refetch();
     };
 
+    // React 19 useEffectEvent: stable polling callback that always reads the
+    // latest refreshDashboard / remindersHook without effect dependency churn.
+    const onPollDashboard = React.useEffectEvent(() => {
+        refreshDashboard();
+        remindersHook.fetchReminders();
+    });
+
     useEffect(() => {
         if (!user || isPatient) return;
-        const interval = setInterval(() => {
-            refreshDashboard();
-            remindersHook.fetchReminders();
-        }, 30000);
+        const interval = setInterval(onPollDashboard, 30000);
         return () => clearInterval(interval);
     }, [user, isPatient]);
 

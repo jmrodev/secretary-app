@@ -9,10 +9,10 @@ import { MedicationInput } from '@/features/medical_documents/components/forms/M
 export const RequestsView = () => {
     const controller = useMedicalRequestsController();
     const {
-        user, t, requestsSubTab,
-        requests, doctors,
+        user, t,
+        requests,
         requestsPage, requestsTotalPages,
-        reqType, sendToDoctor, canDeleteRequest,
+        canDeleteRequest,
         isEditing, setIsEditing, actionModal, actionNote,
         paymentModal, selectedRequest, requestEditData,
         handlers, loading

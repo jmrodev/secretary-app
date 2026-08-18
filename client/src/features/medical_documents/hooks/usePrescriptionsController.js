@@ -31,9 +31,13 @@ export const usePrescriptionsController = () => {
         return () => clearTimeout(timer);
     }, [searchTerm]);
 
-    useEffect(() => {
+    // Reset to page 1 whenever the debounced search changes. Applied during
+    // render so the new page commits before the fetch effect runs.
+    const [prevDebouncedSearch, setPrevDebouncedSearch] = useState(debouncedSearch);
+    if (prevDebouncedSearch !== debouncedSearch) {
+        setPrevDebouncedSearch(debouncedSearch);
         setPage(1);
-    }, [debouncedSearch]);
+    }
 
     const {
         data: response,

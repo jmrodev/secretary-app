@@ -12,7 +12,6 @@ export const ScheduleTimeline = ({
     timeSlots, showOutOfHours, showCancelled, onSlotClick, onSlotAction, getAppointmentsForSlot, t,
     isLoading = false
 }) => {
-    let timeMarkerRendered = false;
     const now = new Date();
     const markerRef = useRef(null);
 
@@ -42,6 +41,19 @@ export const ScheduleTimeline = ({
         return acc;
     }, []);
 
+    // Pure computation of the visible slot that currently contains "now".
+    // -1 means no slot qualifies (e.g. the visible list is empty or not today).
+    const currentSlotIndex = isTodaySchedule
+        ? filteredSlots.findIndex((slot, index) => {
+              const nextTime = index < filteredSlots.length - 1
+                  ? filteredSlots[index + 1].time
+                  : new Date(slot.time.getTime() + 60 * 60 * 1000);
+              if (index === 0 && now < slot.time) return true;
+              if (now >= slot.time && now < nextTime) return true;
+              return index === filteredSlots.length - 1 && now >= nextTime;
+          })
+        : -1;
+
 
 
     return (
@@ -59,31 +71,23 @@ export const ScheduleTimeline = ({
                     }
                 };
 
-                let isCurrentSlot = false;
-                let progressPercent = 0;
-                
-                if (isTodaySchedule && !timeMarkerRendered) {
-                    const nextTime = index < filteredSlots.length - 1 ? filteredSlots[index+1].time : new Date(time.getTime() + 60*60*1000);
-                    
+                const isCurrentSlot = index === currentSlotIndex;
+                const progressPercent = (() => {
+                    if (!isCurrentSlot) return 0;
+                    const nextTime = index < filteredSlots.length - 1 ? filteredSlots[index + 1].time : new Date(time.getTime() + 60 * 60 * 1000);
                     if (index === 0 && now < time) {
                         // La hora actual es anterior al primer slot visible (ej. son las 08:30 y el primer turno es a las 09:00)
-                        isCurrentSlot = true;
-                        timeMarkerRendered = true;
-                        progressPercent = 0;
-                    } else if (now >= time && now < nextTime) {
+                        return 0;
+                    }
+                    if (now >= time && now < nextTime) {
                         // La hora actual cae dentro de este slot
-                        isCurrentSlot = true;
-                        timeMarkerRendered = true;
                         const totalDuration = nextTime.getTime() - time.getTime();
                         const elapsed = now.getTime() - time.getTime();
-                        progressPercent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-                    } else if (index === filteredSlots.length - 1 && now >= nextTime) {
-                        // La hora actual es posterior a todo el rango visible dentro de horario (ej. pasadas las 12:00 p.m.)
-                        isCurrentSlot = true;
-                        timeMarkerRendered = true;
-                        progressPercent = 100;
+                        return Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
                     }
-                }
+                    // La hora actual es posterior a todo el rango visible dentro de horario (ej. pasadas las 12:00 p.m.)
+                    return 100;
+                })();
 
                 return (
                     <div key={timeKey} style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
@@ -137,8 +141,8 @@ export const ScheduleTimeline = ({
                 );
             })}
             
-            {/* If it's today and marker was never rendered, it means all slots are in the past. Render at the very end. */}
-            {isTodaySchedule && !timeMarkerRendered && (
+            {/* If it's today and no slot contains "now", all visible slots are in the past. Render at the very end. */}
+            {isTodaySchedule && currentSlotIndex === -1 && (
                 <div ref={markerRef} className={styles.ScheduleTimeline__currentTimeLine}>
                     <div className={styles.ScheduleTimeline__currentTimeLineLabel}>AHORA</div>
                     <div className={styles.ScheduleTimeline__currentTimeLineBar}></div>

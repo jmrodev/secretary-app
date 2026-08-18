@@ -17,7 +17,10 @@ export const NextSlotModal = ({
     fetchNextFreeSlots, hasNextGroup
 }) => {
     const { t } = useLanguage();
-    const monthNames = t('months_short_array') || ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const monthNames = useMemo(
+        () => t('months_short_array') || ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        [t]
+    );
     
     // Generate next 6 months for navigation bar
     const navMonths = useMemo(() => {

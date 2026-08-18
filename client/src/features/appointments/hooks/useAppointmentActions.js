@@ -96,7 +96,9 @@ export const useAppointmentActions = ({
                 if (updated?.data?.data && setActionModal) {
                     setActionModal(prev => (prev.open ? { ...prev, appt: updated.data.data } : prev));
                 }
-            } catch (_) {}
+            } catch (_) {
+                // Best-effort refresh of the modal's appointment; ignore failures.
+            }
         } catch {
             showMessage(t('bonify_error') || "Error al intentar bonificar el turno.", 'error');
         }

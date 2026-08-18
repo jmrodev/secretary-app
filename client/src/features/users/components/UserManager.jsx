@@ -1,7 +1,5 @@
 import React from 'react';
 import { UserManagement } from '@/features/users/components/UserManagement';
-import { Button } from '@/components/atoms/Button';
-import { Icon } from '@/components/atoms/Icon';
 import styles from './UserManager.module.css';
 
 export const UserManager = ({ t }) => {

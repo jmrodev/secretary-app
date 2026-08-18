@@ -59,7 +59,7 @@ export default defineConfig([
       'no-empty': 'warn',
       'no-useless-escape': 'warn',
       'react-refresh/only-export-components': ['warn', {
-        allowExportNames: ['useAuth', 'useConfig', 'useLanguage', 'useMessage', 'useModal'],
+        allowExportNames: ['useAuth', 'useConfig', 'useLanguage', 'useMessage', 'useModal', 'usePendingApproval'],
       }],
       'react-hooks/immutability': 'warn',
       'react-hooks/preserve-manual-memoization': 'warn',

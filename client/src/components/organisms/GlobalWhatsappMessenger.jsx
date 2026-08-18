@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useRef } from 'react';
 import { api } from '@/api/axios';
 import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
@@ -44,7 +44,7 @@ function messengerReducer(state, action) {
 }
 
 export const GlobalWhatsappMessenger = ({ t }) => {
-    const { viewDoctorId, doctorDisplayName } = useDoctors();
+    useDoctors();
     const [state, dispatch] = React.useReducer(messengerReducer, initialState);
     const { isOpen, activeTab, activeChat, conversations, loading, bridgeStatus, statusLoading } = state;
 
@@ -69,20 +69,11 @@ export const GlobalWhatsappMessenger = ({ t }) => {
         }
     }, []);
 
-    const handleManualRefresh = useCallback(async () => {
-        dispatch({ type: 'SET_STATUS_LOADING', payload: true });
-        try {
-            await api.post('/whatsapp/refresh');
-            // Give the bridge time to rebuild the client and generate a new QR
-            await new Promise((resolve) => setTimeout(resolve, 3000));
-        } catch (error) {
-            console.error("[WhatsApp] Failed to refresh bridge:", error);
-        } finally {
-            fetchStatus(true);
-        }
-    }, []);
+    // Ref indirection breaks the circular fetchStatus <-> handleManualRefresh
+    // dependency so both can stay stable (useCallback) without stale closures.
+    const handleManualRefreshRef = useRef(null);
 
-    const fetchStatus = async (isAutoCall = false) => {
+    const fetchStatus = useCallback(async (isAutoCall = false) => {
         try {
             const res = await api.get('/whatsapp/status');
             if (res.data.success) {
@@ -97,7 +88,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                 // Auto-refresh if QR timed out (disconnected & empty QR) and we aren't already refreshing
                 if (res.data.status === 'disconnected' && !res.data.qr_code && !isAutoCall) {
                     console.log("[WhatsApp] Stale/Timeout QR detected. Auto-refreshing...");
-                    handleManualRefresh();
+                    handleManualRefreshRef.current?.();
                 }
             } else {
                 dispatch({ 
@@ -118,7 +109,25 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                 } 
             });
         }
-    };
+    }, []);
+
+    const handleManualRefresh = useCallback(async () => {
+        dispatch({ type: 'SET_STATUS_LOADING', payload: true });
+        try {
+            await api.post('/whatsapp/refresh');
+            // Give the bridge time to rebuild the client and generate a new QR
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+        } catch (error) {
+            console.error("[WhatsApp] Failed to refresh bridge:", error);
+        } finally {
+            fetchStatus(true);
+        }
+    }, [fetchStatus]);
+
+    // Keep the latest handleManualRefresh reachable from the stable fetchStatus
+    useEffect(() => {
+        handleManualRefreshRef.current = handleManualRefresh;
+    }, [handleManualRefresh]);
 
     const handleLogout = useCallback(async () => {
         if (!window.confirm(t('confirm_logout_bridge') || '¿Seguro que querés desconectar WhatsApp?')) return;

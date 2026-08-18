@@ -37,8 +37,6 @@ export const MedicationAutocomplete = ({
         setCursor
     } = useMedicationAutocomplete(value, onChange, onSelectMedication);
 
-    const baseClass = styles.MedicationAutocomplete__root;
-
     // Handle clicks outside to close suggestions
     useEffect(() => {
         const handleClickOutside = (event) => {

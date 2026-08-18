@@ -1,7 +1,6 @@
 import React from 'react';
 import { Input } from '@/components/atoms/Input';
 import { Select } from '@/components/atoms/Select';
-import { Icon } from '@/components/atoms/Icon';
 import styles from './PatientMedicalNotes.module.css';
 
 /**

@@ -99,7 +99,9 @@ export const useAppointmentsHandlers = ({
                 setActionModal(prev => (prev.open && prev.appt && String(prev.appt.id) === String(id)) ? { ...prev, appt: freshAppt } : prev);
                 return;
             }
-        } catch (_) {}
+        } catch (_) {
+            // Best-effort refresh of the modal's appointment; ignore failures.
+        }
         setActionModal(prev => (prev.open && prev.appt && String(prev.appt.id) === String(id)) ? { ...prev, appt: { ...prev.appt, status } } : prev);
     };
 

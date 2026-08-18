@@ -40,7 +40,6 @@ export const PatientForm = ({
         insurances,
         doctors,
         institutions,
-        coveredByInstitution,
         isSubmitting,
         t,
         handlers
@@ -51,7 +50,6 @@ export const PatientForm = ({
         setPatientValue,
         toggleDoctorAssignment,
         updatePhoneNumbers,
-        toggleInstitutionCoverage,
         savePatient
     } = handlers;
 

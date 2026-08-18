@@ -36,8 +36,14 @@ export const PatientMedicationFormModal = ({
     const [saving, setSaving] = useState(false);
     const dropdownRef = useRef(null);
 
-    useEffect(() => {
-        if (isOpen) {
+    // Populate or reset the form whenever the modal opens with a given
+    // medication. Applied during render so the fields are correct on first
+    // paint; re-runs when the modal re-opens or the target changes while open.
+    const formSyncKey = isOpen ? (initialData?.id ?? 'new') : null;
+    const [prevFormSyncKey, setPrevFormSyncKey] = useState(null);
+    if (prevFormSyncKey !== formSyncKey) {
+        setPrevFormSyncKey(formSyncKey);
+        if (formSyncKey !== null) {
             if (initialData) {
                 setMedName(initialData.medication_name || initialData.name || '');
                 setDose(initialData.dose || '');
@@ -62,7 +68,7 @@ export const PatientMedicationFormModal = ({
             setVademecumResults([]);
             setShowDropdown(false);
         }
-    }, [isOpen, initialData]);
+    }
 
     // Close dropdown on outside click
     useEffect(() => {

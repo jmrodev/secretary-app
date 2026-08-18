@@ -1,3 +1,4 @@
+/* eslint-disable max-lines -- Large patient detail view; splitting into sub-components tracked as follow-up. */
 import React, { useState } from 'react';
 import { usePatientDetailsController } from '@/features/patients/hooks/usePatientDetailsController';
 import { Button } from '@/components/atoms/Button';
@@ -367,7 +368,6 @@ export const PatientDetailsView = ({
                                                 </thead>
                                                 <tbody>
                                                     {allPrescriptions.map((r, i) => {
-                                                        const token = r.token || r.id;
                                                         const isOfficial = !!r.token || r.type === 'official';
                                                         const actualFileUrl = r.file_url || r.pdf_url;
                                                         const medText = r.request_note || r.medications || r.doctor_note || '—';

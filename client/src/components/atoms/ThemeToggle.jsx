@@ -3,8 +3,9 @@ import { Button } from './Button';
 import { Icon } from './Icon';
 import styles from './ThemeToggle.module.css';
 
+const THEMES = ['dark', 'dim', 'light'];
+
 export const ThemeToggle = ({ className = '' }) => {
-    const themes = ['dark', 'dim', 'light'];
     const [theme, setTheme] = useState(() => {
         if (typeof window !== 'undefined' && window.localStorage) {
             return window.localStorage.getItem('theme') || 'dark';
@@ -16,7 +17,7 @@ export const ThemeToggle = ({ className = '' }) => {
         const root = document.documentElement;
         
         // Remove old classes
-        themes.forEach(t => {
+        THEMES.forEach(t => {
             document.body.classList.remove(`theme-${t}`);
         });
         
@@ -32,8 +33,8 @@ export const ThemeToggle = ({ className = '' }) => {
 
     const toggleTheme = () => {
         setTheme(prev => {
-            const nextIndex = (themes.indexOf(prev) + 1) % themes.length;
-            return themes[nextIndex];
+            const nextIndex = (THEMES.indexOf(prev) + 1) % THEMES.length;
+            return THEMES[nextIndex];
         });
     };
 

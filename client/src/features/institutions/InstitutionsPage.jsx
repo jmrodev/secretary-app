@@ -5,7 +5,6 @@ import { Loading } from '@/components/atoms/Loading';
 import { Icon } from '@/components/atoms/Icon';
 import { InstitutionFinances } from '@/features/finances';
 import { useInstitutionsController, InstitutionFormModal } from '@/features/institutions/index';
-import styles from './InstitutionsPage.module.css';
 
 import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 

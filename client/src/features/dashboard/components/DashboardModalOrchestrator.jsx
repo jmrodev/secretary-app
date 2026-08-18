@@ -20,8 +20,7 @@ export const DashboardModalOrchestrator = ({ controller }) => {
         newRequestModal,
         isSubmitting,
         doctors,
-        handlers,
-        refreshDashboard
+        handlers
     } = controller;
 
     const {
