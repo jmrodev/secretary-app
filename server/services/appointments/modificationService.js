@@ -1,6 +1,7 @@
 const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
 const googleSyncService = require('./googleSyncService');
 const financeService = require('../finance/financeService');
+const debtLifecycleService = require('../finance/debtLifecycleService');
 const helper = require('./appointmentHelper');
 const { pool } = require('../../db');
 const { nowLocalSQL } = require('../../utils/core/dateUtils');
@@ -22,6 +23,9 @@ class ModificationService {
             // Check for medical records before deletion
             const medical = await conn.query("SELECT id FROM prescriptions WHERE appointment_id = ? UNION SELECT id FROM medical_licenses WHERE appointment_id = ?", [id, id]);
             if (medical.length > 0) throw new Error("No se puede eliminar: tiene registros médicos asociados.");
+
+            // Apply debt policy atomically within this transaction (R1-R6)
+            await debtLifecycleService.handleAppointmentDelete(conn, appt);
 
             await helper.freeSlot(conn, appt.doctor_id, appt.appointment_date);
             await appointmentRepository.delete(id, conn);
@@ -74,7 +78,8 @@ class ModificationService {
                 updates.completed_at = nowLocalSQL();
             }
 
-            if (['cancelled', 'absent', 'suspended'].includes(status) && ['pending', 'debt'].includes(appt.payment_status)) {
+            // R4: absent retains payment_status (debt is kept and charged); cancelled/suspended legacy nulls it
+            if (['cancelled', 'suspended'].includes(status) && ['pending', 'debt'].includes(appt.payment_status)) {
                 updates.payment_status = null;
             }
 
@@ -91,6 +96,8 @@ class ModificationService {
             
             if (['cancelled', 'absent', 'suspended'].includes(status)) {
                 await this._handleCancellation(conn, appt, status);
+                // Apply debt policy atomically within this transaction (R4/R5/R6 + suspended legacy)
+                await debtLifecycleService.handleAppointmentStatusChange(conn, appt, status);
                 eventBus.emit(EVENTS.APPOINTMENT_CANCELLED, { id, status, appt, userId, conn });
             }
 

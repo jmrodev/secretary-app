@@ -7,9 +7,8 @@ const patientRepository = require('../../repositories/user/patientRepository');
 const medicationRepository = require('../../repositories/medical/medicationRepository');
 const doctorRepository = require('../../repositories/user/doctorRepository');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
-const eventBus = require('../../events/eventBus');
-const EVENTS = require('../../events/eventConstants');
 const financeService = require('../finance/financeService');
+const debtLifecycleService = require('../finance/debtLifecycleService');
 const { ROLES } = require('../../constants/roles');
 
 /**
@@ -149,10 +148,10 @@ class MedicalRequestService {
 
             await saveToRecycleBin(req, 'medical_requests', id, `Request #${id}`, reqInfo);
             await medicationRepository.deleteByRequestId(id, conn);
-            
-            // Clean up financial dependencies
-            eventBus.emit(EVENTS.MEDICAL_REQUEST_DELETED, { id, conn });
-            
+
+            // Apply debt policy atomically within this transaction (R7)
+            await debtLifecycleService.handleRequestDelete(conn, reqInfo);
+
             await medicalRequestRepository.delete(id, conn);
             await conn.commit();
             logAction(req, 'DELETE_MEDICAL_REQUEST', `ID: ${id}`);
