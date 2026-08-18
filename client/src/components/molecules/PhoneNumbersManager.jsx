@@ -70,10 +70,10 @@ export const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJE
     ];
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.PhoneNumbersManager__root}`}>
             {displayPhoneNumbers.map((pn, index) => (
-                <div key={pn.id || `phone-${index}`} className={`${styles.row} ${pn.is_primary ? styles.rowPrimary : ''}`}>
-                    <div className={`${styles.labelWrapper}`}>
+                <div key={pn.id || `phone-${index}`} className={`${styles.PhoneNumbersManager__row} ${pn.is_primary ? styles.PhoneNumbersManager__rowPrimary : ''}`}>
+                    <div className={`${styles.PhoneNumbersManager__labelWrapper}`}>
                         <Select
                             value={pn.label}
                             onChange={(e) => handleUpdate(index, 'label', e.target.value)}
@@ -81,7 +81,7 @@ export const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJE
                         />
                     </div>
 
-                    <div className={`${styles.numberWrapper}`}>
+                    <div className={`${styles.PhoneNumbersManager__numberWrapper}`}>
                         <PhoneInput
                             value={pn.phone_number}
                             onChange={(newValue) => handleUpdate(index, 'phone_number', newValue)}
@@ -89,10 +89,10 @@ export const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJE
                         />
                     </div>
 
-                    <div className={`${styles.controls}`}>
+                    <div className={`${styles.PhoneNumbersManager__controls}`}>
                         <button
                             type="button"
-                            className={`${styles.star} ${pn.is_primary ? styles.starActive : ''}`}
+                            className={`${styles.PhoneNumbersManager__star} ${pn.is_primary ? styles.PhoneNumbersManager__starActive : ''}`}
                             onClick={() => handleUpdate(index, 'is_primary', true)}
                             title={tx.markAsPrimary}
                         >
@@ -101,7 +101,7 @@ export const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJE
 
                         <button
                             type="button"
-                            className={`${styles.delete}`}
+                            className={`${styles.PhoneNumbersManager__delete}`}
                             onClick={() => handleRemove(index)}
                             title={tx.deleteBtn}
                         >
@@ -111,7 +111,7 @@ export const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJE
                 </div>
             ))}
 
-            <button type="button" className={`${styles.add}`} onClick={handleAdd}>
+            <button type="button" className={`${styles.PhoneNumbersManager__add}`} onClick={handleAdd}>
                 <Icon name="add" size="0.9rem" />
                 <span>{tx.addAnotherPhone}</span>
             </button>

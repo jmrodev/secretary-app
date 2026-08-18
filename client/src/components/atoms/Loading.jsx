@@ -16,7 +16,7 @@ export const Loading = ({
     text,
     className = ''
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.Loading__root;
     const variantClass = `${baseClass}--${variant}`;
     const sizeClass = `${baseClass}__spinner--${size}`;
 

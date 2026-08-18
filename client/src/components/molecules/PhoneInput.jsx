@@ -40,13 +40,13 @@ export const PhoneInput = ({ value, onChange, placeholder = 'Número...', disabl
     };
 
     return (
-        <div className={`${styles.root} ${className}`}>
+        <div className={`${styles.PhoneInput__root} ${className}`}>
             <Select
                 value={code}
                 onChange={handleCodeChange}
                 options={COUNTRY_OPTIONS}
                 disabled={disabled}
-                className={styles.select}
+                className={styles.PhoneInput__select}
             />
             <Input
                 value={number}
@@ -54,7 +54,7 @@ export const PhoneInput = ({ value, onChange, placeholder = 'Número...', disabl
                 placeholder={placeholder}
                 disabled={disabled}
                 required={required}
-                className={styles.input}
+                className={styles.PhoneInput__input}
                 onBlur={onBlur}
             />
         </div>

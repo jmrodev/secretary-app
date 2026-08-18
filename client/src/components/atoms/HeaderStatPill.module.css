@@ -1,4 +1,4 @@
-.pill {
+.HeaderStatPill__pill {
     display: flex;
     align-items: center;
     gap: 0.65rem;
@@ -13,13 +13,13 @@
     cursor: default;
 }
 
-.pill:hover {
+.HeaderStatPill__pill:hover {
     background: rgb(128, 128, 128, 0.08);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px var(--background-bg);
 }
 
-.iconWrapper {
+.HeaderStatPill__iconWrapper {
     width: 28px;
     height: 28px;
     border-radius: 6px;
@@ -29,32 +29,32 @@
     flex-shrink: 0;
 }
 
-.iconWrapper--appointments {
+.HeaderStatPill__iconWrapper--appointments {
     background: rgb(72 128 255 / 20%);
     color: #4880FF;
 }
 
-.iconWrapper--week {
+.HeaderStatPill__iconWrapper--week {
     background: rgb(16 185 129 / 20%);
     color: #10B981;
 }
 
-.iconWrapper--month {
+.HeaderStatPill__iconWrapper--month {
     background: rgb(245 158 11 / 20%);
     color: #F59E0B;
 }
 
-.iconWrapper--patients {
+.HeaderStatPill__iconWrapper--patients {
     background: rgb(239 68 68 / 20%);
     color: #EF4444;
 }
 
-.iconWrapper--growth {
+.HeaderStatPill__iconWrapper--growth {
     background: rgb(139 92 246 / 20%);
     color: #8B5CF6;
 }
 
-.value {
+.HeaderStatPill__value {
     font-family: var(--font-manrope);
     font-size: 1rem;
     font-weight: 700;

@@ -30,27 +30,27 @@ export const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', v
     if (!isOpen) return null;
 
     return ReactDOM.createPortal(
-        <div className={`${styles.root}`}>
+        <div className={`${styles.Modal__root}`}>
             <button
                 type="button"
-                className={`${styles.backdrop}`}
+                className={`${styles.Modal__backdrop}`}
                 onClick={onClose}
                 aria-label="Cerrar modal"
             />
             <div
-                className={`${styles.content} ${size && size !== 'md' ? styles['content' + size.charAt(0).toUpperCase() + size.slice(1)] : ''} ${className}`}
+                className={`${styles.Modal__content} ${size && size !== 'md' ? styles['content' + size.charAt(0).toUpperCase() + size.slice(1)] : ''} ${className}`}
                 onClick={e => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="modal-title"
                 tabIndex={-1}
             >
-                <header className={`${styles.header}`}>
-                    <h3 id="modal-title" className={`${styles.title}`}>{title}</h3>
+                <header className={`${styles.Modal__header}`}>
+                    <h3 id="modal-title" className={`${styles.Modal__title}`}>{title}</h3>
                     <Button
                         variant="ghost"
                         size="md-compact"
-                        className={`${styles.close}`}
+                        className={`${styles.Modal__close}`}
                         onClick={onClose}
                         aria-label="Close"
                         icon={<Icon name="CLOSE" />}
@@ -58,12 +58,12 @@ export const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', v
                     />
                 </header>
 
-                <div className={`${styles.body}`}>
+                <div className={`${styles.Modal__body}`}>
                     {children}
                 </div>
 
                 {footer && (
-                    <footer className={`${styles.footer}`}>
+                    <footer className={`${styles.Modal__footer}`}>
                         {footer}
                     </footer>
                 )}

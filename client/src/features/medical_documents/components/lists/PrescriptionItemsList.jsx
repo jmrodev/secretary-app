@@ -60,7 +60,7 @@ export const PrescriptionItemsList = ({
                                 </td>
                                 <td className={styles.PrescriptionItemsList__formCell}>
                                     <select
-                                        className={`${inputStyles.root} ${inputStyles.sm}`}
+                                        className={`${inputStyles.Input__root} ${inputStyles.Input__sm}`}
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
                                         value={tempFreqPreset !== null ? tempFreqPreset : ''}
                                         onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
@@ -76,7 +76,7 @@ export const PrescriptionItemsList = ({
                                 </td>
                                 <td className={styles.PrescriptionItemsList__formCell}>
                                     <select
-                                        className={`${inputStyles.root} ${inputStyles.sm}`}
+                                        className={`${inputStyles.Input__root} ${inputStyles.Input__sm}`}
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '100%', textAlign: 'center' }}
                                         value={tempUnitsPerBox}
                                         onChange={e => handleQuantityChange('units_per_box', e.target.value)}
@@ -90,7 +90,7 @@ export const PrescriptionItemsList = ({
                                 <td className={styles.PrescriptionItemsList__formCell}>
                                     <div className={styles.PrescriptionItemsList__qtyInputs} style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'nowrap' }}>
                                         <select
-                                            className={`${inputStyles.root} ${inputStyles.sm}`}
+                                            className={`${inputStyles.Input__root} ${inputStyles.Input__sm}`}
                                             style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '55px', textAlign: 'center' }}
                                             value={tempBoxes}
                                             onChange={e => handleQuantityChange('boxes', e.target.value)}

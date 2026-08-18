@@ -37,7 +37,7 @@ export const DayCell = ({
   };
 
   const cellClasses = [
-    styles.DayCell__dayCell,
+    styles.DayCell,
     isSelected && styles.DayCell__selected,
     isToday && styles.DayCell__today,
     isHoliday && styles.DayCell__holiday,

@@ -1,4 +1,4 @@
-.root {
+.HolidaysPage__root {
     display: flex;
     flex-direction: column;
     padding: 1rem;
@@ -8,19 +8,19 @@
     margin: 0 auto;
 }
 
-.content {
+.HolidaysPage__content {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
 }
 
 @media (width >= 768px) {
-    .content {
+    .HolidaysPage__content {
         grid-template-columns: 350px 1fr;
     }
 }
 
-.card {
+.HolidaysPage__card {
     background: var(--border-color);
     backdrop-filter: blur(16px);
     border: 1px solid var(--border-color);
@@ -32,7 +32,7 @@
     box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.cardTitle {
+.HolidaysPage__cardTitle {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-color);
@@ -41,7 +41,7 @@
     border-bottom: 1px solid var(--dashboard-card-border, var(--glass));
 }
 
-.form {
+.HolidaysPage__form {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;

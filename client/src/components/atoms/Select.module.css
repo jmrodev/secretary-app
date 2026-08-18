@@ -1,6 +1,6 @@
 /* Select Atom Styles (BEM) */
 
-.root {
+.Select__root {
     /* --- Local Component Tokens --- */
     --select-bg: var(--background-bg);
     --select-border: var(--border-color);
@@ -38,44 +38,44 @@
 }
 
 /* Ensure the placeholder option has a lighter color if possible (mostly for custom selects, native select options are hard to style) */
-.root:invalid {
+.Select__root:invalid {
     color: rgb(255 255 255 / 100%);
 }
 
-.root option {
+.Select__root option {
     background-color: var(--dashboard-card-bg, var(--background-bg));
     color: var(--text-main);
 }
 
-.root:focus {
+.Select__root:focus {
     border-color: var(--select-focus-border);
     box-shadow: 0 0 0 4px var(--select-focus-ring);
     transform: translateY(-1px);
 }
 
-.root:disabled {
+.Select__root:disabled {
     background-color: var(--select-disabled-bg);
     color: var(--select-disabled-text);
     cursor: not-allowed;
     transform: none;
 }
 
-.error {
+.Select__error {
     border-color: var(--select-error-border);
 }
 
-.error:focus {
+.Select__error:focus {
     box-shadow: 0 0 0 4px rgb(239 68 68 / 10%);
 }
 
-.sm {
+.Select__sm {
     padding: 0.5rem 2.25rem 0.5rem 0.75rem;
     font-size: 0.8125rem;
     border-radius: 0.5rem;
     background-position: right 0.5rem center;
 }
 
-.ghost {
+.Select__ghost {
     background-color: transparent;
     border-color: transparent;
     color: inherit;
@@ -86,7 +86,7 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
 }
 
-.ghost:focus {
+.Select__ghost:focus {
     transform: none;
     box-shadow: none;
 }

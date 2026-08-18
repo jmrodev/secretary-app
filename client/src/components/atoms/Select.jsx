@@ -16,7 +16,7 @@ export const Select = ({
     variant = 'default', // 'default', 'error'
     size = 'md' // 'sm', 'md', 'lg'
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.Select__root;
 
     const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
     const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';

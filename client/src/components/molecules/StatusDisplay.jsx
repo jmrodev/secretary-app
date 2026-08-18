@@ -11,24 +11,24 @@ const StatusContent = ({ type, title, message, icon }) => {
     switch (type) {
         case 'error':
             return (
-                <div className={`${styles.root} ${styles.error}`}>
-                    <div className={`${styles.icon}`}>{icon || <Icon name="warning" size="2.5rem" />}</div>
-                    <h2 className={`${styles.title}`}>{title || 'Error'}</h2>
-                    <p className={`${styles.message}`}>{message}</p>
+                <div className={`${styles.StatusDisplay__root} ${styles.StatusDisplay__error}`}>
+                    <div className={`${styles.StatusDisplay__icon}`}>{icon || <Icon name="warning" size="2.5rem" />}</div>
+                    <h2 className={`${styles.StatusDisplay__title}`}>{title || 'Error'}</h2>
+                    <p className={`${styles.StatusDisplay__message}`}>{message}</p>
                 </div>
             );
         case 'success':
             return (
-                <div className={`${styles.root} ${styles.success}`}>
-                    <div className={`${styles.icon}`}>{icon || <Icon name="check_circle" size="2.5rem" />}</div>
-                    <h2 className={`${styles.title}`}>{title || 'Completado'}</h2>
-                    <p className={`${styles.message}`}>{message}</p>
+                <div className={`${styles.StatusDisplay__root} ${styles.StatusDisplay__success}`}>
+                    <div className={`${styles.StatusDisplay__icon}`}>{icon || <Icon name="check_circle" size="2.5rem" />}</div>
+                    <h2 className={`${styles.StatusDisplay__title}`}>{title || 'Completado'}</h2>
+                    <p className={`${styles.StatusDisplay__message}`}>{message}</p>
                 </div>
             );
         case 'loading':
         default:
             return (
-                <div className={`${styles.root} status-display--loading`}>
+                <div className={`${styles.StatusDisplay__root} status-display--loading`}>
                     <Loading text={message} />
                 </div>
             );
@@ -42,7 +42,7 @@ export const StatusDisplay = ({
     icon
 }) => {
     return (
-        <div className={`${styles.statusDisplayContainer}`}>
+        <div className={`${styles.StatusDisplay__statusDisplayContainer}`}>
             <StatusContent type={type} title={title} message={message} icon={icon} />
         </div>
     );

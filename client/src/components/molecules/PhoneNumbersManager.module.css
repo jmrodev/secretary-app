@@ -1,4 +1,4 @@
-.root {
+.PhoneNumbersManager__root {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -6,24 +6,24 @@
 
 
 
-.row {
+.PhoneNumbersManager__row {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     padding: 0;
 }
 
-.rowPrimary {
+.PhoneNumbersManager__rowPrimary {
     border-left: 3px solid var(--primary-color);
     padding-left: 0.5rem;
 }
 
-.labelWrapper {
+.PhoneNumbersManager__labelWrapper {
     width: 14ch;
     flex-shrink: 0;
 }
 
-.inputLabel {
+.PhoneNumbersManager__inputLabel {
     width: 100%;
     background: transparent !important;
     border: none !important;
@@ -40,7 +40,7 @@
     box-shadow: none !important;
 }
 
-.numberWrapper {
+.PhoneNumbersManager__numberWrapper {
     flex: 1;
     display: flex;
     align-items: center;
@@ -48,7 +48,7 @@
     min-width: 0;
 }
 
-.inputNumber {
+.PhoneNumbersManager__inputNumber {
     flex: 1;
     background: transparent;
     border: none;
@@ -59,20 +59,20 @@
     min-width: 0;
 }
 
-.actions {
+.PhoneNumbersManager__actions {
     display: flex;
     gap: 0.25rem;
     padding-right: 0.5rem;
 }
 
-.action {
+.PhoneNumbersManager__action {
     color: var(--gray-500);
 }
 
-.actionWhatsapp:hover { color: var(--green-400); }
-.actionCall:hover { color: var(--primary-color); }
+.PhoneNumbersManager__actionWhatsapp:hover { color: var(--green-400); }
+.PhoneNumbersManager__actionCall:hover { color: var(--primary-color); }
 
-.controls {
+.PhoneNumbersManager__controls {
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -80,8 +80,8 @@
     padding-left: 0.5rem;
 }
 
-.star,
-.delete {
+.PhoneNumbersManager__star,
+.PhoneNumbersManager__delete {
     background: transparent;
     border: none;
     padding: 0.25rem;
@@ -94,15 +94,15 @@
     justify-content: center;
 }
 
-.star:hover { color: var(--amber-400); }
-.starActive { color: var(--amber-400); }
+.PhoneNumbersManager__star:hover { color: var(--amber-400); }
+.PhoneNumbersManager__starActive { color: var(--amber-400); }
 
-.delete:hover {
+.PhoneNumbersManager__delete:hover {
     color: var(--red-400);
     background-color: rgb(239 68 68 / 10%);
 }
 
-.add {
+.PhoneNumbersManager__add {
     background: transparent;
     border: none;
     padding: 0.5rem;
@@ -117,17 +117,17 @@
     transition: all 0.2s;
 }
 
-.add:hover {
+.PhoneNumbersManager__add:hover {
     color: var(--primary-hover, var(--primary-color));
     opacity: 0.8;
 }
 
 @media (width <= 48rem) {
-    .row {
+    .PhoneNumbersManager__row {
         flex-wrap: wrap;
     }
 
-    .labelWrapper {
+    .PhoneNumbersManager__labelWrapper {
         width: 100%;
     }
 }

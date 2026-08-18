@@ -24,12 +24,12 @@ export const HolidaysPage = () => {
 
     return (
         <MainLayout wide flush title={t('holidays') || 'Feriados y Días No Laborables'}>
-            <div className={styles.root}>
+            <div className={styles.HolidaysPage__root}>
 
-                <div className={styles.content}>
-                    <div className={styles.card}>
-                        <h3 className={styles.cardTitle}>Agregar Feriado</h3>
-                        <form onSubmit={handleAdd} className={styles.form}>
+                <div className={styles.HolidaysPage__content}>
+                    <div className={styles.HolidaysPage__card}>
+                        <h3 className={styles.HolidaysPage__cardTitle}>Agregar Feriado</h3>
+                        <form onSubmit={handleAdd} className={styles.HolidaysPage__form}>
                             <Input 
                                 type="date" 
                                 label="Fecha" 
@@ -50,8 +50,8 @@ export const HolidaysPage = () => {
                         </form>
                     </div>
 
-                    <div className={styles.card}>
-                        <h3 className={styles.cardTitle}>Feriados Registrados</h3>
+                    <div className={styles.HolidaysPage__card}>
+                        <h3 className={styles.HolidaysPage__cardTitle}>Feriados Registrados</h3>
                         {loading ? (
                             <div style={{ textAlign: 'center', padding: '2rem' }}>Cargando…</div>
                         ) : (

@@ -10,12 +10,16 @@
       {
         "preset": "bem",
         "componentName": "^[A-Z][a-zA-Z0-9]*$",
-        "componentSelectors": "^\\.{componentName}(?:__[a-zA-Z0-9-]+)?(?:--[a-zA-Z0-9-]+)?(?::[a-z-]+)?(?:\\s+[a-z][\\w:-]*)*$",
+        "componentSelectors": {
+          "initial": "^\\.{componentName}(?:__[a-zA-Z0-9-]+)?(?:--[a-zA-Z0-9-]+)?(?::[a-z-]+)?(?:\\s+[a-z][\\w:-]*)*$",
+          "combined": "^(?:\\.{componentName}(?:__[a-zA-Z0-9-]+)?(?:--[a-zA-Z0-9-]+)?(?::[a-z-]+)?|[a-z][\\w:-]*|\\*|\\[[^\\]]*\\])$"
+        },
         "implicitComponents": "**/*.module.css",
         "ignoreSelectors": [
           "^body",
           "^html",
-          "^:root"
+          "^:root",
+          "^li$"
         ],
         "ignoreCustomProperties": [
           "^--"

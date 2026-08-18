@@ -10,9 +10,9 @@ export const Tooltip = ({ text, position = 'top' }) => {
     if (!text) return null;
 
     return (
-        <div className={`${styles.root} tooltip--${position}`}>
-            <Icon name="INFO" size="1.1rem" className={`${styles.icon}`} />
-            <div className={`${styles.content}`}>
+        <div className={`${styles.Tooltip__root} tooltip--${position}`}>
+            <Icon name="INFO" size="1.1rem" className={`${styles.Tooltip__icon}`} />
+            <div className={`${styles.Tooltip__content}`}>
                 {text}
             </div>
         </div>

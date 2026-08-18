@@ -7,7 +7,7 @@ import styles from './TabNav.module.css';
  */
 export const TabNav = ({ children, className = '' }) => {
     return (
-        <nav className={`${styles.tabNav} ${className}`}>
+        <nav className={`${styles.TabNav__tabNav} ${className}`}>
             {children}
         </nav>
     );

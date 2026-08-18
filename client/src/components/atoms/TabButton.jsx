@@ -10,12 +10,12 @@ export const TabButton = ({
     activeColor = 'blue', // 'blue' | 'purple' | 'green' | 'amber' | 'default'
     className = ''
 }) => {
-    const colorKey = `tabBtn${activeColor.charAt(0).toUpperCase() + activeColor.slice(1)}`;
-    
+    const colorKey = `TabButton__tabBtn--${activeColor}`;
+
     const combinedClassName = [
-        styles.tabBtn,
-        variant === 'underline' && styles.tabBtnUnderline,
-        isActive && styles.tabBtnActive,
+        styles.TabButton__tabBtn,
+        variant === 'underline' && isActive && styles[`TabButton__tabBtn--underline-${activeColor}`],
+        isActive && styles['TabButton__tabBtn--active'],
         isActive && styles[colorKey],
         className
     ].filter(Boolean).join(' ');

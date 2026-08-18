@@ -11,7 +11,7 @@ export const Alert = ({
     children,
     className = ''
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.Alert__root;
     const variantClass = `${baseClass}--${variant}`;
 
     return (

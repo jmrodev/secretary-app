@@ -1,6 +1,6 @@
 /* FormGroup Molecule Styles (BEM) */
 
-.root {
+.FormGroup__root {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -8,7 +8,7 @@
     width: 100%;
 }
 
-.label {
+.FormGroup__label {
     font-size: 0.8125rem;
     font-weight: 700;
     color: var(--text-muted);
@@ -17,18 +17,18 @@
     user-select: none;
 }
 
-.required .label::after {
+.FormGroup__required .FormGroup__label::after {
     content: ' *';
     color: var(--danger);
 }
 
-.content {
+.FormGroup__content {
     position: relative;
     display: flex;
     flex-direction: column;
 }
 
-.error {
+.FormGroup__error {
     font-size: 0.75rem;
     color: var(--danger);
     margin-top: 0.25rem;

@@ -1,6 +1,6 @@
 /* Modal Component Styles (BEM) */
 
-.root {
+.Modal__root {
     position: fixed;
     inset: 0;
     background-color: rgb(0 0 0 / 60%);
@@ -13,7 +13,7 @@
     animation: modal-fade-in 0.2s ease-out;
 }
 
-.backdrop {
+.Modal__backdrop {
     position: absolute;
     top: 0;
     left: 0;
@@ -25,7 +25,7 @@
     cursor: default;
 }
 
-.content {
+.Modal__content {
     background: var(--modal-bg);
     backdrop-filter: blur(20px);
     color: var(--text-main);
@@ -47,11 +47,11 @@
     overflow: hidden; 
 }
 
-.contentLg { max-width: 64rem; }
-.contentXl { max-width: 76rem; }
-.content2xl { max-width: 90rem; }
+.Modal__contentLg { max-width: 64rem; }
+.Modal__contentXl { max-width: 76rem; }
+.Modal__content2xl { max-width: 90rem; }
 
-.header {
+.Modal__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -60,7 +60,7 @@
     background: var(--modal-bg-dark);
 }
 
-.title {
+.Modal__title {
     font-size: 1.15rem;
     font-weight: 800;
     margin: 0;
@@ -68,7 +68,7 @@
     letter-spacing: -0.02em;
 }
 
-.close {
+.Modal__close {
     color: var(--text-main);
     background: transparent;
     border: none;
@@ -81,13 +81,13 @@
     border-radius: 50%;
 }
 
-.close:hover {
+.Modal__close:hover {
     color: var(--text-main);
     background: var(--border-color);
     transform: rotate(90deg);
 }
 
-.body {
+.Modal__body {
     flex: 1 1 auto;
     min-height: 0; /* Crucial for preventing flex container from expanding beyond its max-height */
     display: flex;
@@ -96,7 +96,7 @@
     padding: clamp(1rem, 3vw, 1.5rem); /* responsive padding */
 }
 
-.footer {
+.Modal__footer {
     display: flex;
     justify-content: flex-end;
     gap: 1rem;

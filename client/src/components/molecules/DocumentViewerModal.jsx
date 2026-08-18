@@ -87,14 +87,14 @@ export const DocumentViewerModal = ({
             onClose={onClose}
             title={`${fileName}`}
             size="xl"
-            className={styles.modalContent}
+            className={styles.DocumentViewerModal__modalContent}
         >
-            <div className={styles.root}>
+            <div className={styles.DocumentViewerModal__root}>
                 {/* Control Toolbar */}
-                <header className={styles.toolbar}>
+                <header className={styles.DocumentViewerModal__toolbar}>
                     {/* List Navigation Group */}
                     {hasMultipleFiles && (
-                        <div className={styles.controlsGroup}>
+                        <div className={styles.DocumentViewerModal__controlsGroup}>
                             <Button
                                 variant="secondary"
                                 size="sm"
@@ -105,7 +105,7 @@ export const DocumentViewerModal = ({
                             >
                                 {t('prev') || 'Anterior'}
                             </Button>
-                            <span className={styles.counterLabel}>
+                            <span className={styles.DocumentViewerModal__counterLabel}>
                                 {activeIndex + 1} / {filesList.length}
                             </span>
                             <Button
@@ -122,7 +122,7 @@ export const DocumentViewerModal = ({
                     )}
 
                     {/* Image Controls Group */}
-                    <div className={styles.controlsGroup}>
+                    <div className={styles.DocumentViewerModal__controlsGroup}>
                         <Button
                             variant="ghost"
                             size="sm"
@@ -131,7 +131,7 @@ export const DocumentViewerModal = ({
                             icon={<Icon name="zoom_in" size="1.2rem" />}
                             disabled={!isImage}
                         />
-                        <span className={styles.zoomLabel}>{Math.round(zoom * 100)}%</span>
+                        <span className={styles.DocumentViewerModal__zoomLabel}>{Math.round(zoom * 100)}%</span>
                         <Button
                             variant="ghost"
                             size="sm"
@@ -151,7 +151,7 @@ export const DocumentViewerModal = ({
                     </div>
 
                     {/* Rotation Controls Group */}
-                    <div className={styles.controlsGroup}>
+                    <div className={styles.DocumentViewerModal__controlsGroup}>
                         <Button
                             variant="ghost"
                             size="sm"
@@ -171,7 +171,7 @@ export const DocumentViewerModal = ({
                     </div>
 
                     {/* External Actions Group */}
-                    <div className={styles.controlsGroup}>
+                    <div className={styles.DocumentViewerModal__controlsGroup}>
                         <Button
                             to={fileUrl}
                             target="_blank"
@@ -193,12 +193,12 @@ export const DocumentViewerModal = ({
                 </header>
 
                 {/* Viewport Display Area */}
-                <main className={styles.viewport}>
+                <main className={styles.DocumentViewerModal__viewport}>
                     {/* Floating Side Nav Arrows */}
                     {hasPrev && (
                         <button
                             type="button"
-                            className={`${styles.navArrow} ${styles.navArrowLeft}`}
+                            className={`${styles.DocumentViewerModal__navArrow} ${styles.DocumentViewerModal__navArrowLeft}`}
                             onClick={handlePrevFile}
                             aria-label="Archivo anterior"
                         >
@@ -209,7 +209,7 @@ export const DocumentViewerModal = ({
                     {hasNext && (
                         <button
                             type="button"
-                            className={`${styles.navArrow} ${styles.navArrowRight}`}
+                            className={`${styles.DocumentViewerModal__navArrow} ${styles.DocumentViewerModal__navArrowRight}`}
                             onClick={handleNextFile}
                             aria-label="Archivo siguiente"
                         >
@@ -218,11 +218,11 @@ export const DocumentViewerModal = ({
                     )}
 
                     {isImage && (
-                        <div className={styles.imageContainer}>
+                        <div className={styles.DocumentViewerModal__imageContainer}>
                             <img
                                 src={fileUrl}
                                 alt={fileName}
-                                className={styles.previewImage}
+                                className={styles.DocumentViewerModal__previewImage}
                                 style={{
                                     transform: `scale(${zoom}) rotate(${rotation}deg)`,
                                     transition: 'transform 0.2s ease-in-out'
@@ -232,17 +232,17 @@ export const DocumentViewerModal = ({
                     )}
 
                     {isPdf && (
-                        <div className={styles.pdfContainer}>
+                        <div className={styles.DocumentViewerModal__pdfContainer}>
                             <iframe
                                 src={fileUrl}
                                 title={fileName}
-                                className={styles.pdfIframe}
+                                className={styles.DocumentViewerModal__pdfIframe}
                             />
                         </div>
                     )}
 
                     {!isImage && !isPdf && (
-                        <div className={styles.genericFileBox}>
+                        <div className={styles.DocumentViewerModal__genericFileBox}>
                             <Icon name="description" size="4rem" />
                             <h4>{fileName}</h4>
                             <p>{file.description || t('no_description') || 'Sin descripción'}</p>

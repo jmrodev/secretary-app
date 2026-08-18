@@ -1,4 +1,4 @@
-.root {
+.Card__root {
     /* --- Local Component Tokens --- */
     --card-bg: var(--dashboard-card-bg);
     --card-border: var(--dashboard-card-border);
@@ -15,13 +15,13 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.header {
+.Card__header {
     padding: 1.5rem 1.75rem 1rem;
     border-bottom: 1px solid var(--card-border);
     background-color: var(--glass);
 }
 
-.title {
+.Card__title {
     font-size: 1.125rem;
     font-weight: 800;
     color: var(--text-main);
@@ -31,17 +31,17 @@
     gap: 0.75rem;
 }
 
-.content {
+.Card__content {
     padding: 1.75rem;
 }
 
-.footer {
+.Card__footer {
     padding: 1.25rem 1.75rem;
     background-color: var(--glass);
     border-top: 1px solid var(--card-border);
 }
 
 /* Modifier for no-padding cards (flush content) */
-.noPadding .content {
+.Card__noPadding .Card__content {
     padding: 0;
 }

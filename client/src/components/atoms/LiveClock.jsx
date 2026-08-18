@@ -22,13 +22,13 @@ export const LiveClock = ({ className = '', hideDate = false, premium = false })
         hour12: false,
     });
 
-    const rootClass = [styles.root, premium ? styles.premium : '', className].filter(Boolean).join(' ');
+    const rootClass = [styles.LiveClock__root, premium ? styles.LiveClock__premium : '', className].filter(Boolean).join(' ');
 
     return (
         <div className={rootClass}>
-            {!hideDate && <span className={`${styles.date}`}>{dateLabel}</span>}
-            {!hideDate && <span className={`${styles.separator}`}>·</span>}
-            <span className={`${styles.time}`}>{timeLabel}</span>
+            {!hideDate && <span className={`${styles.LiveClock__date}`}>{dateLabel}</span>}
+            {!hideDate && <span className={`${styles.LiveClock__separator}`}>·</span>}
+            <span className={`${styles.LiveClock__time}`}>{timeLabel}</span>
         </div>
     );
 };

@@ -12,13 +12,13 @@ import styles from './MedicationTag.module.css';
  */
 export const MedicationTag = ({ label, onRemove, className = '' }) => {
     return (
-        <span className={`${styles.root} ${className}`}>
-            <span className={`${styles.label}`}>{label}</span>
+        <span className={`${styles.MedicationTag__root} ${className}`}>
+            <span className={`${styles.MedicationTag__label}`}>{label}</span>
             <Button
                 variant="ghost"
                 size="sm-compact"
                 onClick={onRemove}
-                className={`${styles.removeBtn}`}
+                className={`${styles.MedicationTag__removeBtn}`}
                 icon={<Icon name="close" size="1.1rem" />}
             />
         </span>

@@ -6,7 +6,7 @@ import styles from './Switch.module.css';
  * Removed Tailwind utility classes.
  */
 export const Switch = ({ id, checked, onChange, disabled, label, className = '' }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.Switch__root;
     const disabledClass = disabled ? `${baseClass}--disabled` : '';
 
     return (

@@ -1,4 +1,4 @@
-.root {
+.LiveClock__root {
     --clock-font-size: 0.85rem;
     --clock-color: var(--text-main);
     --clock-gap: 0.5rem;
@@ -24,24 +24,24 @@
     transition: all 0.3s ease;
 }
 
-.date {
+.LiveClock__date {
     text-transform: capitalize;
     letter-spacing: 0.02em;
 }
 
-.separator {
+.LiveClock__separator {
     opacity: 0.3;
     font-weight: 200;
 }
 
-.time {
+.LiveClock__time {
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.05em;
 }
 
 /* Modifier: Premium Frame (used in PageHeader) */
-.premium {
+.LiveClock__premium {
     --clock-font-size: 0.95rem;
     --clock-gap: 1rem;
     --clock-bg: transparent;
@@ -54,18 +54,18 @@
     font-weight: 400;
 }
 
-.premium .time {
+.LiveClock__premium .LiveClock__time {
     font-weight: 700;
     color: var(--primary-color);
 }
 
-.premium:hover {
+.LiveClock__premium:hover {
     border-color: transparent;
 }
 
 /* Compact (<768px): smaller clock font, stays readable */
 @media (width <= 768px) {
-    .root {
+    .LiveClock__root {
         --clock-font-size: 0.75rem;
     }
 }

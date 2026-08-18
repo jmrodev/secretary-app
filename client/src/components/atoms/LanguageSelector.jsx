@@ -9,17 +9,17 @@ import styles from './LanguageSelector.module.css';
  */
 export const LanguageSelector = ({ currentLanguage, onToggleLanguage, switchTitle }) => {
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.LanguageSelector__root}`}>
             <Button
                 variant="ghost"
-                className={`${styles.button}`}
+                className={`${styles.LanguageSelector__button}`}
                 onClick={onToggleLanguage}
                 title={switchTitle}
             >
-                <span className={`${styles.icon}`}>
+                <span className={`${styles.LanguageSelector__icon}`}>
                     {currentLanguage === 'es' ? '🇪🇸' : '🇺🇸'}
                 </span>
-                <span className={`${styles.text}`}>
+                <span className={`${styles.LanguageSelector__text}`}>
                     {currentLanguage === 'es' ? 'Español' : 'English'}
                 </span>
             </Button>

@@ -31,15 +31,15 @@ export const Pagination = ({ currentPage, totalPages, onPageChange, t, totalCoun
     }
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.Pagination__root}`}>
             {(totalCount !== undefined && itemsShowing !== undefined) && (
-                <span className={`${styles.info}`}>
+                <span className={`${styles.Pagination__info}`}>
                     {t?.('showing') ?? 'Mostrando'} {itemsShowing} {t?.('of') ?? 'de'} {totalCount}
                 </span>
             )}
             
             {totalPages > 1 && (
-                <div className={`${styles.controls}`}>
+                <div className={`${styles.Pagination__controls}`}>
                     <Button
                         variant="ghost"
                         size="sm-compact"
@@ -55,20 +55,20 @@ export const Pagination = ({ currentPage, totalPages, onPageChange, t, totalCoun
                         icon={<Icon name="CHEVRON_LEFT" size="1.2rem" />}
                     />
                     
-                    <div className={`${styles.pages}`}>
-                        {start > 1 && <span className={`${styles.ellipsis}`}>…</span>}
+                    <div className={`${styles.Pagination__pages}`}>
+                        {start > 1 && <span className={`${styles.Pagination__ellipsis}`}>…</span>}
                         {pages.map(p => (
                             <Button
                                 key={p}
                                 variant={p === currentPage ? 'primary' : 'ghost'}
                                 size="sm-compact"
                                 onClick={() => onPageChange(p)}
-                                className={`${styles.pageBtn}`}
+                                className={`${styles.Pagination__pageBtn}`}
                             >
                                 {p}
                             </Button>
                         ))}
-                        {end < totalPages && <span className={`${styles.ellipsis}`}>…</span>}
+                        {end < totalPages && <span className={`${styles.Pagination__ellipsis}`}>…</span>}
                     </div>
 
                     <Button

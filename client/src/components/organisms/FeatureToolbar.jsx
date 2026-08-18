@@ -20,8 +20,8 @@ export const FeatureToolbar = ({
     className = ''
 }) => {
     return (
-        <div className={`${styles.root} ${className} animate-fade-in no-print`}>
-            <div className={`${styles.content}`}>
+        <div className={`${styles.FeatureToolbar__root} ${className} animate-fade-in no-print`}>
+            <div className={`${styles.FeatureToolbar__content}`}>
                 {tabs.length > 0 && (
                     <TabNav className="feature-toolbar__tabs tab-nav--no-margin">
                         {tabs.map(tab => (
@@ -33,20 +33,20 @@ export const FeatureToolbar = ({
                                 icon={tab.icon && <Icon name={tab.icon} size="1.1rem" />}
                             >
                                 {tab.label}
-                                {tab.badge && <span className={styles.badge}>{tab.badge}</span>}
+                                {tab.badge && <span className={styles.FeatureToolbar__badge}>{tab.badge}</span>}
                             </TabButton>
                         ))}
                     </TabNav>
                 )}
 
                 {search && (
-                    <div className={styles.search}>
+                    <div className={styles.FeatureToolbar__search}>
                         {search}
                     </div>
                 )}
 
                 {actions && (
-                    <div className={`${styles.actions}`}>
+                    <div className={`${styles.FeatureToolbar__actions}`}>
                         {actions}
                     </div>
                 )}

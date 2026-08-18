@@ -65,7 +65,7 @@ export const ConfirmModal = ({
             footer={footer}
             size="md"
         >
-            <div className={`${styles.text} ${type === 'prompt' ? styles.textPrompt : ''}`}>
+            <div className={`${styles.ConfirmModal__text} ${type === 'prompt' ? styles.ConfirmModal__textPrompt : ''}`}>
                 {message}
             </div>
             {type === 'prompt' && (

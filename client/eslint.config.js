@@ -8,14 +8,6 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 export default defineConfig([
   globalIgnores(['dist']),
   {
-    // Root config files legitimately use `export default`; exclude them from the
-    // named-exports restriction (kept as the only allowed default exports).
-    files: ['vite.config.js', 'eslint.config.js'],
-    rules: {
-      'no-restricted-syntax': 'off',
-    },
-  },
-  {
     files: ['**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,
@@ -73,6 +65,15 @@ export default defineConfig([
       'react-hooks/preserve-manual-memoization': 'warn',
       'react-hooks/set-state-in-effect': 'warn',
       'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
+  {
+    // Root config files legitimately use `export default`; exclude them from the
+    // named-exports restriction (kept as the only allowed default exports).
+    // Must come after the main block so its `off` wins over `error` for these files.
+    files: ['vite.config.js', 'eslint.config.js'],
+    rules: {
+      'no-restricted-syntax': 'off',
     },
   },
 ])

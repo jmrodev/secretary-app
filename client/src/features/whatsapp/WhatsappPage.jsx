@@ -12,17 +12,17 @@ export const WhatsappPage = () => {
 
     return (
         <MainLayout wide flush title={t('whatsapp_messenger')}>
-            <div className={styles.page}>
-                <div className={styles.tabBar}>
+            <div className={styles.WhatsappPage__page}>
+                <div className={styles.WhatsappPage__tabBar}>
                     <button
-                        className={`${styles.tab} ${activeTab === 'broadcast' ? styles.tabActive : ''}`}
+                        className={`${styles.WhatsappPage__tab} ${activeTab === 'broadcast' ? styles.WhatsappPage__tabActive : ''}`}
                         onClick={() => setActiveTab('broadcast')}
                     >
                         <Icon name="campaign" size="1rem" />
                         {t('broadcast_tab') || 'Difusión'}
                     </button>
                     <button
-                        className={`${styles.tab} ${activeTab === 'config' ? styles.tabActive : ''}`}
+                        className={`${styles.WhatsappPage__tab} ${activeTab === 'config' ? styles.WhatsappPage__tabActive : ''}`}
                         onClick={() => setActiveTab('config')}
                     >
                         <Icon name="settings" size="1rem" />
@@ -31,11 +31,11 @@ export const WhatsappPage = () => {
                 </div>
 
                 {activeTab === 'broadcast' ? (
-                    <div className={styles.broadcastContainer}>
+                    <div className={styles.WhatsappPage__broadcastContainer}>
                         <WhatsappBroadcast t={t} />
                     </div>
                 ) : (
-                    <div className={styles.configContainer}>
+                    <div className={styles.WhatsappPage__configContainer}>
                         <WhatsappConfig t={t} />
                     </div>
                 )}

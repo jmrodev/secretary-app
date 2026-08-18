@@ -51,12 +51,12 @@
     --content-padding: var(--spacing-md) var(--spacing-xl);
 }
 
-.MainLayout__root.MainLayout--dashboardWide .MainLayout__pageShell {
+.MainLayout__root--dashboardWide .MainLayout__pageShell {
     padding: var(--spacing-md) var(--spacing-xl);
     max-width: 1200px;
 }
 
-.MainLayout__root.MainLayout--flush .MainLayout__pageShell {
+.MainLayout__root--flush .MainLayout__pageShell {
     padding: var(--spacing-md) var(--spacing-xl);
     max-width: 1200px;
 }

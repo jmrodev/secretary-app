@@ -1,4 +1,4 @@
-.root {
+.StatusIndicator__root {
     /* --- Local Component Tokens --- */
     --status-connected-color: var(--green-600);
     --status-connected-dot: var(--green-500);
@@ -15,28 +15,28 @@
     font-weight: 600;
 }
 
-.dot {
+.StatusIndicator__dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     display: inline-block;
 }
 
-.connected {
+.StatusIndicator__connected {
     color: var(--status-connected-color);
 }
 
-.connected .dot {
+.StatusIndicator__connected .StatusIndicator__dot {
     background-color: var(--status-connected-dot);
     box-shadow: 0 0 0 2px var(--green-100);
     animation: pulse-green 2s infinite;
 }
 
-.disconnected {
+.StatusIndicator__disconnected {
     color: var(--status-disconnected-color);
 }
 
-.disconnected .dot {
+.StatusIndicator__disconnected .StatusIndicator__dot {
     background-color: var(--status-disconnected-dot);
 }
 

@@ -71,35 +71,35 @@ export const PendingApprovalQueue = () => {
     return (
         <>
             {expanded && (
-                <aside className={styles.panel} aria-label={t('pending_approval_title')}>
-                    <header className={styles.panel__header}>
-                        <h4 className={styles.panel__title}>
+                <aside className={styles.PendingApprovalQueue} aria-label={t('pending_approval_title')}>
+                    <header className={styles.PendingApprovalQueue__header}>
+                        <h4 className={styles.PendingApprovalQueue__title}>
                             <Icon name="NOTIFICATIONS" size="1rem" />
                             {t('pending_approval_title')}
                         </h4>
                         <Icon
                             name="EXPAND_LESS"
                             size="1.2rem"
-                            className={styles.panel__collapse}
+                            className={styles.PendingApprovalQueue__collapse}
                             onIconClick={() => setExpanded(false)}
                         />
                     </header>
-                    <div className={styles.panel__body}>
+                    <div className={styles.PendingApprovalQueue__body}>
                         {loading ? (
                             <Loading variant="centered" size="sm" />
                         ) : pendingItems.length === 0 ? (
-                            <p className={styles.panel__empty}>{t('pending_approval_empty')}</p>
+                            <p className={styles.PendingApprovalQueue__empty}>{t('pending_approval_empty')}</p>
                         ) : (
-                            <ul className={styles.panel__list}>
+                            <ul className={styles.PendingApprovalQueue__list}>
                                 {pendingItems.map((item) => (
-                                    <li key={item.id} className={styles.panel__item}>
-                                        <div className={styles.panel__info}>
-                                            <strong className={styles.panel__patient}>{item.patient_name}</strong>
-                                            <span className={styles.panel__doctor}>
+                                    <li key={item.id} className={styles.PendingApprovalQueue__item}>
+                                        <div className={styles.PendingApprovalQueue__info}>
+                                            <strong className={styles.PendingApprovalQueue__patient}>{item.patient_name}</strong>
+                                            <span className={styles.PendingApprovalQueue__doctor}>
                                                 <Icon name="DOCTORS" size="0.85rem" />
                                                 {item.doctor_name}
                                             </span>
-                                            <span className={styles.panel__slot}>
+                                            <span className={styles.PendingApprovalQueue__slot}>
                                                 <Icon name="TIME" size="0.85rem" />
                                                 {formatDate(
                                                     new Date(`${item.requested_slot_date}T${item.requested_slot_time}:00`),
@@ -108,7 +108,7 @@ export const PendingApprovalQueue = () => {
                                             </span>
                                         </div>
                                         {item.status === 'pending' ? (
-                                            <div className={styles.panel__actions}>
+                                            <div className={styles.PendingApprovalQueue__actions}>
                                                 <Button
                                                     size="sm"
                                                     variant="primary"
@@ -136,7 +136,7 @@ export const PendingApprovalQueue = () => {
                                                 </Button>
                                             </div>
                                         ) : (
-                                            <span className={styles.panel__status}>
+                                            <span className={styles.PendingApprovalQueue__status}>
                                                 <Icon name="PENDING" size="0.85rem" />
                                                 {t('pending_approval_status_alternative')}
                                             </span>

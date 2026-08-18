@@ -185,9 +185,9 @@ export const GlobalWhatsappMessenger = ({ t }) => {
 
     if (!isOpen) {
         return (
-            <div className={`${styles.globalWaTriggerContainer}`}>
+            <div className={`${styles.GlobalWhatsappMessenger__globalWaTriggerContainer}`}>
                 <Button 
-                    className={`${styles.globalWaSimpleBtn}`} 
+                    className={`${styles.GlobalWhatsappMessenger__globalWaSimpleBtn}`} 
                     onClick={() => setIsOpen(true)}
                     variant="success"
                     icon={<Icon name="CHAT" size="1.2rem" />}
@@ -199,13 +199,13 @@ export const GlobalWhatsappMessenger = ({ t }) => {
     }
 
     return (
-        <aside className={`${styles.root} ${styles.animateSlideUp} ${activeChat ? styles.chatActive : ''}`}>
+        <aside className={`${styles.GlobalWhatsappMessenger__root} ${styles.GlobalWhatsappMessenger__animateSlideUp} ${activeChat ? styles.GlobalWhatsappMessenger__chatActive : ''}`}>
             {/* Sidebar: Conversations List */}
             {/* Tab bar - Inbox / Broadcast */}
-            <div className={styles.tabBar}>
+            <div className={styles.GlobalWhatsappMessenger__tabBar}>
                 <button
                     id="wa-tab-inbox"
-                    className={`${styles.tab} ${activeTab === 'inbox' ? styles.tabActive : ''}`}
+                    className={`${styles.GlobalWhatsappMessenger__tab} ${activeTab === 'inbox' ? styles.GlobalWhatsappMessenger__tabActive : ''}`}
                     onClick={() => dispatch({ type: 'SET_TAB', payload: 'inbox' })}
                 >
                     <Icon name="forum" size="1rem" />
@@ -213,7 +213,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                 </button>
                 <button
                     id="wa-tab-broadcast"
-                    className={`${styles.tab} ${activeTab === 'broadcast' ? styles.tabActive : ''}`}
+                    className={`${styles.GlobalWhatsappMessenger__tab} ${activeTab === 'broadcast' ? styles.GlobalWhatsappMessenger__tabActive : ''}`}
                     onClick={() => dispatch({ type: 'SET_TAB', payload: 'broadcast' })}
                 >
                     <Icon name="campaign" size="1rem" />
@@ -234,38 +234,38 @@ export const GlobalWhatsappMessenger = ({ t }) => {
             />
 
             {/* Main: Chat View */}
-            <section className={`${styles.chatArea}`}>
-                <header className={`${styles.chatHeader}`}>
-                     <div className={`${styles.headerLeft}`}>
+            <section className={`${styles.GlobalWhatsappMessenger__chatArea}`}>
+                <header className={`${styles.GlobalWhatsappMessenger__chatHeader}`}>
+                     <div className={`${styles.GlobalWhatsappMessenger__headerLeft}`}>
                         {activeChat && (
                             <Button 
                                 variant="ghost"
                                 size="sm"
-                                className={`${styles.backBtn}`} 
+                                className={`${styles.GlobalWhatsappMessenger__backBtn}`} 
                                 onClick={handleBack}
                                 icon={<Icon name="arrow_back" size="1.2rem" />}
                             />
                         )}
-                        <div className={`${styles.chatUser}`}>
+                        <div className={`${styles.GlobalWhatsappMessenger__chatUser}`}>
                             {activeChat ? (
                                 <>
                                     <strong>{activeChat.patientId ? (conversations.find(c => (c.patientId === activeChat.patientId || c.patient_id === activeChat.patientId))?.patient_name) : activeChat.phone}</strong>
-                                    <span className={`${styles.onlineStatus}`}>{t('live')}</span>
+                                    <span className={`${styles.GlobalWhatsappMessenger__onlineStatus}`}>{t('live')}</span>
                                 </>
                             ) : (
-                                <div className={`${styles.chatPlaceholderHeader}`}>
+                                <div className={`${styles.GlobalWhatsappMessenger__chatPlaceholderHeader}`}>
                                     {t('whatsapp_messenger')}
                                 </div>
                             )}
                         </div>
                     </div>
                     
-                    <div className={`${styles.headerActions}`}>
+                    <div className={`${styles.GlobalWhatsappMessenger__headerActions}`}>
                         {activeChat && !activeChat.patientId && (
                             <Button 
                                 variant="primary" 
                                 size="sm" 
-                                className={`${styles.registerManualBtn}`}
+                                className={`${styles.GlobalWhatsappMessenger__registerManualBtn}`}
                                 onClick={() => {
                                     const event = new CustomEvent('openPatientRegistration', { 
                                         detail: { phone: activeChat.phone } 
@@ -280,18 +280,18 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                         <Button 
                             variant="ghost"
                             size="sm"
-                            className={`${styles.closeBtn}`} 
+                            className={`${styles.GlobalWhatsappMessenger__closeBtn}`} 
                             onClick={() => setIsOpen(false)}
                             icon={<Icon name="close" size="1.2rem" />}
                         />
                     </div>
                 </header>
 
-                <div className={`${styles.chatContent}`}>
+                <div className={`${styles.GlobalWhatsappMessenger__chatContent}`}>
                     {activeTab === 'broadcast' ? (
                         <WhatsappBroadcast t={t} />
                     ) : activeChat ? (
-                        <div className={`${styles.chatWrapper}`}>
+                        <div className={`${styles.GlobalWhatsappMessenger__chatWrapper}`}>
                             <WhatsappChatHistory
                                 patientId={activeChat.patientId}
                                 phone={activeChat.phone}
@@ -307,7 +307,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
 
             {/* Pairing overlay — visible in sidebar when bridge is not connected */}
             {bridgeStatus.status !== 'connected' && (
-                <div className={styles.pairingOverlay}>
+                <div className={styles.GlobalWhatsappMessenger__pairingOverlay}>
                     <WhatsappPairing
                         bridgeStatus={bridgeStatus}
                         onRefresh={handleManualRefresh}

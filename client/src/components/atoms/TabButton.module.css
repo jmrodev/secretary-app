@@ -1,4 +1,4 @@
-.tabBtn {
+.TabButton__tabBtn {
     /* --- Local Component Tokens --- */
     --tab-bg: transparent;
     --tab-color: var(--text-muted);
@@ -25,12 +25,12 @@
     gap: 0.5rem;
 }
 
-.tabBtn:hover:not(.tabBtnActive) {
+.TabButton__tabBtn:hover:not(.TabButton__tabBtn--active) {
     background-color: var(--tab-hover-bg);
     color: var(--tab-hover-color);
 }
 
-.tabBtnActive {
+.TabButton__tabBtn--active {
     background-color: var(--tab-active-bg, var(--primary-color));
     color: var(--tab-active-text, var(--text-main)) !important;
     font-weight: 700;
@@ -39,51 +39,51 @@
 }
 
 /* Color Modifiers for active states */
-.tabBtnBlue.tabBtnActive {
+.TabButton__tabBtn--blue {
     --tab-active-bg: var(--primary-color);
     --tab-active-text: var(--text-main);
     --tab-active-border: var(--primary-color);
     --tab-active-shadow: none;
 }
 
-.tabBtnGreen.tabBtnActive {
+.TabButton__tabBtn--green {
     --tab-active-bg: var(--success);
     --tab-active-text: var(--text-main);
     --tab-active-border: var(--success);
     --tab-active-shadow: none;
 }
 
-.tabBtnAmber.tabBtnActive {
+.TabButton__tabBtn--amber {
     --tab-active-bg: var(--warning);
     --tab-active-text: var(--text-main);
     --tab-active-border: var(--warning);
     --tab-active-shadow: none;
 }
 
-.tabBtnPurple.tabBtnActive {
+.TabButton__tabBtn--purple {
     --tab-active-bg: var(--purple-500);
     --tab-active-text: var(--text-main);
     --tab-active-border: var(--purple-500);
     --tab-active-shadow: none;
 }
 
-.tabBtnRed.tabBtnActive {
+.TabButton__tabBtn--red {
     --tab-active-color: var(--red-600);
 }
 
 /* Underline Color Modifiers */
-.tabBtnUnderline.tabBtnGreen.tabBtnActive {
+.TabButton__tabBtn--underline-green {
     border-bottom-color: var(--green-600);
 }
 
-.tabBtnUnderline.tabBtnAmber.tabBtnActive {
+.TabButton__tabBtn--underline-amber {
     border-bottom-color: var(--amber-600);
 }
 
-.tabBtnUnderline.tabBtnPurple.tabBtnActive {
+.TabButton__tabBtn--underline-purple {
     border-bottom-color: var(--purple-600);
 }
 
-.tabBtnUnderline.tabBtnRed.tabBtnActive {
+.TabButton__tabBtn--underline-red {
     border-bottom-color: var(--red-600);
 }

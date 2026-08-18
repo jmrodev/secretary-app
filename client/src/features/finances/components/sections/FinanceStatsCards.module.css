@@ -70,11 +70,11 @@
 .FinanceStatsCards__iconPrescriptions { color: var(--pink-600, #be185d); }
 .FinanceStatsCards__iconLicenses { color: var(--sky-600, #0369a1); }
 .FinanceStatsCards__iconCertificates { color: var(--amber-600, #b45309); }
-.FinanceStatsCards__iconNet_cash { color: var(--yellow-600, #a16207); }
-.FinanceStatsCards__iconCash_balance { color: #15803d; }
-.FinanceStatsCards__iconTransfer_balance { color: #1d4ed8; }
-.FinanceStatsCards__iconTotal_net { color: #7e22ce; }
-.FinanceStatsCards__iconPending_debt { color: #dc2626; }
+.FinanceStatsCards__iconNetCash { color: var(--yellow-600, #a16207); }
+.FinanceStatsCards__iconCashBalance { color: #15803d; }
+.FinanceStatsCards__iconTransferBalance { color: #1d4ed8; }
+.FinanceStatsCards__iconTotalNet { color: #7e22ce; }
+.FinanceStatsCards__iconPendingDebt { color: #dc2626; }
 
 .FinanceStatsCards__breakdown {
     display: flex;
