@@ -9,7 +9,7 @@ import { formatDate } from '@/utils/core/dateUtils';
 import { useRentalsController } from '@/features/rentals/hooks/useRentalsController';
 import styles from './RentalsPage.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 
 /**
  * RentalsPage (Orchestrator).

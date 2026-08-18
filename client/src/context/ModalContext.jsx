@@ -1,5 +1,5 @@
 import React, { createContext, use, useMemo } from 'react';
-import ConfirmModal from '@/components/ui/ConfirmModal';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModalLogic } from '@/context/useModalLogic';
 

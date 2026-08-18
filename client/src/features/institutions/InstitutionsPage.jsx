@@ -7,7 +7,7 @@ import { InstitutionFinances } from '@/features/finances';
 import { useInstitutionsController, InstitutionFormModal } from '@/features/institutions/index';
 import styles from './InstitutionsPage.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 
 /**
  * InstitutionsPage (Orchestrator).

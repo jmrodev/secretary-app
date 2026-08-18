@@ -16,7 +16,7 @@ import { Loading } from '@/components/atoms/Loading';
  */
 const EMPTY_ARRAY = [];
 
-const RoleGuard = ({ 
+export const RoleGuard = ({ 
     children, 
     allowedRoles = EMPTY_ARRAY, 
     fallbackPath = '/dashboard',
@@ -42,4 +42,3 @@ const RoleGuard = ({
     return children;
 };
 
-export default RoleGuard;

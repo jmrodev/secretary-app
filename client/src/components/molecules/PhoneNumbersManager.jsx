@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Select } from '@/components/atoms/Select';
-import PhoneInput from '@/components/molecules/PhoneInput';
+import { PhoneInput } from '@/components/molecules/PhoneInput';
 import styles from './PhoneNumbersManager.module.css';
 
 /**
@@ -16,7 +16,7 @@ import styles from './PhoneNumbersManager.module.css';
  */
 const EMPTY_OBJECT = {};
 
-const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) => {
+export const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) => {
     const generateId = () => crypto.randomUUID();
 
     // Default fallbacks in case texts are not provided
@@ -119,4 +119,3 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) =
     );
 };
 
-export default PhoneNumbersManager;

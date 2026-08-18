@@ -3,7 +3,7 @@ import { usePatientDetailsController } from '@/features/patients/hooks/usePatien
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 // Local Feature & Molecule Components
 import { PatientInfoBlock } from '@/features/patients/components/views/PatientInfoBlock';
@@ -11,7 +11,7 @@ import { PatientHistoryTable } from '@/features/patients/components/views/Patien
 import { PatientFinancialSidebar } from '@/features/patients/components/views/PatientFinancialSidebar';
 import { PatientPrintableView } from '@/features/patients/components/views/PatientPrintableView';
 import { WhatsappChatHistory } from '@/features/patients/components/views/WhatsappChatHistory';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { DocumentViewerModal } from '@/components/molecules/DocumentViewerModal';
 import { PatientMedicationFormModal } from '@/features/patients/components/modals/PatientMedicationFormModal';
 

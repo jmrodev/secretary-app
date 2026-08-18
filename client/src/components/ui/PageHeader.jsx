@@ -8,7 +8,7 @@ import styles from './PageHeader.module.css';
  * PageHeader Organism.
  * Pure UI component for the clinical header.
  */
-const PageHeader = ({
+export const PageHeader = ({
     title,
     actionSlot,
     divider = false,
@@ -87,4 +87,3 @@ const PageHeader = ({
     );
 };
 
-export default PageHeader;

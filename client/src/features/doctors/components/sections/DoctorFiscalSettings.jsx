@@ -3,7 +3,7 @@ import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Input } from '@/components/atoms/Input';
 import { Switch } from '@/components/atoms/Switch';
-import FormGroup from '@/components/molecules/FormGroup';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './DoctorFiscalSettings.module.css';
 

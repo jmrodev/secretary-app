@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * ECC-Pattern: Stable useFetch for React 19.

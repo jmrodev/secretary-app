@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import styles from '../organisms/GlobalWhatsappMessenger.module.css';
 
 /**
@@ -10,7 +10,7 @@ import styles from '../organisms/GlobalWhatsappMessenger.module.css';
  * Renders the QR code or offline status for WhatsApp bridge pairing.
  * When connected, shows a disconnect button to force re-pairing.
  */
-const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
+export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
     const [logoutLoading, setLogoutLoading] = useState(false);
     const isOffline = bridgeStatus.status === 'offline';
     const isConnected = bridgeStatus.status === 'connected';
@@ -115,4 +115,3 @@ const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
     );
 };
 
-export default WhatsappPairing;

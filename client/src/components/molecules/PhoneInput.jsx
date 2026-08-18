@@ -18,7 +18,7 @@ const COUNTRY_OPTIONS = [
     { value: '', label: '🌐' }
 ];
 
-const PhoneInput = ({ value, onChange, placeholder = 'Número...', disabled = false, required = false, className = '', onBlur }) => {
+export const PhoneInput = ({ value, onChange, placeholder = 'Número...', disabled = false, required = false, className = '', onBlur }) => {
     // Determine country code and number
     const { code, number } = useMemo(() => {
         const val = value || '';
@@ -61,4 +61,3 @@ const PhoneInput = ({ value, onChange, placeholder = 'Número...', disabled = fa
     );
 };
 
-export default PhoneInput;

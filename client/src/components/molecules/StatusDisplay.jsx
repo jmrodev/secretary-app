@@ -35,7 +35,7 @@ const StatusContent = ({ type, title, message, icon }) => {
     }
 };
 
-const StatusDisplay = ({
+export const StatusDisplay = ({
     type = 'loading', // 'loading' | 'error' | 'success'
     title,
     message,
@@ -48,4 +48,3 @@ const StatusDisplay = ({
     );
 };
 
-export default StatusDisplay;

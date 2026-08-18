@@ -1,5 +1,5 @@
 import React from 'react';
-import TabNav from '@/components/molecules/TabNav';
+import { TabNav } from '@/components/molecules/TabNav';
 import { TabButton } from '@/components/atoms/TabButton';
 import { Icon } from '@/components/atoms/Icon';
 import styles from './FeatureToolbar.module.css';
@@ -11,7 +11,7 @@ const EMPTY_ARRAY = [];
  * A generic, reusable horizontal bar for feature orchestration.
  * Centralizes navigation tabs and contextual actions.
  */
-const FeatureToolbar = ({
+export const FeatureToolbar = ({
     tabs = EMPTY_ARRAY,
     activeTab,
     onTabChange,
@@ -55,4 +55,3 @@ const FeatureToolbar = ({
     );
 };
 
-export default FeatureToolbar;

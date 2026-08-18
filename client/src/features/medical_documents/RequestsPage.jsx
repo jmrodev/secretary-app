@@ -9,7 +9,7 @@ import { Button } from '@/components/atoms/Button';
 // Local Styles
 import styles from './RequestsPage.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 
 /**
  * RequestsPage (Orchestrator).

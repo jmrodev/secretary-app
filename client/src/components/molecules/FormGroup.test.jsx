@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import FormGroup from './FormGroup';
+import { FormGroup } from './FormGroup';
 import { Input } from '@/components/atoms/Input';
 
 describe('FormGroup Molecule', () => {

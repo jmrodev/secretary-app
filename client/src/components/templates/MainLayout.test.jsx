@@ -9,7 +9,7 @@ const { mockGet } = vi.hoisted(() => ({ mockGet: vi.fn() }));
 const { mockUseAuth } = vi.hoisted(() => ({ mockUseAuth: vi.fn() }));
 
 vi.mock('@/api/axios', () => ({
-    default: { get: mockGet, post: vi.fn() }
+    api: { get: mockGet, post: vi.fn() }
 }));
 
 vi.mock('@/features/auth', () => ({
@@ -21,7 +21,7 @@ vi.mock('@/features/layout', () => ({
 }));
 
 vi.mock('@/components/ui/PageHeader', () => ({
-    default: () => <header>PageHeader</header>
+    PageHeader: () => <header>PageHeader</header>
 }));
 
 vi.mock('@/features/doctors', () => ({
@@ -29,7 +29,7 @@ vi.mock('@/features/doctors', () => ({
 }));
 
 vi.mock('@/components/molecules/CompactHeaderStats', () => ({
-    default: () => null
+    CompactHeaderStats: () => null
 }));
 
 const pendingBooking = {

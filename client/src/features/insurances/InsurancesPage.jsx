@@ -7,7 +7,7 @@ import { useInsurancesController, InsuranceList, InsuranceFormModal } from '@/fe
 import { MainLayout } from '@/components/templates/MainLayout';
 import styles from './InsurancesPage.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 
 /**
  * InsurancesPage (Orchestrator).

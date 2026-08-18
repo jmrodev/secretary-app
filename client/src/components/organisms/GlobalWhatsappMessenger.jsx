@@ -1,12 +1,12 @@
 import React, { useEffect, useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { WhatsappChatHistory } from '@/features/patients/components/views/WhatsappChatHistory';
 import { useDoctors } from '@/context/DoctorContextDefinition';
-import WhatsappInbox from '../molecules/WhatsappInbox';
-import WhatsappPairing from '../molecules/WhatsappPairing';
-import WhatsappChatPlaceholder from '../molecules/WhatsappChatPlaceholder';
+import { WhatsappInbox } from '../molecules/WhatsappInbox';
+import { WhatsappPairing } from '../molecules/WhatsappPairing';
+import { WhatsappChatPlaceholder } from '../molecules/WhatsappChatPlaceholder';
 import { WhatsappBroadcast } from '../molecules/WhatsappBroadcast';
 import styles from './GlobalWhatsappMessenger.module.css';
 
@@ -43,7 +43,7 @@ function messengerReducer(state, action) {
     }
 }
 
-const GlobalWhatsappMessenger = ({ t }) => {
+export const GlobalWhatsappMessenger = ({ t }) => {
     const { viewDoctorId, doctorDisplayName } = useDoctors();
     const [state, dispatch] = React.useReducer(messengerReducer, initialState);
     const { isOpen, activeTab, activeChat, conversations, loading, bridgeStatus, statusLoading } = state;
@@ -320,4 +320,3 @@ const GlobalWhatsappMessenger = ({ t }) => {
     );
 };
 
-export default GlobalWhatsappMessenger;

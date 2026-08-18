@@ -4,7 +4,7 @@ import { MedicalHistoryTable } from '../components/lists/MedicalHistoryTable';
 import { EditRequestModal } from '../components/modals/EditRequestModal';
 import { MedicalRequestForm } from '../components/forms/MedicalRequestForm';
 import { PatientSearchSelect } from '@/features/patients';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 

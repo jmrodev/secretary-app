@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useFetch } from '@/hooks/useFetch';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 

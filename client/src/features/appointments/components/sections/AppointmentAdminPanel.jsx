@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
-import TabNav from '@/components/molecules/TabNav';
+import { TabNav } from '@/components/molecules/TabNav';
 import { TabButton } from '@/components/atoms/TabButton';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { useMessage } from '@/context/MessageContext';

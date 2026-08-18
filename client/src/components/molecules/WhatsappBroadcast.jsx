@@ -1,5 +1,5 @@
 import React from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import styles from './WhatsappBroadcast.module.css';

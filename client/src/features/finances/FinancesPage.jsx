@@ -7,7 +7,7 @@ import { Loading } from '@/components/atoms/Loading';
 import { useFinancesPageController } from '@/features/finances/hooks/useFinancesPageController';
 import { FinanceStatsCards } from '@/features/finances/components/sections/FinanceStatsCards';
 import { FinanceModalOrchestrator } from '@/features/finances/components/FinanceModalOrchestrator';
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Badge } from '@/components/atoms/Badge';

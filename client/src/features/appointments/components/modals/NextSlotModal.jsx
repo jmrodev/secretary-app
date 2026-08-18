@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Loading } from '@/components/atoms/Loading';

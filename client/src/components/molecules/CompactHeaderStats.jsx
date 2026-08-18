@@ -12,7 +12,7 @@ const EMPTY_OBJECT = {};
  * 
  * @param {Object} texts - Translations { today, week, month, patients, growth }
  */
-const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
+export const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
     const { isStaff, viewDoctorId } = useDoctors();
     const { stats, newPatientStats, loadingStats } = useDashboardStats(isStaff, viewDoctorId);
 
@@ -52,4 +52,3 @@ const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
     );
 };
 
-export default CompactHeaderStats;

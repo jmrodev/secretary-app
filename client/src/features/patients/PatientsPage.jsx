@@ -13,8 +13,8 @@ import { Icon } from '@/components/atoms/Icon';
 import { QRCodeModal } from '@/features/patients/components/modals/QRCodeModal';
 import { Pagination } from '@/components/atoms/Pagination';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
-import SearchBar from '@/components/ui/SearchBar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
+import { SearchBar } from '@/components/ui/SearchBar';
 
 // Feature Components
 import { PatientList } from './components/views/PatientList';

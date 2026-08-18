@@ -5,8 +5,8 @@ import { PrescriptionReportTable } from '@/features/reports/components/tables/Pr
 import { LicenseReportTable } from '@/features/reports/components/tables/LicenseReportTable';
 import { CertificateReportTable } from '@/features/reports/components/tables/CertificateReportTable';
 import { BalanceView } from '@/features/reports/components/views/BalanceView';
-import PageHeader from '@/components/ui/PageHeader';
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 import styles from './ReportsDashboard.module.css';
 
 export const ReportsDashboard = ({

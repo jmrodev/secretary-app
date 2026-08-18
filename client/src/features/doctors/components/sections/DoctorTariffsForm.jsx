@@ -1,5 +1,5 @@
 import React from 'react';
-import FormGroup from '@/components/molecules/FormGroup';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import { Input } from '@/components/atoms/Input';
 import { Select } from '@/components/atoms/Select';
 import { CurrencyInput } from '@/components/atoms/CurrencyInput';

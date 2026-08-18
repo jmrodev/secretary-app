@@ -1,6 +1,6 @@
 
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { PrescriptionItemsList } from '@/features/medical_documents/components/lists/PrescriptionItemsList';

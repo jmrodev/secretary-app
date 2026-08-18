@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './FormGroup.module.css';
 
-const FormGroup = ({ label, children, error, required = false, className = '' }) => {
+export const FormGroup = ({ label, children, error, required = false, className = '' }) => {
     return (
         <div className={`${styles.root} ${required ? styles.required : ''} ${className}`.trim()}>
             {label && (
@@ -17,4 +17,3 @@ const FormGroup = ({ label, children, error, required = false, className = '' })
     );
 };
 
-export default FormGroup;

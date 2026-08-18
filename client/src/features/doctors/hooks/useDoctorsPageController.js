@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useModal } from '@/context/ModalContext';
 import { useMessage } from '@/context/MessageContext';

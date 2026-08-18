@@ -1,6 +1,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { getNow, addDays, toInputDate } from '@/utils/core/dateUtils';
 
 /**

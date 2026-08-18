@@ -5,7 +5,7 @@ import { useModal } from '@/context/ModalContext';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * Renders a WhatsApp message template with appointment context variables.

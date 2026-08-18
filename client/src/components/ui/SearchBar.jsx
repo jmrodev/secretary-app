@@ -15,7 +15,7 @@ const DEFAULT_LABELS = {
  * SearchBar UI Component
  * Pure component for displaying a search bar with optional suggestions.
  */
-const SearchBar = ({ 
+export const SearchBar = ({ 
     value, 
     onChange, 
     placeholder, 
@@ -139,4 +139,3 @@ const SearchBar = ({
     );
 };
 
-export default SearchBar;

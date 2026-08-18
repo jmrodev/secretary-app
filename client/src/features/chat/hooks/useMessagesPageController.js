@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
 import { useFetch } from '@/hooks/useFetch';

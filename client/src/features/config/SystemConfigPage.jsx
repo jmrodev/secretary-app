@@ -7,7 +7,7 @@ import { loadDefaultConfigSections } from './components/ConfigRegistryLoader';
 import { MainLayout } from '@/components/templates/MainLayout';
 import { Icon } from '@/components/atoms/Icon';
 import { Loading } from '@/components/atoms/Loading';
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 import { QRCodeModal } from '@/features/patients';
 
 import styles from './SystemConfigPage.module.css';

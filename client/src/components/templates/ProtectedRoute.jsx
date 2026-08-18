@@ -3,8 +3,8 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '@/features/auth';
 import { PatientBlocker } from '@/features/patients';
 import { Loading } from '@/components/atoms/Loading';
-import GlobalWhatsappMessenger from '@/components/organisms/GlobalWhatsappMessenger';
-import GlobalPatientRegistrar from '@/components/organisms/GlobalPatientRegistrar';
+import { GlobalWhatsappMessenger } from '@/components/organisms/GlobalWhatsappMessenger';
+import { GlobalPatientRegistrar } from '@/components/organisms/GlobalPatientRegistrar';
 import { useLanguage } from '@/hooks/useLanguage';
 
 /**

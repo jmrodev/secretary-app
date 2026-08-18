@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * ECC-Pattern: useFinanceHandlers Hook

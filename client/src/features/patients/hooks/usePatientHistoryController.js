@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 const unpack = (res) => {
     if (!res || !res.data) return [];

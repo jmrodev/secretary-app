@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useAuth } from '@/features/auth';
 
 /**

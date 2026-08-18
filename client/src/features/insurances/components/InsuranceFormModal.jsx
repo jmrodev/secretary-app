@@ -1,13 +1,13 @@
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
 import { Select } from '@/components/atoms/Select';
 import { Icon } from '@/components/atoms/Icon';
-import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
+import { PhoneNumbersManager } from '@/components/molecules/PhoneNumbersManager';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import { useLanguage } from '@/hooks/useLanguage';
-import FormGroup from '@/components/molecules/FormGroup';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import styles from './InsuranceFormModal.module.css';
 
 export const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFormData, isEditing }) => {

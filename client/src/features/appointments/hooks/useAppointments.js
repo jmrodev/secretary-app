@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * Service Hook to manage individual appointment API operations.

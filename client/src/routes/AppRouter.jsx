@@ -3,7 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Layout & Guards
 import { ProtectedRoute } from '@/components/templates/ProtectedRoute';
-import RoleGuard from '@/components/auth/RoleGuard';
+import { RoleGuard } from '@/components/auth/RoleGuard';
 import { Loading } from '@/components/atoms/Loading';
 
 // Features (Orchestrators) - Lazy Loaded

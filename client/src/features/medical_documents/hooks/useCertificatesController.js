@@ -7,7 +7,7 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { useFetch } from '@/hooks/useFetch';
 import { useSearch } from '@/hooks/useSearch';
 import { useDoctors } from '@/context/DoctorContextDefinition';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 export const useCertificatesController = () => {
     const { user } = useAuth();

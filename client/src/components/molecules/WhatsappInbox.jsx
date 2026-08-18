@@ -8,7 +8,7 @@ import styles from '../organisms/GlobalWhatsappMessenger.module.css';
  * WhatsappInbox Molecule.
  * Renders the list of recent conversations for the WhatsApp messenger.
  */
-const WhatsappInbox = ({ 
+export const WhatsappInbox = ({ 
     conversations, 
     activeChat, 
     loading, 
@@ -116,4 +116,3 @@ const WhatsappInbox = ({
     );
 };
 
-export default WhatsappInbox;

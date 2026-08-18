@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { TabButton } from '@/components/atoms/TabButton';
 import { useLanguage } from '@/hooks/useLanguage';
 import { usePatientHistoryController } from '@/features/patients/hooks/usePatientHistoryController';

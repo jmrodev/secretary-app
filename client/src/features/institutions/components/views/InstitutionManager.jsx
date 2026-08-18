@@ -2,7 +2,7 @@ import React from 'react';
 import { InstitutionList } from '@/features/institutions/components/views/InstitutionList';
 import { InstitutionFormModal } from '@/features/institutions/components/forms/InstitutionFormModal';
 import { Icon } from '@/components/atoms/Icon';
-import TabNav from '@/components/molecules/TabNav';
+import { TabNav } from '@/components/molecules/TabNav';
 import { TabButton } from '@/components/atoms/TabButton';
 import { Button } from '@/components/atoms/Button';
 import styles from './InstitutionManager.module.css';

@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
 import { Button } from '@/components/atoms/Button';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import styles from './ConfirmModal.module.css';
 
-const ConfirmModal = ({
+export const ConfirmModal = ({
     isOpen,
     title,
     message,
@@ -82,4 +82,3 @@ const ConfirmModal = ({
     );
 };
 
-export default ConfirmModal;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';

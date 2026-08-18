@@ -4,7 +4,7 @@ import { useRegisterController } from '@/features/auth/hooks/useRegisterControll
 import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
 import { Select } from '@/components/atoms/Select';
-import FormGroup from '@/components/molecules/FormGroup';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import styles from './RegisterForm.module.css';
 
 /**
