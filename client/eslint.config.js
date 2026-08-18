@@ -8,6 +8,14 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 export default defineConfig([
   globalIgnores(['dist']),
   {
+    // Root config files legitimately use `export default`; exclude them from the
+    // named-exports restriction (kept as the only allowed default exports).
+    files: ['vite.config.js', 'eslint.config.js'],
+    rules: {
+      'no-restricted-syntax': 'off',
+    },
+  },
+  {
     files: ['**/*.{js,jsx}'],
     extends: [
       js.configs.recommended,
@@ -33,7 +41,7 @@ export default defineConfig([
     rules: {
       'max-lines': ['warn', { max: 350, skipBlankLines: true, skipComments: true }],
       'no-restricted-syntax': [
-        'warn',
+        'error',
         {
           selector: "Identifier[name=/^(handleClick|handleChange|handleEvent)$/]",
           message: "Use semantic handler names (e.g., handleSavePatient) instead of generic names like handleClick.",
