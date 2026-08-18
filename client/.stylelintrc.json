@@ -10,11 +10,23 @@
       {
         "preset": "bem",
         "componentName": "^[A-Z][a-zA-Z0-9]*$",
-        "componentSelectors": "^\\.{componentName}(?:__[a-zA-Z0-9]+)?(?:--[a-zA-Z0-9]+)?$",
-        "implicitComponents": "**/*.module.css"
+        "componentSelectors": {
+          "initial": "^\\.{componentName}(?:__[a-zA-Z0-9-]+)?(?:--[a-zA-Z0-9-]+)?(?::[a-z-]+)?(?:\\s+[a-z][\\w:-]*)*$",
+          "combined": "^(?:\\.{componentName}(?:__[a-zA-Z0-9-]+)?(?:--[a-zA-Z0-9-]+)?(?::[a-z-]+)?|[a-z][\\w:-]*|\\*|\\[[^\\]]*\\])$"
+        },
+        "implicitComponents": "**/*.module.css",
+        "ignoreSelectors": [
+          "^body",
+          "^html",
+          "^:root",
+          "^li$"
+        ],
+        "ignoreCustomProperties": [
+          "^--"
+        ]
       },
       {
-        "severity": "warning"
+        "severity": "error"
       }
     ],
     "selector-class-pattern": null,

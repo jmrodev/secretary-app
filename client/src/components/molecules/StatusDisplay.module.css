@@ -1,39 +1,39 @@
 /* StatusDisplay Molecule Styles */
-.statusDisplayContainer {
+.StatusDisplay__statusDisplayContainer {
     display: flex;
     justify-content: center;
     padding: 2rem;
     width: 100%;
 }
 
-.root {
+.StatusDisplay__root {
     text-align: center;
     padding: 2rem;
     max-width: 400px;
 }
 
-.icon {
+.StatusDisplay__icon {
     font-size: 3rem;
     margin-bottom: 1rem;
 }
 
-.title {
+.StatusDisplay__title {
     font-size: 1.5rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
     color: var(--gray-800);
 }
 
-.message {
+.StatusDisplay__message {
     color: var(--gray-600);
     line-height: 1.5;
 }
 
 /* Status variants */
-.error .title {
+.StatusDisplay__error .StatusDisplay__title {
     color: var(--red-600);
 }
 
-.success .icon {
+.StatusDisplay__success .StatusDisplay__icon {
     color: var(--green-500);
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import Switch from '@/components/atoms/Switch';
+import { Switch } from '@/components/atoms/Switch';
 
 /**
  * ConfigToggle Molecule (Feature Component).

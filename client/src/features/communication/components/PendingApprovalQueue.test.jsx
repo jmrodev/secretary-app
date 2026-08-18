@@ -27,7 +27,7 @@ vi.mock('@/features/auth', () => ({
 }));
 
 vi.mock('@/api/axios', () => ({
-    default: { get: mockAxiosGet, post: vi.fn() }
+    api: { get: mockAxiosGet, post: vi.fn() }
 }));
 
 import { PendingBookingBanner } from './PendingBookingBanner';

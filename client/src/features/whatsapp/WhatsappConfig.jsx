@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import api from '@/api/axios';
-import Icon from '@/components/atoms/Icon';
+import { api } from '@/api/axios';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import styles from './WhatsappConfig.module.css';
 
@@ -137,7 +137,7 @@ export const WhatsappConfig = ({ t }) => {
     return (
         <div className="tab-panel animate-fade-in">
             {message && (
-                <div className={`${styles.message} ${styles[message.type === 'success' ? 'message--success' : 'message--error']}`}>
+                <div className={`${styles.WhatsappConfig__message} ${styles[message.type === 'success' ? 'message--success' : 'message--error']}`}>
                     {message.text}
                 </div>
             )}
@@ -150,7 +150,7 @@ export const WhatsappConfig = ({ t }) => {
                 </div>
                 <div className="config-section__body">
                     <select
-                        className={styles['var-btn']}
+                        className={styles['WhatsappConfig__var-btn']}
                         value={selectedDoctorId}
                         onChange={e => setSelectedDoctorId(e.target.value)}
                     >
@@ -173,12 +173,12 @@ export const WhatsappConfig = ({ t }) => {
                     <p className="config-section__description" style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
                         {t('wa_config_prompt_hint')}
                     </p>
-                    <div className={styles.vars}>
+                    <div className={styles.WhatsappConfig__vars}>
                         {COMMON_VARS.map(v => (
                             <button
                                 key={v}
                                 type="button"
-                                className={styles['var-btn']}
+                                className={styles['WhatsappConfig__var-btn']}
                                 onClick={() => insertVariable(v)}
                             >
                                 {v}
@@ -187,7 +187,7 @@ export const WhatsappConfig = ({ t }) => {
                     </div>
                     <textarea
                         id="ai-context-textarea"
-                        className={styles.textarea}
+                        className={styles.WhatsappConfig__textarea}
                         value={aiContext}
                         onChange={e => setAiContext(e.target.value)}
                         rows={12}
@@ -196,7 +196,7 @@ export const WhatsappConfig = ({ t }) => {
                         size="sm"
                         variant="ghost"
                         onClick={() => setAiContext(BUSINESS_RULES_BASE)}
-                        className={styles['small-btn']}
+                        className={styles['WhatsappConfig__small-btn']}
                     >
                         <Icon name="sync" size="0.9rem" />
                         {t('wa_config_prompt_restore')}
@@ -217,7 +217,7 @@ export const WhatsappConfig = ({ t }) => {
                         {t('wa_config_pending_template_hint')}
                     </p>
                     <textarea
-                        className={styles.textarea}
+                        className={styles.WhatsappConfig__textarea}
                         value={pendingTemplate}
                         onChange={e => setPendingTemplate(e.target.value)}
                         rows={4}
@@ -236,11 +236,11 @@ export const WhatsappConfig = ({ t }) => {
                     <h4 className="config-section__title">{t('wa_config_model_label')}</h4>
                 </div>
                 <div className="config-section__body">
-                    <div className={styles.row}>
-                        <div className={styles.field}>
-                            <label className={styles['field-label']}>{t('wa_config_model')}</label>
+                    <div className={styles.WhatsappConfig__row}>
+                        <div className={styles.WhatsappConfig__field}>
+                            <label className={styles['WhatsappConfig__field-label']}>{t('wa_config_model')}</label>
                             <select
-                                className={styles['var-btn']}
+                                className={styles['WhatsappConfig__var-btn']}
                                 value={aiModel}
                                 onChange={e => setAiModel(e.target.value)}
                             >
@@ -250,13 +250,13 @@ export const WhatsappConfig = ({ t }) => {
                                 <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
                             </select>
                         </div>
-                        <div className={styles.field}>
-                            <label className={styles['field-label']}>{t('wa_config_history')}</label>
+                        <div className={styles.WhatsappConfig__field}>
+                            <label className={styles['WhatsappConfig__field-label']}>{t('wa_config_history')}</label>
                             <input
                                 type="number"
                                 min="1"
                                 max="20"
-                                className={styles['var-btn']}
+                                className={styles['WhatsappConfig__var-btn']}
                                 value={historyLimit}
                                 onChange={e => setHistoryLimit(parseInt(e.target.value) || 3)}
                             />
@@ -277,9 +277,9 @@ export const WhatsappConfig = ({ t }) => {
                     <p className="config-section__description" style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
                         {t('wa_config_quick_hint')}
                     </p>
-                    <div className={styles.responses}>
+                    <div className={styles.WhatsappConfig__responses}>
                         {QUICK_RESPONSES.map(qr => (
-                            <div key={qr.key} className={styles['response-card']}>
+                            <div key={qr.key} className={styles['WhatsappConfig__response-card']}>
                                 <strong>{t(QR_LABEL_KEYS[qr.key])}</strong>
                                 <p>{qr.text}</p>
                                 <Button

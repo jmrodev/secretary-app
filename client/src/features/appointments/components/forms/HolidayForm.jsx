@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import FormGroup from '@/components/molecules/FormGroup';
-import Input from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
+import { FormGroup } from '@/components/molecules/FormGroup';
+import { Input } from '@/components/atoms/Input';
 import { capitalizeFirst } from '@/utils/core/stringUtils';
 
 /**

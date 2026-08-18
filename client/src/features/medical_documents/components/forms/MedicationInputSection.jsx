@@ -1,10 +1,10 @@
 import React from 'react';
 import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import Tooltip from '@/components/atoms/Tooltip';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { Tooltip } from '@/components/atoms/Tooltip';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 
 
 /**

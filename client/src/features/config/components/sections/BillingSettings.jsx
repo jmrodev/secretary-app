@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import api from '@/api/axios';
+import { Icon } from '@/components/atoms/Icon';
+import { api } from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';

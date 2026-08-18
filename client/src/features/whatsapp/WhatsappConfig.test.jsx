@@ -5,7 +5,7 @@ import { WhatsappConfig } from './WhatsappConfig';
 const { mockGet, mockPut } = vi.hoisted(() => ({ mockGet: vi.fn(), mockPut: vi.fn() }));
 
 vi.mock('@/api/axios', () => ({
-    default: { get: mockGet, put: mockPut }
+    api: { get: mockGet, put: mockPut }
 }));
 
 const doctor = {

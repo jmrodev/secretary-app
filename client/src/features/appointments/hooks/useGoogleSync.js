@@ -1,5 +1,5 @@
 import { useMessage } from '@/context/MessageContext';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * useGoogleSync (Handler Hook).

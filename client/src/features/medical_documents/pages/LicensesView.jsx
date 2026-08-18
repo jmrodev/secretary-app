@@ -4,9 +4,9 @@ import { MedicalHistoryTable } from '../components/lists/MedicalHistoryTable';
 import { EditLicenseModal } from '../components/modals/EditLicenseModal';
 import { MedicalRequestForm } from '../components/forms/MedicalRequestForm';
 import { PatientSearchSelect } from '@/features/patients';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 
 export const LicensesView = () => {
     const controller = useLicensesController();

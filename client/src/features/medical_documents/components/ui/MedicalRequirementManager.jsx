@@ -3,9 +3,9 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useRequirementManagerController } from '@/features/medical_documents/hooks/useRequirementManagerController';
 
 // Components
-import TabButton from '@/components/atoms/TabButton';
-import Icon from '@/components/atoms/Icon';
-import Loading from '@/components/atoms/Loading';
+import { TabButton } from '@/components/atoms/TabButton';
+import { Icon } from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
 import { MedicalRequirementTable } from '@/features/medical_documents/components/lists/MedicalRequirementTable';
 import { MedicalRequirementRecycleBin } from '@/features/medical_documents/components/lists/MedicalRequirementRecycleBin';
 import { MedicalRequirementDetailModal } from '@/features/medical_documents/components/modals/MedicalRequirementDetailModal';

@@ -1,22 +1,22 @@
 /* --- Search Box Block --- */
-.root {
+.SearchBar__root {
     margin-bottom: 2rem;
 }
 
-.wrapper {
+.SearchBar__wrapper {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.icon {
+.SearchBar__icon {
     position: absolute;
     left: 1rem;
     color: var(--gray-400);
     font-size: 1.25rem;
 }
 
-.input {
+.SearchBar__input {
     width: 100%;
     padding: 1rem 1rem 1rem 3rem;
     border-radius: var(--radius);
@@ -26,12 +26,12 @@
     font-size: 1.1rem;
 }
 
-.input:focus {
+.SearchBar__input:focus {
     border-color: var(--blue-500);
     box-shadow: 0 0 0 4px rgb(59 130 246 / 10%);
 }
 
-.actions {
+.SearchBar__actions {
     position: absolute;
     right: 0.5rem;
     display: flex;
@@ -40,7 +40,7 @@
 }
 
 /* --- Suggestions Dropdown --- */
-.suggestions {
+.SearchBar__suggestions {
     position: absolute;
     top: calc(100% - 1.5rem);
     left: 0;
@@ -54,7 +54,7 @@
     animation: fade-in 0.2s ease-out;
 }
 
-.suggestionsHeader {
+.SearchBar__suggestionsHeader {
     padding: 0.75rem 1.25rem;
     font-size: 0.75rem;
     font-weight: 600;
@@ -68,13 +68,13 @@
     background: var(--gray-50);
 }
 
-.suggestionsList {
+.SearchBar__suggestionsList {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.suggestionItem {
+.SearchBar__suggestionItem {
     padding: 1rem 1.25rem;
     display: flex;
     justify-content: space-between;
@@ -84,32 +84,32 @@
     border-left: 3px solid transparent;
 }
 
-.suggestionItem:hover {
+.SearchBar__suggestionItem:hover {
     background: var(--blue-50);
     border-left-color: var(--blue-500);
     padding-left: 1.5rem;
 }
 
-.suggestionInfo {
+.SearchBar__suggestionInfo {
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
 }
 
-.suggestionName {
+.SearchBar__suggestionName {
     font-weight: 600;
     color: var(--gray-800);
     font-size: 1rem;
 }
 
-.suggestionDni {
+.SearchBar__suggestionDni {
     font-size: 0.8rem;
     color: var(--gray-500);
     font-family: var(--font-mono, monospace);
 }
 
 /* --- Status Indicators (Semáforo) --- */
-.suggestionStatus {
+.SearchBar__suggestionStatus {
     width: 10px;
     height: 10px;
     border-radius: 50%;
@@ -117,17 +117,17 @@
     box-shadow: 0 0 0 3px var(--white);
 }
 
-.suggestionStatusGreen {
+.SearchBar__suggestionStatusGreen {
     background-color: var(--green-500);
     box-shadow: 0 0 8px var(--green-200);
 }
 
-.suggestionStatusYellow {
+.SearchBar__suggestionStatusYellow {
     background-color: var(--yellow-500);
     box-shadow: 0 0 8px var(--yellow-200);
 }
 
-.suggestionStatusRed {
+.SearchBar__suggestionStatusRed {
     background-color: var(--red-500);
     box-shadow: 0 0 8px var(--red-200);
     animation: pulse-red 2s infinite;

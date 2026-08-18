@@ -1,7 +1,7 @@
 import React from 'react';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './MedicationEditor.module.css';
 
 /**

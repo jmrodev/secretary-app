@@ -1,7 +1,7 @@
 import React from 'react';
-import Badge from '@/components/atoms/Badge';
+import { Badge } from '@/components/atoms/Badge';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './UserTable.module.css';
 

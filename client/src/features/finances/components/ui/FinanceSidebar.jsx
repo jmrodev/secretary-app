@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Card from '@/components/atoms/Card';
-import Badge from '@/components/atoms/Badge';
+import { Icon } from '@/components/atoms/Icon';
+import { Card } from '@/components/atoms/Card';
+import { Badge } from '@/components/atoms/Badge';
 import { CashBoxSummary } from '@/features/finances/components/sections/CashBoxSummary';
 import { FinanceFilters } from '@/features/finances/components/ui/FinanceFilters';
 import styles from './FinanceSidebar.module.css';

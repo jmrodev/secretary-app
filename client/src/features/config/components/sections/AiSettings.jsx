@@ -1,6 +1,6 @@
 import React from 'react';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { AI_PROVIDERS, DEFAULT_AI_MODELS, normalizeGeminiModel } from '@/constants/aiModels';
 

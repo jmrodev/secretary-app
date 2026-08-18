@@ -7,7 +7,7 @@ import styles from './Input.module.css';
  * Accepts all native HTML input props via `...rest`
  * (checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.)
  */
-const Input = ({
+export const Input = ({
     type = 'text',
     value,
     onChange,
@@ -23,11 +23,11 @@ const Input = ({
     htmlSize,            // Native HTML size attribute
     ...rest              // forwards: checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.Input__root;
 
     const variantClass = variant !== 'default' && styles[variant] ? styles[variant] : '';
     const sizeClass = size !== 'md' && styles[size] ? styles[size] : '';
-    const typeClass = type === 'textarea' && styles.textarea ? styles.textarea : '';
+    const typeClass = type === 'textarea' && styles.Input__textarea ? styles.Input__textarea : '';
 
     const combinedClassName = `
         ${baseClass} 
@@ -70,5 +70,3 @@ const Input = ({
         />
     );
 };
-
-export default Input;

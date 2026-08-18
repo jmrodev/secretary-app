@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Loading from '@/components/atoms/Loading';
-import Card from '@/components/atoms/Card';
-import Icon from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
+import { Card } from '@/components/atoms/Card';
+import { Icon } from '@/components/atoms/Icon';
 import { useInsurancesController, InsuranceList, InsuranceFormModal } from '@/features/insurances/index';
 import { MainLayout } from '@/components/templates/MainLayout';
 import styles from './InsurancesPage.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 
 /**
  * InsurancesPage (Orchestrator).

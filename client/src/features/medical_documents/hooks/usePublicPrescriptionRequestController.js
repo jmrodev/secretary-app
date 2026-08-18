@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 const initialState = {
     loading: true,

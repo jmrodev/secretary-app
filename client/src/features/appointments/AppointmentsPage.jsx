@@ -1,8 +1,8 @@
 import React from 'react';
 import { useAppointmentsPageController } from './hooks/useAppointmentsPageController';
 import { MainLayout } from '@/components/templates/MainLayout';
-import Loading from '@/components/atoms/Loading';
-import Icon from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 
 // Feature Components

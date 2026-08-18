@@ -5,7 +5,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { usePermissions } from '@/hooks/usePermissions';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { extractMedicationDetails } from '@/features/medical_documents/utils/medicationHelpers';
 
 const initialState = { isEditing: false, editMeds: [], editNotes: '', editDoctorNote: '' };

@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useRef, useEffect } from 'react';
-import Icon from '@/components/atoms/Icon';
-import Loading from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getNow } from '@/utils/core/dateUtils';
 import styles from './SlotExplorerDropdown.module.css';

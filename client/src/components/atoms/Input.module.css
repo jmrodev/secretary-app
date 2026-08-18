@@ -1,4 +1,4 @@
-.root {
+.Input__root {
     /* --- Local Component Tokens --- */
     --input-bg: var(--background-bg);
     --input-border: var(--border-color);
@@ -27,38 +27,38 @@
     outline: none;
 }
 
-.root::placeholder {
+.Input__root::placeholder {
     color: var(--text-muted, rgb(156 163 175));
     opacity: 0.6;
 }
 
-.root:focus {
+.Input__root:focus {
     border-color: var(--input-focus-border);
     box-shadow: 0 0 0 4px var(--input-focus-ring);
     transform: translateY(-1px);
 }
 
-.root:disabled {
+.Input__root:disabled {
     background-color: var(--input-disabled-bg);
     color: var(--input-disabled-text);
     cursor: not-allowed;
     transform: none;
 }
 
-.textarea {
+.Input__textarea {
     resize: vertical;
     min-height: 100px;
 }
 
-.error {
+.Input__error {
     border-color: var(--red-500);
 }
 
-.error:focus {
+.Input__error:focus {
     box-shadow: 0 0 0 4px rgb(239 68 68 / 10%);
 }
 
-.sm {
+.Input__sm {
     padding: 0.5rem 0.75rem;
     font-size: 0.8125rem;
     border-radius: 0.5rem;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { AuditLogTable } from '@/features/reports/components/tables/AuditLogTable';
 import { Button } from '@/components/atoms/Button';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { formatDate } from '@/utils/core/dateUtils';
 import styles from './AuditLogManager.module.css';
 

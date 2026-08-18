@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './HeaderStatPill.module.css';
 
 /**
@@ -13,16 +13,14 @@ import styles from './HeaderStatPill.module.css';
  * @param {string} tone - Icon wrapper tone: appointments | week | month | patients | growth.
  */
 export const HeaderStatPill = ({ icon, value, title, tone }) => {
-    const iconWrapperClass = `${styles.iconWrapper} ${styles[`iconWrapper--${tone}`] || ''}`.trim();
+    const iconWrapperClass = `${styles.HeaderStatPill__iconWrapper} ${styles[`HeaderStatPill__iconWrapper--${tone}`] || ''}`.trim();
 
     return (
-        <div className={styles.pill} title={title}>
+        <div className={styles.HeaderStatPill__pill} title={title}>
             <div className={iconWrapperClass}>
                 <Icon name={icon} size="0.9rem" />
             </div>
-            <span className={styles.value}>{value}</span>
+            <span className={styles.HeaderStatPill__value}>{value}</span>
         </div>
     );
 };
-
-export default HeaderStatPill;

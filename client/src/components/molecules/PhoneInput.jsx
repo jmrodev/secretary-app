@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
 import styles from './PhoneInput.module.css';
 
 const COUNTRY_OPTIONS = [
@@ -18,7 +18,7 @@ const COUNTRY_OPTIONS = [
     { value: '', label: '🌐' }
 ];
 
-const PhoneInput = ({ value, onChange, placeholder = 'Número...', disabled = false, required = false, className = '', onBlur }) => {
+export const PhoneInput = ({ value, onChange, placeholder = 'Número...', disabled = false, required = false, className = '', onBlur }) => {
     // Determine country code and number
     const { code, number } = useMemo(() => {
         const val = value || '';
@@ -40,13 +40,13 @@ const PhoneInput = ({ value, onChange, placeholder = 'Número...', disabled = fa
     };
 
     return (
-        <div className={`${styles.root} ${className}`}>
+        <div className={`${styles.PhoneInput__root} ${className}`}>
             <Select
                 value={code}
                 onChange={handleCodeChange}
                 options={COUNTRY_OPTIONS}
                 disabled={disabled}
-                className={styles.select}
+                className={styles.PhoneInput__select}
             />
             <Input
                 value={number}
@@ -54,11 +54,10 @@ const PhoneInput = ({ value, onChange, placeholder = 'Número...', disabled = fa
                 placeholder={placeholder}
                 disabled={disabled}
                 required={required}
-                className={styles.input}
+                className={styles.PhoneInput__input}
                 onBlur={onBlur}
             />
         </div>
     );
 };
 
-export default PhoneInput;

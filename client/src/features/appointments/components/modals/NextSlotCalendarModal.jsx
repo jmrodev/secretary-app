@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
-import Loading from '@/components/atoms/Loading';
+import { Loading } from '@/components/atoms/Loading';
 import { formatDate, toInputDate, getNow } from '@/utils/core/dateUtils';
 import styles from './NextSlotCalendarModal.module.css';
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import { PatientForm, usePatientFormController } from '@/features/patients';
-import StatusDisplay from '@/components/molecules/StatusDisplay';
+import { StatusDisplay } from '@/components/molecules/StatusDisplay';
 import { useTempAccessController } from '@/features/users/hooks/useTempAccessController';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './TempAccessPage.module.css';
 
 const TempAccessFormWrapper = ({ initialData, insurances, onSubmit, isEdit }) => {

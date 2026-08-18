@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import ThemeToggle from './ThemeToggle';
+import { ThemeToggle } from './ThemeToggle';
 
 describe('ThemeToggle Atom', () => {
     beforeEach(() => {

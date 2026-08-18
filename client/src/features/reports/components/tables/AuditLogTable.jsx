@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Badge from '@/components/atoms/Badge';
+import { Badge } from '@/components/atoms/Badge';
 import { formatDateTimeLong } from '@/utils/core/dateUtils';
 import styles from './AuditLogTable.module.css';
 

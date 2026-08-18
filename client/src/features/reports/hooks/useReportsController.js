@@ -3,7 +3,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { useAppointments } from '@/features/appointments';
 import { useDoctors } from '@/context/DoctorContextDefinition';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 export const useReportsController = () => {
     const { t } = useLanguage();

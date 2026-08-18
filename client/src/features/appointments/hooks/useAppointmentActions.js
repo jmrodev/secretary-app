@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * Hook that contains specific logic for appointment lifecycle actions (reschedule, cancel, delete, status).

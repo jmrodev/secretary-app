@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { parseDate, isToday, formatTime, formatDate as formatUtil } from '@/utils/core/dateUtils';
 import styles from './ChatSidebar.module.css';

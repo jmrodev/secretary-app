@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { AppointmentCard } from '../cards/AppointmentCard';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { formatTime } from '@/utils/core/dateUtils';
 import styles from './ScheduleTimeline.module.css';
 

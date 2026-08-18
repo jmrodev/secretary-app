@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './ErrorBoundary.module.css';
 
 export class ErrorBoundary extends React.Component {
@@ -36,26 +36,26 @@ export class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div className={`${styles.errorBoundaryContainer} animate-fade-in`}>
-            <div className={`${styles.errorBoundaryCard}`}>
-                <div className={`${styles.errorBoundaryIcon}`}>
+        <div className={`${styles.ErrorBoundary__errorBoundaryContainer} animate-fade-in`}>
+            <div className={`${styles.ErrorBoundary__errorBoundaryCard}`}>
+                <div className={`${styles.ErrorBoundary__errorBoundaryIcon}`}>
                     <Icon name="error_outline" size="4rem" color="#e74c3c" />
                 </div>
                 <h2>¡Ups! Algo salió mal.</h2>
                 <p>Ha ocurrido un error inesperado en esta sección de la aplicación.</p>
                 {process.env.NODE_ENV === 'development' && (
-                    <details className={`${styles.errorDetails}`}>
+                    <details className={`${styles.ErrorBoundary__errorDetails}`}>
                         <summary>Detalles del error (Solo en desarrollo)</summary>
                         <p>{this.state.error && this.state.error.toString()}</p>
                         <pre>{this.state.errorInfo && this.state.errorInfo.componentStack}</pre>
                     </details>
                 )}
-                <div className={`${styles.errorBoundaryActions}`}>
+                <div className={`${styles.ErrorBoundary__errorBoundaryActions}`}>
                     <Button
                         variant="primary"
                         onClick={this.handleReload}
                         icon={<Icon name="refresh" />}
-                        className={`${styles.errorReloadBtn}`}
+                        className={`${styles.ErrorBoundary__errorReloadBtn}`}
                     >
                         Recargar Página
                     </Button>
@@ -64,7 +64,7 @@ export class ErrorBoundary extends React.Component {
                         outline
                         onClick={this.handleCopy}
                         icon={<Icon name={this.state.copied ? "check" : "content_copy"} />}
-                        className={`${styles.errorCopyBtn}`}
+                        className={`${styles.ErrorBoundary__errorCopyBtn}`}
                     >
                         {this.state.copied ? "¡Copiado!" : "Copiar Error"}
                     </Button>

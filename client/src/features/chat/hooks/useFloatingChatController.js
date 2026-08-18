@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useFetch } from '@/hooks/useFetch';
 import { getNow } from '@/utils/core/dateUtils';
 

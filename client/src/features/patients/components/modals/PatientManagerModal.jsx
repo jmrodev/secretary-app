@@ -1,9 +1,9 @@
 
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { PatientForm } from '@/features/patients/components/forms/PatientForm';
-import Loading from '@/components/atoms/Loading';
-import Icon from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
 import { usePatientFormController } from '@/features/patients/hooks/usePatientFormController';
 import styles from './PatientManagerModal.module.css';
 

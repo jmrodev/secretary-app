@@ -1,7 +1,7 @@
 import React from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './WhatsappBroadcast.module.css';
 
 const FILTERS = ['last_12_months', 'all'];
@@ -86,10 +86,10 @@ export const WhatsappBroadcast = ({ t }) => {
 
     if (result) {
         return (
-            <div className={styles.root}>
-                <div className={styles.resultCard}>
-                    <Icon name="check_circle" size="3rem" className={styles.resultIcon} />
-                    <h3 className={styles.resultTitle}>
+            <div className={styles.WhatsappBroadcast__root}>
+                <div className={styles.WhatsappBroadcast__resultCard}>
+                    <Icon name="check_circle" size="3rem" className={styles.WhatsappBroadcast__resultIcon} />
+                    <h3 className={styles.WhatsappBroadcast__resultTitle}>
                         {t('broadcast_success_summary')
                             .replace('{success}', result.success.length)
                             .replace('{failed}', result.failed.length)}
@@ -108,14 +108,14 @@ export const WhatsappBroadcast = ({ t }) => {
 
     if (confirming) {
         return (
-            <div className={styles.root}>
-                <div className={styles.confirmCard}>
-                    <Icon name="warning" size="2.5rem" className={styles.confirmIcon} />
-                    <h3 className={styles.confirmTitle}>{t('broadcast_confirm_title')}</h3>
-                    <p className={styles.confirmDesc}>
+            <div className={styles.WhatsappBroadcast__root}>
+                <div className={styles.WhatsappBroadcast__confirmCard}>
+                    <Icon name="warning" size="2.5rem" className={styles.WhatsappBroadcast__confirmIcon} />
+                    <h3 className={styles.WhatsappBroadcast__confirmTitle}>{t('broadcast_confirm_title')}</h3>
+                    <p className={styles.WhatsappBroadcast__confirmDesc}>
                         {t('broadcast_confirm_desc').replace('{count}', recipientCount ?? '?')}
                     </p>
-                    <div className={styles.confirmActions}>
+                    <div className={styles.WhatsappBroadcast__confirmActions}>
                         <Button
                             variant="ghost"
                             size="sm"
@@ -129,7 +129,7 @@ export const WhatsappBroadcast = ({ t }) => {
                             size="sm"
                             onClick={handleConfirm}
                             disabled={sending}
-                            icon={sending ? <Icon name="progress_activity" size="1rem" className={styles.spin} /> : null}
+                            icon={sending ? <Icon name="progress_activity" size="1rem" className={styles.WhatsappBroadcast__spin} /> : null}
                         >
                             {sending ? t('broadcast_sending') : t('broadcast_confirm_yes')}
                         </Button>
@@ -140,16 +140,16 @@ export const WhatsappBroadcast = ({ t }) => {
     }
 
     return (
-        <div className={styles.root}>
+        <div className={styles.WhatsappBroadcast__root}>
             {/* Filter selector */}
-            <div className={styles.field}>
-                <label className={styles.label}>
+            <div className={styles.WhatsappBroadcast__field}>
+                <label className={styles.WhatsappBroadcast__label}>
                     <Icon name="group" size="1rem" />
                     {t('broadcast_filter_label')}
                 </label>
-                <div className={styles.filterRow}>
+                <div className={styles.WhatsappBroadcast__filterRow}>
                     <select
-                        className={styles.select}
+                        className={styles.WhatsappBroadcast__select}
                         value={filter}
                         onChange={handleFilterChange}
                     >
@@ -161,24 +161,24 @@ export const WhatsappBroadcast = ({ t }) => {
                             </option>
                         ))}
                     </select>
-                    <span className={styles.countBadge}>{countLabel}</span>
+                    <span className={styles.WhatsappBroadcast__countBadge}>{countLabel}</span>
                 </div>
             </div>
 
             {/* Message textarea */}
-            <div className={styles.field}>
-                <label className={styles.label}>
+            <div className={styles.WhatsappBroadcast__field}>
+                <label className={styles.WhatsappBroadcast__label}>
                     <Icon name="edit" size="1rem" />
                     {t('broadcast_message_label')}
                 </label>
                 <textarea
-                    className={styles.textarea}
+                    className={styles.WhatsappBroadcast__textarea}
                     rows={5}
                     placeholder={t('broadcast_message_placeholder')}
                     value={message}
                     onChange={(e) => dispatch({ type: 'SET_MESSAGE', payload: e.target.value })}
                 />
-                <p className={styles.hint}>
+                <p className={styles.WhatsappBroadcast__hint}>
                     <Icon name="info" size="0.85rem" />
                     {t('broadcast_personalization_hint')}
                 </p>
@@ -186,22 +186,22 @@ export const WhatsappBroadcast = ({ t }) => {
 
             {/* Preview */}
             {previewMessage && (
-                <div className={styles.field}>
-                    <span className={styles.label}>
+                <div className={styles.WhatsappBroadcast__field}>
+                    <span className={styles.WhatsappBroadcast__label}>
                         <Icon name="visibility" size="1rem" />
                         {t('broadcast_preview_label')}
                     </span>
-                    <div className={styles.preview}>{previewMessage}</div>
+                    <div className={styles.WhatsappBroadcast__preview}>{previewMessage}</div>
                 </div>
             )}
 
             {/* Error */}
-            {error && <p className={styles.errorMsg}>{error}</p>}
+            {error && <p className={styles.WhatsappBroadcast__errorMsg}>{error}</p>}
 
             {/* Send button */}
             <Button
                 variant="success"
-                className={styles.sendBtn}
+                className={styles.WhatsappBroadcast__sendBtn}
                 onClick={handleSendClick}
                 disabled={!message.trim() || recipientCount === 0}
                 icon={<Icon name="campaign" size="1.1rem" />}

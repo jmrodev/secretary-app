@@ -12,7 +12,7 @@ const EMPTY_OBJECT = {};
  * 
  * @param {Object} texts - Translations { today, week, month, patients, growth }
  */
-const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
+export const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
     const { isStaff, viewDoctorId } = useDoctors();
     const { stats, newPatientStats, loadingStats } = useDashboardStats(isStaff, viewDoctorId);
 
@@ -26,17 +26,17 @@ const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
 
     if (loadingStats || !stats) {
         return (
-            <div className={`${styles.root} compact-stats--loading`}>
-                <div className={`${pillStyles.pill}`}><div className={`${styles.skeleton}`} /></div>
-                <div className={`${pillStyles.pill}`}><div className={`${styles.skeleton}`} /></div>
-                <div className={`${pillStyles.pill}`}><div className={`${styles.skeleton}`} /></div>
+            <div className={`${styles.CompactHeaderStats__root} compact-stats--loading`}>
+                <div className={`${pillStyles.HeaderStatPill__pill}`}><div className={`${styles.CompactHeaderStats__skeleton}`} /></div>
+                <div className={`${pillStyles.HeaderStatPill__pill}`}><div className={`${styles.CompactHeaderStats__skeleton}`} /></div>
+                <div className={`${pillStyles.HeaderStatPill__pill}`}><div className={`${styles.CompactHeaderStats__skeleton}`} /></div>
             </div>
         );
     }
 
     return (
-        <div className={`${styles.root}`}>
-            <div className={`${styles.group}`}>
+        <div className={`${styles.CompactHeaderStats__root}`}>
+            <div className={`${styles.CompactHeaderStats__group}`}>
                 <HeaderStatPill icon="CALENDAR_TODAY" value={stats.appointments_today || 0} title={tx.today} tone="appointments" />
                 <HeaderStatPill icon="VIEW_WEEK" value={stats.appointments_week || 0} title={tx.week} tone="week" />
                 <HeaderStatPill icon="DATE_RANGE" value={stats.appointments_month || 0} title={tx.month} tone="month" />
@@ -44,7 +44,7 @@ const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
             </div>
 
             {isStaff && newPatientStats && (
-                <div className={`${styles.group}`}>
+                <div className={`${styles.CompactHeaderStats__group}`}>
                     <HeaderStatPill icon="TRENDING_UP" value={`+${newPatientStats.currentDay || 0}`} title={tx.growth} tone="growth" />
                 </div>
             )}
@@ -52,4 +52,3 @@ const CompactHeaderStats = ({ texts = EMPTY_OBJECT }) => {
     );
 };
 
-export default CompactHeaderStats;

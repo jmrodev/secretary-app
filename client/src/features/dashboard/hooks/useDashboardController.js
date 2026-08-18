@@ -4,7 +4,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useAppointments } from '@/features/appointments';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats';
 import { useDashboardReminders } from '@/features/dashboard/hooks/useDashboardReminders';

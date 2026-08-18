@@ -1,7 +1,7 @@
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { useMessage } from '@/context/MessageContext';
 
 // Local Feature Components

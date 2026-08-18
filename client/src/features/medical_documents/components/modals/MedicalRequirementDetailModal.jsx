@@ -1,10 +1,10 @@
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Badge from '@/components/atoms/Badge';
-import Input from '@/components/atoms/Input';
-import Icon from '@/components/atoms/Icon';
-import FormGroup from '@/components/molecules/FormGroup';
+import { Badge } from '@/components/atoms/Badge';
+import { Input } from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import { MedicationEditor } from '@/features/medical_documents/components/forms/MedicationEditor';
 import { extractMedicationDetails } from '@/features/medical_documents/utils/medicationHelpers';
 

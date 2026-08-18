@@ -3,7 +3,7 @@ import styles from './Select.module.css';
 
 const EMPTY_ARRAY = [];
 
-const Select = ({
+export const Select = ({
     value,
     onChange,
     options = EMPTY_ARRAY,
@@ -16,7 +16,7 @@ const Select = ({
     variant = 'default', // 'default', 'error'
     size = 'md' // 'sm', 'md', 'lg'
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.Select__root;
 
     const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
     const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
@@ -51,5 +51,3 @@ const Select = ({
         </select>
     );
 };
-
-export default Select;

@@ -3,9 +3,9 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useHolidays } from '@/features/appointments/hooks/useHolidays';
 import { MainLayout } from '@/components/templates/MainLayout';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { HolidayList } from '@/features/appointments/components/sections/HolidayList';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
 import styles from './HolidaysPage.module.css';
 
 export const HolidaysPage = () => {
@@ -24,12 +24,12 @@ export const HolidaysPage = () => {
 
     return (
         <MainLayout wide flush title={t('holidays') || 'Feriados y Días No Laborables'}>
-            <div className={styles.root}>
+            <div className={styles.HolidaysPage__root}>
 
-                <div className={styles.content}>
-                    <div className={styles.card}>
-                        <h3 className={styles.cardTitle}>Agregar Feriado</h3>
-                        <form onSubmit={handleAdd} className={styles.form}>
+                <div className={styles.HolidaysPage__content}>
+                    <div className={styles.HolidaysPage__card}>
+                        <h3 className={styles.HolidaysPage__cardTitle}>Agregar Feriado</h3>
+                        <form onSubmit={handleAdd} className={styles.HolidaysPage__form}>
                             <Input 
                                 type="date" 
                                 label="Fecha" 
@@ -50,8 +50,8 @@ export const HolidaysPage = () => {
                         </form>
                     </div>
 
-                    <div className={styles.card}>
-                        <h3 className={styles.cardTitle}>Feriados Registrados</h3>
+                    <div className={styles.HolidaysPage__card}>
+                        <h3 className={styles.HolidaysPage__cardTitle}>Feriados Registrados</h3>
                         {loading ? (
                             <div style={{ textAlign: 'center', padding: '2rem' }}>Cargando…</div>
                         ) : (

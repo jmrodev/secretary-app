@@ -1,4 +1,4 @@
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './RequirementDetailHeader.module.css';
 
 /**

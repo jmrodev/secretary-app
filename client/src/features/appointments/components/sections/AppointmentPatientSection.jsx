@@ -1,6 +1,6 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
-import PhoneInput from '@/components/molecules/PhoneInput';
+import { Icon } from '@/components/atoms/Icon';
+import { PhoneInput } from '@/components/molecules/PhoneInput';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import styles from './AppointmentPatientSection.module.css';
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import StatusIndicator from '@/components/atoms/StatusIndicator';
+import { Icon } from '@/components/atoms/Icon';
+import { StatusIndicator } from '@/components/atoms/StatusIndicator';
 import { ConfigToggle } from '@/features/config/components/ui/ConfigToggle';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
-import Alert from '@/components/atoms/Alert';
+import { Alert } from '@/components/atoms/Alert';
 
 /**
  * IntegrationGoogleCalendar Feature Molecule.

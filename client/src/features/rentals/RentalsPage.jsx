@@ -1,15 +1,15 @@
 import React from 'react';
 import { MainLayout } from '@/components/templates/MainLayout';
-import Loading from '@/components/atoms/Loading';
+import { Loading } from '@/components/atoms/Loading';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Badge from '@/components/atoms/Badge';
+import { Icon } from '@/components/atoms/Icon';
+import { Badge } from '@/components/atoms/Badge';
 import { formatCurrency } from '@/utils/core/format';
 import { formatDate } from '@/utils/core/dateUtils';
 import { useRentalsController } from '@/features/rentals/hooks/useRentalsController';
 import styles from './RentalsPage.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 
 /**
  * RentalsPage (Orchestrator).

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import WhatsappPairing from './WhatsappPairing';
+import { WhatsappPairing } from './WhatsappPairing';
 
 describe('WhatsappPairing Component (TDD)', () => {
     const mockT = (key) => key;

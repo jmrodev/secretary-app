@@ -1,7 +1,7 @@
 import React from 'react';
 import { getNow, parseDate } from '@/utils/core/dateUtils';
-import Badge from '@/components/atoms/Badge';
-import Icon from '@/components/atoms/Icon';
+import { Badge } from '@/components/atoms/Badge';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import styles from './InstitutionTransactionsTable.module.css';
 

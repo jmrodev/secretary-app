@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PendingBookingBanner.module.css';
 
@@ -21,15 +21,15 @@ export const PendingBookingBanner = ({ count = 0, expanded = false, loading = fa
     return (
         <button
             type="button"
-            className={`${styles.root} ${expanded ? styles.rootExpanded : ''}`}
+            className={`${styles.PendingBookingBanner__root} ${expanded ? styles.PendingBookingBanner__rootExpanded : ''}`}
             onClick={onToggle}
             aria-expanded={expanded}
             aria-label={t(expanded ? 'pending_approval_close' : 'pending_approval_open')}
         >
-            <Icon name="NOTIFICATIONS" size="1.1rem" className={styles.icon} />
-            <span className={styles.label}>{label}</span>
-            {loading && <span className={styles.loading} aria-hidden="true" />}
-            <Icon name={expanded ? 'EXPAND_LESS' : 'EXPAND_MORE'} size="1.1rem" className={styles.chevron} />
+            <Icon name="NOTIFICATIONS" size="1.1rem" className={styles.PendingBookingBanner__icon} />
+            <span className={styles.PendingBookingBanner__label}>{label}</span>
+            {loading && <span className={styles.PendingBookingBanner__loading} aria-hidden="true" />}
+            <Icon name={expanded ? 'EXPAND_LESS' : 'EXPAND_MORE'} size="1.1rem" className={styles.PendingBookingBanner__chevron} />
         </button>
     );
 };

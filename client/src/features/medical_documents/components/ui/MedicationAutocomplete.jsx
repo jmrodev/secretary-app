@@ -2,9 +2,9 @@ import React, { useRef, useEffect } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMedicationAutocomplete } from '@/features/medical_documents/hooks/useMedicationAutocomplete';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
-import Loading from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Loading } from '@/components/atoms/Loading';
 import styles from './MedicationAutocomplete.module.css';
 
 /**

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import styles from '../organisms/GlobalWhatsappMessenger.module.css';
 
 /**
@@ -10,7 +10,7 @@ import styles from '../organisms/GlobalWhatsappMessenger.module.css';
  * Renders the QR code or offline status for WhatsApp bridge pairing.
  * When connected, shows a disconnect button to force re-pairing.
  */
-const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
+export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
     const [logoutLoading, setLogoutLoading] = useState(false);
     const isOffline = bridgeStatus.status === 'offline';
     const isConnected = bridgeStatus.status === 'connected';
@@ -28,17 +28,17 @@ const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
     };
 
     return (
-        <div className={styles.pairing}>
-            <div className={`${styles.pairingCard} ${styles.animateFadeIn}`}>
+        <div className={styles.GlobalWhatsappMessenger__pairing}>
+            <div className={`${styles.GlobalWhatsappMessenger__pairingCard} ${styles.GlobalWhatsappMessenger__animateFadeIn}`}>
 
-                <div className={styles.pairingIconWrapper}>
-                    <div className={`${styles.pairingIcon} ${isOffline ? styles.pairingIconOffline : ''}`}>
+                <div className={styles.GlobalWhatsappMessenger__pairingIconWrapper}>
+                    <div className={`${styles.GlobalWhatsappMessenger__pairingIcon} ${isOffline ? styles.GlobalWhatsappMessenger__pairingIconOffline : ''}`}>
                         <Icon
                             name={isOffline ? 'cloud_off' : isConnected ? 'check_circle' : 'qr_code_scanner'}
                             size="2.5rem"
                         />
                     </div>
-                    <div className={`${styles.pulseRing} ${isOffline ? styles.pulseRingOffline : ''}`} />
+                    <div className={`${styles.GlobalWhatsappMessenger__pulseRing} ${isOffline ? styles.GlobalWhatsappMessenger__pulseRingOffline : ''}`} />
                 </div>
 
                 <h3>{t(isOffline ? 'bridge_offline_title' : isConnected ? 'whatsapp_connected' : 'whatsapp_pairing_required')}</h3>
@@ -52,26 +52,26 @@ const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
 
                 {/* QR — solo cuando está desconectado (no offline, no connected) */}
                 {!isOffline && !isConnected && (
-                    <div className={styles.qrWrapper}>
+                    <div className={styles.GlobalWhatsappMessenger__qrWrapper}>
                         {bridgeStatus.qr_code ? (
-                            <div className={`${styles.qrContainer} ${styles.animateZoomIn}`}>
+                            <div className={`${styles.GlobalWhatsappMessenger__qrContainer} ${styles.GlobalWhatsappMessenger__animateZoomIn}`}>
                                 <QRCodeSVG
                                     value={bridgeStatus.qr_code}
                                     size={240}
                                     level="H"
-                                    className={styles.qrImage}
+                                    className={styles.GlobalWhatsappMessenger__qrImage}
                                 />
                             </div>
                         ) : (
-                            <div className={styles.qrPlaceholder}>
-                                <div className={styles.loader} />
+                            <div className={styles.GlobalWhatsappMessenger__qrPlaceholder}>
+                                <div className={styles.GlobalWhatsappMessenger__loader} />
                                 <span>{t('generating_qr') || 'Generando código...'}</span>
                             </div>
                         )}
                     </div>
                 )}
 
-                <div className={styles.pairingActions}>
+                <div className={styles.GlobalWhatsappMessenger__pairingActions}>
                     {isConnected ? (
                         <Button
                             variant="danger"
@@ -95,13 +95,13 @@ const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
                     )}
                 </div>
 
-                <div className={styles.pairingFooter}>
-                    <span className={`${styles.statusIndicator} ${
+                <div className={styles.GlobalWhatsappMessenger__pairingFooter}>
+                    <span className={`${styles.GlobalWhatsappMessenger__statusIndicator} ${
                         isOffline
-                            ? styles.statusIndicatorOffline
+                            ? styles.GlobalWhatsappMessenger__statusIndicatorOffline
                             : isConnected
-                                ? styles.statusIndicatorConnected
-                                : styles.statusIndicatorDisconnected
+                                ? styles.GlobalWhatsappMessenger__statusIndicatorConnected
+                                : styles.GlobalWhatsappMessenger__statusIndicatorDisconnected
                     }`}>
                         {isOffline
                             ? t('offline')
@@ -115,4 +115,3 @@ const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
     );
 };
 
-export default WhatsappPairing;

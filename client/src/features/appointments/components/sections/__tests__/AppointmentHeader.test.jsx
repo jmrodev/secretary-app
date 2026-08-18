@@ -11,7 +11,7 @@ vi.mock('@/hooks/useLanguage', () => ({
 }));
 
 vi.mock('@/components/atoms/Icon', () => ({
-    default: ({ name }) => <span data-testid={`icon-${name}`}>{name}</span>
+    Icon: ({ name }) => <span data-testid={`icon-${name}`}>{name}</span>
 }));
 
 describe('AppointmentHeader Component', () => {

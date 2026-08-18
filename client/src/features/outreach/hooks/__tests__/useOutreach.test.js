@@ -4,13 +4,13 @@ import { useOutreach } from '../useOutreach';
 
 // Mock axios API module
 vi.mock('@/api/axios', () => ({
-    default: {
+    api: {
         get: vi.fn(),
         post: vi.fn()
     }
 }));
 
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 describe('useOutreach', () => {
     beforeEach(() => {

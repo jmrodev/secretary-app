@@ -4,9 +4,9 @@ import { useLanguage } from '@/hooks/useLanguage';
 
 // Atoms & Molecules
 import { Button } from '@/components/atoms/Button';
-import Card from '@/components/atoms/Card';
-import Icon from '@/components/atoms/Icon';
-import Modal from '@/components/molecules/Modal';
+import { Card } from '@/components/atoms/Card';
+import { Icon } from '@/components/atoms/Icon';
+import { Modal } from '@/components/molecules/Modal';
 
 // Feature Components
 import { UserTable } from '@/features/users/components/UserTable';

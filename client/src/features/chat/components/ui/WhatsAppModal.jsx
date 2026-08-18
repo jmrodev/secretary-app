@@ -1,11 +1,11 @@
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import FormGroup from '@/components/molecules/FormGroup';
+import { Icon } from '@/components/atoms/Icon';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import styles from './WhatsAppModal.module.css';
 
 /**

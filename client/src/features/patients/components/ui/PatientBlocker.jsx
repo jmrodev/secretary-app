@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAuth } from '@/features/auth';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './PatientBlocker.module.css';
 
 export const PatientBlocker = () => {

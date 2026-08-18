@@ -9,9 +9,9 @@ describe('HeaderStatPill Atom', () => {
             <HeaderStatPill icon="CALENDAR_TODAY" value={7} title="Today" tone="appointments" />
         );
 
-        const iconWrapper = container.querySelector(`.${styles.iconWrapper}`);
+        const iconWrapper = container.querySelector(`.${styles.HeaderStatPill__iconWrapper}`);
         expect(iconWrapper).not.toBeNull();
-        expect(iconWrapper).toHaveClass(styles['iconWrapper--appointments']);
+        expect(iconWrapper).toHaveClass(styles['HeaderStatPill__iconWrapper--appointments']);
         // The icon wrapper actually renders an icon (Icon renders aria-hidden)
         expect(iconWrapper.querySelector('[aria-hidden="true"]')).not.toBeNull();
         expect(screen.getByText('7')).toBeInTheDocument();
@@ -31,13 +31,13 @@ describe('HeaderStatPill Atom', () => {
             <HeaderStatPill icon="GROUPS" value={0} title="Patients" tone="patients" />
         );
 
-        const iconWrapper = container.querySelector(`.${styles.iconWrapper}`);
-        expect(iconWrapper).toHaveClass(styles['iconWrapper--patients']);
+        const iconWrapper = container.querySelector(`.${styles.HeaderStatPill__iconWrapper}`);
+        expect(iconWrapper).toHaveClass(styles['HeaderStatPill__iconWrapper--patients']);
         expect(screen.getByText('0')).toBeInTheDocument();
 
         rerender(<HeaderStatPill icon="TRENDING_UP" value={5} title="Growth" tone="growth" />);
-        expect(container.querySelector(`.${styles.iconWrapper}`)).toHaveClass(
-            styles['iconWrapper--growth']
+        expect(container.querySelector(`.${styles.HeaderStatPill__iconWrapper}`)).toHaveClass(
+            styles['HeaderStatPill__iconWrapper--growth']
         );
         expect(screen.getByText('5')).toBeInTheDocument();
         expect(screen.queryByText('0')).not.toBeInTheDocument();

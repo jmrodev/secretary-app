@@ -1,10 +1,10 @@
 import React from 'react';
 import { Navbar } from '@/features/layout';
-import PageHeader from '@/components/ui/PageHeader';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { useSearch } from '@/hooks/useSearch';
 import { useLanguage } from '@/hooks/useLanguage';
 import { DoctorSelector } from '@/features/doctors';
-import CompactHeaderStats from '@/components/molecules/CompactHeaderStats';
+import { CompactHeaderStats } from '@/components/molecules/CompactHeaderStats';
 import styles from './MainLayout.module.css';
 
 /**
@@ -32,7 +32,7 @@ export const MainLayout = ({
     return (
         <div className={`${styles.MainLayout__appLayout}`}>
             <Navbar />
-            <main className={`${styles.MainLayout__root} ${wide ? styles['MainLayout--dashboardWide'] : ''} ${flush ? styles['MainLayout--flush'] : ''}`}>
+            <main className={`${styles.MainLayout__root} ${wide ? styles['MainLayout__root--dashboardWide'] : ''} ${flush ? styles['MainLayout__root--flush'] : ''}`}>
                 {title && (
                     <PageHeader 
                         title={title}

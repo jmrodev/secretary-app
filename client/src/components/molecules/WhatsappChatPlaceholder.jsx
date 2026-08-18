@@ -1,11 +1,11 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 
 /**
  * WhatsappChatPlaceholder Molecule.
  * Renders the empty state when no chat is selected in the WhatsApp messenger.
  */
-const WhatsappChatPlaceholder = ({ t }) => {
+export const WhatsappChatPlaceholder = ({ t }) => {
     return (
         <div className="global-wa-messenger__placeholder">
             <div className="global-wa-messenger__placeholder-icon">
@@ -17,4 +17,3 @@ const WhatsappChatPlaceholder = ({ t }) => {
     );
 };
 
-export default WhatsappChatPlaceholder;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
-import Loading from '@/components/atoms/Loading';
+import { Loading } from '@/components/atoms/Loading';
 
 /**
  * RoleGuard Component.
@@ -16,7 +16,7 @@ import Loading from '@/components/atoms/Loading';
  */
 const EMPTY_ARRAY = [];
 
-const RoleGuard = ({ 
+export const RoleGuard = ({ 
     children, 
     allowedRoles = EMPTY_ARRAY, 
     fallbackPath = '/dashboard',
@@ -42,4 +42,3 @@ const RoleGuard = ({
     return children;
 };
 
-export default RoleGuard;

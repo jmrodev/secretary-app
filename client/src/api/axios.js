@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const api = axios.create({
+export const api = axios.create({
     baseURL: '/api',
     paramsSerializer: {
         indexes: null // This removes the brackets [] from array parameters
@@ -34,5 +34,4 @@ api.interceptors.response.use(
     }
 );
 
-export default api;
 

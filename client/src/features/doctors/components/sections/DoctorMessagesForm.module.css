@@ -26,7 +26,7 @@
     transition: all 0.2s ease !important;
 }
 
-.DoctorMessagesForm__tabButton[data-active="true"] {
+.DoctorMessagesForm__tabButton:is([data-active="true"]) {
     background: var(--dashboard-card-bg) !important;
     color: var(--primary-color) !important;
     box-shadow: var(--shadow-sm) !important;

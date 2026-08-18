@@ -1,4 +1,4 @@
-.root {
+.CompactHeaderStats__root {
     --stats-gap: 1.25rem;
     --stats-pill-bg: var(--dashboard-card-bg);
     --stats-pill-border: var(--dashboard-card-border);
@@ -10,13 +10,13 @@
     animation: fade-in-down 0.6s cubic-bezier(0.2, 0, 0, 1) both;
 }
 
-.group {
+.CompactHeaderStats__group {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-.skeleton {
+.CompactHeaderStats__skeleton {
     width: 40px;
     height: 14px;
     background: var(--glass);
@@ -25,7 +25,7 @@
     overflow: hidden;
 }
 
-.skeleton::after {
+.CompactHeaderStats__skeleton::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -59,13 +59,13 @@
 
 /* Compact (<768px): wrap pills full-width, nothing hidden */
 @media (width <= 768px) {
-    .root,
-    .group {
+    .CompactHeaderStats__root,
+    .CompactHeaderStats__group {
         flex-wrap: wrap;
         justify-content: center;
     }
 
-    .root {
+    .CompactHeaderStats__root {
         gap: 0.75rem var(--stats-gap);
     }
 }

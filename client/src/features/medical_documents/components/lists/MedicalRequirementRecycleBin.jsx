@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { formatDate, formatDateTimeLong } from '@/utils/core/dateUtils';
 import managerStyles from '@/features/medical_documents/components/ui/MedicalRequirementManager.module.css';
 import itemStyles from '@/features/medical_documents/components/sections/RequirementItem.module.css';

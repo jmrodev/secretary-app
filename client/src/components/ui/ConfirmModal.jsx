@@ -1,9 +1,9 @@
 import React, { useRef } from 'react';
 import { Button } from '@/components/atoms/Button';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import styles from './ConfirmModal.module.css';
 
-const ConfirmModal = ({
+export const ConfirmModal = ({
     isOpen,
     title,
     message,
@@ -65,7 +65,7 @@ const ConfirmModal = ({
             footer={footer}
             size="md"
         >
-            <div className={`${styles.text} ${type === 'prompt' ? styles.textPrompt : ''}`}>
+            <div className={`${styles.ConfirmModal__text} ${type === 'prompt' ? styles.ConfirmModal__textPrompt : ''}`}>
                 {message}
             </div>
             {type === 'prompt' && (
@@ -82,4 +82,3 @@ const ConfirmModal = ({
     );
 };
 
-export default ConfirmModal;

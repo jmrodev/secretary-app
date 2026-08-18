@@ -1,7 +1,7 @@
 import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
 import { useFloatingChatController } from '@/features/chat/hooks/useFloatingChatController';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { formatTime } from '@/utils/core/dateUtils';
 

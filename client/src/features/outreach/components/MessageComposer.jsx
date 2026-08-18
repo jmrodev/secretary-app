@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
 import styles from './MessageComposer.module.css';
 

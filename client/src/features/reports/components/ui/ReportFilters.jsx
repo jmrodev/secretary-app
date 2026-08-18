@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Select from '@/components/atoms/Select';
-import Input from '@/components/atoms/Input';
-import Icon from '@/components/atoms/Icon';
+import { Select } from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
 import { getMonthsOptions } from '@/utils/core/dateUtils';
 import styles from './ReportFilters.module.css';
 

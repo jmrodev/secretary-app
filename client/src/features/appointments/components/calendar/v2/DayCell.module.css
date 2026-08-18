@@ -34,13 +34,13 @@
 }
 
 /* Selected state */
-.DayCell.selected {
+.DayCell__selected {
   background: rgb(var(--accent-rgb, 99, 102, 241), 0.15);
   border-color: rgb(var(--accent-rgb, 99, 102, 241), 0.6);
   box-shadow: 0 0 12px rgb(var(--accent-rgb, 99, 102, 241), 0.25);
 }
 
-.DayCell.selected::before {
+.DayCell__selected::before {
   content: '';
   position: absolute;
   top: 0;
@@ -52,33 +52,33 @@
 }
 
 /* Today state */
-.DayCell.today {
+.DayCell__today {
   border-color: var(--primary-color);
   background: rgb(13, 148, 136, 0.08);
 }
 
 /* Holiday state */
-.DayCell.holiday {
+.DayCell__holiday {
   background: rgb(239, 68, 68, 0.05);
   border-color: rgb(239, 68, 68, 0.3);
 }
 
 /* Inactive / Past / Outside month states */
-.DayCell.past {
+.DayCell__past {
   background-color: rgb(0, 0, 0, 0.04);
 }
 
-:root[data-theme="dark"] .DayCell.past,
-html[data-theme="dark"] .DayCell.past,
-body:not(.DayCell__theme-light) .DayCell.past {
+:root[data-theme="dark"] .DayCell__past,
+html[data-theme="dark"] .DayCell__past,
+body:not(.DayCell__theme-light) .DayCell__past {
   background-color: rgb(0, 0, 0, 0.25);
 }
 
-.DayCell.past .DayCell__number {
+.DayCell__past .DayCell__number {
   color: var(--text-muted);
 }
 
-.DayCell.outsideMonth {
+.DayCell__outsideMonth {
   opacity: 0.4;
 }
 

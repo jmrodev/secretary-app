@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
 import styles from './AppointmentMedicalPanel.module.css';
 
 /**

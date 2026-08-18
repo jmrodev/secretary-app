@@ -1,4 +1,4 @@
-.tabNav {
+.TabNav__tabNav {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -10,7 +10,7 @@
 }
 
 @media (width <= 768px) {
-    .tabNav {
+    .TabNav__tabNav {
         width: 100%;
         flex-wrap: wrap;
         gap: 0.5rem;
@@ -19,11 +19,11 @@
 }
 
 /* Modifiers */
-.tabNavFull {
+.TabNav__tabNavFull {
     width: 100%;
 }
 
-.tabNavSub {
+.TabNav__tabNavSub {
     background: transparent;
     border: none;
     padding: 0;
@@ -31,6 +31,6 @@
     margin-bottom: 1rem;
 }
 
-.tabNavNoMargin {
+.TabNav__tabNavNoMargin {
     margin-bottom: 0;
 }

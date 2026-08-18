@@ -4,7 +4,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * System Configuration Controller (Feature Hook).

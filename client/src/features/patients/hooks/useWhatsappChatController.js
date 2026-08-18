@@ -1,5 +1,5 @@
 import { useState, useReducer, useCallback, useRef, useEffect, useEffectEvent } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 const initialState = {
     messages: [],

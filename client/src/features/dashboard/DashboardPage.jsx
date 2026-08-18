@@ -5,8 +5,8 @@ import { MedicalRequirementManager } from '@/features/medical_documents/componen
 import { DashboardModalOrchestrator } from './components/DashboardModalOrchestrator';
 import { MainLayout } from '@/components/templates/MainLayout';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Loading from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
 import { CashMonitorCard } from './components/CashMonitorCard';
 
 import styles from './DashboardPage.module.css';

@@ -1,6 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { registerConfigSection } from '../registry/configRegistry';
-import Loading from '@/components/atoms/Loading';
+import { Loading } from '@/components/atoms/Loading';
 
 // Lazy loading to maintain performance and avoid eager cross-feature coupling at the module level
 const GeneralSettings = lazy(() => import('../components/sections/GeneralSettings'));

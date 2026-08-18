@@ -3,8 +3,8 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 // Layout & Guards
 import { ProtectedRoute } from '@/components/templates/ProtectedRoute';
-import RoleGuard from '@/components/auth/RoleGuard';
-import Loading from '@/components/atoms/Loading';
+import { RoleGuard } from '@/components/auth/RoleGuard';
+import { Loading } from '@/components/atoms/Loading';
 
 // Features (Orchestrators) - Lazy Loaded
 // We use named exports for features, so we have to unwrap them in the lazy call.

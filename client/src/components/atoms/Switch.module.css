@@ -1,4 +1,4 @@
-.root {
+.Switch__root {
     /* --- Local Component Tokens --- */
     --switch-bg: var(--gray-500);
     --switch-checked-bg: var(--accent-color);
@@ -15,7 +15,7 @@
     flex-wrap: nowrap;
 }
 
-.toggle {
+.Switch__toggle {
     position: relative;
     display: inline-block;
     width: 44px;
@@ -23,13 +23,13 @@
     flex-shrink: 0;
 }
 
-.input {
+.Switch__input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.slider {
+.Switch__slider {
     position: absolute;
     cursor: pointer;
     inset: 0;
@@ -38,7 +38,7 @@
     border-radius: 24px;
 }
 
-.slider::before {
+.Switch__slider::before {
     position: absolute;
     content: "";
     height: 18px;
@@ -51,19 +51,19 @@
     box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
 }
 
-.input:checked+.slider {
+.Switch__input:checked+.Switch__slider {
     background-color: var(--switch-checked-bg);
 }
 
-.input:focus+.slider {
+.Switch__input:focus+.Switch__slider {
     box-shadow: 0 0 0 3px var(--switch-focus-ring);
 }
 
-.input:checked+.slider::before {
+.Switch__input:checked+.Switch__slider::before {
     transform: translateX(20px);
 }
 
-.label {
+.Switch__label {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--switch-label-color);
@@ -71,11 +71,11 @@
     white-space: nowrap;
 }
 
-.disabled {
+.Switch__disabled {
     cursor: not-allowed;
     opacity: 0.6;
 }
 
-.disabled .slider {
+.Switch__disabled .Switch__slider {
     cursor: not-allowed;
 }
