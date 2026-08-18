@@ -45,11 +45,11 @@ Per PR: convert `export default` → `export const` per JSX, update ALL importer
 
 - [x] 3.1 holidays (1); 3.2 rentals (1); 3.3 insurances (3)
 - [x] 3.4 layout, dashboard, whatsapp (3–4); - [x] 3.5 users (communication skip: 0); 
-- [x] 3.6 institutions (6); - [ ] 3.7 outreach (8)
+- [x] 3.6 institutions (6); - [x] 3.7 outreach (8)
 - [x] 3.8 auth, chat (9); - [x] 3.9 doctors, reports (11)
-- [ ] 3.10 config (14); 3.11 finances (25)
-- [ ] 3.12 patients (27); 3.13 medical_documents (40)
-- [ ] 3.14 appointments (41)
+- [x] 3.10 config (14); 3.11 finances (25)
+- [x] 3.12 patients (27); 3.13 medical_documents (40)
+- [x] 3.14 appointments (41)
 
 ## Phase 4: BEM fixes in migrated features
 
