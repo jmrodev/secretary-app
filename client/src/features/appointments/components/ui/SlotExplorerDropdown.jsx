@@ -59,11 +59,11 @@ const SlotExplorerDropdownBase = ({
 
     const sidebarRef = useRef(null);
 
-    useEffect(() => {
-        if (uniqueDays.length > 0 && !activeDay) {
-            setActiveDay(uniqueDays[0].date);
-        }
-    }, [uniqueDays, activeDay]);
+    // Auto-select the first available day once slots load. Selection is applied
+    // during render so the sidebar and content stay in sync on the same frame.
+    if (uniqueDays.length > 0 && !activeDay) {
+        setActiveDay(uniqueDays[0].date);
+    }
 
     useEffect(() => {
         if (sidebarRef.current && activeDay) {

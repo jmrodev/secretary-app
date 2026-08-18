@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- barrel re-export of components, hooks, and utils */
 // Public API for the Outreach Feature
 // WhatsApp message broadcast to patient segments
 

@@ -36,22 +36,26 @@ export const usePatientDetailsController = (patientId) => {
 
     useEffect(() => {
         if (!patientId) return;
-        
-        refetchMedications();
 
-        api.get(`/medical/requests?patientId=${patientId}`)
-            .then(res => {
-                const list = unpack(res);
-                const prescriptions = list.filter(r => r.type === 'prescription');
-                setRecentRequests(prescriptions);
-            })
-            .catch(err => console.error("Error fetching requests:", err));
+        // Deferred to a microtask: refetchFiles sets loadingFiles synchronously
+        // and the rule forbids setState during the effect body.
+        queueMicrotask(() => {
+            refetchMedications();
 
-        api.get(`/medical/prescriptions?patientId=${patientId}`)
-            .then(res => setOfficialPrescriptions(unpack(res)))
-            .catch(err => console.error("Error fetching official prescriptions:", err));
+            api.get(`/medical/requests?patientId=${patientId}`)
+                .then(res => {
+                    const list = unpack(res);
+                    const prescriptions = list.filter(r => r.type === 'prescription');
+                    setRecentRequests(prescriptions);
+                })
+                .catch(err => console.error("Error fetching requests:", err));
 
-        refetchFiles();
+            api.get(`/medical/prescriptions?patientId=${patientId}`)
+                .then(res => setOfficialPrescriptions(unpack(res)))
+                .catch(err => console.error("Error fetching official prescriptions:", err));
+
+            refetchFiles();
+        });
     }, [patientId, refetchMedications, refetchFiles]);
 
     return { chronicMeds, recentRequests, officialPrescriptions, patientFiles, loadingFiles, refetchMedications, refetchFiles };

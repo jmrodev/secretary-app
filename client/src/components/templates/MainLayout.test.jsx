@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MessageProvider } from '@/context/MessageContext';
 import { LanguageProvider } from '@/context/LanguageProvider';
 import { SearchProvider } from '@/context/SearchProvider';
@@ -31,15 +31,6 @@ vi.mock('@/features/doctors', () => ({
 vi.mock('@/components/molecules/CompactHeaderStats', () => ({
     CompactHeaderStats: () => null
 }));
-
-const pendingBooking = {
-    id: 1,
-    patient_name: 'Juan Pérez',
-    doctor_name: 'Dr. House',
-    requested_slot_date: '2026-08-03',
-    requested_slot_time: '09:00',
-    status: 'pending'
-};
 
 const renderLayout = () => render(
     <MessageProvider>

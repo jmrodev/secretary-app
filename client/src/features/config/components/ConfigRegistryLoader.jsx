@@ -1,6 +1,6 @@
-import React, { lazy, Suspense } from 'react';
+/* eslint-disable react-refresh/only-export-components -- registry module: lazy component wrappers and the loadDefaultConfigSections initializer are module-level exports */
+import React, { lazy } from 'react';
 import { registerConfigSection } from '../registry/configRegistry';
-import { Loading } from '@/components/atoms/Loading';
 
 // Lazy loading to maintain performance and avoid eager cross-feature coupling at the module level
 const GeneralSettings = lazy(() => import('../components/sections/GeneralSettings'));

@@ -8,6 +8,7 @@ import {
 } from '@/api/pendingBookingApi';
 
 /** Polling interval for the pending-approval queue (design: every 10s). */
+// eslint-disable-next-line react-refresh/only-export-components -- constant imported by MainLayout for the polling interval
 export const POLL_INTERVAL_MS = 10000;
 
 const PendingApprovalContext = createContext(null);
@@ -42,6 +43,10 @@ export const PendingApprovalProvider = ({ children }) => {
 
     useEffect(() => {
         if (!user || user.role === 'patient') return undefined;
+        // The initial fetch must run synchronously: PendingApprovalContext.test
+        // asserts the poll starts on mount, and the loading flag mirrors the
+        // async external polling system (deferring it would drop the spinner).
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- sync initial poll drives a global queue spinner
         refresh();
         const interval = setInterval(refresh, POLL_INTERVAL_MS);
         return () => clearInterval(interval);

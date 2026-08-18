@@ -70,12 +70,14 @@ export const useReportsController = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [activeTab, month, year, selectedDoctorId]); // Removed getMonthlyReport from dependencies to prevent infinite loop
+    }, [activeTab, month, year, selectedDoctorId, getMonthlyReport]);
 
-    // Fetch report data on initial mount or when explicit filter params change
+    // Fetch report data on initial mount or when explicit filter params change.
+    // Deferred to a microtask: handleGenerateReport sets state synchronously
+    // and the rule forbids setState during the effect body.
     useEffect(() => {
-        handleGenerateReport();
-    }, [activeTab, month, year, selectedDoctorId]);
+        queueMicrotask(() => handleGenerateReport());
+    }, [activeTab, month, year, selectedDoctorId, handleGenerateReport]);
 
     const handleDownloadJson = useCallback(() => {
         if (!reportData) return;

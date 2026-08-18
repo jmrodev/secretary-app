@@ -11,14 +11,12 @@ export const AppointmentReportTable = ({ data, t }) => {
         return <div className={styles.AppointmentReportTable__appointmentReport__empty}>{t('no_data_to_display')}</div>;
     }
 
-    // Compute running totals for weekly and monthly progression
-    let currentWeeklySum = 0;
-    let currentMonthlySum = 0;
-
-    const dailySummaryWithTotals = list.map((dayGroup, index) => {
+    // Pure computation of per-day and running totals. Two passes keep the render
+    // callback free of render-scope mutation (react-hooks/immutability).
+    const baseRows = list.map((dayGroup) => {
         let cash = Number(dayGroup.total_efectivo || 0);
         let total = Number(dayGroup.total_dia || dayGroup.total_paid || 0);
-        
+
         if (dayGroup.appointments && dayGroup.appointments.length > 0) {
             let apptCash = 0;
             let apptTotal = 0;
@@ -34,28 +32,41 @@ export const AppointmentReportTable = ({ data, t }) => {
             }
         }
 
-        const others = Math.max(0, total - cash);
         const parsedDate = parseDate(dayGroup.date);
-        const dayOfWeek = parsedDate ? parsedDate.getDay() : 0;
-
-        // Reset weekly sum on Monday (dayOfWeek === 1) or at start of list
-        if (index === 0 || dayOfWeek === 1) {
-            currentWeeklySum = total;
-        } else {
-            currentWeeklySum += total;
-        }
-
-        currentMonthlySum += total;
-
         return {
             date: dayGroup.date,
             cash,
-            others,
+            others: Math.max(0, total - cash),
             total,
-            weeklyTotal: currentWeeklySum,
-            monthlyAccumulated: currentMonthlySum,
+            dayOfWeek: parsedDate ? parsedDate.getDay() : 0,
             is_weekend: dayGroup.is_weekend,
             is_holiday: dayGroup.is_holiday
+        };
+    });
+
+    const dailySummaryWithTotals = baseRows.map((row, index) => {
+        // Weekly segment restarts on Monday (dayOfWeek === 1) or at list start.
+        const isWeekStart = index === 0 || row.dayOfWeek === 1;
+        const weeklyStart = isWeekStart
+            ? index
+            : (() => {
+                for (let i = index - 1; i >= 0; i--) {
+                    if (baseRows[i].dayOfWeek === 1) return i;
+                }
+                return 0;
+            })();
+        const weeklyTotal = baseRows.slice(weeklyStart, index + 1).reduce((sum, r) => sum + r.total, 0);
+        const monthlyAccumulated = baseRows.slice(0, index + 1).reduce((sum, r) => sum + r.total, 0);
+
+        return {
+            date: row.date,
+            cash: row.cash,
+            others: row.others,
+            total: row.total,
+            weeklyTotal,
+            monthlyAccumulated,
+            is_weekend: row.is_weekend,
+            is_holiday: row.is_holiday
         };
     });
 

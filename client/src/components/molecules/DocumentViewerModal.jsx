@@ -21,6 +21,16 @@ export const DocumentViewerModal = ({
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
 
+    // Reset zoom and rotation whenever a new file is opened. Reset is applied
+    // during render so the viewport is already correct on first paint.
+    const [prevFileKey, setPrevFileKey] = useState('');
+    const currentFileKey = file ? `${file.id ?? ''}:${file.file_url ?? file.url ?? ''}` : '';
+    if (currentFileKey !== prevFileKey) {
+        setPrevFileKey(currentFileKey);
+        setZoom(1);
+        setRotation(0);
+    }
+
     // Calculate current index within filesList
     const activeIndex = filesList.findIndex(
         f => (f.id && file?.id && f.id === file.id) || (f.file_url && file?.file_url && f.file_url === file.file_url)
@@ -28,14 +38,6 @@ export const DocumentViewerModal = ({
     const hasMultipleFiles = filesList.length > 1 && activeIndex !== -1;
     const hasPrev = hasMultipleFiles && activeIndex > 0;
     const hasNext = hasMultipleFiles && activeIndex < filesList.length - 1;
-
-    // Reset zoom and rotation whenever a new file is opened
-    useEffect(() => {
-        if (isOpen) {
-            setZoom(1);
-            setRotation(0);
-        }
-    }, [isOpen, file]);
 
     const handlePrevFile = useCallback(() => {
         if (hasPrev && onSelectFile) {

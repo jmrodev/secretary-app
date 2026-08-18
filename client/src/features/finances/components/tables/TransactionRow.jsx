@@ -46,15 +46,6 @@ export const TransactionRow = ({
             ? styles.rowWithdrawal
             : (isIncome ? styles.rowIncome : styles.rowExpense));
 
-    // Normalizing status for Badge atom
-    const getStatusVariant = (status, bonified) => {
-        if (bonified === 1 || status === 'bonified') return 'blue';
-        if (status === 'paid' || status === 'completed') return 'success';
-        if (status === 'pending') return 'warning';
-        if (status === 'rejected' || status === 'cancelled') return 'danger';
-        return 'default';
-    };
-
     return (
         <tr className={`transactions-table__row ${rowColorClass} ${isGrouped ? 'transactions-table__row--grouped' : ''} animate-fade-in`}>
             <td className="transactions-table__cell--first">

@@ -4,7 +4,6 @@ import { AuditLogManager } from '@/features/reports/components/views/AuditLogMan
 
 import { MainLayout } from '@/components/templates/MainLayout';
 import { useLanguage } from '@/hooks/useLanguage';
-import styles from './AuditLogsPage.module.css';
 
 /**
  * AuditLogsPage (Orchestrator).

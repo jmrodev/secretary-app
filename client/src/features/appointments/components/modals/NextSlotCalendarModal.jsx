@@ -33,12 +33,16 @@ export const NextSlotCalendarModal = ({
     const onLoadMoreRef = useRef(onLoadMore);
     const todayIso = toInputDate(getNow());
 
-    useEffect(() => {
+    // Reset to the days step whenever the modal is closed. Reset is applied
+    // during render so reopening always starts on the days list.
+    const [prevOpenState, setPrevOpenState] = React.useState(false);
+    if (prevOpenState !== isOpen) {
+        setPrevOpenState(isOpen);
         if (!isOpen) {
             setStep('days');
             setSelectedDate(null);
         }
-    }, [isOpen]);
+    }
 
     useEffect(() => { onLoadMoreRef.current = onLoadMore; }, [onLoadMore]);
 

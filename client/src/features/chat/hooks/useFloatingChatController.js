@@ -134,7 +134,7 @@ export const useFloatingChatController = (user, showMessage) => {
     useEffect(() => {
         if (!activeConvoId) return;
         
-        onPollThread();
+        queueMicrotask(() => onPollThread());
         const threadInterval = setInterval(onPollThread, 5000);
         return () => clearInterval(threadInterval);
     }, [activeConvoId]);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { api } from '@/api/axios';
 
 /**
@@ -92,12 +92,12 @@ export const useAppointments = () => {
         }
     };
 
-    const getMonthlyReport = async (month, year, doctorId = null) => {
+    const getMonthlyReport = useCallback(async (month, year, doctorId = null) => {
         const params = { month, year };
         if (doctorId) params.doctorId = doctorId;
         const response = await api.get('/appointments/month-report', { params });
         return response.data;
-    };
+    }, []);
 
     return {
         updateStatus,

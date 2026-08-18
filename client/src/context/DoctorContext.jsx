@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useFetch } from '@/hooks/useFetch';
 import { usePermissions } from '@/hooks/usePermissions';
 import { DoctorContext } from './DoctorContextDefinition';
@@ -46,12 +46,11 @@ export const DoctorProvider = ({ children }) => {
     }, [viewDoctorIdInternal, isDoctor, doctors, user]);
 
     // Doctor selection is mandatory: auto-select the first doctor when none is
-    // selected and the list has loaded. The last selection persists in localStorage.
-    useEffect(() => {
-        if (!viewDoctorId && doctors.length > 0) {
-            setViewDoctorId(String(doctors[0].id));
-        }
-    }, [viewDoctorId, doctors, setViewDoctorId]);
+    // selected and the list has loaded. Adjusted during render so the selection
+    // commits before the next paint (the setter also persists to localStorage).
+    if (!viewDoctorId && doctors.length > 0) {
+        setViewDoctorId(String(doctors[0].id));
+    }
 
     const currentDoctor = useMemo(() => 
         doctors.find(d => String(d.id) === String(viewDoctorId)) || null

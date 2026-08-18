@@ -18,7 +18,6 @@ export const MessageComposer = ({
     showEmptyError = false
 }) => {
     const { t } = useLanguage();
-    const charCount = body.length;
 
     return (
         <section className={styles['MessageComposer__message-composer']}>

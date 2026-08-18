@@ -25,7 +25,7 @@ function editReducer(state, action) {
 export const useRequirementManagerController = (user) => {
     const { showMessage } = useMessage();
     const { t } = useLanguage();
-    const { doubleConfirm, confirm } = useModal();
+    const { doubleConfirm } = useModal();
     const { canDeleteRequest } = usePermissions();
     const { searchTerm: globalSearchTerm } = useSearch();
 
@@ -80,9 +80,15 @@ export const useRequirementManagerController = (user) => {
     const totalCount = requestsHook.data?.meta?.totalCount || requests.length || 0;
     const recycleRequests = useMemo(() => recycleBinData.filter(item => item.entity_type === 'medical_request'), [recycleBinData]);
 
-    useEffect(() => {
+    // Reset to page 1 whenever the debounced search or filter changes. Applied
+    // during render so the new page commits before the fetch effect runs.
+    const [prevSearch, setPrevSearch] = useState(debouncedSearch);
+    const [prevFilter, setPrevFilter] = useState(filter);
+    if (prevSearch !== debouncedSearch || prevFilter !== filter) {
+        setPrevSearch(debouncedSearch);
+        setPrevFilter(filter);
         setCurrentPage(1);
-    }, [debouncedSearch, filter]);
+    }
 
     const setSelectedRequest = useCallback((req) => {
         setSelectedRequestInternal(req);

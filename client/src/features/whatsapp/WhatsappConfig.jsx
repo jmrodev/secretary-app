@@ -79,8 +79,11 @@ export const WhatsappConfig = ({ t }) => {
         }).catch(err => console.error("Error fetching doctors", err));
     }, []);
 
-    useEffect(() => {
-        if (!selectedDoctorId) return;
+    // Sync form fields when the selected doctor (or the doctors list identity)
+    // changes. Applied during render so the fields are correct on first paint.
+    const [prevSelection, setPrevSelection] = useState({ id: '', doctors: [] });
+    if (prevSelection.id !== selectedDoctorId || prevSelection.doctors !== doctors) {
+        setPrevSelection({ id: selectedDoctorId, doctors });
         const doctor = doctors.find(d => String(d.id) === selectedDoctorId);
         if (doctor) {
             setAiContext(doctor.gemini_context || BUSINESS_RULES_BASE);
@@ -88,7 +91,7 @@ export const WhatsappConfig = ({ t }) => {
             setHistoryLimit(doctor.gemini_history_limit || 3);
             setPendingTemplate(doctor.pending_response_template || '');
         }
-    }, [selectedDoctorId, doctors]);
+    }
 
     const handleSave = async () => {
         if (!selectedDoctorId) return;

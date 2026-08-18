@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import React, { Suspense, useMemo, useState } from 'react';
 import { useSystemConfigController } from '@/features/config/hooks/useSystemConfigController';
 import { getConfigSections, getConfigSection } from './registry/configRegistry';
 import { loadDefaultConfigSections } from './components/ConfigRegistryLoader';
@@ -16,9 +16,9 @@ import styles from './SystemConfigPage.module.css';
  * SettingsContent (Slot Renderer).
  * Renders the active configuration section based on the registry.
  */
-const SettingsContent = ({ activeTab, controller, registryLoaded }) => {
+const SettingsContent = ({ activeTab, controller }) => {
     const { t } = controller;
-    const section = useMemo(() => getConfigSection(activeTab), [activeTab, registryLoaded]);
+    const section = useMemo(() => getConfigSection(activeTab), [activeTab]);
 
     if (!section) return null;
 
@@ -52,21 +52,19 @@ export const SystemConfigPage = () => {
     const controller = useSystemConfigController();
     const { t, activeTab, qrModal, handlers } = controller;
 
-    const [registryLoaded, setRegistryLoaded] = useState(false);
-
-    // Initialize the registry once. 
-    // In a larger app, this would happen at the app level.
-    useEffect(() => {
+    // Initialize the registry once, lazily, so the first paint already shows
+    // the configured sections without an extra effect round-trip.
+    const [sections] = useState(() => {
         loadDefaultConfigSections(t);
-        setRegistryLoaded(true);
-    }, [t]);
+        return getConfigSections();
+    });
 
     const tabs = useMemo(() => 
-        getConfigSections().map(s => ({
+        sections.map(s => ({
             id: s.id,
             label: s.metadata.title,
             icon: s.metadata.icon
-        })), [registryLoaded]);
+        })), [sections]);
 
     return (
         <MainLayout wide flush title={t('config') || 'Configuración del Sistema'}>
@@ -82,7 +80,7 @@ export const SystemConfigPage = () => {
                 <section className={styles.SystemConfigPage__systemConfigMain}>
                     <div className={styles.SystemConfigPage__systemConfigContainer}>
                         <Suspense fallback={<Loading variant="centered" />}>
-                            <SettingsContent activeTab={activeTab} controller={controller} registryLoaded={registryLoaded} />
+                            <SettingsContent activeTab={activeTab} controller={controller} />
                         </Suspense>
 
                         <QRCodeModal

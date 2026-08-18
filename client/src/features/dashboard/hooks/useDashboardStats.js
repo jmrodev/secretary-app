@@ -51,6 +51,13 @@ export const useDashboardStats = (isStaff = false, doctor_id = '') => {
     const doctorsHook = useFetch('/users/doctors', { initialData: { success: true, data: [] } });
     const doctors = useMemo(() => doctorsHook.data?.data || [], [doctorsHook.data]);
 
+    // Stable refetch callbacks so the returned memo doesn't capture the hook
+    // objects (their identities change every render).
+    const refetchStats = statsHook.refetch;
+    const refetchFin = finStatsHook.refetch;
+    const refetchNew = newPatientsHook.refetch;
+    const refetchRequests = requestsHook.refetch;
+
     return useMemo(() => ({
         stats,
         financeStats,
@@ -60,15 +67,15 @@ export const useDashboardStats = (isStaff = false, doctor_id = '') => {
         loading: statsHook.loading || finStatsHook.loading || newPatientsHook.loading,
         fetched: statsHook.fetched && finStatsHook.fetched && doctorsHook.fetched,
         refetch: () => {
-            statsHook.refetch();
-            finStatsHook.refetch();
-            if (isStaff) newPatientsHook.refetch();
-            requestsHook.refetch();
+            refetchStats();
+            refetchFin();
+            if (isStaff) refetchNew();
+            refetchRequests();
         }
     }), [
         stats, financeStats, newPatientStats, pendingReqCount, doctors, 
         statsHook.loading, finStatsHook.loading, newPatientsHook.loading,
         statsHook.fetched, finStatsHook.fetched, doctorsHook.fetched,
-        statsHook.refetch, finStatsHook.refetch, newPatientsHook.refetch, requestsHook.refetch, isStaff
+        refetchStats, refetchFin, refetchNew, refetchRequests, isStaff
     ]);
 };
