@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json.schema.dev/oxlint.json",
+  "rules": {
+    "no-unused-vars": [
+      "warn",
+      {
+        "args": "none",
+        "ignoreRestSiblings": true,
+        "varsIgnorePattern": "^(React|use[A-Z].*|is[A-Z].*|set[A-Z].*|handle[A-Z].*|t|api|user|settings|navigate|components)$",
+        "argsIgnorePattern": "^_",
+        "caughtErrors": "none"
+      }
+    ]
+  }
+}
