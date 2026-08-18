@@ -1,9 +1,9 @@
 import React from 'react';
 import FormGroup from '@/components/molecules/FormGroup';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import CurrencyInput from '@/components/atoms/CurrencyInput';
-import AutoTextarea from '@/components/atoms/AutoTextarea';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { CurrencyInput } from '@/components/atoms/CurrencyInput';
+import { AutoTextarea } from '@/components/atoms/AutoTextarea';
 import styles from './DoctorTariffsForm.module.css';
 
 export const DoctorTariffsForm = ({ data, settings, onChange, t }) => {

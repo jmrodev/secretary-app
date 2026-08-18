@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Card.module.css';
 
-const Card = ({ children, className = '', title = '', footer = null, noPadding = false, as: Component = 'section' }) => {
+export const Card = ({ children, className = '', title = '', footer = null, noPadding = false, as: Component = 'section' }) => {
     const combinedClasses = [
         styles.root,
         className
@@ -29,5 +29,3 @@ const Card = ({ children, className = '', title = '', footer = null, noPadding =
         </Component>
     );
 };
-
-export default Card;

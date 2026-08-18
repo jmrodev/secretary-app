@@ -1,7 +1,7 @@
 import React from 'react';
 import api from '@/api/axios';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { useMessage } from '@/context/MessageContext';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import { useWhatsappChatController } from '@/features/patients/hooks/useWhatsappChatController';

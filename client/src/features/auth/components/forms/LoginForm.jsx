@@ -1,11 +1,11 @@
 import React from 'react';
 import { useLoginController } from '@/features/auth/hooks/useLoginController';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
 import FormGroup from '@/components/molecules/FormGroup';
-import Icon from '@/components/atoms/Icon';
-import Loading from '@/components/atoms/Loading';
-import Card from '@/components/atoms/Card';
+import { Icon } from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
+import { Card } from '@/components/atoms/Card';
 import styles from './LoginForm.module.css';
 
 /**

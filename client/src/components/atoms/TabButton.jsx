@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import styles from './TabButton.module.css';
 
-const TabButton = ({
+export const TabButton = ({
     children,
     isActive,
     onClick,
@@ -31,5 +31,3 @@ const TabButton = ({
         </Button>
     );
 };
-
-export default TabButton;

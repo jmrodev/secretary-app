@@ -1,6 +1,6 @@
 import React from 'react';
-import Card from '@/components/atoms/Card';
-import Icon from '@/components/atoms/Icon';
+import { Card } from '@/components/atoms/Card';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './FinanceStatsCards.module.css';
 
 /**

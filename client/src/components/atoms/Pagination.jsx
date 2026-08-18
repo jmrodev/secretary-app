@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './Pagination.module.css';
 
 /**
@@ -14,7 +14,7 @@ import styles from './Pagination.module.css';
  * @param {number}   [totalCount]     - Total item count (shows "X of Y" when provided with itemsShowing)
  * @param {number}   [itemsShowing]   - Items visible on current page
  */
-const Pagination = ({ currentPage, totalPages, onPageChange, t, totalCount, itemsShowing }) => {
+export const Pagination = ({ currentPage, totalPages, onPageChange, t, totalCount, itemsShowing }) => {
     if (!totalCount && totalPages <= 1) return null;
 
     const pages = [];
@@ -90,5 +90,3 @@ const Pagination = ({ currentPage, totalPages, onPageChange, t, totalCount, item
         </div>
     );
 };
-
-export default Pagination;

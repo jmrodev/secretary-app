@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import Select from '@/components/atoms/Select';
-import Input from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
 import styles from './SegmentSelector.module.css';
 

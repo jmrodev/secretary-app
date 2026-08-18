@@ -1,7 +1,7 @@
 import React from 'react';
-import Input from '@/components/atoms/Input';
-import CurrencyInput from '@/components/atoms/CurrencyInput';
-import Icon from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { CurrencyInput } from '@/components/atoms/CurrencyInput';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './PatientAdminFields.module.css';
 
 const EMPTY_ARRAY = [];

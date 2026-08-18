@@ -3,9 +3,9 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useHolidays } from '@/features/appointments/hooks/useHolidays';
 import { MainLayout } from '@/components/templates/MainLayout';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { HolidayList } from '@/features/appointments/components/sections/HolidayList';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
 import styles from './HolidaysPage.module.css';
 
 export const HolidaysPage = () => {

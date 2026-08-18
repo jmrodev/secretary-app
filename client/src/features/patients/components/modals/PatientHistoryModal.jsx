@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Modal from '@/components/molecules/Modal';
-import TabButton from '@/components/atoms/TabButton';
+import { TabButton } from '@/components/atoms/TabButton';
 import { useLanguage } from '@/hooks/useLanguage';
 import { usePatientHistoryController } from '@/features/patients/hooks/usePatientHistoryController';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
 import styles from './PatientHistoryModal.module.css';
 

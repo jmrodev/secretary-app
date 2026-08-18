@@ -1,8 +1,8 @@
 
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
 import inputStyles from '@/components/atoms/Input.module.css';
 import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
 import styles from './PrescriptionItemsList.module.css';

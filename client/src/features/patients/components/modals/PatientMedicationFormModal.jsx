@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Modal from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import api from '@/api/axios';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PatientMedicationFormModal.module.css';

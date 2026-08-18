@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
 import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/core/stringUtils';

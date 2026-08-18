@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './MedicationTag.module.css';
 
 /**
@@ -10,7 +10,7 @@ import styles from './MedicationTag.module.css';
  * @param {function} onRemove - Callback when remove button is clicked
  * @param {string} className - Additional CSS classes
  */
-const MedicationTag = ({ label, onRemove, className = '' }) => {
+export const MedicationTag = ({ label, onRemove, className = '' }) => {
     return (
         <span className={`${styles.root} ${className}`}>
             <span className={`${styles.label}`}>{label}</span>
@@ -24,5 +24,3 @@ const MedicationTag = ({ label, onRemove, className = '' }) => {
         </span>
     );
 };
-
-export default MedicationTag;

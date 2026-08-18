@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Loading from '@/components/atoms/Loading';
-import Icon from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
 import { DoctorCard } from '@/features/doctors/components/cards/DoctorCard';
 import { DoctorEditModal } from '@/features/doctors/components/modals/DoctorEditModal';
 import styles from './DoctorsManager.module.css';

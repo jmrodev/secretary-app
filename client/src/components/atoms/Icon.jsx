@@ -7,7 +7,7 @@ import styles from './Icon.module.css';
  * Uses Material Symbols Outlined.
  * Supports semantic names from ICONS configuration.
  */
-const Icon = ({
+export const Icon = ({
     name,
     className = '',
     size = 'inherit',
@@ -62,5 +62,3 @@ const Icon = ({
         </span>
     );
 };
-
-export default Icon;

@@ -13,7 +13,7 @@ import styles from './Badge.module.css';
  * @param {number} count - For notification mode: the count to display
  * @param {string} position - For notification mode: 'top-right', 'top-left', 'bottom-right', 'bottom-left'
  */
-const Badge = ({
+export const Badge = ({
     children,
     variant = 'default',
     className = '',
@@ -75,5 +75,5 @@ const Badge = ({
     );
 };
 
-export default Badge;
+
 

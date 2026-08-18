@@ -1,7 +1,7 @@
 import React from 'react';
 import api from '@/api/axios';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './WhatsappBroadcast.module.css';
 
 const FILTERS = ['last_12_months', 'all'];

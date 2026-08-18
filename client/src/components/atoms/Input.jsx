@@ -7,7 +7,7 @@ import styles from './Input.module.css';
  * Accepts all native HTML input props via `...rest`
  * (checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.)
  */
-const Input = ({
+export const Input = ({
     type = 'text',
     value,
     onChange,
@@ -70,5 +70,3 @@ const Input = ({
         />
     );
 };
-
-export default Input;

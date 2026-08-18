@@ -1,6 +1,6 @@
 import React from 'react';
-import Badge from '@/components/atoms/Badge';
-import Icon from '@/components/atoms/Icon';
+import { Badge } from '@/components/atoms/Badge';
+import { Icon } from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/format';
 import styles from './AppointmentHeader.module.css';
 

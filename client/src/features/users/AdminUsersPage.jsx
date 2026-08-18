@@ -6,7 +6,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { MainLayout } from '@/components/templates/MainLayout';
 import { UserManagement } from '@/features/users/index';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './AdminUsersPage.module.css';
 
 /**

@@ -1,12 +1,12 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
-import Input from '@/components/atoms/Input';
-import Switch from '@/components/atoms/Switch';
+import { Input } from '@/components/atoms/Input';
+import { Switch } from '@/components/atoms/Switch';
 import TabNav from '@/components/molecules/TabNav';
-import TabButton from '@/components/atoms/TabButton';
+import { TabButton } from '@/components/atoms/TabButton';
 import { DoctorTariffsForm } from '@/features/doctors/components/sections/DoctorTariffsForm';
 import { DoctorGoogleSettings } from '@/features/doctors/components/sections/DoctorGoogleSettings';
 import { DoctorScheduleSettings } from '@/features/doctors/components/sections/DoctorScheduleSettings';

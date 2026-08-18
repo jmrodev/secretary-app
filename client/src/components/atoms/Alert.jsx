@@ -4,7 +4,7 @@ import styles from './Alert.module.css';
 /**
  * Alert Atom follows Atomic Design & BEM.
  */
-const Alert = ({
+export const Alert = ({
     variant = 'info',
     title,
     message,
@@ -22,5 +22,3 @@ const Alert = ({
         </div>
     );
 };
-
-export default Alert;

@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from '../modals/NextSlotCalendarModal.module.css';
 
 export const DayListItem = ({ dayName, dateStr: _dateStr, dateLabel, isToday, inCount, outCount, includeOutOfHours, onClick }) => {

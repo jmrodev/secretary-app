@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '@/api/axios';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import styles from './WhatsappConfig.module.css';
 

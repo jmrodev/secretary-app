@@ -1,7 +1,7 @@
 import React from 'react';
-import Select from '@/components/atoms/Select';
-import Input from '@/components/atoms/Input';
-import Icon from '@/components/atoms/Icon';
+import { Select } from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
 import { AppointmentTypeSelector } from '../forms/AppointmentTypeSelector';
 import { AppointmentPatientSection } from './AppointmentPatientSection';
 import styles from '../modals/AppointmentFormModal.module.css';

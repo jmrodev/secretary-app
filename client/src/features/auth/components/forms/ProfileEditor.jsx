@@ -1,9 +1,9 @@
 import React from 'react';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import FormGroup from '@/components/molecules/FormGroup';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
 import styles from './ProfileEditor.module.css';
 
 /**

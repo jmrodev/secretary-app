@@ -7,7 +7,7 @@ import styles from './LanguageSelector.module.css';
  * Removed Tailwind utility classes.
  * Receives language state and toggle function via props.
  */
-const LanguageSelector = ({ currentLanguage, onToggleLanguage, switchTitle }) => {
+export const LanguageSelector = ({ currentLanguage, onToggleLanguage, switchTitle }) => {
     return (
         <div className={`${styles.root}`}>
             <Button
@@ -26,5 +26,3 @@ const LanguageSelector = ({ currentLanguage, onToggleLanguage, switchTitle }) =>
         </div>
     );
 };
-
-export default LanguageSelector;

@@ -1,7 +1,7 @@
 import React from 'react';
-import Pagination from '@/components/atoms/Pagination';
-import TabButton from '@/components/atoms/TabButton';
-import Icon from '@/components/atoms/Icon';
+import { Pagination } from '@/components/atoms/Pagination';
+import { TabButton } from '@/components/atoms/TabButton';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { RequirementItem } from '@/features/medical_documents/components/sections/RequirementItem';
 import managerStyles from '@/features/medical_documents/components/ui/MedicalRequirementManager.module.css';

@@ -5,7 +5,7 @@ import styles from './Switch.module.css';
  * Switch Atom follows Atomic Design & BEM.
  * Removed Tailwind utility classes.
  */
-const Switch = ({ id, checked, onChange, disabled, label, className = '' }) => {
+export const Switch = ({ id, checked, onChange, disabled, label, className = '' }) => {
     const baseClass = styles.root;
     const disabledClass = disabled ? `${baseClass}--disabled` : '';
 
@@ -30,5 +30,3 @@ const Switch = ({ id, checked, onChange, disabled, label, className = '' }) => {
         </label>
     );
 };
-
-export default Switch;

@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import styles from './PatientFinancialSidebar.module.css';

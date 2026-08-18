@@ -3,7 +3,7 @@ import styles from './Select.module.css';
 
 const EMPTY_ARRAY = [];
 
-const Select = ({
+export const Select = ({
     value,
     onChange,
     options = EMPTY_ARRAY,
@@ -51,5 +51,3 @@ const Select = ({
         </select>
     );
 };
-
-export default Select;

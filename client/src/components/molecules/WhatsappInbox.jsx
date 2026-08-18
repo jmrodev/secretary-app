@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { formatTime } from '@/utils/core/dateUtils';
 import styles from '../organisms/GlobalWhatsappMessenger.module.css';

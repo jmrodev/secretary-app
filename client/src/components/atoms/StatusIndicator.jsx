@@ -4,7 +4,7 @@ import styles from './StatusIndicator.module.css';
 /**
  * StatusIndicator Atom follows Atomic Design & BEM.
  */
-const StatusIndicator = ({ status, label, className = '' }) => {
+export const StatusIndicator = ({ status, label, className = '' }) => {
     const baseClass = styles.root;
     const statusClass = `${baseClass}--${status}`;
 
@@ -15,5 +15,3 @@ const StatusIndicator = ({ status, label, className = '' }) => {
         </div>
     );
 };
-
-export default StatusIndicator;

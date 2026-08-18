@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './PrescriptionHabitualMeds.module.css';
 
 const QuickSelectTable = ({ meds, label, items, onSelect, t }) => {

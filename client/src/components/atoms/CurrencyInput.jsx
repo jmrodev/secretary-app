@@ -16,7 +16,7 @@ const format = (val) => {
  * CurrencyInput Atom follows Atomic Design & BEM.
  * Reuses the 'input' base class from design-system.
  */
-const CurrencyInput = ({
+export const CurrencyInput = ({
     value,
     onChange,
     placeholder,
@@ -74,5 +74,3 @@ const CurrencyInput = ({
         />
     );
 };
-
-export default CurrencyInput;

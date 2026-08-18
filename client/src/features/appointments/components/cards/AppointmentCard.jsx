@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import Badge from '@/components/atoms/Badge';
-import Icon from '@/components/atoms/Icon';
+import { Badge } from '@/components/atoms/Badge';
+import { Icon } from '@/components/atoms/Icon';
 import { formatDate, formatTime, formatDateTimeLong } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
 import styles from './AppointmentCard.module.css';

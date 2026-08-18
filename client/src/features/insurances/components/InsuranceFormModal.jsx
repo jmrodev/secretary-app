@@ -1,9 +1,9 @@
 import React from 'react';
 import Modal from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import Icon from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { Icon } from '@/components/atoms/Icon';
 import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import { useLanguage } from '@/hooks/useLanguage';

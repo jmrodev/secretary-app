@@ -1,7 +1,7 @@
 import React from 'react';
 import TabNav from '@/components/molecules/TabNav';
-import TabButton from '@/components/atoms/TabButton';
-import Icon from '@/components/atoms/Icon';
+import { TabButton } from '@/components/atoms/TabButton';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './FeatureToolbar.module.css';
 
 const EMPTY_ARRAY = [];

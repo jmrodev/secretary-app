@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Badge from '@/components/atoms/Badge';
-import Icon from '@/components/atoms/Icon';
+import { Badge } from '@/components/atoms/Badge';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './DoctorGoogleSettings.module.css';
 
 export const DoctorGoogleSettings = ({

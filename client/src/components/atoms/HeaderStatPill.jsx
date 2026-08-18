@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './HeaderStatPill.module.css';
 
 /**
@@ -24,5 +24,3 @@ export const HeaderStatPill = ({ icon, value, title, tone }) => {
         </div>
     );
 };
-
-export default HeaderStatPill;

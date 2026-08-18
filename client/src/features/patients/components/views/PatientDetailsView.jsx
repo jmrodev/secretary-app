@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { usePatientDetailsController } from '@/features/patients/hooks/usePatientDetailsController';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
 import api from '@/api/axios';
 

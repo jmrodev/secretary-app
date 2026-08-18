@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
-import Loading from '@/components/atoms/Loading';
+import { Loading } from '@/components/atoms/Loading';
 import styles from './PatientRecycleBin.module.css';
 
 const EMPTY_ARRAY = [];

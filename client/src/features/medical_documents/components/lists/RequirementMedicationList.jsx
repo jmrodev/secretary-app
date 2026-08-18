@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { MedicationCard } from '@/features/medical_documents/components/sections/MedicationCard';
 import { calculateDuration } from '@/features/medical_documents/utils/medicationHelpers';
 

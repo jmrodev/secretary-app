@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Icon from '@/components/atoms/Icon';
-import Loading from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
 import { Button } from '@/components/atoms/Button';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';

@@ -6,12 +6,12 @@ import { usePermissions } from '@/hooks/usePermissions';
 // Atoms (Shared)
 import { MainLayout } from '@/components/templates/MainLayout';
 import { Button } from '@/components/atoms/Button';
-import Loading from '@/components/atoms/Loading';
-import Icon from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
 import { QRCodeModal } from '@/features/patients/components/modals/QRCodeModal';
-import Pagination from '@/components/atoms/Pagination';
+import { Pagination } from '@/components/atoms/Pagination';
 
 import FeatureToolbar from '@/components/organisms/FeatureToolbar';
 import SearchBar from '@/components/ui/SearchBar';

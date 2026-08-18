@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from './Button';
-import Icon from './Icon';
+import { Icon } from './Icon';
 import styles from './ThemeToggle.module.css';
 
-const ThemeToggle = ({ className = '' }) => {
+export const ThemeToggle = ({ className = '' }) => {
     const themes = ['dark', 'dim', 'light'];
     const [theme, setTheme] = useState(() => {
         if (typeof window !== 'undefined' && window.localStorage) {
@@ -63,5 +63,3 @@ const ThemeToggle = ({ className = '' }) => {
         </Button>
     );
 };
-
-export default ThemeToggle;

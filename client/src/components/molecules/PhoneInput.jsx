@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
 import styles from './PhoneInput.module.css';
 
 const COUNTRY_OPTIONS = [

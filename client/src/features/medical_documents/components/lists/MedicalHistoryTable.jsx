@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import Pagination from '@/components/atoms/Pagination';
+import { Pagination } from '@/components/atoms/Pagination';
 import { useAuth } from '@/features/auth';
 import { timeAgo, formatDate } from '@/utils/core/dateUtils';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './MedicalHistoryTable.module.css';
 
 export const MedicalHistoryTable = ({ 

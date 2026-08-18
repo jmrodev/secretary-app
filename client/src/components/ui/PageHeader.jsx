@@ -1,7 +1,7 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
-import LiveClock from '@/components/atoms/LiveClock';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { LiveClock } from '@/components/atoms/LiveClock';
 import styles from './PageHeader.module.css';
 
 /**

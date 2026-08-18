@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useRegisterController } from '@/features/auth/hooks/useRegisterController';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
 import FormGroup from '@/components/molecules/FormGroup';
 import styles from './RegisterForm.module.css';
 

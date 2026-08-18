@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
-import Loading from '@/components/atoms/Loading';
+import { Loading } from '@/components/atoms/Loading';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import styles from './PatientHistoryView.module.css';
 

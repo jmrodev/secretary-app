@@ -10,7 +10,7 @@ import styles from './Loading.module.css';
  * @param {string} text - Optional loading text
  * @param {string} className - Additional classes
  */
-const Loading = ({
+export const Loading = ({
     variant = 'centered',
     size = 'md',
     text,
@@ -27,5 +27,3 @@ const Loading = ({
         </div>
     );
 };
-
-export default Loading;

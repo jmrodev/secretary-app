@@ -1,5 +1,5 @@
 import React from 'react';
-import MedicationTag from '@/components/atoms/MedicationTag';
+import { MedicationTag } from '@/components/atoms/MedicationTag';
 import styles from './MedicationList.module.css';
 
 /**

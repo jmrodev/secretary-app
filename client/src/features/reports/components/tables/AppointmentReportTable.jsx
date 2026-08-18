@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { parseDate } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
 import styles from './AppointmentReportTable.module.css';
