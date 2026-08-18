@@ -67,3 +67,124 @@ describe('TransactionRepository - Doctor financial balance and withdrawals', () 
         expect(result[0].balance).toBe(12000);
     });
 });
+
+describe('TransactionRepository - Debt lifecycle helpers (shared conn)', () => {
+    let mockPool;
+    let repository;
+
+    beforeEach(() => {
+        mockPool = {
+            query: jest.fn(),
+            getConnection: jest.fn().mockResolvedValue({
+                query: jest.fn().mockResolvedValue([]),
+                release: jest.fn()
+            })
+        };
+        repository = TransactionRepository(mockPool);
+        jest.clearAllMocks();
+    });
+
+    it('findByAppointmentId should select transactions by appointment_id on the shared conn', async () => {
+        const mockConn = {
+            query: jest.fn().mockResolvedValue([
+                { id: 10, appointment_id: 7, status: 'pending' }
+            ]),
+            release: jest.fn()
+        };
+
+        const result = await repository.findByAppointmentId(7, mockConn);
+
+        expect(mockConn.query).toHaveBeenCalledWith(
+            expect.stringContaining("SELECT * FROM transactions WHERE appointment_id = ?"),
+            [7]
+        );
+        expect(mockConn.release).not.toHaveBeenCalled();
+        expect(result).toHaveLength(1);
+        expect(result[0].id).toBe(10);
+    });
+
+    it('findByRequestId should select transactions by request_id on the shared conn', async () => {
+        const mockConn = {
+            query: jest.fn().mockResolvedValue([
+                { id: 11, request_id: 3, status: 'pending' }
+            ]),
+            release: jest.fn()
+        };
+
+        const result = await repository.findByRequestId(3, mockConn);
+
+        expect(mockConn.query).toHaveBeenCalledWith(
+            expect.stringContaining("SELECT * FROM transactions WHERE request_id = ?"),
+            [3]
+        );
+        expect(mockConn.release).not.toHaveBeenCalled();
+        expect(result).toHaveLength(1);
+        expect(result[0].request_id).toBe(3);
+    });
+
+    it('detachAndLabel should null FKs, prefix label and guard idempotency with NOT LIKE', async () => {
+        const mockConn = {
+            query: jest.fn().mockResolvedValue({ affectedRows: 2 }),
+            release: jest.fn()
+        };
+        const ids = [12, 13];
+        const label = 'Deuda (Turno Eliminado)';
+
+        const affected = await repository.detachAndLabel(ids, label, mockConn);
+
+        const [sql, params] = mockConn.query.mock.calls[0];
+        expect(sql).toContain("UPDATE transactions");
+        expect(sql).toContain("SET appointment_id = NULL, request_id = NULL");
+        expect(sql).toContain("description = CONCAT(?, ': ', COALESCE(description, ''))");
+        expect(sql).toContain("WHERE id IN (?)");
+        expect(sql).toContain("description NOT LIKE CONCAT(?, ':%')");
+        expect(params).toEqual([label, ids, label]);
+        expect(mockConn.release).not.toHaveBeenCalled();
+        expect(affected).toBe(2);
+    });
+
+    it('deletePendingByAppointmentId should delete only pending transactions for the appointment', async () => {
+        const mockConn = {
+            query: jest.fn().mockResolvedValue({ affectedRows: 1 }),
+            release: jest.fn()
+        };
+
+        const affected = await repository.deletePendingByAppointmentId(9, mockConn);
+
+        expect(mockConn.query).toHaveBeenCalledWith(
+            expect.stringContaining("DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'"),
+            [9]
+        );
+        expect(mockConn.release).not.toHaveBeenCalled();
+        expect(affected).toBe(1);
+    });
+
+    it('deletePendingByRequestId should delete only pending transactions for the request', async () => {
+        const mockConn = {
+            query: jest.fn().mockResolvedValue({ affectedRows: 1 }),
+            release: jest.fn()
+        };
+
+        const affected = await repository.deletePendingByRequestId(5, mockConn);
+
+        expect(mockConn.query).toHaveBeenCalledWith(
+            expect.stringContaining("DELETE FROM transactions WHERE request_id = ? AND status = 'pending'"),
+            [5]
+        );
+        expect(mockConn.release).not.toHaveBeenCalled();
+        expect(affected).toBe(1);
+    });
+
+    it('debt lifecycle helpers should acquire and release their own conn when none is shared', async () => {
+        const mockConn = {
+            query: jest.fn().mockResolvedValue([]),
+            release: jest.fn()
+        };
+        mockPool.getConnection.mockResolvedValue(mockConn);
+
+        await repository.findByAppointmentId(7);
+
+        expect(mockPool.getConnection).toHaveBeenCalled();
+        expect(mockConn.release).toHaveBeenCalled();
+    });
+});
