@@ -8,6 +8,20 @@ import { capitalizeFirst } from '@/utils/core/stringUtils';
 import { formatCurrency } from '@/utils/core/formatUtils';
 
 /**
+ * Fills a template string with context values.
+ * Replaces placeholders like `{key}` with corresponding values from context object.
+ */
+const fillTemplate = (template, context) => {
+    if (!template) return '';
+    let result = template;
+    Object.entries(context).forEach(([key, value]) => {
+        const regex = new RegExp(`{[\\s]*${key}[\\s]*}`, 'gi');
+        result = result.replace(regex, value);
+    });
+    return result;
+};
+
+/**
  * Hook to manage the appointment booking lifecycle.
  * Handles form state, validation, saving, zombie cleanup, and confirmation messaging.
  */
@@ -78,16 +92,6 @@ export const useAppointmentBooking = (doctors) => {
             secretary_name: user?.name || 'Secretaría'
         };
     }, [selectedPatientData, date, doctors, selectedDoctor, type, settings.clinic_address, user?.name]);
-
-    const fillTemplate = (template, context) => {
-        if (!template) return '';
-        let result = template;
-        Object.entries(context).forEach(([key, value]) => {
-            const regex = new RegExp(`{[\\s]*${key}[\\s]*}`, 'gi');
-            result = result.replace(regex, value);
-        });
-        return result;
-    };
 
     const handleMetaSend = async (phone, context) => {
         const templateName = settings.meta_confirmation_template_name;

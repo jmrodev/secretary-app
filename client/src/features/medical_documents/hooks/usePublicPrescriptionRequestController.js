@@ -48,16 +48,22 @@ export const usePublicPrescriptionRequestController = () => {
     const { loading, error, success, patientInfo, selectedMeds, notes, searchTerm, searchResults, searching } = realState;
 
     useEffect(() => {
+        let isMounted = true;
         const fetchData = async () => {
             realDispatch({ type: 'START_FETCH' });
             try {
                 const res = await api.get(`/medical/public/prescription-request/${token}`);
-                realDispatch({ type: 'FETCH_SUCCESS', payload: res.data });
+                if (isMounted) {
+                    realDispatch({ type: 'FETCH_SUCCESS', payload: res.data });
+                }
             } catch (err) {
-                realDispatch({ type: 'FETCH_ERROR', payload: err.response?.data?.error || "El enlace es inválido o ha expirado." });
+                if (isMounted) {
+                    realDispatch({ type: 'FETCH_ERROR', payload: err.response?.data?.error || "El enlace es inválido o ha expirado." });
+                }
             }
         };
         fetchData();
+        return () => { isMounted = false; };
     }, [token]);
 
     useEffect(() => {

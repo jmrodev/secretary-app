@@ -9,10 +9,13 @@
     display: flex;
     align-items: center;
     gap: 0.85rem;
+    width: 100%;
     padding: 0.5rem 1rem;
     background: var(--dashboard-card-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
+    font-family: inherit;
+    text-align: left;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -98,8 +101,13 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    width: 100%;
     padding: 0.7rem 1rem;
+    border: none;
+    background: none;
     border-radius: var(--radius-sm);
+    font-family: inherit;
+    text-align: left;
     color: var(--text-secondary);
     font-size: 0.9rem;
     font-weight: 600;

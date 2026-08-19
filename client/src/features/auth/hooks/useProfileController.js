@@ -23,6 +23,7 @@ export const useProfileController = () => {
         dni: '',
     });
 
+    // react-doctor-disable-next-line react-doctor/no-set-state-after-await-in-effect
     useEffect(() => {
         let isCurrent = true;
         const fetchProfile = async () => {

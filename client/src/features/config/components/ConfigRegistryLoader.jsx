@@ -33,13 +33,15 @@ import { useInstitutionsController } from '@/features/institutions';
 
 const GeneralSettingsWrapper = ({ controller }) => {
     const { user, settings, handlers } = controller;
+    // Ensure settings is a plain object to avoid "Cannot convert object to primitive value" errors
+    const safeSettings = structuredClone(settings);
     return (
         <GeneralSettings 
             user={user} 
-            settings={settings} 
+            settings={safeSettings} 
             updateSetting={handlers.updateSetting}
             onShowQr={() => {
-                const url = settings.staff_base_url || window.location.origin;
+                const url = safeSettings.staff_base_url || window.location.origin;
                 handlers.setQrModal({ open: true, url, expiry: null });
             }}
         />

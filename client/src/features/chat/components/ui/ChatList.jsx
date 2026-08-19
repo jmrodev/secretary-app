@@ -20,7 +20,7 @@ export const ChatList = ({
     const filteredConvos = conversations.filter(c =>
         (c.other_display_name || '').toLowerCase().includes(q) ||
         (c.message || '').toLowerCase().includes(q) ||
-        (c.other_phone || '').includes(q)
+        (c.other_phone || '').toLowerCase().includes(q)
     );
 
     const existingUserIds = new Set(conversations.map(c => c.other_user_id));
