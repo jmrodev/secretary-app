@@ -11,6 +11,27 @@ import { ChatList } from '@/features/chat/components/ui/ChatList';
 
 import styles from './FloatingChat.module.css';
 
+const formatMessageTime = (dateString = '') => formatTime(dateString);
+
+const renderTicks = (status) => {
+    if (status === 0) return (
+        <div className={`${styles.FloatingChat__ticks}`}>
+            <Icon name="check" size="0.75rem" className={`${styles.FloatingChat__tickGrey}`} />
+        </div>
+    );
+    if (status === 1) return (
+        <div className={`${styles.FloatingChat__ticks}`}>
+            <Icon name="done_all" size="0.75rem" className={`${styles.FloatingChat__tickGrey}`} />
+        </div>
+    );
+    if (status === 2) return (
+        <div className={`${styles.FloatingChat__ticks}`}>
+            <Icon name="done_all" size="0.75rem" className={`${styles.FloatingChat__tickBlue}`} />
+        </div>
+    );
+    return null;
+};
+
 /**
  * FloatingChat Organism.
  * Minimized chat widget for quick messaging between users.
@@ -37,35 +58,6 @@ export const FloatingChat = () => {
         startNewChat
     } = useFloatingChatController(user, showMessage);
 
-    /**
-     * Helper to format timestamps for message bubbles.
-     */
-    const formatMessageTime = (dateString = '') => {
-        return formatTime(dateString);
-    };
-
-    /**
-     * Renders WhatsApp-style read status ticks.
-     */
-    const renderTicks = (status) => {
-        if (status === 0) return (
-            <div className={`${styles.FloatingChat__ticks}`}>
-                <Icon name="check" size="0.75rem" className={`${styles.FloatingChat__tickGrey}`} />
-            </div>
-        );
-        if (status === 1) return (
-            <div className={`${styles.FloatingChat__ticks}`}>
-                <Icon name="done_all" size="0.75rem" className={`${styles.FloatingChat__tickGrey}`} />
-            </div>
-        );
-        if (status === 2) return (
-            <div className={`${styles.FloatingChat__ticks}`}>
-                <Icon name="done_all" size="0.75rem" className={`${styles.FloatingChat__tickBlue}`} />
-            </div>
-        );
-        return null;
-    };
-
     if (!user || user.role === 'patient') return null;
 
     const baseClass = styles.FloatingChat__root;
@@ -75,34 +67,18 @@ export const FloatingChat = () => {
             {isOpen ? (
                 <div className={`${baseClass}__window animate-fade-in`}>
                     <div 
-                        className={`${baseClass}__header`} 
-                        onClick={() => !selectedConvo && closeChat()}
-                        role="button"
-                        tabIndex={0}
-                        onKeyDown={(e) => {
-                            if ((e.key === 'Enter' || e.key === ' ') && !selectedConvo) {
-                                e.preventDefault();
-                                closeChat();
-                            }
-                        }}
+                        className={`${baseClass}__header`}
                     >
                         <h4 className={`${baseClass}__title`}>
                             {selectedConvo ? (
-                                <span 
-                                    className={`${baseClass}__back`} 
+                                <button
+                                    type="button"
+                                    className={`${baseClass}__back`}
                                     onClick={(e) => { e.stopPropagation(); backToList(); }}
-                                    role="button"
-                                    tabIndex={0}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
-                                            e.preventDefault();
-                                            backToList();
-                                        }
-                                    }}
                                 >
                                     <Icon name="arrow_back" size="1.1rem" />
                                     {selectedConvo.other_display_name}
-                                </span>
+                                </button>
                             ) : (
                                 <>
                                     <Icon name="chat" size="1.1rem" />
@@ -149,22 +125,15 @@ export const FloatingChat = () => {
                     </div>
                 </div>
             ) : (
-                <div 
-                    className={`${baseClass}__minimized`} 
+                <button
+                    type="button"
+                    className={`${baseClass}__minimized`}
                     onClick={toggleChat}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            toggleChat();
-                        }
-                    }}
                 >
                     <Icon name="chat" size="1.1rem" />
                     <span>Mensajes</span>
                     {unreadCount > 0 && <span className={`${baseClass}__badge`}>{unreadCount}</span>}
-                </div>
+                </button>
             )}
         </div>
     );

@@ -239,6 +239,7 @@ export const DocumentViewerModal = ({
                                 src={fileUrl}
                                 title={fileName}
                                 className={styles.DocumentViewerModal__pdfIframe}
+                                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
                             />
                         </div>
                     )}

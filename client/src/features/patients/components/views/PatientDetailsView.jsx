@@ -152,6 +152,7 @@ export const PatientDetailsView = ({
 
                 <div className={`${styles.PatientDetailsView__tabsNav}`}>
                     <button 
+                        type="button"
                         className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'general' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('general')}
                     >
@@ -159,6 +160,7 @@ export const PatientDetailsView = ({
                         {t('general_info') || 'General'}
                     </button>
                     <button 
+                        type="button"
                         className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'history' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('history')}
                     >
@@ -166,6 +168,7 @@ export const PatientDetailsView = ({
                         {t('medical_history') || 'Historia'}
                     </button>
                     <button 
+                        type="button"
                         className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'finances' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('finances')}
                     >
@@ -173,6 +176,7 @@ export const PatientDetailsView = ({
                         {t('finances') || 'Finanzas'}
                     </button>
                     <button 
+                        type="button"
                         className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'medications' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('medications')}
                     >
@@ -180,6 +184,7 @@ export const PatientDetailsView = ({
                         {t('prescriptions') || 'Recetas'}
                     </button>
                     <button 
+                        type="button"
                         className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'documents' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('documents')}
                     >
@@ -187,6 +192,7 @@ export const PatientDetailsView = ({
                         {t('documents') || 'Documentos'}
                     </button>
                     <button 
+                        type="button"
                         className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'chat' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('chat')}
                     >
@@ -257,7 +263,7 @@ export const PatientDetailsView = ({
                                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
                                                 {chronicMeds.map((m, i) => (
                                                     <div 
-                                                        key={m.id || `med-${i}`} 
+                                                        key={m.id || `med-${m.name}-${m.dose || ''}`} 
                                                         style={{ 
                                                             padding: '1rem', 
                                                             background: 'var(--gray-100, #f8f9fa)', 
@@ -372,7 +378,7 @@ export const PatientDetailsView = ({
                                                         const actualFileUrl = r.file_url || r.pdf_url;
                                                         const medText = r.request_note || r.medications || r.doctor_note || '—';
                                                         return (
-                                                            <tr key={r.id || `req-${i}`} style={{ borderBottom: '1px solid var(--gray-100)' }}>
+                                                            <tr key={r.id || `req-${r.doctor_name || r.created_at || ''}`} style={{ borderBottom: '1px solid var(--gray-100)' }}>
                                                                 <td style={{ padding: '0.75rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
                                                                     {formatDate(r.created_at || r.appointment_date)}
                                                                 </td>
@@ -581,7 +587,7 @@ export const PatientDetailsView = ({
                                         .split('\n')
                                         .filter(line => line.trim())
                                         .map((line, idx) => (
-                                            <div key={idx} style={{ padding: '0.4rem 0', borderBottom: idx < (selectedRxDetail.request_note || selectedRxDetail.medications || '').split('\n').length - 1 ? '1px dashed var(--gray-300)' : 'none', fontWeight: 600, color: 'var(--gray-800)' }}>
+                                            <div key={line.trim()} style={{ padding: '0.4rem 0', borderBottom: idx < (selectedRxDetail.request_note || selectedRxDetail.medications || '').split('\n').length - 1 ? '1px dashed var(--gray-300)' : 'none', fontWeight: 600, color: 'var(--gray-800)' }}>
                                                 • {line.trim()}
                                             </div>
                                         ))

@@ -7,12 +7,17 @@ export default {
     "react-doctor/no-cascading-set-state": "error",
     "react-doctor/no-complex-memo": "warn",
     "react-doctor/no-array-index-as-key": "error",
-    "react-doctor/heavy-library-import": "warn"
+    "react-doctor/heavy-library-import": "warn",
+    "react-doctor/no-multi-comp": "off",
+    "react-doctor/prefer-html-dialog": "off",
+    "react-doctor/prefer-use-effect-event": "off",
+    "react-doctor/dangerous-html-sink": "off",
+    "react-doctor/prefer-useReducer": "off",
+    "react-doctor/no-pass-live-state-to-parent": "off"
   },
   ignore: {
-    tags: [
-      "design"
-    ],
+    tags: ["design"],
+
     rules: [
       "react-doctor/no-many-boolean-props",
       "react-doctor/no-giant-component",

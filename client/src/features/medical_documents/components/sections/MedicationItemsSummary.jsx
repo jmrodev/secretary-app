@@ -14,7 +14,7 @@ export const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
     return (
         <ul className={`${baseClass ? `${baseClass}__med-list` : styles.MedicationItemsSummary__root} animate-fade-in`}>
             {items.map((item, idx) => (
-                <li key={item.id || `${item.name}-${idx}`} className={`${baseClass ? `${baseClass}__med-item` : ''} medication-items-summary__item`}>
+                <li key={item.id || item.name} className={`${baseClass ? `${baseClass}__med-item` : ''} medication-items-summary__item`}>
                     <div className={`${baseClass ? `${baseClass}__med-info` : ''} medication-items-summary__info`}>
                         <span className={`${baseClass ? `${baseClass}__med-name` : ''} medication-items-summary__name`}>{item.name}</span>
                         {item.dose && <span className={`${baseClass ? `${baseClass}__med-dose` : ''} medication-items-summary__dose`}>{item.dose}</span>}

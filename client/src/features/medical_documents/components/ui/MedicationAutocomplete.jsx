@@ -59,11 +59,20 @@ export const MedicationAutocomplete = ({
         const regex = new RegExp(`(${parts.join('|')})`, 'gi');
         const chunks = text.split(regex);
 
+        // Stable key without array index: hash of chunk content + running counter
+        let chunkCounter = 0;
+        const makeChunkKey = (chunk) => {
+            let h = 5381;
+            for (let k = 0; k < chunk.length; k++) {
+                h = ((h << 5) + h) ^ chunk.charCodeAt(k);
+            }
+            return `chunk-${chunkCounter++}-${h >>> 0}`;
+        };
+
         return (
             <>
-                {chunks.map((chunk, i) => {
-                    // Use a more stable key by combining index and content
-                    const chunkKey = `chunk-${i}-${chunk.length}`;
+                {chunks.map((chunk) => {
+                    const chunkKey = makeChunkKey(chunk);
                     return regex.test(chunk) ? (
                         <span key={chunkKey} className={styles.MedicationAutocomplete__highlight}>{chunk}</span>
                     ) : (
@@ -113,7 +122,7 @@ export const MedicationAutocomplete = ({
                 <ul ref={listRef} className={`${styles.MedicationAutocomplete__animateFadeIn} ${styles.MedicationAutocomplete__list}`} role="listbox">
                     {suggestions.map((med, idx) => (
                         <li
-                            key={med.id || `med-suggestion-${idx}`}
+                            key={med.id}
                             className={`${styles.MedicationAutocomplete__item} ${cursor === idx ? styles.MedicationAutocomplete__itemActive : ''}`}
                             onClick={() => handleSelect(med)}
                             onKeyDown={(e) => {

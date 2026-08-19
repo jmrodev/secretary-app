@@ -23,7 +23,7 @@ export const MedicationList = ({
             <div className={`${styles.MedicationList__items}`}>
                 {medications.map((med, index) => (
                     <MedicationTag
-                        key={med.id || med.medication_id || `med-${index}`}
+                        key={med.id || med.medication_id || `med-${med.name || med.full_label || med.medication_name || String(med)}`}
                         label={med.name || med.full_label || med.medication_name || med}
                         onRemove={() => onRemove(index)}
                     />

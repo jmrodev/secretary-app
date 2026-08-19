@@ -12,6 +12,7 @@ const EMPTY_ARRAY = [];
  * Optimized for Bento Box layout.
  */
 export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoctorToggle, handleManualValueChange, updateAdminFields, t }) => {
+    const assignedDoctorSet = new Set(formData.assignedDoctors || []);
     return (
         <article className={`${styles.PatientAdminFields__root}`}>
             
@@ -26,7 +27,7 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                     </header>
                     <div className={`${styles.PatientAdminFields__doctorScroller}`}>
                         {doctors.map(doc => {
-                            const isSelected = formData.assignedDoctors?.includes(doc.id);
+                            const isSelected = assignedDoctorSet.has(doc.id);
                             return (
                                 <label key={doc.id} className={`${styles.PatientAdminFields__doctorTextTag} ${isSelected ? styles.PatientAdminFields__doctorTextTagActive : ''}`}>
                                     <input

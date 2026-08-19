@@ -11,7 +11,7 @@ export const DoctorProvider = ({ children }) => {
     
     // Global filter state
     const [viewDoctorIdInternal, setViewDoctorIdInternal] = useState(
-        localStorage.getItem('global_selected_doctor_id') || ''
+        () => localStorage.getItem('global_selected_doctor_id') || ''
     );
 
     // Doctors List (Cached globally) - ECC Envelope support
@@ -29,11 +29,10 @@ export const DoctorProvider = ({ children }) => {
 
     const setViewDoctorId = useCallback((id) => {
         const stringId = id ? String(id) : '';
-        setViewDoctorIdInternal(prev => {
-            if (prev === stringId) return prev;
+        setViewDoctorIdInternal(stringId);
+        if (stringId) {
             localStorage.setItem('global_selected_doctor_id', stringId);
-            return stringId;
-        });
+        }
     }, []);
 
     const viewDoctorId = useMemo(() => {

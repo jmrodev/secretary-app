@@ -19,6 +19,13 @@ import styles from './InstitutionFinances.module.css';
  * Orchestrates financial reports and patient data for health insurance institutions.
  * Institution selection is managed by the parent sidebar (Institutions.jsx).
  */
+const isRealDebt = (tr) => {
+    const paymentLower = (tr.payment_status || '').toLowerCase();
+    const statusLower = (tr.appointment_status || '').toLowerCase();
+    const done = ['completed', 'attended', 'arrived', 'absent'].includes(statusLower);
+    return paymentLower === 'pending' && (!tr.appointment_id || done);
+};
+
 export const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMode, t }) => {
     const {
         report,
@@ -36,13 +43,6 @@ export const InstitutionFinances = ({ institutions, selectedInstId, viewMode, se
 
     // Reset selection when institution changes
     React.useEffect(() => { queueMicrotask(() => setSelectedTrs(new Set())); }, [selectedInstId]);
-
-    const isRealDebt = (tr) => {
-        const paymentLower = (tr.payment_status || '').toLowerCase();
-        const statusLower = (tr.appointment_status || '').toLowerCase();
-        const done = ['completed', 'attended', 'arrived', 'absent'].includes(statusLower);
-        return paymentLower === 'pending' && (!tr.appointment_id || done);
-    };
 
     const filteredTransactions = report?.transactions.filter(tr =>
         showPendingOnly ? isRealDebt(tr) : true

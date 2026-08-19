@@ -8,6 +8,20 @@ import { TransactionRow } from '@/features/finances/components/tables/Transactio
 
 import styles from './TransactionsTable.module.css';
 
+const highlightPatientName = (description, patientName) => {
+    if (!description || !patientName) return description;
+
+    const escapedName = patientName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${escapedName})`, 'gi');
+
+        const parts = description.split(regex);
+        return parts.map((part) => {
+        return part.toLowerCase() === patientName.toLowerCase()
+            ? <strong key={part} className={`${styles.TransactionsTable__highlight}`}>{part}</strong>
+            : part;
+    });
+};
+
 /**
  * TransactionsTable Feature Organism.
  * Main ledger display for financial audit and cash control.
@@ -82,27 +96,6 @@ export const TransactionsTable = ({
         return d;
     };
 
-    /**
-     * Highlighting logic for patient names in transactional descriptions.
-     */
-    const highlightPatientName = (description, patientName) => {
-        if (!description || !patientName) return description;
-
-        const escapedName = patientName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regex = new RegExp(`(${escapedName})`, 'gi');
-
-        const parts = description.split(regex);
-        return parts.map((part, i) => {
-            const partKey = `part-${i}-${part.length}`;
-            return part.toLowerCase() === patientName.toLowerCase()
-                ? <strong key={partKey} className={`${styles.TransactionsTable__highlight}`}>{part}</strong>
-                : part;
-        });
-    };
-
-    /**
-     * Memoized grouping logic for aesthetic and conceptual grouping of split payments.
-     */
     const groupedTransactions = useMemo(() => {
         const groups = [];
         let currentGroup = [];

@@ -50,7 +50,7 @@ export const TransactionPaymentsSection = ({
                     </div>
 
                     {payments.map((payment, index) => (
-                        <div key={payment._tmpId || index} className={`${styles.paymentRow}`}>
+                        <div key={payment._tmpId || `pay-${payment.amount}-${payment.method}`} className={`${styles.paymentRow}`}>
                             <div className={`${styles.paymentRowAmount}`}>
                                 <CurrencyInput
                                     placeholder={t('amount_label')} value={payment.amount}

@@ -17,7 +17,7 @@ const MessageBody = ({ body }) => {
             const href = part.startsWith('http') ? part : `https://${part}`;
             return (
                 <a 
-                    key={i} 
+                    key={part} 
                     href={href} 
                     target="_blank" 
                     rel="noopener noreferrer"

@@ -9,6 +9,8 @@ import { useSearch } from '@/hooks/useSearch';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import { useRequestHandlers } from './useRequestHandlers';
 
+const unpack = (response, fallback = []) => response?.data || (Array.isArray(response) ? response : fallback);
+
 export const useMedicalRequestsController = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
@@ -32,9 +34,7 @@ export const useMedicalRequestsController = () => {
     useEffect(() => {
         const t = setTimeout(() => setRequestsPage(1), 0);
         return () => clearTimeout(t);
-    }, [debouncedSearch]);
-
-    const unpack = (response, fallback = []) => response?.data || (Array.isArray(response) ? response : fallback);
+            }, [debouncedSearch]);
 
     const { data: doctorsResponse = { success: true, data: [] } } = useFetch('/users/doctors', { 
         initialData: { success: true, data: [] } 
@@ -58,7 +58,7 @@ export const useMedicalRequestsController = () => {
     const requestsTotal = reqResponse?.meta?.totalCount || requests.length || 0;
 
     const [selectedPatient, setSelectedPatient] = useState('');
-    const [selectedDoctor, _setSelectedDoctor] = useState(localStorage.getItem('last_selected_doctor_id') || '');
+    const [selectedDoctor, _setSelectedDoctor] = useState(() => localStorage.getItem('last_selected_doctor_id') || '');
     const setSelectedDoctor = (id) => { _setSelectedDoctor(id); if (id) localStorage.setItem('last_selected_doctor_id', id); };
     const [selectedRequest, setSelectedRequest] = useState(null);
 

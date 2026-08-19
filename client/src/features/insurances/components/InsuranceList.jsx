@@ -5,17 +5,17 @@ import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './InsuranceList.module.css';
 
+const getInitials = (name) => {
+    return name
+        .split(' ')
+        .map(word => word[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase();
+};
+
 export const InsuranceList = React.memo(({ insurances, onEdit, onDelete, hasFilter }) => {
     const { t } = useLanguage();
-
-    const getInitials = (name) => {
-        return name
-            .split(' ')
-            .map(word => word[0])
-            .join('')
-            .substring(0, 2)
-            .toUpperCase();
-    };
 
     if (insurances.length === 0) {
         return (

@@ -69,13 +69,16 @@ export const Navbar = () => {
                             isOpen={openDropdown === 'spreadsheets'}
                             onToggle={() => handleToggle('spreadsheets')}
                         >
-                            {doctors.filter(d => d.spreadsheet_id && (!isDoctor || d.user_id === (user.user_id || user.id))).map(d => (
-                                <a key={d.id} href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`} 
-                                   target="_blank" rel="noopener noreferrer" className={styles.Navbar__link}>
-                                    <Icon name="SPREADSHEETS" />
-                                    {isDoctor ? (t('my_spreadsheet') || 'Mi Planilla') : d.full_name.split(' ')[0]}
-                                </a>
-                            ))}
+                            {doctors.map(d => {
+                                if (!d.spreadsheet_id || (isDoctor && d.user_id !== (user.user_id || user.id))) return null;
+                                return (
+                                    <a key={d.id} href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
+                                       target="_blank" rel="noopener noreferrer" className={styles.Navbar__link}>
+                                        <Icon name="SPREADSHEETS" />
+                                        {isDoctor ? (t('my_spreadsheet') || 'Mi Planilla') : d.full_name.split(' ')[0]}
+                                    </a>
+                                );
+                            })}
                         </NavbarDropdown>
                     )}
 

@@ -6,6 +6,11 @@ import { useConfig } from '@/context/ConfigContext';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import { PATIENT_CAPITALIZE_FIELDS } from '@/constants/patientConstants';
 
+const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    return dateStr.split('T')[0];
+};
+
 /**
  * usePatientFormController (Orchestrator).
  * Manages the state and logic for the PatientForm component.
@@ -120,12 +125,6 @@ export const usePatientFormController = ({
         fetchResources();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Run once on mount. State variables inside will check if they need to fetch.
-
-    // Helper to ensure date is YYYY-MM-DD
-    const formatDate = (dateStr) => {
-        if (!dateStr) return '';
-        return dateStr.split('T')[0];
-    };
 
     // Load Initial Values
     useEffect(() => {

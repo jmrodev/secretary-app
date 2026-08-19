@@ -38,7 +38,8 @@ export const useUsers = (options = {}) => {
             filtered = filtered.filter(u => u.role === role);
         }
         if (excludeRoles.length > 0) {
-            filtered = filtered.filter(u => !excludeRoles.includes(u.role));
+            const excludeSet = new Set(excludeRoles);
+            filtered = filtered.filter(u => !excludeSet.has(u.role));
         }
         return filtered;
     }, [allUsers, role, excludeRoles]);

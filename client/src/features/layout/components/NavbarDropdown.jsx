@@ -16,16 +16,16 @@ export const NavbarDropdown = React.memo(({ label, isOpen, onToggle, children })
 
     return (
         <div className={`${styles.Navbar__dropdown} ${isOpen ? styles.Navbar__dropdownOpen : ''}`}>
-            <div 
-                className={styles.Navbar__dropdownTrigger} 
+            <button
+                type="button"
+                className={styles.Navbar__dropdownTrigger}
                 onClick={onToggle}
                 onKeyDown={handleKeyDown}
-                role="button"
-                tabIndex={0}
+                aria-expanded={isOpen}
             >
                 {label}
                 <Icon name={isOpen ? 'EXPAND_LESS' : 'EXPAND_MORE'} size="1rem" />
-            </div>
+            </button>
             {isOpen && (
                 <div className={styles.Navbar__dropdownContent}>
                     {children}

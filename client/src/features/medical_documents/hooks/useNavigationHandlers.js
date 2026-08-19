@@ -56,13 +56,14 @@ export const useNavigationHandlers = ({
     const handleExportJSON = useCallback(async () => {
         try {
             const response = await api.get('/medical/prescriptions/export/json', { responseType: 'blob' });
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', 'prescriptions_backup.json');
             document.body.appendChild(link);
             link.click();
             link.remove();
+            window.URL.revokeObjectURL(url);
             showMessage(t('export_success') || 'Exportación exitosa', 'success');
         } catch {
             showMessage(t('export_failed') || 'Error al exportar', 'error');

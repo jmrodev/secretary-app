@@ -213,6 +213,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
             {/* Tab bar - Inbox / Broadcast */}
             <div className={styles.GlobalWhatsappMessenger__tabBar}>
                 <button
+                    type="button"
                     id="wa-tab-inbox"
                     className={`${styles.GlobalWhatsappMessenger__tab} ${activeTab === 'inbox' ? styles.GlobalWhatsappMessenger__tabActive : ''}`}
                     onClick={() => dispatch({ type: 'SET_TAB', payload: 'inbox' })}
@@ -221,6 +222,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                     {t('inbox_tab')}
                 </button>
                 <button
+                    type="button"
                     id="wa-tab-broadcast"
                     className={`${styles.GlobalWhatsappMessenger__tab} ${activeTab === 'broadcast' ? styles.GlobalWhatsappMessenger__tabActive : ''}`}
                     onClick={() => dispatch({ type: 'SET_TAB', payload: 'broadcast' })}

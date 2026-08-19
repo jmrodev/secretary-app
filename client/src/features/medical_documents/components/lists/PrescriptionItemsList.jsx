@@ -70,7 +70,7 @@ export const PrescriptionItemsList = ({
                                             const safeKey = p.label.replace('½', 'half').replace('¼', 'quarter').replace('¾', 'three_quarters').replace('/', '_per_').replace(' ', '_').toLowerCase();
                                             const translationKey = `freq_${safeKey}`;
                                             const labelText = t(translationKey) === translationKey ? (p.text.charAt(0).toUpperCase() + p.text.slice(1)) : t(translationKey);
-                                            return <option key={idx} value={idx} style={{ color: 'black' }}>{labelText}</option>;
+                                            return <option key={`option-${p.label}`} value={idx} style={{ color: 'black' }}>{labelText}</option>;
                                         })}
                                     </select>
                                 </td>
@@ -133,7 +133,7 @@ export const PrescriptionItemsList = ({
 
                         {/* Added Items */}
                         {items && items.map((item, idx) => (
-                            <tr key={item._id || idx} className="animate-slide-in">
+                            <tr key={item._id || `item-${item.name}-${item.frequency || ''}`} className="animate-slide-in">
                                 <td className={styles.PrescriptionItemsList__nameCell}>
                                     <span className={styles.PrescriptionItemsList__name}>{item.name}</span>
                                 </td>

@@ -182,17 +182,17 @@ export const PublicRegisterPage = () => {
 
                         <footer className={`${styles.PublicRegisterPage__stepFooter}`}>
                             {step > 1 && (
-                                <button className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugeSecondary}`} onClick={prevStep} disabled={loading}>
+                                <button type="button" className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugeSecondary}`} onClick={prevStep} disabled={loading}>
                                     ATRÁS
                                 </button>
                             )}
                             
                             {step < totalSteps ? (
-                                <button className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugePrimary}`} onClick={nextStep}>
+                                <button type="button" className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugePrimary}`} onClick={nextStep}>
                                     SIGUIENTE
                                 </button>
                             ) : (
-                                <button className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugeSuccess}`} onClick={handleSubmit} disabled={loading}>
+                                <button type="button" className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugeSuccess}`} onClick={handleSubmit} disabled={loading}>
                                     {loading ? 'GUARDANDO...' : 'FINALIZAR'}
                                 </button>
                             )}

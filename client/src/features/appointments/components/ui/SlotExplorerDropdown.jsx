@@ -117,7 +117,7 @@ const SlotExplorerDropdownBase = ({
             <nav className={styles.SlotExplorerDropdown__monthBar}>
                 {navMonths.map((m, idx) => (
                     <div 
-                        key={`m-${idx}`} 
+                        key={`m-${m.month}-${m.year}`} 
                         className={[styles.SlotExplorerDropdown__monthItem, currentMonth === m.month && styles.SlotExplorerDropdown__monthActive].filter(Boolean).join(' ')}
                         onClick={() => jumpToMonth(m.month, m.year)}
                     >
@@ -150,7 +150,7 @@ const SlotExplorerDropdownBase = ({
                                     const dateObj = new Date(slot.dayDate + 'T12:00:00');
                                     const showHeader = idx === 0 || currentSlots[idx-1].dayDate !== slot.dayDate;
                                     return (
-                                        <React.Fragment key={`s-${slot.iso}-${idx}`}>
+                                        <React.Fragment key={`s-${slot.iso}`}>
                                             {showHeader && (
                                                 <div 
                                                     className={styles.SlotExplorerDropdown__dayHeader} 

@@ -89,8 +89,9 @@ export const DoctorScheduleSettings = ({
     const [bulkEnd, setBulkEnd] = useState('20:00');
 
     const applyBulk = (daysToApply) => {
+        const daysToApplySet = new Set(daysToApply);
         setSchedule(prev => {
-            let newSched = prev.filter(s => !daysToApply.includes(s.day_of_week));
+            let newSched = prev.filter(s => !daysToApplySet.has(s.day_of_week));
             daysToApply.forEach(dayId => {
                 newSched.push({
                     day_of_week: dayId,

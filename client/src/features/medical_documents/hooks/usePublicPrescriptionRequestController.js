@@ -66,18 +66,22 @@ export const usePublicPrescriptionRequestController = () => {
             return;
         }
 
+        let isActive = true;
         const delayDebounceFn = setTimeout(async () => {
+            if (!isActive) return;
             realDispatch({ type: 'START_SEARCH' });
             try {
                 const res = await api.get(`/medical/public/vademecum/search?q=${searchTerm}`);
+                if (!isActive) return;
                 realDispatch({ type: 'SET_SEARCH_RESULTS', payload: res.data });
             } catch (err) {
                 console.error("Search failed", err);
+                if (!isActive) return;
                 realDispatch({ type: 'SET_SEARCH_RESULTS', payload: [] });
             }
         }, 500);
 
-        return () => clearTimeout(delayDebounceFn);
+        return () => { clearTimeout(delayDebounceFn); isActive = false; };
     }, [searchTerm]);
 
     const handleToggleMedSelection = (medName) => realDispatch({ type: 'TOGGLE_MED', payload: medName });

@@ -2,19 +2,7 @@ import React, { useState } from 'react';
 import { DayCell } from './DayCell';
 import styles from './DayCellPlayground.module.css';
 
-/**
- * DayCellPlayground (Molecule/Section Component)
- * Showcases all possible states of our atomic DayCell component
- * to demonstrate how it can be replicated with different data inputs.
- */
-export const DayCellPlayground = () => {
-  const [selectedDay, setSelectedDay] = useState(15);
-
-  const handleDayClick = (day) => {
-    setSelectedDay(day);
-  };
-
-  const sampleDays = [
+const sampleDays = [
     {
       id: 1,
       day: 1,
@@ -66,7 +54,19 @@ export const DayCellPlayground = () => {
       isPast: false,
       appointmentsCount: 0
     }
-  ];
+];
+
+/**
+ * DayCellPlayground (Molecule/Section Component)
+ * Showcases all possible states of our atomic DayCell component
+ * to demonstrate how it can be replicated with different data inputs.
+ */
+export const DayCellPlayground = () => {
+  const [selectedDay, setSelectedDay] = useState(15);
+
+  const handleDayClick = (day) => {
+    setSelectedDay(day);
+  };
 
   return (
     <div className={styles.DayCellPlayground__playground}>

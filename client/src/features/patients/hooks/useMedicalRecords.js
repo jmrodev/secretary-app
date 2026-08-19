@@ -3,6 +3,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/api/axios';
 import { getNow, addDays, toInputDate } from '@/utils/core/dateUtils';
 
+const calculateRefillDate = (units, daily, boxes = 1) => {
+    if (!units || !daily || isNaN(daily) || Number(daily) <= 0 || isNaN(units)) return null;
+
+    const totalUnits = Number(units) * Number(boxes || 1);
+    const daysLasting = Math.floor(totalUnits / Number(daily));
+    return toInputDate(addDays(getNow(), daysLasting));
+};
+
 /**
  * useMedicalRecords (Handler).
  * Hook to manage patient medications, chronic treatments, and history.
@@ -34,14 +42,6 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
     useEffect(() => {
         queueMicrotask(() => fetchMedications());
     }, [fetchMedications]);
-
-    const calculateRefillDate = (units, daily, boxes = 1) => {
-        if (!units || !daily || isNaN(daily) || Number(daily) <= 0 || isNaN(units)) return null;
-
-        const totalUnits = Number(units) * Number(boxes || 1);
-        const daysLasting = Math.floor(totalUnits / Number(daily));
-        return toInputDate(addDays(getNow(), daysLasting));
-    };
 
     const handleSaveMedications = async () => {
         if (pendingMedications.length === 0) {
