@@ -38,7 +38,7 @@ export const useAppointmentsHandlers = ({
 
     const handleDateSelect = useCallback((date) => setSelectedDate(date), [setSelectedDate]);
 
-    const handleSlotClick = async (hour, existingAppt, minute = 0) => {
+    const handleSlotClick = useCallback(async (hour, existingAppt, minute = 0) => {
         if (rescheduleAppt) {
             if (existingAppt) return;
             const selectedYMD = toInputDate(selectedDate);
@@ -87,9 +87,12 @@ export const useAppointmentsHandlers = ({
                 setSelectedInstitution('');
             }
         }
-    };
+    }, [rescheduleAppt, selectedDate, holidays, showMessage, t, confirm, appointmentActions,
+        exitRescheduleMode, setRetryAction, setAuthModalOpen, setActionModal,
+        setDate, setSelectedDoctor, viewDoctorId, setShowForm, setIsOutOfHours,
+        setBonified, setSelectedInstitution, user]);
 
-    const handleUpdateStatus = async (id, status) => {
+    const handleUpdateStatus = useCallback(async (id, status) => {
         await appointmentActions.handleStatusUpdate(id, status);
         fetchAppointments();
         try {
@@ -103,7 +106,7 @@ export const useAppointmentsHandlers = ({
             // Best-effort refresh of the modal's appointment; ignore failures.
         }
         setActionModal(prev => (prev.open && prev.appt && String(prev.appt.id) === String(id)) ? { ...prev, appt: { ...prev.appt, status } } : prev);
-    };
+    }, [appointmentActions, fetchAppointments, setActionModal]);
 
     const handleSaveNote = async (apptId, note, date) => {
         try {
@@ -116,7 +119,7 @@ export const useAppointmentsHandlers = ({
         }
     };
 
-    const handleSavePrescription = async (prescribeModal) => {
+    const handleSavePrescription = useCallback(async (prescribeModal) => {
         try {
             await savePrescription({
                 apptId: prescribeModal.apptId,
@@ -130,25 +133,25 @@ export const useAppointmentsHandlers = ({
         } catch {
             showMessage(t('prescription_error') || 'Error al guardar receta', 'error');
         }
-    };
+    }, [savePrescription, setPrescribeModal, showMessage, t]);
 
-    const handleDelete = async (id, status, adminPassword = null) => {
+    const handleDelete = useCallback(async (id, status, adminPassword = null) => {
         const apptData = appointments.find(a => a.id === id) || filteredAppointments.find(a => a.id === id);
         const result = await deleteAppointment(id, apptData, { adminPassword, viewDoctorId: viewDoctorId || selectedDoctor, onUpdate: fetchAppointments });
         if (result?.type === 'AUTH_REQUIRED') {
             setRetryAction({ type: 'delete', args: [id, status] });
             setAuthModalOpen(true);
         }
-    };
+    }, [appointments, filteredAppointments, deleteAppointment, viewDoctorId, selectedDoctor, fetchAppointments, setRetryAction, setAuthModalOpen]);
 
-    const handleReschedule = async (id, newDate, adminPassword = null) => {
+    const handleReschedule = useCallback(async (id, newDate, adminPassword = null) => {
         const result = await rescheduleAppointment(id, newDate, adminPassword, fetchAppointments);
         if (result?.type === 'AUTH_REQUIRED') {
             setRetryAction({ type: 'reschedule', args: [id, newDate] });
             setAuthModalOpen(true);
         }
         return result;
-    };
+    }, [rescheduleAppointment, fetchAppointments, setRetryAction, setAuthModalOpen]);
 
     const handleSyncGoogleEvent = (appt) => {
         const apptDate = parseDate(appt.appointment_date);
