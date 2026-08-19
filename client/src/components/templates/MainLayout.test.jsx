@@ -28,10 +28,6 @@ vi.mock('@/features/doctors', () => ({
     DoctorSelector: () => null
 }));
 
-vi.mock('@/components/molecules/CompactHeaderStats', () => ({
-    CompactHeaderStats: () => null
-}));
-
 const renderLayout = () => render(
     <MessageProvider>
         <LanguageProvider>

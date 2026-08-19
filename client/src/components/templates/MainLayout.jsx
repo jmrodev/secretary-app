@@ -4,7 +4,6 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { useSearch } from '@/hooks/useSearch';
 import { useLanguage } from '@/hooks/useLanguage';
 import { DoctorSelector } from '@/features/doctors';
-import { CompactHeaderStats } from '@/components/molecules/CompactHeaderStats';
 import styles from './MainLayout.module.css';
 
 /**
@@ -44,7 +43,6 @@ export const MainLayout = ({
                         hideSearch={hideSearch}
                         searchTerm={searchTerm}
                         onSearchChange={setSearchTerm}
-                        statsSlot={<CompactHeaderStats />}
                         doctorSelectorSlot={
                             !hideDoctorSelector ? (
                                 <>
