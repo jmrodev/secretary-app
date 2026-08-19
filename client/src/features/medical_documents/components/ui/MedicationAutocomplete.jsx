@@ -8,6 +8,42 @@ import { Loading } from '@/components/atoms/Loading';
 import styles from './MedicationAutocomplete.module.css';
 
 /**
+ * Highlights matching substrings in suggestion text.
+ * Takes styles as parameter to avoid recreating on every render.
+ */
+const highlightMatch = (text, query, styles) => {
+    if (!query || typeof text !== 'string') return text;
+    const parts = query.split(/\s+/).filter(q => q.length > 0);
+    if (parts.length === 0) return text;
+
+    const regex = new RegExp(`(${parts.join('|')})`, 'gi');
+    const chunks = text.split(regex);
+
+    // Stable key without array index: hash of chunk content + running counter
+    let chunkCounter = 0;
+    const makeChunkKey = (chunk) => {
+        let h = 5381;
+        for (let k = 0; k < chunk.length; k++) {
+            h = ((h << 5) + h) ^ chunk.charCodeAt(k);
+        }
+        return `chunk-${chunkCounter++}-${h >>> 0}`;
+    };
+
+    return (
+        <>
+            {chunks.map((chunk) => {
+                const chunkKey = makeChunkKey(chunk);
+                return regex.test(chunk) ? (
+                    <span key={chunkKey} className={styles.MedicationAutocomplete__highlight}>{chunk}</span>
+                ) : (
+                    <React.Fragment key={chunkKey}>{chunk}</React.Fragment>
+                );
+            })}
+        </>
+    );
+};
+
+/**
  * MedicationAutocomplete Feature Molecule.
  * Search bar with live suggestions from the medical vademecum.
  * Part of the prescription and medical request management workflow.
@@ -47,41 +83,6 @@ export const MedicationAutocomplete = ({
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [setShowSuggestions]);
-
-    /**
-     * Helper to highlight matching text in suggestions
-     */
-    const highlightMatch = (text, query) => {
-        if (!query || typeof text !== 'string') return text;
-        const parts = query.split(/\s+/).filter(q => q.length > 0);
-        if (parts.length === 0) return text;
-
-        const regex = new RegExp(`(${parts.join('|')})`, 'gi');
-        const chunks = text.split(regex);
-
-        // Stable key without array index: hash of chunk content + running counter
-        let chunkCounter = 0;
-        const makeChunkKey = (chunk) => {
-            let h = 5381;
-            for (let k = 0; k < chunk.length; k++) {
-                h = ((h << 5) + h) ^ chunk.charCodeAt(k);
-            }
-            return `chunk-${chunkCounter++}-${h >>> 0}`;
-        };
-
-        return (
-            <>
-                {chunks.map((chunk) => {
-                    const chunkKey = makeChunkKey(chunk);
-                    return regex.test(chunk) ? (
-                        <span key={chunkKey} className={styles.MedicationAutocomplete__highlight}>{chunk}</span>
-                    ) : (
-                        <React.Fragment key={chunkKey}>{chunk}</React.Fragment>
-                    );
-                })}
-            </>
-        );
-    };
 
     return (
         <div className={`${styles.MedicationAutocomplete__animateFadeIn} ${styles.MedicationAutocomplete__root} ${className}`} ref={wrapperRef}>
@@ -137,7 +138,7 @@ export const MedicationAutocomplete = ({
                             tabIndex={0}
                         >
                             <div className={styles.MedicationAutocomplete__itemTitle}>
-                                {highlightMatch(med.name, searchTerm)}
+                                {highlightMatch(med.name, searchTerm, styles)}
                             </div>
                             <div className={styles.MedicationAutocomplete__itemSubtitle}>
                                 {med.presentation && (
@@ -145,11 +146,11 @@ export const MedicationAutocomplete = ({
                                         {med.presentation}
                                     </span>
                                 )}
-                                <span>{highlightMatch(med.drug, searchTerm)}</span>
+                                <span>{highlightMatch(med.drug, searchTerm, styles)}</span>
                                 {med.lab && (
                                     <>
                                         <span className={styles.separator}>•</span>
-                                        <span className={styles.lab}>{highlightMatch(med.lab, searchTerm)}</span>
+                                        <span className={styles.lab}>{highlightMatch(med.lab, searchTerm, styles)}</span>
                                     </>
                                 )}
                             </div>

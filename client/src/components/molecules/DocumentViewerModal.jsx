@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
@@ -14,9 +14,10 @@ export const DocumentViewerModal = ({
     isOpen,
     onClose,
     file,
-    filesList = [],
+    filesList,
     onSelectFile
 }) => {
+    const filesListData = useMemo(() => filesList ?? [], [filesList]);
     const { t } = useLanguage();
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
@@ -32,24 +33,24 @@ export const DocumentViewerModal = ({
     }
 
     // Calculate current index within filesList
-    const activeIndex = filesList.findIndex(
+    const activeIndex = filesListData.findIndex(
         f => (f.id && file?.id && f.id === file.id) || (f.file_url && file?.file_url && f.file_url === file.file_url)
     );
-    const hasMultipleFiles = filesList.length > 1 && activeIndex !== -1;
+    const hasMultipleFiles = filesListData.length > 1 && activeIndex !== -1;
     const hasPrev = hasMultipleFiles && activeIndex > 0;
-    const hasNext = hasMultipleFiles && activeIndex < filesList.length - 1;
+    const hasNext = hasMultipleFiles && activeIndex < filesListData.length - 1;
 
     const handlePrevFile = useCallback(() => {
         if (hasPrev && onSelectFile) {
-            onSelectFile(filesList[activeIndex - 1]);
+            onSelectFile(filesListData[activeIndex - 1]);
         }
-    }, [hasPrev, onSelectFile, filesList, activeIndex]);
+    }, [hasPrev, onSelectFile, filesListData, activeIndex]);
 
     const handleNextFile = useCallback(() => {
         if (hasNext && onSelectFile) {
-            onSelectFile(filesList[activeIndex + 1]);
+            onSelectFile(filesListData[activeIndex + 1]);
         }
-    }, [hasNext, onSelectFile, filesList, activeIndex]);
+    }, [hasNext, onSelectFile, filesListData, activeIndex]);
 
     // Keyboard navigation (ArrowLeft & ArrowRight)
     useEffect(() => {
@@ -108,7 +109,7 @@ export const DocumentViewerModal = ({
                                 {t('prev') || 'Anterior'}
                             </Button>
                             <span className={styles.DocumentViewerModal__counterLabel}>
-                                {activeIndex + 1} / {filesList.length}
+                                {activeIndex + 1} / {filesListData.length}
                             </span>
                             <Button
                                 variant="secondary"
@@ -239,7 +240,7 @@ export const DocumentViewerModal = ({
                                 src={fileUrl}
                                 title={fileName}
                                 className={styles.DocumentViewerModal__pdfIframe}
-                                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                                sandbox="allow-scripts allow-forms"
                             />
                         </div>
                     )}
