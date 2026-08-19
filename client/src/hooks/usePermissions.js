@@ -20,8 +20,10 @@ export const usePermissions = () => {
     });
 
     const { permissions, loading } = state;
+    const fetchedForUserId = React.useRef(null);
 
     useEffect(() => {
+        let isCurrent = true;
         const fetchSettings = async () => {
             if (!user) {
                 dispatch({ loading: false });
@@ -42,17 +44,19 @@ export const usePermissions = () => {
                 return;
             }
 
-            let newPermissions = {
-                canDeletePrescription: false,
-                canDeleteLicense: false,
-                canDeleteRequest: false,
-                canDeleteFile: false,
-                canManageAppointments: false
-            };
+            if (user.role === 'secretary' && fetchedForUserId.current !== user.id) {
+                fetchedForUserId.current = user.id;
+                let newPermissions = {
+                    canDeletePrescription: false,
+                    canDeleteLicense: false,
+                    canDeleteRequest: false,
+                    canDeleteFile: false,
+                    canManageAppointments: false
+                };
 
-            if (user.role === 'secretary') {
                 try {
                     const res = await api.get('/settings');
+                    if (!isCurrent) return;
                     const settings = res.data;
 
                     newPermissions = {
@@ -63,14 +67,18 @@ export const usePermissions = () => {
                         canManageAppointments: settings.enable_secretary_crud_appointments === 'true'
                     };
                 } catch (err) {
+                    if (!isCurrent) return;
                     console.error("[usePermissions] Failed to fetch settings", err);
                 }
+
+                dispatch({ permissions: newPermissions, loading: false });
+            } else {
+                dispatch({ loading: false });
             }
-            
-            dispatch({ permissions: newPermissions, loading: false });
         };
 
         fetchSettings();
+        return () => { isCurrent = false; };
     }, [user]);
 
     return { 

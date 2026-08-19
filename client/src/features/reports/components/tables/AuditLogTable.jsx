@@ -4,19 +4,19 @@ import { Badge } from '@/components/atoms/Badge';
 import { formatDateTimeLong } from '@/utils/core/dateUtils';
 import styles from './AuditLogTable.module.css';
 
+const formatAction = (action) => {
+    let variant = 'gray';
+
+    if (action.includes('LOGIN')) variant = 'blue';
+    if (action.includes('CREATE')) variant = 'green';
+    if (action.includes('UPDATE')) variant = 'yellow';
+    if (action.includes('DELETE')) variant = 'red';
+    if (action.includes('ERROR')) variant = 'red';
+
+    return <Badge variant={variant}>{action}</Badge>;
+};
+
 export const AuditLogTable = React.memo(({ logs, onSelectLog, t }) => {
-
-    const formatAction = (action) => {
-        let variant = 'gray';
-
-        if (action.includes('LOGIN')) variant = 'blue';
-        if (action.includes('CREATE')) variant = 'green';
-        if (action.includes('UPDATE')) variant = 'yellow';
-        if (action.includes('DELETE')) variant = 'red';
-        if (action.includes('ERROR')) variant = 'red';
-
-        return <Badge variant={variant}>{action}</Badge>;
-    };
 
     return (
         <div className={styles.AuditLogTable__auditLogTableContainer}>

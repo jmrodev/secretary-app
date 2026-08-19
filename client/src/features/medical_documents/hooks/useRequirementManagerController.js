@@ -19,6 +19,8 @@ function editReducer(state, action) {
     }
 }
 
+const unpack = (response, fallback = []) => response?.data || (Array.isArray(response) ? response : fallback);
+
 /**
  * ECC-Pattern: useRequirementManagerController Hook (Global Search Integrated)
  */
@@ -33,8 +35,6 @@ export const useRequirementManagerController = (user) => {
     const [filter, setFilter] = useState('active');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(25);
-
-    const unpack = (response, fallback = []) => response?.data || (Array.isArray(response) ? response : fallback);
 
     const [debouncedSearch, setDebouncedSearch] = useState(globalSearchTerm);
     useEffect(() => {

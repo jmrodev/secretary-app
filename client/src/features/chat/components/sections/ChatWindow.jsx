@@ -5,6 +5,13 @@ import { Loading } from '@/components/atoms/Loading';
 import { parseDate, isToday, formatTime, formatDate as formatUtil } from '@/utils/core/dateUtils';
 import styles from './ChatWindow.module.css';
 
+const formatDate = (dateString) => {
+    const date = parseDate(dateString);
+    return isToday(date)
+        ? formatTime(date, { hour12: false })
+        : formatUtil(date, { hideYear: true });
+};
+
 /**
  * ChatWindow Component (Feature Component).
  * Renders the full-screen view of a chat thread.
@@ -22,13 +29,6 @@ export const ChatWindow = ({
     onBack // Added onBack prop
 }) => {
 
-    const formatDate = (dateString) => {
-        const date = parseDate(dateString);
-        return isToday(date)
-            ? formatTime(date, { hour12: false })
-            : formatUtil(date, { hideYear: true });
-    };
-
     if (!selectedConvo) {
         return (
             <section className={`${styles.ChatWindow__root} ${styles.ChatWindow__empty}`}>
@@ -44,7 +44,7 @@ export const ChatWindow = ({
             {/* Header */}
             <header className={`${styles.ChatWindow__header}`}>
                 {/* Back button for mobile navigation */}
-                <button className={`${styles.ChatWindow__backButton}`} onClick={onBack} title="Volver a la lista">
+                <button type="button" className={`${styles.ChatWindow__backButton}`} onClick={onBack} title="Volver a la lista">
                     <Icon name="arrow_back" />
                 </button>
 

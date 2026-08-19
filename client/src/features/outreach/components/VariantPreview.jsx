@@ -37,7 +37,7 @@ export const VariantPreview = ({
                 <>
                     <div className={styles['VariantPreview__grid']}>
                         {variants.map((variant, i) => (
-                            <article key={i} className={styles['VariantPreview__card']}>
+                            <article key={`variant-${variant.header}-${variant.body}`} className={styles['VariantPreview__card']}>
                                 <span className={styles['VariantPreview__card-number']}>
                                     {t('outreach_variant_title', { number: i + 1 })}
                                 </span>

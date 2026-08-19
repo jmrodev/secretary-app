@@ -5,25 +5,25 @@ import { Button } from '@/components/atoms/Button';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PatientSearchSelect.module.css';
 
+const loadOptions = async (inputValue) => {
+    try {
+        const patients = await patientService.search(inputValue || '');
+
+        return (patients || []).map(p => ({
+            value: p.id,
+            label: `${p.full_name} - DNI: ${p.dni || 'N/A'}${p.street_name ? ` - ${p.street_name}` : ''}`,
+            patient: p
+        }));
+    } catch (err) {
+        console.error('[PatientSearchSelect] Error loading options:', err);
+        return [];
+    }
+};
+
 export const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus: _autoFocus = false, selectedData }) => {
     const { t } = useLanguage();
     const finalPlaceholder = placeholder || t('search_placeholder');
     const [internalSelected, setInternalSelected] = useState(null);
-
-    const loadOptions = async (inputValue) => {
-        try {
-            const patients = await patientService.search(inputValue || '');
-            
-            return (patients || []).map(p => ({
-                value: p.id,
-                label: `${p.full_name} - DNI: ${p.dni || 'N/A'}${p.street_name ? ` - ${p.street_name}` : ''}`,
-                patient: p
-            }));
-        } catch (err) {
-            console.error('[PatientSearchSelect] Error loading options:', err);
-            return [];
-        }
-    };
 
     const handleSelectPatient = (selectedOption) => {
         setInternalSelected(selectedOption);
@@ -96,5 +96,3 @@ export const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePati
         />
     );
 };
-
-

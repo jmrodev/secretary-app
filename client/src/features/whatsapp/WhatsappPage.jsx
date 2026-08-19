@@ -15,6 +15,7 @@ export const WhatsappPage = () => {
             <div className={styles.WhatsappPage__page}>
                 <div className={styles.WhatsappPage__tabBar}>
                     <button
+                        type="button"
                         className={`${styles.WhatsappPage__tab} ${activeTab === 'broadcast' ? styles.WhatsappPage__tabActive : ''}`}
                         onClick={() => setActiveTab('broadcast')}
                     >
@@ -22,6 +23,7 @@ export const WhatsappPage = () => {
                         {t('broadcast_tab') || 'Difusión'}
                     </button>
                     <button
+                        type="button"
                         className={`${styles.WhatsappPage__tab} ${activeTab === 'config' ? styles.WhatsappPage__tabActive : ''}`}
                         onClick={() => setActiveTab('config')}
                     >

@@ -5,41 +5,40 @@ import { Modal } from '@/components/molecules/Modal';
 import { formatDate } from '@/utils/core/dateUtils';
 import styles from './AuditLogManager.module.css';
 
+const formatDetails = (detailsRaw) => {
+    if (!detailsRaw) return <span className={styles.AuditLogManager__textMuted}>-</span>;
+
+    let content = detailsRaw;
+    let isJson = false;
+    try {
+        const parsed = JSON.parse(detailsRaw);
+        if (typeof parsed === 'object' && parsed !== null) {
+            content = parsed;
+            isJson = true;
+        }
+    } catch { /* Not JSON */ }
+
+    if (isJson) {
+        return (
+            <div className={styles.AuditLogManager__jsonContent}>
+                {Object.entries(content).map(([key, value]) => (
+                    <div key={key} className={styles.AuditLogManager__jsonItem}>
+                        <span className={styles.AuditLogManager__jsonKey}>{key}:</span>{' '}
+                        <span className={styles.AuditLogManager__jsonValue}>{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+    return <span className={styles.AuditLogManager__textValue}>{String(detailsRaw)}</span>;
+};
+
 export const AuditLogManager = ({
     logs,
     selectedLog,
     setSelectedLog,
     t
 }) => {
-
-    const formatDetails = (detailsRaw) => {
-        if (!detailsRaw) return <span className={styles.AuditLogManager__textMuted}>-</span>;
-
-        let content = detailsRaw;
-        let isJson = false;
-        try {
-            const parsed = JSON.parse(detailsRaw);
-            if (typeof parsed === 'object' && parsed !== null) {
-                content = parsed;
-                isJson = true;
-            }
-        } catch { /* Not JSON */ }
-
-        if (isJson) {
-            return (
-                <div className={styles.AuditLogManager__jsonContent}>
-                    {Object.entries(content).map(([key, value]) => (
-                        <div key={key} className={styles.AuditLogManager__jsonItem}>
-                            <span className={styles.AuditLogManager__jsonKey}>{key}:</span>{' '}
-                            <span className={styles.AuditLogManager__jsonValue}>{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>
-                        </div>
-                    ))}
-                </div>
-            );
-        }
-        return <span className={styles.AuditLogManager__textValue}>{String(detailsRaw)}</span>;
-    };
-
     return (
         <div className={styles.AuditLogManager__auditLogManager}>
             <header className={styles.AuditLogManager__header}>
@@ -107,5 +106,3 @@ export const AuditLogManager = ({
         </div>
     );
 };
-
-

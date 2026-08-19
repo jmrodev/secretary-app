@@ -3,6 +3,24 @@ import { Card } from '@/components/atoms/Card';
 import { Icon } from '@/components/atoms/Icon';
 import styles from './FinanceStatsCards.module.css';
 
+const breakdownTypes = ['appointments', 'prescriptions', 'licenses', 'certificates'];
+
+const typeIcons = {
+    cash: 'payments',
+    transfer: 'account_balance',
+    withdrawal: 'logout',
+    expenses: 'trending_down',
+    appointments: 'calendar_month',
+    prescriptions: 'medication',
+    licenses: 'badge',
+    certificates: 'verified',
+    net_cash: 'monetization_on',
+    cash_balance: 'payments',
+    transfer_balance: 'account_balance',
+    total_net: 'account_balance_wallet',
+    pending_debt: 'warning'
+};
+
 /**
  * FinanceStatsCards Feature Organism.
  * Displays financial breakdown by category and payment methods.
@@ -13,26 +31,7 @@ export const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) =
     const tableStats = stats.filter(s => ['cash', 'transfer', 'withdrawal', 'expenses'].includes(s.type));
     const financialSummary = stats.filter(s => ['cash_balance', 'transfer_balance', 'total_net', 'net_cash'].includes(s.type));
 
-    // Medical request categories that use the breakdown table
-    const breakdownTypes = ['appointments', 'prescriptions', 'licenses', 'certificates'];
     const otherStats = stats.filter(s => breakdownTypes.includes(s.type));
-
-    // Icon mapping using semantic names for the Icon atom
-    const typeIcons = {
-        cash: 'payments',
-        transfer: 'account_balance',
-        withdrawal: 'logout',
-        expenses: 'trending_down',
-        appointments: 'calendar_month',
-        prescriptions: 'medication',
-        licenses: 'badge',
-        certificates: 'verified',
-        net_cash: 'monetization_on',
-        cash_balance: 'payments',
-        transfer_balance: 'account_balance',
-        total_net: 'account_balance_wallet',
-        pending_debt: 'warning'
-    };
 
     return (
         <section className={`${styles.FinanceStatsCards__root}`}>

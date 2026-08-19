@@ -14,9 +14,17 @@ import styles from './PhoneNumbersManager.module.css';
  * @param {Object} texts - Translations { cellPhone, label, call, markAsPrimary, deleteBtn, addAnotherPhone }
  */
 const EMPTY_OBJECT = {};
+const generateId = () => crypto.randomUUID();
+
+const labelOptions = [
+    { value: 'Celular', label: 'Celular' },
+    { value: 'Fijo', label: 'Fijo' },
+    { value: 'Laboral', label: 'Laboral' },
+    { value: 'Familiar', label: 'Familiar' },
+    { value: 'Otro', label: 'Otro' }
+];
 
 export const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) => {
-    const generateId = () => crypto.randomUUID();
 
     // Default fallbacks in case texts are not provided
     const tx = {
@@ -43,35 +51,27 @@ export const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJE
     };
 
     const handleUpdate = (index, field, value) => {
-        let currentList = (phoneNumbers && phoneNumbers.length > 0) 
-            ? phoneNumbers.map(p => ({ ...p, id: p.id || generateId() })) 
+        let currentList = (phoneNumbers && phoneNumbers.length > 0)
+            ? phoneNumbers.map(p => ({ ...p, id: p.id || generateId() }))
             : [{ id: generateId(), phone_number: '54', label: tx.cellPhone, is_primary: true }];
-            
+
         let sanitizedValue = value;
         if (field === 'phone_number') {
             sanitizedValue = value.replace(/[^\d+]/g, '');
         }
 
         currentList[index] = { ...currentList[index], [field]: sanitizedValue };
-        
+
         if (field === 'is_primary' && value === true) {
             currentList.forEach((p, i) => { if (i !== index) p.is_primary = false; });
         }
         onChange(currentList);
     };
 
-    const labelOptions = [
-        { value: 'Celular', label: 'Celular' },
-        { value: 'Fijo', label: 'Fijo' },
-        { value: 'Laboral', label: 'Laboral' },
-        { value: 'Familiar', label: 'Familiar' },
-        { value: 'Otro', label: 'Otro' }
-    ];
-
     return (
         <div className={`${styles.PhoneNumbersManager__root}`}>
-            {displayPhoneNumbers.map((pn, index) => (
-                <div key={pn.id || `phone-${index}`} className={`${styles.PhoneNumbersManager__row} ${pn.is_primary ? styles.PhoneNumbersManager__rowPrimary : ''}`}>
+                {displayPhoneNumbers.map((pn, index) => (
+                    <div key={pn.id || `phone-${pn.phone_number}`} className={`${styles.PhoneNumbersManager__row} ${pn.is_primary ? styles.PhoneNumbersManager__rowPrimary : ''}`}>
                     <div className={`${styles.PhoneNumbersManager__labelWrapper}`}>
                         <Select
                             value={pn.label}

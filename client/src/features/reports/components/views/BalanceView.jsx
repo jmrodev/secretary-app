@@ -6,6 +6,12 @@ import { BalanceFinancialSummary, BalanceCashFlowTable, BalanceDebtsTable } from
 
 import styles from './BalanceView.module.css';
 
+const calculateItemTotal = (items) => items.reduce((acc, item) =>
+    (item.payment_status?.toLowerCase() === 'paid' || item.payment_status?.toLowerCase() === 'pagado')
+        ? acc + Number(item.amount || 0)
+        : acc, 0
+);
+
 /**
  * BalanceView Organism.
  * Orchestrates financial reporting by aggregating data for a specific period and 
@@ -24,12 +30,6 @@ export const BalanceView = ({ reportData, month, year, t }) => {
     const totalIncome = appts.reduce((acc, day) => acc + Number(day.total_paid || 0), 0);
     const totalAppts = appts.reduce((acc, day) =>
         acc + day.appointments.reduce((sum, a) => sum + Number(a.monto_pagado || 0), 0), 0);
-
-    const calculateItemTotal = (items) => items.reduce((acc, item) =>
-        (item.payment_status?.toLowerCase() === 'paid' || item.payment_status?.toLowerCase() === 'pagado')
-            ? acc + Number(item.amount || 0)
-            : acc, 0
-    );
 
     const totalPres = calculateItemTotal(pres);
     const totalLicenses = calculateItemTotal(licenses);

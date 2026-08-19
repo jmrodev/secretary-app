@@ -4,36 +4,37 @@ import { Icon } from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/format';
 import styles from './AppointmentHeader.module.css';
 
+const getStatusVariant = (status) => {
+    switch (status) {
+        case 'completed':
+        case 'attended': return 'success';
+        case 'confirmed': return 'blue';
+        case 'arrived': return 'accent';
+        case 'rescheduled': return 'default';
+        case 'suspended': return 'warning';
+        case 'absent':
+        case 'cancelled': return 'danger';
+        case 'pending': return 'pending';
+        case 'consult': return 'consult';
+        default: return 'default';
+    }
+};
+
+const getPaymentStatusVariant = (paymentStatus) => {
+    switch (paymentStatus) {
+        case 'paid': return 'success';
+        case 'pending': return 'pending';
+        case 'partial': return 'warning';
+        case 'debt': return 'danger';
+        default: return 'danger';
+    }
+};
+
 /**
  * AppointmentHeader Molecule (Internal to feature).
  * Displays patient info and quick actions for an appointment.
  */
 export const AppointmentHeader = ({ appt, t }) => {
-    const getStatusVariant = (status) => {
-        switch (status) {
-            case 'completed':
-            case 'attended': return 'success';
-            case 'confirmed': return 'blue';
-            case 'arrived': return 'accent';
-            case 'rescheduled': return 'default';
-            case 'suspended': return 'warning';
-            case 'absent':
-            case 'cancelled': return 'danger';
-            case 'pending': return 'pending';
-            case 'consult': return 'consult';
-            default: return 'default';
-        }
-    };
-    const getPaymentStatusVariant = (paymentStatus) => {
-        switch (paymentStatus) {
-            case 'paid': return 'success';
-            case 'pending': return 'pending';
-            case 'partial': return 'warning';
-            case 'debt': return 'danger';
-            default: return 'danger';
-        }
-    };
-
     const getPaymentStatusLabel = (paymentStatus) => {
         switch (paymentStatus) {
             case 'paid': return t('paid') || 'Pagado';

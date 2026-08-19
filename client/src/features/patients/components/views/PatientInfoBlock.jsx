@@ -105,7 +105,7 @@ export const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGe
 
                                         if (hasPhone) {
                                             return validPhones.map((p, idx) => (
-                                                <div key={p.phone_number || `phone-${idx}`} className={`${styles.PatientInfoBlock__contactItem}`}>
+                                                <div key={`phone-${p.phone_number}-${p.is_primary}`} className={`${styles.PatientInfoBlock__contactItem}`}>
                                                     <span className={`${styles.PatientInfoBlock__contactIndicator} ${p.is_primary ? styles.PatientInfoBlock__contactIndicatorPrimary : ''}`}></span>
                                                     <Button
                                                         to={`tel:${String(p.phone_number).replace(/[^0-9+]/g, '')}`}

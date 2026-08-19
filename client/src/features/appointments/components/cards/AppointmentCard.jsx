@@ -84,11 +84,11 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
                                 return <span className={styles.AppointmentCard__surname}>{parts[0]}</span>;
                             }
                             const surnameIndex = parts.length - 1;
-                            return parts.map((part, index) => (
-                                <span key={index} className={index === surnameIndex ? styles.AppointmentCard__surname : styles.AppointmentCard__givenName}>
-                                    {part}
-                                </span>
-                            ));
+                return parts.map((part, index) => (
+                                    <span key={part} className={index === surnameIndex ? styles.AppointmentCard__surname : styles.AppointmentCard__givenName}>
+                                        {part}
+                                    </span>
+                                ));
                         })()}
                     </div>
                     {appt.attended_appointments > 0 && (

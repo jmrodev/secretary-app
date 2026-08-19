@@ -4,6 +4,14 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { parseDate, isToday, formatTime, formatDate as formatUtil } from '@/utils/core/dateUtils';
 import styles from './ChatSidebar.module.css';
 
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = parseDate(dateString);
+    return isToday(date)
+        ? formatTime(date, { hour12: false })
+        : formatUtil(date, { hideYear: true });
+};
+
 /**
  * ChatSidebar Component (Feature Component).
  * Renders the sidebar for the full-screen chat page.
@@ -19,15 +27,6 @@ export const ChatSidebar = ({
     unreadCount
 }) => {
     const { t } = useLanguage();
-
-    // Formatting Helpers
-    const formatDate = (dateString) => {
-        if (!dateString) return '';
-        const date = parseDate(dateString);
-        return isToday(date)
-            ? formatTime(date, { hour12: false })
-            : formatUtil(date, { hideYear: true });
-    };
 
     const q = searchTerm.toLowerCase().trim();
 

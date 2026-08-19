@@ -84,7 +84,7 @@ export const NextSlotModal = ({
                 <nav className={styles.NextSlotModal__monthBar}>
                     {navMonths.map((m, idx) => (
                         <div 
-                            key={`month-${idx}`} 
+                            key={`month-${m.month}-${m.year}`} 
                             className={`${styles.NextSlotModal__monthItem} ${currentMonth === m.month ? styles.NextSlotModal__monthActive : ''}`}
                             onClick={() => jumpToMonth(m.month, m.year)}
                         >
@@ -118,7 +118,7 @@ export const NextSlotModal = ({
                             const showDateHeader = idx === 0 || currentSlots[idx-1].dayDate !== slot.dayDate;
 
                             return (
-                                <React.Fragment key={`slot-${slot.iso}-${idx}`}>
+                                <React.Fragment key={`slot-${slot.iso}`}>
                                     {showDateHeader && (
                                         <div className={styles.NextSlotModal__dateHeader}>
                                             <span className={styles.NextSlotModal__dayNum}>{date.getDate()}</span>

@@ -2,6 +2,9 @@ import React from 'react';
 import { Icon } from '@/components/atoms/Icon';
 import styles from '../DashboardPage.module.css';
 
+const arCurrencyFormatter = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' });
+const formatAmount = (val) => arCurrencyFormatter.format(val);
+
 /**
  * CashMonitorCard (Molecule).
  * Displays real-time cash balance and theoretical totals.
@@ -11,9 +14,6 @@ export const CashMonitorCard = React.memo(({ stats, t }) => {
     const withdrawalsToday = Number(stats?.todayWithdrawalCash || 0);
     const expensesToday = Number(stats?.todayExpenseCash || 0);
     const currentBalance = cashToday - withdrawalsToday - expensesToday;
-
-    const formatAmount = (val) => 
-        new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(val);
 
     return (
         <article className={`${styles.DashboardPage__bentoCard} ${styles.DashboardPage__cashMonitorCard}`}>

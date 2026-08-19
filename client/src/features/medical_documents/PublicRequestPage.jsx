@@ -35,6 +35,8 @@ export const PublicRequestPage = () => {
     if (error && !patientInfo) return <StatusDisplay type="error" title="Error" message={error} />;
     if (success) return <StatusDisplay type="success" title="¡Solicitud Enviada!" message="Tu médico recibirá la solicitud. Te notificaremos cuando las recetas estén listas." />;
 
+    const selectedMedsSet = new Set(selectedMeds || []);
+
     return (
         <div className={`${styles.PublicRequestPage__root}`}>
             <div className={`${styles.PublicRequestPage__container}`}>
@@ -67,7 +69,7 @@ export const PublicRequestPage = () => {
                                 <Button
                                     key={med}
                                     onClick={() => handleToggleMedSelection(med)}
-                                    className={`${styles.PublicRequestPage__medChip} ${selectedMeds.includes(med) ? styles.PublicRequestPage__medChipActive : ''}`}
+                                    className={`${styles.PublicRequestPage__medChip} ${selectedMedsSet.has(med) ? styles.PublicRequestPage__medChipActive : ''}`}
                                     title={med}
                                     unstyled
                                 >
