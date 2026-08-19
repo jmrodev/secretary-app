@@ -64,6 +64,7 @@ export const PrescriptionItemsList = ({
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
                                         value={tempFreqPreset !== null ? tempFreqPreset : ''}
                                         onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
+                                        aria-label={t('frequency') || 'Frecuencia'}
                                     >
                                         <option value="" disabled style={{ color: 'black' }}>Frecuencia…</option>
                                         {freqPresets && freqPresets.map((p, idx) => {
@@ -80,6 +81,7 @@ export const PrescriptionItemsList = ({
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '100%', textAlign: 'center' }}
                                         value={tempUnitsPerBox}
                                         onChange={e => handleQuantityChange('units_per_box', e.target.value)}
+                                        aria-label={t('units_per_box') || 'Unidades por caja'}
                                     >
                                         <option value="" style={{ color: 'black' }}>-</option>
                                         {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (

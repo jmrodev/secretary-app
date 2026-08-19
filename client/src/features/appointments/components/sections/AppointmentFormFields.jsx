@@ -46,13 +46,14 @@ export const AppointmentFormFields = ({
             {/* 2. Professional & Schedule */}
             <div className={styles.panel}>
                 <div className={styles.field}>
-                    <label className={styles.label}>{t('doctor') || 'Doctor'}</label>
+                    <label htmlFor="appointment-doctor" className={styles.label}>{t('doctor') || 'Doctor'}</label>
                     {user?.role === 'doctor' ? (
                         <div className={styles.readOnlyField}>
                             {doctors.find(d => String(d.id) === String(selectedDoctor))?.full_name || 'Usted'}
                         </div>
                     ) : (
                         <Select
+                            id="appointment-doctor"
                             value={selectedDoctor || ''}
                             onChange={handleDoctorChange}
                             options={doctors.map(d => ({ value: d.id, label: d.full_name }))}
@@ -63,8 +64,8 @@ export const AppointmentFormFields = ({
                 </div>
 
                 <div className={styles.field}>
-                    <label className={styles.label}>{t('date_time') || 'Fecha y Hora'}</label>
-                    <Input type="datetime-local" value={date} onChange={handleDateChange} required />
+                    <label htmlFor="appointment-date" className={styles.label}>{t('date_time') || 'Fecha y Hora'}</label>
+                    <Input id="appointment-date" type="datetime-local" value={date} onChange={handleDateChange} required />
                     {isOutOfHours && (
                         <div className={`${styles.extraBadge} ${styles.extraBadgePulse}`}>
                             <Icon name="warning" size="1rem" />
@@ -77,13 +78,14 @@ export const AppointmentFormFields = ({
             {/* 3. Details & Type */}
             <div className={styles.panel}>
                 <div className={styles.field}>
-                    <label className={styles.label}>{t('appointment_type') || 'Tipo de Turno'}</label>
+                    <span className={styles.label}>{t('appointment_type') || 'Tipo de Turno'}</span>
                     <AppointmentTypeSelector type={type} onChange={handleTypeChange} t={t} />
                 </div>
 
                 <div className={styles.field}>
-                    <label className={styles.label}>{t('institution') || 'Obra Social / Institución'}</label>
+                    <label htmlFor="appointment-institution" className={styles.label}>{t('institution') || 'Obra Social / Institución'}</label>
                     <Select
+                        id="appointment-institution"
                         value={selectedInstitution}
                         onChange={handleInstitutionChange}
                         options={institutionOptions}
@@ -94,8 +96,9 @@ export const AppointmentFormFields = ({
             {/* 4. Notes & Bonification */}
             <div className={`${styles.panel} ${styles.fieldFull}`}>
                 <div className={styles.field}>
-                    <label className={styles.label}>{t('reason') || 'Motivo y Notas'}</label>
+                    <label htmlFor="appointment-reason" className={styles.label}>{t('reason') || 'Motivo y Notas'}</label>
                     <Input
+                        id="appointment-reason"
                         type="textarea"
                         rows="1"
                         value={reason}

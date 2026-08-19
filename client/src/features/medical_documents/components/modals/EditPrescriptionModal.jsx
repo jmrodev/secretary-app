@@ -40,7 +40,7 @@ export const EditPrescriptionModal = ({
         >
             <div className="config-flex--column config-flex--gap-4">
                 <div className="input-group">
-                    <label className="input-label">{t('medications')}</label>
+                    <label htmlFor="edit-prescription-medications" className="input-label">{t('medications')}</label>
                     {editData.items && editData.items.length > 0 && (
                         <div className="prescription-modal mb-4">
                             <PrescriptionItemsList
@@ -59,6 +59,7 @@ export const EditPrescriptionModal = ({
                         />
                     )}
                     <textarea
+                        id="edit-prescription-medications"
                         className="input-field mt-4"
                         rows="4"
                         readOnly={editData._readOnly}
@@ -67,8 +68,9 @@ export const EditPrescriptionModal = ({
                     />
                 </div>
                 <div className="input-group">
-                    <label className="input-label">{t('instructions')}</label>
+                    <label htmlFor="edit-prescription-instructions" className="input-label">{t('instructions')}</label>
                     <textarea
+                        id="edit-prescription-instructions"
                         className="input-field"
                         rows="3"
                         readOnly={editData._readOnly}

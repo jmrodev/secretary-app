@@ -157,11 +157,12 @@ export const PatientMedicationFormModal = ({
             <form onSubmit={handleSubmit} className={styles.PatientMedicationFormModal__root}>
                 {/* Vademecum Autocomplete */}
                 <div className={styles.PatientMedicationFormModal__fieldGroup} ref={dropdownRef}>
-                    <label className={styles.PatientMedicationFormModal__label}>
+                    <label htmlFor="med-name" className={styles.PatientMedicationFormModal__label}>
                         {t('medication_name') || 'Nombre del Medicamento / Vademécum'} *
                     </label>
                     <div className={styles.PatientMedicationFormModal__inputWrapper}>
                         <input
+                            id="med-name"
                             type="text"
                             className={styles.PatientMedicationFormModal__input}
                             value={medName}
@@ -196,8 +197,9 @@ export const PatientMedicationFormModal = ({
                 {/* Dose & Frequency Grid */}
                 <div className={styles.PatientMedicationFormModal__gridTwoCols}>
                     <div className={styles.PatientMedicationFormModal__fieldGroup}>
-                        <label className={styles.PatientMedicationFormModal__label}>{t('dosage') || 'Dosis (ej: 50 mg, 1 comp.)'}</label>
+                        <label htmlFor="med-dose" className={styles.PatientMedicationFormModal__label}>{t('dosage') || 'Dosis (ej: 50 mg, 1 comp.)'}</label>
                         <input
+                            id="med-dose"
                             type="text"
                             className={styles.PatientMedicationFormModal__input}
                             value={dose}
@@ -206,8 +208,9 @@ export const PatientMedicationFormModal = ({
                         />
                     </div>
                     <div className={styles.PatientMedicationFormModal__fieldGroup}>
-                        <label className={styles.PatientMedicationFormModal__label}>{t('frequency') || 'Frecuencia (ej: Cada 12 hs)'}</label>
+                        <label htmlFor="med-frequency" className={styles.PatientMedicationFormModal__label}>{t('frequency') || 'Frecuencia (ej: Cada 12 hs)'}</label>
                         <input
+                            id="med-frequency"
                             type="text"
                             className={styles.PatientMedicationFormModal__input}
                             value={frequency}
@@ -220,8 +223,9 @@ export const PatientMedicationFormModal = ({
                 {/* Boxes count & Chronic Checkbox */}
                 <div className={styles.PatientMedicationFormModal__gridTwoCols}>
                     <div className={styles.PatientMedicationFormModal__fieldGroup}>
-                        <label className={styles.PatientMedicationFormModal__label}>{t('boxes_count') || 'Cantidad de Cajas'}</label>
+                        <label htmlFor="med-boxes" className={styles.PatientMedicationFormModal__label}>{t('boxes_count') || 'Cantidad de Cajas'}</label>
                         <input
+                            id="med-boxes"
                             type="number"
                             min="1"
                             max="10"
@@ -244,8 +248,9 @@ export const PatientMedicationFormModal = ({
 
                 {/* Notes */}
                 <div className={styles.PatientMedicationFormModal__fieldGroup}>
-                    <label className={styles.PatientMedicationFormModal__label}>{t('notes') || 'Indicaciones / Observaciones'}</label>
+                    <label htmlFor="med-notes" className={styles.PatientMedicationFormModal__label}>{t('notes') || 'Indicaciones / Observaciones'}</label>
                     <textarea
+                        id="med-notes"
                         className={styles.PatientMedicationFormModal__textarea}
                         rows="2"
                         value={notes}

@@ -195,7 +195,7 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
 
                         <div className={`${styles.DoctorMessagesForm__aiGrid}`}>
                             <div className={`${styles.DoctorMessagesForm__field} doctor-messages-form__field--main`}>
-                                <label className={`${styles.DoctorMessagesForm__label}`}>
+                                <label htmlFor="gemini-context-textarea" className={`${styles.DoctorMessagesForm__label}`}>
                                     {t('gemini_context_label')}
                                 </label>
                                 
@@ -228,10 +228,11 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
 
                             <aside className={`${styles.DoctorMessagesForm__aiSidebar}`}>
                                 <div className={`${styles.DoctorMessagesForm__field}`}>
-                                    <label className={`${styles.DoctorMessagesForm__label}`}>
+                                    <label htmlFor="doctor-api-version" className={`${styles.DoctorMessagesForm__label}`}>
                                         {t('gemini_api_version_label')}
                                     </label>
                                     <select
+                                        id="doctor-api-version"
                                         className={`${styles.DoctorMessagesForm__input}`}
                                         value={data.gemini_api_version || 'v1beta'}
                                         onChange={(e) => updateField('gemini_api_version', e.target.value)}
@@ -242,10 +243,11 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                                 </div>
 
                                 <div className={`${styles.DoctorMessagesForm__field}`}>
-                                    <label className={`${styles.DoctorMessagesForm__label}`}>
+                                    <label htmlFor="doctor-model" className={`${styles.DoctorMessagesForm__label}`}>
                                         {t('gemini_model_label')}
                                     </label>
                                     <select
+                                        id="doctor-model"
                                         className={`${styles.DoctorMessagesForm__input}`}
                                         value={normalizeGeminiModel(data.gemini_model) || 'gemini-3.6-flash'}
                                         onChange={(e) => updateField('gemini_model', e.target.value)}
@@ -257,10 +259,11 @@ Sos "Gemi", la asistente virtual del consultorio de {doctor_name}. Tu misión es
                                 </div>
 
                                 <div className={`${styles.DoctorMessagesForm__field}`}>
-                                    <label className={`${styles.DoctorMessagesForm__label}`}>
+                                    <label htmlFor="doctor-history-limit" className={`${styles.DoctorMessagesForm__label}`}>
                                         {t('gemini_history_limit_label')}
                                     </label>
                                     <input
+                                        id="doctor-history-limit"
                                         type="number"
                                         min="1"
                                         max="20"

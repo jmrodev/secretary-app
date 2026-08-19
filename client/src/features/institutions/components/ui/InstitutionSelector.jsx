@@ -19,11 +19,12 @@ export const InstitutionSelector = ({
     return (
         <div className={`${styles.InstitutionSelector__root} animate-fade-in`}>
             <div className={`${styles.InstitutionSelector__group}`}>
-                <label className={`${styles.InstitutionSelector__label}`}>
+                <label htmlFor="institution-selector-select" className={`${styles.InstitutionSelector__label}`}>
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />
                     {t('institutions') || 'Instituciones'}:
                 </label>
                 <select
+                    id="institution-selector-select"
                     className={`${styles.InstitutionSelector__select}`}
                     value={selectedInstId}
                     onChange={e => setSelectedInstId(e.target.value)}

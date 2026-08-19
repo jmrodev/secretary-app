@@ -4,6 +4,7 @@ import { StatusDisplay } from '@/components/molecules/StatusDisplay';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Loading } from '@/components/atoms/Loading';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PublicRequestPage.module.css';
 
 /**
@@ -11,6 +12,7 @@ import styles from './PublicRequestPage.module.css';
  * Patient-facing portal for requesting prescriptions.
  */
 export const PublicRequestPage = () => {
+    const { t } = useLanguage();
     const {
         loading,
         error,
@@ -111,7 +113,11 @@ export const PublicRequestPage = () => {
                         Buscar otra medicación
                     </h2>
                     <div className={`${styles.PublicRequestPage__searchWrapper}`}>
+                        <label htmlFor="public-request-search" className={`${styles.PublicRequestPage__label}`}>
+                            {t('search_medication') || 'Buscar medicación'}
+                        </label>
                         <input
+                            id="public-request-search"
                             type="text"
                             placeholder="Ej: Losartan, Atenolol..."
                             className={`${styles.PublicRequestPage__searchInput}`}
@@ -157,7 +163,11 @@ export const PublicRequestPage = () => {
                         <Icon name="NOTES" size="1.2rem" className="mr-2" />
                         Notas (Opcional)
                     </h2>
+                    <label htmlFor="public-request-notes" className={`${styles.PublicRequestPage__label}`}>
+                        {t('instructions_notes') || 'Instrucciones o Notas'}
+                    </label>
                     <textarea
+                        id="public-request-notes"
                         className="public-prescription__notes-field"
                         placeholder="Ej: Retiro por secretaría el miércoles..."
                         value={notes}

@@ -29,7 +29,7 @@ export const MedicationInput = ({
     return (
         <div className={`${styles.MedicationInput__root} ${className} animate-fade-in`}>
             <div className={`${styles.MedicationInput__header}`}>
-                <label className={`${styles.MedicationInput__label}`}>
+                <label htmlFor="medication-search" className={`${styles.MedicationInput__label}`}>
                     {label}
                     {optional && (
                         <span className={`${styles.MedicationInput__optionalBadge}`}>Optional</span>
@@ -38,6 +38,7 @@ export const MedicationInput = ({
             </div>
 
             <MedicationAutocomplete
+                id="medication-search"
                 value={searchValue}
                 onChange={setSearchValue}
                 onSelectMedication={handleSelectMedication}

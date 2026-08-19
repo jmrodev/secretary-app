@@ -18,8 +18,9 @@ export const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubm
     return (
         <form onSubmit={onSubmit} className={`${styles.InstitutionForm__root}`}>
             <div className={`${styles.InstitutionForm__group}`}>
-                <label className={`${styles.InstitutionForm__label}`}>{t('institution_name')} *</label>
+                <label htmlFor="institution-name" className={`${styles.InstitutionForm__label}`}>{t('institution_name')} *</label>
                 <Input
+                    id="institution-name"
                     type="text"
                     className="institution-form__input"
                     value={formData.name}
@@ -29,8 +30,9 @@ export const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubm
             </div>
 
             <div className={`${styles.InstitutionForm__group}`}>
-                <label className={`${styles.InstitutionForm__label}`}>{t('base_amount_label')}</label>
+                <label htmlFor="institution-base-price" className={`${styles.InstitutionForm__label}`}>{t('base_amount_label')}</label>
                 <Input
+                    id="institution-base-price"
                     type="number"
                     className="institution-form__input"
                     value={formData.base_price}
@@ -47,8 +49,9 @@ export const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubm
             </div>
 
             <div className={`${styles.InstitutionForm__group}`}>
-                <label className={`${styles.InstitutionForm__label}`}>{t('description')}</label>
+                <label htmlFor="institution-description" className={`${styles.InstitutionForm__label}`}>{t('description')}</label>
                 <Input
+                    id="institution-description"
                     type="textarea"
                     rows={3}
                     className="institution-form__input"
@@ -58,8 +61,9 @@ export const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubm
             </div>
 
             <div className={`${styles.InstitutionForm__group}`}>
-                <label className={`${styles.InstitutionForm__label}`}>{t('status')}</label>
+                <label htmlFor="institution-status" className={`${styles.InstitutionForm__label}`}>{t('status')}</label>
                 <Select
+                    id="institution-status"
                     className="institution-form__input"
                     value={formData.status}
                     options={statusOptions}

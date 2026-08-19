@@ -16,8 +16,9 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
 
             <div className={`${styles.PatientAddressFields__bento}`}>
                 <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan6}`}>
-                    <label className={`${styles.PatientAddressFields__label}`}>{t('street_name')}</label>
+                    <label htmlFor="patient-street" className={`${styles.PatientAddressFields__label}`}>{t('street_name')}</label>
                     <Input
+                        id="patient-street"
                         name="street_name"
                         className="patient-address-fields__field"
                         value={formData.street_name || ''}
@@ -26,8 +27,9 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
                 <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan2}`}>
-                    <label className={`${styles.PatientAddressFields__label}`}>{t('street_number')}</label>
+                    <label htmlFor="patient-street-number" className={`${styles.PatientAddressFields__label}`}>{t('street_number')}</label>
                     <Input
+                        id="patient-street-number"
                         name="street_number"
                         className="patient-address-fields__field"
                         value={formData.street_number || ''}
@@ -37,8 +39,9 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                 </div>
 
                 <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan2}`}>
-                    <label className={`${styles.PatientAddressFields__label}`}>{t('floor')}</label>
+                    <label htmlFor="patient-floor" className={`${styles.PatientAddressFields__label}`}>{t('floor')}</label>
                     <Input
+                        id="patient-floor"
                         name="floor"
                         className="patient-address-fields__field"
                         value={formData.floor || ''}
@@ -47,8 +50,9 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
                 <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan2}`}>
-                    <label className={`${styles.PatientAddressFields__label}`}>{t('apartment')}</label>
+                    <label htmlFor="patient-apartment" className={`${styles.PatientAddressFields__label}`}>{t('apartment')}</label>
                     <Input
+                        id="patient-apartment"
                         name="apartment"
                         className="patient-address-fields__field"
                         value={formData.apartment || ''}
@@ -58,8 +62,9 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                 </div>
 
                 <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan3}`}>
-                    <label className={`${styles.PatientAddressFields__label}`}>{t('city')}</label>
+                    <label htmlFor="patient-city" className={`${styles.PatientAddressFields__label}`}>{t('city')}</label>
                     <Input
+                        id="patient-city"
                         name="city"
                         className="patient-address-fields__field"
                         value={formData.city || ''}
@@ -67,8 +72,9 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
                 <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan3}`}>
-                    <label className={`${styles.PatientAddressFields__label}`}>{t('province')}</label>
+                    <label htmlFor="patient-province" className={`${styles.PatientAddressFields__label}`}>{t('province')}</label>
                     <Input
+                        id="patient-province"
                         name="province"
                         className="patient-address-fields__field"
                         value={formData.province || ''}

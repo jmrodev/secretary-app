@@ -56,6 +56,7 @@ export const PatientPrintableContent = ({
                                             checked={!isExcluded} 
                                             onChange={() => toggleExclude(`appt_${app.id}`)} 
                                             className="no-print cursor-pointer"
+                                            aria-label={t('include_in_print') || 'Incluir en la impresión'}
                                         />
                                         <div>
                                             <strong>{formatDate(app.appointment_date)} {formatTime(app.appointment_date)}</strong> 
@@ -105,6 +106,7 @@ export const PatientPrintableContent = ({
                                             checked={!isExcluded} 
                                             onChange={() => toggleExclude(`req_${p.id}`)} 
                                             className="no-print cursor-pointer mt-1"
+                                            aria-label={t('include_in_print') || 'Incluir en la impresión'}
                                         />
                                         <div className="flex-1">
                                             <div className="printable-item-header mb-1 text-sm-compact">

@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Loading } from '@/components/atoms/Loading';
+import { useLanguage } from '@/hooks/useLanguage';
 import { parseDate, isToday, formatTime, formatDate as formatUtil } from '@/utils/core/dateUtils';
 import styles from './ChatWindow.module.css';
 
@@ -28,6 +29,7 @@ export const ChatWindow = ({
     scrollRef,
     onBack // Added onBack prop
 }) => {
+    const { t } = useLanguage();
 
     if (!selectedConvo) {
         return (
@@ -84,7 +86,11 @@ export const ChatWindow = ({
             <footer className={`${styles.ChatWindow__footer}`}>
                 <form className={`${styles.ChatWindow__inputArea}`} onSubmit={onSendMessage}>
                     <div className={`${styles.ChatWindow__inputWrapper}`}>
+                        <label htmlFor="chat-message" className={`${styles.ChatWindow__label}`}>
+                            {t('write_message') || 'Escribe un mensaje'}
+                        </label>
                         <input
+                            id="chat-message"
                             type="text"
                             placeholder="Escribe un mensaje aquí..."
                             className={`${styles.ChatWindow__input}`}

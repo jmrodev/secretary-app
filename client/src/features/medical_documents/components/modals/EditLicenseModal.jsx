@@ -36,8 +36,9 @@ export const EditLicenseModal = ({
         >
             <div className="config-flex--column config-flex--gap-4">
                 <div className="input-group">
-                    <label className="input-label">{t('request_note') || 'Descripción de la licencia'}</label>
+                    <label htmlFor="edit-license-request-note" className="input-label">{t('request_note') || 'Descripción de la licencia'}</label>
                     <textarea
+                        id="edit-license-request-note"
                         className="input-field"
                         rows="4"
                         readOnly={editData._readOnly}
@@ -46,8 +47,9 @@ export const EditLicenseModal = ({
                     />
                 </div>
                 <div className="input-group">
-                    <label className="input-label">{t('doctor_note') || 'Nota del médico'}</label>
+                    <label htmlFor="edit-license-doctor-note" className="input-label">{t('doctor_note') || 'Nota del médico'}</label>
                     <textarea
+                        id="edit-license-doctor-note"
                         className="input-field"
                         rows="3"
                         readOnly={editData._readOnly}

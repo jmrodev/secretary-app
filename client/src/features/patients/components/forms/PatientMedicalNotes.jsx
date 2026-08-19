@@ -27,8 +27,9 @@ export const PatientMedicalNotes = ({ formData, updatePatientData, institutions,
 
             <div className={`${styles.PatientMedicalNotes__content}`}>
                 <div className={`${styles.PatientMedicalNotes__group} ${styles.groupInstitution}`}>
-                    <label className={`${styles.PatientMedicalNotes__label}`}>{t('paying_institution')}</label>
+                    <label htmlFor="patient-paying-institution" className={`${styles.PatientMedicalNotes__label}`}>{t('paying_institution')}</label>
                     <Select
+                        id="patient-paying-institution"
                         name="institution_id"
                         value={formData.institution_id || ''}
                         options={institutionOptions}
@@ -37,8 +38,9 @@ export const PatientMedicalNotes = ({ formData, updatePatientData, institutions,
                 </div>
 
                 <div className={`${styles.PatientMedicalNotes__group}`}>
-                    <label className={`${styles.PatientMedicalNotes__label}`}>{t('medical_history_notes')}</label>
+                    <label htmlFor="patient-medical-history" className={`${styles.PatientMedicalNotes__label}`}>{t('medical_history_notes')}</label>
                     <Input
+                        id="patient-medical-history"
                         type="textarea"
                         name="medical_history"
                         rows={4}

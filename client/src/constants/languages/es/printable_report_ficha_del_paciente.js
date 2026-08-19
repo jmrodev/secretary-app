@@ -40,4 +40,7 @@ export const printable_report_ficha_del_paciente = {
     whatsapp_chat_with: "Chatear con",
     you: "Tú",
     unread_messages: "Mensajes sin leer",
+    include_in_print: "Incluir en la impresión",
+    from_date: "Desde",
+    to_date: "Hasta",
 };

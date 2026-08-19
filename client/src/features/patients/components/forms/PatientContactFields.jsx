@@ -17,9 +17,10 @@ export const PatientContactFields = ({ formData, updatePatientData, updatePhoneN
 
             <div className={`${styles.PatientContactFields__bento}`}>
                 <div className={`${styles.PatientContactFields__group} ${styles.PatientContactFields__groupSpan5}`}>
-                    <label className={`${styles.PatientContactFields__label}`}>{t('primary_email')}</label>
+                    <label htmlFor="patient-email" className={`${styles.PatientContactFields__label}`}>{t('primary_email')}</label>
                     <div className={`${styles.PatientContactFields__inputWithAction}`}>
                         <Input
+                            id="patient-email"
                             type="email"
                             name="email"
                             className="patient-contact-fields__field"
@@ -41,7 +42,7 @@ export const PatientContactFields = ({ formData, updatePatientData, updatePhoneN
                 </div>
 
                 <div className={`${styles.PatientContactFields__group} ${styles.PatientContactFields__groupSpan7}`}>
-                    <label className={`${styles.PatientContactFields__label}`}>{t('contact_phones') || 'Teléfonos'}</label>
+                    <span className={`${styles.PatientContactFields__label}`}>{t('contact_phones') || 'Teléfonos'}</span>
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
                         onChange={updatePhoneNumbers}

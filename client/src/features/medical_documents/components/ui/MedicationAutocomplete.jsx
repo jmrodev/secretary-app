@@ -53,7 +53,8 @@ export const MedicationAutocomplete = ({
     onChange,
     placeholder,
     className = '',
-    onSelectMedication
+    onSelectMedication,
+    id
 }) => {
     const { t } = useLanguage();
     const wrapperRef = useRef(null);
@@ -88,6 +89,7 @@ export const MedicationAutocomplete = ({
         <div className={`${styles.MedicationAutocomplete__animateFadeIn} ${styles.MedicationAutocomplete__root} ${className}`} ref={wrapperRef}>
             <div className={styles.MedicationAutocomplete__inputWrapper}>
                 <Input
+                    id={id}
                     className={styles.MedicationAutocomplete__input}
                     value={searchTerm}
                     onChange={(e) => handleSearch(e.target.value)}

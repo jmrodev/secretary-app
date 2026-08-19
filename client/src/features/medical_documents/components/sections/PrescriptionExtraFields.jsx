@@ -6,8 +6,9 @@ export const PrescriptionExtraFields = ({ instructions, setInstructions, bonifie
         <>
             <article className="prescription-modal__group">
                 <h3 className="visually-hidden">{t('instructions')}</h3>
-                <label className="prescription-modal__label">{t('instructions')}</label>
+                <label htmlFor="prescription-instructions" className="prescription-modal__label">{t('instructions')}</label>
                 <textarea
+                    id="prescription-instructions"
                     className="input-field"
                     rows="3"
                     value={instructions}

@@ -22,5 +22,9 @@ export const finances = {
     // Reports Table Headers
     weekly_total: "Weekly Total",
     cumulative_monthly_total: "Cumulative Monthly Total",
+
+    // Transaction Table
+    select_all: "Select all",
+    select_transaction: "Select transaction",
 };
 

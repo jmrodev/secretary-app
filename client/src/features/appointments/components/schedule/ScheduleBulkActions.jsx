@@ -22,6 +22,7 @@ export const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkE
                         className={`input-field ${styles.timeInput}`}
                         value={bulkStart}
                         onChange={(e) => setBulkStart(e.target.value)}
+                        aria-label={t('start_time') || 'Hora de inicio'}
                     />
                     <span className={`${styles.ScheduleBulkActions__separator}`}>{t('to_label') || 'a'}</span>
                     <input
@@ -29,6 +30,7 @@ export const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkE
                         className={`input-field ${styles.timeInput}`}
                         value={bulkEnd}
                         onChange={(e) => setBulkEnd(e.target.value)}
+                        aria-label={t('end_time') || 'Hora de fin'}
                     />
                 </div>
                 <div className={`${styles.ScheduleBulkActions__buttons}`}>

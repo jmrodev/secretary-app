@@ -44,6 +44,7 @@ export const PatientPrintableFilters = ({
                         value={fromDate} 
                         onChange={(e) => dispatch({ type: 'SET_FILTER', payload: { name: 'fromDate', value: e.target.value } })} 
                         className="printable-input" 
+                        aria-label={t('from_date') || 'Desde'}
                     />
                     <span>-</span>
                     <input 
@@ -51,6 +52,7 @@ export const PatientPrintableFilters = ({
                         value={toDate} 
                         onChange={(e) => dispatch({ type: 'SET_FILTER', payload: { name: 'toDate', value: e.target.value } })} 
                         className="printable-input" 
+                        aria-label={t('to_date') || 'Hasta'}
                     />
                     
                     <span className="ml-4">{t('limit')}</span>

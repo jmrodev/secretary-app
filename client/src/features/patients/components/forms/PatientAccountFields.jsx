@@ -15,8 +15,9 @@ export const PatientAccountFields = ({ formData, updatePatientData, t }) => {
 
             <div className={`${styles.PatientAccountFields__bento}`}>
                 <div className={`${styles.PatientAccountFields__group} ${styles.PatientAccountFields__groupSpan6}`}>
-                    <label className={`${styles.PatientAccountFields__label}`}>{t('username')}</label>
+                    <label htmlFor="patient-username" className={`${styles.PatientAccountFields__label}`}>{t('username')}</label>
                     <Input
+                        id="patient-username"
                         type="text"
                         name="username"
                         className="patient-account-fields__field"
@@ -28,8 +29,9 @@ export const PatientAccountFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
                 <div className={`${styles.PatientAccountFields__group} ${styles.PatientAccountFields__groupSpan6}`}>
-                    <label className={`${styles.PatientAccountFields__label}`}>{t('password')}</label>
+                    <label htmlFor="patient-password" className={`${styles.PatientAccountFields__label}`}>{t('password')}</label>
                     <Input
+                        id="patient-password"
                         type="password"
                         name="password"
                         className="patient-account-fields__field"

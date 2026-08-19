@@ -37,15 +37,17 @@ export const DebtPaymentModal = ({
         >
             <div className={`${styles.DebtPaymentModal__root}`}>
                 <div className={`${styles.DebtPaymentModal__field}`}>
-                    <label className={`${styles.DebtPaymentModal__label}`}>{t('amount')} ($)</label>
+                    <label htmlFor="debt-payment-amount" className={`${styles.DebtPaymentModal__label}`}>{t('amount')} ($)</label>
                     <CurrencyInput
+                        id="debt-payment-amount"
                         value={amount}
                         onChange={(e) => onAmountChange(e.target.value)}
                     />
                 </div>
                 <div className={`${styles.DebtPaymentModal__field}`}>
-                    <label className={`${styles.DebtPaymentModal__label}`}>{t('payment_method')}</label>
+                    <label htmlFor="debt-payment-method" className={`${styles.DebtPaymentModal__label}`}>{t('payment_method')}</label>
                     <Select
+                        id="debt-payment-method"
                         value={method}
                         onChange={(e) => onMethodChange(e.target.value)}
                         options={paymentMethods}

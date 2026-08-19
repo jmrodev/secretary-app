@@ -38,7 +38,7 @@ export const TransactionPaymentsSection = ({
                 {/* Block 2: Payment methods and amounts */}
                 <div className={`${styles.paymentsContainer}`}>
                     <div className={`${styles.paymentMethodsHeader}`}>
-                        <label className={`${styles.paymentMethodsTitle}`}>{t('payment_methods')}</label>
+                        <span className={`${styles.paymentMethodsTitle}`}>{t('payment_methods')}</span>
                         <Button 
                             variant="ghost" 
                             size="sm-compact" 

@@ -11,9 +11,9 @@ export const HabitualMedicationsGrid = ({ patientMeds, medicationItems, onSelect
 
     return (
         <div className={`${baseClass}__habitual animate-fade-in`}>
-            <label className={`${baseClass}__field-label block text-sm font-bold text-gray-700 mb-3`}>
+            <div className={`${baseClass}__field-label block text-sm font-bold text-gray-700 mb-3`}>
                 {t('habitual_meds') || 'Habituales'}:
-            </label>
+            </div>
             <div className={`${baseClass}__habitual-grid grid grid-cols-2 md:grid-cols-3 gap-3`}>
                 {patientMeds.map(m => {
                     const isSelected = medicationItems.some(i => i.name === m.medication_name);

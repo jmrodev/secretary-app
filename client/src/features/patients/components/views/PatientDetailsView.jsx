@@ -472,6 +472,7 @@ export const PatientDetailsView = ({
                                                     onChange={e => setNewFile(e.target.files[0])}
                                                     required 
                                                     style={{ flex: 1 }}
+                                                    aria-label={t('upload_file_for_patient') || 'Adjuntar Documento al Paciente'}
                                                 />
                                                 <input 
                                                     type="text" 
