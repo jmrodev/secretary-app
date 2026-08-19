@@ -176,15 +176,17 @@ export const PatientMedicationFormModal = ({
                     {showDropdown && (
                         <ul className={styles.PatientMedicationFormModal__dropdown}>
                             {vademecumResults.map((item) => (
-                                <li
-                                    key={item.id}
-                                    className={styles.PatientMedicationFormModal__dropdownItem}
-                                    onClick={() => handleSelectVademecumItem(item)}
-                                >
-                                    <div className={styles.PatientMedicationFormModal__itemTitle}>{item.name}</div>
-                                    <div className={styles.PatientMedicationFormModal__itemMeta}>
-                                        {item.presentation} {item.drug ? `(${item.drug})` : ''} [{item.lab}]
-                                    </div>
+                                <li key={item.id}>
+                                    <button
+                                        type="button"
+                                        className={styles.PatientMedicationFormModal__dropdownItem}
+                                        onClick={() => handleSelectVademecumItem(item)}
+                                    >
+                                        <span className={styles.PatientMedicationFormModal__itemTitle}>{item.name}</span>
+                                        <span className={styles.PatientMedicationFormModal__itemMeta}>
+                                            {item.presentation} {item.drug ? `(${item.drug})` : ''} [{item.lab}]
+                                        </span>
+                                    </button>
                                 </li>
                             ))}
                         </ul>

@@ -86,6 +86,12 @@ export const PatientHistoryView = ({ patientAppointments, loading, onClose, t, s
                                     key={appt.id}
                                     className={`${styles.PatientHistoryView__row} ${styles['row' + appt.status.charAt(0).toUpperCase() + appt.status.slice(1)]}`}
                                     onClick={() => handlers.handleOpenAction(appt)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            handlers.handleOpenAction(appt);
+                                        }
+                                    }}
                                     title={translate('view')}
                                 >
                                     <td className={`${styles.PatientHistoryView__td}`}>

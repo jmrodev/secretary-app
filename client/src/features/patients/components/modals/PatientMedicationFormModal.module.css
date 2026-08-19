@@ -90,7 +90,14 @@
 }
 
 .PatientMedicationFormModal__dropdownItem {
+    display: block;
+    width: 100%;
     padding: 0.6rem 0.85rem;
+    border: none;
+    background: none;
+    font-family: inherit;
+    text-align: left;
+    color: inherit;
     cursor: pointer;
     border-bottom: 1px solid var(--gray-100, #f8f9fa);
     transition: background 0.15s ease;
@@ -101,12 +108,14 @@
 }
 
 .PatientMedicationFormModal__itemTitle {
+    display: block;
     font-weight: 600;
     font-size: 0.9rem;
     color: var(--gray-900, #212529);
 }
 
 .PatientMedicationFormModal__itemMeta {
+    display: block;
     font-size: 0.8rem;
     color: var(--gray-600, #6c757d);
     margin-top: 0.15rem;

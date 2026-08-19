@@ -73,41 +73,41 @@ export const WhatsappInbox = ({
                                 (conv.patient_id ? activeChat.patientId === conv.patient_id : activeChat.phone === conv.patient_phone);
                              const chatKey = conv.patient_id || conv.patient_phone;
                              
-                             return (
-                                <li 
-                                    key={chatKey} 
-                                    role="button"
-                                    tabIndex={0}
-                                    className={`${styles.GlobalWhatsappMessenger__listItem} ${isSelected ? styles.GlobalWhatsappMessenger__listItemActive : ''}`} 
-                                    onClick={() => onPatientClick(conv)}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter' || e.key === ' ') {
-                                            e.preventDefault();
-                                            onPatientClick(conv);
-                                        }
-                                    }}
-                                >
-                                <div className={styles.GlobalWhatsappMessenger__itemAvatar}>
-                                    {(conv.patient_name || 'U').charAt(0).toUpperCase()}
-                                </div>
-                                <div className={styles.GlobalWhatsappMessenger__itemInfo}>
-                                    <div className={styles.GlobalWhatsappMessenger__itemHeader}>
-                                        <strong>{conv.patient_name || conv.patient_phone || t('unknown')}</strong>
-                                        {conv.last_message_time && (
-                                            <span className={styles.GlobalWhatsappMessenger__itemTime}>
-                                                {formatTime(conv.last_message_time)}
-                                            </span>
-                                        )}
-                                    </div>
-                                    <p className={styles.GlobalWhatsappMessenger__itemBody}>
-                                        {conv.direction === 'outbound' ? `${t('you')}: ` : ''}{conv.body}
-                                    </p>
-                                </div>
-                                 {conv.direction === 'inbound' && !isSelected && (
-                                     <div className={styles.GlobalWhatsappMessenger__unreadDot} title={t('unread_messages')}></div>
-                                 )}
-                             </li>
-                             );
+return (
+                                  <li key={chatKey} className={`${styles.GlobalWhatsappMessenger__listItem} ${isSelected ? styles.GlobalWhatsappMessenger__listItemActive : ''}`}>
+                                      <button
+                                          type="button"
+                                          className={styles.GlobalWhatsappMessenger__listItemButton}
+                                          onClick={() => onPatientClick(conv)}
+                                          onKeyDown={(e) => {
+                                              if (e.key === 'Enter' || e.key === ' ') {
+                                                  e.preventDefault();
+                                                  onPatientClick(conv);
+                                              }
+                                          }}
+                                      >
+                                          <div className={styles.GlobalWhatsappMessenger__itemAvatar}>
+                                              {(conv.patient_name || 'U').charAt(0).toUpperCase()}
+                                          </div>
+                                          <div className={styles.GlobalWhatsappMessenger__itemInfo}>
+                                              <div className={styles.GlobalWhatsappMessenger__itemHeader}>
+                                                  <strong>{conv.patient_name || conv.patient_phone || t('unknown')}</strong>
+                                                  {conv.last_message_time && (
+                                                      <span className={styles.GlobalWhatsappMessenger__itemTime}>
+                                                          {formatTime(conv.last_message_time)}
+                                                      </span>
+                                                  )}
+                                              </div>
+                                              <p className={styles.GlobalWhatsappMessenger__itemBody}>
+                                                  {conv.direction === 'outbound' ? `${t('you')}: ` : ''}{conv.body}
+                                              </p>
+                                          </div>
+                                          {conv.direction === 'inbound' && !isSelected && (
+                                              <div className={styles.GlobalWhatsappMessenger__unreadDot} title={t('unread_messages')}></div>
+                                          )}
+                                      </button>
+                                  </li>
+                                );
                          })}
                     </ul>
                 )}

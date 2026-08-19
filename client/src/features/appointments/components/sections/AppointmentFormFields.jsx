@@ -105,17 +105,17 @@ export const AppointmentFormFields = ({
                     />
                 </div>
                 
-                <div className={styles.checkboxContainer} onClick={() => handleBonifiedChange(!bonified)}>
+                <label className={styles.checkboxContainer}>
                     <input
                         type="checkbox"
                         checked={bonified}
                         onChange={e => handleBonifiedChange(e.target.checked)}
                         className={styles.checkbox}
                     />
-                    <label className={styles.checkboxLabel}>
+                    <span className={styles.checkboxLabel}>
                         {t('bonified_label') || 'Bonificar este turno (Sin costo)'}
-                    </label>
-                </div>
+                    </span>
+                </label>
             </div>
         </div>
     );

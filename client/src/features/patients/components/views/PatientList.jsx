@@ -66,8 +66,6 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                 }
             }}
             className={`${styles.PatientList__row}`}
-            role="button"
-            tabIndex={0}
         >
             <td>
                 <div className={`${styles.PatientList__patientCol}`}>
@@ -185,6 +183,7 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                     size="sm-compact"
                     className={`${styles.PatientList__viewBtn}`}
                     icon={<Icon name="badge" />}
+                    onClick={(e) => { e.stopPropagation(); onViewDetails(p.id); }}
                 >
                     {t('view_details') || 'Ficha'}
                 </Button>

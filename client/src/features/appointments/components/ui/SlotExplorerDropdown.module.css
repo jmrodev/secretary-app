@@ -27,6 +27,9 @@
     font-size: 1rem;
     font-weight: 700;
     color: var(--text-muted);
+    border: none;
+    background: none;
+    font-family: inherit;
     cursor: pointer;
     border-radius: 4px;
 }
@@ -55,10 +58,15 @@
 }
 
 .SlotExplorerDropdown__sidebarItem {
+    display: block;
+    width: 100%;
     padding: 12px 10px;
     font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-secondary);
+    border: none;
+    background: none;
+    font-family: inherit;
     cursor: pointer;
     border-bottom: 1px solid var(--border-color);
     transition: all 0.2s;
@@ -101,10 +109,15 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
     padding: 14px 18px; /* Extremely comfortable padding */
     background: var(--background-bg);
+    border: none;
     border-radius: 6px;
     margin-bottom: 3px;
+    font-family: inherit;
+    text-align: left;
+    color: inherit;
     cursor: pointer;
     transition: background 0.2s;
 }

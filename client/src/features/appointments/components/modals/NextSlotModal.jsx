@@ -83,13 +83,14 @@ export const NextSlotModal = ({
                 {/* 1. Horizontal Month Bar */}
                 <nav className={styles.NextSlotModal__monthBar}>
                     {navMonths.map((m, idx) => (
-                        <div 
+                        <button
+                            type="button"
                             key={`month-${m.month}-${m.year}`} 
                             className={`${styles.NextSlotModal__monthItem} ${currentMonth === m.month ? styles.NextSlotModal__monthActive : ''}`}
                             onClick={() => jumpToMonth(m.month, m.year)}
                         >
                             {m.label}
-                        </div>
+                        </button>
                     ))}
                 </nav>
 

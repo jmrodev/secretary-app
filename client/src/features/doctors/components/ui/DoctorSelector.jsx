@@ -41,6 +41,12 @@ export const DoctorSelector = () => {
             <div 
                 className={`${styles.DoctorSelector__trigger} ${isOpen ? styles.DoctorSelector__triggerOpen : ''}`} 
                 onClick={() => setIsOpen(!isOpen)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setIsOpen(prev => !prev);
+                    }
+                }}
                 role="button"
                 tabIndex={0}
             >
@@ -59,14 +65,15 @@ export const DoctorSelector = () => {
             {isOpen && (
                 <div className={styles.DoctorSelector__dropdown}>
                     {doctors.map(d => (
-                        <div 
+                        <button 
+                            type="button"
                             key={d.id}
                             className={`${styles.DoctorSelector__option} ${String(d.id) === String(viewDoctorId) ? styles.DoctorSelector__optionActive : ''}`}
                             onClick={() => { setViewDoctorId(String(d.id)); setIsOpen(false); }}
                         >
                             <span className={styles.DoctorSelector__optionAvatar}>{d.full_name.charAt(0)}</span>
                             {d.full_name}
-                        </div>
+                        </button>
                     ))}
                 </div>
             )}
