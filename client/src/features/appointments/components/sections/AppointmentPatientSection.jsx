@@ -20,7 +20,7 @@ export const AppointmentPatientSection = ({
         <div className={styles.AppointmentPatientSection__root}>
             <div className={styles.AppointmentPatientSection__fieldsRow}>
                 <div className={styles.AppointmentPatientSection__searchGroup}>
-                    <label className={styles.AppointmentPatientSection__groupLabel}>{t('patients') || 'Paciente'}</label>
+                    <label htmlFor="patient-search-input" className={styles.AppointmentPatientSection__groupLabel}>{t('patients') || 'Paciente'}</label>
                     {PatientSearchSelect ? (
                         <div style={{ maxWidth: '35ch', width: '100%' }}>
                             <PatientSearchSelect
@@ -40,10 +40,10 @@ export const AppointmentPatientSection = ({
                 </div>
 
                 <div className={styles.AppointmentPatientSection__searchGroup} style={{ width: '18ch', flexShrink: 0 }}>
-                    <label className={styles.AppointmentPatientSection__groupLabel}>
+                    <span className={styles.AppointmentPatientSection__groupLabel}>
                         <Icon name="phone" size="0.8rem" style={{ marginRight: '0.35rem' }} />
-                        Teléfono
-                    </label>
+                        {t('phone') || 'Teléfono'}
+                    </span>
                     <PhoneInput
                         value={selectedPatientData?.phone || ''}
                         onChange={newValue => handlePhoneChange(newValue)}

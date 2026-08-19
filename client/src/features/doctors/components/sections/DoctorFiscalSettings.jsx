@@ -60,15 +60,17 @@ export const DoctorFiscalSettings = ({
                 </div>
 
                 <div className={`${styles.DoctorFiscalSettings__grid}`}>
-                    <FormGroup label={t('billing_cuit')}>
+                    <FormGroup label={t('billing_cuit')} htmlFor="fiscal-cuit">
                         <Input
+                            id="fiscal-cuit"
                             value={data.afip_cuit || ''}
                             onChange={(e) => onChangeData({ afip_cuit: e.target.value })}
                             placeholder="20123456789"
                         />
                     </FormGroup>
-                    <FormGroup label={t('pto_vta')}>
+                    <FormGroup label={t('pto_vta')} htmlFor="fiscal-pto-vta">
                         <Input
+                            id="fiscal-pto-vta"
                             value={data.afip_pto_vta || '1'}
                             onChange={(e) => onChangeData({ afip_pto_vta: e.target.value })}
                             type="number"
@@ -110,6 +112,7 @@ export const DoctorFiscalSettings = ({
                             value={generatedCsr}
                             className={`${styles.DoctorFiscalSettings__textarea}`}
                             onClick={e => e.target.select()}
+                            aria-label={t('your_csr') || 'Your Certificate Request (CSR)'}
                         />
                         <div className={`${styles.DoctorFiscalSettings__csrFooter}`}>
                             <span className={`${styles.DoctorFiscalSettings__hint}`}>{t('copy_to_wsass')}</span>

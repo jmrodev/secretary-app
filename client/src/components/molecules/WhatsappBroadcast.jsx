@@ -143,12 +143,13 @@ export const WhatsappBroadcast = ({ t }) => {
         <div className={styles.WhatsappBroadcast__root}>
             {/* Filter selector */}
             <div className={styles.WhatsappBroadcast__field}>
-                <label className={styles.WhatsappBroadcast__label}>
+                <label htmlFor="broadcast-filter" className={styles.WhatsappBroadcast__label}>
                     <Icon name="group" size="1rem" />
                     {t('broadcast_filter_label')}
                 </label>
                 <div className={styles.WhatsappBroadcast__filterRow}>
                     <select
+                        id="broadcast-filter"
                         className={styles.WhatsappBroadcast__select}
                         value={filter}
                         onChange={handleFilterChange}
@@ -167,11 +168,12 @@ export const WhatsappBroadcast = ({ t }) => {
 
             {/* Message textarea */}
             <div className={styles.WhatsappBroadcast__field}>
-                <label className={styles.WhatsappBroadcast__label}>
+                <label htmlFor="broadcast-message" className={styles.WhatsappBroadcast__label}>
                     <Icon name="edit" size="1rem" />
                     {t('broadcast_message_label')}
                 </label>
                 <textarea
+                    id="broadcast-message"
                     className={styles.WhatsappBroadcast__textarea}
                     rows={5}
                     placeholder={t('broadcast_message_placeholder')}

@@ -9,10 +9,11 @@ export const SimpleRequestForm = ({ reqType, reqNote, setReqNote, t, baseClass }
     return (
         <div className={`${baseClass}__simple-form`}>
             <div className="input-group">
-                <label className="input-label">
+                <label htmlFor="simple-request-note" className="input-label">
                     {reqType === 'license' ? t('diagnosis') : t('motive')}
                 </label>
                 <textarea
+                    id="simple-request-note"
                     className="input-field"
                     rows="3"
                     value={reqNote}

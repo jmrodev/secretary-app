@@ -7,7 +7,7 @@ const QuickSelectTable = ({ meds, label, items, onSelect, t }) => {
     if (!meds || meds.length === 0) return null;
     return (
         <div className={styles.PrescriptionHabitualMeds__container}>
-            <label className={styles.PrescriptionHabitualMeds__label}>{label}</label>
+            <span className={styles.PrescriptionHabitualMeds__label}>{label}</span>
             <div className={styles.PrescriptionHabitualMeds__tableWrapper}>
                 <table className={styles.PrescriptionHabitualMeds__table}>
                     <thead>

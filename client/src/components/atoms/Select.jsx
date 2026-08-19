@@ -14,7 +14,9 @@ export const Select = ({
     name,
     required = false,
     variant = 'default', // 'default', 'error'
-    size = 'md' // 'sm', 'md', 'lg'
+    size = 'md', // 'sm', 'md', 'lg'
+    ariaLabel,
+    ariaLabelledby
 }) => {
     const baseClass = styles.Select__root;
 
@@ -37,6 +39,8 @@ export const Select = ({
             className={combinedClassName}
             disabled={disabled}
             required={required}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledby}
         >
             {placeholder && (
                 <option value="" disabled={required}>

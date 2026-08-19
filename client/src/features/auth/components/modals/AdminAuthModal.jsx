@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * AdminAuthModal Feature Molecule.
@@ -11,6 +12,7 @@ import { Icon } from '@/components/atoms/Icon';
 import styles from './AdminAuthModal.module.css';
 
 export const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
+    const { t } = useLanguage();
     const [password, setPassword] = useState('');
     const inputRef = React.useRef(null);
 
@@ -43,7 +45,11 @@ export const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
                     Esta acción está restringida por seguridad. Por favor, ingrese la contraseña maestra de administrador para continuar con el proceso.
                 </p>
                 <div className={`${styles.AdminAuthModal__inputGroup}`}>
+                    <label htmlFor="admin-master-password" className={`${styles.AdminAuthModal__label}`}>
+                        {t('master_password') || 'Contraseña maestra'}
+                    </label>
                     <input
+                        id="admin-master-password"
                         type="password"
                         className={`${styles.AdminAuthModal__passwordInput} input-field`}
                         placeholder="••••••••"

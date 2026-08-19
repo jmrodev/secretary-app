@@ -5,6 +5,7 @@ export const auth = {
     username: "Username",
     username_placeholder: "Username",
     password: "Password",
+    master_password: "Master password",
     sign_in: "Sign In",
     signing_in: "Signing in...",
     no_account: "Don't have an account?",

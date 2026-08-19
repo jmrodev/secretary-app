@@ -46,8 +46,9 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
 
                 {/* Tariff Section */}
                 <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan3}`}>
-                    <label className={`${styles.PatientAdminFields__label}`}>Ajuste Tarifa (%)</label>
+                    <label htmlFor="admin-tariff-percent" className={`${styles.PatientAdminFields__label}`}>{t('admin_tariff_percent') || 'Ajuste Tarifa (%)'}</label>
                     <Input
+                        id="admin-tariff-percent"
                         type="number"
                         name="tariff_percent"
                         value={formData.tariff_percent || ''}
@@ -60,8 +61,9 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                     />
                 </div>
                 <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan3}`}>
-                    <label className={`${styles.PatientAdminFields__label}`}>Tarifa Fija</label>
+                    <label htmlFor="admin-tariff-override" className={`${styles.PatientAdminFields__label}`}>{t('admin_fixed_tariff') || 'Tarifa Fija'}</label>
                     <CurrencyInput
+                        id="admin-tariff-override"
                         value={formData.tariff_override || ''}
                         onChange={(e) => handleManualValueChange('tariff_override', e.target.value)}
                         placeholder="$ 5000"
@@ -71,8 +73,9 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
 
                 {/* Intervals Section */}
                 <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan3}`}>
-                    <label className={`${styles.PatientAdminFields__label}`}>Intervalo Visitas (Días)</label>
+                    <label htmlFor="admin-visit-interval" className={`${styles.PatientAdminFields__label}`}>{t('admin_visit_interval_days') || 'Intervalo Visitas (Días)'}</label>
                     <Input 
+                        id="admin-visit-interval"
                         type="number" 
                         name="visit_interval_days" 
                         value={formData.visit_interval_days || ''} 
@@ -85,8 +88,9 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                     />
                 </div>
                 <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan3}`}>
-                    <label className={`${styles.PatientAdminFields__label}`}>Intervalo Recetas (Días)</label>
+                    <label htmlFor="admin-prescription-interval" className={`${styles.PatientAdminFields__label}`}>{t('admin_prescription_interval_days') || 'Intervalo Recetas (Días)'}</label>
                     <Input 
+                        id="admin-prescription-interval"
                         type="number" 
                         name="prescription_interval_days" 
                         value={formData.prescription_interval_days || ''} 
@@ -101,8 +105,9 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
 
                 {/* Dates Section */}
                 <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan4}`}>
-                    <label className={`${styles.PatientAdminFields__label}`}>Próx. Visita</label>
+                    <label htmlFor="admin-next-visit" className={`${styles.PatientAdminFields__label}`}>{t('admin_next_visit') || 'Próx. Visita'}</label>
                     <Input 
+                        id="admin-next-visit"
                         type="date" 
                         name="next_suggested_visit_date" 
                         value={formData.next_suggested_visit_date || ''} 
@@ -111,8 +116,9 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                     />
                 </div>
                 <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan4}`}>
-                    <label className={`${styles.PatientAdminFields__label}`}>Próx. Receta</label>
+                    <label htmlFor="admin-next-prescription" className={`${styles.PatientAdminFields__label}`}>{t('admin_next_prescription') || 'Próx. Receta'}</label>
                     <Input 
+                        id="admin-next-prescription"
                         type="date" 
                         name="next_suggested_prescription_date" 
                         value={formData.next_suggested_prescription_date || ''} 
@@ -121,8 +127,9 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                     />
                 </div>
                 <div className={`${styles.PatientAdminFields__group} ${styles.PatientAdminFields__groupSpan4}`}>
-                    <label className={`${styles.PatientAdminFields__label}`}>Venc. Carnet</label>
+                    <label htmlFor="admin-license-expiry" className={`${styles.PatientAdminFields__label}`}>{t('admin_license_expiry') || 'Venc. Carnet'}</label>
                     <Input 
+                        id="admin-license-expiry"
                         type="date" 
                         name="license_expiry_date" 
                         value={formData.license_expiry_date || ''} 

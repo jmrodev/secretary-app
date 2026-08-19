@@ -16,7 +16,8 @@ export const ConfirmModal = ({
         confirm: 'Confirm',
         close: 'Close',
         cancel: 'Cancel',
-        accept: 'Accept'
+        accept: 'Accept',
+        prompt: 'Value'
     }
 }) => {
     const inputRef = useRef(null);
@@ -70,7 +71,11 @@ export const ConfirmModal = ({
             </div>
             {type === 'prompt' && (
                 <form onSubmit={handleConfirm} className="modal-form-bem">
+                    <label htmlFor="confirm-modal-prompt-input" className={styles.ConfirmModal__label}>
+                        {labels.prompt || 'Value'}
+                    </label>
                     <input
+                        id="confirm-modal-prompt-input"
                         type="text"
                         className="input-field"
                         defaultValue={initialValue}

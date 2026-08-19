@@ -66,14 +66,20 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                     <Icon name="whatsapp" size="1.2rem" />
                     <h3 className={`${styles.WhatsappChatHistory__title}`}>{t('whatsapp_history')}</h3>
                     <div className={styles.WhatsappChatHistory__phoneInputContainer} title="Teléfono WhatsMeow (ej: 54249...)">
-                        <Icon name="edit" size="0.85rem" />
-                        <input
-                            type="text"
-                            className={styles.WhatsappChatHistory__targetPhoneInput}
-                            value={targetPhoneInput}
-                            onChange={(e) => handleTargetPhoneChange(e.target.value)}
-                            placeholder="542494521825..."
-                        />
+                        <label htmlFor="whatsapp-target-phone" className={styles.WhatsappChatHistory__label}>
+                            {t('whatsapp_target_phone') || 'Teléfono objetivo'}
+                        </label>
+                        <div className={styles.WhatsappChatHistory__phoneInputRow}>
+                            <Icon name="edit" size="0.85rem" />
+                            <input
+                                id="whatsapp-target-phone"
+                                type="text"
+                                className={styles.WhatsappChatHistory__targetPhoneInput}
+                                value={targetPhoneInput}
+                                onChange={(e) => handleTargetPhoneChange(e.target.value)}
+                                placeholder="542494521825..."
+                            />
+                        </div>
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: '4px' }}>
@@ -138,7 +144,12 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                 >
                     <Icon name="auto_awesome" size="1.2rem" />
                 </button>
-                <button type="submit" className={`${styles.WhatsappChatHistory__sendBtn}`} disabled={sending || !newMessage.trim()}>
+                <button
+                    type="submit"
+                    className={`${styles.WhatsappChatHistory__sendBtn}`}
+                    disabled={sending || !newMessage.trim()}
+                    aria-label={t('send_message') || 'Enviar mensaje'}
+                >
                     <Icon name="send" size="1.2rem" />
                 </button>
             </form>

@@ -156,6 +156,7 @@ export const WhatsappConfig = ({ t }) => {
                         className={styles['WhatsappConfig__var-btn']}
                         value={selectedDoctorId}
                         onChange={e => setSelectedDoctorId(e.target.value)}
+                        aria-label={t('wa_config_doctor') || 'Doctor'}
                     >
                         {doctors.map(d => (
                             <option key={d.id} value={d.id}>{d.full_name}</option>
@@ -194,6 +195,7 @@ export const WhatsappConfig = ({ t }) => {
                         value={aiContext}
                         onChange={e => setAiContext(e.target.value)}
                         rows={12}
+                        aria-label={t('wa_config_prompt_label') || 'Prompt IA'}
                     />
                     <Button
                         size="sm"
@@ -241,8 +243,9 @@ export const WhatsappConfig = ({ t }) => {
                 <div className="config-section__body">
                     <div className={styles.WhatsappConfig__row}>
                         <div className={styles.WhatsappConfig__field}>
-                            <label className={styles['WhatsappConfig__field-label']}>{t('wa_config_model')}</label>
+                            <label htmlFor="wa-model" className={styles['WhatsappConfig__field-label']}>{t('wa_config_model')}</label>
                             <select
+                                id="wa-model"
                                 className={styles['WhatsappConfig__var-btn']}
                                 value={aiModel}
                                 onChange={e => setAiModel(e.target.value)}
@@ -254,8 +257,9 @@ export const WhatsappConfig = ({ t }) => {
                             </select>
                         </div>
                         <div className={styles.WhatsappConfig__field}>
-                            <label className={styles['WhatsappConfig__field-label']}>{t('wa_config_history')}</label>
+                            <label htmlFor="wa-history-limit" className={styles['WhatsappConfig__field-label']}>{t('wa_config_history')}</label>
                             <input
+                                id="wa-history-limit"
                                 type="number"
                                 min="1"
                                 max="20"

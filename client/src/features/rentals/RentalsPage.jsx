@@ -67,8 +67,8 @@ export const RentalsPage = () => {
                                             <form onSubmit={handleRent} className={`${styles.RentalsPage__bookingForm}`}>
                                                 <div className={`${styles.RentalsPage__formRow}`}>
                                                     <div className="input-group">
-                                                        <label className="input-label">{t('select_office')}</label>
-                                                        <select className="input-field" value={selectedOffice} onChange={(e) => setSelectedOffice(e.target.value)} required>
+                                                        <label htmlFor="rental-office" className="input-label">{t('select_office')}</label>
+                                                        <select id="rental-office" className="input-field" value={selectedOffice} onChange={(e) => setSelectedOffice(e.target.value)} required>
                                                             <option value="">-- {t('select_office')} --</option>
                                                             {consultorios.map(c => (
                                                                 <option key={c.id} value={c.id}>{c.name} - {t(c.status) || c.status}</option>
@@ -76,18 +76,18 @@ export const RentalsPage = () => {
                                                         </select>
                                                     </div>
                                                     <div className="input-group">
-                                                        <label className="input-label">{t('date')}</label>
-                                                        <input type="date" className="input-field" value={date} onChange={(e) => setDate(e.target.value)} required />
+                                                        <label htmlFor="rental-date" className="input-label">{t('date')}</label>
+                                                        <input id="rental-date" type="date" className="input-field" value={date} onChange={(e) => setDate(e.target.value)} required />
                                                     </div>
                                                 </div>
                                                 <div className={`${styles.RentalsPage__formRow}`}>
                                                     <div className="input-group">
-                                                        <label className="input-label">{t('start_time')}</label>
-                                                        <input type="time" className="input-field" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
+                                                        <label htmlFor="rental-start-time" className="input-label">{t('start_time')}</label>
+                                                        <input id="rental-start-time" type="time" className="input-field" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
                                                     </div>
                                                     <div className="input-group">
-                                                        <label className="input-label">{t('end_time')}</label>
-                                                        <input type="time" className="input-field" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
+                                                        <label htmlFor="rental-end-time" className="input-label">{t('end_time')}</label>
+                                                        <input id="rental-end-time" type="time" className="input-field" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
                                                     </div>
                                                 </div>
                                                 <div>

@@ -68,11 +68,12 @@ export const EditRequestModal = ({
                 )}
 
                 <div className="input-group">
-                    <label className="input-group__label">
+                    <label htmlFor="edit-request-note" className="input-group__label">
                         <Icon name="description" size="1rem" />
                         {request.type === 'prescription' ? t('medications') : t('request_note')}
                     </label>
                     <textarea
+                        id="edit-request-note"
                         className="input-group__textarea"
                         rows="3"
                         readOnly={isReadOnly}
@@ -83,11 +84,12 @@ export const EditRequestModal = ({
                 </div>
 
                 <div className="input-group">
-                    <label className="input-group__label">
+                    <label htmlFor="edit-request-doctor-note" className="input-group__label">
                         <Icon name="medical_services" size="1rem" />
                         {t('doctor_says')}
                     </label>
                     <textarea
+                        id="edit-request-doctor-note"
                         className="input-group__textarea"
                         rows="3"
                         readOnly={isReadOnly}
@@ -99,10 +101,10 @@ export const EditRequestModal = ({
 
                 {!isReadOnly && (
                     <div className="input-group">
-                        <label className="input-group__label">
+                        <span className="input-group__label">
                             <Icon name="payments" size="1rem" />
                             {t('appointment_payment')}
-                        </label>
+                        </span>
                         <div className={`${styles.EditRequestModal__paymentStatus}`}>
                             <label className={`${styles.EditRequestModal__checkboxContainer}`}>
                                 <input

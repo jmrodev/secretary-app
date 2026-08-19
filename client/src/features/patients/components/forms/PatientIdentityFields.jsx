@@ -14,8 +14,9 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
 
             <div className={`${styles.PatientIdentityFields__bento}`}>
                 <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan3}`}>
-                    <label className={`${styles.PatientIdentityFields__label}`}>{t('first_name')}</label>
+                    <label htmlFor="patient-first-name" className={`${styles.PatientIdentityFields__label}`}>{t('first_name')}</label>
                     <Input
+                        id="patient-first-name"
                         name="first_name"
                         className="patient-identity-fields__field"
                         value={formData.first_name || ''}
@@ -29,8 +30,9 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
                 <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan3}`}>
-                    <label className={`${styles.PatientIdentityFields__label}`}>{t('last_name')}</label>
+                    <label htmlFor="patient-last-name" className={`${styles.PatientIdentityFields__label}`}>{t('last_name')}</label>
                     <Input
+                        id="patient-last-name"
                         name="last_name"
                         className="patient-identity-fields__field"
                         value={formData.last_name || ''}
@@ -44,8 +46,9 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
                 <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan2}`}>
-                    <label className={`${styles.PatientIdentityFields__label}`}>{t('dni')}</label>
+                    <label htmlFor="patient-dni" className={`${styles.PatientIdentityFields__label}`}>{t('dni')}</label>
                     <Input
+                        id="patient-dni"
                         name="dni"
                         className="patient-identity-fields__field"
                         value={formData.dni || ''}
@@ -60,8 +63,9 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
                 <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan4}`}>
-                    <label className={`${styles.PatientIdentityFields__label}`}>{t('dob')}</label>
+                    <label htmlFor="patient-dob" className={`${styles.PatientIdentityFields__label}`}>{t('dob')}</label>
                     <Input
+                        id="patient-dob"
                         type="date"
                         name="dob"
                         className="patient-identity-fields__field"

@@ -138,5 +138,15 @@ export const patients = {
     toggle_institution: "Alternar Institución",
     verify_on_map: "Verificar en Mapa",
     visit_interval: "Intervalo de Visitas",
-    write_message: "Escribir mensaje"
+    write_message: "Escribir mensaje",
+    send_message: "Enviar mensaje",
+    whatsapp_target_phone: "Teléfono objetivo",
+    os_prepaga: "OS / Prepaga",
+    admin_tariff_percent: "Ajuste Tarifa (%)",
+    admin_fixed_tariff: "Tarifa Fija",
+    admin_visit_interval_days: "Intervalo Visitas (Días)",
+    admin_prescription_interval_days: "Intervalo Recetas (Días)",
+    admin_next_visit: "Próx. Visita",
+    admin_next_prescription: "Próx. Receta",
+    admin_license_expiry: "Venc. Carnet"
 };
