@@ -48,7 +48,7 @@ export const DashboardPage = () => {
                         <div className={styles.DashboardPage__bentoGrid}>
                             
                             {/* Card 1: Cash Monitor (Theoretical vs Actual) */}
-                            <CashMonitorCard stats={controller.stats?.financeStats || controller.financeStats} t={t} />
+                            <CashMonitorCard stats={controller.stats?.financeStats || controller.financeStats} t={t} className={styles.DashboardPage__cashMonitorCard} />
 
                             {/* Card 2: Appointments Overview (Day, Week, Month, Total) */}
                             <article className={`${styles.DashboardPage__bentoCard} ${styles.DashboardPage__statsOverviewCard}`}>

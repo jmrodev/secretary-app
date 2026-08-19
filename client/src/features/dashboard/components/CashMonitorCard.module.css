@@ -1,0 +1,95 @@
+/* CashMonitorCard Molecule — standalone styles (no longer coupled to DashboardPage CSS) */
+
+.CashMonitorCard__root {
+    position: relative;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.CashMonitorCard__root:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-color);
+}
+
+.CashMonitorCard__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.CashMonitorCard__headerIcon {
+    color: var(--primary-color);
+}
+
+.CashMonitorCard__statsRow {
+    display: flex;
+    gap: var(--spacing-md);
+    flex: 1;
+}
+
+.CashMonitorCard__statItem {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.CashMonitorCard__statItem--divider {
+    border-left: 1px solid var(--border-color);
+}
+
+.CashMonitorCard__statValue {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.35rem;
+    color: var(--text-main);
+}
+
+.CashMonitorCard__statValue--muted {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+}
+
+.CashMonitorCard__statLabel {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.CashMonitorCard__breakdown {
+    margin-top: var(--spacing-lg);
+    display: flex;
+    gap: var(--spacing-lg);
+    opacity: 0.9;
+}
+
+.CashMonitorCard__breakdownItem {
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.CashMonitorCard__breakdownIncome {
+    color: var(--success);
+}
+
+.CashMonitorCard__breakdownExpense {
+    color: var(--error);
+}

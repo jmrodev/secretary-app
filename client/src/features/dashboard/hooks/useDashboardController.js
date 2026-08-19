@@ -157,8 +157,8 @@ export const useDashboardController = () => {
 
     return {
         user, t, settings,
-        loading: statsHook.loadingStats || doctorsLoading,
-        error: statsHook.errorStats || statsHook.errorDoctors || remindersHook.errorReminders,
+        loading: statsHook.loading || doctorsLoading,
+        error: statsHook.error || remindersHook.errorReminders,
         stats: statsHook.stats,
         newPatientStats: statsHook.newPatientStats,
         reminders: remindersHook.reminders,
