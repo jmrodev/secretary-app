@@ -11,3 +11,4 @@ export { UserManager } from '@/features/users/components/UserManager';
 export { UserManagement } from '@/features/users/components/UserManagement';
 export { UserTable } from '@/features/users/components/UserTable';
 export { UserForm } from '@/features/users/components/UserForm';
+export { SecretaryPermissionsPanel } from '@/features/users/components/SecretaryPermissionsPanel';
