@@ -21,7 +21,7 @@ export const useSecretaryPermissions = () => {
 
     const fetchPermissions = useCallback(async () => {
         try {
-            const res = await api.get('/users/admin/permissions');
+            const res = await api.get('/users/admin/users/permissions');
             setSecretaries(res.data?.data ?? []);
         } catch (err) {
             console.error("[useSecretaryPermissions] Failed to fetch permissions", err);
@@ -50,7 +50,7 @@ export const useSecretaryPermissions = () => {
 
         setUpdating(true);
         try {
-            await api.post('/users/admin/permissions', buildPermissionPayload({
+            await api.post('/users/admin/users/permissions', buildPermissionPayload({
                 secretaryIds: selectedIds,
                 grantToAll,
                 revoke

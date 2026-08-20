@@ -38,7 +38,7 @@ describe('useSecretaryPermissions', () => {
 
         await waitFor(() => expect(result.current.loading).toBe(false));
 
-        expect(mockGet).toHaveBeenCalledWith('/users/admin/permissions');
+        expect(mockGet).toHaveBeenCalledWith('/users/admin/users/permissions');
         expect(result.current.secretaries).toHaveLength(2);
         expect(result.current.secretaries[1].can_manage_users).toBe(1);
     });
@@ -65,7 +65,7 @@ describe('useSecretaryPermissions', () => {
 
         await act(async () => { await result.current.applyGrant(); });
 
-        expect(mockPost).toHaveBeenCalledWith('/users/admin/permissions', {
+        expect(mockPost).toHaveBeenCalledWith('/users/admin/users/permissions', {
             secretaryIds: [2],
             grantToAll: false,
             revoke: false
@@ -83,7 +83,7 @@ describe('useSecretaryPermissions', () => {
 
         await act(async () => { await result.current.applyRevoke(); });
 
-        expect(mockPost).toHaveBeenCalledWith('/users/admin/permissions', {
+        expect(mockPost).toHaveBeenCalledWith('/users/admin/users/permissions', {
             secretaryIds: [2],
             grantToAll: false,
             revoke: true
