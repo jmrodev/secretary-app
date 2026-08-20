@@ -83,6 +83,13 @@ class RetrievalService {
     }
 
     async getMonthlyReport(doctorId, month, year) {
+        const doctor = await doctorRepository.findById(doctorId);
+        if (!doctor) {
+            const err = new Error("Doctor not found");
+            err.statusCode = 404;
+            throw err;
+        }
+
         const targetMonth = month || new Date().getMonth() + 1;
         const targetYear = year || new Date().getFullYear();
 

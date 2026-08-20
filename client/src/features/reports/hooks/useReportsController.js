@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { useAppointments } from '@/features/appointments';
@@ -11,7 +12,18 @@ export const useReportsController = () => {
     const { getMonthlyReport, isSubmitting } = useAppointments();
     const { doctors, viewDoctorId: selectedDoctorId } = useDoctors();
 
-    const [activeTab, setActiveTab] = useState('appointments'); // appointments | prescriptions | licenses | certificates | balance
+    // Active tab is derived from the URL (?tab=...) via the router so deep
+    // links and browser back/forward work natively. No manual replaceState.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const activeTab = searchParams.get('tab') || 'appointments'; // appointments | prescriptions | licenses | certificates | balance
+    const setActiveTab = useCallback((tab) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set('tab', tab);
+            return next;
+        });
+    }, [setSearchParams]);
+
     const [month, setMonth] = useState(() => new Date().getMonth() + 1);
     const [year, setYear] = useState(() => new Date().getFullYear());
     const [reportData, setReportData] = useState(null);
@@ -21,6 +33,12 @@ export const useReportsController = () => {
     const handleGenerateReport = useCallback(async () => {
         setIsLoading(true);
         setError(null);
+        if ((activeTab === 'appointments' || activeTab === 'balance') && !selectedDoctorId) {
+            setReportData(null);
+            setError(t('please_select_doctor') || 'Por favor, seleccione un profesional');
+            setIsLoading(false);
+            return;
+        }
         try {
             if (activeTab === 'appointments') {
                 const res = await getMonthlyReport(month, year, selectedDoctorId);
@@ -70,7 +88,7 @@ export const useReportsController = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [activeTab, month, year, selectedDoctorId, getMonthlyReport]);
+    }, [activeTab, month, year, selectedDoctorId, getMonthlyReport, t]);
 
     // Fetch report data on initial mount or when explicit filter params change.
     // Deferred to a microtask: handleGenerateReport sets state synchronously
