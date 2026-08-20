@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { api } from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useModal } from '@/context/ModalContext';
@@ -77,17 +78,26 @@ export const useDoctorsPageController = () => {
         data: {}
     });
 
+    const [searchParams, setSearchParams] = useSearchParams();
+
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get('status');
+        const status = searchParams.get('status');
         if (status === 'success') {
             showMessage('Cuenta de Google conectada con éxito', 'success');
-            window.history.replaceState({}, document.title, window.location.pathname);
+            setSearchParams((prev) => {
+                const next = new URLSearchParams(prev);
+                next.delete('status');
+                return next;
+            });
         } else if (status === 'error') {
             showMessage('Error al conectar con Google', 'error');
-            window.history.replaceState({}, document.title, window.location.pathname);
+            setSearchParams((prev) => {
+                const next = new URLSearchParams(prev);
+                next.delete('status');
+                return next;
+            });
         }
-    }, [showMessage]);
+    }, [searchParams, setSearchParams, showMessage]);
 
     const checkGoogleStatus = async (doctorId) => {
         setModalState(prev => ({ ...prev, loadingGoogle: true }));

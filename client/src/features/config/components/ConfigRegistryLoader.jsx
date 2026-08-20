@@ -2,12 +2,14 @@
 import React, { lazy } from 'react';
 import { registerConfigSection } from '../registry/configRegistry';
 
-// Lazy loading to maintain performance and avoid eager cross-feature coupling at the module level
-const GeneralSettings = lazy(() => import('../components/sections/GeneralSettings'));
-const CommunicationSettings = lazy(() => import('../components/sections/CommunicationSettings'));
-const IntegrationSettings = lazy(() => import('../components/sections/IntegrationSettings'));
-const BillingSettings = lazy(() => import('../components/sections/BillingSettings'));
-const AiSettings = lazy(() => import('../components/sections/AiSettings'));
+// Lazy loading to maintain performance and avoid eager cross-feature coupling at the module level.
+// Sections use named exports (export const X), so map them to `default` for React.lazy — otherwise
+// React 19 resolves the whole module namespace (an object) as the component.
+const GeneralSettings = lazy(() => import('../components/sections/GeneralSettings').then(m => ({ default: m.GeneralSettings })));
+const CommunicationSettings = lazy(() => import('../components/sections/CommunicationSettings').then(m => ({ default: m.CommunicationSettings })));
+const IntegrationSettings = lazy(() => import('../components/sections/IntegrationSettings').then(m => ({ default: m.IntegrationSettings })));
+const BillingSettings = lazy(() => import('../components/sections/BillingSettings').then(m => ({ default: m.BillingSettings })));
+const AiSettings = lazy(() => import('../components/sections/AiSettings').then(m => ({ default: m.AiSettings })));
 
 // Domain Features
 const DoctorsManager = lazy(() => import('@/features/doctors').then(m => ({ default: m.DoctorsManager })));
@@ -33,15 +35,13 @@ import { useInstitutionsController } from '@/features/institutions';
 
 const GeneralSettingsWrapper = ({ controller }) => {
     const { user, settings, handlers } = controller;
-    // Ensure settings is a plain object to avoid "Cannot convert object to primitive value" errors
-    const safeSettings = structuredClone(settings);
     return (
         <GeneralSettings 
             user={user} 
-            settings={safeSettings} 
+            settings={settings} 
             updateSetting={handlers.updateSetting}
             onShowQr={() => {
-                const url = safeSettings.staff_base_url || window.location.origin;
+                const url = settings.staff_base_url || window.location.origin;
                 handlers.setQrModal({ open: true, url, expiry: null });
             }}
         />
