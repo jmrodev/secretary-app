@@ -77,21 +77,21 @@ export const useDoctorsPageController = () => {
     useEffect(() => {
         const status = searchParams.get('status');
         if (status === 'success') {
-            showMessage('Cuenta de Google conectada con éxito', 'success');
+            showMessage(t('google_connect_success'), 'success');
             setSearchParams((prev) => {
                 const next = new URLSearchParams(prev);
                 next.delete('status');
                 return next;
             });
         } else if (status === 'error') {
-            showMessage('Error al conectar con Google', 'error');
+            showMessage(t('google_connect_error'), 'error');
             setSearchParams((prev) => {
                 const next = new URLSearchParams(prev);
                 next.delete('status');
                 return next;
             });
         }
-    }, [searchParams, setSearchParams, showMessage]);
+    }, [searchParams, setSearchParams, showMessage, t]);
 
     const checkGoogleStatus = async (doctorId) => {
         setModalState(prev => ({ ...prev, loadingGoogle: true }));
@@ -132,7 +132,7 @@ export const useDoctorsPageController = () => {
                     full_name: '',
                     dni: '',
                     specialty: '',
-                    phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }]
+                    phoneNumbers: [{ phone_number: '+549', label: '', is_primary: true }]
                 }
             });
             return;
@@ -162,13 +162,13 @@ export const useDoctorsPageController = () => {
                     ...data,
                     fullName: data.full_name, // Backend expects fullName
                 });
-                showMessage(t('doctor_created') || "Doctor creado exitosamente", "success");
+                showMessage(t('doctor_created'), "success");
             } else {
                 await Promise.all([
                     api.put(`/users/doctors/${data.id}`, data),
                     api.put(`/schedules/${data.id}`, { schedule })
                 ]);
-                showMessage(t('doctor_updated') || "Doctor actualizado exitosamente", "success");
+                showMessage(t('doctor_updated'), "success");
             }
             setModalState(prev => ({ ...prev, isOpen: false }));
             window.dispatchEvent(new CustomEvent('doctors-updated'));
@@ -183,18 +183,19 @@ export const useDoctorsPageController = () => {
         try {
             const res = await api.get(`/google/auth-url?doctorId=${modalState.data.id}`);
             window.location.href = res.data.url;
-        } catch {
-            showMessage('Failed to initiate connection.', 'error');
+        } catch (err) {
+            console.error("Failed to initiate Google connection", err);
+            showMessage(t('google_connect_failed'), 'error');
         }
     };
 
     const handleDisconnectGoogle = async () => {
-        if (!await confirm("¿Estás seguro? Se detendrá la sincronización.")) return;
+        if (!await confirm(t('google_disconnect_confirm'))) return;
         try {
             await api.post('/google/disconnect', { doctorId: modalState.data.id });
             setModalState(prev => ({ ...prev, connected: false }));
             window.dispatchEvent(new CustomEvent('doctors-updated'));
-            showMessage('Desconectado', 'success');
+            showMessage(t('google_disconnected'), 'success');
         } catch (err) {
             console.error(err);
         }
@@ -209,7 +210,12 @@ export const useDoctorsPageController = () => {
         );
     }, [doctors, searchTerm]);
 
-    const setFormData = (newData) => setModalState(prev => ({ ...prev, data: { ...prev.data, ...newData } }));
+    const setFormData = (newData) => setModalState(prev => ({
+        ...prev,
+        data: typeof newData === 'function'
+            ? newData(prev.data)
+            : { ...prev.data, ...newData }
+    }));
 
     // Handlers mapped for cleaner component usage
     const handlers = {
@@ -228,25 +234,31 @@ export const useDoctorsPageController = () => {
         onVerifyGoogleEvents: async () => {
             try {
                 const res = await api.get(`/google/appointments?doctorId=${modalState.data.id}`);
-                showMessage(`Encontrados ${res.data.events?.length || 0} turnos en Calendar.`, 'success');
-            } catch { showMessage('Error al verificar calendar', 'error'); }
+                showMessage(t('calendar_events_found', { count: res.data.events?.length || 0 }), 'success');
+            } catch (err) {
+                console.error("Failed to verify Google events", err);
+                showMessage(t('calendar_check_error'), 'error');
+            }
         },
         onImportContacts: async () => {
-            if (!await confirm("¿Importar contactos como pacientes?")) return;
+            if (!await confirm(t('import_contacts_confirm'))) return;
             try {
                 await api.post('/google/import', { doctorId: modalState.data.id });
-                showMessage('Importación completada con éxito', 'success');
-            } catch { showMessage('Error al importar contactos', 'error'); }
+                showMessage(t('import_success'), 'success');
+            } catch (err) {
+                console.error("Failed to import contacts", err);
+                showMessage(t('import_error'), 'error');
+            }
         },
         onResetSpreadsheet: async () => {
-            if (!await confirm("¿Restablecer planilla de Finanzas? Se creará una nueva con el próximo pago.")) return;
+            if (!await confirm(t('reset_spreadsheet_confirm'))) return;
             try {
                 await api.post('/google/reset-spreadsheet', { doctorId: modalState.data.id });
                 window.dispatchEvent(new CustomEvent('doctors-updated'));
-                showMessage('Planilla restablecida. Se creará una nueva automáticamente.', 'success');
+                showMessage(t('spreadsheet_reset_success'), 'success');
             } catch (e) {
                 console.error(e);
-                showMessage('Error al restablecer planilla', 'error');
+                showMessage(t('spreadsheet_reset_error'), 'error');
             }
         }
     };
