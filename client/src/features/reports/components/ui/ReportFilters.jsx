@@ -26,9 +26,9 @@ export const ReportFilters = ({
     }));
 
     return (
-        <div className={styles.ReportFilters__reportFilters}>
-            <div className={styles.ReportFilters__reportFilters__controls}>
-                <div className={styles.ReportFilters__reportFilters__field}>
+        <div className={styles.ReportFilters}>
+            <div className={styles.ReportFilters__controls}>
+                <div className={styles.ReportFilters__field}>
                     <Button
                         variant="ghost"
                         size="sm-compact"
@@ -40,7 +40,7 @@ export const ReportFilters = ({
                         value={month}
                         onChange={(e) => onMonthChange(Number(e.target.value))}
                         options={monthOptions}
-                        className={styles.ReportFilters__reportFilters__selectMonth}
+                        className={styles.ReportFilters__selectMonth}
                     />
                     <Button
                         variant="ghost"
@@ -51,7 +51,7 @@ export const ReportFilters = ({
                     </Button>
                 </div>
 
-                <div className={styles.ReportFilters__reportFilters__field}>
+                <div className={styles.ReportFilters__field}>
                     <Button
                         variant="ghost"
                         size="sm-compact"
@@ -65,7 +65,7 @@ export const ReportFilters = ({
                         onChange={(e) => onYearChange(Number(e.target.value))}
                         min="2020"
                         max="2035"
-                        className={styles.ReportFilters__reportFilters__inputYear}
+                        className={styles.ReportFilters__inputYear}
                     />
                     <Button
                         variant="ghost"
@@ -77,7 +77,7 @@ export const ReportFilters = ({
                 </div>
             </div>
 
-            <div className={styles.ReportFilters__reportFilters__actions}>
+            <div className={styles.ReportFilters__actions}>
                 <Button
                     onClick={onGenerate}
                     disabled={isSubmitting}
@@ -88,7 +88,7 @@ export const ReportFilters = ({
                 </Button>
 
                 {hasData && (
-                    <div className={styles.ReportFilters__reportFilters__exportGroup}>
+                    <div className={styles.ReportFilters__exportGroup}>
                         <Button
                             variant="secondary"
                             size="sm"

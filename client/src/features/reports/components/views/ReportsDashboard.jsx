@@ -29,14 +29,14 @@ export const ReportsDashboard = ({
     onPrint
 }) => {
     return (
-        <section className={styles.ReportsDashboard__reportsDashboard}>
+        <section className={styles.ReportsDashboard}>
             <PageHeader 
                 title={t('reports_page_title')}
                 subtitle={t('reports_page_subtitle')}
             />
 
             <FeatureToolbar
-                className={styles.ReportsDashboard__reportsDashboard__topActions}
+                className={styles.ReportsDashboard__topActions}
                 tabs={[
                     { id: 'appointments', label: t('appointments'), icon: 'event' },
                     { id: 'prescriptions', label: t('prescriptions'), icon: 'medication' },
@@ -64,9 +64,9 @@ export const ReportsDashboard = ({
                 }
             />
 
-            <div className={`${styles.ReportsDashboard__reportsDashboard__grid} animate-fade-in`}>
-                <main className={styles.ReportsDashboard__reportsDashboard__main}>
-                    <div className={styles.ReportsDashboard__reportsDashboard__card}>
+            <div className={`${styles.ReportsDashboard__grid} animate-fade-in`}>
+                <main className={styles.ReportsDashboard__main}>
+                    <div className={styles.ReportsDashboard__card}>
                         <div className={styles.ReportsDashboard__results}>
                             {error && (
                                 <div className={styles.ReportsDashboard__errorState}>
