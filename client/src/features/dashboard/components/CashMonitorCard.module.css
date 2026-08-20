@@ -38,7 +38,8 @@
 
 .CashMonitorCard__statsRow {
     display: flex;
-    gap: var(--spacing-md);
+    flex-direction: column;
+    gap: var(--spacing-sm);
     flex: 1;
 }
 
@@ -50,19 +51,20 @@
 }
 
 .CashMonitorCard__statItem--divider {
-    border-left: 1px solid var(--border-color);
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-sm);
 }
 
 .CashMonitorCard__statValue {
-    font-size: 1.75rem;
+    font-size: 1.25rem;
     font-weight: 800;
     line-height: 1;
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.25rem;
     color: var(--text-main);
 }
 
 .CashMonitorCard__statValue--muted {
-    font-size: 1.25rem;
+    font-size: 1rem;
     color: var(--text-muted);
 }
 
@@ -75,9 +77,10 @@
 }
 
 .CashMonitorCard__breakdown {
-    margin-top: var(--spacing-lg);
+    margin-top: var(--spacing-md);
     display: flex;
-    gap: var(--spacing-lg);
+    flex-direction: column;
+    gap: var(--spacing-xs);
     opacity: 0.9;
 }
 

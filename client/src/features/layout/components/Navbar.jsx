@@ -90,8 +90,6 @@ export const Navbar = () => {
                             isOpen={openDropdown === 'admin'}
                             onToggle={() => handleToggle('admin')}
                         >
-                            <NavbarLink to="/admin/users?tab=doctor" label={t('doctors')} onClick={() => setOpenDropdown(null)} icon={<Icon name="DOCTORS" />} />
-                            <NavbarLink to="/reports" label={t('reports')} onClick={() => setOpenDropdown(null)} icon={<Icon name="REPORTS" />} />
                             <NavbarLink to="/institutions" label={t('institutions')} onClick={() => setOpenDropdown(null)} icon={<Icon name="INSTITUTIONS" />} />
                             <NavbarLink to="/holidays" label={t('holidays')} onClick={() => setOpenDropdown(null)} icon={<Icon name="beach_access" />} />
                             {(isAdmin || canManageUsers) && (

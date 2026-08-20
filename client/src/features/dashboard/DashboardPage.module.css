@@ -5,8 +5,8 @@
 .DashboardPage__bentoGrid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    grid-auto-rows: minmax(120px, auto);
-    gap: 1.5rem; /* Wider gaps for breathing room */
+    grid-auto-rows: minmax(90px, auto);
+    gap: 1rem; /* Compact gaps to fit everything on screen */
     padding: 0.5rem 0;
     width: 100%;
 }
@@ -16,7 +16,7 @@
     background: var(--dashboard-card-bg);
     border: 1px solid var(--dashboard-card-border);
     border-radius: 8px; /* Strict 8px radius */
-    padding: 1.5rem;
+    padding: 1rem;
     box-shadow: 0 2px 8px rgb(0, 0, 0, 0.03); /* Soft subtle shadow */
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -32,43 +32,74 @@
 }
 
 .DashboardPage__cashMonitorCard {
-    grid-column: span 4;
+    grid-column: span 2;
     grid-row: span 1;
     order: 1;
 }
 
 .DashboardPage__statsOverviewCard {
-    grid-column: span 4;
+    grid-column: span 2;
     grid-row: span 1;
     order: 2;
 }
 
 .DashboardPage__patientGrowthCard {
-    grid-column: span 4;
+    grid-column: span 2;
     grid-row: span 1;
     order: 3;
 }
 
 .DashboardPage__mainContentCard {
-    grid-column: span 8;
-    grid-row: span 3;
+    grid-column: span 4;
+    grid-row: span 2;
     order: 4;
+}
+
+.DashboardPage__mainContentCard > div {
+    min-height: 260px;
 }
 
 .DashboardPage__remindersCard {
     grid-column: span 4;
-    grid-row: span 3;
+    grid-row: span 2;
     order: 5;
+}
+
+.DashboardPage__reportsCard {
+    grid-column: span 4;
+    grid-row: span 2;
+    order: 6;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: var(--spacing-sm);
+}
+
+.DashboardPage__reportsCard .DashboardPage__bentoHeader {
+    margin-bottom: 0;
+    flex-shrink: 0;
+}
+
+.DashboardPage__reportsText {
+    flex: 1;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.DashboardPage__reportsButton {
+    flex-shrink: 0;
 }
 
 .DashboardPage__bentoHeader {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.75rem; /* Refined small label typography */
+    font-size: 0.7rem; /* Refined small label typography */
     font-weight: 600;
     color: var(--text-muted);
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -83,6 +114,7 @@
 
 .DashboardPage__statsRow {
     display: flex;
+    flex-direction: column;
     gap: var(--spacing-sm);
     flex: 1;
 }
@@ -96,27 +128,27 @@
 }
 
 .DashboardPage__statValue {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 800;
     line-height: 1;
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.25rem;
     color: var(--text-main);
 }
 
 .DashboardPage__statValuePurple {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     font-weight: 800;
     line-height: 1;
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.25rem;
     color: var(--text-main);
 }
 
 .DashboardPage__statValue--today {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
 .DashboardPage__statValue--year {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
 }
 
 .DashboardPage__statLabel {
