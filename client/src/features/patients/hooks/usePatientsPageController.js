@@ -23,7 +23,7 @@ export const usePatientsPageController = () => {
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { settings } = useConfig();
-    const { confirm } = useModal();
+    const { confirm, prompt } = useModal();
     const { viewDoctorId, setViewDoctorId } = useDoctors();
     const { savePrescription } = useAppointments();
     const { deleteUser } = useUsers();
@@ -76,7 +76,7 @@ export const usePatientsPageController = () => {
 
     // --- Handlers Hook ---
     const hookHandlers = usePatientsHandlers({
-        t, showMessage, confirm, deleteUser, settings,
+        t, showMessage, confirm, prompt, deleteUser, settings,
         patients, patientDetails,
         setPatients: () => fetchPatients(), // Use fetchPatients instead of manual setPatients if possible
         setPatientDetails, setSelectedPatientId, setDetailsLoading,

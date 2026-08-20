@@ -11,6 +11,7 @@ export const usePatientsHandlers = ({
     t,
     showMessage,
     confirm: _confirm,
+    prompt,
     deleteUser,
     settings,
 
@@ -51,8 +52,18 @@ export const usePatientsHandlers = ({
 
     const handleDeletePatient = useCallback(async (patientData) => {
         if (!patientData?.user_id) return;
+
+        const adminPassword = await prompt(
+            t('delete_admin_password_hint') || 'Ingrese su contraseña para confirmar la eliminación.',
+            '',
+            t('delete_user') || 'Eliminar usuario',
+            'password'
+        );
+        if (!adminPassword) return;
+
         await deleteUser(patientData.user_id, patientData.full_name, {
             useDoubleConfirm: true,
+            adminPassword,
             onSuccess: () => {
                 setSelectedPatientId(null);
                 setPatientDetails(null);
@@ -60,7 +71,7 @@ export const usePatientsHandlers = ({
                 fetchRecycleBin();
             }
         });
-    }, [deleteUser, setSelectedPatientId, setPatientDetails, fetchPatients, fetchRecycleBin]);
+    }, [prompt, deleteUser, setSelectedPatientId, setPatientDetails, fetchPatients, fetchRecycleBin, t]);
 
     const handleEditClick = useCallback((patient) => {
         const data = patient || patientDetails;

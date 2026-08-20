@@ -7,10 +7,11 @@ export const useModalLogic = () => {
         message: '',
         type: 'confirm',
         initialValue: '',
+        inputType: 'text',
         resolve: null
     });
 
-    const showModal = useCallback((type, message, title = '', initialValue = '') => {
+    const showModal = useCallback((type, message, title = '', initialValue = '', inputType = 'text') => {
         return new Promise((resolve) => {
             setModalConfig({
                 isOpen: true,
@@ -18,6 +19,7 @@ export const useModalLogic = () => {
                 message,
                 title,
                 initialValue,
+                inputType,
                 resolve
             });
         });
@@ -29,8 +31,8 @@ export const useModalLogic = () => {
     const confirm = useCallback((message, title) => 
         showModal('confirm', message, title), [showModal]);
 
-    const prompt = useCallback((message, defaultValue = '', title = '') => 
-        showModal('prompt', message, title, defaultValue), [showModal]);
+    const prompt = useCallback((message, defaultValue = '', title = '', inputType = 'text') => 
+        showModal('prompt', message, title, defaultValue, inputType), [showModal]);
 
     const doubleConfirm = useCallback(async (message1, message2, title1 = '', title2 = '') => {
         const first = await confirm(message1, title1);
