@@ -1,5 +1,4 @@
 const medicalExportRepository = require('../../repositories/medical/medicalExportRepository');
-const transactionRepository = require('../../repositories/finance/transactionRepository');
 const doctorRepository = require('../../repositories/user/doctorRepository');
 const patientRepository = require('../../repositories/user/patientRepository');
 
@@ -9,25 +8,13 @@ const patientRepository = require('../../repositories/user/patientRepository');
  */
 class MedicalExportService {
     async exportPrescriptionsJSON(user, query) {
-        const { month, year, doctorId } = query;
-
         const filters = await this._buildFilters(user, query);
         const rows = await medicalExportRepository.findPrescriptionsForExport(filters);
 
-        const targetMonth = month ? parseInt(month) : new Date().getMonth() + 1;
-        const targetYear = year ? parseInt(year) : new Date().getFullYear();
-
-        const withdrawals = await transactionRepository.findMonthlyWithdrawals(targetMonth, targetYear, doctorId);
-        const totalIncome = await transactionRepository.findTotalIncomeByPeriod(targetMonth, targetYear, doctorId);
-
+        // Prescriptions module is isolated from finances by design (same as
+        // licenses/certificates). The balance report owns financial data.
         return {
-            prescriptions: rows,
-            withdrawals: withdrawals.map(w => ({
-                fecha: new Date(w.transaction_date).toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' }),
-                monto: w.amount,
-                descripcion: w.description
-            })),
-            appointment_income: Number(totalIncome)
+            prescriptions: rows
         };
     }
 
