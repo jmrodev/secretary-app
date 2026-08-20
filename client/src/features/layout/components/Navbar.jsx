@@ -21,7 +21,7 @@ export const Navbar = () => {
         isStaff, isAdmin, isSecretary, isPatient, isDoctor
     } = useLayoutController();
 
-    const [openDropdown, setOpenDropdown] = useState(null); // 'admin' | 'spreadsheets' | null
+    const [openDropdown, setOpenDropdown] = useState(null); // 'admin' | 'spreadsheets' | 'user' | null
 
     // ECC: Navigation Configuration (Computed during render)
     const navLinks = useMemo(() => [
@@ -89,7 +89,6 @@ export const Navbar = () => {
                             isOpen={openDropdown === 'admin'}
                             onToggle={() => handleToggle('admin')}
                         >
-                            <NavbarLink to="/profile" label={t('profile')} onClick={() => setOpenDropdown(null)} icon={<Icon name="PROFILE" />} />
                             <NavbarLink to="/doctors" label={t('doctors')} onClick={() => setOpenDropdown(null)} icon={<Icon name="DOCTORS" />} />
                             <NavbarLink to="/reports" label={t('reports')} onClick={() => setOpenDropdown(null)} icon={<Icon name="REPORTS" />} />
                             <NavbarLink to="/institutions" label={t('institutions')} onClick={() => setOpenDropdown(null)} icon={<Icon name="INSTITUTIONS" />} />
@@ -119,14 +118,28 @@ export const Navbar = () => {
                         />
                     </div>
                     
-                    <div className={styles.Navbar__navbarUser}>
-                        <div className={styles.Navbar__avatar}>
-                            {user?.username?.charAt(0)?.toUpperCase() || 'U'}
-                        </div>
-                        <div className={styles.Navbar__info}>
-                            <span className={styles.Navbar__name}>{user?.full_name || user?.username}</span>
-                            <span className={styles.Navbar__role}>{user?.role}</span>
-                        </div>
+                    <div className={`${styles.Navbar__dropdown} ${openDropdown === 'user' ? styles.Navbar__dropdownOpen : ''}`}>
+                        <button
+                            type="button"
+                            className={styles.Navbar__userButton}
+                            onClick={() => handleToggle('user')}
+                            aria-expanded={openDropdown === 'user'}
+                            aria-haspopup="menu"
+                        >
+                            <div className={styles.Navbar__avatar}>
+                                {user?.username?.charAt(0)?.toUpperCase() || 'U'}
+                            </div>
+                            <div className={styles.Navbar__info}>
+                                <span className={styles.Navbar__name}>{user?.full_name || user?.username}</span>
+                                <span className={styles.Navbar__role}>{user?.role}</span>
+                            </div>
+                            <Icon name={openDropdown === 'user' ? 'EXPAND_LESS' : 'EXPAND_MORE'} size="1rem" />
+                        </button>
+                        {openDropdown === 'user' && (
+                            <div className={styles.Navbar__dropdownContent} role="menu">
+                                <NavbarLink to="/profile" label={t('profile')} onClick={() => setOpenDropdown(null)} icon={<Icon name="PROFILE" />} />
+                            </div>
+                        )}
                     </div>
 
                     <Button variant="ghost" onClick={logout} icon={<Icon name="LOGOUT" size="1.2rem" />} />
