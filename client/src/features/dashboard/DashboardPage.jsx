@@ -40,7 +40,7 @@ export const DashboardPage = () => {
                 <section >
                     {shouldShowErrorState ? (
                         <article className={`${styles.DashboardPage__bentoCard} ${styles.DashboardPage__mainContentCard}`}>
-                            <div className={styles.DashboardPage__bentoHeader}><Icon name="error" /> Error</div>
+                            <div className={styles.DashboardPage__bentoHeader}><Icon name="error" /> {t('error')}</div>
                             <p>{t('dashboard_error_message')}</p>
                             <Button variant="premium" size="sm" onClick={refreshDashboard} icon={<Icon name="refresh" />}>{t('retry')}</Button>
                         </article>
@@ -104,7 +104,7 @@ export const DashboardPage = () => {
 
                             {/* Card 4: Main Activity Area (Requirements) */}
                             <article className={`${styles.DashboardPage__bentoCard} ${styles.DashboardPage__mainContentCard}`}>
-                                <div style={{ minHeight: '350px' }}>
+                                <div>
                                     {shouldShowLoadingState ? <Loading variant="centered" /> : (
                                         <MedicalRequirementManager user={user} variant="compact" setPaymentModal={setPaymentModal} />
                                     )}
@@ -127,6 +127,28 @@ export const DashboardPage = () => {
                                     />
                                 )}
                             </article>
+
+                            {/* Card 6: Reports Access (staff only) */}
+                            {isAdminOrSecretary && (
+                                <article className={`${styles.DashboardPage__bentoCard} ${styles.DashboardPage__reportsCard}`}>
+                                    <header className={styles.DashboardPage__bentoHeader}>
+                                        <Icon name="REPORTS" className={styles.DashboardPage__bentoHeaderIcon} />
+                                        {t('reports')}
+                                    </header>
+                                    <p className={styles.DashboardPage__reportsText}>
+                                        {t('reports_dashboard_hint')}
+                                    </p>
+                                    <Button
+                                        variant="primary"
+                                        size="sm"
+                                        onClick={() => navigate('/reports')}
+                                        icon={<Icon name="chevron_right" size="1.1rem" />}
+                                        className={styles.DashboardPage__reportsButton}
+                                    >
+                                        {t('reports')}
+                                    </Button>
+                                </article>
+                            )}
                         </div>
                     )}
                 </section>

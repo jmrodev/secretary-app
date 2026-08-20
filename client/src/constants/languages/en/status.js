@@ -127,4 +127,12 @@ export const status = {
     whatsapp_text_copied_opening: "Text copied! Opening WhatsApp...",
     error_copying_text: "Error copying text",
     last_year: "Last Year",
+
+    // Dashboard Labels
+    view_week: "Week",
+    date_range: "Month",
+    total_active_patients: "Total Active",
+    new_patients_today: "New Today",
+    pending_requests: "Pending Requests",
+    dashboard_reminders: "System Reminders",
 };

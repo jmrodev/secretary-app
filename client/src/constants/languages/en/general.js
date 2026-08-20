@@ -50,6 +50,7 @@ export const general = {
     medical_history: "Medical History",
     loading: "Loading...",
     no_results_found: "No results found",
+    error: "Error",
     no_insurances_registered: "No insurances registered",
     search_on_map: "Search on map",
     more: "more",
@@ -165,6 +166,7 @@ export const general = {
     // Keys mirrored from es/general.js (i18n parity)
     profile: "Profile",
     reports: "Reports",
+    reports_dashboard_hint: "View monthly reports for appointments, prescriptions, licenses, certificates and balance.",
     users: "Users",
     system_config: "Settings",
     mobile_app: "Mobile App",
