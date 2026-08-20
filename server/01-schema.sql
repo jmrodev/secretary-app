@@ -326,11 +326,6 @@ CREATE TABLE `doctors` (
   `confirmation_template` text DEFAULT NULL,
   `reminder_virtual_template` text DEFAULT NULL,
   `confirmation_virtual_template` text DEFAULT NULL,
-  `gemini_context` text DEFAULT NULL,
-  `gemini_model` varchar(100) DEFAULT NULL,
-  `gemini_history_limit` int(11) DEFAULT 3,
-  `gemini_api_version` varchar(20) DEFAULT 'v1beta',
-  `pending_response_template` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `doctors_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE

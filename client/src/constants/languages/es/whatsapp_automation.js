@@ -1,34 +1,9 @@
 export const whatsapp_automation = {
     // WhatsApp Automation
     whatsapp_automation_title: "Automatización de WhatsApp (IA)",
-    whatsapp_auto_respond_unknown_label: "Responder automáticamente a números desconocidos",
-    whatsapp_auto_respond_unknown_hint: "Si está activado, la IA enviará automáticamente un saludo y el link de registro a cualquier número que no esté en tu agenda.",
-
-    // AI Provider Priority (AiSettings)
-    ai_provider_title: "Proveedor de IA",
-    ai_provider_hint: "Define qué proveedor se intenta primero y cuál actúa como respaldo al enviar solicitudes de IA.",
-    ai_provider_label: "Proveedor principal",
-    ai_provider_hint_detail: "El proveedor secundario se usa automáticamente si el principal falla.",
-    ai_provider_option_ollama: "Ollama (local) primero, Groq respaldo",
-    ai_provider_option_groq: "Groq (Llama) primero, Gemini respaldo",
-    ai_provider_option_gemini: "Gemini primero, Groq respaldo",
-    ai_ollama_model_label: "Modelo Ollama (Global)",
-    ai_ollama_model_hint: "Modelo usado para las sugerencias cuando Ollama es el proveedor principal o de respaldo.",
-    ai_groq_model_label: "Modelo Groq (Global)",
-    ai_groq_model_hint: "Modelo usado para las sugerencias cuando Groq es el proveedor principal o de respaldo.",
-    gemini_global_model_label: "Modelo Gemini (Global)",
-    gemini_global_model_hint: "El modelo utilizado para generar sugerencias de respuesta y automatizaciones.",
-    ai_gemini_section_title: "Modelos por proveedor",
-    ai_gemini_section_desc: "Configura el comportamiento global de la inteligencia artificial. Estos valores se usarán como base para todos los médicos del sistema.",
 
     // WhatsApp Page Config
     wa_config_doctor: "Médico",
-    wa_config_prompt_label: "Prompt / Contexto de la IA",
-    wa_config_prompt_hint: "Este texto define cómo se comporta la IA al responder pacientes.",
-    wa_config_prompt_restore: "Restaurar base",
-    wa_config_model_label: "Configuración del modelo",
-    wa_config_model: "Modelo",
-    wa_config_history: "Historial (mensajes)",
     wa_config_quick_label: "Respuestas rápidas",
     wa_config_quick_hint: "Tocá una respuesta para copiarla al clipboard y usarla en el chat.",
     wa_config_save: "Guardar configuración",
@@ -75,9 +50,4 @@ export const whatsapp_automation = {
     pending_approval_reject_success: "Pedido rechazado",
     pending_approval_reject_error: "Error al rechazar el pedido",
     pending_approval_loading: "Cargando aprobaciones...",
-
-    // Pending-state AI response template
-    wa_config_pending_template_label: "Plantilla de respuesta en estado pendiente",
-    wa_config_pending_template_hint: "Mensaje que envía la IA cuando el paciente escribe mientras su turno espera aprobación.",
-    wa_config_pending_template_placeholder: "Ej: Tu solicitud está en revisión, te confirmamos a la brevedad.",
 };

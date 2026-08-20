@@ -112,9 +112,6 @@ importers:
 
   server:
     dependencies:
-      '@google/gemini-cli':
-        specifier: ^0.53.0
-        version: 0.53.0
       afip-apis:
         specifier: ^0.5.5
         version: 0.5.5
@@ -166,16 +163,16 @@ importers:
     devDependencies:
       '@eslint/js':
         specifier: ^10.0.1
-        version: 10.0.1(eslint@10.3.0(jiti@2.7.0))
+        version: 10.0.1(eslint@10.3.0)
       eslint:
         specifier: ^10.3.0
-        version: 10.3.0(jiti@2.7.0)
+        version: 10.3.0
       globals:
         specifier: ^17.8.0
         version: 17.8.0
       jest:
         specifier: ^30.4.2
-        version: 30.4.2(@types/node@25.7.0)(babel-plugin-macros@3.1.0)
+        version: 30.4.2(@types/node@25.7.0)
       node-mocks-http:
         specifier: ^1.18.1
         version: 1.18.1(@types/node@25.7.0)
@@ -813,14 +810,6 @@ packages:
   '@floating-ui/utils@0.2.11':
     resolution: {integrity: sha512-RiB/yIh78pcIxl6lLMG0CgBXAZ2Y0eVHqMPYugu+9U0AeT6YBeiJpf7lbdJNIugFP5SIjwNRgo4DhR1Qxi26Gg==}
 
-  '@github/keytar@7.10.6':
-    resolution: {integrity: sha512-mRW6cUsSG+nj4jp5gp8e91zPySaT73r+2JM6VyMZfrEgksjPmjSMr+tPGNOK3HUHV+GUU9B1LAiiYy/wmAnIxA==}
-
-  '@google/gemini-cli@0.53.0':
-    resolution: {integrity: sha512-2taA43ERfQ4yPzJGYGTQ4LPjDsFs8d52v1SbInm8ZKtzSyXlHJnI4LHL/wGRBY0MGqH/IWCv7zvT+8aZPu3Sew==}
-    engines: {node: '>=20'}
-    hasBin: true
-
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
     engines: {node: '>=18.18.0'}
@@ -1127,39 +1116,6 @@ packages:
 
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
-
-  '@lydell/node-pty-darwin-arm64@1.1.0':
-    resolution: {integrity: sha512-7kFD+owAA61qmhJCtoMbqj3Uvff3YHDiU+4on5F2vQdcMI3MuwGi7dM6MkFG/yuzpw8LF2xULpL71tOPUfxs0w==}
-    cpu: [arm64]
-    os: [darwin]
-
-  '@lydell/node-pty-darwin-x64@1.1.0':
-    resolution: {integrity: sha512-XZdvqj5FjAMjH8bdp0YfaZjur5DrCIDD1VYiE9EkkYVMDQqRUPHYV3U8BVEQVT9hYfjmpr7dNaELF2KyISWSNA==}
-    cpu: [x64]
-    os: [darwin]
-
-  '@lydell/node-pty-linux-arm64@1.1.0':
-    resolution: {integrity: sha512-yyDBmalCfHpLiQMT2zyLcqL2Fay4Xy7rIs8GH4dqKLnEviMvPGOK7LADVkKAsbsyXBSISL3Lt1m1MtxhPH6ckg==}
-    cpu: [arm64]
-    os: [linux]
-
-  '@lydell/node-pty-linux-x64@1.1.0':
-    resolution: {integrity: sha512-NcNqRTD14QT+vXcEuqSSvmWY+0+WUBn2uRE8EN0zKtDpIEr9d+YiFj16Uqds6QfcLCHfZmC+Ls7YzwTaqDnanA==}
-    cpu: [x64]
-    os: [linux]
-
-  '@lydell/node-pty-win32-arm64@1.1.0':
-    resolution: {integrity: sha512-JOMbCou+0fA7d/m97faIIfIU0jOv8sn2OR7tI45u3AmldKoKoLP8zHY6SAvDDnI3fccO1R2HeR1doVjpS7HM0w==}
-    cpu: [arm64]
-    os: [win32]
-
-  '@lydell/node-pty-win32-x64@1.1.0':
-    resolution: {integrity: sha512-3N56BZ+WDFnUMYRtsrr7Ky2mhWGl9xXcyqR6cexfuCqcz9RNWL+KoXRv/nZylY5dYaXkft4JaR1uVu+roiZDAw==}
-    cpu: [x64]
-    os: [win32]
-
-  '@lydell/node-pty@1.1.0':
-    resolution: {integrity: sha512-VDD8LtlMTOrPKWMXUAcB9+LTktzuunqrMwkYR1DMRBkS6LQrCt+0/Ws1o2rMml/n3guePpS7cxhHF7Nm5K4iMw==}
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
@@ -4199,9 +4155,6 @@ packages:
     resolution: {integrity: sha512-Tz09sEL2EEuv5fFowm419c1+a/jSMiBjI9gHxVLrVdbUkkNUUfjsVYs9pVZu5oCon/kmRh9TfLEObFtkVxmY0w==}
     engines: {node: '>=8.0.0'}
 
-  nan@2.28.0:
-    resolution: {integrity: sha512-fTsDz99OTq2sVePhGdp4qQhggZFtKr64ZNVyVajRKtMOkJxYekplBh577PiJB12v/D3s2E5cGtOI45LWp6rnLQ==}
-
   nanoid@3.3.12:
     resolution: {integrity: sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
@@ -4235,10 +4188,6 @@ packages:
 
   node-addon-api@8.7.0:
     resolution: {integrity: sha512-9MdFxmkKaOYVTV+XVRG8ArDwwQ77XIgIPyKASB1k3JPq3M8fGQQQE3YpMOrKm6g//Ktx8ivZr8xo1Qmtqub+GA==}
-    engines: {node: ^18 || ^20 || >= 21}
-
-  node-addon-api@8.9.1:
-    resolution: {integrity: sha512-4eUQWVPCUUUiBjLnHS3cXWeC6ryoPUc0U3rP7IuzapoGbzMqd/r6KKO0clr0b+snQhsrueFEhCZDdK+LK7hxKg==}
     engines: {node: ^18 || ^20 || >= 21}
 
   node-cron@4.2.1:
@@ -4280,9 +4229,6 @@ packages:
         optional: true
       '@types/node':
         optional: true
-
-  node-pty@1.0.0:
-    resolution: {integrity: sha512-wtBMWWS7dFZm/VgqElrTvtfMq4GzJ6+edFI0Y0zyzygUSZMgZdraDUMUhCIvkjhJjme15qWmbyJbtAx4ot4uZA==}
 
   node-releases@2.0.38:
     resolution: {integrity: sha512-3qT/88Y3FbH/Kx4szpQQ4HzUbVrHPKTLVpVocKiLfoYvw9XSGOX2FmD2d6DrXbVYyAQTF2HeF6My8jmzx7/CRw==}
@@ -6142,6 +6088,11 @@ snapshots:
       eslint: 10.3.0(jiti@2.7.0)
       eslint-visitor-keys: 3.4.3
 
+  '@eslint-community/eslint-utils@4.9.1(eslint@10.3.0)':
+    dependencies:
+      eslint: 10.3.0
+      eslint-visitor-keys: 3.4.3
+
   '@eslint-community/regexpp@4.12.2': {}
 
   '@eslint/config-array@0.23.5':
@@ -6164,6 +6115,10 @@ snapshots:
     optionalDependencies:
       eslint: 10.3.0(jiti@2.7.0)
 
+  '@eslint/js@10.0.1(eslint@10.3.0)':
+    optionalDependencies:
+      eslint: 10.3.0
+
   '@eslint/object-schema@3.0.5': {}
 
   '@eslint/plugin-kit@0.7.1':
@@ -6183,22 +6138,6 @@ snapshots:
       '@floating-ui/utils': 0.2.11
 
   '@floating-ui/utils@0.2.11': {}
-
-  '@github/keytar@7.10.6':
-    dependencies:
-      node-addon-api: 8.9.1
-    optional: true
-
-  '@google/gemini-cli@0.53.0':
-    optionalDependencies:
-      '@github/keytar': 7.10.6
-      '@lydell/node-pty': 1.1.0
-      '@lydell/node-pty-darwin-arm64': 1.1.0
-      '@lydell/node-pty-darwin-x64': 1.1.0
-      '@lydell/node-pty-linux-x64': 1.1.0
-      '@lydell/node-pty-win32-arm64': 1.1.0
-      '@lydell/node-pty-win32-x64': 1.1.0
-      node-pty: 1.0.0
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -6352,7 +6291,7 @@ snapshots:
       jest-util: 30.4.1
       slash: 3.0.0
 
-  '@jest/core@30.4.2(babel-plugin-macros@3.1.0)':
+  '@jest/core@30.4.2':
     dependencies:
       '@jest/console': 30.4.1
       '@jest/pattern': 30.4.0
@@ -6368,7 +6307,7 @@ snapshots:
       fast-json-stable-stringify: 2.1.0
       graceful-fs: 4.2.11
       jest-changed-files: 30.4.1
-      jest-config: 30.4.2(@types/node@25.7.0)(babel-plugin-macros@3.1.0)
+      jest-config: 30.4.2(@types/node@25.7.0)
       jest-haste-map: 30.4.1
       jest-message-util: 30.4.1
       jest-regex-util: 30.4.0
@@ -6552,34 +6491,6 @@ snapshots:
       keyv: 5.6.0
 
   '@keyv/serialize@1.1.1': {}
-
-  '@lydell/node-pty-darwin-arm64@1.1.0':
-    optional: true
-
-  '@lydell/node-pty-darwin-x64@1.1.0':
-    optional: true
-
-  '@lydell/node-pty-linux-arm64@1.1.0':
-    optional: true
-
-  '@lydell/node-pty-linux-x64@1.1.0':
-    optional: true
-
-  '@lydell/node-pty-win32-arm64@1.1.0':
-    optional: true
-
-  '@lydell/node-pty-win32-x64@1.1.0':
-    optional: true
-
-  '@lydell/node-pty@1.1.0':
-    optionalDependencies:
-      '@lydell/node-pty-darwin-arm64': 1.1.0
-      '@lydell/node-pty-darwin-x64': 1.1.0
-      '@lydell/node-pty-linux-arm64': 1.1.0
-      '@lydell/node-pty-linux-x64': 1.1.0
-      '@lydell/node-pty-win32-arm64': 1.1.0
-      '@lydell/node-pty-win32-x64': 1.1.0
-    optional: true
 
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:
@@ -7847,9 +7758,7 @@ snapshots:
 
   decimal.js@10.6.0: {}
 
-  dedent@1.7.2(babel-plugin-macros@3.1.0):
-    optionalDependencies:
-      babel-plugin-macros: 3.1.0
+  dedent@1.7.2: {}
 
   deep-is@0.1.4: {}
 
@@ -8143,6 +8052,41 @@ snapshots:
   eslint-visitor-keys@3.4.3: {}
 
   eslint-visitor-keys@5.0.1: {}
+
+  eslint@10.3.0:
+    dependencies:
+      '@eslint-community/eslint-utils': 4.9.1(eslint@10.3.0)
+      '@eslint-community/regexpp': 4.12.2
+      '@eslint/config-array': 0.23.5
+      '@eslint/config-helpers': 0.5.5
+      '@eslint/core': 1.2.1
+      '@eslint/plugin-kit': 0.7.1
+      '@humanfs/node': 0.16.8
+      '@humanwhocodes/module-importer': 1.0.1
+      '@humanwhocodes/retry': 0.4.3
+      '@types/estree': 1.0.9
+      ajv: 6.15.0
+      cross-spawn: 7.0.6
+      debug: 4.4.3
+      escape-string-regexp: 4.0.0
+      eslint-scope: 9.1.2
+      eslint-visitor-keys: 5.0.1
+      espree: 11.2.0
+      esquery: 1.7.0
+      esutils: 2.0.3
+      fast-deep-equal: 3.1.3
+      file-entry-cache: 8.0.0
+      find-up: 5.0.0
+      glob-parent: 6.0.2
+      ignore: 5.3.2
+      imurmurhash: 0.1.4
+      is-glob: 4.0.3
+      json-stable-stringify-without-jsonify: 1.0.1
+      minimatch: 10.2.5
+      natural-compare: 1.4.0
+      optionator: 0.9.4
+    transitivePeerDependencies:
+      - supports-color
 
   eslint@10.3.0(jiti@2.7.0):
     dependencies:
@@ -8954,7 +8898,7 @@ snapshots:
       jest-util: 30.4.1
       p-limit: 3.1.0
 
-  jest-circus@30.4.2(babel-plugin-macros@3.1.0):
+  jest-circus@30.4.2:
     dependencies:
       '@jest/environment': 30.4.1
       '@jest/expect': 30.4.1
@@ -8963,7 +8907,7 @@ snapshots:
       '@types/node': 25.7.0
       chalk: 4.1.2
       co: 4.6.0
-      dedent: 1.7.2(babel-plugin-macros@3.1.0)
+      dedent: 1.7.2
       is-generator-fn: 2.1.0
       jest-each: 30.4.1
       jest-matcher-utils: 30.4.1
@@ -8980,15 +8924,15 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  jest-cli@30.4.2(@types/node@25.7.0)(babel-plugin-macros@3.1.0):
+  jest-cli@30.4.2(@types/node@25.7.0):
     dependencies:
-      '@jest/core': 30.4.2(babel-plugin-macros@3.1.0)
+      '@jest/core': 30.4.2
       '@jest/test-result': 30.4.1
       '@jest/types': 30.4.1
       chalk: 4.1.2
       exit-x: 0.2.2
       import-local: 3.2.0
-      jest-config: 30.4.2(@types/node@25.7.0)(babel-plugin-macros@3.1.0)
+      jest-config: 30.4.2(@types/node@25.7.0)
       jest-util: 30.4.1
       jest-validate: 30.4.1
       yargs: 17.7.2
@@ -8999,7 +8943,7 @@ snapshots:
       - supports-color
       - ts-node
 
-  jest-config@30.4.2(@types/node@25.7.0)(babel-plugin-macros@3.1.0):
+  jest-config@30.4.2(@types/node@25.7.0):
     dependencies:
       '@babel/core': 7.29.0
       '@jest/get-type': 30.1.0
@@ -9012,7 +8956,7 @@ snapshots:
       deepmerge: 4.3.1
       glob: 10.5.0
       graceful-fs: 4.2.11
-      jest-circus: 30.4.2(babel-plugin-macros@3.1.0)
+      jest-circus: 30.4.2
       jest-docblock: 30.4.0
       jest-environment-node: 30.4.1
       jest-regex-util: 30.4.0
@@ -9246,12 +9190,12 @@ snapshots:
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
-  jest@30.4.2(@types/node@25.7.0)(babel-plugin-macros@3.1.0):
+  jest@30.4.2(@types/node@25.7.0):
     dependencies:
-      '@jest/core': 30.4.2(babel-plugin-macros@3.1.0)
+      '@jest/core': 30.4.2
       '@jest/types': 30.4.1
       import-local: 3.2.0
-      jest-cli: 30.4.2(@types/node@25.7.0)(babel-plugin-macros@3.1.0)
+      jest-cli: 30.4.2(@types/node@25.7.0)
     transitivePeerDependencies:
       - '@types/node'
       - babel-plugin-macros
@@ -9652,9 +9596,6 @@ snapshots:
     dependencies:
       lru.min: 1.1.4
 
-  nan@2.28.0:
-    optional: true
-
   nanoid@3.3.12: {}
 
   nanoid@3.3.15: {}
@@ -9670,9 +9611,6 @@ snapshots:
   negotiator@1.0.0: {}
 
   node-addon-api@8.7.0: {}
-
-  node-addon-api@8.9.1:
-    optional: true
 
   node-cron@4.2.1: {}
 
@@ -9710,11 +9648,6 @@ snapshots:
       type-is: 1.6.18
     optionalDependencies:
       '@types/node': 25.7.0
-
-  node-pty@1.0.0:
-    dependencies:
-      nan: 2.28.0
-    optional: true
 
   node-releases@2.0.38: {}
 

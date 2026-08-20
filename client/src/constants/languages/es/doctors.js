@@ -228,19 +228,8 @@ export const doctors = {
     force_hour_alignment_label: "Coordinar con minuto cero (:00)",
     force_hour_alignment_help: "Si un turno arranca 8:15, el siguiente será clavado a las 9:00, luego 10:00, etc.",
 
-    // Doctor messages AI subtab
+    // Doctor messages tabs
     reminders_tab: "Recordatorios",
     confirmations_tab: "Confirmaciones",
-    ai_tab: "IA",
     load_base_rules: "Cargar reglas base",
-    gemini_config_title: "Configuración IA Gemini",
-    gemini_context_label: "Prompt / Contexto de la IA",
-    gemini_context_placeholder: "Ej: Sos Gemi, la asistente virtual del consultorio...",
-    gemini_context_hint: "Este contexto personaliza cómo responde la IA para este médico. La regla anti-alucinación siempre se conserva.",
-    gemini_model_label: "Modelo",
-    gemini_api_version_label: "Versión de la API",
-    gemini_api_version_option_v1: "v1 (Estable)",
-    gemini_api_version_option_v1beta: "v1beta (Preview)",
-    gemini_history_limit_label: "Historial (mensajes)",
-    gemini_history_limit_hint: "Cantidad de mensajes previos que la IA considera al responder.",
 };

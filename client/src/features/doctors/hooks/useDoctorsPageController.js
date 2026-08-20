@@ -11,9 +11,7 @@ import { useSearch } from '@/hooks/useSearch';
 /**
  * Builds the edit-modal initialData from a doctor record.
  * Pure function so the seeding logic is unit-testable without rendering the
- * controller hook. AI fields are seeded explicitly (gemini_model, and
- * gemini_api_version defaulting to 'v1beta') so stored values display and
- * persist through the modal.
+ * controller hook.
  *
  * @param {object} doc doctor record
  * @returns {object} modal initialData
@@ -44,11 +42,7 @@ export const buildDoctorInitialData = (doc) => ({
     reminder_template: doc.reminder_template || '',
     confirmation_template: doc.confirmation_template || '',
     reminder_virtual_template: doc.reminder_virtual_template || '',
-    confirmation_virtual_template: doc.confirmation_virtual_template || '',
-    gemini_context: doc.gemini_context || '',
-    gemini_history_limit: doc.gemini_history_limit || 3,
-    gemini_model: doc.gemini_model || '',
-    gemini_api_version: doc.gemini_api_version || 'v1beta'
+    confirmation_virtual_template: doc.confirmation_virtual_template || ''
 });
 
 export const useDoctorsPageController = () => {
