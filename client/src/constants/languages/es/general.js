@@ -63,6 +63,7 @@ export const general = {
     reload_page: "Recargar Página",
     copy_error: "Copiar Error",
     error_copied: "¡Copiado!",
+    error_update: "Error al actualizar",
     no_insurances_registered: "No hay obras sociales registradas",
     search_on_map: "Buscar en mapa",
     more: "más",

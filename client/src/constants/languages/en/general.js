@@ -177,6 +177,7 @@ export const general = {
     reload_page: "Reload Page",
     copy_error: "Copy Error",
     error_copied: "Copied!",
+    error_update: "Error updating",
     new_appointment_short: "Appointment",
     new_patient_short: "Patient",
 };
