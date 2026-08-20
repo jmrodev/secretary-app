@@ -14,7 +14,6 @@ const AiSettings = lazy(() => import('../components/sections/AiSettings').then(m
 // Domain Features
 const DoctorsManager = lazy(() => import('@/features/doctors').then(m => ({ default: m.DoctorsManager })));
 const ProfileEditor = lazy(() => import('@/features/auth').then(m => ({ default: m.ProfileEditor })));
-const ReportsDashboard = lazy(() => import('@/features/reports').then(m => ({ default: m.ReportsDashboard })));
 const InstitutionManager = lazy(() => import('@/features/institutions').then(m => ({ default: m.InstitutionManager })));
 const UserManager = lazy(() => import('@/features/users').then(m => ({ default: m.UserManager })));
 const AuditLogManager = lazy(() => import('@/features/reports').then(m => ({ default: m.AuditLogManager })));
@@ -28,7 +27,7 @@ import { MessageTemplateEditor } from './forms/MessageTemplateEditor';
 // Eager imports for hooks to avoid undef require at runtime/eslint
 import { useProfileController } from '@/features/auth/hooks/useProfileController';
 import { useDoctorsPageController } from '@/features/doctors';
-import { useReportsController, useAuditLogsController } from '@/features/reports';
+import { useAuditLogsController } from '@/features/reports';
 import { useInstitutionsController } from '@/features/institutions';
 
 // --- Specialized Wrappers to map the common Controller to specific component props ---
@@ -65,11 +64,6 @@ const DoctorsManagerWrapper = ({ controller }) => {
             MessageTemplateEditorComponent={MessageTemplateEditor}
         />
     );
-};
-
-const ReportsDashboardWrapper = ({ controller }) => {
-    const reportsController = useReportsController();
-    return <ReportsDashboard {...reportsController} />;
 };
 
 const InstitutionManagerWrapper = ({ controller }) => {
@@ -136,5 +130,4 @@ export const loadDefaultConfigSections = (t) => {
     registerConfigSection('users', { title: t('users'), icon: 'group', desc: 'Gestiona los accesos y roles.' }, UserManagerWrapper);
     registerConfigSection('billing', { title: t('billing'), icon: 'payments', desc: 'Configuración de facturación.' }, BillingSettingsWrapper);
     registerConfigSection('logs', { title: t('logs'), icon: 'list_alt', desc: 'Historial de auditoría.' }, AuditLogManagerWrapper);
-    registerConfigSection('reports', { title: t('reports'), icon: 'assessment', desc: 'Estadísticas del sistema.' }, ReportsDashboardWrapper);
 };
