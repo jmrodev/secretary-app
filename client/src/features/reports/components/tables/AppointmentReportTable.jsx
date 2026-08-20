@@ -8,7 +8,7 @@ export const AppointmentReportTable = ({ data, t }) => {
     const list = Array.isArray(data?.appointments) ? data.appointments : (Array.isArray(data) ? data : []);
 
     if (!list || list.length === 0) {
-        return <div className={styles.AppointmentReportTable__appointmentReport__empty}>{t('no_data_to_display')}</div>;
+        return <div className={styles.AppointmentReportTable__empty}>{t('no_data_to_display')}</div>;
     }
 
     // Pure computation of per-day and running totals. Two passes keep the render
@@ -94,12 +94,12 @@ export const AppointmentReportTable = ({ data, t }) => {
     return (
         <section className={styles.AppointmentReportTable__appointmentReport}>
             {/* Summary Table */}
-            <article className={styles.AppointmentReportTable__appointmentReport__summary}>
-                <header className={styles.AppointmentReportTable__appointmentReport__summaryHeader}>
-                    <h3 className={styles.AppointmentReportTable__appointmentReport__summaryTitle}>{t('daily_summary')}</h3>
+            <article className={styles.AppointmentReportTable__summary}>
+                <header className={styles.AppointmentReportTable__summaryHeader}>
+                    <h3 className={styles.AppointmentReportTable__summaryTitle}>{t('daily_summary')}</h3>
                 </header>
-                <div className={styles.AppointmentReportTable__appointmentReport__tableContainer}>
-                    <table className={`${styles.AppointmentReportTable__appointmentReport__table} ${styles['appointmentReport__table--summary']}`}>
+                <div className={styles.AppointmentReportTable__tableContainer}>
+                    <table className={styles.AppointmentReportTable__table}>
                         <thead>
                             <tr>
                                 <th>{t('date_label')}</th>
@@ -114,39 +114,39 @@ export const AppointmentReportTable = ({ data, t }) => {
                             {dailySummaryWithTotals.map((day) => (
                                 <tr 
                                     key={day.date} 
-                                    className={`${styles.AppointmentReportTable__appointmentReport__row} ${day.is_weekend ? styles['AppointmentReportTable__row--weekend'] : ''} ${day.is_holiday ? styles['AppointmentReportTable__row--holiday'] : ''}`}
+                                    className={`${styles.AppointmentReportTable__row} ${day.is_weekend ? styles['AppointmentReportTable__row--weekend'] : ''} ${day.is_holiday ? styles['AppointmentReportTable__row--holiday'] : ''}`}
                                 >
                                     <td>
                                         {day.date}
-                                        {day.is_holiday && <span className={styles.AppointmentReportTable__appointmentReport__tagSmall}><Icon name="celebration" size="1rem" /></span>}
-                                        {day.is_weekend && !day.is_holiday && <span className={styles.AppointmentReportTable__appointmentReport__tagSmall}><Icon name="calendar_today" size="1rem" /></span>}
+                                        {day.is_holiday && <span className={styles.AppointmentReportTable__tagSmall}><Icon name="celebration" size="1rem" /></span>}
+                                        {day.is_weekend && !day.is_holiday && <span className={styles.AppointmentReportTable__tagSmall}><Icon name="calendar_today" size="1rem" /></span>}
 
-                                        <span className={styles.AppointmentReportTable__appointmentReport__dayName}> {getDayOfWeek(day.date)}</span>
+                                        <span className={styles.AppointmentReportTable__dayName}> {getDayOfWeek(day.date)}</span>
                                     </td>
                                     <td className="text-right">{formatCurrency(day.cash)}</td>
                                     <td className="text-right">{formatCurrency(day.others)}</td>
-                                    <td className={`text-right ${styles.AppointmentReportTable__appointmentReport__cellBold}`}>
+                                    <td className={`text-right ${styles.AppointmentReportTable__cellBold}`}>
                                         {formatCurrency(day.total)}
                                     </td>
                                     <td className="text-right">{formatCurrency(day.weeklyTotal)}</td>
-                                    <td className={`text-right ${styles.AppointmentReportTable__appointmentReport__cellBold}`}>{formatCurrency(day.monthlyAccumulated)}</td>
+                                    <td className={`text-right ${styles.AppointmentReportTable__cellBold}`}>{formatCurrency(day.monthlyAccumulated)}</td>
                                 </tr>
                             ))}
                         </tbody>
                         <tfoot>
-                            <tr className={styles.AppointmentReportTable__appointmentReport__footerSubtotal}>
+                            <tr className={styles.AppointmentReportTable__footerSubtotal}>
                                 <td>{t('monthly_cash_total')}</td>
                                 <td colSpan="5" className="text-right">
                                     {formatCurrency(monthlyTotalCash)}
                                 </td>
                             </tr>
-                            <tr className={styles.AppointmentReportTable__appointmentReport__footerSubtotal}>
+                            <tr className={styles.AppointmentReportTable__footerSubtotal}>
                                 <td>{t('monthly_others_total')}</td>
                                 <td colSpan="5" className="text-right">
                                     {formatCurrency(monthlyTotalOthers)}
                                 </td>
                             </tr>
-                            <tr className={styles.AppointmentReportTable__appointmentReport__footer}>
+                            <tr className={styles.AppointmentReportTable__footer}>
                                 <td>{t('monthly_accumulated_total')}</td>
                                 <td colSpan="5" className="text-right">
                                     {formatCurrency(monthlyTotal)}
@@ -158,8 +158,8 @@ export const AppointmentReportTable = ({ data, t }) => {
             </article>
 
             {/* Detailed Daily Breakdown */}
-            <div className={styles.AppointmentReportTable__appointmentReport__tableContainer}>
-                <table className={styles.AppointmentReportTable__appointmentReport__table}>
+            <div className={styles.AppointmentReportTable__tableContainer}>
+                <table className={styles.AppointmentReportTable__table}>
                     <thead>
                         <tr>
                             <th>{t('date_label')}</th>
@@ -174,18 +174,18 @@ export const AppointmentReportTable = ({ data, t }) => {
                     <tbody>
                         {list.map((dayGroup) => (
                             <React.Fragment key={dayGroup.date}>
-                                <tr className={`${styles.AppointmentReportTable__appointmentReport__dayHeader} ${dayGroup.is_weekend ? styles['AppointmentReportTable__dayHeader--weekend'] : ''} ${dayGroup.is_holiday ? styles['AppointmentReportTable__dayHeader--holiday'] : ''}`}>
+                                <tr className={`${styles.AppointmentReportTable__dayHeader} ${dayGroup.is_weekend ? styles['AppointmentReportTable__dayHeader--weekend'] : ''} ${dayGroup.is_holiday ? styles['AppointmentReportTable__dayHeader--holiday'] : ''}`}>
                                     <td colSpan="7">
                                         <Icon name="calendar_today" size="1rem" className="mr-1" /> {dayGroup.date}
                                         {dayGroup.is_holiday && (
-                                            <span className={styles.AppointmentReportTable__appointmentReport__holidayTag}>
+                                            <span className={styles.AppointmentReportTable__holidayTag}>
                                                 <Icon name="celebration" size="1rem" />
                                                 {dayGroup.holiday_description}
                                             </span>
                                         )}
 
                                         {dayGroup.is_weekend && !dayGroup.is_holiday && (
-                                            <span className={styles.AppointmentReportTable__appointmentReport__weekendNote}>
+                                            <span className={styles.AppointmentReportTable__weekendNote}>
                                                 ({t('weekend_short')})
                                             </span>
                                         )}
@@ -204,28 +204,28 @@ export const AppointmentReportTable = ({ data, t }) => {
                                     return (
                                         <tr 
                                             key={appt.id || `${dayGroup.date}-${timeStr}-${patientName}`} 
-                                            className={`${styles.AppointmentReportTable__appointmentReport__row} ${appt.is_out_of_hours ? styles['AppointmentReportTable__row--overturn'] : ''}`}
+                                            className={`${styles.AppointmentReportTable__row} ${appt.is_out_of_hours ? styles['AppointmentReportTable__row--overturn'] : ''}`}
                                         >
-                                            <td className={styles.AppointmentReportTable__appointmentReport__cellDay}>{dayGroup.date}</td>
+                                            <td className={styles.AppointmentReportTable__cellDay}>{dayGroup.date}</td>
                                             <td>
                                                 {infoStr}
-                                                {appt.is_out_of_hours && <span className={styles.AppointmentReportTable__appointmentReport__overturnBadge}>{t('overturn')}</span>}
+                                                {appt.is_out_of_hours && <span className={styles.AppointmentReportTable__overturnBadge}>{t('overturn')}</span>}
                                             </td>
-                                            <td className={styles.AppointmentReportTable__appointmentReport__cellPatient}>{patientName}</td>
-                                            <td className={styles.AppointmentReportTable__appointmentReport__cellTime}>{timeStr}</td>
+                                            <td className={styles.AppointmentReportTable__cellPatient}>{patientName}</td>
+                                            <td className={styles.AppointmentReportTable__cellTime}>{timeStr}</td>
                                             <td>
-                                                <span className={`${styles.AppointmentReportTable__appointmentReport__badge} ${styles[`appointmentReport__badge--${statusStr}`] || ''}`}>
+                                                <span className={`${styles.AppointmentReportTable__badge} ${styles[`appointmentReport__badge--${statusStr}`] || ''}`}>
                                                     {t(statusStr) || statusStr}
                                                 </span>
                                             </td>
                                             <td>
-                                                <div className={styles.AppointmentReportTable__appointmentReport__paymentInfo}>
-                                                    <span className={`${styles.AppointmentReportTable__appointmentReport__badge} ${styles[`appointmentReport__badge--${paymentStr}`] || ''}`}>
+                                                <div className={styles.AppointmentReportTable__paymentInfo}>
+                                                    <span className={`${styles.AppointmentReportTable__badge} ${styles[`appointmentReport__badge--${paymentStr}`] || ''}`}>
                                                         {t(paymentStr) || paymentStr}
                                                     </span>
                                                 </div>
                                             </td>
-                                            <td className={styles.AppointmentReportTable__appointmentReport__cellAmount}>
+                                            <td className={styles.AppointmentReportTable__cellAmount}>
                                                 {paidAmount > 0 ? formatCurrency(paidAmount) : '-'}
                                             </td>
                                         </tr>
