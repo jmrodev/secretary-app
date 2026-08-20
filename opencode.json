@@ -1,42 +1,45 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "agent": {
+    "gentle-orchestrator": {
+      "model": "opencode/deepseek-v4-flash-free"
+    },
     "explore": {
-      "model": "opencode/laguna-s-2.1-free",
+      "model": "opencode/deepseek-v4-flash-free",
       "description": "Fast agent specialized for exploring codebases — cheap free model"
     },
     "general": {
-      "model": "opencode/deepseek-v4-flash-free"
+      "model": "opencode/hy3-free"
     },
     "sdd-init": {
-      "model": "opencode/laguna-s-2.1-free"
+      "model": "opencode/mimo-v2.5-free"
     },
     "sdd-explore": {
-      "model": "opencode/laguna-s-2.1-free"
+      "model": "opencode/muse-spark-1.2-contributor-free"
     },
     "sdd-propose": {
-      "model": "google/gemini-3.5-flash-lite"
+      "model": "opencode/nemotron-3-ultra-free"
     },
     "sdd-spec": {
-      "model": "google/gemini-3.5-flash-lite"
+      "model": "opencode/hy3-free"
     },
     "sdd-design": {
-      "model": "google/gemini-3.5-flash-lite"
+      "model": "opencode/nemotron-3.5-lightning-free"
     },
     "sdd-tasks": {
-      "model": "google/gemini-3.5-flash-lite"
+      "model": "opencode/muse-spark-1.2-contributor-free"
     },
     "sdd-apply": {
       "model": "opencode/deepseek-v4-flash-free"
     },
     "sdd-verify": {
-      "model": "google/gemini-3.5-flash-lite"
+      "model": "opencode/hy3-free"
     },
     "sdd-archive": {
-      "model": "opencode/laguna-s-2.1-free"
+      "model": "opencode/mimo-v2.5-free"
     },
     "sdd-onboard": {
-      "model": "opencode/laguna-s-2.1-free"
+      "model": "opencode/nemotron-3-ultra-free"
     },
     "git-manager": {
       "description": "Git branch management, PR creation, sync operations, and cleanup across branches",
