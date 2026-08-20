@@ -18,7 +18,8 @@ export const Navbar = () => {
         user, logout, t, settings,
         location, doctors,
         language, toggleLanguage,
-        isStaff, isAdmin, isSecretary, isPatient, isDoctor
+        isStaff, isAdmin, isSecretary, isPatient, isDoctor,
+        canManageUsers
     } = useLayoutController();
 
     const [openDropdown, setOpenDropdown] = useState(null); // 'admin' | 'spreadsheets' | 'user' | null
@@ -65,7 +66,7 @@ export const Navbar = () => {
                     {/* Spreadsheets Dropdown */}
                     {doctors.length > 0 && (
                         <NavbarDropdown 
-                            label={t('spreadsheets') || 'Planillas'}
+                            label={t('spreadsheets')}
                             isOpen={openDropdown === 'spreadsheets'}
                             onToggle={() => handleToggle('spreadsheets')}
                         >
@@ -75,7 +76,7 @@ export const Navbar = () => {
                                     <a key={d.id} href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
                                        target="_blank" rel="noopener noreferrer" className={styles.Navbar__link}>
                                         <Icon name="SPREADSHEETS" />
-                                        {isDoctor ? (t('my_spreadsheet') || 'Mi Planilla') : d.full_name.split(' ')[0]}
+                                        {isDoctor ? t('my_spreadsheet') : d.full_name.split(' ')[0]}
                                     </a>
                                 );
                             })}
@@ -89,15 +90,17 @@ export const Navbar = () => {
                             isOpen={openDropdown === 'admin'}
                             onToggle={() => handleToggle('admin')}
                         >
-                            <NavbarLink to="/doctors" label={t('doctors')} onClick={() => setOpenDropdown(null)} icon={<Icon name="DOCTORS" />} />
+                            <NavbarLink to="/admin/users?tab=doctor" label={t('doctors')} onClick={() => setOpenDropdown(null)} icon={<Icon name="DOCTORS" />} />
                             <NavbarLink to="/reports" label={t('reports')} onClick={() => setOpenDropdown(null)} icon={<Icon name="REPORTS" />} />
                             <NavbarLink to="/institutions" label={t('institutions')} onClick={() => setOpenDropdown(null)} icon={<Icon name="INSTITUTIONS" />} />
-                            <NavbarLink to="/holidays" label="Feriados" onClick={() => setOpenDropdown(null)} icon={<Icon name="beach_access" />} />
-                            {isAdmin && (
+                            <NavbarLink to="/holidays" label={t('holidays')} onClick={() => setOpenDropdown(null)} icon={<Icon name="beach_access" />} />
+                            {(isAdmin || canManageUsers) && (
                                 <>
                                     <NavbarLink to="/admin/users" label={t('users')} onClick={() => setOpenDropdown(null)} icon={<Icon name="USERS" />} />
-                                    <NavbarLink to="/logs" label={t('audit_logs')} onClick={() => setOpenDropdown(null)} icon={<Icon name="LOGS" />} />
                                 </>
+                            )}
+                            {isAdmin && (
+                                <NavbarLink to="/logs" label={t('audit_logs')} onClick={() => setOpenDropdown(null)} icon={<Icon name="LOGS" />} />
                             )}
                             <NavbarLink to="/config?tab=general" label={t('system_config')} onClick={() => setOpenDropdown(null)} icon={<Icon name="SETTINGS" />} />
                         </NavbarDropdown>
@@ -110,7 +113,7 @@ export const Navbar = () => {
                         <ThemeToggle />
                         <div className={styles.Navbar__actionIcon}>
                             <Icon name="NOTIFICATIONS" size="1.2rem" />
-                            <span className={styles.badge}></span>
+                            <span className={styles.Navbar__badge}></span>
                         </div>
                         <LanguageSelector 
                             currentLanguage={language} 
@@ -127,7 +130,7 @@ export const Navbar = () => {
                             aria-haspopup="menu"
                         >
                             <div className={styles.Navbar__avatar}>
-                                {user?.username?.charAt(0)?.toUpperCase() || 'U'}
+                                {user?.username?.charAt(0)?.toUpperCase() || t('avatar_initial_fallback')}
                             </div>
                             <div className={styles.Navbar__info}>
                                 <span className={styles.Navbar__name}>{user?.full_name || user?.username}</span>

@@ -3,6 +3,8 @@ export const admin_users = {
     admin_console: "Admin Console",
     manage_users_subtitle: "Manage system access and recover user accounts.",
     add_user: "+ Add User",
+    refresh: "Refresh",
+    actions: "Actions",
     search_users_placeholder: "Search by username, name or role...",
     user_header: "User",
     role_header: "Role",
@@ -29,4 +31,17 @@ export const admin_users = {
     password_reset: "Password reset for",
     failed_reset_password: "Failed to reset password",
     loading_users: "Loading users...",
+    // Management tabs
+    tab_secretaries: "Secretaries",
+    tab_doctors: "Doctors",
+    // Secretary permissions (grant UI)
+    grant_permissions_title: "Secretary Permissions",
+    grant_permissions_hint: "Granted secretaries can manage user accounts and the doctors list.",
+    grant_all: "Grant to all",
+    grant_selected: "Grant selected",
+    revoke_selected: "Revoke selected",
+    loading_permissions: "Loading permissions...",
+    no_secretaries: "No secretaries found",
+    permission_updated: "Permissions updated successfully",
+    permission_update_failed: "Failed to update permissions",
 };

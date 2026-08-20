@@ -3,6 +3,16 @@ import { api } from '@/api/axios';
 import { useAuth } from '@/features/auth';
 
 /**
+ * Pure helper: resolves whether a user holds the can_manage_users grant
+ * (JWT camelCase flag or legacy snake_case DB field).
+ */
+export const resolveCanManageUsers = (user) => {
+    if (!user) return false;
+    if (typeof user.canManageUsers === 'boolean') return user.canManageUsers;
+    return Boolean(user.can_manage_users);
+};
+
+/**
  * Hook to manage complex role-based permissions, including dynamic system settings.
  * Ensures clean code by abstracting permission logic away from components.
  */
@@ -90,6 +100,9 @@ export const usePermissions = () => {
         isPatient: user?.role === 'patient',
         isStaff: user?.role === 'admin' || user?.role === 'secretary',
         isMedicalStaff: user?.role === 'admin' || user?.role === 'secretary' || user?.role === 'doctor',
+        // Mirrors the backend authorizeCanManageUsers semantics:
+        // admins always hold the grant; secretaries only when flagged.
+        canManageUsers: user?.role === 'admin' || resolveCanManageUsers(user),
         user,
         logout
     };

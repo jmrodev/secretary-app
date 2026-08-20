@@ -34,7 +34,6 @@ const TempAccessPage = lazy(() => import('@/features/auth').then(m => ({ default
 const LoginPage = lazy(() => import('@/features/auth').then(m => ({ default: m.LoginPage })));
 const RegisterPage = lazy(() => import('@/features/auth').then(m => ({ default: m.RegisterPage })));
 const ProfilePage = lazy(() => import('@/features/auth').then(m => ({ default: m.ProfilePage })));
-const DoctorsPage = lazy(() => import('@/features/doctors').then(m => ({ default: m.DoctorsPage })));
 const ReportsPage = lazy(() => import('@/features/reports').then(m => ({ default: m.ReportsPage })));
 
 const DayCellPlayground = lazy(() => import('@/features/appointments/components/calendar/v2/DayCellPlayground').then(m => ({ default: m.DayCellPlayground })));
@@ -86,7 +85,7 @@ export const AppRouter = () => {
                 } />
 
                 <Route path="/admin/users" element={
-                    <RoleGuard allowedRoles={['admin']}>
+                    <RoleGuard allowedRoles={['admin', 'secretary']} permission="canManageUsers">
                         <AdminUsersPage />
                     </RoleGuard>
                 } />
@@ -112,7 +111,7 @@ export const AppRouter = () => {
                     <Route path="certificates" element={<CertificatesView />} />
                 </Route>
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/doctors" element={<DoctorsPage />} />
+                <Route path="/doctors" element={<Navigate to="/admin/users?tab=doctor" replace />} />
                 <Route path="/holidays" element={
                     <RoleGuard allowedRoles={['admin', 'secretary']}>
                         <HolidaysPage />
