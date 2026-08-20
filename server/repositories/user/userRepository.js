@@ -61,7 +61,11 @@ class UserRepository {
     }
 
     async updatePassword(id, hashedPassword, conn = this.pool) {
-        return await conn.query("UPDATE users SET password_hash = ? WHERE id = ?", [hashedPassword, id]);
+        // Bump token_version to evict existing JWTs (other sessions must re-login)
+        return await conn.query(
+            "UPDATE users SET password_hash = ?, token_version = token_version + 1 WHERE id = ?",
+            [hashedPassword, id]
+        );
     }
 
     async update(id, updates, conn = this.pool) {
@@ -81,6 +85,40 @@ class UserRepository {
     async findAdminPasswordHash(conn = this.pool) {
         const rows = await conn.query("SELECT password_hash FROM users WHERE username = 'admin'");
         return rows[0] || null;
+    }
+
+    /**
+     * Lists all secretary accounts with their can_manage_users flag,
+     * joined with the secretary profile name for the grant UI.
+     */
+    async findSecretaryPermissions(conn = this.pool) {
+        return await conn.query(`
+            SELECT u.id, u.username, u.can_manage_users, s.full_name
+            FROM users u
+            LEFT JOIN secretaries s ON s.user_id = u.id
+            WHERE u.role = 'secretary'
+            ORDER BY s.full_name IS NULL, s.full_name ASC
+        `);
+    }
+
+    /**
+     * Returns the ids of every secretary account (used for bulk grants).
+     */
+    async findSecretaryUserIds(conn = this.pool) {
+        const rows = await conn.query("SELECT id FROM users WHERE role = 'secretary'");
+        return rows.map(row => row.id);
+    }
+
+    /**
+     * Sets can_manage_users for the given user ids and bumps token_version
+     * so existing JWTs are evicted and the affected users must re-authenticate.
+     */
+    async updateCanManageUsers(ids, value, conn = this.pool) {
+        const placeholders = ids.map(() => '?').join(', ');
+        return await conn.query(
+            `UPDATE users SET can_manage_users = ?, token_version = token_version + 1 WHERE id IN (${placeholders})`,
+            [value ? 1 : 0, ...ids]
+        );
     }
 }
 
