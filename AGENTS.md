@@ -33,6 +33,57 @@ Este documento contiene las reglas de oro y estándares obligatorios para todo e
 - **Internacionalización (i18n)**:
   - Todo texto visible para el usuario final debe pasar por el sistema de traducciones (`t('key')`). Prohibido colocar texto crudo directamente en el JSX.
 
+### 2.1 Design Tokens (CSS Variables) — OBLIGATORIO
+
+Todos los estilos deben usar los tokens definidos en `client/src/styles/variables.css` (default dark, light y dim vía `data-theme`). Prohibido hardcodear valores si existe un token equivalente.
+
+**Colores semánticos (los más usados):**
+- `--primary-color` / `--primary-hover` — color principal de acción (teal)
+- `--accent-color` / `--accent-hover` — color de acento / links
+- `--secondary-color` — dark slate de apoyo
+- `--danger` / `--error` — errores y destrucción
+- `--success` — éxito
+- `--warning` — advertencias
+
+**Superficies:**
+- `--background-bg` — fondo de app
+- `--dashboard-card-bg` — fondo de cards/navbar
+- `--dashboard-card-border` — borde de cards
+- `--modal-bg` / `--modal-bg-dark` — modales
+- `--card-surface-bg` — interior de cards
+- `--card-hover-bg` — hover de cards
+- `--glass` / `--glass-dark` / `--glass-border` — superficies translúcidas
+
+**Texto:**
+- `--text-main` — texto principal
+- `--text-secondary` — texto secundario
+- `--text-muted` — texto atenuado
+
+**Bordes y UI:**
+- `--border-color` — borde genérico
+- `--radius` / `--radius-sm` / `--radius-md` / `--radius-lg` — radios de borde
+- `--shadow-sm` / `--shadow-md` / `--shadow-lg` / `--shadow-premium` — sombras
+- `--navbar-bg` / `--navbar-border` / `--navbar-link-color` — navbar
+
+**Tipografía:**
+- `--font-main` (Nunito Sans) — fuente por defecto
+- `--font-manrope` — títulos/logo
+- `--font-newsreader` — serif (académico)
+- `--font-nunito` — cuerpo
+
+**Escalas de color (usar cuando el semántico no aplique):** `--gray-50..950`, `--blue-50..800`, `--red-*`, `--green-*`, `--amber-*`, `--sky-*`, `--teal-*`, `--purple-*`, `--violet-*`, `--indigo-*`, `--pink-*`, `--rose-*`, `--orange-*`, `--cyan-*`, `--yellow-*`.
+
+**Espaciado:** `--spacing-xs` (4px), `--spacing-sm` (8px), `--spacing-md` (16px), `--spacing-lg` (24px), `--spacing-xl` (32px).
+
+Regla: nunca uses valores hardcodeados (ej. `#333`, `15px`) si existe un token equivalente. Si un valor no tiene token, preferí agregarlo como token nuevo en `variables.css` antes que inline.
+
+### 2.2 Distribución en el Paño (Layout & Estilo) — OBLIGATORIO
+
+1. **Mobile-First**: Diseñá siempre pensando en componentes responsivos; partí del layout móvil y expandí con media queries.
+2. **Contenedores**: Usá **Flexbox** para distribuciones unidimensionales (filas/columnas simples) y **CSS Grid** para estructuras bidimensionales complejas (tableros, mallas de tarjetas). `display: grid` con `grid-template-columns` para grillas de componentes.
+3. **Espaciado Consistente**: Prohibido usar valores aleatorios para `margin`/`padding`. Usá exclusivamente la propiedad `gap` en los contenedores padres y los tokens `--spacing-*` (múltiplos de 4px: 4, 8, 16, 24, 32).
+4. **Alineación**: Usá `place-items: center`, `justify-content: space-between` o `align-items` de forma explícita para evitar que los elementos colapsen o se encimen en pantallas de diferentes tamaños.
+
 ---
 
 ## 3. Backend (Node.js & Express)

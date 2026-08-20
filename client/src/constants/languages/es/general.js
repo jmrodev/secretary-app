@@ -80,6 +80,7 @@ export const general = {
     years: "años",
     total_active_patients: "Total Activos",
     new_patients_today: "Nuevos Hoy",
+    new_patients_year: "Nuevos en el Año",
     new_insurance: "Nueva Obra Social",
     edit_insurance: "Editar Obra Social",
     general_information: "Información General",

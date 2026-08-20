@@ -38,7 +38,9 @@ exports.getMonthlyReport = async (req, res) => {
         sendResponse(res, true, report);
     } catch (err) {
         console.error("[ECC-Controller] getMonthlyReport error:", err);
-        sendResponse(res, false, null, "Internal Server Error", 500);
+        const status = err.statusCode || 500;
+        const message = err.statusCode ? err.message : "Internal Server Error";
+        sendResponse(res, false, null, message, status);
     }
 };
 

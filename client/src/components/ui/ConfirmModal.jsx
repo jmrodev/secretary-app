@@ -9,6 +9,7 @@ export const ConfirmModal = ({
     message,
     type = 'confirm',
     initialValue = '',
+    inputType = 'text',
     onConfirm,
     onCancel,
     labels = {
@@ -76,7 +77,7 @@ export const ConfirmModal = ({
                     </label>
                     <input
                         id="confirm-modal-prompt-input"
-                        type="text"
+                        type={inputType}
                         className="input-field"
                         defaultValue={initialValue}
                         ref={inputRef}

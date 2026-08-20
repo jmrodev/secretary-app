@@ -6,7 +6,7 @@
     --navbar-link-color: var(--text-muted);
 
     width: 100%;
-    height: var(--navbar-height);
+    min-height: var(--navbar-height);
     background: var(--navbar-bg);
     border-bottom: 1px solid var(--navbar-border);
     position: sticky;
@@ -19,14 +19,18 @@
 
 .Navbar__container {
     width: 100%;
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+        "left right"
+        "nav nav";
     align-items: center;
-    justify-content: space-between;
     max-width: 1800px;
     margin: 0 auto;
 }
 
 .Navbar__left {
+    grid-area: left;
     display: flex;
     align-items: center;
     min-width: 200px;
@@ -59,13 +63,15 @@
 }
 
 .Navbar__nav {
-    flex: 1;
+    grid-area: nav;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
     gap: 1.25rem;
-    padding: 0 2rem;
+    padding: 0.5rem 2rem 0.75rem;
+    border-top: 1px solid var(--navbar-border);
+    margin-top: 0.5rem;
 }
 
 .Navbar__link {
@@ -95,6 +101,7 @@
 }
 
 .Navbar__right {
+    grid-area: right;
     display: flex;
     align-items: center;
     gap: 1.5rem;

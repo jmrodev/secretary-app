@@ -12,6 +12,7 @@ export const admin_users = {
     add_new_user: "Agregar Nuevo Usuario",
     edit_user: "Editar Usuario",
     delete_user: "Eliminar Usuario",
+    delete_admin_password_hint: "Ingrese su contraseña para confirmar la eliminación.",
     reset_password: "Blanqueo de Clave",
     delete_confirmation: "¿Está seguro que desea eliminar al usuario",
     action_cannot_undone: "Esta acción no se puede deshacer.",

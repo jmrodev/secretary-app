@@ -42,6 +42,7 @@ export const ModalProvider = ({ children }) => {
                 message={modalConfig.message}
                 type={modalConfig.type}
                 initialValue={modalConfig.initialValue}
+                inputType={modalConfig.inputType}
                 onConfirm={handleConfirm}
                 onCancel={handleCancel}
                 labels={{

@@ -39,7 +39,7 @@
 .MainLayout__pageShell {
     padding: var(--spacing-md) var(--spacing-xl);
     width: 95%;
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 0 auto;
     flex: 1;
     display: flex;
@@ -53,12 +53,12 @@
 
 .MainLayout__root--dashboardWide .MainLayout__pageShell {
     padding: var(--spacing-md) var(--spacing-xl);
-    max-width: 1200px;
+    max-width: 1600px;
 }
 
 .MainLayout__root--flush .MainLayout__pageShell {
     padding: var(--spacing-md) var(--spacing-xl);
-    max-width: 1200px;
+    max-width: 1600px;
 }
 
 @media screen and (width <= 1024px) {

@@ -148,6 +148,13 @@
     --radius: 0.375rem;    /* 6px */
     --radius-md: 0.375rem; /* 6px */
     --radius-sm: 0.25rem;  /* 4px */
+
+    /* Spacing Scale - 4px base system */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
     
     /* Ambient Shadows (Extra-diffused) */
     --shadow-sm: 0 4px 12px rgb(25 28 30 / 4%);

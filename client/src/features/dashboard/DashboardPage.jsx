@@ -48,7 +48,7 @@ export const DashboardPage = () => {
                         <div className={styles.DashboardPage__bentoGrid}>
                             
                             {/* Card 1: Cash Monitor (Theoretical vs Actual) */}
-                            <CashMonitorCard stats={controller.stats?.financeStats || controller.financeStats} t={t} />
+                            <CashMonitorCard stats={controller.stats?.financeStats || controller.financeStats} t={t} className={styles.DashboardPage__cashMonitorCard} />
 
                             {/* Card 2: Appointments Overview (Day, Week, Month, Total) */}
                             <article className={`${styles.DashboardPage__bentoCard} ${styles.DashboardPage__statsOverviewCard}`}>
@@ -84,12 +84,20 @@ export const DashboardPage = () => {
                                         <div className={styles.DashboardPage__statLabel}>{t('total_active_patients')}</div>
                                     </div>
                                     {isAdminOrSecretary && (
-                                        <div className={styles.DashboardPage__statItem}>
-                                            <div className={styles.DashboardPage__statValuePurple} style={{ fontSize: '1.8rem' }}>
-                                                +{controller.newPatientStats?.currentDay || 0}
+                                        <>
+                                            <div className={styles.DashboardPage__statItem}>
+                                                <div className={`${styles.DashboardPage__statValuePurple} ${styles['DashboardPage__statValue--today']}`}>
+                                                    +{controller.newPatientStats?.currentDay || 0}
+                                                </div>
+                                                <div className={styles.DashboardPage__statLabel}>{t('new_patients_today')}</div>
                                             </div>
-                                            <div className={styles.DashboardPage__statLabel}>{t('new_patients_today')}</div>
-                                        </div>
+                                            <div className={styles.DashboardPage__statItem}>
+                                                <div className={`${styles.DashboardPage__statValuePurple} ${styles['DashboardPage__statValue--year']}`}>
+                                                    +{controller.newPatientStats?.currentYear || 0}
+                                                </div>
+                                                <div className={styles.DashboardPage__statLabel}>{t('new_patients_year')}</div>
+                                            </div>
+                                        </>
                                     )}
                                 </div>
                             </article>

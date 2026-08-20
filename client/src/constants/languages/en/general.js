@@ -65,6 +65,7 @@ export const general = {
     years: "years",
     total_active_patients: "Total Active",
     new_patients_today: "New Today",
+    new_patients_year: "New This Year",
     new_insurance: "New Insurance",
     edit_insurance: "Edit Insurance",
     general_information: "General Information",

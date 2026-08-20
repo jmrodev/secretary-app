@@ -13,6 +13,7 @@ export const admin_users = {
     add_new_user: "Add New User",
     edit_user: "Edit User",
     delete_user: "Delete User",
+    delete_admin_password_hint: "Enter your password to confirm deletion.",
     reset_password: "Reset Password",
     delete_confirmation: "Are you sure you want to delete user",
     action_cannot_undone: "This action cannot be undone.",

@@ -65,6 +65,7 @@ export const useDashboardStats = (isStaff = false, doctor_id = '') => {
         pendingReqCount,
         doctors,
         loading: statsHook.loading || finStatsHook.loading || newPatientsHook.loading,
+        error: statsHook.error || finStatsHook.error || newPatientsHook.error,
         fetched: statsHook.fetched && finStatsHook.fetched && doctorsHook.fetched,
         refetch: () => {
             refetchStats();
@@ -73,8 +74,9 @@ export const useDashboardStats = (isStaff = false, doctor_id = '') => {
             refetchRequests();
         }
     }), [
-        stats, financeStats, newPatientStats, pendingReqCount, doctors, 
+        stats, financeStats, newPatientStats, pendingReqCount, doctors,
         statsHook.loading, finStatsHook.loading, newPatientsHook.loading,
+        statsHook.error, finStatsHook.error, newPatientsHook.error,
         statsHook.fetched, finStatsHook.fetched, doctorsHook.fetched,
         refetchStats, refetchFin, refetchNew, refetchRequests, isStaff
     ]);

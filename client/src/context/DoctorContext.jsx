@@ -32,8 +32,18 @@ export const DoctorProvider = ({ children }) => {
         setViewDoctorIdInternal(stringId);
         if (stringId) {
             localStorage.setItem('global_selected_doctor_id', stringId);
+        } else {
+            localStorage.removeItem('global_selected_doctor_id');
         }
     }, []);
+
+    // Sanitize the persisted selection during render (same pattern as the
+    // auto-select below): a stored id that no longer exists (deleted doctor or
+    // empty DB) is dropped so no ghost doctorId survives.
+    if (viewDoctorIdInternal && doctorsFetched && !doctors.some(d => String(d.id) === String(viewDoctorIdInternal))) {
+        setViewDoctorIdInternal('');
+        localStorage.removeItem('global_selected_doctor_id');
+    }
 
     const viewDoctorId = useMemo(() => {
         if (viewDoctorIdInternal) return viewDoctorIdInternal;
