@@ -2,19 +2,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { WhatsappConfig } from './WhatsappConfig';
 
-const { mockGet, mockPut } = vi.hoisted(() => ({ mockGet: vi.fn(), mockPut: vi.fn() }));
+const { mockGet } = vi.hoisted(() => ({ mockGet: vi.fn() }));
 
 vi.mock('@/api/axios', () => ({
-    api: { get: mockGet, put: mockPut }
+    api: { get: mockGet }
 }));
 
 const doctor = {
     id: 1,
-    full_name: 'Dr. House',
-    gemini_context: 'contexto base',
-    gemini_model: 'llama-3.3-70b-versatile',
-    gemini_history_limit: 3,
-    pending_response_template: 'Esperá un momento, estoy consultando con la secretaría...'
+    full_name: 'Dr. House'
 };
 
 // t stub: labels resolve to their keys, so tests assert on stable keys.
@@ -24,31 +20,28 @@ const renderConfig = () => render(<WhatsappConfig t={t} />);
 
 beforeEach(() => {
     mockGet.mockReset();
-    mockPut.mockReset();
     mockGet.mockResolvedValue({ data: { success: true, data: [doctor] } });
-    mockPut.mockResolvedValue({ data: { success: true } });
 });
 
-describe('WhatsappConfig pending_response_template', () => {
-    it('loads the pending response template from the selected doctor', async () => {
+describe('WhatsappConfig quick responses', () => {
+    it('loads the doctor selector and shows the quick responses section', async () => {
         renderConfig();
-        const textarea = await screen.findByDisplayValue(doctor.pending_response_template);
-        expect(textarea).toHaveValue(doctor.pending_response_template);
+        expect(await screen.findByRole('option', { name: 'Dr. House' })).toBeInTheDocument();
+        expect(screen.getByText('wa_config_quick_label')).toBeInTheDocument();
+        expect(screen.getByText('wa_qr_saludo')).toBeInTheDocument();
+        expect(screen.getByText('wa_qr_derivar')).toBeInTheDocument();
     });
 
-    it('saves the pending response template with the doctor config', async () => {
+    it('copies a quick response to the clipboard', async () => {
+        const writeText = vi.fn().mockResolvedValue();
+        Object.assign(navigator, { clipboard: { writeText } });
+
         renderConfig();
-        // Wait for the initial doctor load before typing, otherwise the
-        // doctor-select effect overwrites the edited value.
-        const textarea = await screen.findByDisplayValue(doctor.pending_response_template);
-        fireEvent.change(textarea, { target: { value: 'Tu pedido sigue en revisión' } });
+        await screen.findByRole('option', { name: 'Dr. House' });
 
-        fireEvent.click(screen.getByRole('button', { name: 'wa_config_save' }));
+        fireEvent.click(screen.getAllByRole('button', { name: 'wa_copy_btn' })[0]);
 
-        await waitFor(() => expect(mockPut).toHaveBeenCalledWith(
-            '/users/doctors/1',
-            expect.objectContaining({ pending_response_template: 'Tu pedido sigue en revisión' })
-        ));
-        expect(await screen.findByText('wa_config_saved')).toBeInTheDocument();
+        await waitFor(() => expect(writeText).toHaveBeenCalled());
+        expect(await screen.findByText('wa_config_copied')).toBeInTheDocument();
     });
 });

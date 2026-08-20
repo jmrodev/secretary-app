@@ -1,7 +1,6 @@
 const whatsappService = require('../../services/communication/whatsappService');
 const whatsappRepository = require('../../repositories/communication/whatsappRepository');
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
-const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 const patientRepository = require('../../repositories/user/patientRepository');
 const bookingService = require('../../services/appointments/bookingService');
 const { ConflictError } = require('../../utils/core/errors');
@@ -66,28 +65,10 @@ const receiveWebhook = async (req, res) => {
 
         await whatsappRepository.createMessage(patientId, direction, message, null, 'delivered', patientId ? null : phone);
 
-        if (!patientId && !isFromMe) {
-            await _handleAutoReplyUnknown(phone);
-        }
         res.json({ success: true });
     } catch (error) {
         console.error('[WhatsApp Webhook Error]:', error);
         res.status(500).json({ error: error.message });
-    }
-};
-
-const _handleAutoReplyUnknown = async (phone) => {
-    const autoRespondSetting = await systemSettingsRepository.findByKey('whatsapp_auto_respond_unknown');
-    if (autoRespondSetting?.setting_value === '1') {
-        const domainSetting = await systemSettingsRepository.findByKey('duckdns_domain');
-        const domain = domainSetting?.setting_value;
-        if (!domain) {
-            console.warn('[WhatsApp]: Cannot send auto-reply, duckdns_domain is not configured in settings.');
-            return;
-        }
-        const link = `https://${domain}.duckdns.org/#/p/register?phone=${phone}`;
-        const autoReply = `¡Hola! 👋 Soy la asistente virtual. No tenemos tus datos registrados.\n\nPor favor, completalos en este link:\n${link}`;
-        await whatsappService.sendMessageDirect(phone, autoReply);
     }
 };
 

@@ -9,7 +9,6 @@ const GeneralSettings = lazy(() => import('../components/sections/GeneralSetting
 const CommunicationSettings = lazy(() => import('../components/sections/CommunicationSettings').then(m => ({ default: m.CommunicationSettings })));
 const IntegrationSettings = lazy(() => import('../components/sections/IntegrationSettings').then(m => ({ default: m.IntegrationSettings })));
 const BillingSettings = lazy(() => import('../components/sections/BillingSettings').then(m => ({ default: m.BillingSettings })));
-const AiSettings = lazy(() => import('../components/sections/AiSettings').then(m => ({ default: m.AiSettings })));
 
 // Domain Features
 const DoctorsManager = lazy(() => import('@/features/doctors').then(m => ({ default: m.DoctorsManager })));
@@ -106,14 +105,6 @@ const BillingSettingsWrapper = ({ controller }) => (
     />
 );
 
-const AiSettingsWrapper = ({ controller }) => (
-    <AiSettings 
-        user={controller.user} 
-        settings={controller.settings} 
-        updateSetting={controller.handlers.updateSetting}
-    />
-);
-
 /**
  * Orchestrator that populates the configuration registry.
  * This is the ONLY place where cross-feature configuration imports should live.
@@ -123,7 +114,6 @@ export const loadDefaultConfigSections = (t) => {
     registerConfigSection('general', { title: t('general'), icon: 'settings', desc: 'Configuración básica y enlaces de ayuda.' }, GeneralSettingsWrapper);
     registerConfigSection('profile', { title: t('profile'), icon: 'person', desc: 'Gestiona tu información personal y profesional.' }, ProfileEditorWrapper);
     registerConfigSection('communications', { title: t('communications'), icon: 'chat', desc: 'Plantillas de mensajes y automatización de WhatsApp.' }, CommunicationSettingsWrapper);
-    registerConfigSection('ai', { title: t('ai'), icon: 'psychology', desc: 'Configuración de modelos de IA y asistentes.' }, AiSettingsWrapper);
     registerConfigSection('doctors', { title: t('doctors'), icon: 'medical_services', desc: 'Administra la lista de profesionales.' }, DoctorsManagerWrapper);
     registerConfigSection('integrations', { title: t('integrations'), icon: 'extension', desc: 'Conexión con servicios externos.' }, IntegrationSettingsWrapper);
     registerConfigSection('institutions', { title: t('institutions'), icon: 'business', desc: 'Configura las clínicas y centros.' }, InstitutionManagerWrapper);
