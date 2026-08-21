@@ -11,3 +11,7 @@
     font-weight: 600;
     color: var(--text-main);
 }
+
+.MedicalRequirementActionModal__requiredStar {
+    color: var(--error);
+}

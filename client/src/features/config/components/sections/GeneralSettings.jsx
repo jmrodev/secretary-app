@@ -16,11 +16,11 @@ import shared from '@/styles/shared.module.css';
  */
 const PermissionsGroup = ({ settings, updateSetting, isAdmin }) => {
     return (
-        <article className="config-group">
-            <header className="config-group__header">
-                <h4 className="config-group__title">Gestión de Secretarias (CRUD)</h4>
+        <article className={styles.GeneralSettings__group}>
+            <header className={styles.GeneralSettings__groupHeader}>
+                <h4 className={styles.GeneralSettings__groupTitle}>Gestión de Secretarias (CRUD)</h4>
             </header>
-            <div className="config-group__items">
+            <div className={styles.GeneralSettings__groupItems}>
                 <ConfigToggle
                     id="sec-crud-appointments"
                     label="Turnos (Cualquier estado)"

@@ -3,6 +3,7 @@ import shared from '@/styles/shared.module.css';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
+import styles from './IntegrationMetaWhatsApp.module.css';
 
 /**
  * IntegrationMetaWhatsApp Feature Molecule.
@@ -17,7 +18,7 @@ export const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, l
             </div>
 
             <div className={shared.ConfigSection__body}>
-                <p className="config-field__hint config-field__hint--mb-15">
+                <p className={styles.IntegrationMetaWhatsApp__hint}>
                     Configure las credenciales de WhatsApp Cloud API.
                 </p>
 
@@ -27,7 +28,7 @@ export const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, l
                     value={settings.meta_phone_number_id || ''}
                     onChange={(e) => updateSetting('meta_phone_number_id', e.target.value)}
                     disabled={!isAuthorized}
-                    className="config-field__input--monospace"
+                    className={styles.IntegrationMetaWhatsApp__inputMonospace}
                 />
 
                 <ConfigField
@@ -38,10 +39,10 @@ export const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, l
                     onChange={(e) => updateSetting('meta_access_token', e.target.value)}
                     placeholder={settings.meta_access_token === 'MASKED_PRESENT' ? '•••••••• (Guardado)' : 'Pegar Token aquí...'}
                     disabled={!isAuthorized}
-                    className="config-field__input--monospace"
+                    className={styles.IntegrationMetaWhatsApp__inputMonospace}
                 />
 
-                <div className="config-actions">
+                <div className={styles.IntegrationMetaWhatsApp__actions}>
                     <Button
                         onClick={onTestMeta}
                         disabled={loading || !settings.meta_phone_number_id}
