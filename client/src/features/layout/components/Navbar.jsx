@@ -37,7 +37,7 @@ export const Navbar = () => {
         { path: '/holidays', label: t('holidays'), show: isStaff },
         { path: '/admin/users', label: t('users'), show: isAdmin || canManageUsers },
         { path: '/logs', label: t('audit_logs'), show: isAdmin },
-        { path: '/config?tab=general', label: t('system_config'), show: isStaff }
+        { path: '/config?tab=modules', label: t('system_config'), show: isStaff }
     ].filter(l => l.show), [t, isAdmin, isPatient, isSecretary, isStaff, canManageUsers, settings?.enable_office_rentals]);
 
     if (!user) return null;

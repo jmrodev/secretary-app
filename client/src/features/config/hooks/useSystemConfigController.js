@@ -25,7 +25,7 @@ export const useSystemConfigController = () => {
     // Active tab is derived from the URL (?tab=...) via the router so deep
     // links and browser back/forward work natively. No manual replaceState.
     const [searchParams, setSearchParams] = useSearchParams();
-    const activeTab = searchParams.get('tab') || 'general';
+    const activeTab = searchParams.get('tab') || 'modules';
 
     const setActiveTab = useCallback((tab) => {
         setSearchParams((prev) => {
