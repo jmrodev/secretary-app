@@ -6,6 +6,7 @@ import { registerConfigSection } from '../registry/configRegistry';
 // Sections use named exports (export const X), so map them to `default` for React.lazy — otherwise
 // React 19 resolves the whole module namespace (an object) as the component.
 const GeneralSettings = lazy(() => import('../components/sections/GeneralSettings').then(m => ({ default: m.GeneralSettings })));
+const ModulesSettings = lazy(() => import('../components/sections/ModulesSettings').then(m => ({ default: m.ModulesSettings })));
 const CommunicationSettings = lazy(() => import('../components/sections/CommunicationSettings').then(m => ({ default: m.CommunicationSettings })));
 const IntegrationSettings = lazy(() => import('../components/sections/IntegrationSettings').then(m => ({ default: m.IntegrationSettings })));
 const BillingSettings = lazy(() => import('../components/sections/BillingSettings').then(m => ({ default: m.BillingSettings })));
@@ -32,13 +33,17 @@ const GeneralSettingsWrapper = ({ controller }) => {
             user={user} 
             settings={settings} 
             updateSetting={handlers.updateSetting}
-            onShowQr={() => {
-                const url = settings.staff_base_url || window.location.origin;
-                handlers.setQrModal({ open: true, url, expiry: null });
-            }}
         />
     );
 };
+
+const ModulesSettingsWrapper = ({ controller }) => (
+    <ModulesSettings 
+        user={controller.user} 
+        settings={controller.settings} 
+        updateSetting={controller.handlers.updateSetting}
+    />
+);
 
 const ProfileEditorWrapper = ({ controller }) => {
     const profileController = useProfileController();
@@ -73,6 +78,10 @@ const IntegrationSettingsWrapper = ({ controller }) => (
         onRetryGoogle={controller.handlers.handleRetryGoogleFailed}
         onRefreshTunnel={controller.handlers.handleRefreshTunnel}
         onTestMeta={controller.handlers.handleTestMeta}
+        onShowQr={() => {
+            const url = controller.settings.staff_base_url || window.location.origin;
+            controller.handlers.setQrModal({ open: true, url, expiry: null });
+        }}
     />
 );
 
@@ -91,6 +100,7 @@ const BillingSettingsWrapper = ({ controller }) => (
  */
 export const loadDefaultConfigSections = (t) => {
     registerConfigSection('general', { title: t('general'), icon: 'settings', desc: t('general_desc') }, GeneralSettingsWrapper);
+    registerConfigSection('modules', { title: t('modules') || 'Módulos', icon: 'view_module', desc: t('modules_desc') || 'Habilita o deshabilita módulos opcionales de la clínica.' }, ModulesSettingsWrapper);
     registerConfigSection('profile', { title: t('profile'), icon: 'person', desc: t('profile_desc') }, ProfileEditorWrapper);
     registerConfigSection('communications', { title: t('communications'), icon: 'chat', desc: t('communications_desc') }, CommunicationSettingsWrapper);
     registerConfigSection('integrations', { title: t('integrations'), icon: 'extension', desc: t('integrations_desc') }, IntegrationSettingsWrapper);

@@ -8,9 +8,9 @@ import { Card } from '@/components/atoms/Card';
 import { Icon } from '@/components/atoms/Icon';
 import { Modal } from '@/components/molecules/Modal';
 
-// Feature Components
 import { UserTable } from '@/features/users/components/UserTable';
 import { UserForm } from '@/features/users/components/UserForm';
+import { SecretaryPermissionsModal } from '@/features/users/components/SecretaryPermissionsModal';
 import sharedStyles from '@/styles/shared.module.css';
 import styles from './UserManagement.module.css';
 
@@ -30,6 +30,7 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
     } = useUsers({ role, excludeRoles });
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedSecretaryForPerms, setSelectedSecretaryForPerms] = useState(null);
     const [modalState, setModalState] = useState({
         isOpen: false,
         type: null,
@@ -105,14 +106,14 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
                         onClick={() => openModal('CREATE')}
                         icon={<Icon name="add" size="1.1rem" />}
                     >
-                        {t('add_user') || 'Agregar Usuario'}
+                        {t('add_user')}
                     </Button>
                     <Button 
                         variant="outline" 
                         onClick={loadData}
                         icon={<Icon name="sync" size="1.1rem" />}
                     >
-                        {t('refresh') || 'Actualizar'}
+                        {t('refresh')}
                     </Button>
                 </div>
             </section>
@@ -126,9 +127,17 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
                         onEdit={(u) => openModal('EDIT', u)}
                         onReset={(u) => openModal('RESET', u)}
                         onDelete={(u) => openModal('DELETE', u)}
+                        onOpenPermissions={(u) => setSelectedSecretaryForPerms(u)}
                     />
                 )}
             </Card>
+
+            <SecretaryPermissionsModal
+                isOpen={Boolean(selectedSecretaryForPerms)}
+                onClose={() => setSelectedSecretaryForPerms(null)}
+                secretary={selectedSecretaryForPerms}
+                onSaveSuccess={loadData}
+            />
 
             <Modal
                 isOpen={modalState.isOpen}

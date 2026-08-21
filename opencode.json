@@ -2,10 +2,10 @@
   "$schema": "https://opencode.ai/config.json",
   "agent": {
     "gentle-orchestrator": {
-      "model": "opencode/deepseek-v4-flash-free"
+      "model": "opencode/hy3-free"
     },
     "explore": {
-      "model": "opencode/deepseek-v4-flash-free",
+      "model": "opencode/muse-spark-1.2-contributor-free",
       "description": "Fast agent specialized for exploring codebases — cheap free model"
     },
     "general": {
@@ -24,13 +24,13 @@
       "model": "opencode/hy3-free"
     },
     "sdd-design": {
-      "model": "opencode/nemotron-3.5-lightning-free"
+      "model": "opencode/nemotron-3-ultra-free"
     },
     "sdd-tasks": {
       "model": "opencode/muse-spark-1.2-contributor-free"
     },
     "sdd-apply": {
-      "model": "opencode/deepseek-v4-flash-free"
+      "model": "opencode/nemotron-3-ultra-free"
     },
     "sdd-verify": {
       "model": "opencode/hy3-free"

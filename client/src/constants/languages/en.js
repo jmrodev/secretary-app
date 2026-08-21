@@ -24,6 +24,7 @@ import { printable_report_patient_sheet } from './en/printable_report_patient_sh
 import { pairing_bridge } from './en/pairing_bridge';
 import { whatsapp_automation } from './en/whatsapp_automation';
 import { outreach } from './en/outreach';
+import { integrations } from './en/integrations';
 
 export const en = {
     ...general,
@@ -51,4 +52,5 @@ export const en = {
     ...pairing_bridge,
     ...whatsapp_automation,
     ...outreach,
+    ...integrations,
 };

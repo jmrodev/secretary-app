@@ -33,6 +33,35 @@ exports.getSecretaryPermissions = async (req, res) => {
     }
 };
 
+exports.getSecretaryPermissionsById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const permissions = await userAccountService.getSecretaryPermissionsById(id);
+        res.json({ success: true, data: permissions });
+    } catch (err) {
+        console.error("Get Secretary Permissions By Id Error:", err);
+        if (err.statusCode) {
+            return res.status(err.statusCode).json({ success: false, error: err.message });
+        }
+        res.status(500).json({ success: false, error: "Server Error" });
+    }
+};
+
+exports.updateSecretaryPermissionsById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updated = await userAccountService.updateSecretaryPermissionsById(id, req.body);
+        logAction(req, 'UPDATE_SECRETARY_PERMISSIONS', `Updated permissions for Secretary ID: ${id}`);
+        res.json({ success: true, message: "Permissions updated successfully", data: updated });
+    } catch (err) {
+        console.error("Update Secretary Permissions By Id Error:", err);
+        if (err.statusCode) {
+            return res.status(err.statusCode).json({ success: false, error: err.message });
+        }
+        res.status(500).json({ success: false, error: "Server Error" });
+    }
+};
+
 /**
  * Grants or revokes can_manage_users for targeted secretaries
  * (individual ids or grantToAll). Guarded at route level: strictly admin.

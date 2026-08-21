@@ -21,7 +21,10 @@ export const ConfigField = ({
     id,
     variant = '', // e.g., 'monospace'
     className = '',
-    options = EMPTY_OPTIONS // Only used if type="select"
+    options = EMPTY_OPTIONS, // Only used if type="select"
+    readOnly = false,
+    rows = 3,
+    ...rest
 }) => {
     const isSelect = type === 'select';
     const rootClass = `config-field ${variant ? `config-field--${variant}` : ''}`;
@@ -51,6 +54,9 @@ export const ConfigField = ({
                     disabled={disabled}
                     placeholder={placeholder}
                     className={inputClassName}
+                    readOnly={readOnly}
+                    rows={rows}
+                    {...rest}
                 />
             )}
 

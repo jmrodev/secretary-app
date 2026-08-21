@@ -21,7 +21,8 @@ export const IntegrationSettings = ({
     onRefreshToken,
     onRetryGoogle,
     onRefreshTunnel,
-    onTestMeta
+    onTestMeta,
+    onShowQr
 }) => {
     // Shared authorization logic for integration management
     const isAuthorized = user?.role === 'admin' || user?.role === 'secretary';
@@ -51,6 +52,7 @@ export const IntegrationSettings = ({
                 settings={settings}
                 updateSetting={updateSetting}
                 onRefreshTunnel={onRefreshTunnel}
+                onShowQr={onShowQr}
                 loading={loading}
                 isAuthorized={isAuthorized}
             />

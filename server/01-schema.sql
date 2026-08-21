@@ -1441,6 +1441,13 @@ CREATE TABLE `users` (
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `token_version` int(11) DEFAULT 0,
   `can_manage_users` tinyint(1) NOT NULL DEFAULT 0,
+  `can_crud_appointments` tinyint(1) NOT NULL DEFAULT 0,
+  `can_edit_past_appointments` tinyint(1) NOT NULL DEFAULT 0,
+  `can_crud_requests` tinyint(1) NOT NULL DEFAULT 0,
+  `can_crud_prescriptions` tinyint(1) NOT NULL DEFAULT 0,
+  `can_crud_licenses` tinyint(1) NOT NULL DEFAULT 0,
+  `can_crud_files` tinyint(1) NOT NULL DEFAULT 0,
+  `can_crud_finances` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10039 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

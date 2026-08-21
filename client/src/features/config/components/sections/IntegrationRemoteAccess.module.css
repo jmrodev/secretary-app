@@ -1,64 +1,68 @@
 /* IntegrationRemoteAccess Component Styles (BEM) */
 
-.IntegrationRemoteAccess__root {
-    /* Root styles */
-}
-
-.IntegrationRemoteAccess__urlBox {
+.IntegrationRemoteAccess__mobileCard {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    background-color: var(--gray-50);
-    padding: 1rem;
-    border-radius: var(--radius-sm);
+    justify-content: space-between;
+    background-color: var(--dashboard-card-bg);
     border: 1px solid var(--border-color);
-}
-
-.IntegrationRemoteAccess__urlText {
-    flex: 1;
-    font-family: var(--font-mono, monospace);
-    font-size: 0.875rem;
-    color: var(--primary-color);
-    font-weight: 600;
-}
-
-.IntegrationRemoteAccess__guide {
-    background-color: var(--blue-50);
-    padding: 1.5rem;
     border-radius: var(--radius-md);
-    border: 1px solid var(--blue-100);
-    margin-top: 2rem;
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
 }
 
-.IntegrationRemoteAccess__guideTitle {
+.IntegrationRemoteAccess__mobileInfo {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--blue-800);
-    margin-bottom: 1rem;
-    text-transform: uppercase;
+    gap: var(--spacing-sm);
 }
 
-.IntegrationRemoteAccess__guideList {
-    margin: 0;
-    padding-left: 1.25rem;
+.IntegrationRemoteAccess__mobileIcon {
     display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    font-size: 0.875rem;
-    color: var(--blue-900);
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background-color: rgb(var(--primary-rgb) / 10%);
+    color: var(--primary-color);
 }
 
-.IntegrationRemoteAccess__guideList li::marker {
-    font-weight: 800;
-    color: var(--blue-600);
-}
-
-.IntegrationRemoteAccess__link {
-    color: var(--blue-600);
-    text-decoration: underline;
+.IntegrationRemoteAccess__mobileTitle {
+    margin: 0;
+    font-size: 0.9rem;
     font-weight: 700;
+    color: var(--text-main);
+}
+
+.IntegrationRemoteAccess__mobileDesc {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.IntegrationRemoteAccess__urlDisplay {
+    flex: 1;
+}
+
+.IntegrationRemoteAccess__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.IntegrationRemoteAccess__configActions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+@media (width <= 600px) {
+    .IntegrationRemoteAccess__mobileCard {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
 }

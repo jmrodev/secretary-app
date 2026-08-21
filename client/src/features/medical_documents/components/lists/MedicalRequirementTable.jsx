@@ -26,9 +26,9 @@ export const MedicalRequirementTable = ({
     onPageChange
 }) => {
     return (
-        <div className={`${managerStyles.content} animate-fade-in`}>
+        <div className={`${managerStyles.MedicalRequirementManager__content} animate-fade-in`}>
             {!hideFilters && (
-                <div className={managerStyles.filters}>
+                <div className={managerStyles.MedicalRequirementManager__filters}>
                     <TabButton
                         variant="pill"
                         isActive={filter === 'active'}
@@ -47,7 +47,7 @@ export const MedicalRequirementTable = ({
             )}
 
             {requests.length === 0 ? (
-                <div className={managerStyles.empty}>
+                <div className={managerStyles.MedicalRequirementManager__empty}>
                     <Icon name="inbox" size="3rem" />
                     <p>{t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}</p>
                     {filter === 'active' && (
@@ -61,15 +61,15 @@ export const MedicalRequirementTable = ({
                     )}
                 </div>
             ) : (
-                <div className={managerStyles.tableContainer}>
-                    <table className={managerStyles.table}>
+                <div className={managerStyles.MedicalRequirementManager__tableContainer}>
+                    <table className={managerStyles.MedicalRequirementManager__table}>
                         <thead>
                             <tr>
-                                <th className={managerStyles.tableHeader}>{t('type') || 'Tipo'}</th>
-                                <th className={managerStyles.tableHeader}>{t('date') || 'Fecha'}</th>
-                                <th className={managerStyles.tableHeader}>{t('patient') || 'Paciente'}</th>
-                                <th className={managerStyles.tableHeader}>{t('status') || 'Estado'}</th>
-                                <th className={managerStyles.tableHeader}>{t('actions') || 'Acciones'}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('type') || 'Tipo'}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('date') || 'Fecha'}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('patient') || 'Paciente'}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('status') || 'Estado'}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('actions') || 'Acciones'}</th>
                             </tr>
                         </thead>
                         <tbody>

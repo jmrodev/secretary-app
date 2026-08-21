@@ -8,7 +8,7 @@
 .BillingSettings__status {
     padding: 1rem;
     border-radius: var(--radius-sm);
-    background-color: var(--white);
+    background-color: var(--card-surface-bg);
     border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
@@ -18,13 +18,13 @@
 }
 
 .BillingSettings__statusSuccess {
-    border-left: 4px solid var(--green-500);
-    color: var(--green-700);
+    border-left: 4px solid var(--success);
+    color: var(--text-main);
 }
 
 .BillingSettings__statusError {
     border-left: 4px solid var(--error);
-    color: var(--red-700);
+    color: var(--text-main);
 }
 
 .BillingSettings__statusHeader {

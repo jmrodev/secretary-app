@@ -38,7 +38,7 @@
 
 .MainLayout__pageShell {
     padding: var(--spacing-md) var(--spacing-xl);
-    width: 95%;
+    width: 80%;
     max-width: 1600px;
     margin: 0 auto;
     flex: 1;
@@ -53,11 +53,13 @@
 
 .MainLayout__root--dashboardWide .MainLayout__pageShell {
     padding: var(--spacing-md) var(--spacing-xl);
+    width: 80%;
     max-width: 1600px;
 }
 
 .MainLayout__root--flush .MainLayout__pageShell {
     padding: var(--spacing-md) var(--spacing-xl);
+    width: 80%;
     max-width: 1600px;
 }
 

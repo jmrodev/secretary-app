@@ -41,8 +41,10 @@ router.post('/admin/users', verifyToken, authorizeCanManageUsers, validate(schem
 router.put('/admin/users/:id', verifyToken, authorizeCanManageUsers, validate(schemas.updateUser), userAccountController.updateUser);
 router.delete('/admin/users/:id', verifyToken, authorizeCanManageUsers, validate(schemas.deleteUser), userAccountController.deleteUser);
 
-// Secretary management permission grants (GET: admin or granted secretary; POST: strictly admin)
+// Secretary management permission grants (GET: admin or granted secretary; POST: admin or granted secretary)
 router.get('/admin/users/permissions', verifyToken, authorizeCanManageUsers, userAccountController.getSecretaryPermissions);
-router.post('/admin/users/permissions', verifyToken, authorize([ROLES.ADMIN]), validate(schemas.updateSecretaryPermissions), userAccountController.updateSecretaryPermissions);
+router.post('/admin/users/permissions', verifyToken, authorizeCanManageUsers, validate(schemas.updateSecretaryPermissions), userAccountController.updateSecretaryPermissions);
+router.get('/admin/users/:id/permissions', verifyToken, authorizeCanManageUsers, userAccountController.getSecretaryPermissionsById);
+router.put('/admin/users/:id/permissions', verifyToken, authorizeCanManageUsers, userAccountController.updateSecretaryPermissionsById);
 
 module.exports = router;

@@ -1,108 +1,58 @@
-import React, { useEffect } from 'react';
-import { api } from '@/api/axios';
 import { useAuth } from '@/features/auth';
 
 /**
  * Pure helper: resolves whether a user holds the can_manage_users grant
- * (JWT camelCase flag or legacy snake_case DB field).
+ * (JWT camelCase flag, permissions dictionary, or legacy snake_case DB field).
  */
 export const resolveCanManageUsers = (user) => {
     if (!user) return false;
     if (typeof user.canManageUsers === 'boolean') return user.canManageUsers;
+    if (user.permissions?.can_manage_users !== undefined) return Boolean(user.permissions.can_manage_users);
     return Boolean(user.can_manage_users);
 };
 
 /**
- * Hook to manage complex role-based permissions, including dynamic system settings.
- * Ensures clean code by abstracting permission logic away from components.
+ * Hook to manage role-based permissions and granular secretary permissions.
+ * Evaluates synchronously from user session state without making HTTP requests.
  */
 export const usePermissions = () => {
     const { user, logout } = useAuth();
-    const [state, dispatch] = React.useReducer((s, a) => ({ ...s, ...a }), {
-        permissions: {
-            canDeletePrescription: false,
-            canDeleteLicense: false,
-            canDeleteRequest: false,
-            canDeleteFile: false,
-            canManageAppointments: false
-        },
-        loading: true
-    });
+    const isAdmin = user?.role === 'admin';
+    const isSecretary = user?.role === 'secretary';
 
-    const { permissions, loading } = state;
-    const fetchedForUserId = React.useRef(null);
+    const getPerm = (key) => {
+        if (isAdmin) return true;
+        if (!isSecretary) return false;
+        if (user?.permissions?.[key] !== undefined) return Boolean(user.permissions[key]);
+        return Boolean(user?.[key]);
+    };
 
-    useEffect(() => {
-        let isCurrent = true;
-        const fetchSettings = async () => {
-            if (!user) {
-                dispatch({ loading: false });
-                return;
-            }
+    const permissions = {
+        canManageUsers: isAdmin || resolveCanManageUsers(user),
+        canCrudAppointments: getPerm('can_crud_appointments'),
+        canEditPastAppointments: getPerm('can_edit_past_appointments'),
+        canCrudRequests: getPerm('can_crud_requests'),
+        canCrudPrescriptions: getPerm('can_crud_prescriptions'),
+        canCrudLicenses: getPerm('can_crud_licenses'),
+        canCrudFiles: getPerm('can_crud_files'),
+        canCrudFinances: getPerm('can_crud_finances'),
+        // Backwards-compatible aliases used in older medical components
+        canManageAppointments: getPerm('can_crud_appointments'),
+        canDeletePrescription: getPerm('can_crud_prescriptions'),
+        canDeleteLicense: getPerm('can_crud_licenses'),
+        canDeleteRequest: getPerm('can_crud_requests'),
+        canDeleteFile: getPerm('can_crud_files')
+    };
 
-            if (user.role === 'admin') {
-                dispatch({
-                    permissions: {
-                        canDeletePrescription: true,
-                        canDeleteLicense: true,
-                        canDeleteRequest: true,
-                        canDeleteFile: true,
-                        canManageAppointments: true
-                    },
-                    loading: false
-                });
-                return;
-            }
-
-            if (user.role === 'secretary' && fetchedForUserId.current !== user.id) {
-                fetchedForUserId.current = user.id;
-                let newPermissions = {
-                    canDeletePrescription: false,
-                    canDeleteLicense: false,
-                    canDeleteRequest: false,
-                    canDeleteFile: false,
-                    canManageAppointments: false
-                };
-
-                try {
-                    const res = await api.get('/settings');
-                    if (!isCurrent) return;
-                    const settings = res.data;
-
-                    newPermissions = {
-                        canDeletePrescription: settings.enable_secretary_crud_prescriptions === 'true',
-                        canDeleteLicense: settings.enable_secretary_crud_licenses === 'true',
-                        canDeleteRequest: settings.enable_secretary_crud_requests === 'true',
-                        canDeleteFile: settings.enable_secretary_crud_files === 'true',
-                        canManageAppointments: settings.enable_secretary_crud_appointments === 'true'
-                    };
-                } catch (err) {
-                    if (!isCurrent) return;
-                    console.error("[usePermissions] Failed to fetch settings", err);
-                }
-
-                dispatch({ permissions: newPermissions, loading: false });
-            } else {
-                dispatch({ loading: false });
-            }
-        };
-
-        fetchSettings();
-        return () => { isCurrent = false; };
-    }, [user]);
-
-    return { 
-        ...permissions, 
-        loading,
-        isAdmin: user?.role === 'admin',
-        isSecretary: user?.role === 'secretary',
+    return {
+        ...permissions,
+        loading: false,
+        isAdmin,
+        isSecretary,
         isDoctor: user?.role === 'doctor',
         isPatient: user?.role === 'patient',
-        isStaff: user?.role === 'admin' || user?.role === 'secretary',
-        isMedicalStaff: user?.role === 'admin' || user?.role === 'secretary' || user?.role === 'doctor',
-        // Mirrors the backend authorizeCanManageUsers semantics:
-        // admins always hold the grant; secretaries only when flagged.
-        canManageUsers: user?.role === 'admin' || resolveCanManageUsers(user),
+        isStaff: isAdmin || isSecretary,
+        isMedicalStaff: isAdmin || isSecretary || user?.role === 'doctor',
         user,
         logout
     };
