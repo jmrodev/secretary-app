@@ -5,7 +5,6 @@ import { registerConfigSection } from '../registry/configRegistry';
 // Lazy loading to maintain performance and avoid eager cross-feature coupling at the module level.
 // Sections use named exports (export const X), so map them to `default` for React.lazy — otherwise
 // React 19 resolves the whole module namespace (an object) as the component.
-const GeneralSettings = lazy(() => import('../components/sections/GeneralSettings').then(m => ({ default: m.GeneralSettings })));
 const ModulesSettings = lazy(() => import('../components/sections/ModulesSettings').then(m => ({ default: m.ModulesSettings })));
 const CommunicationSettings = lazy(() => import('../components/sections/CommunicationSettings').then(m => ({ default: m.CommunicationSettings })));
 const IntegrationSettings = lazy(() => import('../components/sections/IntegrationSettings').then(m => ({ default: m.IntegrationSettings })));
@@ -18,17 +17,6 @@ const AuditLogManager = lazy(() => import('@/features/reports').then(m => ({ def
 import { useAuditLogsController } from '@/features/reports';
 
 // --- Specialized Wrappers to map the common Controller to specific component props ---
-
-const GeneralSettingsWrapper = ({ controller }) => {
-    const { user, settings, handlers } = controller;
-    return (
-        <GeneralSettings 
-            user={user} 
-            settings={settings} 
-            updateSetting={handlers.updateSetting}
-        />
-    );
-};
 
 const ModulesSettingsWrapper = ({ controller }) => (
     <ModulesSettings 
@@ -82,7 +70,6 @@ const BillingSettingsWrapper = ({ controller }) => (
  * By centralizing this, we allow SystemConfigPage to be a pure, decoupled renderer.
  */
 export const loadDefaultConfigSections = (t) => {
-    registerConfigSection('general', { title: t('general'), icon: 'settings', desc: t('general_desc') }, GeneralSettingsWrapper);
     registerConfigSection('modules', { title: t('modules') || 'Módulos', icon: 'view_module', desc: t('modules_desc') || 'Habilita o deshabilita módulos opcionales de la clínica.' }, ModulesSettingsWrapper);
     registerConfigSection('communications', { title: t('communications'), icon: 'chat', desc: t('communications_desc') }, CommunicationSettingsWrapper);
     registerConfigSection('integrations', { title: t('integrations'), icon: 'extension', desc: t('integrations_desc') }, IntegrationSettingsWrapper);

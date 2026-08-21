@@ -72,7 +72,7 @@ export const SystemConfigPage = () => {
             <div className={`${styles.SystemConfigPage__root}  `}>
                 <FeatureToolbar
                     tabs={tabs.length > 0 ? tabs : [
-                        { id: 'general', label: t('general'), icon: 'settings' }
+                        { id: 'modules', label: t('modules') || 'Módulos', icon: 'view_module' }
                     ]}
                     activeTab={activeTab}
                     onTabChange={handlers.setActiveTab}
