@@ -109,7 +109,7 @@ export const SearchBar = ({
                                     aria-selected="false"
                                     tabIndex={0}
                                 >
-                                    <div className="search-box__suggestion-icon">
+                                    <div className={styles.SearchBar__suggestionIcon}>
                                         <Icon name={item.type === 'patient' ? 'person' : 'calendar_today'} />
                                     </div>
                                     <div className={`${styles.SearchBar__suggestionInfo}`}>
@@ -123,7 +123,7 @@ export const SearchBar = ({
                                     
                                     {item.debt_status && (
                                         <div 
-                                            className={`${styles.SearchBar__suggestionStatus} search-box__suggestion-status--${item.debt_status}`}
+                                            className={`${styles.SearchBar__suggestionStatus} ${styles[`SearchBar__suggestionStatus${item.debt_status.charAt(0).toUpperCase() + item.debt_status.slice(1).toLowerCase()}`] || ''}`}
                                             title={`${labels.debtStatusPrefix} ${item.debt_status}`}
                                             role="status"
                                             aria-label={`${labels.debtStatusPrefix} ${item.debt_status}`}

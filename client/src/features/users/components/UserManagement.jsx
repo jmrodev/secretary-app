@@ -11,6 +11,7 @@ import { Modal } from '@/components/molecules/Modal';
 // Feature Components
 import { UserTable } from '@/features/users/components/UserTable';
 import { UserForm } from '@/features/users/components/UserForm';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './UserManagement.module.css';
 
 const EMPTY_EXCLUDE = [];
@@ -85,20 +86,20 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
 
     return (
         <div className={`${styles.UserManagement__userManagementOrganism}`}>
-            <section className="action-bar">
-                <div className="action-bar__search">
-                    <div className="search-box__wrapper">
-                        <span className="search-box__icon"><Icon name="search" /></span>
+            <section className={sharedStyles.ActionBar}>
+                <div className={sharedStyles.ActionBar__search}>
+                    <div className={sharedStyles.SearchBox__wrapper}>
+                        <span className={sharedStyles.SearchBox__icon}><Icon name="search" /></span>
                         <input
                             type="text"
                             placeholder={t('search_users_placeholder')}
-                            className="search-box__input"
+                            className={sharedStyles.SearchBox__input}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
                 </div>
-                <div className="action-bar__tools">
+                <div className={sharedStyles.ActionBar__tools}>
                     <Button 
                         variant="primary" 
                         onClick={() => openModal('CREATE')}

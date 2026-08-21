@@ -108,6 +108,12 @@
     font-family: var(--font-mono, monospace);
 }
 
+.SearchBar__suggestionIcon {
+    color: var(--gray-400);
+    display: inline-flex;
+    align-items: center;
+}
+
 /* --- Status Indicators (Semáforo) --- */
 .SearchBar__suggestionStatus {
     width: 10px;
