@@ -58,7 +58,11 @@ export const AppRouter = () => {
 
             {/* Protected Dashboard Routes (Layout) */}
             <Route element={<ProtectedRoute />}>
-                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/dashboard" element={
+                    <RoleGuard allowedRoles={['secretary', 'doctor']}>
+                        <DashboardPage />
+                    </RoleGuard>
+                } />
                 
                 <Route path="/appointments" element={
                     <RoleGuard allowedRoles={['doctor', 'secretary']}>
@@ -67,7 +71,7 @@ export const AppRouter = () => {
                 } />
 
                 <Route path="/patients" element={
-                    <RoleGuard allowedRoles={['admin', 'secretary', 'doctor']}>
+                    <RoleGuard allowedRoles={['secretary', 'doctor']}>
                         <PatientsPage />
                     </RoleGuard>
                 } />
@@ -113,11 +117,15 @@ export const AppRouter = () => {
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/doctors" element={<Navigate to="/admin/users?tab=doctor" replace />} />
                 <Route path="/holidays" element={
-                    <RoleGuard allowedRoles={['admin', 'secretary']}>
+                    <RoleGuard allowedRoles={['secretary']}>
                         <HolidaysPage />
                     </RoleGuard>
                 } />
-                <Route path="/institutions" element={<InstitutionsPage />} />
+                <Route path="/institutions" element={
+                    <RoleGuard allowedRoles={['secretary']}>
+                        <InstitutionsPage />
+                    </RoleGuard>
+                } />
                 <Route path="/reports" element={<ReportsPage />} />
                 <Route path="/requests" element={<RequestsPage />} />
                 <Route path="/messages" element={<ChatPage />} />

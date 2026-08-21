@@ -80,4 +80,28 @@ describe('RoleGuard - permission prop', () => {
 
         expect(screen.getByText('PROTECTED_CONTENT')).toBeTruthy();
     });
+
+    it('redirects unauthorized admin users to /admin/users by default', () => {
+        usePermissionsMock.mockReturnValue({
+            user: { role: 'admin' },
+            canManageUsers: true,
+            loading: false
+        });
+
+        render(
+            <MemoryRouter initialEntries={['/dashboard']}>
+                <Routes>
+                    <Route path="/dashboard" element={
+                        <RoleGuard allowedRoles={['secretary']}>
+                            <ProtectedContent />
+                        </RoleGuard>
+                    } />
+                    <Route path="/admin/users" element={<div>ADMIN_USERS_FALLBACK</div>} />
+                </Routes>
+            </MemoryRouter>
+        );
+
+        expect(screen.getByText('ADMIN_USERS_FALLBACK')).toBeTruthy();
+        expect(screen.queryByText('PROTECTED_CONTENT')).toBeNull();
+    });
 });
