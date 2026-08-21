@@ -7,6 +7,8 @@ import { api } from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
+import sharedStyles from '@/styles/shared.module.css';
+import styles from './BillingSettings.module.css';
 
 /**
  * BillingSettings Feature Component.
@@ -57,16 +59,16 @@ export const BillingSettings = ({ user, settings, updateSetting }) => {
     };
 
     return (
-        <div className="tab-panel animate-fade-in">
+        <div className={`${sharedStyles.TabPanel} ${sharedStyles.AnimateFadeIn}`}>
             {/* AFIP General Configuration */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <span className="config-section__icon"><Icon name="receipt_long" /></span>
-                    <h4 className="config-section__title">{t('billing_settings_title')}</h4>
+            <div className={sharedStyles.ConfigSection}>
+                <div className={sharedStyles.ConfigSection__header}>
+                    <span className={sharedStyles.ConfigSection__icon}><Icon name="receipt_long" /></span>
+                    <h4 className={sharedStyles.ConfigSection__title}>{t('billing_settings_title')}</h4>
                 </div>
 
-                <div className="config-section__body">
-                    <div className="config-grid config-grid--2col">
+                <div className={sharedStyles.ConfigSection__body}>
+                    <div className={`${sharedStyles.ConfigGrid} ${sharedStyles['ConfigGrid--2col']}`}>
                         <ConfigField
                             label={t('billing_cuit')}
                             type="text"
@@ -100,30 +102,30 @@ export const BillingSettings = ({ user, settings, updateSetting }) => {
                         hint={t('afip_prod_warning')}
                     />
 
-                    <div className="config-section__divider"></div>
+                    <div className={sharedStyles.ConfigSection__divider}></div>
 
-                    <div className="config-group">
-                        <div className="config-group__header">
-                            <h5 className="config-group__title">{t('connection_status')}</h5>
+                    <div className={styles.BillingSettings__group}>
+                        <div className={styles.BillingSettings__groupHeader}>
+                            <h5 className={styles.BillingSettings__groupTitle}>{t('connection_status')}</h5>
                         </div>
-                        <div className="config-group__items">
+                        <div className={styles.BillingSettings__groupItems}>
                             {status ? (
-                                <div className={`config-status ${status.error ? 'config-status--error' : 'config-status--success'}`}>
+                                <div className={`${styles.BillingSettings__status} ${status.error ? styles.BillingSettings__statusError : styles.BillingSettings__statusSuccess}`}>
                                     {status.error ? (
                                         <p><Icon name="close" className="mr-1" />{t('afip_status_error')}: {status.error}</p>
                                     ) : (
                                         <>
                                             <p><Icon name="check" className="mr-1" />{t('afip_status_connected')} ({status.environment})</p>
-                                            <p className="config-field__hint">App: {status.afip_status.AppServer}, DB: {status.afip_status.DbServer}, Auth: {status.afip_status.AuthServer}</p>
+                                            <p className={styles.BillingSettings__hint}>App: {status.afip_status.AppServer}, DB: {status.afip_status.DbServer}, Auth: {status.afip_status.AuthServer}</p>
                                         </>
                                     )}
                                 </div>
                             ) : (
-                                <p className="config-field__hint">{t('not_verified')}</p>
+                                <p className={styles.BillingSettings__hint}>{t('not_verified')}</p>
                             )}
                         </div>
 
-                        <div className="config-actions config-actions--mt-1">
+                        <div className={`${styles.BillingSettings__actions} ${styles['BillingSettings__actions--mt1']}`}>
                             <Button
                                 variant="secondary"
                                 onClick={checkStatus}
@@ -138,18 +140,18 @@ export const BillingSettings = ({ user, settings, updateSetting }) => {
             </div>
 
             {/* AFIP Certificates and Key Generation */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <span className="config-section__icon"><Icon name="key" /></span>
-                    <h4 className="config-section__title">{t('digital_certificates')}</h4>
+            <div className={sharedStyles.ConfigSection}>
+                <div className={sharedStyles.ConfigSection__header}>
+                    <span className={sharedStyles.ConfigSection__icon}><Icon name="key" /></span>
+                    <h4 className={sharedStyles.ConfigSection__title}>{t('digital_certificates')}</h4>
                 </div>
-                <div className="config-section__body">
-                    <div className="config-field__hint config-field__hint--mb-15">
+                <div className={sharedStyles.ConfigSection__body}>
+                    <div className={`${styles.BillingSettings__hint} ${styles['BillingSettings__hint--mb15']}`}>
                         {t('valid_certificate_needed')}
                         <br /><br />
                         1. {t('afip_guide_step_1_short')}
                         <br />
-                        2. {t('afip_guide_step_2_short')} <a href="https://auth.afip.gob.ar/contribuyente_/login.xhtml" target="_blank" rel="noreferrer" className="config-link">{t('access_afip')}</a>
+                        2. {t('afip_guide_step_2_short')} <a href="https://auth.afip.gob.ar/contribuyente_/login.xhtml" target="_blank" rel="noreferrer" className={styles.BillingSettings__link}>{t('access_afip')}</a>
                         <br />
                         3. {t('afip_guide_step_3_short')}
                         <br />
@@ -157,7 +159,7 @@ export const BillingSettings = ({ user, settings, updateSetting }) => {
                         <br />
                         5. {t('afip_guide_step_5_short')}
                     </div>
-                    <div className="config-actions">
+                    <div className={styles.BillingSettings__actions}>
                         <Button variant="primary" onClick={generateCsr} loading={generatingCsr} icon={<Icon name="settings" />}>
                             {t('generate_csr_btn')}
                         </Button>
@@ -165,20 +167,20 @@ export const BillingSettings = ({ user, settings, updateSetting }) => {
                     </div>
 
                     {generatedCsr && (
-                        <div className="config-group config-group--bg-white">
-                            <div className="config-group__header">
-                                <h5 className="config-group__title">{t('your_csr')}</h5>
+                        <div className={`${styles.BillingSettings__group} ${styles['BillingSettings__group--bgWhite']}`}>
+                            <div className={styles.BillingSettings__groupHeader}>
+                                <h5 className={styles.BillingSettings__groupTitle}>{t('your_csr')}</h5>
                             </div>
-                            <p className="config-field__hint config-field__hint--mb-05">{t('copy_to_wsass')}:</p>
+                            <p className={`${styles.BillingSettings__hint} ${styles['BillingSettings__hint--mb05']}`}>{t('copy_to_wsass')}:</p>
                             <Input
                                 type="textarea"
-                                className="config-field__input config-field__input--monospace"
+                                className={styles.BillingSettings__inputMonospace}
                                 readOnly
                                 value={generatedCsr}
                                 onClick={(e) => e.target.select()}
                                 rows={8}
                             />
-                            <div className="config-actions config-actions--right config-actions--mt-1">
+                            <div className={`${styles.BillingSettings__actions} ${styles['BillingSettings__actions--right']} ${styles['BillingSettings__actions--mt1']}`}>
                                 <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }} icon={<Icon name="content_copy" />}>
                                     {t('copy')}
                                 </Button>

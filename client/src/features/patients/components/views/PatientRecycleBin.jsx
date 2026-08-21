@@ -4,6 +4,7 @@ import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import { Loading } from '@/components/atoms/Loading';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './PatientRecycleBin.module.css';
 
 const EMPTY_ARRAY = [];
@@ -40,7 +41,7 @@ const PatientRecycleBinBase = ({
     }
 
     return (
-        <div className={`${styles.PatientRecycleBin__root} animate-fade-in`}>
+        <div className={`${styles.PatientRecycleBin__root} ${sharedStyles.AnimateFadeIn}`}>
             <div className={`${styles.PatientRecycleBin__container}`}>
                 <table className={`${styles.PatientRecycleBin__table}`}>
                     <thead>

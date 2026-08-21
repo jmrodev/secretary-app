@@ -4,6 +4,7 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { useSearch } from '@/hooks/useSearch';
 import { useLanguage } from '@/hooks/useLanguage';
 import { DoctorSelector } from '@/features/doctors';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './MainLayout.module.css';
 
 /**
@@ -56,7 +57,7 @@ export const MainLayout = ({
                         }}
                     />
                 )}
-                <div className={`layout-content-area ${!noAnimation ? 'animate-fade-in' : ''} ${styles.MainLayout__pageShell}`}>
+                <div className={`${styles.MainLayout__pageShell} ${!noAnimation ? sharedStyles.AnimateFadeIn : ''}`}>
                     {children}
                 </div>
             </main>

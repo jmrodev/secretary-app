@@ -2,6 +2,7 @@ import React, { useReducer, useMemo, useCallback } from 'react';
 import { parseDate } from '@/utils/core/dateUtils';
 import { PatientPrintableFilters } from '../sections/PatientPrintableFilters';
 import { PatientPrintableContent } from '../sections/PatientPrintableContent';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './PatientPrintableView.module.css';
 
 const initialState = {
@@ -134,7 +135,7 @@ const PatientPrintableViewBase = ({
     );
 
     return (
-        <div className={`${styles.PatientPrintableView__fullscreen} printable-patient-sheet animate-fade-in`}>
+        <div className={`${styles.PatientPrintableView__fullscreen} ${sharedStyles.AnimateFadeIn}`}>
             <PatientPrintableFilters
                 printOptions={printOptions}
                 fromDate={fromDate}

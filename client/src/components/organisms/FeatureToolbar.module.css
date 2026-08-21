@@ -15,6 +15,14 @@
     width: 100%;
 }
 
+.FeatureToolbar__tabs {
+    margin-bottom: 0;
+}
+
+.FeatureToolbar__tabButton {
+    /* Scoped tab button */
+}
+
 .FeatureToolbar__search {
     flex: 1;
     min-width: 200px;

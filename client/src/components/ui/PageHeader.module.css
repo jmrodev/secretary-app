@@ -45,6 +45,12 @@
     gap: 0.75rem;
 }
 
+.PageHeader__extraActions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
 .PageHeader__divider {
     border-bottom: 1px solid var(--header-divider-color);
     padding-bottom: 1.25rem;
