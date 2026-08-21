@@ -4,6 +4,7 @@ import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Loading } from '@/components/atoms/Loading';
+import { Checkbox } from '@/components/atoms/Checkbox';
 import { formatDate, toInputDate, getNow } from '@/utils/core/dateUtils';
 import styles from './NextSlotCalendarModal.module.css';
 
@@ -121,18 +122,16 @@ export const NextSlotCalendarModal = ({
 
                 {/* ── Controls bar ── */}
                 <div className={`${styles.NextSlotCalendarModal__calendarSlotControls}`}>
-                    <label className={`${styles.NextSlotCalendarModal__checkbox}`}>
-                        <input
-                            type="checkbox"
-                            className={`${styles.NextSlotCalendarModal__input}`}
-                            checked={includeOutOfHours}
-                            onChange={(e) => onToggleOutOfHours(e.target.checked)}
-                        />
-                        <span className={`${styles.NextSlotCalendarModal__label}`}>
-                            <Icon name="lock_open" size="1rem" />
-                            {t('include_overtime')}
-                        </span>
-                    </label>
+                    <Checkbox
+                        checked={includeOutOfHours}
+                        onChange={(e) => onToggleOutOfHours(e.target.checked)}
+                        label={(
+                            <>
+                                <Icon name="lock_open" size="1rem" />
+                                {t('include_overtime')}
+                            </>
+                        )}
+                    />
                 </div>
 
                 {/* ── Content ── */}

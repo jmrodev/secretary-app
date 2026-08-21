@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
 import styles from './ScheduleBulkActions.module.css';
 
 /**
@@ -17,17 +18,15 @@ export const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkE
             </h4>
             <div className={`${styles.ScheduleBulkActions__actions}`}>
                 <div className={`${styles.ScheduleBulkActions__timeInputs}`}>
-                    <input
+                    <Input
                         type="time"
-                        className={`input-field ${styles.timeInput}`}
                         value={bulkStart}
                         onChange={(e) => setBulkStart(e.target.value)}
                         aria-label={t('start_time') || 'Hora de inicio'}
                     />
                     <span className={`${styles.ScheduleBulkActions__separator}`}>{t('to_label') || 'a'}</span>
-                    <input
+                    <Input
                         type="time"
-                        className={`input-field ${styles.timeInput}`}
                         value={bulkEnd}
                         onChange={(e) => setBulkEnd(e.target.value)}
                         aria-label={t('end_time') || 'Hora de fin'}

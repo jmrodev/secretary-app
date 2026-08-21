@@ -2,6 +2,8 @@
 import React from 'react';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
+import { Input } from '@/components/atoms/Input';
+import { FormGroup } from '@/components/molecules/FormGroup';
 
 /**
  * StatusActionModal Molecule.
@@ -31,18 +33,18 @@ export const StatusActionModal = ({
                 </>
             }
         >
-            <div className="input-group">
-                <label className="input-label" htmlFor="status-note">
-                    {type === 'completed' ? t('message_optional') : t('reason_rejection')}
-                </label>
-                <textarea
+            <FormGroup
+                label={type === 'completed' ? t('message_optional') : t('reason_rejection')}
+                htmlFor="status-note"
+            >
+                <Input
+                    type="textarea"
                     id="status-note"
-                    className="input-field"
-                    rows="3"
+                    rows={3}
                     value={note}
                     onChange={e => onNoteChange(e.target.value)}
                 />
-            </div>
+            </FormGroup>
         </Modal>
     );
 };

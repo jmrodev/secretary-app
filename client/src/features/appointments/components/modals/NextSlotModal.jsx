@@ -3,6 +3,7 @@ import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Loading } from '@/components/atoms/Loading';
+import { Checkbox } from '@/components/atoms/Checkbox';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getNow } from '@/utils/core/dateUtils';
 import styles from './NextSlotModal.module.css';
@@ -96,14 +97,11 @@ export const NextSlotModal = ({
 
                 {/* 2. Extra Options */}
                 <div className={styles.NextSlotModal__options}>
-                    <label className={styles.NextSlotModal__checkboxLabel}>
-                        <input 
-                            type="checkbox" 
-                            checked={includeOutOfHours} 
-                            onChange={e => onToggleOutOfHours(e.target.checked)} 
-                        />
-                        <span>{t('include_overtime') || 'Incluir fuera de horario'}</span>
-                    </label>
+                    <Checkbox
+                        checked={includeOutOfHours}
+                        onChange={e => onToggleOutOfHours(e.target.checked)}
+                        label={t('include_overtime') || 'Incluir fuera de horario'}
+                    />
                 </div>
 
                 {/* 3. Slot Timeline List */}
