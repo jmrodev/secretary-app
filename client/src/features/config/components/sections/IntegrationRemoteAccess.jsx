@@ -1,4 +1,5 @@
 import React from 'react';
+import shared from '@/styles/shared.module.css';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
@@ -12,13 +13,13 @@ export const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunn
     const method = settings.remote_access_method || 'none';
 
     return (
-        <div className="config-section animate-fade-in">
-            <div className="config-section__header">
-                <span className="config-section__icon"><Icon name="language" /></span>
-                <h3 className="config-section__title">Acceso Remoto (Internet)</h3>
+        <div className={`${shared.ConfigSection} ${shared.AnimateFadeIn}`}>
+            <div className={shared.ConfigSection__header}>
+                <span className={shared.ConfigSection__icon}><Icon name="language" /></span>
+                <h3 className={shared.ConfigSection__title}>Acceso Remoto (Internet)</h3>
             </div>
 
-            <div className="config-section__body">
+            <div className={shared.ConfigSection__body}>
                 <p className="config-field__hint config-field__hint--mb-15">
                     Elija cómo desea acceder a la aplicación cuando no esté en el consultorio.
                 </p>
@@ -37,11 +38,11 @@ export const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunn
                     />
                 </div>
 
-                <div className="config-section__divider"></div>
+                <div className={shared.ConfigSection__divider}></div>
 
                 {method === 'duckdns' && (
-                    <div className="animate-fade-in">
-                        <div className="config-grid config-grid--2col config-grid--gap-1">
+                    <div className={shared.AnimateFadeIn}>
+                        <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']} ${shared['ConfigGrid--gap1']}`}>
                             <ConfigField
                                 id="duckdns-domain"
                                 label="Subdominio DuckDNS"
@@ -77,7 +78,7 @@ export const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunn
                             </Button>
                         </div>
 
-                        <div className="config-section__divider"></div>
+                        <div className={shared.ConfigSection__divider}></div>
 
                         <div className="config-guide">
                             <h4 className="config-guide__title"><Icon name="menu_book" className="mr-1" />Guía de Configuración DuckDNS</h4>

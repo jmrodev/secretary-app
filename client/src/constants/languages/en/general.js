@@ -182,4 +182,5 @@ export const general = {
     error_update: "Error updating",
     new_appointment_short: "Appointment",
     new_patient_short: "Patient",
+    modal_close: "Close modal",
 };

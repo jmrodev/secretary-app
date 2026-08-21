@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Input } from '@/components/atoms/Input';
 
 const CURRENCY_FORMATTER = new Intl.NumberFormat('es-AR', {
     style: 'decimal',
@@ -14,7 +15,9 @@ const format = (val) => {
 
 /**
  * CurrencyInput Atom follows Atomic Design & BEM.
- * Reuses the 'input' base class from design-system.
+ * Renders the shared Input atom (type="text") so it inherits Input.module.css
+ * styling while keeping the es-AR number formatting and the
+ * onChange({ target: { value: numValue } }) contract intact.
  */
 export const CurrencyInput = ({
     value,
@@ -41,12 +44,6 @@ export const CurrencyInput = ({
         }
     }
 
-    const baseClass = 'input';
-    const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
-    const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
-
-    const combinedClassName = `${baseClass} ${variantClass} ${sizeClass} ${className}`.trim();
-
     const handleCurrencyChange = (e) => {
         const inputVal = e.target.value;
         const rawValue = inputVal.replace(/\D/g, '');
@@ -63,10 +60,12 @@ export const CurrencyInput = ({
     };
 
     return (
-        <input
+        <Input
             {...props}
             type="text"
-            className={combinedClassName}
+            size={size}
+            variant={variant}
+            className={className}
             placeholder={placeholder}
             required={required}
             value={displayValue}

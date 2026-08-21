@@ -2,9 +2,12 @@ import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from './Modal.module.css';
 
 export const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', variant: _variant = 'light', className = '' }) => {
+    const { t } = useLanguage();
+
     // Prevent scrolling on body when modal is open and handle global Escape key
     const onCloseRef = React.useRef(onClose);
     
@@ -35,7 +38,7 @@ export const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', v
                 type="button"
                 className={`${styles.Modal__backdrop}`}
                 onClick={onClose}
-                aria-label="Cerrar modal"
+                aria-label={t('modal_close')}
             />
             <div
                 className={`${styles.Modal__content} ${size && size !== 'md' ? styles['content' + size.charAt(0).toUpperCase() + size.slice(1)] : ''} ${className}`}
@@ -52,7 +55,7 @@ export const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', v
                         size="md-compact"
                         className={`${styles.Modal__close}`}
                         onClick={onClose}
-                        aria-label="Close"
+                        aria-label={t('modal_close')}
                         icon={<Icon name="CLOSE" />}
                         unstyled
                     />

@@ -3,6 +3,7 @@ import { api } from '@/api/axios';
 import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import styles from './WhatsappConfig.module.css';
+import shared from '@/styles/shared.module.css';
 
 const QUICK_RESPONSES = [
     { key: 'saludo', label: 'Saludo inicial', text: '¡Hola {patient_name}! 👋 Soy {secretary_name} de Cima Salud. ¿En qué puedo ayudarte hoy?' },
@@ -46,7 +47,7 @@ export const WhatsappConfig = ({ t }) => {
     };
 
     return (
-        <div className="tab-panel animate-fade-in">
+        <div className={`${shared.TabPanel} ${shared.AnimateFadeIn}`}>
             {message && (
                 <div className={`${styles.WhatsappConfig__message} ${styles[message.type === 'success' ? 'message--success' : 'message--error']}`}>
                     {message.text}
@@ -54,12 +55,12 @@ export const WhatsappConfig = ({ t }) => {
             )}
 
             {/* Doctor selector */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="person" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('wa_config_doctor')}</h4>
+            <div className={shared.ConfigSection}>
+                <div className={shared.ConfigSection__header}>
+                    <Icon name="person" size="1.2rem" className={shared.ConfigSection__icon} />
+                    <h4 className={shared.ConfigSection__title}>{t('wa_config_doctor')}</h4>
                 </div>
-                <div className="config-section__body">
+                <div className={shared.ConfigSection__body}>
                     <select
                         className={styles['WhatsappConfig__var-btn']}
                         value={selectedDoctorId}
@@ -73,16 +74,16 @@ export const WhatsappConfig = ({ t }) => {
                 </div>
             </div>
 
-            <div className="config-section__divider"></div>
+            <div className={shared.ConfigSection__divider}></div>
 
             {/* Quick responses */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="quickreply" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('wa_config_quick_label')}</h4>
+            <div className={shared.ConfigSection}>
+                <div className={shared.ConfigSection__header}>
+                    <Icon name="quickreply" size="1.2rem" className={shared.ConfigSection__icon} />
+                    <h4 className={shared.ConfigSection__title}>{t('wa_config_quick_label')}</h4>
                 </div>
-                <div className="config-section__body">
-                    <p className="config-section__description" style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
+                <div className={shared.ConfigSection__body}>
+                    <p className={shared.ConfigSection__description} style={{ fontSize: '0.85rem', color: 'var(--color-text-muted, #94a3b8)', margin: 0 }}>
                         {t('wa_config_quick_hint')}
                     </p>
                     <div className={styles.WhatsappConfig__responses}>

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
+import { Input } from '@/components/atoms/Input';
+import { FormGroup } from '@/components/molecules/FormGroup';
 
 /**
  * EditLicenseModal Molecule.
@@ -35,28 +37,26 @@ export const EditLicenseModal = ({
             }
         >
             <div className="config-flex--column config-flex--gap-4">
-                <div className="input-group">
-                    <label htmlFor="edit-license-request-note" className="input-label">{t('request_note') || 'Descripción de la licencia'}</label>
-                    <textarea
+                <FormGroup label={t('request_note') || 'Descripción de la licencia'} htmlFor="edit-license-request-note">
+                    <Input
+                        type="textarea"
                         id="edit-license-request-note"
-                        className="input-field"
-                        rows="4"
+                        rows={4}
                         readOnly={editData._readOnly}
                         value={editData.request_note || ''}
                         onChange={e => onEditDataChange('request_note', e.target.value)}
                     />
-                </div>
-                <div className="input-group">
-                    <label htmlFor="edit-license-doctor-note" className="input-label">{t('doctor_note') || 'Nota del médico'}</label>
-                    <textarea
+                </FormGroup>
+                <FormGroup label={t('doctor_note') || 'Nota del médico'} htmlFor="edit-license-doctor-note">
+                    <Input
+                        type="textarea"
                         id="edit-license-doctor-note"
-                        className="input-field"
-                        rows="3"
+                        rows={3}
                         readOnly={editData._readOnly}
                         value={editData.doctor_note || ''}
                         onChange={e => onEditDataChange('doctor_note', e.target.value)}
                     />
-                </div>
+                </FormGroup>
             </div>
         </Modal>
     );

@@ -1,4 +1,5 @@
 import React from 'react';
+import shared from '@/styles/shared.module.css';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { StatusIndicator } from '@/components/atoms/StatusIndicator';
@@ -24,13 +25,13 @@ export const IntegrationGoogleCalendar = ({
     const statusLabel = googleUnlinked ? 'Desconectado' : 'Conectado';
 
     return (
-        <div className="config-section animate-fade-in">
-            <div className="config-section__header">
-                <span className="config-section__icon"><Icon name="calendar_today" /></span>
-                <h2 className="config-section__title">Integración con Google Calendar</h2>
+        <div className={`${shared.ConfigSection} ${shared.AnimateFadeIn}`}>
+            <div className={shared.ConfigSection__header}>
+                <span className={shared.ConfigSection__icon}><Icon name="calendar_today" /></span>
+                <h2 className={shared.ConfigSection__title}>Integración con Google Calendar</h2>
             </div>
 
-            <div className="config-section__body">
+            <div className={shared.ConfigSection__body}>
                 <div className="config-group">
                     <div className="config-group__header config-group__header--flex-spaced">
                         <div className="config-group__status-info">
@@ -84,7 +85,7 @@ export const IntegrationGoogleCalendar = ({
                                 </Button>
                             </Alert>
 
-                            <div className="config-section__divider"></div>
+                            <div className={shared.ConfigSection__divider}></div>
 
                             <div className="config-field">
                                 <ConfigField

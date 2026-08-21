@@ -4,6 +4,9 @@ import { Loading } from '@/components/atoms/Loading';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Badge } from '@/components/atoms/Badge';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import { formatCurrency } from '@/utils/core/format';
 import { formatDate } from '@/utils/core/dateUtils';
 import { useRentalsController } from '@/features/rentals/hooks/useRentalsController';
@@ -66,29 +69,48 @@ export const RentalsPage = () => {
                                             </div>
                                             <form onSubmit={handleRent} className={`${styles.RentalsPage__bookingForm}`}>
                                                 <div className={`${styles.RentalsPage__formRow}`}>
-                                                    <div className="input-group">
-                                                        <label htmlFor="rental-office" className="input-label">{t('select_office')}</label>
-                                                        <select id="rental-office" className="input-field" value={selectedOffice} onChange={(e) => setSelectedOffice(e.target.value)} required>
-                                                            <option value="">-- {t('select_office')} --</option>
-                                                            {consultorios.map(c => (
-                                                                <option key={c.id} value={c.id}>{c.name} - {t(c.status) || c.status}</option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-                                                    <div className="input-group">
-                                                        <label htmlFor="rental-date" className="input-label">{t('date')}</label>
-                                                        <input id="rental-date" type="date" className="input-field" value={date} onChange={(e) => setDate(e.target.value)} required />
-                                                    </div>
+                                                    <FormGroup label={t('select_office')} htmlFor="rental-office">
+                                                        <Select
+                                                            id="rental-office"
+                                                            value={selectedOffice}
+                                                            onChange={(e) => setSelectedOffice(e.target.value)}
+                                                            required
+                                                            placeholder={`-- ${t('select_office')} --`}
+                                                            options={consultorios.map(c => ({
+                                                                value: c.id,
+                                                                label: `${c.name} - ${t(c.status) || c.status}`
+                                                            }))}
+                                                        />
+                                                    </FormGroup>
+                                                    <FormGroup label={t('date')} htmlFor="rental-date">
+                                                        <Input
+                                                            id="rental-date"
+                                                            type="date"
+                                                            value={date}
+                                                            onChange={(e) => setDate(e.target.value)}
+                                                            required
+                                                        />
+                                                    </FormGroup>
                                                 </div>
                                                 <div className={`${styles.RentalsPage__formRow}`}>
-                                                    <div className="input-group">
-                                                        <label htmlFor="rental-start-time" className="input-label">{t('start_time')}</label>
-                                                        <input id="rental-start-time" type="time" className="input-field" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
-                                                    </div>
-                                                    <div className="input-group">
-                                                        <label htmlFor="rental-end-time" className="input-label">{t('end_time')}</label>
-                                                        <input id="rental-end-time" type="time" className="input-field" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
-                                                    </div>
+                                                    <FormGroup label={t('start_time')} htmlFor="rental-start-time">
+                                                        <Input
+                                                            id="rental-start-time"
+                                                            type="time"
+                                                            value={startTime}
+                                                            onChange={(e) => setStartTime(e.target.value)}
+                                                            required
+                                                        />
+                                                    </FormGroup>
+                                                    <FormGroup label={t('end_time')} htmlFor="rental-end-time">
+                                                        <Input
+                                                            id="rental-end-time"
+                                                            type="time"
+                                                            value={endTime}
+                                                            onChange={(e) => setEndTime(e.target.value)}
+                                                            required
+                                                        />
+                                                    </FormGroup>
                                                 </div>
                                                 <div>
                                                     <Button type="submit" variant="primary">

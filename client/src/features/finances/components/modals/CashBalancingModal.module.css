@@ -1,0 +1,59 @@
+/* CashBalancingModal Component Styles (BEM) */
+
+.CashBalancingModal__footer {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: flex-end;
+    width: 100%;
+}
+
+.CashBalancingModal__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+}
+
+.CashBalancingModal__statsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.CashBalancingModal__amountInput {
+    font-size: 1.5rem;
+    height: 3.75rem;
+    font-weight: 700;
+}
+
+.CashBalancingModal__statItem {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+    background-color: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+}
+
+.CashBalancingModal__statValue {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.CashBalancingModal__statLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.CashBalancingModal__diffNegative {
+    color: var(--danger);
+}
+
+.CashBalancingModal__diffPositive {
+    color: var(--success);
+}
