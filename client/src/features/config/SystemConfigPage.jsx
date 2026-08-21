@@ -60,12 +60,18 @@ export const SystemConfigPage = () => {
         return getConfigSections();
     });
 
+    const userRole = controller.user?.role;
+    const visibleSections = useMemo(() => 
+        sections.filter(s => !s.metadata?.allowedRoles || s.metadata.allowedRoles.includes(userRole)),
+        [sections, userRole]
+    );
+
     const tabs = useMemo(() => 
-        sections.map(s => ({
+        visibleSections.map(s => ({
             id: s.id,
             label: s.metadata.title,
             icon: s.metadata.icon
-        })), [sections]);
+        })), [visibleSections]);
 
     return (
         <MainLayout wide flush title={t('config') || 'Configuración del Sistema'}>

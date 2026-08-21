@@ -11,7 +11,7 @@ describe('loadDefaultConfigSections', () => {
         registerMock.mockClear();
     });
 
-    it('no longer registers users, doctors, institutions, profile, general, billing, communications, or logs sections', () => {
+    it('no longer registers users, doctors, institutions, profile, general, or logs sections', () => {
         loadDefaultConfigSections((key) => key);
 
         const registeredKeys = registerMock.mock.calls.map(([key]) => key);
@@ -20,15 +20,13 @@ describe('loadDefaultConfigSections', () => {
         expect(registeredKeys).not.toContain('institutions');
         expect(registeredKeys).not.toContain('profile');
         expect(registeredKeys).not.toContain('general');
-        expect(registeredKeys).not.toContain('billing');
-        expect(registeredKeys).not.toContain('communications');
         expect(registeredKeys).not.toContain('logs');
     });
 
-    it('still registers the core system config sections (modules and integrations)', () => {
+    it('registers valid sections with role scoping (modules, communications, integrations, billing)', () => {
         loadDefaultConfigSections((key) => key);
 
         const registeredKeys = registerMock.mock.calls.map(([key]) => key);
-        expect(registeredKeys).toEqual(['modules', 'integrations']);
+        expect(registeredKeys).toEqual(['modules', 'communications', 'integrations', 'billing']);
     });
 });
