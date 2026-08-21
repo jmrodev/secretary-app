@@ -65,6 +65,10 @@
     letter-spacing: 0.05em;
 }
 
+.ConfirmModal__promptInput {
+    width: 100%;
+}
+
 .ConfirmModal__modalFooterBem {
     display: flex;
     gap: 8px;

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
 import { useLanguage } from '@/hooks/useLanguage';
 
 /**
@@ -48,10 +49,10 @@ export const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
                     <label htmlFor="admin-master-password" className={`${styles.AdminAuthModal__label}`}>
                         {t('master_password') || 'Contraseña maestra'}
                     </label>
-                    <input
+                    <Input
                         id="admin-master-password"
                         type="password"
-                        className={`${styles.AdminAuthModal__passwordInput} input-field`}
+                        className={styles.AdminAuthModal__passwordInput}
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}

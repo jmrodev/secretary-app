@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Modal } from '@/components/molecules/Modal';
+import { Input } from '@/components/atoms/Input';
 import styles from './ConfirmModal.module.css';
 
 export const ConfirmModal = ({
@@ -75,10 +76,10 @@ export const ConfirmModal = ({
                     <label htmlFor="confirm-modal-prompt-input" className={styles.ConfirmModal__label}>
                         {labels.prompt || 'Value'}
                     </label>
-                    <input
+                    <Input
                         id="confirm-modal-prompt-input"
                         type={inputType}
-                        className="input-field"
+                        className={styles.ConfirmModal__promptInput}
                         defaultValue={initialValue}
                         ref={inputRef}
                     />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styles from './Input.module.css';
 
 /**
@@ -6,8 +6,9 @@ import styles from './Input.module.css';
  * Renders a text input, textarea, or any other input type.
  * Accepts all native HTML input props via `...rest`
  * (checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.)
+ * Forwards `ref` to the underlying native element.
  */
-export const Input = ({
+export const Input = forwardRef(({
     type = 'text',
     value,
     onChange,
@@ -22,7 +23,7 @@ export const Input = ({
     size = 'md',         // 'sm' | 'md' | 'lg'
     htmlSize,            // Native HTML size attribute
     ...rest              // forwards: checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.
-}) => {
+}, ref) => {
     const baseClass = styles.Input__root;
 
     const variantClass = variant !== 'default' && styles[variant] ? styles[variant] : '';
@@ -40,6 +41,7 @@ export const Input = ({
     if (type === 'textarea') {
         return (
             <textarea
+                ref={ref}
                 id={id}
                 name={name}
                 value={value}
@@ -56,6 +58,7 @@ export const Input = ({
 
     return (
         <input
+            ref={ref}
             id={id}
             name={name}
             type={type}
@@ -69,4 +72,6 @@ export const Input = ({
             {...rest}
         />
     );
-};
+});
+
+Input.displayName = 'Input';

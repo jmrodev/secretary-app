@@ -274,3 +274,13 @@
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1rem;
 }
+
+.PatientHistoryModal__fileLinkWrap {
+    margin-top: var(--spacing-sm);
+}
+
+.PatientHistoryModal__fileLink {
+    font-size: 0.85rem;
+    color: var(--primary-color);
+    text-decoration: underline;
+}

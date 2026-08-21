@@ -2,6 +2,9 @@
 import React from 'react';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
+import { Input } from '@/components/atoms/Input';
+import { Checkbox } from '@/components/atoms/Checkbox';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
 import { PrescriptionItemsList } from '@/features/medical_documents/components/lists/PrescriptionItemsList';
 
@@ -39,8 +42,7 @@ export const EditPrescriptionModal = ({
             }
         >
             <div className="config-flex--column config-flex--gap-4">
-                <div className="input-group">
-                    <label htmlFor="edit-prescription-medications" className="input-label">{t('medications')}</label>
+                <FormGroup label={t('medications')} htmlFor="edit-prescription-medications">
                     {editData.items && editData.items.length > 0 && (
                         <div className="prescription-modal mb-4">
                             <PrescriptionItemsList
@@ -58,40 +60,32 @@ export const EditPrescriptionModal = ({
                             onSelectMedication={onSelectMedication}
                         />
                     )}
-                    <textarea
+                    <Input
+                        type="textarea"
                         id="edit-prescription-medications"
-                        className="input-field mt-4"
-                        rows="4"
+                        rows={4}
                         readOnly={editData._readOnly}
                         value={editData.medications}
                         onChange={e => onEditDataChange('medications', e.target.value)}
                     />
-                </div>
-                <div className="input-group">
-                    <label htmlFor="edit-prescription-instructions" className="input-label">{t('instructions')}</label>
-                    <textarea
+                </FormGroup>
+                <FormGroup label={t('instructions')} htmlFor="edit-prescription-instructions">
+                    <Input
+                        type="textarea"
                         id="edit-prescription-instructions"
-                        className="input-field"
-                        rows="3"
+                        rows={3}
                         readOnly={editData._readOnly}
                         value={editData.instructions}
                         onChange={e => onEditDataChange('instructions', e.target.value)}
                     />
-                </div>
+                </FormGroup>
                 {!editData._readOnly && (
-                    <div className="input-group">
-                        <label className="checkbox-container">
-                            <input
-                                type="checkbox"
-                                checked={editData.bonified || false}
-                                onChange={e => onEditDataChange('bonified', e.target.checked)}
-                            />
-                            <span className="checkmark"></span>
-                            <span className="checkbox-label" style={{ marginLeft: '10px' }}>
-                                {t('bonified') || 'Bonificado (Sin Costo)'}
-                            </span>
-                        </label>
-                    </div>
+                    <Checkbox
+                        id="edit-prescription-bonified"
+                        checked={editData.bonified || false}
+                        onChange={e => onEditDataChange('bonified', e.target.checked)}
+                        label={t('bonified') || 'Bonificado (Sin Costo)'}
+                    />
                 )}
             </div>
         </Modal>

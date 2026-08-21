@@ -181,4 +181,5 @@ export const general = {
     mercadopago: "MercadoPago",
     credit: "Tarjeta de Crédito",
     debit: "Tarjeta de Débito",
+    modal_close: "Cerrar modal",
 };
