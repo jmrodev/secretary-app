@@ -12,17 +12,10 @@ const IntegrationSettings = lazy(() => import('../components/sections/Integratio
 const BillingSettings = lazy(() => import('../components/sections/BillingSettings').then(m => ({ default: m.BillingSettings })));
 
 // Domain Features
-const ProfileEditor = lazy(() => import('@/features/auth').then(m => ({ default: m.ProfileEditor })));
-const InstitutionManager = lazy(() => import('@/features/institutions').then(m => ({ default: m.InstitutionManager })));
 const AuditLogManager = lazy(() => import('@/features/reports').then(m => ({ default: m.AuditLogManager })));
 
-// Cross-feature imports for Slots (kept inside the loader to keep SystemConfigPage pure)
-import { InstitutionFinances } from '@/features/finances';
-
 // Eager imports for hooks to avoid undef require at runtime/eslint
-import { useProfileController } from '@/features/auth/hooks/useProfileController';
 import { useAuditLogsController } from '@/features/reports';
-import { useInstitutionsController } from '@/features/institutions';
 
 // --- Specialized Wrappers to map the common Controller to specific component props ---
 
@@ -44,16 +37,6 @@ const ModulesSettingsWrapper = ({ controller }) => (
         updateSetting={controller.handlers.updateSetting}
     />
 );
-
-const ProfileEditorWrapper = ({ controller }) => {
-    const profileController = useProfileController();
-    return <ProfileEditor {...profileController} />;
-};
-
-const InstitutionManagerWrapper = ({ controller }) => {
-    const instController = useInstitutionsController();
-    return <InstitutionManager {...instController} InstitutionFinancesComponent={InstitutionFinances} />;
-};
 
 const AuditLogManagerWrapper = ({ controller }) => {
     const logsController = useAuditLogsController();
@@ -101,10 +84,8 @@ const BillingSettingsWrapper = ({ controller }) => (
 export const loadDefaultConfigSections = (t) => {
     registerConfigSection('general', { title: t('general'), icon: 'settings', desc: t('general_desc') }, GeneralSettingsWrapper);
     registerConfigSection('modules', { title: t('modules') || 'Módulos', icon: 'view_module', desc: t('modules_desc') || 'Habilita o deshabilita módulos opcionales de la clínica.' }, ModulesSettingsWrapper);
-    registerConfigSection('profile', { title: t('profile'), icon: 'person', desc: t('profile_desc') }, ProfileEditorWrapper);
     registerConfigSection('communications', { title: t('communications'), icon: 'chat', desc: t('communications_desc') }, CommunicationSettingsWrapper);
     registerConfigSection('integrations', { title: t('integrations'), icon: 'extension', desc: t('integrations_desc') }, IntegrationSettingsWrapper);
-    registerConfigSection('institutions', { title: t('institutions'), icon: 'business', desc: t('institutions_desc') }, InstitutionManagerWrapper);
     registerConfigSection('billing', { title: t('billing'), icon: 'payments', desc: t('billing_desc') }, BillingSettingsWrapper);
     registerConfigSection('logs', { title: t('logs'), icon: 'list_alt', desc: t('logs_desc') }, AuditLogManagerWrapper);
 };
