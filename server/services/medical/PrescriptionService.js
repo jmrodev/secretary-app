@@ -106,6 +106,14 @@ class PrescriptionService {
     async updatePrescription(req, id, prescriptionData) {
         const conn = await pool.getConnection();
         try {
+            if (req.user.role === 'secretary') {
+                const hasPerm = Boolean(req.user.permissions?.can_crud_prescriptions ?? req.user.can_crud_prescriptions);
+                if (!hasPerm) {
+                    const setting = await systemSettingsRepository.findByKey('enable_secretary_crud_prescriptions', conn);
+                    if (!setting || setting.setting_value !== 'true') throw new Error("Unauthorized");
+                }
+            }
+
             const { medications, instructions } = prescriptionData;
             const updates = { medications, instructions };
 
@@ -131,6 +139,14 @@ class PrescriptionService {
 
             const isValid = await bcrypt.compare(password, currentUser.password_hash);
             if (!isValid) throw new Error("Invalid password");
+
+            if (req.user.role === 'secretary') {
+                const hasPerm = Boolean(req.user.permissions?.can_crud_prescriptions ?? req.user.can_crud_prescriptions);
+                if (!hasPerm) {
+                    const setting = await systemSettingsRepository.findByKey('enable_secretary_crud_prescriptions', conn);
+                    if (!setting || setting.setting_value !== 'true') throw new Error("Unauthorized");
+                }
+            }
 
             const prescription = await prescriptionRepository.findById(id, conn);
             if (!prescription) {
@@ -218,8 +234,12 @@ class PrescriptionService {
     async _checkPermissions(conn, user, doctorId, settingKey) {
         if (user.role === 'admin') return;
         if (user.role === 'secretary') {
-            const setting = await systemSettingsRepository.findByKey(settingKey, conn);
-            if (setting?.setting_value === 'true') return;
+            const hasPerm = Boolean(user.permissions?.can_crud_prescriptions ?? user.can_crud_prescriptions);
+            if (hasPerm) return;
+            if (settingKey) {
+                const setting = await systemSettingsRepository.findByKey(settingKey, conn);
+                if (setting?.setting_value === 'true') return;
+            }
         }
         if (user.role === 'doctor') {
             const doc = await doctorRepository.getDoctorConfigByUserId(user.user_id, conn);

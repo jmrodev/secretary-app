@@ -11,14 +11,15 @@ const { nowLocalSQL } = require('../../utils/core/dateUtils');
  * Handles updates, deletions, and status changes for appointments.
  */
 class ModificationService {
-    async deleteAppointment(id, userId, role, adminPassword) {
+    async deleteAppointment(id, userId, userOrRole, adminPassword) {
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
             const appt = await appointmentRepository.findById(id, conn);
             if (!appt) throw new Error("Appointment not found");
 
-            await helper.checkModificationPermissions(conn, appt, { role }, adminPassword);
+            const userObj = typeof userOrRole === 'object' && userOrRole !== null ? userOrRole : { role: userOrRole };
+            await helper.checkModificationPermissions(conn, appt, userObj, adminPassword);
 
             // Check for medical records before deletion
             const medical = await conn.query("SELECT id FROM prescriptions WHERE appointment_id = ? UNION SELECT id FROM medical_licenses WHERE appointment_id = ?", [id, id]);
@@ -111,14 +112,15 @@ class ModificationService {
         }
     }
 
-    async updateAppointment(id, updates, userId, role, adminPassword) {
+    async updateAppointment(id, updates, userId, userOrRole, adminPassword) {
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
             const appt = await appointmentRepository.findById(id, conn);
             if (!appt) throw new Error("Appointment not found");
 
-            await helper.checkModificationPermissions(conn, appt, { role }, adminPassword);
+            const userObj = typeof userOrRole === 'object' && userOrRole !== null ? userOrRole : { role: userOrRole };
+            await helper.checkModificationPermissions(conn, appt, userObj, adminPassword);
 
             if (updates.appointment_date) {
                 const newDate = helper.formatDateForDB(updates.appointment_date);

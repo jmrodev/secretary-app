@@ -13,10 +13,47 @@ const bcrypt = require('bcrypt');
  */
 class UserAccountService {
     /**
-     * Lists every secretary account with its can_manage_users flag.
+     * Lists every secretary account with their permission flags.
      */
     async getSecretaryPermissions() {
         return await userRepository.findSecretaryPermissions();
+    }
+
+    /**
+     * Gets granular permissions for a single secretary.
+     */
+    async getSecretaryPermissionsById(userId) {
+        const user = await userRepository.findById(userId);
+        if (!user || user.role !== 'secretary') {
+            const error = new Error('Secretaria no encontrada');
+            error.statusCode = 404;
+            throw error;
+        }
+        return await userRepository.getSecretaryPermissions(userId);
+    }
+
+    /**
+     * Updates granular permissions for a single secretary by user ID.
+     */
+    async updateSecretaryPermissionsById(userId, permissions) {
+        const user = await userRepository.findById(userId);
+        if (!user || user.role !== 'secretary') {
+            const error = new Error('Secretaria no encontrada');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        // Validate that provided values are boolean
+        for (const [key, val] of Object.entries(permissions)) {
+            if (typeof val !== 'boolean') {
+                const error = new Error(`El valor para '${key}' debe ser un booleano.`);
+                error.statusCode = 400;
+                throw error;
+            }
+        }
+
+        await userRepository.updatePermissions(userId, permissions);
+        return await userRepository.getSecretaryPermissions(userId);
     }
 
     /**

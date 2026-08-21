@@ -32,8 +32,13 @@ export const Navbar = () => {
         { path: '/insurances', label: t('insurances'), show: isSecretary },
         { path: '/rentals', label: t('office_rentals'), show: settings?.enable_office_rentals === 'true' && !isAdmin },
         { path: '/documents', label: t('medical_documents'), show: !isAdmin },
-        { path: '/finances', label: t('finances'), show: isSecretary }
-    ].filter(l => l.show), [t, isAdmin, isPatient, isSecretary, settings?.enable_office_rentals]);
+        { path: '/finances', label: t('finances'), show: isSecretary },
+        { path: '/institutions', label: t('institutions'), show: isStaff },
+        { path: '/holidays', label: t('holidays'), show: isStaff },
+        { path: '/admin/users', label: t('users'), show: isAdmin || canManageUsers },
+        { path: '/logs', label: t('audit_logs'), show: isAdmin },
+        { path: '/config?tab=general', label: t('system_config'), show: isStaff }
+    ].filter(l => l.show), [t, isAdmin, isPatient, isSecretary, isStaff, canManageUsers, settings?.enable_office_rentals]);
 
     if (!user) return null;
 
@@ -59,7 +64,7 @@ export const Navbar = () => {
                             key={link.path}
                             to={link.path}
                             label={link.label}
-                            isActive={location.pathname === link.path}
+                            isActive={location.pathname === link.path || location.pathname === link.path.split('?')[0]}
                         />
                     ))}
 
@@ -80,27 +85,6 @@ export const Navbar = () => {
                                     </a>
                                 );
                             })}
-                        </NavbarDropdown>
-                    )}
-
-                    {/* Admin Dropdown */}
-                    {isStaff && (
-                        <NavbarDropdown 
-                            label={t('administration')}
-                            isOpen={openDropdown === 'admin'}
-                            onToggle={() => handleToggle('admin')}
-                        >
-                            <NavbarLink to="/institutions" label={t('institutions')} onClick={() => setOpenDropdown(null)} icon={<Icon name="INSTITUTIONS" />} />
-                            <NavbarLink to="/holidays" label={t('holidays')} onClick={() => setOpenDropdown(null)} icon={<Icon name="beach_access" />} />
-                            {(isAdmin || canManageUsers) && (
-                                <>
-                                    <NavbarLink to="/admin/users" label={t('users')} onClick={() => setOpenDropdown(null)} icon={<Icon name="USERS" />} />
-                                </>
-                            )}
-                            {isAdmin && (
-                                <NavbarLink to="/logs" label={t('audit_logs')} onClick={() => setOpenDropdown(null)} icon={<Icon name="LOGS" />} />
-                            )}
-                            <NavbarLink to="/config?tab=general" label={t('system_config')} onClick={() => setOpenDropdown(null)} icon={<Icon name="SETTINGS" />} />
                         </NavbarDropdown>
                     )}
                 </nav>

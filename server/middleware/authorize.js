@@ -15,19 +15,36 @@ const authorize = (allowedRoles) => {
 };
 
 /**
- * Grants access to admins and to secretaries whose JWT carries
- * canManageUsers: true. Used to protect user-management endpoints
- * beyond the plain role check.
+ * Authorizes admins unconditionally, or secretaries if they hold the specific permission flag.
+ * @param {string} permissionKey e.g. 'can_crud_licenses'
  */
-const authorizeCanManageUsers = (req, res, next) => {
-    const userRole = req.user?.role;
-    const canManageUsers = req.user?.canManageUsers === true;
+const authorizePermission = (permissionKey) => {
+    return (req, res, next) => {
+        const user = req.user;
+        if (!user) {
+            return res.status(401).json({ message: "No autenticado" });
+        }
 
-    if (userRole === ROLES.ADMIN || (userRole === ROLES.SECRETARY && canManageUsers)) {
-        return next();
-    }
+        if (user.role === ROLES.ADMIN) {
+            return next();
+        }
 
-    return res.status(403).json({ message: "Acceso denegado: permisos insuficientes" });
+        if (user.role === ROLES.SECRETARY) {
+            const hasPerm = Boolean(
+                user.permissions?.[permissionKey] || 
+                user[permissionKey] ||
+                (permissionKey === 'can_manage_users' && user.canManageUsers)
+            );
+            if (hasPerm) {
+                return next();
+            }
+        }
+
+        return res.status(403).json({ message: "Acceso denegado: permisos insuficientes" });
+    };
 };
 
-module.exports = { authorize, authorizeCanManageUsers };
+const authorizeCanManageUsers = authorizePermission('can_manage_users');
+
+module.exports = { authorize, authorizePermission, authorizeCanManageUsers };
+

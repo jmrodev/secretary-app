@@ -13,25 +13,6 @@ vi.mock('@/hooks/useLanguage', () => ({
 vi.mock('@/features/users/components/UserManagement', () => ({
     UserManagement: () => <div>USER_MANAGEMENT</div>
 }));
-vi.mock('@/features/users/components/SecretaryPermissionsPanel', () => ({
-    SecretaryPermissionsPanel: () => <div>SECRETARY_PERMISSIONS_PANEL</div>
-}));
-vi.mock('@/features/users/components/UserForm', () => ({
-    UserForm: () => null
-}));
-vi.mock('@/features/users/hooks/useSecretaryPermissions', () => ({
-    useSecretaryPermissions: () => ({
-        secretaries: [],
-        loading: false,
-        updating: false,
-        selectedIds: [],
-        grantToAll: false,
-        setGrantToAll: vi.fn(),
-        toggleSelect: vi.fn(),
-        applyGrant: vi.fn(),
-        applyRevoke: vi.fn()
-    })
-}));
 vi.mock('@/features/doctors', () => ({
     DoctorsManager: () => <div>DOCTORS_MANAGER</div>,
     useDoctorsPageController: () => ({})
@@ -53,11 +34,10 @@ const renderPage = (initialPath) => (
 );
 
 describe('AdminUsersPage - tabs', () => {
-    it('renders the secretaries tab by default', () => {
+    it('renders the secretaries tab by default with UserManagement full-width', () => {
         renderPage('/admin/users');
 
         expect(screen.getByText('USER_MANAGEMENT')).toBeTruthy();
-        expect(screen.getByText('SECRETARY_PERMISSIONS_PANEL')).toBeTruthy();
         expect(screen.queryByText('DOCTORS_MANAGER')).toBeNull();
     });
 

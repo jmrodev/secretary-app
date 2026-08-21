@@ -1,7 +1,7 @@
 ---
 description: Go development for whatsapp-bridge-go — build, test, fix, maintain WhatsApp WebSocket bridge
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: opencode/nemotron-3-ultra-free
 permission:
   edit: allow
 ---

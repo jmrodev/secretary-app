@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
-import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { api } from '@/api/axios';
@@ -119,6 +118,13 @@ export const BillingSettings = ({ user, settings, updateSetting }) => {
                                             <p className={styles.BillingSettings__hint}>App: {status.afip_status.AppServer}, DB: {status.afip_status.DbServer}, Auth: {status.afip_status.AuthServer}</p>
                                         </>
                                     )}
+                                    <div className={styles.BillingSettings__statusHeader}>
+                                        {status.error ? (
+                                            <Icon name="close" />
+                                        ) : (
+                                            <Icon name="check" />
+                                        )}
+                                    </div>
                                 </div>
                             ) : (
                                 <p className={styles.BillingSettings__hint}>{t('not_verified')}</p>
@@ -172,13 +178,15 @@ export const BillingSettings = ({ user, settings, updateSetting }) => {
                                 <h5 className={styles.BillingSettings__groupTitle}>{t('your_csr')}</h5>
                             </div>
                             <p className={`${styles.BillingSettings__hint} ${styles['BillingSettings__hint--mb05']}`}>{t('copy_to_wsass')}:</p>
-                            <Input
+                            <ConfigField
+                                variant="monospace"
                                 type="textarea"
-                                className={styles.BillingSettings__inputMonospace}
-                                readOnly
                                 value={generatedCsr}
-                                onClick={(e) => e.target.select()}
+                                onChange={() => {}}
+                                readOnly
                                 rows={8}
+                                id="csr-textarea"
+                                label=""
                             />
                             <div className={`${styles.BillingSettings__actions} ${styles['BillingSettings__actions--right']} ${styles['BillingSettings__actions--mt1']}`}>
                                 <Button size="sm" variant="secondary" onClick={() => { navigator.clipboard.writeText(generatedCsr); showMessage(t('csr_copied'), 'success'); }} icon={<Icon name="content_copy" />}>

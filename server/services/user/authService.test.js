@@ -9,7 +9,7 @@ jest.mock('../../utils/system/audit', () => ({
 
 const authService = require('./authService');
 
-describe('AuthService - _generateToken canManageUsers payload', () => {
+describe('AuthService - _generateToken permissions payload', () => {
     beforeEach(() => {
         process.env.JWT_SECRET = 'test-secret-key';
     });
@@ -18,8 +18,18 @@ describe('AuthService - _generateToken canManageUsers payload', () => {
         delete process.env.JWT_SECRET;
     });
 
-    it('embeds canManageUsers: true for a granted secretary', () => {
-        const token = authService._generateToken(1, 'sec1', 'secretary', 5, true);
+    it('embeds full permissions dictionary and canManageUsers alias for secretary', () => {
+        const perms = {
+            can_manage_users: true,
+            can_crud_appointments: true,
+            can_edit_past_appointments: false,
+            can_crud_requests: true,
+            can_crud_prescriptions: false,
+            can_crud_licenses: true,
+            can_crud_files: false,
+            can_crud_finances: true
+        };
+        const token = authService._generateToken(1, 'sec1', 'secretary', 5, perms);
 
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         expect(payload.user_id).toBe(1);
@@ -27,22 +37,35 @@ describe('AuthService - _generateToken canManageUsers payload', () => {
         expect(payload.role).toBe('secretary');
         expect(payload.token_version).toBe(5);
         expect(payload.canManageUsers).toBe(true);
+        expect(payload.permissions).toEqual({
+            can_manage_users: true,
+            can_crud_appointments: true,
+            can_edit_past_appointments: false,
+            can_crud_requests: true,
+            can_crud_prescriptions: false,
+            can_crud_licenses: true,
+            can_crud_files: false,
+            can_crud_finances: true
+        });
     });
 
-    it('embeds canManageUsers: false when the flag is not set', () => {
-        const token = authService._generateToken(2, 'sec2', 'secretary', 0, false);
+    it('embeds all false when no permissions are set', () => {
+        const token = authService._generateToken(2, 'sec2', 'secretary', 0, {});
 
         const payload = jwt.verify(token, process.env.JWT_SECRET);
         expect(payload.canManageUsers).toBe(false);
         expect(payload.role).toBe('secretary');
+        expect(payload.permissions.can_crud_appointments).toBe(false);
+        expect(payload.permissions.can_crud_finances).toBe(false);
     });
 
-    it('defaults to false when the flag argument is omitted (legacy callers)', () => {
-        const token = authService._generateToken(9, 'admin', 'admin', 2);
+    it('handles legacy boolean flag input', () => {
+        const token = authService._generateToken(3, 'sec3', 'secretary', 1, true);
 
         const payload = jwt.verify(token, process.env.JWT_SECRET);
-        expect(payload.canManageUsers).toBe(false);
-        expect(payload.role).toBe('admin');
+        expect(payload.canManageUsers).toBe(true);
+        expect(payload.permissions.can_manage_users).toBe(true);
+        expect(payload.permissions.can_crud_appointments).toBe(false);
     });
 });
 

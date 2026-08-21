@@ -8,6 +8,7 @@ export { useSystemConfigController } from '@/features/config/hooks/useSystemConf
 // Components
 export { SystemConfigPage } from '@/features/config/SystemConfigPage';
 export { GeneralSettings } from '@/features/config/components/sections/GeneralSettings';
+export { ModulesSettings } from '@/features/config/components/sections/ModulesSettings';
 export { CommunicationSettings } from '@/features/config/components/sections/CommunicationSettings';
 export { IntegrationSettings } from '@/features/config/components/sections/IntegrationSettings';
 export { BillingSettings } from '@/features/config/components/sections/BillingSettings';

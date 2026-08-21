@@ -5,6 +5,8 @@ jest.mock('../../repositories/user/userRepository', () => ({
     findSecretaryPermissions: jest.fn(),
     findSecretaryUserIds: jest.fn(),
     updateCanManageUsers: jest.fn(),
+    getSecretaryPermissions: jest.fn(),
+    updatePermissions: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
     updatePassword: jest.fn(),
@@ -81,6 +83,54 @@ describe('UserAccountService - secretary permissions', () => {
                 message: 'No secretary ids provided'
             });
             expect(userRepository.updateCanManageUsers).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getSecretaryPermissionsById', () => {
+        it('returns secretary permissions when user exists and is a secretary', async () => {
+            userRepository.findById.mockResolvedValue({ id: 5, role: 'secretary' });
+            userRepository.getSecretaryPermissions.mockResolvedValue({ id: 5, can_crud_appointments: 1 });
+
+            const result = await UserAccountService.getSecretaryPermissionsById(5);
+
+            expect(userRepository.findById).toHaveBeenCalledWith(5);
+            expect(userRepository.getSecretaryPermissions).toHaveBeenCalledWith(5);
+            expect(result).toEqual({ id: 5, can_crud_appointments: 1 });
+        });
+
+        it('throws 404 when user does not exist or is not a secretary', async () => {
+            userRepository.findById.mockResolvedValue({ id: 5, role: 'doctor' });
+
+            await expect(UserAccountService.getSecretaryPermissionsById(5))
+                .rejects.toMatchObject({ statusCode: 404, message: 'Secretaria no encontrada' });
+        });
+    });
+
+    describe('updateSecretaryPermissionsById', () => {
+        it('updates granular permissions and returns updated object', async () => {
+            userRepository.findById.mockResolvedValue({ id: 5, role: 'secretary' });
+            userRepository.updatePermissions.mockResolvedValue(true);
+            userRepository.getSecretaryPermissions.mockResolvedValue({ id: 5, can_crud_finances: 1 });
+
+            const perms = { can_crud_finances: true, can_crud_appointments: false };
+            const result = await UserAccountService.updateSecretaryPermissionsById(5, perms);
+
+            expect(userRepository.updatePermissions).toHaveBeenCalledWith(5, perms);
+            expect(result).toEqual({ id: 5, can_crud_finances: 1 });
+        });
+
+        it('throws 400 when non-boolean values are supplied', async () => {
+            userRepository.findById.mockResolvedValue({ id: 5, role: 'secretary' });
+
+            await expect(UserAccountService.updateSecretaryPermissionsById(5, { can_crud_finances: 'yes' }))
+                .rejects.toMatchObject({ statusCode: 400 });
+        });
+
+        it('throws 404 when user is not found', async () => {
+            userRepository.findById.mockResolvedValue(null);
+
+            await expect(UserAccountService.updateSecretaryPermissionsById(999, { can_crud_finances: true }))
+                .rejects.toMatchObject({ statusCode: 404 });
         });
     });
 

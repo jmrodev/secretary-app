@@ -19,6 +19,8 @@ jest.mock('../../services/user/UserAccountService', () => ({
     deleteUser: jest.fn(),
     getSecretaryPermissions: jest.fn(),
     updateSecretaryPermissions: jest.fn(),
+    getSecretaryPermissionsById: jest.fn(),
+    updateSecretaryPermissionsById: jest.fn(),
     getUsersForAdmin: jest.fn(),
     adminResetPassword: jest.fn()
 }));
@@ -98,6 +100,60 @@ describe('UserAccountController - secretary permissions', () => {
 
             expect(res.statusCode).toBe(500);
             consoleSpy.mockRestore();
+        });
+    });
+
+    describe('getSecretaryPermissionsById', () => {
+        it('returns 200 with the single secretary permissions on success', async () => {
+            req.params = { id: '5' };
+            const perms = { id: 5, can_crud_appointments: 1, can_crud_finances: 1 };
+            userAccountService.getSecretaryPermissionsById.mockResolvedValue(perms);
+
+            await userAccountController.getSecretaryPermissionsById(req, res);
+
+            expect(userAccountService.getSecretaryPermissionsById).toHaveBeenCalledWith('5');
+            expect(res.statusCode).toBe(200);
+            expect(res._getJSONData()).toEqual({ success: true, data: perms });
+        });
+
+        it('returns 404 when secretary is not found', async () => {
+            req.params = { id: '999' };
+            const error = new Error('Secretaria no encontrada');
+            error.statusCode = 404;
+            userAccountService.getSecretaryPermissionsById.mockRejectedValue(error);
+
+            await userAccountController.getSecretaryPermissionsById(req, res);
+
+            expect(res.statusCode).toBe(404);
+            expect(res._getJSONData()).toEqual({ success: false, error: 'Secretaria no encontrada' });
+        });
+    });
+
+    describe('updateSecretaryPermissionsById', () => {
+        it('returns 200 with updated permissions on success', async () => {
+            req.params = { id: '5' };
+            req.body = { can_crud_appointments: true, can_crud_finances: false };
+            const updated = { id: 5, can_crud_appointments: 1, can_crud_finances: 0 };
+            userAccountService.updateSecretaryPermissionsById.mockResolvedValue(updated);
+
+            await userAccountController.updateSecretaryPermissionsById(req, res);
+
+            expect(userAccountService.updateSecretaryPermissionsById).toHaveBeenCalledWith('5', req.body);
+            expect(res.statusCode).toBe(200);
+            expect(res._getJSONData()).toEqual({ success: true, message: 'Permissions updated successfully', data: updated });
+        });
+
+        it('returns 400 on validation error', async () => {
+            req.params = { id: '5' };
+            req.body = { can_crud_appointments: 'invalid' };
+            const error = new Error("El valor para 'can_crud_appointments' debe ser un booleano.");
+            error.statusCode = 400;
+            userAccountService.updateSecretaryPermissionsById.mockRejectedValue(error);
+
+            await userAccountController.updateSecretaryPermissionsById(req, res);
+
+            expect(res.statusCode).toBe(400);
+            expect(res._getJSONData()).toEqual({ success: false, error: error.message });
         });
     });
 

@@ -1,5 +1,5 @@
 const httpMocks = require('node-mocks-http');
-const { authorize, authorizeCanManageUsers } = require('./authorize');
+const { authorize, authorizePermission, authorizeCanManageUsers } = require('./authorize');
 
 describe('authorizeCanManageUsers - admin or granted secretary guard', () => {
     let req, res, next;
@@ -47,7 +47,7 @@ describe('authorizeCanManageUsers - admin or granted secretary guard', () => {
     });
 });
 
-describe('authorize - admin-only POST guard', () => {
+describe('authorizePermission - granular secretary permission guard', () => {
     let req, res, next;
 
     beforeEach(() => {
@@ -56,18 +56,53 @@ describe('authorize - admin-only POST guard', () => {
         next = jest.fn();
     });
 
-    it('lets an admin through', () => {
-        req.user = { role: 'admin' };
+    it('returns 401 if user is not authenticated', () => {
+        authorizePermission('can_crud_licenses')(req, res, next);
 
-        authorize(['admin'])(req, res, next);
+        expect(next).not.toHaveBeenCalled();
+        expect(res.statusCode).toBe(401);
+        expect(res._getJSONData()).toEqual({ message: 'No autenticado' });
+    });
+
+    it('lets an admin through unconditionally regardless of permission flags', () => {
+        req.user = { user_id: 9, role: 'admin', permissions: { can_crud_licenses: false } };
+
+        authorizePermission('can_crud_licenses')(req, res, next);
+
+        expect(next).toHaveBeenCalledTimes(1);
+        expect(res.statusCode).toBe(200);
+    });
+
+    it('lets a secretary through when the permission is true in permissions dictionary', () => {
+        req.user = { user_id: 2, role: 'secretary', permissions: { can_crud_licenses: true } };
+
+        authorizePermission('can_crud_licenses')(req, res, next);
 
         expect(next).toHaveBeenCalledTimes(1);
     });
 
-    it('blocks a secretary', () => {
-        req.user = { role: 'secretary' };
+    it('lets a secretary through when the permission is true directly on user object', () => {
+        req.user = { user_id: 2, role: 'secretary', can_crud_finances: true };
 
-        authorize(['admin'])(req, res, next);
+        authorizePermission('can_crud_finances')(req, res, next);
+
+        expect(next).toHaveBeenCalledTimes(1);
+    });
+
+    it('blocks a secretary when the permission is false or absent', () => {
+        req.user = { user_id: 3, role: 'secretary', permissions: { can_crud_licenses: false } };
+
+        authorizePermission('can_crud_licenses')(req, res, next);
+
+        expect(next).not.toHaveBeenCalled();
+        expect(res.statusCode).toBe(403);
+        expect(res._getJSONData()).toEqual({ message: 'Acceso denegado: permisos insuficientes' });
+    });
+
+    it('blocks other roles (e.g. doctor, patient) even if permission flag is set', () => {
+        req.user = { user_id: 4, role: 'doctor', permissions: { can_crud_licenses: true } };
+
+        authorizePermission('can_crud_licenses')(req, res, next);
 
         expect(next).not.toHaveBeenCalled();
         expect(res.statusCode).toBe(403);

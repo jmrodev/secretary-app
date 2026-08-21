@@ -128,7 +128,9 @@ class LicenseService {
     async _checkPermissions(conn, user, doctorId, settingKey) {
         if (user.role === 'admin') return;
         if (user.role === 'secretary') {
-            if (!settingKey) return; // General creation allowed?
+            const hasPerm = Boolean(user.permissions?.can_crud_licenses ?? user.can_crud_licenses);
+            if (hasPerm) return;
+            if (!settingKey) return;
             const s = await systemSettingsRepository.findByKey(settingKey, conn);
             if (s?.setting_value === 'true') return;
         }

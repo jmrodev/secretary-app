@@ -1,7 +1,7 @@
 ---
 description: Manage i18n translation files (en/es), add missing keys, validate consistency across the secretary-app
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: opencode/hy3-free
 permission:
   read: allow
   edit: allow
