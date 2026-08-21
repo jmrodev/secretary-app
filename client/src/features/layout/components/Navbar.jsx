@@ -26,15 +26,15 @@ export const Navbar = () => {
 
     // ECC: Navigation Configuration (Computed during render)
     const navLinks = useMemo(() => [
-        { path: '/dashboard', label: t('dashboard'), show: true },
+        { path: '/dashboard', label: t('dashboard'), show: !isAdmin },
         { path: '/appointments', label: t('appointments'), show: !isAdmin },
         { path: '/patients', label: t('patients'), show: !isPatient && !isAdmin },
         { path: '/insurances', label: t('insurances'), show: isSecretary },
         { path: '/rentals', label: t('office_rentals'), show: settings?.enable_office_rentals === 'true' && !isAdmin },
         { path: '/documents', label: t('medical_documents'), show: !isAdmin },
         { path: '/finances', label: t('finances'), show: isSecretary },
-        { path: '/institutions', label: t('institutions'), show: isStaff },
-        { path: '/holidays', label: t('holidays'), show: isStaff },
+        { path: '/institutions', label: t('institutions'), show: isSecretary },
+        { path: '/holidays', label: t('holidays'), show: isSecretary },
         { path: '/admin/users', label: t('users'), show: isAdmin || canManageUsers },
         { path: '/logs', label: t('audit_logs'), show: isAdmin },
         { path: '/config?tab=modules', label: t('system_config'), show: isStaff }
@@ -49,7 +49,7 @@ export const Navbar = () => {
             <div className={styles.Navbar__container}>
                 {/* --- Left: Branding --- */}
                 <div className={styles.Navbar__left}>
-                    <Link to="/dashboard" className={styles.Navbar__logo}>
+                    <Link to={isAdmin ? "/admin/users" : "/dashboard"} className={styles.Navbar__logo}>
                         <div className={styles.Navbar__logoIcon}>
                             <Icon name="DASHBOARD" size="1.5rem" color="var(--primary-color)" />
                         </div>

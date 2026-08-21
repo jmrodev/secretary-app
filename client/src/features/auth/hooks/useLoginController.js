@@ -25,7 +25,8 @@ export const useLoginController = () => {
         try {
             const result = await login(username, password);
             if (result.success) {
-                navigate('/dashboard');
+                const target = result.user?.role === 'admin' ? '/admin/users' : '/dashboard';
+                navigate(target);
             } else {
                 setError(result.message || t('invalid_credentials'));
             }
