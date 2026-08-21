@@ -4,11 +4,33 @@
     /* Root styles */
 }
 
-/* System URLs Section */
 .GeneralSettings__urlGroup {
     display: flex;
     gap: 1rem;
     align-items: flex-start;
+}
+
+.GeneralSettings__group {
+    background: var(--dashboard-card-bg);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--dashboard-card-border);
+}
+
+.GeneralSettings__groupHeader {
+    margin-bottom: 1rem;
+}
+
+.GeneralSettings__groupTitle {
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.GeneralSettings__groupItems {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
 .GeneralSettings__urlInput {

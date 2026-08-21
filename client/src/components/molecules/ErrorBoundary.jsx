@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './ErrorBoundary.module.css';
 
 export class ErrorBoundary extends React.Component {
@@ -36,7 +37,7 @@ export class ErrorBoundary extends React.Component {
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
-        <div className={`${styles.ErrorBoundary__errorBoundaryContainer} animate-fade-in`}>
+        <div className={`${styles.ErrorBoundary__errorBoundaryContainer} ${sharedStyles.AnimateFadeIn}`}>
             <div className={`${styles.ErrorBoundary__errorBoundaryCard}`}>
                 <div className={`${styles.ErrorBoundary__errorBoundaryIcon}`}>
                     <Icon name="error_outline" size="4rem" color="#e74c3c" />

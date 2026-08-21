@@ -2,6 +2,7 @@ import React from 'react';
 import { AutoTextarea } from '@/components/atoms/AutoTextarea';
 import { Button } from '@/components/atoms/Button';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './MessageTemplateEditor.module.css';
 
 /**
@@ -45,7 +46,7 @@ export const MessageTemplateEditor = ({
     t
 }) => {
     return (
-        <div className={`${styles.MessageTemplateEditor__root} animate-fade-in`}>
+        <div className={`${styles.MessageTemplateEditor__root} ${sharedStyles.AnimateFadeIn}`}>
             <label className={`${styles.MessageTemplateEditor__label}`} htmlFor={id}>{label}</label>
 
             <AutoTextarea

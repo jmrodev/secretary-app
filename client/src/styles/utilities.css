@@ -18,30 +18,11 @@
     gap: 1rem;
 }
 
-.config-grid {
-    display: grid;
-    gap: 1.5rem;
-}
-
-.config-grid--3col {
-    grid-template-columns: repeat(3, 1fr);
-}
-
-@media (width <= 768px) {
-    .config-grid--3col {
-        grid-template-columns: 1fr;
-    }
-}
-
 .form-actions {
     margin-top: 1.5rem;
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
-}
-
-.animate-fade-in {
-    animation: fade-in 0.3s ease-out forwards;
 }
 
 .overflow-visible {
@@ -91,10 +72,6 @@
 
 .text-success {
     color: var(--success);
-}
-
-.text-danger {
-    color: var(--error);
 }
 
 .text-warning {

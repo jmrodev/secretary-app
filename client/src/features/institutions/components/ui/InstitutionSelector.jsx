@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './InstitutionSelector.module.css';
 
 /**
@@ -17,7 +18,7 @@ export const InstitutionSelector = ({
     t
 }) => {
     return (
-        <div className={`${styles.InstitutionSelector__root} animate-fade-in`}>
+        <div className={`${styles.InstitutionSelector__root} ${sharedStyles.AnimateFadeIn}`}>
             <div className={`${styles.InstitutionSelector__group}`}>
                 <label htmlFor="institution-selector-select" className={`${styles.InstitutionSelector__label}`}>
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />

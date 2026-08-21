@@ -5,6 +5,7 @@ import { Select } from '@/components/atoms/Select';
 import { PhoneNumbersManager } from '@/components/molecules/PhoneNumbersManager';
 import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/core/stringUtils';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './UserForm.module.css';
 
 export const UserForm = ({ type, formData, setFormData }) => {
@@ -19,7 +20,7 @@ export const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'DELETE') {
         return (
-            <div className={`${styles.UserForm__root} animate-fade-in`}>
+            <div className={`${styles.UserForm__root} ${sharedStyles.AnimateFadeIn}`}>
                 <p className={`${styles.UserForm__hint}`}>
                     {t('delete_confirmation') || '¿Eliminar usuario?'} <strong>{formData.username}</strong>?
                     <br />
@@ -39,7 +40,7 @@ export const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'RESET_DNI') {
         return (
-            <div className={`${styles.UserForm__alert} animate-fade-in`}>
+            <div className={`${styles.UserForm__alert} ${sharedStyles.AnimateFadeIn}`}>
                 <p className={`${styles.UserForm__alertText}`}>
                     ¿Reiniciar contraseña de <strong>{formData.username}</strong> al DNI (<strong>{formData.dni}</strong>)?
                 </p>
@@ -49,7 +50,7 @@ export const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'RESET_MANUAL') {
         return (
-            <div className={`${styles.UserForm__root} animate-fade-in`}>
+            <div className={`${styles.UserForm__root} ${sharedStyles.AnimateFadeIn}`}>
                 <FormGroup label={t('new_password')}>
                     <Input
                         value={formData.password}
@@ -62,7 +63,7 @@ export const UserForm = ({ type, formData, setFormData }) => {
     }
 
     return (
-        <div className={`${styles.UserForm__root} animate-fade-in`}>
+        <div className={`${styles.UserForm__root} ${sharedStyles.AnimateFadeIn}`}>
             <div className={`${styles.UserForm__row}`}>
                 <FormGroup label={t('username')} required>
                     <Input

@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon } from '@/components/atoms/Icon';
 import { Input } from '@/components/atoms/Input';
 import { LiveClock } from '@/components/atoms/LiveClock';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './PageHeader.module.css';
 
 /**
@@ -31,7 +32,7 @@ export const PageHeader = ({
     // Standard variant
     if (!isPremium) {
         return (
-            <header className={`${styles.PageHeader__root} ${divider ? styles.PageHeader__divider : ''} ${className} animate-fade-in`}>
+            <header className={`${styles.PageHeader__root} ${divider ? styles.PageHeader__divider : ''} ${className} ${sharedStyles.AnimateFadeIn}`}>
                 <div className={`${styles.PageHeader__content}`}>
                     <div className={`${styles.PageHeader__titleContainer}`}>
                         {!hideTitle && <h1 className={`${styles.PageHeader__title}`}>{title}</h1>}
@@ -48,7 +49,7 @@ export const PageHeader = ({
 
     // Premium variant
     return (
-        <header className={`${styles.PageHeader__root} ${styles.PageHeader__premium} ${className} animate-fade-in`}>
+        <header className={`${styles.PageHeader__root} ${styles.PageHeader__premium} ${className} ${sharedStyles.AnimateFadeIn}`}>
 
 
             <div className={`${styles.PageHeader__content}`}>
@@ -78,7 +79,7 @@ export const PageHeader = ({
 
                     <div className={`${styles.PageHeader__statsContainer}`}>
                         {statsSlot}
-                        {actionSlot && <div className="page-header__extra-actions">{actionSlot}</div>}
+                        {actionSlot && <div className={styles.PageHeader__extraActions}>{actionSlot}</div>}
                     </div>
                 </div>
 

@@ -4,6 +4,7 @@ import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import { Select } from '@/components/atoms/Select';
+import styles from './IntegrationRemoteAccess.module.css';
 
 /**
  * IntegrationRemoteAccess Feature Molecule.
@@ -80,10 +81,10 @@ export const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunn
 
                         <div className={shared.ConfigSection__divider}></div>
 
-                        <div className="config-guide">
-                            <h4 className="config-guide__title"><Icon name="menu_book" className="mr-1" />Guía de Configuración DuckDNS</h4>
-                            <ol className="config-guide__list">
-                                <li>Registre un subdominio gratuito en <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className="config-link">duckdns.org</a>.</li>
+                        <div className={styles.IntegrationRemoteAccess__guide}>
+                            <h4 className={styles.IntegrationRemoteAccess__guideTitle}><Icon name="menu_book" className="mr-1" />Guía de Configuración DuckDNS</h4>
+                            <ol className={styles.IntegrationRemoteAccess__guideList}>
+                                <li>Registre un subdominio gratuito en <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className={styles.IntegrationRemoteAccess__link}>duckdns.org</a>.</li>
                                 <li>Copie el <b>Token</b> y el <b>Subdominio</b> en los campos de arriba.</li>
                                 <li>Lo más importante: Debe configurar el <b>Port Forwarding</b> en su Router.</li>
                                 <li>Reenvíe el puerto externo <b>80</b> (o el que prefiera) a la IP local del servidor en el puerto <b>5173</b> (Dev) o <b>3001</b> (Prod).</li>

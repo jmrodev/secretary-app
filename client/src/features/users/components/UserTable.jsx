@@ -3,6 +3,7 @@ import { Badge } from '@/components/atoms/Badge';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './UserTable.module.css';
 
 export const UserTable = ({ users, onEdit, onReset, onDelete }) => {
@@ -12,7 +13,7 @@ export const UserTable = ({ users, onEdit, onReset, onDelete }) => {
         <div className={`${styles.UserTable__userTableWrapper}`}>
             <table className={`${styles.UserTable__table}`}>
                 <thead>
-                    <tr className="user-table__header">
+                    <tr className={sharedStyles.UserTable__header}>
                         <th className={`${styles.UserTable__headerCell}`}>{t('user_header')}</th>
                         <th className={`${styles.UserTable__headerCell}`}>{t('role_header')}</th>
                         <th className={`${styles.UserTable__headerCell}`}>{t('name_contact_header')}</th>
@@ -47,7 +48,7 @@ export const UserTable = ({ users, onEdit, onReset, onDelete }) => {
                                     <Button variant="ghost" size="sm-compact" onClick={() => onEdit(u)} title={t('edit')} icon={<Icon name="edit" />} />
                                     <Button variant="ghost" size="sm-compact" onClick={() => onReset(u)} title={t('reset_pwd')} icon={<Icon name="key" />} />
                                     {u.role !== 'admin' && (
-                                        <Button variant="ghost" size="sm-compact" className={`${styles.actionBtnDelete} text-danger`} onClick={() => onDelete(u)} title={t('delete')} icon={<Icon name="delete" />} />
+                                        <Button variant="ghost" size="sm-compact" className={`${styles.actionBtnDelete} ${sharedStyles.TextDanger}`} onClick={() => onDelete(u)} title={t('delete')} icon={<Icon name="delete" />} />
                                     )}
                                 </div>
                             </td>

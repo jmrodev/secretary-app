@@ -34,21 +34,72 @@
     font-weight: 700;
 }
 
-/* CSR Generation Result */
-.BillingSettings__csrBox {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px dashed var(--border-color);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.BillingSettings__group {
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    margin-top: 1rem;
 }
 
-.BillingSettings__csrTextarea {
+.BillingSettings__group--bgWhite {
+    background: var(--card-surface-bg);
+}
+
+.BillingSettings__groupHeader {
+    margin-bottom: 0.75rem;
+}
+
+.BillingSettings__groupTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.BillingSettings__groupItems {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.BillingSettings__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.BillingSettings__actions--right {
+    justify-content: flex-end;
+}
+
+.BillingSettings__actions--mt1 {
+    margin-top: 1rem;
+}
+
+.BillingSettings__link {
+    color: var(--accent-color);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.BillingSettings__hint {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.BillingSettings__hint--mb05 {
+    margin-bottom: 0.5rem;
+}
+
+.BillingSettings__hint--mb15 {
+    margin-bottom: 1.5rem;
+}
+
+.BillingSettings__inputMonospace {
     font-family: var(--font-mono, monospace);
-    font-size: 0.75rem;
-    background-color: var(--slate-50);
-    border-color: var(--slate-200);
+    font-size: 0.8rem;
     line-height: 1.4;
-    resize: none;
 }

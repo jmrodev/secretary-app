@@ -111,7 +111,7 @@ export const PatientDetailsView = ({
                     t={t}
                 />
             ) : (
-                <section className={`${styles.PatientDetailsView__root} animate-fade-in no-print-section`}>
+                <section className={`${styles.PatientDetailsView__root} no-print-section`}>
                 <header className={`${styles.PatientDetailsView__header}`}>
                     <Button variant="secondary" onClick={onBack}>
                         &larr; {t('back_to_list')}

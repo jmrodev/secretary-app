@@ -42,8 +42,8 @@ export const DoctorGoogleSettings = ({
                     </>
                 ) : (
                     <Button
-                        variant="secondary"
-                        className="w-full text-danger"
+                        variant="danger"
+                        className="w-full"
                         size="lg"
                         onClick={onDisconnect}
                         icon={<Icon name="close" />}
