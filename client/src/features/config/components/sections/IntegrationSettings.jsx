@@ -1,4 +1,5 @@
 import React from 'react';
+import shared from '@/styles/shared.module.css';
 
 // Feature Molecules
 import { IntegrationGoogleCalendar } from '@/features/config/components/sections/IntegrationGoogleCalendar';
@@ -26,7 +27,7 @@ export const IntegrationSettings = ({
     const isAuthorized = user?.role === 'admin' || user?.role === 'secretary';
 
     return (
-        <div className="tab-panel animate-fade-in">
+        <div className={`${shared.TabPanel} ${shared.AnimateFadeIn}`}>
             <IntegrationGoogleCalendar
                 googleUnlinked={googleUnlinked}
                 settings={settings}

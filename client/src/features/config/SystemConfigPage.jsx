@@ -11,6 +11,7 @@ import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 import { QRCodeModal } from '@/features/patients';
 
 import styles from './SystemConfigPage.module.css';
+import shared from '@/styles/shared.module.css';
 
 /**
  * SettingsContent (Slot Renderer).
@@ -25,17 +26,17 @@ const SettingsContent = ({ activeTab, controller }) => {
     const { metadata, Component } = section;
 
     return (
-        <section className="config-section -up">
-            <header className="config-section__header">
-                <div className="config-section__icon">
+        <section className={`${shared.ConfigSection} -up`}>
+            <header className={shared.ConfigSection__header}>
+                <div className={shared.ConfigSection__icon}>
                     <Icon name={metadata.icon} size="1.5rem" />
                 </div>
-                <div className="config-section__text">
-                    <h2 className="config-section__title">{metadata.title}</h2>
-                    <p className="config-section__desc">{metadata.desc}</p>
+                <div className={shared.ConfigSection__text}>
+                    <h2 className={shared.ConfigSection__title}>{metadata.title}</h2>
+                    <p className={shared.ConfigSection__desc}>{metadata.desc}</p>
                 </div>
             </header>
-            <div className="config-section__body">
+            <div className={shared.ConfigSection__body}>
                 <Suspense fallback={<Loading variant="centered" />}>
                     <Component controller={controller} />
                 </Suspense>

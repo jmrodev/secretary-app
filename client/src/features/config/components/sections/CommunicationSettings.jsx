@@ -4,6 +4,7 @@ import { Icon } from '@/components/atoms/Icon';
 import { MessageTemplateEditor } from '@/features/config/components/forms/MessageTemplateEditor';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './CommunicationSettings.module.css';
+import shared from '@/styles/shared.module.css';
 
 /**
  * CommunicationSettings Feature Component.
@@ -19,15 +20,15 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
     ], []);
 
     return (
-        <div className={`${styles.CommunicationSettings__root} tab-panel animate-fade-in`}>
+        <div className={`${styles.CommunicationSettings__root} ${shared.TabPanel} ${shared.AnimateFadeIn}`}>
             {/* Clinic Address */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="settings" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('clinic_address_title')}</h4>
+            <div className={shared.ConfigSection}>
+                <div className={shared.ConfigSection__header}>
+                    <Icon name="settings" size="1.2rem" className={shared.ConfigSection__icon} />
+                    <h4 className={shared.ConfigSection__title}>{t('clinic_address_title')}</h4>
                 </div>
 
-                <div className="config-section__body">
+                <div className={shared.ConfigSection__body}>
                     <ConfigField
                         id="clinic-address"
                         label={t('physical_address_label')}
@@ -42,13 +43,13 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
             </div>
 
             {/* Appointment Reminders */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="event" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('appointment_reminders_title')}</h4>
+            <div className={shared.ConfigSection}>
+                <div className={shared.ConfigSection__header}>
+                    <Icon name="event" size="1.2rem" className={shared.ConfigSection__icon} />
+                    <h4 className={shared.ConfigSection__title}>{t('appointment_reminders_title')}</h4>
                 </div>
 
-                <div className="config-section__body">
+                <div className={shared.ConfigSection__body}>
                     <MessageTemplateEditor
                         id="reminder-template"
                         label={
@@ -68,7 +69,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         t={t}
                     />
 
-                    <div className="config-section__divider"></div>
+                    <div className={shared.ConfigSection__divider}></div>
 
                     <MessageTemplateEditor
                         id="reminder-virtual-template"
@@ -90,13 +91,13 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
             </div>
 
             {/* Appointment Confirmation */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="check_circle" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('appointment_confirmation_title')}</h4>
+            <div className={shared.ConfigSection}>
+                <div className={shared.ConfigSection__header}>
+                    <Icon name="check_circle" size="1.2rem" className={shared.ConfigSection__icon} />
+                    <h4 className={shared.ConfigSection__title}>{t('appointment_confirmation_title')}</h4>
                 </div>
 
-                <div className="config-section__body">
+                <div className={shared.ConfigSection__body}>
                     <MessageTemplateEditor
                         id="confirmation-template"
                         label={
@@ -117,7 +118,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         t={t}
                     />
 
-                    <div className="config-section__divider"></div>
+                    <div className={shared.ConfigSection__divider}></div>
 
                     <MessageTemplateEditor
                         id="confirmation-virtual-template"
@@ -139,13 +140,13 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
             </div>
 
             {/* Public Requests / QR Links */}
-            <div className="config-section">
-                <div className="config-section__header">
-                    <Icon name="description" size="1.2rem" className="config-section__icon" />
-                    <h4 className="config-section__title">{t('public_requests_title')}</h4>
+            <div className={shared.ConfigSection}>
+                <div className={shared.ConfigSection__header}>
+                    <Icon name="description" size="1.2rem" className={shared.ConfigSection__icon} />
+                    <h4 className={shared.ConfigSection__title}>{t('public_requests_title')}</h4>
                 </div>
 
-                <div className="config-section__body">
+                <div className={shared.ConfigSection__body}>
                     <ConfigField
                         id="google-review-link"
                         label={
@@ -163,7 +164,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                     />
 
 
-                    <div className="config-section__divider"></div>
+                    <div className={shared.ConfigSection__divider}></div>
 
                     <MessageTemplateEditor
                         id="whatsapp-prescription-template"
@@ -184,7 +185,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         t={t}
                     />
 
-                    <div className="config-section__divider"></div>
+                    <div className={shared.ConfigSection__divider}></div>
 
                     <MessageTemplateEditor
                         id="whatsapp-patient-data-template"
@@ -205,7 +206,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         t={t}
                     />
 
-                    <div className="config-section__divider"></div>
+                    <div className={shared.ConfigSection__divider}></div>
 
                     <MessageTemplateEditor
                         id="medication-refill-template"

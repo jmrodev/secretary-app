@@ -5,6 +5,7 @@ import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Input } from '@/components/atoms/Input';
 import styles from './GeneralSettings.module.css';
+import shared from '@/styles/shared.module.css';
 
 /**
  * GeneralSettings Feature Component.
@@ -65,7 +66,7 @@ const PermissionsGroup = ({ settings, updateSetting, isAdmin }) => {
  */
 const UrlConfiguration = ({ settings, updateSetting, isAdmin, onShowQr }) => {
     return (
-        <div className="config-grid">
+        <div className={shared.ConfigGrid}>
             <ConfigField
                 id="public-base-url"
                 label="URL Pública (Internet)"
@@ -111,15 +112,15 @@ export const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => 
     const isAdmin = user?.role === 'admin';
 
     return (
-        <div className={`${styles.GeneralSettings__root} tab-panel animate-fade-in`}>
+        <div className={`${styles.GeneralSettings__root} ${shared.TabPanel} ${shared.AnimateFadeIn}`}>
             {/* Functionalities and Permissions */}
-            <article className="config-section">
-                <header className="config-section__header">
-                    <Icon name="settings" size="1.5rem" className="config-section__icon" />
-                    <h3 className="config-section__title">Funcionalidades y Permisos</h3>
+            <article className={shared.ConfigSection}>
+                <header className={shared.ConfigSection__header}>
+                    <Icon name="settings" size="1.5rem" className={shared.ConfigSection__icon} />
+                    <h3 className={shared.ConfigSection__title}>Funcionalidades y Permisos</h3>
                 </header>
 
-                <div className="config-section__body">
+                <div className={shared.ConfigSection__body}>
                     <ConfigToggle
                         id="opt-rentals"
                         label="Activar Alquiler de Consultorios"
@@ -157,25 +158,25 @@ export const GeneralSettings = ({ user, settings, updateSetting, onShowQr }) => 
             </article>
 
             {/* System URLs */}
-            <article className="config-section">
-                <header className="config-section__header">
-                    <Icon name="link" size="1.5rem" className="config-section__icon" />
-                    <h3 className="config-section__title">Direcciones del Sistema</h3>
+            <article className={shared.ConfigSection}>
+                <header className={shared.ConfigSection__header}>
+                    <Icon name="link" size="1.5rem" className={shared.ConfigSection__icon} />
+                    <h3 className={shared.ConfigSection__title}>Direcciones del Sistema</h3>
                 </header>
 
-                <div className="config-section__body">
+                <div className={shared.ConfigSection__body}>
                     <UrlConfiguration settings={settings} updateSetting={updateSetting} isAdmin={isAdmin} onShowQr={onShowQr} />
                 </div>
             </article>
 
             {/* Mobile App Download */}
-            <article className="config-section">
-                <header className="config-section__header">
-                    <Icon name="smartphone" size="1.5rem" className="config-section__icon" />
-                    <h3 className="config-section__title">Aplicación Móvil</h3>
+            <article className={shared.ConfigSection}>
+                <header className={shared.ConfigSection__header}>
+                    <Icon name="smartphone" size="1.5rem" className={shared.ConfigSection__icon} />
+                    <h3 className={shared.ConfigSection__title}>Aplicación Móvil</h3>
                 </header>
 
-                <div className="config-section__body">
+                <div className={shared.ConfigSection__body}>
                     <article className={`${styles.GeneralSettings__appCard}`}>
                         <header className={`${styles.GeneralSettings__appInfo}`}>
                             <h4 className={`${styles.GeneralSettings__appTitle}`}>Descargar APK para Android</h4>

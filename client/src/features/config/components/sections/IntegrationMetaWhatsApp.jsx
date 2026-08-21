@@ -1,4 +1,5 @@
 import React from 'react';
+import shared from '@/styles/shared.module.css';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
@@ -9,13 +10,13 @@ import { ConfigField } from '@/features/config/components/ui/ConfigField';
  */
 export const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, loading, isAuthorized }) => {
     return (
-        <div className="config-section animate-fade-in">
-            <div className="config-section__header">
-                <span className="config-section__icon"><Icon name="chat" /></span>
-                <h3 className="config-section__title">Meta Business (WhatsApp API)</h3>
+        <div className={`${shared.ConfigSection} ${shared.AnimateFadeIn}`}>
+            <div className={shared.ConfigSection__header}>
+                <span className={shared.ConfigSection__icon}><Icon name="chat" /></span>
+                <h3 className={shared.ConfigSection__title}>Meta Business (WhatsApp API)</h3>
             </div>
 
-            <div className="config-section__body">
+            <div className={shared.ConfigSection__body}>
                 <p className="config-field__hint config-field__hint--mb-15">
                     Configure las credenciales de WhatsApp Cloud API.
                 </p>
