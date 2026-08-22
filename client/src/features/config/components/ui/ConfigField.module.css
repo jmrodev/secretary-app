@@ -3,7 +3,7 @@
 .ConfigField__root {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
 }
 
 .ConfigField__label {
@@ -13,6 +13,10 @@
     margin: 0;
 }
 
+.ConfigField__input {
+    width: 100%;
+}
+
 .ConfigField__hint {
     font-size: 0.75rem;
     color: var(--text-muted);
@@ -20,11 +24,14 @@
 }
 
 .ConfigField__hintMb15 {
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
 }
 
 /* Modifier for monospace inputs (IDs, Tokens) */
-.ConfigField__monospace .ConfigField__input {
+.ConfigField--monospace .ConfigField__input,
+.ConfigField--monospace input,
+.ConfigField--monospace textarea,
+.ConfigField--monospace select {
     font-family: var(--font-mono, monospace);
     letter-spacing: 0.025em;
     font-size: 0.85rem;

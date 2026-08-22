@@ -27,14 +27,19 @@ export const ConfigField = ({
     ...rest
 }) => {
     const isSelect = type === 'select';
-    const rootClass = `config-field ${variant ? `config-field--${variant}` : ''}`;
-    const inputClassName = `config-field__input ${className}`.trim();
+    const variantClass = variant === 'monospace'
+        ? (styles['ConfigField--monospace'] || 'ConfigField--monospace')
+        : (variant ? (styles[`ConfigField--${variant}`] || `ConfigField--${variant}`) : '');
+    const rootClass = `${styles.ConfigField__root} ${variantClass} ${className}`.trim();
+    const inputClassName = `${styles.ConfigField__input}`.trim();
 
     return (
         <div className={rootClass}>
-            <label className={`${styles.ConfigField__label}`} htmlFor={id}>
-                {label}
-            </label>
+            {label && (
+                <label className={styles.ConfigField__label} htmlFor={id}>
+                    {label}
+                </label>
+            )}
             
             {isSelect ? (
                 <Select
@@ -61,9 +66,8 @@ export const ConfigField = ({
             )}
 
             {hint && (
-                <span className={`${styles.ConfigField__hint}`}>{hint}</span>
+                <span className={styles.ConfigField__hint}>{hint}</span>
             )}
         </div>
     );
 };
-
