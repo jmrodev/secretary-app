@@ -21,7 +21,6 @@ const DashboardPage = lazy(() => import('@/features/dashboard').then(m => ({ def
 const SystemConfigPage = lazy(() => import('@/features/config').then(m => ({ default: m.SystemConfigPage })));
 const InstitutionsPage = lazy(() => import('@/features/institutions').then(m => ({ default: m.InstitutionsPage })));
 const InsurancesPage = lazy(() => import('@/features/insurances').then(m => ({ default: m.InsurancesPage })));
-const AdminUsersPage = lazy(() => import('@/features/users').then(m => ({ default: m.AdminUsersPage })));
 const AuditLogsPage = lazy(() => import('@/features/reports').then(m => ({ default: m.AuditLogsPage })));
 const HolidaysPage = lazy(() => import('@/features/holidays').then(m => ({ default: m.HolidaysPage })));
 const RentalsPage = lazy(() => import('@/features/rentals').then(m => ({ default: m.RentalsPage })));
@@ -88,11 +87,7 @@ export const AppRouter = () => {
                     </RoleGuard>
                 } />
 
-                <Route path="/admin/users" element={
-                    <RoleGuard allowedRoles={['admin', 'secretary']} permission="canManageUsers">
-                        <AdminUsersPage />
-                    </RoleGuard>
-                } />
+                <Route path="/admin/users" element={<Navigate to="/config?tab=users" replace />} />
 
                 <Route path="/logs" element={
                     <RoleGuard allowedRoles={['admin']}>
@@ -115,7 +110,7 @@ export const AppRouter = () => {
                     <Route path="certificates" element={<CertificatesView />} />
                 </Route>
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/doctors" element={<Navigate to="/admin/users?tab=doctor" replace />} />
+                <Route path="/doctors" element={<Navigate to="/config?tab=users&subtab=doctor" replace />} />
                 <Route path="/holidays" element={
                     <RoleGuard allowedRoles={['secretary']}>
                         <HolidaysPage />

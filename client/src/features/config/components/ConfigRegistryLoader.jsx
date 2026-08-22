@@ -7,6 +7,7 @@ const ModulesSettings = lazy(() => import('../components/sections/ModulesSetting
 const CommunicationSettings = lazy(() => import('../components/sections/CommunicationSettings').then(m => ({ default: m.CommunicationSettings })));
 const IntegrationSettings = lazy(() => import('../components/sections/IntegrationSettings').then(m => ({ default: m.IntegrationSettings })));
 const BillingSettings = lazy(() => import('../components/sections/BillingSettings').then(m => ({ default: m.BillingSettings })));
+const AdminUsersSettings = lazy(() => import('../../users').then(m => ({ default: m.AdminUsersPage })));
 
 // --- Specialized Wrappers to map the common Controller to specific component props ---
 
@@ -51,6 +52,10 @@ const BillingSettingsWrapper = ({ controller }) => (
     />
 );
 
+const UsersSettingsWrapper = ({ controller }) => (
+    <AdminUsersSettings />
+);
+
 /**
  * Orchestrator that populates the configuration registry.
  * This is the ONLY place where cross-feature configuration imports should live.
@@ -61,4 +66,5 @@ export const loadDefaultConfigSections = (t) => {
     registerConfigSection('communications', { title: t('communications') || 'Comunicaciones', icon: 'chat', desc: t('communications_desc') || 'Plantillas de mensajes automáticos.', allowedRoles: ['secretary'] }, CommunicationSettingsWrapper);
     registerConfigSection('integrations', { title: t('integrations') || 'Integraciones', icon: 'extension', desc: t('integrations_desc') || 'Servicios externos y conectividad.', allowedRoles: ['admin'] }, IntegrationSettingsWrapper);
     registerConfigSection('billing', { title: t('billing') || 'Facturación AFIP', icon: 'payments', desc: t('billing_desc') || 'Parámetros fiscales de facturación.', allowedRoles: ['admin', 'secretary'] }, BillingSettingsWrapper);
+    registerConfigSection('users', { title: t('users') || 'Usuarios', icon: 'people', desc: t('users_desc') || 'Gestión de personal médico y administrativo.', allowedRoles: ['admin'] }, UsersSettingsWrapper);
 };

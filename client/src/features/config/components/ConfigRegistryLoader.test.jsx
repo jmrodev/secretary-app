@@ -11,11 +11,10 @@ describe('loadDefaultConfigSections', () => {
         registerMock.mockClear();
     });
 
-    it('no longer registers users, doctors, institutions, profile, general, or logs sections', () => {
+    it('no longer registers doctors, institutions, profile, general, or logs sections', () => {
         loadDefaultConfigSections((key) => key);
 
         const registeredKeys = registerMock.mock.calls.map(([key]) => key);
-        expect(registeredKeys).not.toContain('users');
         expect(registeredKeys).not.toContain('doctors');
         expect(registeredKeys).not.toContain('institutions');
         expect(registeredKeys).not.toContain('profile');
@@ -23,14 +22,14 @@ describe('loadDefaultConfigSections', () => {
         expect(registeredKeys).not.toContain('logs');
     });
 
-    it('registers valid sections with role scoping (modules, communications, integrations, billing)', () => {
+    it('registers valid sections with role scoping (modules, communications, integrations, billing, users)', () => {
         loadDefaultConfigSections((key) => key);
 
         const registeredKeys = registerMock.mock.calls.map(([key]) => key);
-        expect(registeredKeys).toEqual(['modules', 'communications', 'integrations', 'billing']);
+        expect(registeredKeys).toEqual(['modules', 'communications', 'integrations', 'billing', 'users']);
     });
 
-    it('assigns allowedRoles [admin] to modules and integrations, [secretary] to communications, and [admin, secretary] to billing', () => {
+    it('assigns allowedRoles [admin] to modules, integrations and users, [secretary] to communications, and [admin, secretary] to billing', () => {
         loadDefaultConfigSections((key) => key);
 
         const sectionMap = Object.fromEntries(
@@ -41,5 +40,6 @@ describe('loadDefaultConfigSections', () => {
         expect(sectionMap.communications.allowedRoles).toEqual(['secretary']);
         expect(sectionMap.integrations.allowedRoles).toEqual(['admin']);
         expect(sectionMap.billing.allowedRoles).toEqual(['admin', 'secretary']);
+        expect(sectionMap.users.allowedRoles).toEqual(['admin']);
     });
 });

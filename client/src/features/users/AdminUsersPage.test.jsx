@@ -41,8 +41,8 @@ describe('AdminUsersPage - tabs', () => {
         expect(screen.queryByText('DOCTORS_MANAGER')).toBeNull();
     });
 
-    it('renders the doctors tab when ?tab=doctor is present', () => {
-        renderPage('/admin/users?tab=doctor');
+    it('renders the doctors tab when ?subtab=doctor is present', () => {
+        renderPage('/admin/users?subtab=doctor');
 
         expect(screen.getByText('DOCTORS_MANAGER')).toBeTruthy();
         expect(screen.queryByText('USER_MANAGEMENT')).toBeNull();
