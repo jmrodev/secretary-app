@@ -30,7 +30,7 @@ describe('loadDefaultConfigSections', () => {
         expect(registeredKeys).toEqual(['modules', 'communications', 'integrations', 'billing']);
     });
 
-    it('assigns allowedRoles [admin] to modules and [admin, secretary] to other sections', () => {
+    it('assigns allowedRoles [admin] to modules and integrations, [secretary] to communications, and [admin, secretary] to billing', () => {
         loadDefaultConfigSections((key) => key);
 
         const sectionMap = Object.fromEntries(
@@ -38,8 +38,8 @@ describe('loadDefaultConfigSections', () => {
         );
 
         expect(sectionMap.modules.allowedRoles).toEqual(['admin']);
-        expect(sectionMap.communications.allowedRoles).toEqual(['admin', 'secretary']);
-        expect(sectionMap.integrations.allowedRoles).toEqual(['admin', 'secretary']);
+        expect(sectionMap.communications.allowedRoles).toEqual(['secretary']);
+        expect(sectionMap.integrations.allowedRoles).toEqual(['admin']);
         expect(sectionMap.billing.allowedRoles).toEqual(['admin', 'secretary']);
     });
 });

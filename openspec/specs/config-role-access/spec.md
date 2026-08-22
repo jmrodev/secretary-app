@@ -8,21 +8,21 @@ Defines role-based access control across system configuration tabs in `ConfigReg
 
 ### Requirement 1: Configuration Registry Role Definitions
 - `ConfigRegistryLoader` MUST register all configuration sections with explicit `allowedRoles`:
-  - `modules`: `['admin', 'secretary']`
-  - `communications`: `['admin', 'secretary']`
-  - `integrations`: `['admin', 'secretary']`
+  - `modules`: `['admin']`
+  - `communications`: `['secretary']`
+  - `integrations`: `['admin']`
   - `billing`: `['admin', 'secretary']`
 - Any configuration section lacking the current user's role in its `allowedRoles` MUST NOT be rendered in the configuration navigation sidebar.
 
 #### Scenario: Admin user loads configuration registry
 - GIVEN an authenticated user with role `admin`
 - WHEN the configuration registry loads on `/config`
-- THEN `modules`, `communications`, `integrations`, and `billing` tabs MUST all be available and visible.
+- THEN `modules`, `integrations`, and `billing` tabs MUST be available and visible, and `communications` tab MUST NOT be rendered.
 
 #### Scenario: Secretary user loads configuration registry
 - GIVEN an authenticated user with role `secretary`
 - WHEN the configuration registry loads on `/config`
-- THEN `modules`, `communications`, `integrations`, and `billing` tabs MUST all be available and visible.
+- THEN `communications` and `billing` tabs MUST be available and visible, and `modules` and `integrations` tabs MUST NOT be rendered.
 
 ---
 
