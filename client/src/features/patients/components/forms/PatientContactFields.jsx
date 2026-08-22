@@ -27,7 +27,7 @@ export const PatientContactFields = ({ formData, updatePatientData, updatePhoneN
                             style={{ maxWidth: '40ch' }}
                             value={formData.email || ''}
                             onChange={updatePatientData}
-                            placeholder="paciente@ejemplo.com"
+                            placeholder={t('patient_email_placeholder') || "paciente@ejemplo.com"}
                         />
                         {formData.email && (
                             <Button

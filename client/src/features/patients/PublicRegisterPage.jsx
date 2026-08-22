@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useFetch } from '@/hooks/useFetch';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PublicRegisterPage.module.css';
 
 /**
@@ -8,19 +9,21 @@ import styles from './PublicRegisterPage.module.css';
  * Paginated form (one field at a time) for accessibility and mobile ease.
  * Focused on: Name, Surname, Address, DNI, Phone.
  */
-const StepField = ({ step, formData, onChange, inputRef }) => {
+const StepField = ({ step, formData, onChange, inputRef, t }) => {
     switch(step) {
         case 1:
             return (
                 <div className={`${styles.PublicRegisterPage__stepField} `}>
-                    <label htmlFor="firstName" className={`${styles.PublicRegisterPage__accessibleLabel}`}>¿Cuál es tu NOMBRE?</label>
+                    <label htmlFor="firstName" className={`${styles.PublicRegisterPage__accessibleLabel}`}>
+                        {t('what_is_your_first_name') || '¿Cuál es tu NOMBRE?'}
+                    </label>
                     <input
                         id="firstName"
                         name="firstName"
                         className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.firstName}
                         onChange={onChange}
-                        placeholder="Escribí tu nombre..."
+                        placeholder={t('write_your_first_name') || 'Escribí tu nombre...'}
                         autoComplete="off"
                         ref={inputRef}
                     />
@@ -29,14 +32,16 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
         case 2:
             return (
                 <div className={`${styles.PublicRegisterPage__stepField} `}>
-                    <label htmlFor="lastName" className={`${styles.PublicRegisterPage__accessibleLabel}`}>¿Cuál es tu APELLIDO?</label>
+                    <label htmlFor="lastName" className={`${styles.PublicRegisterPage__accessibleLabel}`}>
+                        {t('what_is_your_last_name') || '¿Cuál es tu APELLIDO?'}
+                    </label>
                     <input
                         id="lastName"
                         name="lastName"
                         className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.lastName}
                         onChange={onChange}
-                        placeholder="Escribí tu apellido..."
+                        placeholder={t('write_your_last_name') || 'Escribí tu apellido...'}
                         autoComplete="off"
                         ref={inputRef}
                     />
@@ -45,14 +50,16 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
         case 3:
             return (
                 <div className={`${styles.PublicRegisterPage__stepField} `}>
-                    <label htmlFor="address" className={`${styles.PublicRegisterPage__accessibleLabel}`}>¿Cuál es tu DIRECCIÓN?</label>
+                    <label htmlFor="address" className={`${styles.PublicRegisterPage__accessibleLabel}`}>
+                        {t('what_is_your_address') || '¿Cuál es tu DIRECCIÓN?'}
+                    </label>
                     <input
                         id="address"
                         name="address"
                         className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.address}
                         onChange={onChange}
-                        placeholder="Calle y número..."
+                        placeholder={t('street_and_number') || 'Calle y número...'}
                         autoComplete="off"
                         ref={inputRef}
                     />
@@ -61,7 +68,9 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
         case 4:
             return (
                 <div className={`${styles.PublicRegisterPage__stepField} `}>
-                    <label htmlFor="dni" className={`${styles.PublicRegisterPage__accessibleLabel}`}>¿Cuál es tu DNI?</label>
+                    <label htmlFor="dni" className={`${styles.PublicRegisterPage__accessibleLabel}`}>
+                        {t('what_is_your_dni') || '¿Cuál es tu DNI?'}
+                    </label>
                     <input
                         id="dni"
                         name="dni"
@@ -70,7 +79,7 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
                         className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.dni}
                         onChange={onChange}
-                        placeholder="Sólo números..."
+                        placeholder={t('only_numbers') || 'Sólo números...'}
                         autoComplete="off"
                         ref={inputRef}
                     />
@@ -79,7 +88,9 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
         case 5:
             return (
                 <div className={`${styles.PublicRegisterPage__stepField} `}>
-                    <label htmlFor="phone" className={`${styles.PublicRegisterPage__accessibleLabel}`}>Tu TELÉFONO es:</label>
+                    <label htmlFor="phone" className={`${styles.PublicRegisterPage__accessibleLabel}`}>
+                        {t('your_phone_is') || 'Tu TELÉFONO es:'}
+                    </label>
                     <input
                         id="phone"
                         name="phone"
@@ -96,6 +107,7 @@ const StepField = ({ step, formData, onChange, inputRef }) => {
 };
 
 export const PublicRegisterPage = () => {
+    const { t } = useLanguage();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const { request, loading } = useFetch();
@@ -152,7 +164,7 @@ export const PublicRegisterPage = () => {
             setSuccess(true);
             setTimeout(() => navigate('/'), 5000);
         } catch (err) {
-            setError(err.message || 'Error al guardar. Verifique los datos.');
+            setError(err.message || t('error_saving_verify') || 'Error al guardar. Verifique los datos.');
             setStep(4); // Back to DNI on error
         }
     };
@@ -162,14 +174,16 @@ export const PublicRegisterPage = () => {
             {success ? (
                 <div className={`${styles.PublicRegisterPage__successCard} step-card `}>
                     <span className={`${styles.PublicRegisterPage__successEmoji}`}>✅</span>
-                    <h1 className={`${styles.PublicRegisterPage__accessibleTitle}`}>¡Todo Listo!</h1>
-                    <p className={`${styles.PublicRegisterPage__accessibleText}`}>Tus datos se guardaron correctamente.</p>
-                    <p className={`${styles.PublicRegisterPage__accessibleSubtext}`}>Ya podés cerrar esta página y volver al WhatsApp.</p>
+                    <h1 className={`${styles.PublicRegisterPage__accessibleTitle}`}>{t('all_done') || '¡Todo Listo!'}</h1>
+                    <p className={`${styles.PublicRegisterPage__accessibleText}`}>{t('data_saved_successfully') || 'Tus datos se guardaron correctamente.'}</p>
+                    <p className={`${styles.PublicRegisterPage__accessibleSubtext}`}>{t('can_close_page_whatsapp') || 'Ya podés cerrar esta página y volver al WhatsApp.'}</p>
                 </div>
             ) : (
                 <>
                     <div className={`${styles.PublicRegisterPage__stepHeader}`}>
-                        <div className={`${styles.PublicRegisterPage__progressText}`}>Paso {step} de {totalSteps}</div>
+                        <div className={`${styles.PublicRegisterPage__progressText}`}>
+                            {t('step_x_of_y', { step, total: totalSteps }) || `Paso ${step} de ${totalSteps}`}
+                        </div>
                         <div className={`${styles.PublicRegisterPage__progressBar}`}>
                             <div className={`${styles.PublicRegisterPage__progressFill}`} style={{ width: `${(step / totalSteps) * 100}%` }}></div>
                         </div>
@@ -178,22 +192,22 @@ export const PublicRegisterPage = () => {
                     <section className={`${styles.PublicRegisterPage__stepContainer}`}>
                         {error && <div className={`${styles.PublicRegisterPage__accessibleError}`}>{error}</div>}
                         
-                        <StepField step={step} formData={formData} onChange={updateRegisterData} inputRef={inputRef} />
+                        <StepField step={step} formData={formData} onChange={updateRegisterData} inputRef={inputRef} t={t} />
 
                         <footer className={`${styles.PublicRegisterPage__stepFooter}`}>
                             {step > 1 && (
                                 <button type="button" className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugeSecondary}`} onClick={prevStep} disabled={loading}>
-                                    ATRÁS
+                                    {t('back') || 'ATRÁS'}
                                 </button>
                             )}
                             
                             {step < totalSteps ? (
                                 <button type="button" className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugePrimary}`} onClick={nextStep}>
-                                    SIGUIENTE
+                                    {t('next') || 'SIGUIENTE'}
                                 </button>
                             ) : (
                                 <button type="button" className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugeSuccess}`} onClick={handleSubmit} disabled={loading}>
-                                    {loading ? 'GUARDANDO...' : 'FINALIZAR'}
+                                    {loading ? (t('saving') || 'GUARDANDO...') : (t('finish') || 'FINALIZAR')}
                                 </button>
                             )}
                         </footer>

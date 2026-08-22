@@ -60,30 +60,30 @@ export const AppointmentHeader = ({ appt, t }) => {
                 {/* Timeline / Traceability section - Colorful pills */}
                 <div className={styles.AppointmentHeader__timelineList}>
                     {appt.created_at && (
-                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemCreated}`} title="Creación del turno">
+                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemCreated}`} title={t('appointment_creation_title') || "Creación del turno"}>
                             <Icon name="add_circle" size="0.85rem" />
-                            <span>Creado: {formatDate(appt.created_at, true)}</span>
+                            <span>{t('created') || 'Creado'}: {formatDate(appt.created_at, true)}</span>
                         </div>
                     )}
 
                     {appt.confirmed_at && (
-                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemConfirmed}`} title="Confirmación de la cita">
+                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemConfirmed}`} title={t('appointment_confirmation_title') || "Confirmación de la cita"}>
                             <Icon name="check_circle" size="0.85rem" />
-                            <span>Confirmado: {formatDate(appt.confirmed_at, true)}</span>
+                            <span>{t('confirmed') || 'Confirmado'}: {formatDate(appt.confirmed_at, true)}</span>
                         </div>
                     )}
 
                     {appt.arrived_at && (
-                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemArrived}`} title="Llegada a sala de espera">
+                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemArrived}`} title={t('appointment_arrived_title') || "Llegada a sala de espera"}>
                             <Icon name="meeting_room" size="0.85rem" />
-                            <span>En sala: {formatDate(appt.arrived_at, true)}</span>
+                            <span>{t('in_waiting_room') || 'En sala'}: {formatDate(appt.arrived_at, true)}</span>
                         </div>
                     )}
 
                     {appt.completed_at && (
-                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemCompleted}`} title="Atención finalizada">
+                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemCompleted}`} title={t('appointment_completed_title') || "Atención finalizada"}>
                             <Icon name="task_alt" size="0.85rem" />
-                            <span>Atendido: {formatDate(appt.completed_at, true)}</span>
+                            <span>{t('attended') || 'Atendido'}: {formatDate(appt.completed_at, true)}</span>
                         </div>
                     )}
 

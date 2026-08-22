@@ -26,7 +26,7 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                         minLength="2"
                         maxLength="50"
                         pattern="[A-Za-zÀ-ÿ\s]+"
-                        title="Debe contener solo letras y espacios"
+                        title={t('letters_and_spaces_only') || "Debe contener solo letras y espacios"}
                     />
                 </div>
                 <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan3}`}>
@@ -42,7 +42,7 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                         minLength="2"
                         maxLength="50"
                         pattern="[A-Za-zÀ-ÿ\s]+"
-                        title="Debe contener solo letras y espacios"
+                        title={t('letters_and_spaces_only') || "Debe contener solo letras y espacios"}
                     />
                 </div>
                 <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan2}`}>
@@ -59,7 +59,7 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                         minLength="7"
                         maxLength="10"
                         pattern="[0-9\.]+"
-                        title="Solo números y puntos. Ej: 12.345.678 o 12345678"
+                        title={t('dni_validation_pattern_hint') || "Solo números y puntos. Ej: 12.345.678 o 12345678"}
                     />
                 </div>
                 <div className={`${styles.PatientIdentityFields__group} ${styles.PatientIdentityFields__groupSpan4}`}>

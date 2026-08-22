@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Badge } from '@/components/atoms/Badge';
 import { Icon } from '@/components/atoms/Icon';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from './DoctorGoogleSettings.module.css';
 
 export const DoctorGoogleSettings = ({
@@ -12,15 +13,16 @@ export const DoctorGoogleSettings = ({
     onImportContacts,
     onResetSpreadsheet
 }) => {
+    const { t } = useLanguage();
     return (
         <div className={`${styles.DoctorGoogleSettings__root}`}>
             <div className={`${styles.DoctorGoogleSettings__statusCard}`}>
                 <div className={`${styles.DoctorGoogleSettings__info}`}>
-                    <h4 className={`${styles.DoctorGoogleSettings__title}`}>Google Integration</h4>
-                    <p className={`${styles.DoctorGoogleSettings__subtitle}`}>Sincroniza calendar y contactos.</p>
+                    <h4 className={`${styles.DoctorGoogleSettings__title}`}>{t('google_integration') || 'Google Integration'}</h4>
+                    <p className={`${styles.DoctorGoogleSettings__subtitle}`}>{t('google_integration_subtitle') || 'Sincroniza calendar y contactos.'}</p>
                 </div>
                 <Badge variant={connected ? 'success' : 'secondary'}>
-                    {connected ? '● CONECTADO' : '○ DESCONECTADO'}
+                    {connected ? `● ${t('connected_caps') || 'CONECTADO'}` : `○ ${t('disconnected_caps') || 'DESCONECTADO'}`}
                 </Badge>
             </div>
 

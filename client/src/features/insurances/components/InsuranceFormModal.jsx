@@ -34,7 +34,7 @@ export const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFor
                         <Input value={formData.name} onChange={e => setFormData(prev => ({ ...prev, name: capitalizeWords(e.target.value) }))} />
                     </FormGroup>
 
-                    <FormGroup label="CUIT" className={`${styles.InsuranceFormModal__flex1}`}>
+                    <FormGroup label={`${t('cuit') || 'CUIT'}`} className={`${styles.InsuranceFormModal__flex1}`}>
                         <Input value={formData.cuit} onChange={e => setFormData(prev => ({ ...prev, cuit: e.target.value }))} />
                     </FormGroup>
 
@@ -53,10 +53,10 @@ export const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFor
                 {/* Row 2: Website y Email */}
                 <div className={`${styles.InsuranceFormModal__row}`}>
                     <FormGroup label={t('website') || 'Website'} className={`${styles.InsuranceFormModal__flex1}`}>
-                        <Input value={formData.website} onChange={e => setFormData(prev => ({ ...prev, website: e.target.value }))} placeholder="e.g. www.osde.com.ar" />
+                        <Input value={formData.website} onChange={e => setFormData(prev => ({ ...prev, website: e.target.value }))} placeholder={t('insurance_website_placeholder') || "e.g. www.osde.com.ar"} />
                     </FormGroup>
 
-                    <FormGroup label="Email" className={`${styles.InsuranceFormModal__flex1}`}>
+                    <FormGroup label={t('email') || "Email"} className={`${styles.InsuranceFormModal__flex1}`}>
                         <Input value={formData.email} onChange={e => setFormData(prev => ({ ...prev, email: e.target.value }))} />
                         {formData.email && (
                             <a href={`mailto:${formData.email}`} className={`${styles.InsuranceFormModal__link}`}>
@@ -80,7 +80,7 @@ export const InsuranceFormModal = ({ isOpen, onClose, onSubmit, formData, setFor
                 {/* Row 3: Calle, Número, Piso y Depto en una sola fila horizontal */}
                 <div className={`${styles.InsuranceFormModal__row}`}>
                     <FormGroup label={t('street_name') || 'Calle'} className={`${styles.InsuranceFormModal__flex3}`}>
-                        <Input value={formData.street_name || ''} onChange={e => setFormData(prev => ({ ...prev, street_name: capitalizeWords(e.target.value) }))} placeholder="Ej: Av. Rivadavia" />
+                        <Input value={formData.street_name || ''} onChange={e => setFormData(prev => ({ ...prev, street_name: capitalizeWords(e.target.value) }))} placeholder={t('street_name_placeholder') || "Ej: Av. Rivadavia"} />
                     </FormGroup>
                     <FormGroup label={t('number_short') || 'Nro'} className={`${styles.InsuranceFormModal__flex1}`}>
                         <Input value={formData.street_number || ''} onChange={e => setFormData(prev => ({ ...prev, street_number: e.target.value }))} placeholder="123" />

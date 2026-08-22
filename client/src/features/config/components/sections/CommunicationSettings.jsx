@@ -33,7 +33,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         id="clinic-address"
                         label={t('physical_address_label')}
                         type="text"
-                        placeholder="Calle X, Entre Y y Z"
+                        placeholder={t('address_placeholder_example') || "Calle X, Entre Y y Z"}
                         value={settings.clinic_address || ''}
                         onChange={(e) => updateSetting('clinic_address', e.target.value)}
                         disabled={!isAdmin}
@@ -156,7 +156,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                             </span>
                         }
                         type="url"
-                        placeholder="Ej. https://g.page/r/.../review"
+                        placeholder={t('google_review_placeholder_example') || "Ej. https://g.page/r/.../review"}
                         value={settings.google_review_link || ''}
                         onChange={(e) => updateSetting('google_review_link', e.target.value)}
                         disabled={!isAdmin}
@@ -223,7 +223,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         insertVariable={insertVariable}
                         disabled={!isAdmin}
                         description={t('medication_refill_hint') || 'Mensaje enviado para recordar la renovación de recetas.'}
-                        placeholder="Hola {patient_name}, tu medicación {medication_name}..."
+                        placeholder={t('medication_refill_placeholder_example') || "Hola {patient_name}, tu medicación {medication_name}..."}
                         t={t}
                     />
                 </div>

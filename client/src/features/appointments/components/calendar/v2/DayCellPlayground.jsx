@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DayCell } from './DayCell';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from './DayCellPlayground.module.css';
 
 const sampleDays = [
@@ -62,6 +63,7 @@ const sampleDays = [
  * to demonstrate how it can be replicated with different data inputs.
  */
 export const DayCellPlayground = () => {
+  const { t } = useLanguage();
   const [selectedDay, setSelectedDay] = useState(15);
 
   const handleDayClick = (day) => {
@@ -71,9 +73,9 @@ export const DayCellPlayground = () => {
   return (
     <div className={styles.DayCellPlayground__playground}>
       <header className={styles.DayCellPlayground__header}>
-        <h3 className={styles.DayCellPlayground__title}>Visualizador de Componente Atómico: DayCell</h3>
+        <h3 className={styles.DayCellPlayground__title}>{t('daycell_playground_title') || 'Visualizador de Componente Atómico: DayCell'}</h3>
         <p className={styles.DayCellPlayground__subtitle}>
-          Muestra de los diferentes estados del día replicables para el calendario mensual.
+          {t('daycell_playground_subtitle') || 'Muestra de los diferentes estados del día replicables para el calendario mensual.'}
         </p>
       </header>
 
@@ -81,11 +83,11 @@ export const DayCellPlayground = () => {
         {sampleDays.map((item) => (
           <div key={item.id} className={styles.DayCellPlayground__cellWrapper}>
             <span className={styles.DayCellPlayground__label}>
-              {item.isToday && 'Hoy'}
-              {item.isHoliday && 'Feriado'}
-              {!item.isCurrentMonth && 'Mes anterior'}
-              {item.isPast && !item.isToday && !item.isHoliday && 'Pasado'}
-              {!item.isPast && !item.isToday && !item.isHoliday && item.isCurrentMonth && 'Futuro'}
+              {item.isToday && (t('today') || 'Hoy')}
+              {item.isHoliday && (t('holiday') || 'Feriado')}
+              {!item.isCurrentMonth && (t('previous_month') || 'Mes anterior')}
+              {item.isPast && !item.isToday && !item.isHoliday && (t('past') || 'Pasado')}
+              {!item.isPast && !item.isToday && !item.isHoliday && item.isCurrentMonth && (t('future') || 'Futuro')}
             </span>
             <DayCell
               day={item.day}
@@ -104,7 +106,7 @@ export const DayCellPlayground = () => {
 
       <footer className={styles.DayCellPlayground__footer}>
         <span className={styles.DayCellPlayground__footerText}>
-          Día seleccionado actualmente: <strong className={styles.DayCellPlayground__highlight}>{selectedDay}</strong>
+          {t('selected_day_label') || 'Día seleccionado actualmente'}: <strong className={styles.DayCellPlayground__highlight}>{selectedDay}</strong>
         </span>
       </footer>
     </div>

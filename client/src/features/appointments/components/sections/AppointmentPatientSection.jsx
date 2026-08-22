@@ -26,7 +26,7 @@ export const AppointmentPatientSection = ({
                             <PatientSearchSelect
                                 value={selectedPatient}
                                 selectedData={selectedPatientData}
-                                placeholder="Buscar Paciente..."
+                                placeholder={t('search_patient_placeholder') || "Buscar Paciente..."}
                                 onCreatePatient={async (name) => {
                                     handlePatientChange(null, { full_name: capitalizeWords(name) });
                                     onOpenEditPatient();
@@ -35,7 +35,7 @@ export const AppointmentPatientSection = ({
                             />
                         </div>
                     ) : (
-                        <div className="error-placeholder">Error: PatientSearchSelectComponent missing</div>
+                        <div className="error-placeholder">{t('patient_search_component_missing') || "Error: PatientSearchSelectComponent missing"}</div>
                     )}
                 </div>
 
@@ -56,10 +56,10 @@ export const AppointmentPatientSection = ({
                 <div className={styles.AppointmentPatientSection__missingAlert}>
                     <span className={styles.AppointmentPatientSection__missingText}>
                         <Icon name="warning" size="0.9rem" />
-                        <strong>Falta:</strong> {missingData.join(', ')}
+                        <strong>{t('missing_data_prefix') || 'Falta'}:</strong> {missingData.join(', ')}
                     </span>
                     <button type="button" className={styles.AppointmentPatientSection__missingAction} onClick={onOpenEditPatient}>
-                        Completar
+                        {t('complete') || 'Completar'}
                     </button>
                 </div>
             )}

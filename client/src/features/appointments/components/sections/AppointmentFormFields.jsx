@@ -57,7 +57,7 @@ export const AppointmentFormFields = ({
                             value={selectedDoctor || ''}
                             onChange={handleDoctorChange}
                             options={doctors.map(d => ({ value: d.id, label: d.full_name }))}
-                            placeholder="Seleccionar Doctor"
+                            placeholder={t('select_doctor') || "Seleccionar Doctor"}
                             required
                         />
                     )}
@@ -69,7 +69,7 @@ export const AppointmentFormFields = ({
                     {isOutOfHours && (
                         <div className={`${styles.extraBadge} ${styles.extraBadgePulse}`}>
                             <Icon name="warning" size="1rem" />
-                            Turno Fuera de Horario
+                            {t('out_of_hours_appointment') || 'Turno Fuera de Horario'}
                         </div>
                     )}
                 </div>

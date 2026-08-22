@@ -138,7 +138,7 @@ export const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGe
                                         }
 
                                         if (!details.email) {
-                                            return <span className={`${styles.PatientInfoBlock__textEmpty}`}>N/A</span>;
+                                            return <span className={`${styles.PatientInfoBlock__textEmpty}`}>{t('not_available_short') || 'N/A'}</span>;
                                         }
 
                                         return null;

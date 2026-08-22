@@ -19,8 +19,8 @@ export const SlotSection = ({ title, icon, slots, type, t, onWhatsApp, onSelect 
                             <td className={styles.cell}>
                                 <div className={styles.timeGroup}>
                                     <span className={styles.time}>{slot.time}</span>
-                                    {(type === 'before' || type === 'after') && <span className={styles.tagExtra}>EXTRA</span>}
-                                    {type === 'break' && <span className={styles.tagBreak}>EXT</span>}
+                                    {(type === 'before' || type === 'after') && <span className={styles.tagExtra}>{t('extra_caps') || 'EXTRA'}</span>}
+                                    {type === 'break' && <span className={styles.tagBreak}>{t('ext_caps') || 'EXT'}</span>}
                                 </div>
                             </td>
                             <td className={`${styles.cell} ${styles.cellActions}`}>
@@ -36,7 +36,7 @@ export const SlotSection = ({ title, icon, slots, type, t, onWhatsApp, onSelect 
                                             formattedDate: formatDate(slot.iso, { monthName: true }) 
                                         })}
                                         icon={<Icon name="chat" size="1.2rem" />}
-                                        title="WhatsApp"
+                                        title={t('whatsapp') || "WhatsApp"}
                                     />
                                     <Button
                                         variant={type === 'normal' ? "dark" : "accent"}

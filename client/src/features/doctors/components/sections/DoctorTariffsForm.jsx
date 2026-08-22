@@ -71,14 +71,14 @@ export const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                     <Input value={data.cbu || ''} onChange={(e) => handleTariffChange('cbu', e.target.value)} placeholder="28500..." />
                 </FormGroup>
                 <FormGroup label={t('alias_label')}>
-                    <Input value={data.alias || ''} onChange={(e) => handleTariffChange('alias', e.target.value)} placeholder="mi.alias.pago" />
+                    <Input value={data.alias || ''} onChange={(e) => handleTariffChange('alias', e.target.value)} placeholder={t('alias_placeholder_example') || "mi.alias.pago"} />
                 </FormGroup>
                 <FormGroup label={t('professional_bio') || 'Bio Profesional'}>
                     <AutoTextarea
                         className={`${styles.DoctorTariffsForm__bioField}`}
                         value={data.bio || ''}
                         onChange={(e) => handleTariffChange('bio', e.target.value)}
-                        placeholder="Breve currículum o información relevante..."
+                        placeholder={t('bio_placeholder_example') || "Breve currículum o información relevante..."}
                     />
                 </FormGroup>
             </div>

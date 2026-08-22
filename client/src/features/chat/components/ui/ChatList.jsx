@@ -2,6 +2,7 @@ import React from 'react';
 import { Icon } from '@/components/atoms/Icon';
 import { Input } from '@/components/atoms/Input';
 import { ChatConversationItem } from '@/features/chat/components/ui/ChatConversationItem';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * ChatList Molecule (Feature Component).
@@ -15,6 +16,7 @@ export const ChatList = ({
     setSelectedConvo,
     startNewChat
 }) => {
+    const { t } = useLanguage();
     const q = searchTerm.toLowerCase().trim();
 
     const filteredConvos = conversations.filter(c =>
@@ -33,7 +35,7 @@ export const ChatList = ({
         <div className="floating-chat__list">
             <div className="floating-chat__search">
                 <Input
-                    placeholder="Buscar..."
+                    placeholder={t('search') || "Buscar..."}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     size="sm"

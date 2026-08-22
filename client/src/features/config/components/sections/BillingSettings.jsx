@@ -71,7 +71,7 @@ export const BillingSettings = ({ user, settings, updateSetting }) => {
                         <ConfigField
                             label={t('billing_cuit')}
                             type="text"
-                            placeholder="Ej: 20111111112"
+                            placeholder={t('cuit_example_placeholder') || "Ej: 20111111112"}
                             value={settings.afip_cuit || ''}
                             onChange={(e) => updateSetting('afip_cuit', e.target.value)}
                             disabled={!isAdmin}
@@ -169,7 +169,7 @@ export const BillingSettings = ({ user, settings, updateSetting }) => {
                         <Button variant="primary" onClick={generateCsr} loading={generatingCsr} icon={<Icon name="settings" />}>
                             {t('generate_csr_btn')}
                         </Button>
-                        <Button variant="ghost" disabled={true} title="Próximamente">{t('upload_crt')}</Button>
+                        <Button variant="ghost" disabled={true} title={t('coming_soon') || "Próximamente"}>{t('upload_crt')}</Button>
                     </div>
 
                     {generatedCsr && (

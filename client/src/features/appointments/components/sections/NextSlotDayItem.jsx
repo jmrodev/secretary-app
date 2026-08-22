@@ -1,8 +1,10 @@
 import React from 'react';
 import { Icon } from '@/components/atoms/Icon';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from '../modals/NextSlotCalendarModal.module.css';
 
 export const DayListItem = ({ dayName, dateStr: _dateStr, dateLabel, isToday, inCount, outCount, includeOutOfHours, onClick }) => {
+    const { t } = useLanguage();
     const chipCount  = includeOutOfHours ? inCount + outCount : inCount;
     const isOutOnly  = inCount === 0 && outCount > 0;
     const chipVariant = isOutOnly ? 'amber' : 'green';
@@ -18,12 +20,12 @@ export const DayListItem = ({ dayName, dateStr: _dateStr, dateLabel, isToday, in
             className={`${styles.item} ${isToday ? styles.itemToday : ''} ${isOutOnly ? styles.itemOutOnly : ''}`}
             onClick={onClick}
             onKeyDown={handleKeyDown}
-            aria-label={`${dayName} ${dateLabel} — ${chipCount} turnos libres`}
+            aria-label={`${dayName} ${dateLabel} — ${chipCount} ${t('free_slots') || 'turnos libres'}`}
         >
             <div className={styles.dateInfo}>
                 <span className={styles.dayName}>{dayName}</span>
                 <span className={styles.dateLabel}>{dateLabel}</span>
-                {isToday && <span className={styles.todayBadge}>HOY</span>}
+                {isToday && <span className={styles.todayBadge}>{t('today_caps') || 'HOY'}</span>}
             </div>
             <div className={styles.chipGroup}>
                 {isOutOnly && <Icon name="lock_open" size="0.85rem" className={styles.outIcon} />}

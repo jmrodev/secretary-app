@@ -208,7 +208,7 @@ export const AppointmentAdminPanel = ({
                                             variant="accent" className={styles.AppointmentAdminPanel__action}
                                             onClick={() => onWhatsApp(appt, 'reminder')}
                                             icon={<Icon name="notifications" size="1.1rem" />}
-                                            title="Enviar mensaje de recordatorio al paciente por WhatsApp"
+                                            title={t('send_reminder_whatsapp_title') || "Enviar mensaje de recordatorio al paciente por WhatsApp"}
                                         >
                                             {t('reminder') || 'Recordatorio'}
                                         </Button>
@@ -216,7 +216,7 @@ export const AppointmentAdminPanel = ({
                                             variant="success" className={styles.AppointmentAdminPanel__action}
                                             onClick={() => onWhatsAppConfirmation(appt)}
                                             icon={<Icon name="auto_awesome" size="1.1rem" />}
-                                            title="Abrir vista previa del mensaje de confirmación de asistencia"
+                                            title={t('preview_confirmation_whatsapp_title') || "Abrir vista previa del mensaje de confirmación de asistencia"}
                                         >
                                             {t('send_whatsapp_confirmation') || 'Confirmación'}
                                         </Button>
@@ -227,9 +227,9 @@ export const AppointmentAdminPanel = ({
                                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.75rem', display: 'flex', alignItems: 'flex-start', gap: '0.35rem' }}>
                                     <Icon name="info" size="1rem" style={{ marginTop: '0.1rem', flexShrink: 0 }} />
                                     <span>
-                                        <strong>WhatsApp</strong> abre el chat interno (o WhatsApp Web si el bridge está desconectado).
-                                        {' '}<strong>Recordatorio</strong> envía el template de recordatorio automáticamente.
-                                        {' '}<strong>Confirmación</strong> abre una vista previa del mensaje para que puedas editarlo antes de enviarlo.
+                                        <strong>{t('whatsapp') || 'WhatsApp'}</strong> {t('whatsapp_admin_panel_hint_1') || 'abre el chat interno (o WhatsApp Web si el bridge está desconectado).'}
+                                        {' '}<strong>{t('reminder') || 'Recordatorio'}</strong> {t('whatsapp_admin_panel_hint_2') || 'envía el template de recordatorio automáticamente.'}
+                                        {' '}<strong>{t('confirmation') || 'Confirmación'}</strong> {t('whatsapp_admin_panel_hint_3') || 'abre una vista previa del mensaje para que puedas editarlo antes de enviarlo.'}
                                     </span>
                                 </p>
                             )}

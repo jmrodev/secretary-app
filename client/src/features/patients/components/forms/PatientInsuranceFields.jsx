@@ -42,7 +42,7 @@ export const PatientInsuranceFields = ({ formData, updatePatientData, insurances
                         className="patient-insurance-fields__field"
                         value={formData.affiliate_number || ''}
                         onChange={updatePatientData}
-                        placeholder="Ej: 123456789/00"
+                        placeholder={t('affiliate_number_placeholder') || "Ej: 123456789/00"}
                     />
                 </div>
             </div>

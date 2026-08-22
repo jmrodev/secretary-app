@@ -57,7 +57,7 @@ export const ProfileEditor = ({
                             <Input
                                 value={formData.fullName}
                                 onChange={e => handleProfileChange('fullName', e.target.value)}
-                                placeholder="Juan Perez"
+                                placeholder={t('full_name_example_placeholder') || "Juan Perez"}
                                 required
                             />
                         </FormGroup>
@@ -92,7 +92,7 @@ export const ProfileEditor = ({
                                     rows={8}
                                     value={formData.medicalHistory}
                                     onChange={e => handleProfileChange('medicalHistory', e.target.value)}
-                                    placeholder="Allergies, chronic conditions, etc."
+                                    placeholder={t('medical_history_example_placeholder') || "Allergies, chronic conditions, etc."}
                                 />
                             </FormGroup>
                         )}

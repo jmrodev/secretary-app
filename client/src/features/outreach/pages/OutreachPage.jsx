@@ -94,7 +94,7 @@ export const OutreachPage = () => {
                 </h1>
 
                 {/* Step Indicator */}
-                <nav className={styles['OutreachPage__outreach__steps']} aria-label="Progress">
+                <nav className={styles['OutreachPage__outreach__steps']} aria-label={t('progress') || "Progress"}>
                     {STEP_KEYS.map((key, i) => {
                         const stepNum = i + 1;
                         const isActive = currentStep === stepNum;

@@ -156,7 +156,7 @@ export const MedicalRequestList = ({
                                                             },
                                                             reqId: r.id
                                                         })}
-                                                        title="Cobrar"
+                                                        title={t('collect') || "Cobrar"}
                                                         icon={<Icon name="payments" size="1rem" />}
                                                     />
                                                     <Button
