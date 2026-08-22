@@ -132,23 +132,17 @@ const sendAutomatedReminders = async () => {
 
         for (const appt of appointments) {
             try {
-                const isVirtual = appt.type === 'virtual';
-                let template = isVirtual ? appt.reminder_virtual_template : appt.reminder_template;
-                
-                if (!template?.trim()) {
-                    template = isVirtual ? settings.appointment_reminder_virtual_template : settings.appointment_reminder_template;
-                }
+                let template = settings.whatsapp_template_reminder;
 
                 if (!template?.trim()) {
-                    template = isVirtual 
-                        ? "Hola {patient_name}, recordamos tu turno VIRTUAL para el {date} a las {time} con Dr/a. {doctor_name}."
-                        : "Hola {patient_name}, recordamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}. Confirma asistencia.";
+                    throw new Error('Template missing or empty');
                 }
 
                 const dateStr = formatDateDisplay(appt.appointment_date);
                 const timeStr = formatTimeDisplay(appt.appointment_date);
                 const address = settings.clinic_address || '';
 
+                const isVirtual = appt.type === 'virtual';
                 const message = template
                     .replace(/{patient_name}/g, appt.patient_name)
                     .replace(/{date}/g, dateStr)
@@ -163,10 +157,12 @@ const sendAutomatedReminders = async () => {
                 await sendMessageDirect(phone, message, appt.patient_id);
                 console.log(`[WhatsApp Bridge] Automated reminder sent to ${phone} (${appt.patient_name})`);
             } catch (err) {
+                if (err.message === 'Template missing or empty') throw err;
                 console.error(`[WhatsApp] Failed to send automated reminder to ${appt.patient_name}:`, err.message);
             }
         }
     } catch (err) {
+        if (err.message === 'Template missing or empty') throw err;
         console.error('[WhatsApp] Error in sendAutomatedReminders task:', err);
     }
 };
@@ -220,13 +216,10 @@ const sendConfirmationMessage = async (appt) => {
         const settings = {};
         settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
 
-        const isVirtual = appt.type === 'virtual';
-        let template = isVirtual ? settings.appointment_confirmation_virtual_template : settings.appointment_confirmation_template;
+        let template = settings.whatsapp_template_confirmation;
 
         if (!template?.trim()) {
-            template = isVirtual 
-                ? "¡Hola {patient_name}! Confirmamos tu turno VIRTUAL para el {date} a las {time} con Dr/a. {doctor_name}. Recibirás el link minutos antes."
-                : "¡Hola {patient_name}! Confirmamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}.";
+            throw new Error('Template missing or empty');
         }
 
         const dateStr = formatDateDisplay(appt.appointment_date);
@@ -241,6 +234,7 @@ const sendConfirmationMessage = async (appt) => {
             if (doctor) doctorName = doctor.full_name || doctor.name;
         }
 
+        const isVirtual = appt.type === 'virtual';
         const message = template
             .replace(/{patient_name}/g, appt.patient_name || 'Paciente')
             .replace(/{date}/g, dateStr)
@@ -255,6 +249,7 @@ const sendConfirmationMessage = async (appt) => {
         await sendMessageDirect(phone, message, appt.patient_id);
         console.log(`[WhatsApp Bridge] Confirmation sent to ${phone} (${appt.patient_name})`);
     } catch (err) {
+        if (err.message === 'Template missing or empty') throw err;
         console.error(`[WhatsApp] Failed to send confirmation to ${appt.patient_name}:`, err.message);
     }
 };
@@ -269,7 +264,14 @@ const sendDebtReminder = async (data) => {
         const isEnabled = await systemSettingsRepository.findByKey('whatsapp_use_local_bridge');
         if (!isEnabled || isEnabled.setting_value !== 'true') return;
 
-        const message = `¡Hola ${patient_name || 'Paciente'}! 👋 Te escribimos del consultorio para recordarte que tienes un saldo pendiente de $${debt_amount}. Podés abonarlo en tu próxima visita o por transferencia. ¡Muchas gracias!`;
+        const templateSetting = await systemSettingsRepository.findByKey('whatsapp_template_debt');
+        if (!templateSetting || !templateSetting.setting_value?.trim()) {
+            throw new Error('Template missing or empty');
+        }
+
+        const message = templateSetting.setting_value
+            .replace(/{patient_name}/g, patient_name || 'Paciente')
+            .replace(/{debt_amount}/g, debt_amount);
 
         let phone = patient_phone.replace(/\D/g, '');
         if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
