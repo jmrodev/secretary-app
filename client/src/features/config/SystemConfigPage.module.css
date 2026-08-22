@@ -12,9 +12,13 @@
     flex-direction: column;
     flex: 1;
     min-height: 0;
-    gap: 1.5rem;
-    padding: 1.5rem;
+    gap: var(--spacing-lg, 1.5rem);
+    padding: var(--spacing-lg, 1.5rem);
     background-color: var(--background-bg);
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .SystemConfigPage__systemConfigTabs {

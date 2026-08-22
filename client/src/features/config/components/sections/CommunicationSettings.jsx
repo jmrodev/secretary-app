@@ -50,43 +50,43 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                 </div>
 
                 <div className={shared.ConfigSection__body}>
-                    <MessageTemplateEditor
-                        id="reminder-template"
-                        label={
-                            <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
-                                <Icon name="history" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
-                                {t('presential_reminder_label')}
-                            </span>
-                        }
-                        value={settings.appointment_reminder_template}
-                        settingKey="appointment_reminder_template"
-                        variables={commonVars}
-                        updateSetting={updateSetting}
-                        insertVariable={insertVariable}
-                        disabled={!isAdmin}
-                        metaTemplateName={settings.meta_phone_number_id ? settings.meta_reminder_template_name : undefined}
-                        metaParamsOrder={settings.meta_phone_number_id ? settings.meta_reminder_params_order : undefined}
-                        t={t}
-                    />
+                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                        <MessageTemplateEditor
+                            id="reminder-template"
+                            label={
+                                <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
+                                    <Icon name="history" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
+                                    {t('presential_reminder_label')}
+                                </span>
+                            }
+                            value={settings.appointment_reminder_template}
+                            settingKey="appointment_reminder_template"
+                            variables={commonVars}
+                            updateSetting={updateSetting}
+                            insertVariable={insertVariable}
+                            disabled={!isAdmin}
+                            metaTemplateName={settings.meta_phone_number_id ? settings.meta_reminder_template_name : undefined}
+                            metaParamsOrder={settings.meta_phone_number_id ? settings.meta_reminder_params_order : undefined}
+                            t={t}
+                        />
 
-                    <div className={shared.ConfigSection__divider}></div>
-
-                    <MessageTemplateEditor
-                        id="reminder-virtual-template"
-                        label={
-                            <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
-                                <Icon name="video_chat" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
-                                {t('virtual_reminder_label')}
-                            </span>
-                        }
-                        value={settings.appointment_reminder_virtual_template}
-                        settingKey="appointment_reminder_virtual_template"
-                        variables={commonVars}
-                        updateSetting={updateSetting}
-                        insertVariable={insertVariable}
-                        disabled={!isAdmin}
-                        t={t}
-                    />
+                        <MessageTemplateEditor
+                            id="reminder-virtual-template"
+                            label={
+                                <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
+                                    <Icon name="video_chat" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
+                                    {t('virtual_reminder_label')}
+                                </span>
+                            }
+                            value={settings.appointment_reminder_virtual_template}
+                            settingKey="appointment_reminder_virtual_template"
+                            variables={commonVars}
+                            updateSetting={updateSetting}
+                            insertVariable={insertVariable}
+                            disabled={!isAdmin}
+                            t={t}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -98,44 +98,44 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                 </div>
 
                 <div className={shared.ConfigSection__body}>
-                    <MessageTemplateEditor
-                        id="confirmation-template"
-                        label={
-                            <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
-                                <Icon name="check" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
-                                {t('presential_confirmation_label')}
-                            </span>
-                        }
-                        value={settings.appointment_confirmation_template}
-                        settingKey="appointment_confirmation_template"
-                        variables={commonVars}
-                        updateSetting={updateSetting}
-                        insertVariable={insertVariable}
-                        disabled={!isAdmin}
-                        metaTemplateName={settings.meta_phone_number_id ? settings.meta_confirmation_template_name : undefined}
-                        metaParamsOrder={settings.meta_phone_number_id ? settings.meta_confirmation_params_order : undefined}
-                        description={t('confirmation_message_hint')}
-                        t={t}
-                    />
+                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                        <MessageTemplateEditor
+                            id="confirmation-template"
+                            label={
+                                <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
+                                    <Icon name="check" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
+                                    {t('presential_confirmation_label')}
+                                </span>
+                            }
+                            value={settings.appointment_confirmation_template}
+                            settingKey="appointment_confirmation_template"
+                            variables={commonVars}
+                            updateSetting={updateSetting}
+                            insertVariable={insertVariable}
+                            disabled={!isAdmin}
+                            metaTemplateName={settings.meta_phone_number_id ? settings.meta_confirmation_template_name : undefined}
+                            metaParamsOrder={settings.meta_phone_number_id ? settings.meta_confirmation_params_order : undefined}
+                            description={t('confirmation_message_hint')}
+                            t={t}
+                        />
 
-                    <div className={shared.ConfigSection__divider}></div>
-
-                    <MessageTemplateEditor
-                        id="confirmation-virtual-template"
-                        label={
-                            <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
-                                <Icon name="video_chat" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
-                                {t('virtual_confirmation_label')}
-                            </span>
-                        }
-                        value={settings.appointment_confirmation_virtual_template}
-                        settingKey="appointment_confirmation_virtual_template"
-                        variables={commonVars}
-                        updateSetting={updateSetting}
-                        insertVariable={insertVariable}
-                        disabled={!isAdmin}
-                        t={t}
-                    />
+                        <MessageTemplateEditor
+                            id="confirmation-virtual-template"
+                            label={
+                                <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
+                                    <Icon name="video_chat" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
+                                    {t('virtual_confirmation_label')}
+                                </span>
+                            }
+                            value={settings.appointment_confirmation_virtual_template}
+                            settingKey="appointment_confirmation_virtual_template"
+                            variables={commonVars}
+                            updateSetting={updateSetting}
+                            insertVariable={insertVariable}
+                            disabled={!isAdmin}
+                            t={t}
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -147,85 +147,82 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                 </div>
 
                 <div className={shared.ConfigSection__body}>
-                    <ConfigField
-                        id="google-review-link"
-                        label={
-                            <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
-                                <Icon name="star" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
-                                {t('google_review_link_label') || 'Enlace de Reseñas de Google'}
-                            </span>
-                        }
-                        type="url"
-                        placeholder={t('google_review_placeholder_example') || "Ej. https://g.page/r/.../review"}
-                        value={settings.google_review_link || ''}
-                        onChange={(e) => updateSetting('google_review_link', e.target.value)}
-                        disabled={!isAdmin}
-                        hint={t('google_review_hint') || 'Ingresa el enlace directo para que los pacientes te dejen una reseña en Google. Búscalo en tu perfil de Google My Business.'}
-                    />
+                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                        <MessageTemplateEditor
+                            id="whatsapp-prescription-template"
+                            label={
+                                <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
+                                    <Icon name="medication" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
+                                    {t('prescription_request_whatsapp')}
+                                </span>
+                            }
+                            value={settings.whatsapp_prescription_request_template}
+                            settingKey="whatsapp_prescription_request_template"
+                            variables={['{patient_name}', '{link}']}
+                            updateSetting={updateSetting}
+                            insertVariable={insertVariable}
+                            disabled={!isAdmin}
+                            description={t('prescription_request_hint')}
+                            placeholder={t('placeholder_prescription_req')}
+                            t={t}
+                        />
 
+                        <MessageTemplateEditor
+                            id="whatsapp-patient-data-template"
+                            label={
+                                <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
+                                    <Icon name="account_circle" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
+                                    {t('data_update_whatsapp')}
+                                </span>
+                            }
+                            value={settings.whatsapp_patient_data_request_template}
+                            settingKey="whatsapp_patient_data_request_template"
+                            variables={['{patient_name}', '{link}']}
+                            updateSetting={updateSetting}
+                            insertVariable={insertVariable}
+                            disabled={!isAdmin}
+                            description={t('data_update_hint')}
+                            placeholder={t('placeholder_data_req')}
+                            t={t}
+                        />
+                    </div>
 
-                    <div className={shared.ConfigSection__divider}></div>
+                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                        <ConfigField
+                            id="google-review-link"
+                            label={
+                                <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
+                                    <Icon name="star" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
+                                    {t('google_review_link_label') || 'Enlace de Reseñas de Google'}
+                                </span>
+                            }
+                            type="url"
+                            placeholder={t('google_review_placeholder_example') || "Ej. https://g.page/r/.../review"}
+                            value={settings.google_review_link || ''}
+                            onChange={(e) => updateSetting('google_review_link', e.target.value)}
+                            disabled={!isAdmin}
+                            hint={t('google_review_hint') || 'Ingresa el enlace directo para que los pacientes te dejen una reseña en Google. Búscalo en tu perfil de Google My Business.'}
+                        />
 
-                    <MessageTemplateEditor
-                        id="whatsapp-prescription-template"
-                        label={
-                            <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
-                                <Icon name="medication" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
-                                {t('prescription_request_whatsapp')}
-                            </span>
-                        }
-                        value={settings.whatsapp_prescription_request_template}
-                        settingKey="whatsapp_prescription_request_template"
-                        variables={['{patient_name}', '{link}']}
-                        updateSetting={updateSetting}
-                        insertVariable={insertVariable}
-                        disabled={!isAdmin}
-                        description={t('prescription_request_hint')}
-                        placeholder={t('placeholder_prescription_req')}
-                        t={t}
-                    />
-
-                    <div className={shared.ConfigSection__divider}></div>
-
-                    <MessageTemplateEditor
-                        id="whatsapp-patient-data-template"
-                        label={
-                            <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
-                                <Icon name="account_circle" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
-                                {t('data_update_whatsapp')}
-                            </span>
-                        }
-                        value={settings.whatsapp_patient_data_request_template}
-                        settingKey="whatsapp_patient_data_request_template"
-                        variables={['{patient_name}', '{link}']}
-                        updateSetting={updateSetting}
-                        insertVariable={insertVariable}
-                        disabled={!isAdmin}
-                        description={t('data_update_hint')}
-                        placeholder={t('placeholder_data_req')}
-                        t={t}
-                    />
-
-                    <div className={shared.ConfigSection__divider}></div>
-
-                    <MessageTemplateEditor
-                        id="medication-refill-template"
-                        label={
-                            <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
-                                <Icon name="medication" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
-                                {t('medication_refill_reminder_label') || 'Recordatorio de Renovación de Medicación'}
-                            </span>
-                        }
-                        value={settings.medication_refill_reminder_template}
-                        settingKey="medication_refill_reminder_template"
-                        variables={['{patient_name}', '{medication_name}']}
-                        updateSetting={updateSetting}
-                        insertVariable={insertVariable}
-                        disabled={!isAdmin}
-                        description={t('medication_refill_hint') || 'Mensaje enviado para recordar la renovación de recetas.'}
-                        placeholder={t('medication_refill_placeholder_example') || "Hola {patient_name}, tu medicación {medication_name}..."}
-                        t={t}
-                    />
+                        <MessageTemplateEditor
+                            id="medication-refill-template"
+                            label={
+                                <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
+                                    <Icon name="medication" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
+                                    {t('medication_refill_reminder_label') || 'Recordatorio de Renovación de Medicación'}
+                                </span>
+                            }
+                            value={settings.medication_refill_reminder_template}
+                            settingKey="medication_refill_reminder_template"
+                            variables={['{patient_name}', '{medication_name}']}
+                            updateSetting={updateSetting}
+                            insertVariable={insertVariable}
+                            disabled={!isAdmin}
+                            description={t('medication_refill_hint') || 'Mensaje enviado para recordar la renovación de recetas.'}
+                            placeholder={t('medication_refill_placeholder_example') || "Hola {patient_name}, tu medicación {medication_name}..."}
+                            t={t}
+                        />
+                    </div>
                 </div>
             </div>
 
