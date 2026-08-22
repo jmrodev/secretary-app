@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
 import { MedicationList } from '@/features/medical_documents/components/lists/MedicationList';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from './MedicationInput.module.css';
 
 const EMPTY_ARRAY = [];
@@ -19,6 +20,7 @@ export const MedicationInput = ({
     optional = false,
     className = ''
 }) => {
+    const { t } = useLanguage();
     const [searchValue, setSearchValue] = useState('');
 
     const handleSelectMedication = (med) => {
@@ -32,7 +34,7 @@ export const MedicationInput = ({
                 <label htmlFor="medication-search" className={`${styles.MedicationInput__label}`}>
                     {label}
                     {optional && (
-                        <span className={`${styles.MedicationInput__optionalBadge}`}>Optional</span>
+                        <span className={`${styles.MedicationInput__optionalBadge}`}>{t('optional') || 'Optional'}</span>
                     )}
                 </label>
             </div>

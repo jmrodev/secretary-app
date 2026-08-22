@@ -26,10 +26,10 @@ export const UserForm = ({ type, formData, setFormData }) => {
                     <br />
                     <span className={`${styles.UserForm__hintDanger}`}>{t('action_cannot_undone')}</span>
                 </p>
-                <FormGroup label="Contraseña de Administrador" required>
+                <FormGroup label={t('admin_password') || 'Contraseña de Administrador'} required>
                     <Input
                         type="password"
-                        placeholder="Ingrese su contraseña"
+                        placeholder={t('enter_your_password') || 'Ingrese su contraseña'}
                         value={formData.adminPassword || ''}
                         onChange={e => handleUserUpdate('adminPassword', e.target.value)}
                     />
@@ -42,7 +42,7 @@ export const UserForm = ({ type, formData, setFormData }) => {
         return (
             <div className={`${styles.UserForm__alert} ${sharedStyles.AnimateFadeIn}`}>
                 <p className={`${styles.UserForm__alertText}`}>
-                    ¿Reiniciar contraseña de <strong>{formData.username}</strong> al DNI (<strong>{formData.dni}</strong>)?
+                    {t('reset_password_to_dni_confirm') || '¿Reiniciar contraseña de'} <strong>{formData.username}</strong> {t('to_dni') || 'al DNI'} (<strong>{formData.dni}</strong>)?
                 </p>
             </div>
         );
@@ -55,7 +55,7 @@ export const UserForm = ({ type, formData, setFormData }) => {
                     <Input
                         value={formData.password}
                         onChange={e => handleUserUpdate('password', e.target.value)}
-                        placeholder="Nueva contraseña"
+                        placeholder={t('new_password_placeholder') || 'Nueva contraseña'}
                     />
                 </FormGroup>
             </div>
@@ -83,10 +83,10 @@ export const UserForm = ({ type, formData, setFormData }) => {
             </div>
             {type === 'CREATE' && (
                 <div className={`${styles.UserForm__row}`}>
-                    <FormGroup label="Su Contraseña (Admin)" required>
+                    <FormGroup label={t('your_admin_password') || 'Su Contraseña (Admin)'} required>
                         <Input
                             type="password"
-                            placeholder="Ingrese su contraseña"
+                            placeholder={t('enter_your_password') || 'Ingrese su contraseña'}
                             value={formData.adminPassword || ''}
                             onChange={e => handleUserUpdate('adminPassword', e.target.value)}
                         />
@@ -101,7 +101,7 @@ export const UserForm = ({ type, formData, setFormData }) => {
                     options={[
                         { value: 'doctor', label: t('doctor') },
                         { value: 'secretary', label: t('secretary') },
-                        { value: 'admin', label: 'Administrador' }
+                        { value: 'admin', label: t('admin') || 'Administrador' }
                     ]}
                 />
             </FormGroup>
@@ -132,7 +132,7 @@ export const UserForm = ({ type, formData, setFormData }) => {
                     <Input
                         value={formData.specialty}
                         onChange={e => handleUserUpdate('specialty', e.target.value)}
-                        placeholder="E.g. Cardiología"
+                        placeholder={t('specialty_placeholder') || 'E.g. Cardiología'}
                     />
                 </FormGroup>
             )}

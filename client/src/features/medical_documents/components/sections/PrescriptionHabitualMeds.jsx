@@ -12,12 +12,12 @@ const QuickSelectTable = ({ meds, label, items, onSelect, t }) => {
                 <table className={styles.PrescriptionHabitualMeds__table}>
                     <thead>
                         <tr>
-                            <th style={{ width: '32%' }}>Medicamento</th>
-                            <th style={{ width: '8%' }}>Dosis</th>
-                            <th style={{ width: '15%' }}>Frecuencia</th>
-                            <th style={{ width: '15%' }}>Cant/Caja</th>
-                            <th style={{ width: '15%' }}>Envases</th>
-                            <th style={{ width: '15%' }}>Duración</th>
+                            <th style={{ width: '32%' }}>{t('medication') || 'Medicamento'}</th>
+                            <th style={{ width: '8%' }}>{t('dose') || 'Dosis'}</th>
+                            <th style={{ width: '15%' }}>{t('frequency') || 'Frecuencia'}</th>
+                            <th style={{ width: '15%' }}>{t('units_per_box_short') || 'Cant/Caja'}</th>
+                            <th style={{ width: '15%' }}>{t('boxes') || 'Envases'}</th>
+                            <th style={{ width: '15%' }}>{t('duration') || 'Duración'}</th>
                             <th className={styles.PrescriptionHabitualMeds__actionsCol}></th>
                         </tr>
                     </thead>

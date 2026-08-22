@@ -22,7 +22,7 @@ export const PatientAdminFields = ({ formData, doctors = EMPTY_ARRAY, handleDoct
                 <section className={`${styles.PatientAdminFields__section} ${styles.PatientAdminFields__groupSpan12}`}>
                     <header className={`${styles.PatientAdminFields__miniHeader}`}>
                         <Icon name="medical_services" size="1.1rem" />
-                        <h4 className={`${styles.PatientAdminFields__miniTitle}`}>Médicos Asignados</h4>
+                        <h4 className={`${styles.PatientAdminFields__miniTitle}`}>{t('assigned_doctors') || 'Médicos Asignados'}</h4>
                         <span className={`${styles.PatientAdminFields__count}`}>{formData.assignedDoctors?.length || 0}</span>
                     </header>
                     <div className={`${styles.PatientAdminFields__doctorScroller}`}>

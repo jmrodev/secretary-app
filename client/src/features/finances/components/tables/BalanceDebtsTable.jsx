@@ -9,7 +9,7 @@ const EMPTY_DEBTS = [];
 export const BalanceDebtsTable = ({ debts = EMPTY_DEBTS, totalDebt, t }) => {
     return (
         <section className={`${styles.BalanceDebtsTable__root} animate-fade-in`}>
-            <h3 className={`${styles.BalanceDebtsTable__title}`}>Deudas Pendientes</h3>
+            <h3 className={`${styles.BalanceDebtsTable__title}`}>{t('pending_debts') || 'Deudas Pendientes'}</h3>
 
             {debts.length === 0 ? (
                 <div className={`${styles.BalanceDebtsTable__empty}`}>
@@ -20,10 +20,10 @@ export const BalanceDebtsTable = ({ debts = EMPTY_DEBTS, totalDebt, t }) => {
                     <table className={`${styles.BalanceDebtsTable__table}`}>
                         <thead>
                             <tr>
-                                <th>Fecha</th>
-                                <th>Paciente</th>
-                                <th>Origen</th>
-                                <th className={`${styles.BalanceDebtsTable__cellRight}`}>Monto</th>
+                                <th>{t('date') || 'Fecha'}</th>
+                                <th>{t('patient') || 'Paciente'}</th>
+                                <th>{t('origin') || 'Origen'}</th>
+                                <th className={`${styles.BalanceDebtsTable__cellRight}`}>{t('amount') || 'Monto'}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -43,7 +43,7 @@ export const BalanceDebtsTable = ({ debts = EMPTY_DEBTS, totalDebt, t }) => {
             )}
 
             <footer className={`${styles.BalanceDebtsTable__total}`}>
-                Total Deuda Detectada: <span className={`${styles.BalanceDebtsTable__totalAmount}`}>$ {totalDebt.toLocaleString()}</span>
+                {t('total_debt_detected') || 'Total Deuda Detectada'}: <span className={`${styles.BalanceDebtsTable__totalAmount}`}>$ {totalDebt.toLocaleString()}</span>
             </footer>
         </section>
     );

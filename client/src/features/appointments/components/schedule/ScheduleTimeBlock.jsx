@@ -70,7 +70,7 @@ export const ScheduleTimeBlock = ({
                     size="sm-compact"
                     onClick={onRemove}
                     className={`${styles.ScheduleTimeBlock__remove}`}
-                    title="Eliminar franja"
+                    title={t('remove_time_slot') || "Eliminar franja"}
                     icon={<Icon name="delete" />}
                 />
             </div>

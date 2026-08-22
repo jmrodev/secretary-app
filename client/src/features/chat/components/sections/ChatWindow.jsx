@@ -35,8 +35,8 @@ export const ChatWindow = ({
         return (
             <section className={`${styles.ChatWindow__root} ${styles.ChatWindow__empty}`}>
                 <div className={`${styles.ChatWindow__emptyIcon}`}><Icon name="chat" size="4rem" /></div>
-                <h2 className={`${styles.ChatWindow__emptyTitle}`}>Tus Mensajes</h2>
-                <p className={`${styles.ChatWindow__emptyText}`}>Selecciona una conversación de la lista para empezar a chatear o busca un contacto para iniciar un nuevo chat.</p>
+                <h2 className={`${styles.ChatWindow__emptyTitle}`}>{t('your_messages') || 'Tus Mensajes'}</h2>
+                <p className={`${styles.ChatWindow__emptyText}`}>{t('select_convo_hint') || 'Selecciona una conversación de la lista para empezar a chatear o busca un contacto para iniciar un nuevo chat.'}</p>
             </section>
         );
     }
@@ -46,7 +46,7 @@ export const ChatWindow = ({
             {/* Header */}
             <header className={`${styles.ChatWindow__header}`}>
                 {/* Back button for mobile navigation */}
-                <button type="button" className={`${styles.ChatWindow__backButton}`} onClick={onBack} title="Volver a la lista">
+                <button type="button" className={`${styles.ChatWindow__backButton}`} onClick={onBack} title={t('back_to_list') || "Volver a la lista"}>
                     <Icon name="arrow_back" />
                 </button>
 
@@ -55,7 +55,7 @@ export const ChatWindow = ({
                 </div>
                 <div className={`${styles.ChatWindow__headerInfo}`}>
                     <h3 className={`${styles.ChatWindow__headerTitle}`}>{selectedConvo.other_display_name || selectedConvo.other_username}</h3>
-                    <small className={`${styles.ChatWindow__headerSubtitle}`}>{selectedConvo.subject || 'Conversación activa'}</small>
+                    <small className={`${styles.ChatWindow__headerSubtitle}`}>{selectedConvo.subject || (t('active_conversation') || 'Conversación activa')}</small>
                 </div>
             </header>
 
@@ -68,7 +68,7 @@ export const ChatWindow = ({
                 ) : thread.length === 0 ? (
                     <div className={`${styles.ChatWindow__messagesStatus} ${styles.ChatWindow__messagesStatusEmpty}`}>
                         <div className={`${styles.ChatWindow__emptyIcon}`}><Icon name="waving_hand" size="2rem" /></div>
-                        <p>¡Dile hola!</p>
+                        <p>{t('say_hello') || '¡Dile hola!'}</p>
                     </div>
                 ) : (
                     thread.map(msg => (
@@ -92,7 +92,7 @@ export const ChatWindow = ({
                         <input
                             id="chat-message"
                             type="text"
-                            placeholder="Escribe un mensaje aquí..."
+                            placeholder={t('write_message_here_placeholder') || "Escribe un mensaje aquí..."}
                             className={`${styles.ChatWindow__input}`}
                             value={messageText}
                             onChange={(e) => setMessageText(e.target.value)}

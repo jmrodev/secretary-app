@@ -105,13 +105,13 @@ export const DoctorScheduleSettings = ({
         });
     };
 
-    if (loading) return <div className={`${styles.DoctorScheduleSettings__loading}`}>Cargando horarios…</div>;
+    if (loading) return <div className={`${styles.DoctorScheduleSettings__loading}`}>{t('loading_schedules') || 'Cargando horarios…'}</div>;
 
     return (
         <section className={`${styles.DoctorScheduleSettings__scheduleSettings}`}>
             <header className="schedule-settings__header">
-                <h3 className={`${styles.DoctorScheduleSettings__title}`}>Configuración de Horarios de Atención</h3>
-                <p className={`${styles.DoctorScheduleSettings__desc}`}>Defina los días y franjas horarias en las que este médico atiende.</p>
+                <h3 className={`${styles.DoctorScheduleSettings__title}`}>{t('doctor_schedule_settings_title') || 'Configuración de Horarios de Atención'}</h3>
+                <p className={`${styles.DoctorScheduleSettings__desc}`}>{t('doctor_schedule_settings_desc') || 'Defina los días y franjas horarias en las que este médico atiende.'}</p>
             </header>
 
             <ScheduleBulkActionsComponent

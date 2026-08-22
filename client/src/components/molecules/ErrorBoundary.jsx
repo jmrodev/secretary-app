@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import { LanguageContext } from '@/context/LanguageContext';
 import sharedStyles from '@/styles/shared.module.css';
 import styles from './ErrorBoundary.module.css';
 
@@ -35,43 +36,46 @@ export class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
       return (
-        <div className={`${styles.ErrorBoundary__errorBoundaryContainer} ${sharedStyles.AnimateFadeIn}`}>
-            <div className={`${styles.ErrorBoundary__errorBoundaryCard}`}>
-                <div className={`${styles.ErrorBoundary__errorBoundaryIcon}`}>
-                    <Icon name="error_outline" size="4rem" color="#e74c3c" />
-                </div>
-                <h2>¡Ups! Algo salió mal.</h2>
-                <p>Ha ocurrido un error inesperado en esta sección de la aplicación.</p>
-                {process.env.NODE_ENV === 'development' && (
-                    <details className={`${styles.ErrorBoundary__errorDetails}`}>
-                        <summary>Detalles del error (Solo en desarrollo)</summary>
-                        <p>{this.state.error && this.state.error.toString()}</p>
-                        <pre>{this.state.errorInfo && this.state.errorInfo.componentStack}</pre>
-                    </details>
-                )}
-                <div className={`${styles.ErrorBoundary__errorBoundaryActions}`}>
-                    <Button
-                        variant="primary"
-                        onClick={this.handleReload}
-                        icon={<Icon name="refresh" />}
-                        className={`${styles.ErrorBoundary__errorReloadBtn}`}
-                    >
-                        Recargar Página
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        outline
-                        onClick={this.handleCopy}
-                        icon={<Icon name={this.state.copied ? "check" : "content_copy"} />}
-                        className={`${styles.ErrorBoundary__errorCopyBtn}`}
-                    >
-                        {this.state.copied ? "¡Copiado!" : "Copiar Error"}
-                    </Button>
+        <LanguageContext.Consumer>
+          {({ t = (k) => k } = {}) => (
+            <div className={`${styles.ErrorBoundary__errorBoundaryContainer} ${sharedStyles.AnimateFadeIn}`}>
+                <div className={`${styles.ErrorBoundary__errorBoundaryCard}`}>
+                    <div className={`${styles.ErrorBoundary__errorBoundaryIcon}`}>
+                        <Icon name="error_outline" size="4rem" color="#e74c3c" />
+                    </div>
+                    <h2>{t('error_boundary_title') || '¡Ups! Algo salió mal.'}</h2>
+                    <p>{t('error_boundary_desc') || 'Ha ocurrido un error inesperado en esta sección de la aplicación.'}</p>
+                    {process.env.NODE_ENV === 'development' && (
+                        <details className={`${styles.ErrorBoundary__errorDetails}`}>
+                            <summary>{t('error_boundary_details') || 'Detalles del error (Solo en desarrollo)'}</summary>
+                            <p>{this.state.error && this.state.error.toString()}</p>
+                            <pre>{this.state.errorInfo && this.state.errorInfo.componentStack}</pre>
+                        </details>
+                    )}
+                    <div className={`${styles.ErrorBoundary__errorBoundaryActions}`}>
+                        <Button
+                            variant="primary"
+                            onClick={this.handleReload}
+                            icon={<Icon name="refresh" />}
+                            className={`${styles.ErrorBoundary__errorReloadBtn}`}
+                        >
+                            {t('reload_page') || 'Recargar Página'}
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            outline
+                            onClick={this.handleCopy}
+                            icon={<Icon name={this.state.copied ? "check" : "content_copy"} />}
+                            className={`${styles.ErrorBoundary__errorCopyBtn}`}
+                        >
+                            {this.state.copied ? (t('copied') || '¡Copiado!') : (t('copy_error') || 'Copiar Error')}
+                        </Button>
+                    </div>
                 </div>
             </div>
-        </div>
+          )}
+        </LanguageContext.Consumer>
       );
     }
 

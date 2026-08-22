@@ -75,12 +75,12 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                     {((Boolean(p.is_new_patient) || Number(p.is_new_patient) === 1) || Number(p.attended_appointments) > 0) && (
                         <div className={`${styles.PatientList__badgeRow}`}>
                             {(Boolean(p.is_new_patient) || Number(p.is_new_patient) === 1) && (
-                                <Badge variant="blue" size="sm">NUEVO</Badge>
+                                <Badge variant="blue" size="sm">{t('new_patient_badge') || 'NUEVO'}</Badge>
                             )}
 
                             {Number(p.attended_appointments) > 0 && (
                                 <Badge variant="success" size="sm" title={`${t('attended_appointments') || 'Visitas'}: ${p.attended_appointments}`}>
-                                    <Icon name="history" size="0.75rem" /> {p.attended_appointments} {p.attended_appointments === 1 ? 'visita' : 'visitas'}
+                                    <Icon name="history" size="0.75rem" /> {p.attended_appointments} {p.attended_appointments === 1 ? (t('visit') || 'visita') : (t('visits') || 'visitas')}
                                 </Badge>
                             )}
                         </div>
@@ -89,8 +89,8 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
             </td>
             <td>
                 <div className={`${styles.PatientList__idInfo}`}>
-                    {p.dni && <span><span className={`${styles.PatientList__idLabel}`}>DNI:</span> {p.dni}</span>}
-                    {(p.insurance_name || p.insurance) && <span><span className={`${styles.PatientList__idLabel}`}>OS:</span> {p.insurance_name || p.insurance}</span>}
+                    {p.dni && <span><span className={`${styles.PatientList__idLabel}`}>{t('dni') || 'DNI'}:</span> {p.dni}</span>}
+                    {(p.insurance_name || p.insurance) && <span><span className={`${styles.PatientList__idLabel}`}>{t('insurance_short') || 'OS'}:</span> {p.insurance_name || p.insurance}</span>}
                 </div>
             </td>
             <td>
@@ -103,7 +103,7 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                                 variant="whatsapp"
                                 size="sm-compact"
                                 onClick={(e) => e.stopPropagation()}
-                                title="WhatsApp"
+                                title={t('whatsapp') || "WhatsApp"}
                                 icon={<Icon name="send" size="1.1rem" />}
                             />
                             <Button
@@ -112,7 +112,7 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                                 size="sm"
                                 className={`${styles.PatientList__contactLink}`}
                                 onClick={(e) => e.stopPropagation()}
-                                title="Llamar"
+                                title={t('call') || "Llamar"}
                                 icon={<Icon name="call" size="0.9rem" />}
                             >
                                 {p.phone}
@@ -136,12 +136,12 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
             </td>
             <td>
                 <div className={`${styles.PatientList__ratingGroup}`}>
-                    <div className={`${styles.PatientList__ratingItem}`} title={`${t('rating_financial_tooltip')}\nDeuda Actual: $${p.total_debt}`}>
-                        <span className={`${styles.PatientList__ratingLabel}`}>FIN</span>
+                    <div className={`${styles.PatientList__ratingItem}`} title={`${t('rating_financial_tooltip')}\n${t('current_debt') || 'Deuda Actual'}: $${p.total_debt}`}>
+                        <span className={`${styles.PatientList__ratingLabel}`}>{t('financial_rating_short') || 'FIN'}</span>
                         <RatingStars rating={p.financial_rating} colorClass="gold" />
                     </div>
-                    <div className={`${styles.PatientList__ratingItem}`} title={`${t('rating_attendance_tooltip')}\nResumen: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
-                        <span className={`${styles.PatientList__ratingLabel}`}>ASIST</span>
+                    <div className={`${styles.PatientList__ratingItem}`} title={`${t('rating_attendance_tooltip')}\n${t('summary') || 'Resumen'}: ${p.total_appointments - p.missed_appointments}/${p.total_appointments}`}>
+                        <span className={`${styles.PatientList__ratingLabel}`}>{t('attendance_rating_short') || 'ASIST'}</span>
                         <RatingStars rating={p.attendance_rating} colorClass="blue" />
                     </div>
                     <div
@@ -153,11 +153,11 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                                 onToggleRating(e, p.id, p.behavior_rating);
                             }
                         }}
-                        title={`${t('rating_behavior_tooltip')}\nCalificación: ${p.behavior_rating || 5}/5 (Click para cambiar)`}
+                        title={`${t('rating_behavior_tooltip')}\n${t('rating') || 'Calificación'}: ${p.behavior_rating || 5}/5 (${t('click_to_change') || 'Click para cambiar'})`}
                         role="button"
                         tabIndex={0}
                     >
-                        <span className={`${styles.PatientList__ratingLabel}`}>COND</span>
+                        <span className={`${styles.PatientList__ratingLabel}`}>{t('behavior_rating_short') || 'COND'}</span>
                         <RatingStars rating={p.behavior_rating} colorClass="pink" />
                     </div>
                 </div>

@@ -35,12 +35,12 @@ describe('AppointmentHeader Component', () => {
 
     it('renders the Created badge when created_at is present in appt data', () => {
         render(<AppointmentHeader appt={mockApptWithCreated} t={(k) => k} />);
-        expect(screen.getByText(/Creado:/i)).toBeInTheDocument();
+        expect(screen.getByText(/created/i)).toBeInTheDocument();
     });
 
     it('does NOT render the Created badge when created_at is null/undefined', () => {
         render(<AppointmentHeader appt={mockApptWithoutCreated} t={(k) => k} />);
-        expect(screen.queryByText(/Creado:/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/created/i)).not.toBeInTheDocument();
     });
 
     it('renders confirmed_at badge when confirmed_at timestamp exists', () => {
@@ -49,7 +49,7 @@ describe('AppointmentHeader Component', () => {
             confirmed_at: '2026-07-30T18:00:00Z'
         };
         render(<AppointmentHeader appt={apptConfirmed} t={(k) => k} />);
-        expect(screen.getByText(/Confirmado:/i)).toBeInTheDocument();
+        expect(screen.getByText(/confirmed/i)).toBeInTheDocument();
     });
 
     it('renders arrived_at badge (En sala) when arrived_at timestamp exists', () => {
@@ -58,6 +58,6 @@ describe('AppointmentHeader Component', () => {
             arrived_at: '2026-07-30T18:15:00Z'
         };
         render(<AppointmentHeader appt={apptArrived} t={(k) => k} />);
-        expect(screen.getByText(/En sala:/i)).toBeInTheDocument();
+        expect(screen.getByText(/in_waiting_room/i)).toBeInTheDocument();
     });
 });

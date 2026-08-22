@@ -203,7 +203,7 @@ export const DocumentViewerModal = ({
                             type="button"
                             className={`${styles.DocumentViewerModal__navArrow} ${styles.DocumentViewerModal__navArrowLeft}`}
                             onClick={handlePrevFile}
-                            aria-label="Archivo anterior"
+                            aria-label={t('previous_file') || 'Archivo anterior'}
                         >
                             <Icon name="chevron_left" size="2.5rem" />
                         </button>
@@ -214,7 +214,7 @@ export const DocumentViewerModal = ({
                             type="button"
                             className={`${styles.DocumentViewerModal__navArrow} ${styles.DocumentViewerModal__navArrowRight}`}
                             onClick={handleNextFile}
-                            aria-label="Archivo siguiente"
+                            aria-label={t('next_file') || 'Archivo siguiente'}
                         >
                             <Icon name="chevron_right" size="2.5rem" />
                         </button>

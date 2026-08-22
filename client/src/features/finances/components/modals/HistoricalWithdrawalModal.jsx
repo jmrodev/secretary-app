@@ -112,7 +112,7 @@ export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm,
                     <Input
                         value={description}
                         onChange={(e) => dispatch({ description: e.target.value })}
-                        placeholder="Ej: Cierre del día martes"
+                        placeholder={t('historical_withdrawal_desc_placeholder') || 'Ej: Cierre del día martes'}
                         className="historical-withdrawal-modal__input"
                     />
                 </FormGroup>

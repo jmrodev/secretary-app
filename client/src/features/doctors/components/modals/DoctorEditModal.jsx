@@ -130,14 +130,14 @@ export const DoctorEditModal = ({
                     {activeTab === 'schedule' && (
                         <div className={`${styles.DoctorEditModal__scheduleConfig}`}>
                             <div className={`${styles.DoctorEditModal__durationGrid}`}>
-                                <FormGroup label="Duración Turno (min)">
+                                <FormGroup label={t('appointment_duration_min') || "Duración Turno (min)"}>
                                     <Input
                                         type="number"
                                         value={data.appointment_duration}
                                         onChange={e => onChangeData({ appointment_duration: e.target.value })}
                                     />
                                 </FormGroup>
-                                <FormGroup label="Descanso (min)">
+                                <FormGroup label={t('break_duration_min') || "Descanso (min)"}>
                                     <Input
                                         type="number"
                                         value={data.break_duration}

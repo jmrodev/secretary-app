@@ -29,12 +29,12 @@ export const PrescriptionItemsList = ({
                 <table className={styles.PrescriptionItemsList__table}>
                     <thead>
                         <tr>
-                            <th style={{ width: '32%' }}>Medicamento</th>
-                            <th style={{ width: '8%' }}>Dosis</th>
-                            <th style={{ width: '15%' }}>Frecuencia</th>
-                            <th style={{ width: '15%' }}>Cant/Caja</th>
-                            <th style={{ width: '15%' }}>Envases</th>
-                            <th style={{ width: '15%' }}>Duración</th>
+                            <th style={{ width: '32%' }}>{t('medication') || 'Medicamento'}</th>
+                            <th style={{ width: '8%' }}>{t('dose') || 'Dosis'}</th>
+                            <th style={{ width: '15%' }}>{t('frequency') || 'Frecuencia'}</th>
+                            <th style={{ width: '15%' }}>{t('units_per_box_short') || 'Cant/Caja'}</th>
+                            <th style={{ width: '15%' }}>{t('boxes') || 'Envases'}</th>
+                            <th style={{ width: '15%' }}>{t('duration') || 'Duración'}</th>
                             <th className={styles.PrescriptionItemsList__actionsCol}></th>
                         </tr>
                     </thead>
@@ -66,7 +66,7 @@ export const PrescriptionItemsList = ({
                                         onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
                                         aria-label={t('frequency') || 'Frecuencia'}
                                     >
-                                        <option value="" disabled style={{ color: 'black' }}>Frecuencia…</option>
+                                        <option value="" disabled style={{ color: 'black' }}>{t('frequency') || 'Frecuencia'}…</option>
                                         {freqPresets && freqPresets.map((p, idx) => {
                                             const safeKey = p.label.replace('½', 'half').replace('¼', 'quarter').replace('¾', 'three_quarters').replace('/', '_per_').replace(' ', '_').toLowerCase();
                                             const translationKey = `freq_${safeKey}`;
@@ -96,7 +96,7 @@ export const PrescriptionItemsList = ({
                                             style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '55px', textAlign: 'center' }}
                                             value={tempBoxes}
                                             onChange={e => handleQuantityChange('boxes', e.target.value)}
-                                            title="Cantidad de envases"
+                                            title={t('boxes_quantity') || 'Cantidad de envases'}
                                         >
                                             <option value="" style={{ color: 'black' }}>-</option>
                                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(v => (
@@ -114,7 +114,7 @@ export const PrescriptionItemsList = ({
                                             size="sm"
                                             style={{ width: '55px', textAlign: 'center', padding: '0.25rem' }}
                                         />
-                                        <span style={{ fontSize: '0.75rem', color: 'rgb(255 255 255 / 50%)', whiteSpace: 'nowrap' }}>días</span>
+                                        <span style={{ fontSize: '0.75rem', color: 'rgb(255 255 255 / 50%)', whiteSpace: 'nowrap' }}>{t('days') || 'días'}</span>
                                     </div>
                                 </td>
                                 <td className={styles.PrescriptionItemsList__actionsCol}>

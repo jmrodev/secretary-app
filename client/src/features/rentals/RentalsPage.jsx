@@ -155,7 +155,7 @@ export const RentalsPage = () => {
                                             <div className={`${styles.RentalsPage__tableContainer}`}>
                                                 {rentals.length === 0 ? (
                                                     <div className={`${styles.RentalsPage__emptyState}`}>
-                                                        <p>No tienes alquileres registrados.</p>
+                                                        <p>{t('no_rentals_registered') || 'No tienes alquileres registrados.'}</p>
                                                     </div>
                                                 ) : (
                                                     <table className={`${styles.RentalsPage__table}`}>
@@ -196,8 +196,8 @@ export const RentalsPage = () => {
                                         <article className={`${styles.RentalsPage__card}`}>
                                             <div className={`${styles.RentalsPage__staffPlaceholder}`}>
                                                 <Icon name="payments" size="3rem" />
-                                                <h3>Panel de Gestión de Alquileres</h3>
-                                                <p>Próximamente podrá ver el resumen de alquileres de todos los médicos.</p>
+                                                <h3>{t('rentals_management_panel') || 'Panel de Gestión de Alquileres'}</h3>
+                                                <p>{t('rentals_management_soon') || 'Próximamente podrá ver el resumen de alquileres de todos los médicos.'}</p>
                                             </div>
                                         </article>
                                     </section>

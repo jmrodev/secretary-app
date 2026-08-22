@@ -106,7 +106,7 @@ export const PatientHistoryView = ({ patientAppointments, loading, onClose, t, s
                                     <td className={`${styles.PatientHistoryView__td} ${styles.PatientHistoryView__tdReason}`}>
                                         <span title={appt.reason}>{appt.reason || '-'}</span>
                                         {appt.type === 'virtual' && (
-                                            <Icon name="videocam" size="0.9rem" className={styles.PatientHistoryView__virtualIcon} title="Virtual" />
+                                            <Icon name="videocam" size="0.9rem" className={styles.PatientHistoryView__virtualIcon} title={translate('virtual') || "Virtual"} />
                                         )}
                                     </td>
                                     <td className={`${styles.PatientHistoryView__td}`}>

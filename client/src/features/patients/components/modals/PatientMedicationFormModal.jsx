@@ -204,7 +204,7 @@ export const PatientMedicationFormModal = ({
                             className={styles.PatientMedicationFormModal__input}
                             value={dose}
                             onChange={(e) => setDose(e.target.value)}
-                            placeholder="ej: 50 mg"
+                            placeholder={t('dose_example_placeholder') || "ej: 50 mg"}
                         />
                     </div>
                     <div className={styles.PatientMedicationFormModal__fieldGroup}>
@@ -215,7 +215,7 @@ export const PatientMedicationFormModal = ({
                             className={styles.PatientMedicationFormModal__input}
                             value={frequency}
                             onChange={(e) => setFrequency(e.target.value)}
-                            placeholder="ej: Cada 24 hs por la mañana"
+                            placeholder={t('freq_example_placeholder') || "ej: Cada 24 hs por la mañana"}
                         />
                     </div>
                 </div>
@@ -255,7 +255,7 @@ export const PatientMedicationFormModal = ({
                         rows="2"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        placeholder="ej: Tomar con alimentos, mantener refrigeration..."
+                        placeholder={t('notes_example_placeholder') || "ej: Tomar con alimentos, mantener refrigeración..."}
                     />
                 </div>
 

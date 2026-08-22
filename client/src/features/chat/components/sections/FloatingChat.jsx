@@ -4,6 +4,7 @@ import { useFloatingChatController } from '@/features/chat/hooks/useFloatingChat
 import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { formatTime } from '@/utils/core/dateUtils';
+import { useLanguage } from '@/hooks/useLanguage';
 
 // Local Components
 import { ChatThread } from '@/features/chat/components/sections/ChatThread';
@@ -40,6 +41,7 @@ const renderTicks = (status) => {
 export const FloatingChat = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
+    const { t } = useLanguage();
     const {
         isOpen, toggleChat, closeChat,
         selectedConvo, setSelectedConvo, backToList,
@@ -131,7 +133,7 @@ export const FloatingChat = () => {
                     onClick={toggleChat}
                 >
                     <Icon name="chat" size="1.1rem" />
-                    <span>Mensajes</span>
+                    <span>{t('messages') || 'Mensajes'}</span>
                     {unreadCount > 0 && <span className={`${baseClass}__badge`}>{unreadCount}</span>}
                 </button>
             )}

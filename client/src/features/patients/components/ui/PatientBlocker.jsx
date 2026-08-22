@@ -2,10 +2,12 @@ import React from 'react';
 import { useAuth } from '@/features/auth';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PatientBlocker.module.css';
 
 export const PatientBlocker = () => {
     const { logout } = useAuth();
+    const { t } = useLanguage();
 
     const handleLogout = () => {
         logout();
@@ -18,18 +20,18 @@ export const PatientBlocker = () => {
                 <div className={`${styles.PatientBlocker__iconContainer}`}>
                     <Icon name="check_circle" size="4rem" className={`${styles.PatientBlocker__iconSuccess}`} />
                 </div>
-                <h2 className={`${styles.PatientBlocker__title}`}>Registro Completado</h2>
+                <h2 className={`${styles.PatientBlocker__title}`}>{t('registration_completed') || 'Registro Completado'}</h2>
                 <p className={`${styles.PatientBlocker__message}`}>
-                    Tu información ha sido recibida correctamente.
+                    {t('patient_blocker_message_p1') || 'Tu información ha sido recibida correctamente.'}
                     <br /><br />
-                    Esta sección es de uso administrativo. Si necesitas realizar otra gestión, por favor utiliza el enlace enviado a tu dispositivo o escanea el QR en el consultorio.
+                    {t('patient_blocker_message_p2') || 'Esta sección es de uso administrativo. Si necesitas realizar otra gestión, por favor utiliza el enlace enviado a tu dispositivo o escanea el QR en el consultorio.'}
                 </p>
                 <Button
                     variant="secondary"
                     className={`${styles.PatientBlocker__button}`}
                     onClick={handleLogout}
                 >
-                    Cerrar Sesión
+                    {t('logout') || 'Cerrar Sesión'}
                 </Button>
             </div>
         </div>

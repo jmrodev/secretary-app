@@ -12,12 +12,12 @@ describe('ThemeToggle Atom', () => {
 
     it('renders theme toggle button', () => {
         render(<ThemeToggle />);
-        expect(screen.getByRole('button', { name: /modo/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /change_theme_mode|modo/i })).toBeInTheDocument();
     });
 
     it('cycles data-theme attribute through dark -> dim -> light -> dark', () => {
         render(<ThemeToggle />);
-        const btn = screen.getByRole('button', { name: /modo/i });
+        const btn = screen.getByRole('button', { name: /change_theme_mode|modo/i });
 
         // Initial state is dark
         expect(document.body.getAttribute('data-theme')).toBe('dark');

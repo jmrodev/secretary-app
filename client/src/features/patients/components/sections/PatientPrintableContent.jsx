@@ -21,9 +21,9 @@ export const PatientPrintableContent = ({
                 <>
                     <h3 className="printable-subtitle">{t('personal_data_title')}</h3>
                     <ul className="printable-list">
-                        <li><strong>DNI:</strong> {details.dni || '-'}</li>
+                        <li><strong>{t('dni') || 'DNI'}:</strong> {details.dni || '-'}</li>
                         <li><strong>{t('phone')}:</strong> {details.phone || '-'}</li>
-                        <li><strong>Email:</strong> {details.email || '-'}</li>
+                        <li><strong>{t('email') || 'Email'}:</strong> {details.email || '-'}</li>
                         <li><strong>{t('location')}:</strong> {details.street_name || ''} {details.street_number || ''}, {details.city || ''}</li>
                         <li><strong>{t('insurance')}:</strong> {details.insurance_name || '-'}</li>
                     </ul>

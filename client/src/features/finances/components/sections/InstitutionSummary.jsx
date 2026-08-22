@@ -55,7 +55,7 @@ export const InstitutionSummary = ({
                             <Icon name="CONFIRMED" size="1.2rem" />
                         </div>
                         <div className="institution-finances__stat-info">
-                            <p className="institution-finances__stat-label">A Cobrar</p>
+                            <p className="institution-finances__stat-label">{t('to_collect') || 'A Cobrar'}</p>
                             <p className="institution-finances__stat-value institution-finances__stat-value--green">${Number(selectedAmount).toLocaleString()}</p>
                         </div>
                     </div>
