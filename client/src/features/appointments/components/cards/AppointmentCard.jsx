@@ -95,7 +95,7 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
                         <Badge 
                             variant="success" 
                             className={styles.visitCount} 
-                            title={`${t('attended_appointments') || 'Visitas'}: ${appt.attended_appointments}`}
+                            title={`${t('attended_appointments')}: ${appt.attended_appointments}`}
                         >
                             <Icon name="history" size="0.9rem" /> {appt.attended_appointments}
                         </Badge>
@@ -138,7 +138,7 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
                     if (appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') {
                         return (
                             <div className={`${styles.AppointmentCard__paymentInfo} ${styles.AppointmentCard__paymentInfoBonified}`}>
-                                <span>{t('bonified') || 'Bonif.'}</span>
+                                <span>{t('bonified')}</span>
                                 <Icon name="verified" className={styles.paymentIcon} />
                             </div>
                         );

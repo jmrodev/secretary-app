@@ -44,11 +44,11 @@ export class ErrorBoundary extends React.Component {
                     <div className={`${styles.ErrorBoundary__errorBoundaryIcon}`}>
                         <Icon name="error_outline" size="4rem" color="#e74c3c" />
                     </div>
-                    <h2>{t('error_boundary_title') || '¡Ups! Algo salió mal.'}</h2>
-                    <p>{t('error_boundary_desc') || 'Ha ocurrido un error inesperado en esta sección de la aplicación.'}</p>
+                    <h2>{t('error_boundary_title')}</h2>
+                    <p>{t('error_boundary_desc')}</p>
                     {process.env.NODE_ENV === 'development' && (
                         <details className={`${styles.ErrorBoundary__errorDetails}`}>
-                            <summary>{t('error_boundary_details') || 'Detalles del error (Solo en desarrollo)'}</summary>
+                            <summary>{t('error_boundary_details')}</summary>
                             <p>{this.state.error && this.state.error.toString()}</p>
                             <pre>{this.state.errorInfo && this.state.errorInfo.componentStack}</pre>
                         </details>
@@ -60,7 +60,7 @@ export class ErrorBoundary extends React.Component {
                             icon={<Icon name="refresh" />}
                             className={`${styles.ErrorBoundary__errorReloadBtn}`}
                         >
-                            {t('reload_page') || 'Recargar Página'}
+                            {t('reload_page')}
                         </Button>
                         <Button
                             variant="secondary"
@@ -69,7 +69,7 @@ export class ErrorBoundary extends React.Component {
                             icon={<Icon name={this.state.copied ? "check" : "content_copy"} />}
                             className={`${styles.ErrorBoundary__errorCopyBtn}`}
                         >
-                            {this.state.copied ? (t('copied') || '¡Copiado!') : (t('copy_error') || 'Copiar Error')}
+                            {this.state.copied ? (t('copied')) : (t('copy_error'))}
                         </Button>
                     </div>
                 </div>

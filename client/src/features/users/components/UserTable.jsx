@@ -6,7 +6,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 import sharedStyles from '@/styles/shared.module.css';
 import styles from './UserTable.module.css';
 
-export const UserTable = ({ users, onEdit, onReset, onDelete, onOpenPermissions }) => {
+export const UserTable = ({ users, currentUser, onEdit, onReset, onDelete, onOpenPermissions }) => {
     const { t } = useLanguage();
 
     const renderPermissions = (u) => {
@@ -81,7 +81,7 @@ export const UserTable = ({ users, onEdit, onReset, onDelete, onOpenPermissions 
                         <tr key={u.id} className={`${styles.UserTable__row}`}>
                             <td className={`${styles.UserTable__cell}`}>
                                 <div className={`${styles.UserTable__username}`}>{u.username}</div>
-                                <div className={`${styles.UserTable__dni}`}>{t('dni_label')} {u.dni || '-'}</div>
+                                <div className={`${styles.UserTable__dni}`}>{t('dni_label')} {u.dni || t('none')}</div>
                             </td>
                             <td className={`${styles.UserTable__cell}`}>
                                 <Badge variant={u.role}>
@@ -92,31 +92,39 @@ export const UserTable = ({ users, onEdit, onReset, onDelete, onOpenPermissions 
                                 {renderPermissions(u)}
                             </td>
                             <td className={`${styles.UserTable__cell}`}>
-                                <div className={`${styles.UserTable__fullName}`}>{u.full_name || '-'}</div>
+                                <div className={`${styles.UserTable__fullName}`}>{u.full_name || t('none')}</div>
                                 <div className={`${styles.UserTable__phoneContainer}`}>
                                     {u.phoneNumbers && u.phoneNumbers.length > 0 ? (
                                         <>
                                             {u.phoneNumbers.find(p => p.is_primary)?.phone_number || u.phoneNumbers[0].phone_number}
                                             {u.phoneNumbers.length > 1 && <Badge variant="blue" className={`${styles.UserTable__countBadge}`}>+{u.phoneNumbers.length - 1}</Badge>}
                                         </>
-                                    ) : (u.phone || '-')}
+                                    ) : (u.phone || t('none'))}
                                 </div>
                             </td>
                             <td className={`${styles.UserTable__cell}`}>
                                 <div className={`${styles.UserTable__actions}`}>
-                                    {u.role === 'secretary' && onOpenPermissions && (
-                                        <Button
-                                            variant="ghost"
-                                            size="sm-compact"
-                                            onClick={() => onOpenPermissions(u)}
-                                            title={t('edit_permissions')}
-                                            icon={<Icon name="tune" />}
-                                        />
-                                    )}
-                                    <Button variant="ghost" size="sm-compact" onClick={() => onEdit(u)} title={t('edit')} icon={<Icon name="edit" />} />
-                                    <Button variant="ghost" size="sm-compact" onClick={() => onReset(u)} title={t('reset_pwd')} icon={<Icon name="key" />} />
-                                    {u.role !== 'admin' && (
-                                        <Button variant="ghost" size="sm-compact" className={`${styles.actionBtnDelete} ${sharedStyles.TextDanger}`} onClick={() => onDelete(u)} title={t('delete')} icon={<Icon name="delete" />} />
+                                    {u.id === currentUser?.user_id || u.username === currentUser?.username ? (
+                                        <Badge variant="gray" className={styles.UserTable__permMuted}>
+                                            {t('your_account')}
+                                        </Badge>
+                                    ) : (
+                                        <>
+                                            {u.role === 'secretary' && onOpenPermissions && (
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm-compact"
+                                                    onClick={() => onOpenPermissions(u)}
+                                                    title={t('edit_permissions')}
+                                                    icon={<Icon name="tune" />}
+                                                />
+                                            )}
+                                            <Button variant="ghost" size="sm-compact" onClick={() => onEdit(u)} title={t('edit')} icon={<Icon name="edit" />} />
+                                            <Button variant="ghost" size="sm-compact" onClick={() => onReset(u)} title={t('reset_pwd')} icon={<Icon name="key" />} />
+                                            {u.role !== 'admin' && (
+                                                <Button variant="ghost" size="sm-compact" className={`${styles.actionBtnDelete} ${sharedStyles.TextDanger}`} onClick={() => onDelete(u)} title={t('delete')} icon={<Icon name="delete" />} />
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             </td>

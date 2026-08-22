@@ -56,7 +56,7 @@ export const ChatSidebar = ({
                     <span className={`${styles.ChatSidebar__searchIcon}`}><Icon name="search" /></span>
                     <input
                         type="text"
-                        placeholder={t('search_chats_contacts') || "Buscar chats o contactos..."}
+                        placeholder={t('search_chats_contacts')}
                         className={`${styles.ChatSidebar__searchInput}`}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
@@ -99,7 +99,7 @@ export const ChatSidebar = ({
 
                 {suggestedRecipients.length > 0 && (
                     <div className={`${styles.ChatSidebar__sectionLabel}`}>
-                        {t('contacts') || 'Contactos'}
+                        {t('contacts')}
                     </div>
                 )}
 
@@ -122,7 +122,7 @@ export const ChatSidebar = ({
                                 <span className={`${styles.ChatSidebar__recipientRole}`}>{r.role}</span>
                             </div>
                             <div className={`${styles.ChatSidebar__convoLastMsg}`}>
-                                <span className={`${styles.ChatSidebar__recipientHint}`}>{t('start_chat_now') || 'Iniciar chat'}</span>
+                                <span className={`${styles.ChatSidebar__recipientHint}`}>{t('start_chat_now')}</span>
                             </div>
                         </div>
                     </div>

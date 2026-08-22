@@ -20,12 +20,12 @@ export const DayListItem = ({ dayName, dateStr: _dateStr, dateLabel, isToday, in
             className={`${styles.item} ${isToday ? styles.itemToday : ''} ${isOutOnly ? styles.itemOutOnly : ''}`}
             onClick={onClick}
             onKeyDown={handleKeyDown}
-            aria-label={`${dayName} ${dateLabel} — ${chipCount} ${t('free_slots') || 'turnos libres'}`}
+            aria-label={`${dayName} ${dateLabel} — ${chipCount} ${t('free_slots')}`}
         >
             <div className={styles.dateInfo}>
                 <span className={styles.dayName}>{dayName}</span>
                 <span className={styles.dateLabel}>{dateLabel}</span>
-                {isToday && <span className={styles.todayBadge}>{t('today_caps') || 'HOY'}</span>}
+                {isToday && <span className={styles.todayBadge}>{t('today_caps')}</span>}
             </div>
             <div className={styles.chipGroup}>
                 {isOutOnly && <Icon name="lock_open" size="0.85rem" className={styles.outIcon} />}

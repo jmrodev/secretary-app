@@ -60,7 +60,7 @@ export const TransactionRow = ({
                         size="sm"
                     >
                         {tx.appointment_id
-                            ? (t('appointment') || 'Turno')
+                            ? (t('appointment'))
                             : tx.request_type
                                 ? (t(tx.request_type) || tx.request_type)
                                 : (t(tx.type) || tx.type.replace('_', ' '))
@@ -104,7 +104,7 @@ export const TransactionRow = ({
                             variant="ghost" 
                             className={`${styles.actionBtn} ${styles.actionBtnView}`}
                             onClick={() => alert(<InvoiceDetailContent tx={tx} formatDate={formatDateUnambiguous} />)}
-                            title={t('view_details') || 'Ver Detalle'} 
+                            title={t('view_details')} 
                             icon={<Icon name="VIEW" />} 
                         />
                         {tx.type === 'income_patient' && tx.status === 'paid' && !tx.invoice_number && (

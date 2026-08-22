@@ -47,7 +47,7 @@ export const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
                 </p>
                 <div className={`${styles.AdminAuthModal__inputGroup}`}>
                     <label htmlFor="admin-master-password" className={`${styles.AdminAuthModal__label}`}>
-                        {t('master_password') || 'Contraseña maestra'}
+                        {t('master_password')}
                     </label>
                     <Input
                         id="admin-master-password"

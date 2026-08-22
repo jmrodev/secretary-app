@@ -62,11 +62,11 @@ export const IntegrationGoogleCalendar = ({
                         <div className={styles.IntegrationGoogleCalendar__groupItems}>
                             <div className={styles.IntegrationGoogleCalendar__actions}>
                                 <Button variant="secondary" onClick={onRefreshToken}>
-                                    <Icon name="sync" className="mr-1" />
+                                    <Icon name="sync" />
                                     {t('google_refresh_link')}
                                 </Button>
                                 <Button variant="danger" onClick={onDisconnectGoogle}>
-                                    <Icon name="close" className="mr-1" />
+                                    <Icon name="close" />
                                     {t('google_disconnect_account')}
                                 </Button>
                             </div>
@@ -82,7 +82,7 @@ export const IntegrationGoogleCalendar = ({
                                     disabled={loading}
                                     className={styles.IntegrationGoogleCalendar__actionsMt05}
                                 >
-                                    <Icon name="bolt" className="mr-1" />
+                                    <Icon name="bolt" />
                                     {t('google_retry_failed')}
                                 </Button>
                             </Alert>

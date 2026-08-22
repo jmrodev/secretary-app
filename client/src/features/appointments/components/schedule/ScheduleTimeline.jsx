@@ -93,14 +93,14 @@ export const ScheduleTimeline = ({
                     <div key={timeKey} style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
                         {isCurrentSlot && (
                             <div ref={markerRef} className={styles.ScheduleTimeline__currentTimeLine} style={{ top: `${progressPercent}%`, left: 0, right: 0 }}>
-                                <div className={styles.ScheduleTimeline__currentTimeLineLabel}>{t('now') || 'AHORA'}</div>
+                                <div className={styles.ScheduleTimeline__currentTimeLineLabel}>{t('now')}</div>
                                 <div className={styles.ScheduleTimeline__currentTimeLineBar}></div>
                             </div>
                         )}
                         {isBlockedByGoogle ? (
                             <div className={`${styles.ScheduleTimeline__googleBlocked}`}>
                                 <Icon name="lock" size="1.2rem" />
-                                <span>{t('blocked') || 'Bloqueado'}</span>
+                                <span>{t('blocked')}</span>
                             </div>
                         ) : slotApps.length > 0 ? (
                             slotApps.map(appt => {
@@ -132,7 +132,7 @@ export const ScheduleTimeline = ({
                                         <Icon name={isSlotClosed ? 'lock' : 'add'} size="1.5rem" />
                                     </span>
                                     <span className={`${styles.ScheduleTimeline__availableLabel}`}>
-                                        {isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
+                                        {isSlotClosed ? (t('closed_hours')) : (t('available'))}
                                     </span>
                                 </div>
                             </div>
@@ -144,7 +144,7 @@ export const ScheduleTimeline = ({
             {/* If it's today and no slot contains "now", all visible slots are in the past. Render at the very end. */}
             {isTodaySchedule && currentSlotIndex === -1 && (
                 <div ref={markerRef} className={styles.ScheduleTimeline__currentTimeLine}>
-                    <div className={styles.ScheduleTimeline__currentTimeLineLabel}>{t('now') || 'AHORA'}</div>
+                    <div className={styles.ScheduleTimeline__currentTimeLineLabel}>{t('now')}</div>
                     <div className={styles.ScheduleTimeline__currentTimeLineBar}></div>
                 </div>
             )}

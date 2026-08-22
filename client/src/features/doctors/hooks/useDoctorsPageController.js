@@ -158,7 +158,7 @@ export const useDoctorsPageController = () => {
         const { type, data, schedule } = modalState;
         try {
             if (type === 'CREATE') {
-                await api.post('/users', {
+                await api.post('/users/admin/users', {
                     ...data,
                     fullName: data.full_name, // Backend expects fullName
                 });

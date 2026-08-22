@@ -82,6 +82,10 @@
     grid-template-columns: 1fr 1fr;
 }
 
+.ConfigGrid--1col {
+    grid-template-columns: 1fr !important;
+}
+
 .ConfigGrid--gap1 {
     gap: 1rem;
 }

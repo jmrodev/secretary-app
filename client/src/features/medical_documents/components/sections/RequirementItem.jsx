@@ -30,7 +30,7 @@ export const RequirementItem = ({
                     variant={type === 'prescription' ? 'blue' : 'green'}
                     className={`${styles.RequirementItem__badgeClickable}`}
                     onClick={() => onSelect(request)}
-                    title={t('view_detail') || "Ver detalle"}
+                    title={t('view_detail')}
                 >
                     {typeLabel}
                 </Badge>
@@ -57,7 +57,7 @@ export const RequirementItem = ({
                         variant="ghost"
                         size="sm-compact"
                         onClick={() => onSelect(request)}
-                        title={t('view') || "Ver"}
+                        title={t('view')}
                         icon={<Icon name="visibility" size="1rem" />}
                     />
                     {canDelete && (
@@ -65,7 +65,7 @@ export const RequirementItem = ({
                             variant="outline-danger"
                             size="sm-compact"
                             onClick={() => onDelete(id)}
-                            title={t('delete') || "Eliminar"}
+                            title={t('delete')}
                             icon={<Icon name="delete" size="1rem" />}
                         />
                     )}
@@ -88,7 +88,7 @@ export const RequirementItem = ({
                                 },
                                 reqId: id
                             })}
-                            title={t('pay') || 'Cobrar'}
+                            title={t('pay')}
                             icon={<Icon name="payments" size="1rem" />}
                         />
                     )}

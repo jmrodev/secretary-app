@@ -65,9 +65,9 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                 <div className={`${styles.WhatsappChatHistory__headerInfo}`}>
                     <Icon name="whatsapp" size="1.2rem" />
                     <h3 className={`${styles.WhatsappChatHistory__title}`}>{t('whatsapp_history')}</h3>
-                    <div className={styles.WhatsappChatHistory__phoneInputContainer} title={t('whatsmeow_phone_hint') || "Teléfono WhatsMeow (ej: 54249...)"}>
+                    <div className={styles.WhatsappChatHistory__phoneInputContainer} title={t('whatsmeow_phone_hint')}>
                         <label htmlFor="whatsapp-target-phone" className={styles.WhatsappChatHistory__label}>
-                            {t('whatsapp_target_phone') || 'Teléfono objetivo'}
+                            {t('whatsapp_target_phone')}
                         </label>
                         <div className={styles.WhatsappChatHistory__phoneInputRow}>
                             <Icon name="edit" size="0.85rem" />
@@ -83,10 +83,10 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: '4px' }}>
-                    <Button size="sm" variant="ghost" onClick={fetchHistory} title={t('refresh') || "Refrescar"} icon={<Icon name="refresh" size="1rem" />}>
+                    <Button size="sm" variant="ghost" onClick={fetchHistory} title={t('refresh')} icon={<Icon name="refresh" size="1rem" />}>
                         {t('refresh')}
                     </Button>
-                    <Button size="sm" variant="ghost" onClick={handleDeleteConversation} title={t('delete_conversation') || "Eliminar conversación"} icon={<Icon name="delete" size="1rem" />}>
+                    <Button size="sm" variant="ghost" onClick={handleDeleteConversation} title={t('delete_conversation')} icon={<Icon name="delete" size="1rem" />}>
                     </Button>
                 </div>
             </header>
@@ -148,7 +148,7 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                     type="submit"
                     className={`${styles.WhatsappChatHistory__sendBtn}`}
                     disabled={sending || !newMessage.trim()}
-                    aria-label={t('send_message') || 'Enviar mensaje'}
+                    aria-label={t('send_message')}
                 >
                     <Icon name="send" size="1.2rem" />
                 </button>

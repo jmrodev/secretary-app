@@ -22,17 +22,17 @@ export const HolidayForm = ({ onAdd, t: propT }) => {
 
     return (
         <form onSubmit={handleSubmit} className="form">
-            <FormGroup label={t('date') || 'Fecha'} required>
+            <FormGroup label={t('date')} required>
                 <Input type="date" value={newDate} onChange={e => setNewDate(e.target.value)} required />
             </FormGroup>
-            <FormGroup label={t('description') || 'Descripción'} required>
+            <FormGroup label={t('description')} required>
                 <Input
                     type="text" value={newDesc} onChange={e => setNewDesc(capitalizeFirst(e.target.value))}
-                    placeholder={t('holiday_desc_placeholder') || 'Ej. Navidad'} required
+                    placeholder={t('holiday_desc_placeholder')} required
                 />
             </FormGroup>
             <Button type="submit" variant="primary" className="w-full mt-2" icon={<Icon name="auto_awesome" size="1.1rem" />}>
-                {t('add_holiday') || 'Agregar Feriado'}
+                {t('add_holiday')}
             </Button>
         </form>
     );

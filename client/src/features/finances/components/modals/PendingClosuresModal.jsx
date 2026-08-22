@@ -42,7 +42,7 @@ export const PendingClosuresModal = ({
             <div className={`${styles.PendingClosuresModal__pendingClosuresContainer} animate-fade-in`}>
                 <div className={styles.PendingClosuresModal__pendingClosuresHeaderActions}>
                     <p className={styles.PendingClosuresModal__pendingClosuresDescription}>
-                        {t('pending_closures_desc') || 'Días con movimientos de dinero que aún no han sido entregados.'}
+                        {t('pending_closures_desc')}
                     </p>
                 </div>
 
@@ -88,7 +88,7 @@ export const PendingClosuresModal = ({
                                                     onClick={() => handleOpenBalancing(day)}
                                                     icon={<Icon name="account_balance_wallet" />}
                                                 >
-                                                    {t('deliver_action') || 'Hacer Arqueo'}
+                                                    {t('deliver_action')}
                                                 </Button>
                                                 <Button
                                                     size="sm-compact"

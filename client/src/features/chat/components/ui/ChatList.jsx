@@ -35,7 +35,7 @@ export const ChatList = ({
         <div className="floating-chat__list">
             <div className="floating-chat__search">
                 <Input
-                    placeholder={t('search') || "Buscar..."}
+                    placeholder={t('search')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     size="sm"

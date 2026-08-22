@@ -45,7 +45,7 @@ export const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGe
                             </td>
                         </tr>
                         <tr className={`${styles.PatientInfoBlock__infoRow}`}>
-                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('dob') || 'Fecha Nac.'}</th>
+                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('dob')}</th>
                             <td className={`${styles.PatientInfoBlock__infoValue}`}>
                                 {formatDate(details.dob)}
                                 {details.dob && (
@@ -56,7 +56,7 @@ export const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGe
                             </td>
                         </tr>
                         <tr className={`${styles.PatientInfoBlock__infoRow}`}>
-                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('address') || 'Dirección'}</th>
+                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('address')}</th>
                             <td className={`${styles.PatientInfoBlock__infoValue}`}>
                                 <div className={`${styles.PatientInfoBlock__addressBox}`}>
                                     {(() => {
@@ -69,7 +69,7 @@ export const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGe
                                         if (!hasStreet) {
                                             return (
                                                 <span className={`${styles.PatientInfoBlock__textEmpty}`}>
-                                                    {t('no_address_loaded') || 'Sin calle ni altura cargada'}
+                                                    {t('no_address_loaded')}
                                                     {(details.city || details.province) ? ` (${[details.city, details.province].filter(Boolean).join(', ')})` : ''}
                                                 </span>
                                             );
@@ -138,7 +138,7 @@ export const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGe
                                         }
 
                                         if (!details.email) {
-                                            return <span className={`${styles.PatientInfoBlock__textEmpty}`}>{t('not_available_short') || 'N/A'}</span>;
+                                            return <span className={`${styles.PatientInfoBlock__textEmpty}`}>{t('not_available_short')}</span>;
                                         }
 
                                         return null;

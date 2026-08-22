@@ -36,11 +36,11 @@ export const InstitutionsPage = () => {
     const [viewMode, setViewMode] = React.useState('transactions');
 
     return (
-        <MainLayout wide flush title={t('institutions') || 'Instituciones'}>
+        <MainLayout wide flush title={t('institutions')}>
             <div>
                 <div>
                     {loading && institutions.length === 0 ? (
-                        <Loading variant="centered" text={t('loading') || "Cargando..."} />
+                        <Loading variant="centered" text={t('loading')} />
                     ) : (
                         <>
                             <FeatureToolbar
@@ -61,7 +61,7 @@ export const InstitutionsPage = () => {
                                             onClick={() => handleOpenFormModal()}
                                             icon={<Icon name="add" size="1.1rem" />}
                                         >
-                                            {t('new_institution') || 'Nueva'}
+                                            {t('new_institution')}
                                         </Button>
                                         
                                         {selectedInstId && (

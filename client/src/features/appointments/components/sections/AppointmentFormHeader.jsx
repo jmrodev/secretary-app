@@ -13,7 +13,7 @@ export const AppointmentFormHeader = ({ isEdit, date, t }) => {
         <header className={styles.root}>
             <section className={styles.patientInfo}>
                 <h3 className={styles.text}>
-                    {isEdit ? (t('edit_appointment') || 'Editar Turno') : (t('new_appointment') || 'Nuevo Turno')}
+                    {isEdit ? (t('edit_appointment')) : (t('new_appointment'))}
                 </h3>
                 <p className={styles.date}>
                     <Icon name="calendar_month" size="1.1rem" />
@@ -23,7 +23,7 @@ export const AppointmentFormHeader = ({ isEdit, date, t }) => {
 
             <aside className={styles.badges}>
                 <Badge variant={isEdit ? 'accent' : 'blue'}>
-                    {isEdit ? (t('modification') || 'Modificando') : (t('creating') || 'Creando')}
+                    {isEdit ? (t('modification')) : (t('creating'))}
                 </Badge>
             </aside>
         </header>

@@ -37,10 +37,10 @@ const getPaymentStatusVariant = (paymentStatus) => {
 export const AppointmentHeader = ({ appt, t }) => {
     const getPaymentStatusLabel = (paymentStatus) => {
         switch (paymentStatus) {
-            case 'paid': return t('paid') || 'Pagado';
-            case 'pending': return t('pending') || 'Pendiente';
-            case 'partial': return t('partial') || 'Parcial';
-            case 'debt': return t('debt') || 'Deuda';
+            case 'paid': return t('paid');
+            case 'pending': return t('pending');
+            case 'partial': return t('partial');
+            case 'debt': return t('debt');
             default: return t(paymentStatus) || paymentStatus || 'Deuda';
         }
     };
@@ -60,30 +60,30 @@ export const AppointmentHeader = ({ appt, t }) => {
                 {/* Timeline / Traceability section - Colorful pills */}
                 <div className={styles.AppointmentHeader__timelineList}>
                     {appt.created_at && (
-                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemCreated}`} title={t('appointment_creation_title') || "Creación del turno"}>
+                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemCreated}`} title={t('appointment_creation_title')}>
                             <Icon name="add_circle" size="0.85rem" />
-                            <span>{t('created') || 'Creado'}: {formatDate(appt.created_at, true)}</span>
+                            <span>{t('created')}: {formatDate(appt.created_at, true)}</span>
                         </div>
                     )}
 
                     {appt.confirmed_at && (
-                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemConfirmed}`} title={t('appointment_confirmation_title') || "Confirmación de la cita"}>
+                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemConfirmed}`} title={t('appointment_confirmation_title')}>
                             <Icon name="check_circle" size="0.85rem" />
-                            <span>{t('confirmed') || 'Confirmado'}: {formatDate(appt.confirmed_at, true)}</span>
+                            <span>{t('confirmed')}: {formatDate(appt.confirmed_at, true)}</span>
                         </div>
                     )}
 
                     {appt.arrived_at && (
-                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemArrived}`} title={t('appointment_arrived_title') || "Llegada a sala de espera"}>
+                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemArrived}`} title={t('appointment_arrived_title')}>
                             <Icon name="meeting_room" size="0.85rem" />
-                            <span>{t('in_waiting_room') || 'En sala'}: {formatDate(appt.arrived_at, true)}</span>
+                            <span>{t('in_waiting_room')}: {formatDate(appt.arrived_at, true)}</span>
                         </div>
                     )}
 
                     {appt.completed_at && (
-                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemCompleted}`} title={t('appointment_completed_title') || "Atención finalizada"}>
+                        <div className={`${styles.AppointmentHeader__timelineItem} ${styles.AppointmentHeader__itemCompleted}`} title={t('appointment_completed_title')}>
                             <Icon name="task_alt" size="0.85rem" />
-                            <span>{t('attended') || 'Atendido'}: {formatDate(appt.completed_at, true)}</span>
+                            <span>{t('attended')}: {formatDate(appt.completed_at, true)}</span>
                         </div>
                     )}
 
@@ -98,17 +98,17 @@ export const AppointmentHeader = ({ appt, t }) => {
 
             <aside className={styles.AppointmentHeader__badges}>
                 <Badge variant={getStatusVariant(appt.status)}>
-                    {t('appointment_status') || 'Turno'}: {t(appt.status) || appt.status}
+                    {t('appointment_status')}: {t(appt.status) || appt.status}
                 </Badge>
                 
                 {/* Payment badge */}
                 {!(appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') ? (
                     <Badge variant={getPaymentStatusVariant(appt.payment_status)}>
-                        {t('payment') || 'Pago'}: {getPaymentStatusLabel(appt.payment_status)}
+                        {t('payment')}: {getPaymentStatusLabel(appt.payment_status)}
                     </Badge>
                 ) : (
                     <Badge variant="accent">
-                        {t('payment') || 'Pago'}: {t('bonified') || 'Bonificado'}
+                        {t('payment')}: {t('bonified')}
                     </Badge>
                 )}
             </aside>

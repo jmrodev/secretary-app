@@ -27,7 +27,7 @@ export const InstitutionPaymentModal = ({
         { value: 'transfer', label: t('transfer') },
         { value: 'cash', label: t('cash') },
         { value: 'check', label: 'Cheque' },
-        { value: 'other', label: t('other') || 'Otro' }
+        { value: 'other', label: t('other') }
     ];
 
     return (

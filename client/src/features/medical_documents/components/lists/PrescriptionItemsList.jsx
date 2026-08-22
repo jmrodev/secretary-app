@@ -29,12 +29,12 @@ export const PrescriptionItemsList = ({
                 <table className={styles.PrescriptionItemsList__table}>
                     <thead>
                         <tr>
-                            <th style={{ width: '32%' }}>{t('medication') || 'Medicamento'}</th>
-                            <th style={{ width: '8%' }}>{t('dose') || 'Dosis'}</th>
-                            <th style={{ width: '15%' }}>{t('frequency') || 'Frecuencia'}</th>
-                            <th style={{ width: '15%' }}>{t('units_per_box_short') || 'Cant/Caja'}</th>
-                            <th style={{ width: '15%' }}>{t('boxes') || 'Envases'}</th>
-                            <th style={{ width: '15%' }}>{t('duration') || 'Duración'}</th>
+                            <th style={{ width: '32%' }}>{t('medication')}</th>
+                            <th style={{ width: '8%' }}>{t('dose')}</th>
+                            <th style={{ width: '15%' }}>{t('frequency')}</th>
+                            <th style={{ width: '15%' }}>{t('units_per_box_short')}</th>
+                            <th style={{ width: '15%' }}>{t('boxes')}</th>
+                            <th style={{ width: '15%' }}>{t('duration')}</th>
                             <th className={styles.PrescriptionItemsList__actionsCol}></th>
                         </tr>
                     </thead>
@@ -46,13 +46,13 @@ export const PrescriptionItemsList = ({
                                     <MedicationAutocomplete
                                         value={tempMed}
                                         onChange={setTempMed}
-                                        placeholder={t('search_medication') || 'Buscar medicamento...'}
+                                        placeholder={t('search_medication')}
                                         onSelectMedication={handleSelectMedication}
                                     />
                                 </td>
                                 <td className={styles.PrescriptionItemsList__formCell}>
                                     <Input
-                                        placeholder={t('dose_placeholder') || 'Dosis'}
+                                        placeholder={t('dose_placeholder')}
                                         value={tempDose}
                                         onChange={e => setTempDose(e.target.value)}
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
@@ -64,9 +64,9 @@ export const PrescriptionItemsList = ({
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
                                         value={tempFreqPreset !== null ? tempFreqPreset : ''}
                                         onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
-                                        aria-label={t('frequency') || 'Frecuencia'}
+                                        aria-label={t('frequency')}
                                     >
-                                        <option value="" disabled style={{ color: 'black' }}>{t('frequency') || 'Frecuencia'}…</option>
+                                        <option value="" disabled style={{ color: 'black' }}>{t('frequency')}…</option>
                                         {freqPresets && freqPresets.map((p, idx) => {
                                             const safeKey = p.label.replace('½', 'half').replace('¼', 'quarter').replace('¾', 'three_quarters').replace('/', '_per_').replace(' ', '_').toLowerCase();
                                             const translationKey = `freq_${safeKey}`;
@@ -81,7 +81,7 @@ export const PrescriptionItemsList = ({
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '100%', textAlign: 'center' }}
                                         value={tempUnitsPerBox}
                                         onChange={e => handleQuantityChange('units_per_box', e.target.value)}
-                                        aria-label={t('units_per_box') || 'Unidades por caja'}
+                                        aria-label={t('units_per_box')}
                                     >
                                         <option value="" style={{ color: 'black' }}>-</option>
                                         {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
@@ -96,7 +96,7 @@ export const PrescriptionItemsList = ({
                                             style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '55px', textAlign: 'center' }}
                                             value={tempBoxes}
                                             onChange={e => handleQuantityChange('boxes', e.target.value)}
-                                            title={t('boxes_quantity') || 'Cantidad de envases'}
+                                            title={t('boxes_quantity')}
                                         >
                                             <option value="" style={{ color: 'black' }}>-</option>
                                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(v => (
@@ -114,7 +114,7 @@ export const PrescriptionItemsList = ({
                                             size="sm"
                                             style={{ width: '55px', textAlign: 'center', padding: '0.25rem' }}
                                         />
-                                        <span style={{ fontSize: '0.75rem', color: 'rgb(255 255 255 / 50%)', whiteSpace: 'nowrap' }}>{t('days') || 'días'}</span>
+                                        <span style={{ fontSize: '0.75rem', color: 'rgb(255 255 255 / 50%)', whiteSpace: 'nowrap' }}>{t('days')}</span>
                                     </div>
                                 </td>
                                 <td className={styles.PrescriptionItemsList__actionsCol}>
@@ -127,7 +127,7 @@ export const PrescriptionItemsList = ({
                                         icon={<Icon name="ADD" />}
                                         style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
                                     >
-                                        {t('add') || 'Añadir'}
+                                        {t('add')}
                                     </Button>
                                 </td>
                             </tr>
@@ -155,14 +155,14 @@ export const PrescriptionItemsList = ({
                                     {item.quantity && item.quantity !== '0' && (
                                         <div className={styles.PrescriptionItemsList__metaItem}>
                                             <Icon name="inventory_2" size="0.9rem" />
-                                            {item.quantity} {parseInt(item.quantity) === 1 ? (t('box') || 'caja') : (t('boxes_plural') || 'cajas')}
+                                            {item.quantity} {parseInt(item.quantity) === 1 ? (t('box')) : (t('boxes_plural'))}
                                         </div>
                                     )}
                                 </td>
                                 <td className={styles.PrescriptionItemsList__metaCell} style={{ textAlign: 'center' }}>
                                     {item.days_supply && (
                                         <div className={`${styles.PrescriptionItemsList__metaItem} ${styles.PrescriptionItemsList__daysSupply}`} style={{ justifyContent: 'center' }}>
-                                            ~{item.days_supply} {t('days') || 'días'}
+                                            ~{item.days_supply} {t('days')}
                                         </div>
                                     )}
                                 </td>

@@ -30,7 +30,7 @@ export const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, pati
 
     const handleCopy = () => {
         copyToClipboard(url).then(() => {
-            alert(t('link_copied') || "¡Enlace copiado!");
+            alert(t('link_copied'));
         }).catch(err => console.error(err));
     };
 
@@ -54,7 +54,7 @@ export const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, pati
                             WhatsApp
                         </a>
                     )}
-                    <Button variant="accent" onClick={handleCopy} icon={<Icon name="content_copy" size="1.1rem" />}>{t('copy_link') || 'Copiar Enlace'}</Button>
+                    <Button variant="accent" onClick={handleCopy} icon={<Icon name="content_copy" size="1.1rem" />}>{t('copy_link')}</Button>
                 </div>
             }
         >

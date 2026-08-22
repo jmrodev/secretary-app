@@ -99,7 +99,7 @@ class UserAccountService {
         }
         const isMatch = await bcrypt.compare(adminPassword, adminUser.password_hash);
         if (!isMatch) {
-            const error = new Error('Contraseña de administrador incorrecta.');
+            const error = new Error('Su contraseña actual es incorrecta.');
             error.statusCode = 403;
             throw error;
         }

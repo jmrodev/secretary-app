@@ -102,7 +102,7 @@ exports.createUser = async (req, res) => {
     try {
         const { adminPassword, ...userData } = req.body;
         if (!adminPassword) {
-            return res.status(400).json({ error: "Se requiere su contraseña de administrador para crear un usuario." });
+            return res.status(400).json({ error: "Se requiere su contraseña para crear un usuario." });
         }
 
         const userId = await userAccountService.createUser(req, userData);
@@ -138,7 +138,7 @@ exports.deleteUser = async (req, res) => {
         const { adminPassword } = req.body;
 
         if (!adminPassword) {
-            return res.status(400).json({ error: "Se requiere su contraseña de administrador para eliminar un usuario." });
+            return res.status(400).json({ error: "Se requiere su contraseña para eliminar un usuario." });
         }
 
         await userAccountService.deleteUser(req, id);

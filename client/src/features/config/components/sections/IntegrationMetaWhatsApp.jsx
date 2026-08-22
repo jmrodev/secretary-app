@@ -25,7 +25,7 @@ export const IntegrationMetaWhatsApp = ({ settings, updateSetting, onTestMeta, l
                     {t('meta_whatsapp_description')}
                 </p>
 
-                <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--1col']}`}>
                     <ConfigField
                         id="meta-phone-id"
                         label={t('meta_phone_number_id_label')}

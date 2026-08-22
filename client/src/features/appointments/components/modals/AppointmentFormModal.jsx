@@ -29,7 +29,7 @@ export const AppointmentFormModal = ({
         <Modal
             isOpen={isOpen} 
             onClose={onClose}
-            title={editModeId ? (t('edit_appointment') || 'Editar Turno') : t('new_appointment')}
+            title={editModeId ? (t('edit_appointment')) : t('new_appointment')}
             size="lg"
             footer={
                 <Button 
@@ -39,7 +39,7 @@ export const AppointmentFormModal = ({
                     className={styles.AppointmentFormModal__submit} 
                     icon={<Icon name="check" />}
                 >
-                    {editModeId ? (t('save_changes') || 'Guardar') : t('confirm_booking')}
+                    {editModeId ? (t('save_changes')) : t('confirm_booking')}
                 </Button>
             }
         >

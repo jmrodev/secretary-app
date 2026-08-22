@@ -29,7 +29,7 @@ export const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunn
                 </p>
 
                 {/* System URLs Grid */}
-                <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--1col']}`}>
                     <ConfigField
                         id="public-base-url"
                         label={t('remote_access_public_url_label')}
@@ -42,19 +42,18 @@ export const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunn
                     />
 
                     <div>
-                        <label className={styles.IntegrationRemoteAccess__label} htmlFor="staff-base-url">
-                            {t('remote_access_local_url_label')}
-                        </label>
-                        <div className={styles.IntegrationRemoteAccess__actions}>
-                            <Input
-                                type="text"
-                                id="staff-base-url"
-                                placeholder={t('remote_access_local_url_placeholder')}
-                                value={settings.staff_base_url || ''}
-                                onChange={(e) => updateSetting('staff_base_url', e.target.value)}
-                                disabled={!isAuthorized}
-                            />
-                            {onShowQr && (
+                        <ConfigField
+                            id="staff-base-url"
+                            label={t('remote_access_local_url_label')}
+                            type="text"
+                            placeholder={t('remote_access_local_url_placeholder')}
+                            value={settings.staff_base_url || ''}
+                            onChange={(e) => updateSetting('staff_base_url', e.target.value)}
+                            disabled={!isAuthorized}
+                            hint={t('remote_access_local_url_hint')}
+                        />
+                        {onShowQr && (
+                            <div className={styles.IntegrationRemoteAccess__actions}>
                                 <Button
                                     variant="secondary"
                                     onClick={onShowQr}
@@ -63,36 +62,30 @@ export const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunn
                                 >
                                     {t('remote_access_qr_button')}
                                 </Button>
-                            )}
-                        </div>
-                        <span className={styles.IntegrationRemoteAccess__hintSmall}>
-                            {t('remote_access_local_url_hint')}
-                        </span>
+                            </div>
+                        )}
                     </div>
                 </div>
 
                 <div className={shared.ConfigSection__divider}></div>
 
                 {/* DuckDNS & Alternative Methods */}
-                <div>
-                    <label htmlFor="remote-access-method" className={styles.IntegrationRemoteAccess__label}>
-                        {t('remote_access_method_label')}
-                    </label>
-                    <Select
-                        id="remote-access-method"
-                        value={method}
-                        onChange={(e) => updateSetting('remote_access_method', e.target.value)}
-                        disabled={!isAuthorized}
-                        options={[
-                            { value: 'none', label: t('remote_access_method_none') },
-                            { value: 'duckdns', label: t('remote_access_method_duckdns') }
-                        ]}
-                    />
-                </div>
+                <ConfigField
+                    id="remote-access-method"
+                    label={t('remote_access_method_label')}
+                    type="select"
+                    value={method}
+                    onChange={(e) => updateSetting('remote_access_method', e.target.value)}
+                    disabled={!isAuthorized}
+                    options={[
+                        { value: 'none', label: t('remote_access_method_none') },
+                        { value: 'duckdns', label: t('remote_access_method_duckdns') }
+                    ]}
+                />
 
                 {method === 'duckdns' && (
                     <div className={shared.AnimateFadeIn}>
-                        <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                        <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--1col']}`}>
                             <ConfigField
                                 id="duckdns-domain"
                                 label={t('remote_access_duckdns_domain_label')}
@@ -131,13 +124,13 @@ export const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunn
                         <div className={shared.ConfigSection__divider}></div>
 
                         <div className={styles.IntegrationRemoteAccess__guide}>
-                            <h4 className={styles.IntegrationRemoteAccess__guideTitle}><Icon name="menu_book" className="mr-1" />{t('duckdns_guide_title') || 'Guía de Configuración DuckDNS'}</h4>
+                            <h4 className={styles.IntegrationRemoteAccess__guideTitle}><Icon name="menu_book" />{t('duckdns_guide_title')}</h4>
                             <ol className={styles.IntegrationRemoteAccess__guideList}>
-                                <li>{t('duckdns_guide_step1') || 'Registre un subdominio gratuito en'} <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className={styles.IntegrationRemoteAccess__link}>duckdns.org</a>.</li>
-                                <li>{t('duckdns_guide_step2_p1') || 'Copie el'} <b>Token</b> {t('duckdns_guide_step2_p2') || 'y el'} <b>{t('subdomain') || 'Subdominio'}</b> {t('duckdns_guide_step2_p3') || 'en los campos de arriba.'}</li>
-                                <li>{t('duckdns_guide_step3_p1') || 'Lo más importante: Debe configurar el'} <b>Port Forwarding</b> {t('duckdns_guide_step3_p2') || 'en su Router.'}</li>
-                                <li>{t('duckdns_guide_step4_p1') || 'Reenvíe el puerto externo'} <b>80</b> {t('duckdns_guide_step4_p2') || '(o el que prefiera) a la IP local del servidor en el puerto'} <b>5173</b> (Dev) {t('or') || 'o'} <b>3001</b> (Prod).</li>
-                                <li>{t('duckdns_guide_step5') || 'Asegúrese de que el servidor tenga una IP local fija (estática).'}</li>
+                                <li>{t('duckdns_guide_step1')} <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className={styles.IntegrationRemoteAccess__link}>duckdns.org</a>.</li>
+                                <li>{t('duckdns_guide_step2_p1')} <b>Token</b> {t('duckdns_guide_step2_p2')} <b>{t('subdomain')}</b> {t('duckdns_guide_step2_p3')}</li>
+                                <li>{t('duckdns_guide_step3_p1')} <b>Port Forwarding</b> {t('duckdns_guide_step3_p2')}</li>
+                                <li>{t('duckdns_guide_step4_p1')} <b>80</b> {t('duckdns_guide_step4_p2')} <b>5173</b> (Dev) {t('or')} <b>3001</b> (Prod).</li>
+                                <li>{t('duckdns_guide_step5')}</li>
                             </ol>
                         </div>
                     </div>

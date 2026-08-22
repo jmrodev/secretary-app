@@ -1,5 +1,6 @@
 .MessageTemplateEditor__root {
     margin-bottom: var(--spacing-xl);
+    max-width: 420px;
 }
 
 .MessageTemplateEditor__label {

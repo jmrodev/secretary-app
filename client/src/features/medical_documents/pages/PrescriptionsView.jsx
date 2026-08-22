@@ -21,7 +21,7 @@ export const PrescriptionsView = () => {
         handleEditDataChange, handleSelectMedication
     } = controller;
 
-    const getNewButtonLabel = () => t('new_prescription') || 'Nueva Receta';
+    const getNewButtonLabel = () => t('new_prescription');
 
     return (
         <article className={`medical-documents__prescriptions-layout`}>

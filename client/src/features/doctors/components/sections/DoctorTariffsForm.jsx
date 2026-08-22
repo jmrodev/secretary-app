@@ -14,7 +14,7 @@ export const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
         <div className={`${styles.DoctorTariffsForm__root}`}>
             {settings.enable_office_rentals === 'true' && (
                 <div className={`${styles.DoctorTariffsForm__section} ${styles.DoctorTariffsForm__sectionRental}`}>
-                    <h4 className={`${styles.DoctorTariffsForm__title}`}>{t('rental_configuration') || 'Configuración de Alquiler'}</h4>
+                    <h4 className={`${styles.DoctorTariffsForm__title}`}>{t('rental_configuration')}</h4>
                     <div className={`${styles.DoctorTariffsForm__grid}`}>
                         <FormGroup label={t('office_number')}>
                             <Input value={data.office_number} onChange={e => handleTariffChange('office_number', e.target.value)} />
@@ -42,22 +42,22 @@ export const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
 
             <div className={`${styles.DoctorTariffsForm__section}`}>
                 <h4 className={`${styles.DoctorTariffsForm__title}`}>
-                    {t('consultation_prices') || 'Precios de Consulta'} ({data.appointment_duration}m)
+                    {t('consultation_prices')} ({data.appointment_duration}m)
                 </h4>
                  <div className={`${styles.DoctorTariffsForm__grid} ${styles.DoctorTariffsForm__grid3col}`}>
                     <FormGroup label={t('consultation_price')}>
                         <CurrencyInput value={data.consultation_price} onChange={e => handleTariffChange('consultation_price', e.target.value)} />
                     </FormGroup>
-                    <FormGroup label={t('virtual_consultation_price') || 'Consulta Virtual'}>
+                    <FormGroup label={t('virtual_consultation_price')}>
                         <CurrencyInput value={data.virtual_consultation_price} onChange={e => handleTariffChange('virtual_consultation_price', e.target.value)} />
                     </FormGroup>
-                    <FormGroup label={t('prescription_price') || 'Recetas'}>
+                    <FormGroup label={t('prescription_price')}>
                         <CurrencyInput value={data.prescription_price} onChange={e => handleTariffChange('prescription_price', e.target.value)} />
                     </FormGroup>
-                    <FormGroup label={t('medical_license_price') || 'Licencia Médica'}>
+                    <FormGroup label={t('medical_license_price')}>
                         <CurrencyInput value={data.medical_license_price} onChange={e => handleTariffChange('medical_license_price', e.target.value)} />
                     </FormGroup>
-                    <FormGroup label={t('certificate_price') || 'Certificados'}>
+                    <FormGroup label={t('certificate_price')}>
                         <CurrencyInput value={data.certificate_price} onChange={e => handleTariffChange('certificate_price', e.target.value)} />
                     </FormGroup>
                 </div>
@@ -71,14 +71,14 @@ export const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                     <Input value={data.cbu || ''} onChange={(e) => handleTariffChange('cbu', e.target.value)} placeholder="28500..." />
                 </FormGroup>
                 <FormGroup label={t('alias_label')}>
-                    <Input value={data.alias || ''} onChange={(e) => handleTariffChange('alias', e.target.value)} placeholder={t('alias_placeholder_example') || "mi.alias.pago"} />
+                    <Input value={data.alias || ''} onChange={(e) => handleTariffChange('alias', e.target.value)} placeholder={t('alias_placeholder_example')} />
                 </FormGroup>
-                <FormGroup label={t('professional_bio') || 'Bio Profesional'}>
+                <FormGroup label={t('professional_bio')}>
                     <AutoTextarea
                         className={`${styles.DoctorTariffsForm__bioField}`}
                         value={data.bio || ''}
                         onChange={(e) => handleTariffChange('bio', e.target.value)}
-                        placeholder={t('bio_placeholder_example') || "Breve currículum o información relevante..."}
+                        placeholder={t('bio_placeholder_example')}
                     />
                 </FormGroup>
             </div>

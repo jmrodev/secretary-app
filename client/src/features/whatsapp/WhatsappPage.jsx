@@ -20,7 +20,7 @@ export const WhatsappPage = () => {
                         onClick={() => setActiveTab('broadcast')}
                     >
                         <Icon name="campaign" size="1rem" />
-                        {t('broadcast_tab') || 'Difusión'}
+                        {t('broadcast_tab')}
                     </button>
                     <button
                         type="button"

@@ -46,7 +46,7 @@ export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) =
                     {isOffline
                         ? t('bridge_offline_desc')
                         : isConnected
-                            ? (t('whatsapp_connected_desc') || 'WhatsApp vinculado correctamente.')
+                            ? (t('whatsapp_connected_desc'))
                             : t('whatsapp_pairing_desc')}
                 </p>
 
@@ -65,7 +65,7 @@ export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) =
                         ) : (
                             <div className={styles.GlobalWhatsappMessenger__qrPlaceholder}>
                                 <div className={styles.GlobalWhatsappMessenger__loader} />
-                                <span>{t('generating_qr') || 'Generando código...'}</span>
+                                <span>{t('generating_qr')}</span>
                             </div>
                         )}
                     </div>
@@ -80,7 +80,7 @@ export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) =
                             loading={logoutLoading}
                             icon={<Icon name="link_off" size="1rem" />}
                         >
-                            {t('whatsapp_disconnect') || 'Desconectar'}
+                            {t('whatsapp_disconnect')}
                         </Button>
                     ) : (
                         <Button
@@ -106,7 +106,7 @@ export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) =
                         {isOffline
                             ? t('offline')
                             : isConnected
-                                ? (t('connected') || 'Conectado')
+                                ? (t('connected'))
                                 : t('waiting_connection')}
                     </span>
                 </div>

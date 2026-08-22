@@ -12,12 +12,12 @@ const QuickSelectTable = ({ meds, label, items, onSelect, t }) => {
                 <table className={styles.PrescriptionHabitualMeds__table}>
                     <thead>
                         <tr>
-                            <th style={{ width: '32%' }}>{t('medication') || 'Medicamento'}</th>
-                            <th style={{ width: '8%' }}>{t('dose') || 'Dosis'}</th>
-                            <th style={{ width: '15%' }}>{t('frequency') || 'Frecuencia'}</th>
-                            <th style={{ width: '15%' }}>{t('units_per_box_short') || 'Cant/Caja'}</th>
-                            <th style={{ width: '15%' }}>{t('boxes') || 'Envases'}</th>
-                            <th style={{ width: '15%' }}>{t('duration') || 'Duración'}</th>
+                            <th style={{ width: '32%' }}>{t('medication')}</th>
+                            <th style={{ width: '8%' }}>{t('dose')}</th>
+                            <th style={{ width: '15%' }}>{t('frequency')}</th>
+                            <th style={{ width: '15%' }}>{t('units_per_box_short')}</th>
+                            <th style={{ width: '15%' }}>{t('boxes')}</th>
+                            <th style={{ width: '15%' }}>{t('duration')}</th>
                             <th className={styles.PrescriptionHabitualMeds__actionsCol}></th>
                         </tr>
                     </thead>
@@ -44,14 +44,14 @@ const QuickSelectTable = ({ meds, label, items, onSelect, t }) => {
                                         {(m.boxes_count || m.quantity) && (m.boxes_count || m.quantity) !== '0' ? (
                                             <div className={styles.PrescriptionHabitualMeds__metaItem}>
                                                 <Icon name="inventory_2" size="0.9rem" />
-                                                {m.boxes_count || m.quantity} {parseInt(m.boxes_count || m.quantity) === 1 ? (t('box') || 'caja') : (t('boxes_plural') || 'cajas')}
+                                                {m.boxes_count || m.quantity} {parseInt(m.boxes_count || m.quantity) === 1 ? (t('box')) : (t('boxes_plural'))}
                                             </div>
                                         ) : '-'}
                                     </td>
                                     <td className={styles.PrescriptionHabitualMeds__metaCell} style={{ textAlign: 'center' }}>
                                         {m.days_supply ? (
                                             <div className={`${styles.PrescriptionHabitualMeds__metaItem} ${styles.PrescriptionHabitualMeds__daysSupply}`} style={{ justifyContent: 'center' }}>
-                                                ~{m.days_supply} {t('days') || 'días'}
+                                                ~{m.days_supply} {t('days')}
                                             </div>
                                         ) : '-'}
                                     </td>
@@ -63,7 +63,7 @@ const QuickSelectTable = ({ meds, label, items, onSelect, t }) => {
                                             onClick={() => onSelect(m)}
                                             className={styles.PrescriptionHabitualMeds__actionBtn}
                                         >
-                                            {isSelected ? (t('selected') || 'En lista') : (t('load') || 'Cargar')}
+                                            {isSelected ? (t('selected')) : (t('load'))}
                                         </Button>
                                     </td>
                                 </tr>
@@ -88,14 +88,14 @@ export const PrescriptionHabitualMeds = ({ patientMeds, historyMeds = EMPTY_ARRA
         <div className={styles.PrescriptionHabitualMeds__wrapper}>
             <QuickSelectTable
                 meds={patientMeds}
-                label={t('habitual_meds') || 'Habituales'}
+                label={t('habitual_meds')}
                 items={items}
                 onSelect={handleSelectMedication}
                 t={t}
             />
             <QuickSelectTable
                 meds={historyMeds}
-                label={t('recent_history') || 'Histórico'}
+                label={t('recent_history')}
                 items={items}
                 onSelect={handleSelectMedication}
                 t={t}

@@ -57,8 +57,8 @@ const BillingSettingsWrapper = ({ controller }) => (
  * By centralizing this, we allow SystemConfigPage to be a pure, decoupled renderer.
  */
 export const loadDefaultConfigSections = (t) => {
-    registerConfigSection('modules', { title: t('modules') || 'Módulos', icon: 'view_module', desc: t('modules_desc') || 'Habilita o deshabilita módulos opcionales de la clínica.', allowedRoles: ['admin'] }, ModulesSettingsWrapper);
-    registerConfigSection('communications', { title: t('communications') || 'Comunicaciones', icon: 'chat', desc: t('communications_desc') || 'Plantillas de mensajes automáticos.', allowedRoles: ['secretary'] }, CommunicationSettingsWrapper);
-    registerConfigSection('integrations', { title: t('integrations') || 'Integraciones', icon: 'extension', desc: t('integrations_desc') || 'Servicios externos y conectividad.', allowedRoles: ['admin'] }, IntegrationSettingsWrapper);
-    registerConfigSection('billing', { title: t('billing') || 'Facturación AFIP', icon: 'payments', desc: t('billing_desc') || 'Parámetros fiscales de facturación.', allowedRoles: ['admin', 'secretary'] }, BillingSettingsWrapper);
+    registerConfigSection('modules', { title: t('modules'), icon: 'view_module', desc: t('modules_desc'), allowedRoles: ['admin'] }, ModulesSettingsWrapper);
+    registerConfigSection('communications', { title: t('communications'), icon: 'chat', desc: t('communications_desc'), allowedRoles: ['secretary'] }, CommunicationSettingsWrapper);
+    registerConfigSection('integrations', { title: t('integrations'), icon: 'extension', desc: t('integrations_desc'), allowedRoles: ['admin'] }, IntegrationSettingsWrapper);
+    registerConfigSection('billing', { title: t('billing'), icon: 'payments', desc: t('billing_desc'), allowedRoles: ['admin', 'secretary'] }, BillingSettingsWrapper);
 };

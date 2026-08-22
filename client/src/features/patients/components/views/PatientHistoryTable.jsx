@@ -72,7 +72,7 @@ export const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                                 onClick={() => onPayDebt(null, details.id, pendingVal)}
                                                                 icon={<Icon name="payments" size="0.8rem" />}
                                                             >
-                                                                {t('pay') || 'Pagar'}
+                                                                {t('pay')}
                                                             </Button>
                                                         </div>
                                                     )}
@@ -90,7 +90,7 @@ export const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                 {app.rescheduled_from_date && (
                                                     <div 
                                                         className={`${styles.PatientHistoryTable__rescheduleInfo}`} 
-                                                        title={`${t('originally_for') || 'Originalmente para'} ${formatDateTimeLong(app.rescheduled_from_date)}`}
+                                                        title={`${t('originally_for')} ${formatDateTimeLong(app.rescheduled_from_date)}`}
                                                         suppressHydrationWarning
                                                     >
                                                         <Icon name="history" size="0.8rem" />

@@ -20,7 +20,7 @@ export const ProfileEditor = ({
     isAdmin, isDoctor, isPatient
 }) => {
     const { handleProfileChange, handleUpdate } = handlers;
-    if (loading || !user) return <div className={`${styles.ProfileEditor__loading}`}>{t('loading') || 'Cargando...'}</div>;
+    if (loading || !user) return <div className={`${styles.ProfileEditor__loading}`}>{t('loading')}</div>;
 
     if (isAdmin) {
         return (
@@ -57,7 +57,7 @@ export const ProfileEditor = ({
                             <Input
                                 value={formData.fullName}
                                 onChange={e => handleProfileChange('fullName', e.target.value)}
-                                placeholder={t('full_name_example_placeholder') || "Juan Perez"}
+                                placeholder={t('full_name_example_placeholder')}
                                 required
                             />
                         </FormGroup>
@@ -92,14 +92,14 @@ export const ProfileEditor = ({
                                     rows={8}
                                     value={formData.medicalHistory}
                                     onChange={e => handleProfileChange('medicalHistory', e.target.value)}
-                                    placeholder={t('medical_history_example_placeholder') || "Allergies, chronic conditions, etc."}
+                                    placeholder={t('medical_history_example_placeholder')}
                                 />
                             </FormGroup>
                         )}
 
                         {isDoctor && (
                             <p className="profile-editor__text-muted italic">
-                                {t('doctor_settings_moved') || "Para configurar horarios y especialidad, contacte al administrador o use el panel de Doctores."}
+                                {t('doctor_settings_moved')}
                             </p>
                         )}
                     </div>

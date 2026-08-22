@@ -19,29 +19,29 @@ export const CashMonitorCard = React.memo(({ stats, t, className = '' }) => {
         <article className={`${styles.CashMonitorCard__root} ${className}`}>
             <header className={styles.CashMonitorCard__header}>
                 <Icon name="payments" className={styles.CashMonitorCard__headerIcon} />
-                {t('cash_monitor') || 'Monitor de Caja'}
+                {t('cash_monitor')}
             </header>
 
             <div className={styles.CashMonitorCard__statsRow}>
                 <div className={styles.CashMonitorCard__statItem}>
                     <div className={styles.CashMonitorCard__statValue}>{formatAmount(currentBalance)}</div>
-                    <div className={styles.CashMonitorCard__statLabel}>{t('current_cash') || 'Efectivo en Caja'}</div>
+                    <div className={styles.CashMonitorCard__statLabel}>{t('current_cash')}</div>
                 </div>
 
                 <div className={`${styles.CashMonitorCard__statItem} ${styles['CashMonitorCard__statItem--divider']}`}>
                     <div className={`${styles.CashMonitorCard__statValue} ${styles['CashMonitorCard__statValue--muted']}`}>
                         {formatAmount(stats?.todayTransfer || 0)}
                     </div>
-                    <div className={styles.CashMonitorCard__statLabel}>{t('transfers_today') || 'Transferencias Hoy'}</div>
+                    <div className={styles.CashMonitorCard__statLabel}>{t('transfers_today')}</div>
                 </div>
             </div>
 
             <div className={styles.CashMonitorCard__breakdown}>
                 <div className={styles.CashMonitorCard__breakdownItem}>
-                    <span className={styles.CashMonitorCard__breakdownIncome}>+</span> {formatAmount(cashToday)} {t('income_short') || 'Ing.'}
+                    <span className={styles.CashMonitorCard__breakdownIncome}>+</span> {formatAmount(cashToday)} {t('income_short')}
                 </div>
                 <div className={styles.CashMonitorCard__breakdownItem}>
-                    <span className={styles.CashMonitorCard__breakdownExpense}>-</span> {formatAmount(withdrawalsToday + expensesToday)} {t('out_short') || 'Egr.'}
+                    <span className={styles.CashMonitorCard__breakdownExpense}>-</span> {formatAmount(withdrawalsToday + expensesToday)} {t('out_short')}
                 </div>
             </div>
         </article>

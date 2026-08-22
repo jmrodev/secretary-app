@@ -30,16 +30,16 @@ export const DoctorsManager = ({
                     onClick={() => handlers.onEditDoctor(null)}
                     icon={<Icon name="add" size="1.1rem" />}
                 >
-                    {t('new') || 'Nuevo'}
+                    {t('new')}
                 </Button>
                 <div className={`${styles.DoctorsManager__counter}`}>
                     <Icon name="medical_services" size="1.2rem" />
-                    <span>{filteredDoctors.length} {t('doctors_count') || 'Médicos activos'}</span>
+                    <span>{filteredDoctors.length} {t('doctors_count')}</span>
                 </div>
             </div>
 
             {loading ? (
-                <Loading variant="centered" text={t('loading_doctors') || "Cargando médicos..."} />
+                <Loading variant="centered" text={t('loading_doctors')} />
             ) : (
                 <div className={`${styles.DoctorsManager__grid} animate-fade-in`}>
                     {filteredDoctors.length === 0 ? (

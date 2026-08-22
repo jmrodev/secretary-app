@@ -36,7 +36,7 @@ const PatientRecycleBinBase = ({
                     {t('recycle_bin_empty') && t('recycle_bin_empty') !== 'recycle_bin_empty' ? t('recycle_bin_empty') : 'La papelera está vacía.'}
                 </p>
                 <p className={`${styles.PatientRecycleBin__emptyText}`}>
-                    {t('recycle_bin_retention_hint') || 'Los pacientes eliminados aparecerán aquí por 30 días.'}
+                    {t('recycle_bin_retention_hint')}
                 </p>
             </div>
         );
@@ -48,10 +48,10 @@ const PatientRecycleBinBase = ({
                 <table className={`${styles.PatientRecycleBin__table}`}>
                     <thead>
                         <tr>
-                            <th className="w-1/3">{t('patient') || 'Paciente'}</th>
-                            <th className="w-1/4">{t('contact_info') || 'Contacto'}</th>
-                            <th className="w-1/4">{t('deleted_date') || 'Fecha Eliminación'}</th>
-                            <th className="w-1/6 text-right">{t('actions') || 'Acciones'}</th>
+                            <th className="w-1/3">{t('patient')}</th>
+                            <th className="w-1/4">{t('contact_info')}</th>
+                            <th className="w-1/4">{t('deleted_date')}</th>
+                            <th className="w-1/6 text-right">{t('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -62,11 +62,11 @@ const PatientRecycleBinBase = ({
                                         <span className={`${styles.PatientRecycleBin__patientName}`}>
                                             {item.last_name && item.first_name
                                                 ? `${item.last_name}, ${item.first_name}`
-                                                : (item.entity_name || item.full_name || item.username || (t('no_name') || 'Sin Nombre'))}
+                                                : (item.entity_name || item.full_name || item.username || (t('no_name')))}
                                         </span>
                                         {item.dni && (
                                             <span className={`${styles.PatientRecycleBin__patientDni}`}>
-                                                {t('dni') || 'DNI'}: {item.dni}
+                                                {t('dni')}: {item.dni}
                                             </span>
                                         )}
                                     </div>
@@ -78,7 +78,7 @@ const PatientRecycleBinBase = ({
                                                 <span className="opacity-70"><Icon name="phone" size="1rem" /></span> {item.phone}
                                             </div>
                                         ) : (
-                                            <span className={`${styles.PatientRecycleBin__contactMissing}`}>{t('no_phone_short') || 'Sin teléfono'}</span>
+                                            <span className={`${styles.PatientRecycleBin__contactMissing}`}>{t('no_phone_short')}</span>
                                         )}
                                         {item.email ? (
                                             <div className={`${styles.PatientRecycleBin__contactItem}`}>
@@ -104,10 +104,10 @@ const PatientRecycleBinBase = ({
                                             variant="outline"
                                             className={`${styles.PatientRecycleBin__actionBtnRestore}`}
                                             onClick={() => onRestore && onRestore(item.id)}
-                                            title={t('restore') || 'Restaurar'}
+                                            title={t('restore')}
                                             icon={<Icon name="restore" />}
                                         >
-                                            {t('restore') || 'Restaurar'}
+                                            {t('restore')}
                                         </Button>
                                     </div>
                                 </td>
@@ -117,7 +117,7 @@ const PatientRecycleBinBase = ({
                 </table>
             </div>
             <div className={`${styles.PatientRecycleBin__footerHint}`}>
-                <p><Icon name="warning" size="1rem" className="mr-1" />{t('permanent_delete_warning') || 'Los pacientes eliminados permanentemente no se pueden recuperar.'}</p>
+                <p><Icon name="warning" size="1rem" />{t('permanent_delete_warning')}</p>
             </div>
         </div>
     );

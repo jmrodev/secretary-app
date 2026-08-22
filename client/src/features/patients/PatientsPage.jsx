@@ -134,7 +134,7 @@ export const PatientsPage = () => {
                                             setSearchTerm('');
                                             executeSearch('');
                                         }}
-                                        placeholder={t('search_patients_placeholder') || 'Buscar pacientes (Presioná Enter)...'}
+                                        placeholder={t('search_patients_placeholder')}
                                     />
                                 )
                             }

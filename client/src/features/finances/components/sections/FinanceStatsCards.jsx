@@ -54,7 +54,7 @@ export const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) =
                                     <th className={`${styles.FinanceStatsCards__tableHeader} ${styles.FinanceStatsCards__tableHeaderRight}`}>
                                         {t('count_label')}
                                     </th>
-                                    <th className={`${styles.FinanceStatsCards__tableHeader} ${styles.FinanceStatsCards__tableHeaderRight}`}>{t('bonified_short') || 'Bonif.'}</th>
+                                    <th className={`${styles.FinanceStatsCards__tableHeader} ${styles.FinanceStatsCards__tableHeaderRight}`}>{t('bonified_short')}</th>
                                     <th className={`${styles.FinanceStatsCards__tableHeader} ${styles.FinanceStatsCards__tableHeaderRight}`}>{t('payment')}</th>
                                 </tr>
                             </thead>
@@ -101,7 +101,7 @@ export const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) =
                 <Card className={`${styles.FinanceStatsCards__card} ${styles.FinanceStatsCards__cardWide}`}>
                     <h3 className={`${styles.FinanceStatsCards__title}`}>
                         <Icon name="payments" size="0.8rem" className={`${styles.FinanceStatsCards__icon}`} />
-                        {(t('payment_methods_summary') || 'Métodos de Pago y Saldos').toUpperCase()}
+                        {(t('payment_methods_summary')).toUpperCase()}
                     </h3>
                     <div className={`${styles.FinanceStatsCards__breakdown}`}>
                         <table className={`${styles.FinanceStatsCards__table}`}>
@@ -171,23 +171,23 @@ export const FinanceStatsCards = ({ stats, totalDebt = 0, rentalDebt = 0, t }) =
             <Card className={`${styles.FinanceStatsCards__card}`}>
                 <h3 className={`${styles.FinanceStatsCards__title}`}>
                     <Icon name="warning" size="0.8rem" className={`${styles.FinanceStatsCards__icon} finance-stats__icon--pending_debt`} />
-                    {(t('outstanding_debts') || 'Resumen de Deudas').toUpperCase()}
+                    {(t('outstanding_debts')).toUpperCase()}
                 </h3>
                 <div className={`${styles.FinanceStatsCards__breakdown}`}>
                     <div className={`${styles.FinanceStatsCards__row}`}>
-                        <span className={`${styles.FinanceStatsCards__label} ${styles.FinanceStatsCards__labelBold}`}>{t('patient_debt') || 'Deuda de Pacientes'}</span>
+                        <span className={`${styles.FinanceStatsCards__label} ${styles.FinanceStatsCards__labelBold}`}>{t('patient_debt')}</span>
                         <span className={`${styles.FinanceStatsCards__value} ${totalDebt > 0 ? styles.FinanceStatsCards__valueRed : styles.FinanceStatsCards__valueMuted}`}>
                             ${Number(totalDebt).toLocaleString()}
                         </span>
                     </div>
                     <div className={`${styles.FinanceStatsCards__row} ${styles.FinanceStatsCards__rowDivider}`}>
-                        <span className={`${styles.FinanceStatsCards__label} ${styles.FinanceStatsCards__labelBold}`}>{t('doctor_rental_debt') || 'Deuda de Alquiler (Médicos)'}</span>
+                        <span className={`${styles.FinanceStatsCards__label} ${styles.FinanceStatsCards__labelBold}`}>{t('doctor_rental_debt')}</span>
                         <span className={`${styles.FinanceStatsCards__value} ${rentalDebt > 0 ? styles.FinanceStatsCards__valueRed : styles.FinanceStatsCards__valueMuted}`}>
                             ${Number(rentalDebt).toLocaleString()}
                         </span>
                     </div>
                     <div className={`${styles.FinanceStatsCards__row} ${styles.FinanceStatsCards__rowDivider}`}>
-                        <span className={`${styles.FinanceStatsCards__label} ${styles.FinanceStatsCards__labelBold}`}>{t('total_debt') || 'Deuda Total'}</span>
+                        <span className={`${styles.FinanceStatsCards__label} ${styles.FinanceStatsCards__labelBold}`}>{t('total_debt')}</span>
                         <span className={`${styles.FinanceStatsCards__value} ${totalDebt + rentalDebt > 0 ? styles.FinanceStatsCards__valueRed : styles.FinanceStatsCards__valueMuted}`} style={{ fontWeight: 'bold' }}>
                             ${Number(totalDebt + rentalDebt).toLocaleString()}
                         </span>

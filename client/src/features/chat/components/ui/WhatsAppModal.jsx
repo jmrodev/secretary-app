@@ -47,7 +47,7 @@ export const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange
         }
 
         onClose();
-        showMessage(t('message_copied_opening_wa') || "Mensaje copiado. Intentando abrir WhatsApp...", "success");
+        showMessage(t('message_copied_opening_wa'), "success");
     };
 
     const handleAutoSend = async () => {
@@ -56,13 +56,13 @@ export const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange
         if (!cleanPhone.startsWith('54') && cleanPhone.length >= 10) cleanPhone = '549' + cleanPhone;
 
         try {
-            showMessage(t('sending_via_bridge') || "Enviando por puente local...", "info");
+            showMessage(t('sending_via_bridge'), "info");
             await api.post('/whatsapp/send-direct', { to: cleanPhone, message });
-            showMessage(t('sent_via_bridge_success') || "Mensaje enviado automáticamente", "success");
+            showMessage(t('sent_via_bridge_success'), "success");
             onClose();
         } catch (err) {
             console.error("Bridge send failed:", err);
-            showMessage(t('bridge_failed_fallback') || "Error en el puente. Usá el modo manual.", "error");
+            showMessage(t('bridge_failed_fallback'), "error");
         }
     };
 
@@ -73,7 +73,7 @@ export const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange
             title={
                 <div className={`${styles.WhatsAppModal__title}`}>
                     <Icon name="chat" size="1.2rem" />
-                    {t('whatsapp_confirmation') || "Confirmación por WhatsApp"}
+                    {t('whatsapp_confirmation')}
                 </div>
             }
             footer={
@@ -86,15 +86,15 @@ export const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange
                         className={`${styles.WhatsAppModal__sendBtn}`}
                         onClick={handleAutoSend}
                     >
-                        <Icon name="bolt" size="1.1rem" className="mr-1" />
-                        {t('send_automatically') || 'Envío Automático'}
+                        <Icon name="bolt" size="1.1rem" />
+                        {t('send_automatically')}
                     </Button>
                     <Button
                         variant="primary"
                         className={`${styles.WhatsAppModal__sendBtn}`}
                         onClick={handleSend}
                     >
-                        {t('send_via_whatsapp') || 'Enviar Manual (Copiar)'}
+                        {t('send_via_whatsapp')}
                     </Button>
                 </div>
             }
@@ -105,12 +105,12 @@ export const WhatsAppModal = ({ isOpen, onClose, phone, message, onMessageChange
                         <Icon name="smartphone" size="1.2rem" />
                     </div>
                     <div>
-                        <p className={`${styles.WhatsAppModal__recipient}`}>{t('sending_to') || 'Enviar a'}: {phone}</p>
-                        <p className={`${styles.WhatsAppModal__help}`}>{t('wa_help_text') || 'El mensaje se abrirá en WhatsApp Desktop/Web.'}</p>
+                        <p className={`${styles.WhatsAppModal__recipient}`}>{t('sending_to')}: {phone}</p>
+                        <p className={`${styles.WhatsAppModal__help}`}>{t('wa_help_text')}</p>
                     </div>
                 </div>
 
-                <FormGroup label={t('message_to_send') || "Mensaje a enviar"}>
+                <FormGroup label={t('message_to_send')}>
                     <textarea
                         className={`${styles.WhatsAppModal__textarea}`}
                         value={message}

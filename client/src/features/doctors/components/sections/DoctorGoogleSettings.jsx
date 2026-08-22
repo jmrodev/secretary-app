@@ -18,11 +18,11 @@ export const DoctorGoogleSettings = ({
         <div className={`${styles.DoctorGoogleSettings__root}`}>
             <div className={`${styles.DoctorGoogleSettings__statusCard}`}>
                 <div className={`${styles.DoctorGoogleSettings__info}`}>
-                    <h4 className={`${styles.DoctorGoogleSettings__title}`}>{t('google_integration') || 'Google Integration'}</h4>
-                    <p className={`${styles.DoctorGoogleSettings__subtitle}`}>{t('google_integration_subtitle') || 'Sincroniza calendar y contactos.'}</p>
+                    <h4 className={`${styles.DoctorGoogleSettings__title}`}>{t('google_integration')}</h4>
+                    <p className={`${styles.DoctorGoogleSettings__subtitle}`}>{t('google_integration_subtitle')}</p>
                 </div>
                 <Badge variant={connected ? 'success' : 'secondary'}>
-                    {connected ? `● ${t('connected_caps') || 'CONECTADO'}` : `○ ${t('disconnected_caps') || 'DESCONECTADO'}`}
+                    {connected ? `● ${t('connected_caps')}` : `○ ${t('disconnected_caps')}`}
                 </Badge>
             </div>
 
@@ -66,7 +66,7 @@ export const DoctorGoogleSettings = ({
                     <div className={`${styles.DoctorGoogleSettings__divider}`} />
                     <div className={`${styles.DoctorGoogleSettings__resetBox}`}>
                         <p className={`${styles.DoctorGoogleSettings__resetNotice}`}>
-                            <Icon name="warning" size="1rem" className="mr-1" />¿Problemas con la planilla? Si la borraste de Drive, usa este botón para que el sistema genere una nueva.
+                            <Icon name="warning" size="1rem" />¿Problemas con la planilla? Si la borraste de Drive, usa este botón para que el sistema genere una nueva.
                         </p>
                         <Button
                             variant="ghost"

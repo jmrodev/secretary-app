@@ -5,15 +5,15 @@
     padding: 1.5rem;
     border-radius: var(--radius-md);
     border: 1px solid var(--dashboard-card-border);
+    max-width: 420px;
 }
 
 .IntegrationGoogleCalendar__groupHeader {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: flex-start;
-    gap: 1.5rem;
+    gap: 1rem;
     margin-bottom: 1.5rem;
-    flex-wrap: wrap;
 }
 
 .IntegrationGoogleCalendar__statusInfo {
@@ -24,7 +24,7 @@
 .IntegrationGoogleCalendar__syncControls {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
     gap: 0.5rem;
 }
 
@@ -36,9 +36,9 @@
 
 .IntegrationGoogleCalendar__actions {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 0.75rem;
-    flex-wrap: wrap;
 }
 
 .IntegrationGoogleCalendar__actionsMt05 {
@@ -55,7 +55,7 @@
 .IntegrationGoogleCalendar__hintRight {
     font-size: 0.75rem;
     color: var(--text-muted);
-    text-align: right;
+    text-align: left;
     margin: 0;
 }
 

@@ -9,7 +9,7 @@ export { DoctorEditModal } from '@/features/doctors/components/modals/DoctorEdit
 export { DoctorScheduleSettings } from '@/features/doctors/components/sections/DoctorScheduleSettings';
 export { DoctorCard } from '@/features/doctors/components/cards/DoctorCard';
 export { DoctorSelector } from '@/features/doctors/components/ui/DoctorSelector';
-export { DoctorFiscalSettings } from '@/features/doctors/components/sections/DoctorFiscalSettings';
+export { DoctorFiscalWizard } from '@/features/doctors/components/sections/DoctorFiscalWizard';
 export { DoctorGoogleSettings } from '@/features/doctors/components/sections/DoctorGoogleSettings';
 export { DoctorMessagesForm } from '@/features/doctors/components/sections/DoctorMessagesForm';
 export { DoctorTariffsForm } from '@/features/doctors/components/sections/DoctorTariffsForm';

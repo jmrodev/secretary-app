@@ -52,10 +52,10 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
         try {
             const res = await api.get('/billing/status');
             setStatus(res.data);
-            showMessage(t('afip_validated') || 'Conexión con AFIP validada', 'success');
+            showMessage(t('afip_validated'), 'success');
         } catch (err) {
             setStatus({ error: err.response?.data?.error || t('afip_status_error') });
-            showMessage(t('afip_connection_failed') || 'Fallo al conectar con AFIP', 'error');
+            showMessage(t('afip_connection_failed'), 'error');
         } finally {
             setChecking(false);
         }
@@ -92,7 +92,7 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
         const { data } = modalState;
         try {
             await api.put(`/users/doctors/${data.id}`, data);
-            showMessage(t('doctor_updated') || 'Médico actualizado exitosamente', 'success');
+            showMessage(t('doctor_updated'), 'success');
             setModalState(prev => ({ ...prev, isOpen: false }));
             window.dispatchEvent(new CustomEvent('doctors-updated'));
             fetchDoctors();
@@ -105,11 +105,105 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
     const handleEnvironmentChange = useCallback((e) => {
         const value = e.target.value;
         updateSetting('afip_environment', value);
-        showMessage(t('environment_updated_success') || 'Entorno de facturación actualizado correctamente', 'success');
+        showMessage(t('environment_updated_success'), 'success');
     }, [updateSetting, showMessage, t]);
 
     return (
         <div className={`${sharedStyles.TabPanel} ${sharedStyles.AnimateFadeIn}`}>
+            {/* Doctor Fiscal Status Matrix */}
+            <div className={sharedStyles.ConfigSection}>
+                <div className={sharedStyles.ConfigSection__header}>
+                    <span className={sharedStyles.ConfigSection__icon}><Icon name="badge" /></span>
+                    <div className={sharedStyles.ConfigSection__text}>
+                        <h4 className={sharedStyles.ConfigSection__title}>{t('doctor_fiscal_status_title')}</h4>
+                        <p className={styles.BillingSettings__hint}>{t('doctor_fiscal_status_desc')}</p>
+                    </div>
+                </div>
+
+                <div className={sharedStyles.ConfigSection__body}>
+                    {doctorsLoading ? (
+                        <Loading variant="centered" text={t('loading_doctors')} />
+                    ) : doctors.length === 0 ? (
+                        <div className={styles.BillingSettings__emptyState}>
+                            <p>{t('no_doctors_registered')}</p>
+                        </div>
+                    ) : (
+                        <div className={styles.BillingSettings__tableWrapper}>
+                            <table className={styles.BillingSettings__table}>
+                                <thead>
+                                    <tr>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_doctor')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cuit')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_pto_vta')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cert')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_status')}</th>
+                                        <th className={`${styles.BillingSettings__th} ${styles['BillingSettings__th--right']}`}>{t('doctor_fiscal_th_actions')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {doctors.map((doc) => {
+                                        const hasCuit = Boolean(doc.afip_cuit && String(doc.afip_cuit).trim().length > 0);
+                                        const hasPtoVta = Boolean(doc.afip_pto_vta);
+                                        const hasCert = Boolean(doc.afipCrt || doc.afip_crt || doc.has_certificate);
+                                        const isReady = hasCuit && hasPtoVta && hasCert;
+
+                                        return (
+                                            <tr key={doc.id} className={styles.BillingSettings__tr}>
+                                                <td className={styles.BillingSettings__td}>
+                                                    <div className={styles.BillingSettings__doctorCell}>
+                                                        <span className={styles.BillingSettings__doctorName}>{doc.full_name || `${doc.first_name || ''} ${doc.last_name || ''}`.trim() || doc.username}</span>
+                                                        <span className={styles.BillingSettings__doctorSpecialty}>{doc.specialty || t('no_specialty')}</span>
+                                                    </div>
+                                                </td>
+                                                <td className={styles.BillingSettings__td}>
+                                                    {hasCuit ? (
+                                                        <Badge variant="blue">{doc.afip_cuit}</Badge>
+                                                    ) : (
+                                                        <Badge variant="warning">{t('fiscal_cuit_missing')}</Badge>
+                                                    )}
+                                                </td>
+                                                <td className={styles.BillingSettings__td}>
+                                                    {hasPtoVta ? (
+                                                        <Badge variant="default">#{doc.afip_pto_vta}</Badge>
+                                                    ) : (
+                                                        <Badge variant="warning">{t('fiscal_pto_vta_missing')}</Badge>
+                                                    )}
+                                                </td>
+                                                <td className={styles.BillingSettings__td}>
+                                                    {hasCert ? (
+                                                        <Badge variant="success">{t('fiscal_cert_configured')}</Badge>
+                                                    ) : (
+                                                        <Badge variant="danger">{t('fiscal_cert_missing')}</Badge>
+                                                    )}
+                                                </td>
+                                                <td className={styles.BillingSettings__td}>
+                                                    {isReady ? (
+                                                        <Badge variant="success">{t('fiscal_status_ready')}</Badge>
+                                                    ) : (
+                                                        <Badge variant="warning">{t('fiscal_status_incomplete')}</Badge>
+                                                    )}
+                                                </td>
+                                                <td className={`${styles.BillingSettings__td} ${styles['BillingSettings__td--right']}`}>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleEditDoctorFiscal(doc)}
+                                                        icon={<Icon name="edit" size="1rem" />}
+                                                        title={t('edit_fiscal_config')}
+                                                    >
+                                                        {t('view_action')}
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </div>
+
             {/* AFIP Global Environment & Health Verification */}
             <div className={sharedStyles.ConfigSection}>
                 <div className={sharedStyles.ConfigSection__header}>
@@ -117,7 +211,7 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                     <h4 className={sharedStyles.ConfigSection__title}>{t('billing_settings_title')}</h4>
                 </div>
                 <div className={sharedStyles.ConfigSection__body}>
-                    <div className={`${sharedStyles.ConfigGrid} ${sharedStyles['ConfigGrid--2col']}`}>
+                    <div className={`${sharedStyles.ConfigGrid} ${sharedStyles['ConfigGrid--1col']}`}>
                         <ConfigField
                             label={t('afip_environment')}
                             type="select"
@@ -139,11 +233,11 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                                 {status ? (
                                     <div className={`${styles.BillingSettings__status} ${status.error ? styles.BillingSettings__statusError : styles.BillingSettings__statusSuccess}`}>
                                         {status.error ? (
-                                            <p><Icon name="close" className="mr-1" />{t('afip_status_error')}: {status.error}</p>
+                                            <p><Icon name="close" />{t('afip_status_error')}: {status.error}</p>
                                         ) : (
                                             <>
-                                                <p><Icon name="check" className="mr-1" />{t('afip_status_connected')} ({status.environment})</p>
-                                                <p className={styles.BillingSettings__hint}>App: {status.afip_status?.AppServer}, DB: {status.afip_status?.DbServer}, Auth: {status.afip_status?.AuthServer}</p>
+                                                <p><Icon name="check" />{t('afip_status_connected')} ({status.environment})</p>
+                                                <p className={styles.BillingSettings__hint}>{t('afip_status_app')}: {status.afip_status?.AppServer}, {t('afip_status_db')}: {status.afip_status?.DbServer}, {t('afip_status_auth')}: {status.afip_status?.AuthServer}</p>
                                             </>
                                         )}
                                         <div className={styles.BillingSettings__statusHeader}>
@@ -171,100 +265,6 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            {/* Doctor Fiscal Status Matrix */}
-            <div className={sharedStyles.ConfigSection}>
-                <div className={sharedStyles.ConfigSection__header}>
-                    <span className={sharedStyles.ConfigSection__icon}><Icon name="badge" /></span>
-                    <div className={sharedStyles.ConfigSection__text}>
-                        <h4 className={sharedStyles.ConfigSection__title}>{t('doctor_fiscal_status_title') || 'Estado Fiscal por Profesional'}</h4>
-                        <p className={styles.BillingSettings__hint}>{t('doctor_fiscal_status_desc') || 'Resumen del estado de credenciales fiscales y certificados AFIP de cada médico de la clínica.'}</p>
-                    </div>
-                </div>
-
-                <div className={sharedStyles.ConfigSection__body}>
-                    {doctorsLoading ? (
-                        <Loading variant="centered" text={t('loading_doctors') || 'Cargando profesionales...'} />
-                    ) : doctors.length === 0 ? (
-                        <div className={styles.BillingSettings__emptyState}>
-                            <p>{t('no_doctors_registered') || 'No hay profesionales registrados.'}</p>
-                        </div>
-                    ) : (
-                        <div className={styles.BillingSettings__tableWrapper}>
-                            <table className={styles.BillingSettings__table}>
-                                <thead>
-                                    <tr>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_doctor') || 'Profesional'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cuit') || 'CUIT'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_pto_vta') || 'Pto. Venta'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cert') || 'Certificado / Clave'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_status') || 'Estado AFIP'}</th>
-                                        <th className={`${styles.BillingSettings__th} ${styles['BillingSettings__th--right']}`}>{t('doctor_fiscal_th_actions') || 'Acciones'}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {doctors.map((doc) => {
-                                        const hasCuit = Boolean(doc.afip_cuit && String(doc.afip_cuit).trim().length > 0);
-                                        const hasPtoVta = Boolean(doc.afip_pto_vta);
-                                        const hasCert = Boolean(doc.afipCrt || doc.afip_crt || doc.has_certificate);
-                                        const isReady = hasCuit && hasPtoVta && hasCert;
-
-                                        return (
-                                            <tr key={doc.id} className={styles.BillingSettings__tr}>
-                                                <td className={styles.BillingSettings__td}>
-                                                    <div className={styles.BillingSettings__doctorCell}>
-                                                        <span className={styles.BillingSettings__doctorName}>{doc.full_name || `${doc.first_name || ''} ${doc.last_name || ''}`.trim() || doc.username}</span>
-                                                        <span className={styles.BillingSettings__doctorSpecialty}>{doc.specialty || t('no_specialty')}</span>
-                                                    </div>
-                                                </td>
-                                                <td className={styles.BillingSettings__td}>
-                                                    {hasCuit ? (
-                                                        <Badge variant="blue">{doc.afip_cuit}</Badge>
-                                                    ) : (
-                                                        <Badge variant="warning">{t('fiscal_cuit_missing') || 'Sin CUIT'}</Badge>
-                                                    )}
-                                                </td>
-                                                <td className={styles.BillingSettings__td}>
-                                                    {hasPtoVta ? (
-                                                        <Badge variant="default">#{doc.afip_pto_vta}</Badge>
-                                                    ) : (
-                                                        <Badge variant="warning">{t('fiscal_pto_vta_missing') || 'Sin Pto Vta'}</Badge>
-                                                    )}
-                                                </td>
-                                                <td className={styles.BillingSettings__td}>
-                                                    {hasCert ? (
-                                                        <Badge variant="success">{t('fiscal_cert_configured') || 'Configurado'}</Badge>
-                                                    ) : (
-                                                        <Badge variant="danger">{t('fiscal_cert_missing') || 'Falta Certificado'}</Badge>
-                                                    )}
-                                                </td>
-                                                <td className={styles.BillingSettings__td}>
-                                                    {isReady ? (
-                                                        <Badge variant="success">{t('fiscal_status_ready') || 'Listo'}</Badge>
-                                                    ) : (
-                                                        <Badge variant="warning">{t('fiscal_status_incomplete') || 'Incompleto'}</Badge>
-                                                    )}
-                                                </td>
-                                                <td className={`${styles.BillingSettings__td} ${styles['BillingSettings__td--right']}`}>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() => handleEditDoctorFiscal(doc)}
-                                                        icon={<Icon name="edit" size="1rem" />}
-                                                        title={t('edit_fiscal_config') || 'Editar Configuración Fiscal'}
-                                                    >
-                                                        {t('view_action') || 'Ver'}
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-                    )}
                 </div>
             </div>
 

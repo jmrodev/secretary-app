@@ -41,7 +41,7 @@ export const CashBoxDeliveryModal = ({ isOpen, onClose, onConfirm, doctorName, b
 
                 <div className={`${styles.CashBoxDeliveryModal__warning}`}>
                     <Icon name="WARNING" size="1.1rem" />
-                    <span>{t('close_box_warning') || 'Esta acción registrará una salida de efectivo en la caja del profesional y ajustará el saldo.'}</span>
+                    <span>{t('close_box_warning')}</span>
                 </div>
             </div>
         </Modal>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useUsers } from '@/features/users/hooks/useUsers';
+import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useModal } from '@/context/ModalContext';
 
 // Atoms & Molecules
 import { Button } from '@/components/atoms/Button';
@@ -28,6 +30,10 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
         loading,
         isSubmitting
     } = useUsers({ role, excludeRoles });
+    
+    const { user: currentUser } = useAuth();
+    
+    const { prompt } = useModal();
 
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSecretaryForPerms, setSelectedSecretaryForPerms] = useState(null);
@@ -73,9 +79,17 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
         const close = () => setModalState(prev => ({ ...prev, isOpen: false }));
         const refresh = () => { loadData(); close(); };
 
-        if (type === 'CREATE') await createUser(formData, refresh);
+        if (type === 'CREATE') {
+            const adminPassword = await prompt(t('enter_your_password'), '', t('confirm_action'), 'password');
+            if (!adminPassword) return;
+            await createUser({ ...formData, adminPassword }, refresh);
+        }
         else if (type === 'EDIT') await updateUser(user.id, formData, refresh);
-        else if (type === 'DELETE') await deleteUser(user.id, user.full_name, { adminPassword: formData.adminPassword, onSuccess: refresh });
+        else if (type === 'DELETE') {
+            const adminPassword = await prompt(t('enter_your_password'), '', t('confirm_action'), 'password');
+            if (!adminPassword) return;
+            await deleteUser(user.id, user.full_name, { adminPassword, onSuccess: refresh });
+        }
         else if (type === 'RESET_DNI' || type === 'RESET_MANUAL') await resetPassword(user.id, formData.password, close);
     };
 
@@ -124,6 +138,7 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
                 ) : (
                     <UserTable
                         users={filteredUsers}
+                        currentUser={currentUser}
                         onEdit={(u) => openModal('EDIT', u)}
                         onReset={(u) => openModal('RESET', u)}
                         onDelete={(u) => openModal('DELETE', u)}

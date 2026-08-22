@@ -10,7 +10,7 @@ import { TabButton } from '@/components/atoms/TabButton';
 import { DoctorTariffsForm } from '@/features/doctors/components/sections/DoctorTariffsForm';
 import { DoctorGoogleSettings } from '@/features/doctors/components/sections/DoctorGoogleSettings';
 import { DoctorScheduleSettings } from '@/features/doctors/components/sections/DoctorScheduleSettings';
-import { DoctorFiscalSettings } from '@/features/doctors/components/sections/DoctorFiscalSettings';
+import { DoctorFiscalWizard } from '@/features/doctors/components/sections/DoctorFiscalWizard';
 import { DoctorMessagesForm } from '@/features/doctors/components/sections/DoctorMessagesForm';
 import { useDoctorFiscalController } from '@/features/doctors/hooks/useDoctorFiscalController';
 import styles from './DoctorEditModal.module.css';
@@ -61,7 +61,7 @@ export const DoctorEditModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={type === 'CREATE' ? (t('add_new_user') || 'Agregar Nuevo Médico') : t('edit_doctor_details')}
+            title={type === 'CREATE' ? (t('add_new_user')) : t('edit_doctor_details')}
             size="lg"
             footer={
                 <>
@@ -130,14 +130,14 @@ export const DoctorEditModal = ({
                     {activeTab === 'schedule' && (
                         <div className={`${styles.DoctorEditModal__scheduleConfig}`}>
                             <div className={`${styles.DoctorEditModal__durationGrid}`}>
-                                <FormGroup label={t('appointment_duration_min') || "Duración Turno (min)"}>
+                                <FormGroup label={t('appointment_duration_min')}>
                                     <Input
                                         type="number"
                                         value={data.appointment_duration}
                                         onChange={e => onChangeData({ appointment_duration: e.target.value })}
                                     />
                                 </FormGroup>
-                                <FormGroup label={t('break_duration_min') || "Descanso (min)"}>
+                                <FormGroup label={t('break_duration_min')}>
                                     <Input
                                         type="number"
                                         value={data.break_duration}
@@ -148,17 +148,17 @@ export const DoctorEditModal = ({
 
                             <div className={`${styles.DoctorEditModal__overturnSection}`}>
                                 <h4 className={`${styles.DoctorEditModal__overturnTitle}`}>
-                                    <Icon name="schedule" size="1rem" /> {t('overturn_range_title') || 'Horario Sobreturnos (Fuera de Horario)'}
+                                    <Icon name="schedule" size="1rem" /> {t('overturn_range_title')}
                                 </h4>
                                 <div className={`${styles.DoctorEditModal__overturnGrid}`}>
-                                    <FormGroup label={t('overturn_start_label') || 'Inicio Sobreturnos'}>
+                                    <FormGroup label={t('overturn_start_label')}>
                                         <Input
                                             type="time"
                                             value={data.overturn_start_time}
                                             onChange={e => onChangeData({ overturn_start_time: e.target.value })}
                                         />
                                     </FormGroup>
-                                    <FormGroup label={t('overturn_end_label') || 'Fin Sobreturnos'}>
+                                    <FormGroup label={t('overturn_end_label')}>
                                         <Input
                                             type="time"
                                             value={data.overturn_end_time}
@@ -168,12 +168,12 @@ export const DoctorEditModal = ({
                                 </div>
                                 <div className={`${styles.DoctorEditModal__overturnFooter}`}>
                                     <Switch
-                                        label={t('force_hour_alignment_label') || "Coordinar con minuto cero (:00)"}
+                                        label={t('force_hour_alignment_label')}
                                         checked={data.force_hour_alignment}
                                         onChange={val => onChangeData({ force_hour_alignment: val })}
                                     />
                                     <p className={`${styles.DoctorEditModal__overturnHelp}`}>
-                                        {t('force_hour_alignment_help') || "Si un turno arranca 8:15, el siguiente será clavado a las 9:00, luego 10:00, etc."}
+                                        {t('force_hour_alignment_help')}
                                     </p>
                                 </div>
                             </div>
@@ -211,13 +211,12 @@ export const DoctorEditModal = ({
                     )}
 
                     {activeTab === 'fiscal' && (
-                        <DoctorFiscalSettings
+                        <DoctorFiscalWizard
                             data={data}
                             onChangeData={onChangeData}
 
                             generatedCsr={generatedCsr}
                             generatingCsr={generatingCsr}
-                            showCsrInfo={showCsrInfo}
                             uploading={uploading}
                             connectionStatus={connectionStatus}
                             statusDetails={statusDetails}
@@ -225,7 +224,6 @@ export const DoctorEditModal = ({
                             onGenerateCsr={generateCsr}
                             onUploadCert={uploadCert}
                             onTestConnection={testConnection}
-                            onHideCsrInfo={hideCsrInfo}
                         />
                     )}
                 </div>

@@ -44,15 +44,15 @@ export const FinanceFilters = ({
     ];
 
     const statusOptions = [
-        { value: 'all', label: t('all_statuses') || 'Todos los estados' },
-        { value: 'paid', label: t('paid') || 'Pagado' },
-        { value: 'pending', label: t('pending') || 'Pendiente' },
-        { value: 'bonified', label: t('bonified') || 'Bonificado' },
-        { value: 'refunded', label: t('refunded') || 'Reembolsado' }
+        { value: 'all', label: t('all_statuses') },
+        { value: 'paid', label: t('paid') },
+        { value: 'pending', label: t('pending') },
+        { value: 'bonified', label: t('bonified') },
+        { value: 'refunded', label: t('refunded') }
     ];
 
     const typeOptions = [
-        { value: 'all', label: t('all_types') || 'Todos los tipos' },
+        { value: 'all', label: t('all_types') },
         ...options.types.map(type => ({
             value: type,
             label: t(type) || type.charAt(0).toUpperCase() + type.slice(1).replace('_', ' ')
@@ -60,7 +60,7 @@ export const FinanceFilters = ({
     ];
 
     const paymentMethodOptions = [
-        { value: 'all', label: t('all_methods') || 'Todos los métodos' },
+        { value: 'all', label: t('all_methods') },
         ...(options.paymentMethods || []).map(method => ({
             value: method,
             label: t(method) || method.charAt(0).toUpperCase() + method.slice(1)
@@ -77,7 +77,7 @@ export const FinanceFilters = ({
                 <Input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder={t('search_placeholder') || "Buscar por paciente, descripción o monto..."}
+                    placeholder={t('search_placeholder')}
                     className={`${styles.FinanceFilters__searchInput}`}
                     size="sm"
                 />
@@ -120,7 +120,7 @@ export const FinanceFilters = ({
                     />
                 </FormGroup>
 
-                <FormGroup label={t('payment_method') || 'Método de pago'} className={`${styles.FinanceFilters__group}`}>
+                <FormGroup label={t('payment_method')} className={`${styles.FinanceFilters__group}`}>
                     <Select
                         value={paymentMethodFilter}
                         onChange={(e) => setPaymentMethodFilter(e.target.value)}
@@ -145,7 +145,7 @@ export const FinanceFilters = ({
                             }}
                             icon={<Icon name="CANCEL" size="1.1rem" />}
                         >
-                            {t('clear_filters') || 'Limpiar'}
+                            {t('clear_filters')}
                         </Button>
                     </div>
                 )}

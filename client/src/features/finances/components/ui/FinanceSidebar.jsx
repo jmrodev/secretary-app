@@ -52,7 +52,7 @@ export const FinanceSidebar = ({
                                     onClick={onOpenPendingClosures}
                                     icon={<Icon name="calendar_view_week" size="1.1rem" />}
                                 >
-                                    {t('deliver_box') || 'Entregar Caja'}
+                                    {t('deliver_box')}
                                     <Badge 
                                         count={pendingClosuresCount} 
                                         position="top-right" 

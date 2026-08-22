@@ -34,7 +34,7 @@ export const MedicationInput = ({
                 <label htmlFor="medication-search" className={`${styles.MedicationInput__label}`}>
                     {label}
                     {optional && (
-                        <span className={`${styles.MedicationInput__optionalBadge}`}>{t('optional') || 'Optional'}</span>
+                        <span className={`${styles.MedicationInput__optionalBadge}`}>{t('optional')}</span>
                     )}
                 </label>
             </div>

@@ -79,7 +79,7 @@ export const BalanceView = ({ reportData, month, year, t }) => {
     const totalDebt = allDebts.reduce((a, b) => a + b.amount, 0);
 
     const monthName = t('months_array') ? t('months_array')[month - 1] : '';
-    const balanceTitle = t('balance_report') || t('general_balance') || 'Balance General';
+    const balanceTitle = t('balance_report') || t('general_balance');
 
     return (
         <div className={styles.BalanceView}>

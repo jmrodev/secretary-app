@@ -27,7 +27,7 @@ export const PatientContactFields = ({ formData, updatePatientData, updatePhoneN
                             style={{ maxWidth: '40ch' }}
                             value={formData.email || ''}
                             onChange={updatePatientData}
-                            placeholder={t('patient_email_placeholder') || "paciente@ejemplo.com"}
+                            placeholder={t('patient_email_placeholder')}
                         />
                         {formData.email && (
                             <Button
@@ -42,7 +42,7 @@ export const PatientContactFields = ({ formData, updatePatientData, updatePhoneN
                 </div>
 
                 <div className={`${styles.PatientContactFields__group} ${styles.PatientContactFields__groupSpan7}`}>
-                    <span className={`${styles.PatientContactFields__label}`}>{t('contact_phones') || 'Teléfonos'}</span>
+                    <span className={`${styles.PatientContactFields__label}`}>{t('contact_phones')}</span>
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
                         onChange={updatePhoneNumbers}

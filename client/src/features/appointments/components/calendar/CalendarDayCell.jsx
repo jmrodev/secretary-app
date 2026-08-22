@@ -120,7 +120,7 @@ export const CalendarDayCell = ({
           )}
           {isToday && (
             <span className={`${styles.CalendarDayCell__todayMarker}`}>
-              {t('today') || 'Hoy'}
+              {t('today')}
             </span>
           )}
         </div>

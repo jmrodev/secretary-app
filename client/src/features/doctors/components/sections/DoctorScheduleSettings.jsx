@@ -105,13 +105,13 @@ export const DoctorScheduleSettings = ({
         });
     };
 
-    if (loading) return <div className={`${styles.DoctorScheduleSettings__loading}`}>{t('loading_schedules') || 'Cargando horarios…'}</div>;
+    if (loading) return <div className={`${styles.DoctorScheduleSettings__loading}`}>{t('loading_schedules')}</div>;
 
     return (
         <section className={`${styles.DoctorScheduleSettings__scheduleSettings}`}>
             <header className="schedule-settings__header">
-                <h3 className={`${styles.DoctorScheduleSettings__title}`}>{t('doctor_schedule_settings_title') || 'Configuración de Horarios de Atención'}</h3>
-                <p className={`${styles.DoctorScheduleSettings__desc}`}>{t('doctor_schedule_settings_desc') || 'Defina los días y franjas horarias en las que este médico atiende.'}</p>
+                <h3 className={`${styles.DoctorScheduleSettings__title}`}>{t('doctor_schedule_settings_title')}</h3>
+                <p className={`${styles.DoctorScheduleSettings__desc}`}>{t('doctor_schedule_settings_desc')}</p>
             </header>
 
             <ScheduleBulkActionsComponent
@@ -180,7 +180,7 @@ export const DoctorScheduleSettings = ({
                                                 className={`${styles.DoctorScheduleSettings__addBtn}`}
                                                 icon="+"
                                             >
-                                                {t('add_extra_block') || 'Agregar Turno Cortado / Extra'}
+                                                {t('add_extra_block')}
                                             </Button>
                                         </div>
                                     )}

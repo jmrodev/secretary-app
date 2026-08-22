@@ -22,7 +22,7 @@ export const InstitutionSelector = ({
             <div className={`${styles.InstitutionSelector__group}`}>
                 <label htmlFor="institution-selector-select" className={`${styles.InstitutionSelector__label}`}>
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />
-                    {t('institutions') || 'Instituciones'}:
+                    {t('institutions')}:
                 </label>
                 <select
                     id="institution-selector-select"

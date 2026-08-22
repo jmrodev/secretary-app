@@ -62,10 +62,10 @@ export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, loc
                         value={reqType}
                         onChange={e => setReqType(e.target.value)}
                         options={[
-                            { value: '', label: t('request_type') || 'Tipo de solicitud' },
+                            { value: '', label: t('request_type') },
                             { value: 'prescription', label: t('prescription') },
                             { value: 'license', label: t('medical_license') },
-                            { value: 'certificate', label: t('certificate') || 'Certificado' }
+                            { value: 'certificate', label: t('certificate') }
                         ]}
                     />
                 )}
@@ -87,7 +87,7 @@ export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, loc
                         <div className={styles.MedicalRequestForm__badgeWrapper}>
                             <Badge variant="warning">
                                 <Icon name="warning" size="1rem" />
-                                {t('patient_has_valid_until') || 'Cobertura sugerida hasta'}: {formatDate(patientData.next_suggested_prescription_date)}
+                                {t('patient_has_valid_until')}: {formatDate(patientData.next_suggested_prescription_date)}
                             </Badge>
                         </div>
                     )}
@@ -150,7 +150,7 @@ export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, loc
                     variant="primary"
                     icon={<Icon name="send" />}
                 >
-                    {isSubmitting ? (t('sending') || 'Enviando...') : t('send_request')}
+                    {isSubmitting ? (t('sending')) : t('send_request')}
                 </Button>
             </footer>
         </form>

@@ -25,7 +25,7 @@ const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) =>
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={`${t('medical_history') || 'Historia Clínica'}: ${patientName}`}
+            title={`${t('medical_history')}: ${patientName}`}
             size="xl"
         >
             <div className={`${baseClass}__nav`}>
@@ -33,15 +33,15 @@ const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) =>
                     isActive={activeTab === 'appointments'}
                     onClick={() => setActiveTab('appointments')}
                 >
-                    <Icon name="APPOINTMENTS" size="1.1rem" className="mr-1" />
-                    {t('appointments') || 'Turnos'}
+                    <Icon name="APPOINTMENTS" size="1.1rem" />
+                    {t('appointments')}
                 </TabButton>
                 <TabButton
                     isActive={activeTab === 'medical'}
                     onClick={() => setActiveTab('medical')}
                 >
-                    <Icon name="PRESCRIPTION" size="1.1rem" className="mr-1" />
-                    {t('medical_records') || 'Registros Médicos'}
+                    <Icon name="PRESCRIPTION" size="1.1rem" />
+                    {t('medical_records')}
                 </TabButton>
             </div>
 
@@ -62,14 +62,14 @@ const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) =>
                                         <article key={appt.id} className={`${baseClass}__item ${appt.status === 'cancelled' ? baseClass + '__item--cancelled' : ''}`}>
                                             <div className={`${baseClass}__item-header`}>
                                                 <span className={`${baseClass}__date`}>
-                                                    <Icon name="calendar_month" size="1.2rem" className="mr-1" />
+                                                    <Icon name="calendar_month" size="1.2rem" />
                                                     <DateTimeDisplay date={appt.appointment_date} />
                                                 </span>
                                                 <span className={`status-chip status-${appt.status}`}>{t(appt.status) || appt.status}</span>
                                             </div>
                                             <div className={`${baseClass}__doctor`}>
                                                 <Icon name="medical_services" size="1rem" />
-                                                {t('doctor') || 'Dr.'}: {appt.doctor_name}
+                                                {t('doctor')}: {appt.doctor_name}
                                             </div>
                                             {appt.reason && (
                                                 <div className={`${baseClass}__reason`}>
@@ -100,10 +100,10 @@ const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) =>
                                 <section className={`${baseClass}__section`}>
                                     <h4 className={`${baseClass}__section-title`}>
                                         <Icon name="medication" size="1.2rem" />
-                                        {t('prescriptions') || 'Recetas'}
+                                        {t('prescriptions')}
                                     </h4>
                                     {history.prescriptions.length === 0 ? (
-                                        <p className={`${baseClass}__empty-record`}>{t('none') || 'Ninguna'}</p>
+                                        <p className={`${baseClass}__empty-record`}>{t('none')}</p>
                                     ) : (
                                         <div className={`${baseClass}__record-list`}>
                                             {history.prescriptions.map(p => (
@@ -126,10 +126,10 @@ const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) =>
                                 <section className={`${baseClass}__section`}>
                                     <h4 className={`${baseClass}__section-title`}>
                                         <Icon name="assignment" size="1.2rem" />
-                                        {t('requests') || 'Solicitudes'}
+                                        {t('requests')}
                                     </h4>
                                     {history.requests.length === 0 ? (
-                                        <p className={`${baseClass}__empty-record`}>{t('none') || 'Ninguna'}</p>
+                                        <p className={`${baseClass}__empty-record`}>{t('none')}</p>
                                     ) : (
                                         <div className={`${baseClass}__record-list`}>
                                             {history.requests.map(r => (
@@ -140,7 +140,7 @@ const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) =>
                                                     </div>
                                                     <div className={`${baseClass}__record-text`}>"{r.request_note}"</div>
                                                     <div className={`${baseClass}__record-status`}>
-                                                        <Icon name="task_alt" size="0.9rem" className="mr-1" />
+                                                        <Icon name="task_alt" size="0.9rem" />
                                                         {t(r.status)}
                                                     </div>
                                                 </div>
@@ -153,21 +153,21 @@ const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) =>
                                 <section className={`${baseClass}__section`}>
                                     <h4 className={`${baseClass}__section-title`}>
                                         <Icon name="badge" size="1.2rem" />
-                                        {t('licenses') || 'Licencias Médicas'}
+                                        {t('licenses')}
                                     </h4>
                                     {history.licenses.length === 0 ? (
-                                        <p className={`${baseClass}__empty-record`}>{t('none') || 'Ninguna'}</p>
+                                        <p className={`${baseClass}__empty-record`}>{t('none')}</p>
                                     ) : (
                                         <div className={`${baseClass}__record-list`}>
                                             {history.licenses.map(l => (
                                                 <div key={l.id} className={`${baseClass}__record ${baseClass}__record--lic`}>
                                                     <div className={`${baseClass}__record-header`}>
                                                         <span>
-                                                            <Icon name="calendar_today" size="0.9rem" className="mr-1" />
+                                                            <Icon name="calendar_today" size="0.9rem" />
                                                             <SimpleDateDisplay date={l.start_date} />
                                                         </span>
                                                         <span className={`${baseClass}__record-type`}>
-                                                            {l.days_duration} {t('days') || 'Días'}
+                                                            {l.days_duration} {t('days')}
                                                         </span>
                                                     </div>
                                                     <div className={`${baseClass}__record-text`}>{l.diagnosis}</div>
@@ -181,17 +181,17 @@ const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) =>
                                 <section className={`${baseClass}__section`}>
                                     <h4 className={`${baseClass}__section-title`}>
                                         <Icon name="folder_open" size="1.2rem" />
-                                        {t('documents') || 'Documentos y Estudios Adjuntos'}
+                                        {t('documents')}
                                     </h4>
                                     {(!history.files || history.files.length === 0) ? (
-                                        <p className={`${baseClass}__empty-record`}>{t('none') || 'Ninguno'}</p>
+                                        <p className={`${baseClass}__empty-record`}>{t('none')}</p>
                                     ) : (
                                         <div className={`${baseClass}__record-list`}>
                                             {history.files.map(f => (
                                                 <div key={f.id} className={`${baseClass}__record`}>
                                                     <div className={`${baseClass}__record-header`}>
                                                         <span>
-                                                            <Icon name={f.file_type?.includes('pdf') ? 'picture_as_pdf' : 'description'} size="1rem" className="mr-1" />
+                                                            <Icon name={f.file_type?.includes('pdf') ? 'picture_as_pdf' : 'description'} size="1rem" />
                                                             <strong>{f.file_name}</strong>
                                                         </span>
                                                         <span><SimpleDateDisplay date={f.created_at} /></span>
@@ -199,7 +199,7 @@ const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) =>
                                                     {f.description && <div className={`${baseClass}__record-text`}>{f.description}</div>}
                                                     <div className={`${styles.PatientHistoryModal__fileLinkWrap}`}>
                                                         <a href={f.file_url} target="_blank" rel="noreferrer" className={`${styles.PatientHistoryModal__fileLink}`}>
-                                                            {t('view') || 'Ver / Descargar'} &rarr;
+                                                            {t('view')} &rarr;
                                                         </a>
                                                     </div>
                                                 </div>

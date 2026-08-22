@@ -130,7 +130,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
     }, [handleManualRefresh]);
 
     const handleLogout = useCallback(async () => {
-        if (!window.confirm(t('confirm_logout_bridge') || '¿Seguro que querés desconectar WhatsApp?')) return;
+        if (!window.confirm(t('confirm_logout_bridge'))) return;
         dispatch({ type: 'SET_STATUS_LOADING', payload: true });
         try {
             await api.post('/whatsapp/logout');
@@ -285,7 +285,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                                 }}
                                 icon={<Icon name="person_add" size="1rem" />}
                             >
-                                {t('register_contact') || 'Registrar'}
+                                {t('register_contact')}
                             </Button>
                         )}
                         <Button 

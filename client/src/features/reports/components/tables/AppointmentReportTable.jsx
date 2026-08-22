@@ -106,8 +106,8 @@ export const AppointmentReportTable = ({ data, t }) => {
                                 <th className="text-right">{t('cash_cash_only')}</th>
                                 <th className="text-right">{t('other_methods')}</th>
                                 <th className="text-right">{t('daily_total')}</th>
-                                <th className="text-right">{t('weekly_total') || 'Total Semanal'}</th>
-                                <th className="text-right">{t('cumulative_monthly_total') || 'Total Mensual'}</th>
+                                <th className="text-right">{t('weekly_total')}</th>
+                                <th className="text-right">{t('cumulative_monthly_total')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -176,7 +176,7 @@ export const AppointmentReportTable = ({ data, t }) => {
                             <React.Fragment key={dayGroup.date}>
                                 <tr className={`${styles.AppointmentReportTable__dayHeader} ${dayGroup.is_weekend ? styles['AppointmentReportTable__dayHeader--weekend'] : ''} ${dayGroup.is_holiday ? styles['AppointmentReportTable__dayHeader--holiday'] : ''}`}>
                                     <td colSpan="7">
-                                        <Icon name="calendar_today" size="1rem" className="mr-1" /> {dayGroup.date}
+                                        <Icon name="calendar_today" size="1rem" /> {dayGroup.date}
                                         {dayGroup.is_holiday && (
                                             <span className={styles.AppointmentReportTable__holidayTag}>
                                                 <Icon name="celebration" size="1rem" />

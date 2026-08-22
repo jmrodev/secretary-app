@@ -70,7 +70,7 @@ export const InstitutionTransactionsTable = ({
                                     type="checkbox"
                                     checked={allChecked}
                                     onChange={(e) => onSelectAll(e.target.checked)}
-                                    aria-label={t('select_all') || 'Select all'}
+                                    aria-label={t('select_all')}
                                 />
                             </th>
                             <th>{t('date_label')}</th>
@@ -104,7 +104,7 @@ export const InstitutionTransactionsTable = ({
                                                 type="checkbox"
                                                 checked={isChecked}
                                                 onChange={() => onToggleSelect(tr.transaction_id)}
-                                                aria-label={t('select_transaction') || 'Select transaction'}
+                                                aria-label={t('select_transaction')}
                                             />
                                         )}
                                     </td>
