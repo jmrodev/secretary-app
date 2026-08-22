@@ -116,60 +116,59 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                     <span className={sharedStyles.ConfigSection__icon}><Icon name="receipt_long" /></span>
                     <h4 className={sharedStyles.ConfigSection__title}>{t('billing_settings_title')}</h4>
                 </div>
-
                 <div className={sharedStyles.ConfigSection__body}>
-                    <ConfigField
-                        label={t('afip_environment')}
-                        type="select"
-                        value={settings.afip_environment || 'testing'}
-                        onChange={handleEnvironmentChange}
-                        disabled={!isAdmin}
-                        options={[
-                            { value: 'testing', label: t('afip_env_testing') },
-                            { value: 'production', label: t('afip_env_production') }
-                        ]}
-                        hint={t('afip_prod_warning')}
-                    />
+                    <div className={`${sharedStyles.ConfigGrid} ${sharedStyles['ConfigGrid--2col']}`}>
+                        <ConfigField
+                            label={t('afip_environment')}
+                            type="select"
+                            value={settings.afip_environment || 'testing'}
+                            onChange={handleEnvironmentChange}
+                            disabled={!isAdmin}
+                            options={[
+                                { value: 'testing', label: t('afip_env_testing') },
+                                { value: 'production', label: t('afip_env_production') }
+                            ]}
+                            hint={t('afip_prod_warning')}
+                        />
 
-                    <div className={sharedStyles.ConfigSection__divider}></div>
-
-                    <div className={styles.BillingSettings__group}>
-                        <div className={styles.BillingSettings__groupHeader}>
-                            <h5 className={styles.BillingSettings__groupTitle}>{t('connection_status')}</h5>
-                        </div>
-                        <div className={styles.BillingSettings__groupItems}>
-                            {status ? (
-                                <div className={`${styles.BillingSettings__status} ${status.error ? styles.BillingSettings__statusError : styles.BillingSettings__statusSuccess}`}>
-                                    {status.error ? (
-                                        <p><Icon name="close" className="mr-1" />{t('afip_status_error')}: {status.error}</p>
-                                    ) : (
-                                        <>
-                                            <p><Icon name="check" className="mr-1" />{t('afip_status_connected')} ({status.environment})</p>
-                                            <p className={styles.BillingSettings__hint}>App: {status.afip_status?.AppServer}, DB: {status.afip_status?.DbServer}, Auth: {status.afip_status?.AuthServer}</p>
-                                        </>
-                                    )}
-                                    <div className={styles.BillingSettings__statusHeader}>
+                        <div className={styles.BillingSettings__group}>
+                            <div className={styles.BillingSettings__groupHeader}>
+                                <h5 className={styles.BillingSettings__groupTitle}>{t('connection_status')}</h5>
+                            </div>
+                            <div className={styles.BillingSettings__groupItems}>
+                                {status ? (
+                                    <div className={`${styles.BillingSettings__status} ${status.error ? styles.BillingSettings__statusError : styles.BillingSettings__statusSuccess}`}>
                                         {status.error ? (
-                                            <Icon name="close" />
+                                            <p><Icon name="close" className="mr-1" />{t('afip_status_error')}: {status.error}</p>
                                         ) : (
-                                            <Icon name="check" />
+                                            <>
+                                                <p><Icon name="check" className="mr-1" />{t('afip_status_connected')} ({status.environment})</p>
+                                                <p className={styles.BillingSettings__hint}>App: {status.afip_status?.AppServer}, DB: {status.afip_status?.DbServer}, Auth: {status.afip_status?.AuthServer}</p>
+                                            </>
                                         )}
+                                        <div className={styles.BillingSettings__statusHeader}>
+                                            {status.error ? (
+                                                <Icon name="close" />
+                                            ) : (
+                                                <Icon name="check" />
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                            ) : (
-                                <p className={styles.BillingSettings__hint}>{t('not_verified')}</p>
-                            )}
-                        </div>
+                                ) : (
+                                    <p className={styles.BillingSettings__hint}>{t('not_verified')}</p>
+                                )}
+                            </div>
 
-                        <div className={`${styles.BillingSettings__actions} ${styles['BillingSettings__actions--mt1']}`}>
-                            <Button
-                                variant="secondary"
-                                onClick={checkStatus}
-                                loading={checking}
-                                icon={<Icon name="sync" />}
-                            >
-                                {t('verify_afip_connection')}
-                            </Button>
+                            <div className={`${styles.BillingSettings__actions} ${styles['BillingSettings__actions--mt1']}`}>
+                                <Button
+                                    variant="secondary"
+                                    onClick={checkStatus}
+                                    loading={checking}
+                                    icon={<Icon name="sync" />}
+                                >
+                                    {t('verify_afip_connection')}
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
