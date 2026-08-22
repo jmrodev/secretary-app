@@ -3,7 +3,7 @@ import { api } from '@/api/axios';
 
 const initialState = {
     settings: {
-        enable_office_rentals: 'true', // Default to true until loaded
+        enable_office_rentals: 'false',
     },
     loading: true
 };
