@@ -245,4 +245,23 @@ export const doctors = {
     reminders_tab: "Recordatorios",
     confirmations_tab: "Confirmaciones",
     load_base_rules: "Cargar reglas base",
+
+    // Doctor fiscal overview matrix
+    doctor_fiscal_status_title: "Estado Fiscal por Profesional",
+    doctor_fiscal_status_desc: "Resumen del estado de credenciales fiscales y certificados AFIP de cada médico de la clínica.",
+    doctor_fiscal_th_doctor: "Profesional",
+    doctor_fiscal_th_cuit: "CUIT",
+    doctor_fiscal_th_pto_vta: "Pto. Venta",
+    doctor_fiscal_th_cert: "Certificado / Clave",
+    doctor_fiscal_th_status: "Estado AFIP",
+    doctor_fiscal_th_actions: "Acciones",
+    fiscal_status_ready: "Listo",
+    fiscal_status_incomplete: "Incompleto",
+    fiscal_cert_configured: "Configurado",
+    fiscal_cert_missing: "Falta Certificado",
+    fiscal_cuit_missing: "Sin CUIT",
+    fiscal_pto_vta_missing: "Sin Pto Vta",
+    edit_fiscal_config: "Editar Configuración Fiscal",
+    no_doctors_registered: "No hay profesionales registrados.",
+    environment_updated_success: "Entorno de facturación actualizado correctamente",
 };

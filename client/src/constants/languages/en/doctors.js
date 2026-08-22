@@ -244,4 +244,23 @@ export const doctors = {
     reminders_tab: "Reminders",
     confirmations_tab: "Confirmations",
     load_base_rules: "Load base rules",
+
+    // Doctor fiscal overview matrix
+    doctor_fiscal_status_title: "Doctor Fiscal Status",
+    doctor_fiscal_status_desc: "Overview of fiscal credentials and AFIP certificates for each doctor in the clinic.",
+    doctor_fiscal_th_doctor: "Doctor",
+    doctor_fiscal_th_cuit: "Tax ID (CUIT)",
+    doctor_fiscal_th_pto_vta: "Point of Sale",
+    doctor_fiscal_th_cert: "Certificate / Key",
+    doctor_fiscal_th_status: "AFIP Status",
+    doctor_fiscal_th_actions: "Actions",
+    fiscal_status_ready: "Ready",
+    fiscal_status_incomplete: "Incomplete",
+    fiscal_cert_configured: "Configured",
+    fiscal_cert_missing: "Missing Certificate",
+    fiscal_cuit_missing: "Missing CUIT",
+    fiscal_pto_vta_missing: "Missing POS",
+    edit_fiscal_config: "Edit Fiscal Configuration",
+    no_doctors_registered: "No doctors registered.",
+    environment_updated_success: "Billing environment updated successfully",
 };
