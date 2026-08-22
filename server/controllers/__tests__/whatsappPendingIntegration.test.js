@@ -45,7 +45,11 @@ jest.mock('../../db', () => ({
 // DB binding while the env-only AI path is exercised.
 jest.mock('../../repositories/system/systemSettingsRepository', () => ({
     findManyByKeys: jest.fn().mockResolvedValue([]),
-    findByKey: jest.fn().mockResolvedValue(null),
+    findByKey: jest.fn().mockImplementation(async (key) => {
+        if (key === 'whatsapp_template_accept') return { setting_value: 'Hola {patient_name}, aceptada el {date} a las {time} con {doctor_name}' };
+        if (key === 'whatsapp_template_alternative') return { setting_value: 'Hola {patient_name}, alternativa el {date} a las {time}' };
+        return null;
+    }),
     findAll: jest.fn().mockResolvedValue([]),
     upsert: jest.fn().mockResolvedValue([])
 }));
@@ -113,7 +117,7 @@ describe('Pending booking integration — controller + real repository + fake po
             });
             expect(whatsappService.sendMessageDirect).toHaveBeenCalledWith(
                 '+5491112345678',
-                expect.stringContaining('confirmado'),
+                'Hola Juan Perez, aceptada el 2026-08-03 a las 09:00 con Dr. House',
                 5
             );
             expect(res.statusCode).toBe(200);
@@ -180,7 +184,7 @@ describe('Pending booking integration — controller + real repository + fake po
             expect(res.statusCode).toBe(200);
             expect(whatsappService.sendMessageDirect).toHaveBeenCalledWith(
                 '+5491112345678',
-                expect.stringContaining('alternativo'),
+                'Hola Juan Perez, alternativa el 2026-08-05 a las 10:00',
                 5
             );
 

@@ -2,6 +2,7 @@ const whatsappService = require('../../services/communication/whatsappService');
 const whatsappRepository = require('../../repositories/communication/whatsappRepository');
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
 const patientRepository = require('../../repositories/user/patientRepository');
+const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 const bookingService = require('../../services/appointments/bookingService');
 const { ConflictError } = require('../../utils/core/errors');
 const defaultPool = require('../../db').pool;
@@ -257,13 +258,21 @@ const acceptPending = async (req, res) => {
                 reason: 'Turno aprobado por Secretaría'
             });
 
-            const formattedDate = new Date(pending.requested_slot_date + 'T12:00:00').toLocaleDateString('es-AR', {
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-            });
+            // Fetch accept template
+            const templateSetting = await systemSettingsRepository.findByKey('whatsapp_template_accept');
+            if (!templateSetting || !templateSetting.setting_value?.trim()) {
+                throw new Error('Template missing or empty');
+            }
+
+            const message = templateSetting.setting_value
+                .replace(/{patient_name}/g, pending.patient_name)
+                .replace(/{date}/g, pending.requested_slot_date)
+                .replace(/{time}/g, pending.requested_slot_time)
+                .replace(/{doctor_name}/g, pending.doctor_name);
 
             await whatsappService.sendMessageDirect(
                 pending.patient_phone,
-                `✅ Turno confirmado: ${formattedDate} a las ${pending.requested_slot_time} hs con ${pending.doctor_name}. ¡Te esperamos! 🏥`,
+                message,
                 pending.patient_id
             );
 
@@ -309,18 +318,22 @@ const suggestAlternative = async (req, res) => {
             });
         }
 
-        const alternativeDate = new Date(alternative_slot_iso).toLocaleDateString('es-AR', {
-            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-        });
-        const alternativeTime = alternative_slot_iso.includes('T')
-            ? alternative_slot_iso.split('T')[1].slice(0, 5)
-            : alternative_slot_iso;
+        const [datePart, timePart] = alternative_slot_iso.split('T');
+        const timeFormatted = timePart.substring(0, 5); // HH:mm
 
-        await whatsappService.sendMessageDirect(
-            pending.patient_phone,
-            `El turno que pediste no está disponible. ¿Te conviene este turno alternativo el ${alternativeDate} a las ${alternativeTime} hs? Respondé "sí" para confirmarlo. 🙋‍♀️`,
-            pending.patient_id
-        );
+        // Fetch alternative template
+        const templateSetting = await systemSettingsRepository.findByKey('whatsapp_template_alternative');
+        if (!templateSetting || !templateSetting.setting_value?.trim()) {
+            throw new Error('Template missing or empty');
+        }
+
+        const message = templateSetting.setting_value
+            .replace(/{patient_name}/g, pending.patient_name)
+            .replace(/{date}/g, datePart)
+            .replace(/{time}/g, timeFormatted);
+
+        // Notify patient
+        await whatsappService.sendMessageDirect(pending.patient_phone, message, pending.patient_id);
 
         res.json({ success: true, message: 'Alternative sent to patient' });
     } catch (error) {

@@ -1,8 +1,9 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import { Icon } from '@/components/atoms/Icon';
 import { MessageTemplateEditor } from '@/features/config/components/forms/MessageTemplateEditor';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useMessage } from '@/context/MessageContext';
 import styles from './CommunicationSettings.module.css';
 import shared from '@/styles/shared.module.css';
 
@@ -12,7 +13,29 @@ import shared from '@/styles/shared.module.css';
  */
 export const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }) => {
     const { t } = useLanguage();
+    const { showMessage } = useMessage();
     const isAdmin = user?.role === 'admin' || user?.role === 'secretary';
+    
+    const [localSettings, setLocalSettings] = useState({});
+    
+    useEffect(() => {
+        setLocalSettings(settings || {});
+    }, [settings]);
+    
+    const handleUpdateSetting = (key, value) => {
+        setLocalSettings(prev => ({ ...prev, [key]: value }));
+        
+        if (key.startsWith('whatsapp_template_')) {
+            const trimmed = (value || '').replace(/\s/g, '');
+            if (trimmed.length > 0 && trimmed.length < 20) {
+                // Skip saving if invalid
+                return;
+            }
+        }
+        
+        updateSetting(key, value);
+    };
+
     const commonVars = useMemo(() => [
         '{patient_name}', '{date}', '{time}', '{doctor_name}',
         '{appointment_type}', '{appointment_location}', '{price}', '{secretary_name}',
@@ -50,7 +73,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                 </div>
 
                 <div className={shared.ConfigSection__body}>
-                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--1col']}`}>
                         <MessageTemplateEditor
                             id="reminder-template"
                             label={
@@ -59,14 +82,14 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                                     {t('presential_reminder_label')}
                                 </span>
                             }
-                            value={settings.appointment_reminder_template}
-                            settingKey="appointment_reminder_template"
+                            value={localSettings.whatsapp_template_reminder}
+                            settingKey="whatsapp_template_reminder"
                             variables={commonVars}
-                            updateSetting={updateSetting}
+                            updateSetting={handleUpdateSetting}
                             insertVariable={insertVariable}
                             disabled={!isAdmin}
-                            metaTemplateName={settings.meta_phone_number_id ? settings.meta_reminder_template_name : undefined}
-                            metaParamsOrder={settings.meta_phone_number_id ? settings.meta_reminder_params_order : undefined}
+                            metaTemplateName={localSettings.meta_phone_number_id ? localSettings.meta_reminder_template_name : undefined}
+                            metaParamsOrder={localSettings.meta_phone_number_id ? localSettings.meta_reminder_params_order : undefined}
                             t={t}
                         />
 
@@ -98,7 +121,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                 </div>
 
                 <div className={shared.ConfigSection__body}>
-                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--1col']}`}>
                         <MessageTemplateEditor
                             id="confirmation-template"
                             label={
@@ -107,14 +130,14 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                                     {t('presential_confirmation_label')}
                                 </span>
                             }
-                            value={settings.appointment_confirmation_template}
-                            settingKey="appointment_confirmation_template"
+                            value={localSettings.whatsapp_template_confirmation}
+                            settingKey="whatsapp_template_confirmation"
                             variables={commonVars}
-                            updateSetting={updateSetting}
+                            updateSetting={handleUpdateSetting}
                             insertVariable={insertVariable}
                             disabled={!isAdmin}
-                            metaTemplateName={settings.meta_phone_number_id ? settings.meta_confirmation_template_name : undefined}
-                            metaParamsOrder={settings.meta_phone_number_id ? settings.meta_confirmation_params_order : undefined}
+                            metaTemplateName={localSettings.meta_phone_number_id ? localSettings.meta_confirmation_template_name : undefined}
+                            metaParamsOrder={localSettings.meta_phone_number_id ? localSettings.meta_confirmation_params_order : undefined}
                             description={t('confirmation_message_hint')}
                             t={t}
                         />
@@ -139,6 +162,61 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                 </div>
             </div>
 
+            {/* Debt Reminders */}
+            <div className={shared.ConfigSection}>
+                <div className={shared.ConfigSection__header}>
+                    <Icon name="payments" size="1.2rem" className={shared.ConfigSection__icon} />
+                    <h4 className={shared.ConfigSection__title}>Recordatorios de Deuda</h4>
+                </div>
+                <div className={shared.ConfigSection__body}>
+                    <MessageTemplateEditor
+                        id="debt-template"
+                        label="Plantilla de Deuda"
+                        value={localSettings.whatsapp_template_debt}
+                        settingKey="whatsapp_template_debt"
+                        variables={['{patient_name}', '{debt_amount}']}
+                        updateSetting={handleUpdateSetting}
+                        insertVariable={insertVariable}
+                        disabled={!isAdmin}
+                        t={t}
+                    />
+                </div>
+            </div>
+
+            {/* Pending Approvals */}
+            <div className={shared.ConfigSection}>
+                <div className={shared.ConfigSection__header}>
+                    <Icon name="pending_actions" size="1.2rem" className={shared.ConfigSection__icon} />
+                    <h4 className={shared.ConfigSection__title}>Gestión de Turnos Pendientes</h4>
+                </div>
+                <div className={shared.ConfigSection__body}>
+                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--1col']}`}>
+                        <MessageTemplateEditor
+                            id="accept-template"
+                            label="Aceptar Turno"
+                            value={localSettings.whatsapp_template_accept}
+                            settingKey="whatsapp_template_accept"
+                            variables={['{patient_name}', '{date}', '{time}', '{doctor_name}']}
+                            updateSetting={handleUpdateSetting}
+                            insertVariable={insertVariable}
+                            disabled={!isAdmin}
+                            t={t}
+                        />
+                        <MessageTemplateEditor
+                            id="alternative-template"
+                            label="Sugerir Alternativa"
+                            value={localSettings.whatsapp_template_alternative}
+                            settingKey="whatsapp_template_alternative"
+                            variables={['{patient_name}', '{date}', '{time}']}
+                            updateSetting={handleUpdateSetting}
+                            insertVariable={insertVariable}
+                            disabled={!isAdmin}
+                            t={t}
+                        />
+                    </div>
+                </div>
+            </div>
+
             {/* Public Requests / QR Links */}
             <div className={shared.ConfigSection}>
                 <div className={shared.ConfigSection__header}>
@@ -147,7 +225,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                 </div>
 
                 <div className={shared.ConfigSection__body}>
-                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--1col']}`}>
                         <MessageTemplateEditor
                             id="whatsapp-prescription-template"
                             label={
@@ -187,7 +265,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         />
                     </div>
 
-                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--2col']}`}>
+                    <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--1col']}`}>
                         <ConfigField
                             id="google-review-link"
                             label={
