@@ -30,14 +30,14 @@ describe('loadDefaultConfigSections', () => {
         expect(registeredKeys).toEqual(['modules', 'communications', 'integrations', 'billing']);
     });
 
-    it('assigns allowedRoles [admin, secretary] to all 4 configuration sections', () => {
+    it('assigns allowedRoles [admin] to modules and [admin, secretary] to other sections', () => {
         loadDefaultConfigSections((key) => key);
 
         const sectionMap = Object.fromEntries(
             registerMock.mock.calls.map(([key, metadata]) => [key, metadata])
         );
 
-        expect(sectionMap.modules.allowedRoles).toEqual(['admin', 'secretary']);
+        expect(sectionMap.modules.allowedRoles).toEqual(['admin']);
         expect(sectionMap.communications.allowedRoles).toEqual(['admin', 'secretary']);
         expect(sectionMap.integrations.allowedRoles).toEqual(['admin', 'secretary']);
         expect(sectionMap.billing.allowedRoles).toEqual(['admin', 'secretary']);

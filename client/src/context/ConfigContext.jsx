@@ -3,7 +3,7 @@ import { useAuth } from '@/features/auth';
 import { useConfigLogic } from '@/context/useConfigLogic';
 
 const defaultContextValue = {
-    settings: { enable_office_rentals: 'true' },
+    settings: { enable_office_rentals: 'false' },
     loading: true,
     updateSetting: () => {},
     refreshSettings: () => {},
