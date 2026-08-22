@@ -1,23 +1,23 @@
 .MessageTemplateEditor__root {
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-xl);
 }
 
 .MessageTemplateEditor__label {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
     font-size: 0.95rem;
     font-weight: 700;
     color: var(--text-main);
-    margin-bottom: 0.75rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .MessageTemplateEditor__textarea {
     width: 100%;
     min-height: 120px;
-    padding: 1rem;
-    border-radius: 12px;
-    border: 1px solid var(--dashboard-card-border);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
     font-family: inherit;
     font-size: 0.95rem;
     line-height: 1.6;
@@ -31,11 +31,11 @@
     outline: none;
     border-color: var(--accent-color);
     background: var(--dashboard-card-bg);
-    box-shadow: 0 0 0 4px rgb(72 128 255 / 15%);
+    box-shadow: 0 0 0 3px rgb(var(--accent-rgb, 2 132 199) / 20%);
 }
 
 .MessageTemplateEditor__variables {
-    margin-top: 1rem;
+    margin-top: var(--spacing-md);
 }
 
 .MessageTemplateEditor__variablesLabel {
@@ -44,20 +44,20 @@
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-bottom: 0.75rem;
+    margin-bottom: var(--spacing-sm);
 }
 
 .MessageTemplateEditor__buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
 }
 
 .MessageTemplateEditor__variableBtn {
-    padding: 0.4rem 0.75rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
     background: var(--dashboard-card-bg);
-    border: 1px solid var(--dashboard-card-border);
-    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-main);
@@ -68,7 +68,7 @@
 .MessageTemplateEditor__variableBtn:hover {
     border-color: var(--accent-color);
     background: var(--accent-color);
-    color: white;
+    color: var(--white);
 }
 
 .MessageTemplateEditor__variableBtn:active {
@@ -76,19 +76,19 @@
 }
 
 .MessageTemplateEditor__metaGrid {
-    margin-top: 1.5rem;
+    margin-top: var(--spacing-lg);
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.25rem;
-    padding: 1.25rem;
-    background: var(--background-bg);
-    border-radius: 12px;
-    border: 1px dashed var(--dashboard-card-border);
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--card-surface-bg);
+    border-radius: var(--radius-lg);
+    border: 1px dashed var(--border-color);
 }
 
 .MessageTemplateEditor__hint {
     display: block;
-    margin-top: 0.75rem;
+    margin-top: var(--spacing-sm);
     font-size: 0.85rem;
     color: var(--text-muted);
 }

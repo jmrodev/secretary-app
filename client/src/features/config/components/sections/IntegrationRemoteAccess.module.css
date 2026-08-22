@@ -1,5 +1,95 @@
 /* IntegrationRemoteAccess Component Styles (BEM) */
 
+.IntegrationRemoteAccess__hint {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+}
+
+.IntegrationRemoteAccess__label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: var(--spacing-xs);
+}
+
+.IntegrationRemoteAccess__hintSmall {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-top: var(--spacing-xs);
+}
+
+.IntegrationRemoteAccess__urlDisplay {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--text-main);
+    font-family: var(--font-mono, monospace);
+    background-color: var(--card-surface-bg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.IntegrationRemoteAccess__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.IntegrationRemoteAccess__configActions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.IntegrationRemoteAccess__guide {
+    background-color: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.IntegrationRemoteAccess__guideTitle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.IntegrationRemoteAccess__guideList {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.IntegrationRemoteAccess__guideList li b {
+    color: var(--text-main);
+}
+
+.IntegrationRemoteAccess__link {
+    color: var(--accent-color);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.IntegrationRemoteAccess__link:hover {
+    color: var(--accent-hover);
+}
+
 .IntegrationRemoteAccess__mobileCard {
     display: flex;
     align-items: center;
@@ -39,23 +129,6 @@
     margin: 0;
     font-size: 0.75rem;
     color: var(--text-muted);
-}
-
-.IntegrationRemoteAccess__urlDisplay {
-    flex: 1;
-}
-
-.IntegrationRemoteAccess__actions {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-sm);
-    margin-top: var(--spacing-md);
-}
-
-.IntegrationRemoteAccess__configActions {
-    display: flex;
-    gap: var(--spacing-sm);
-    margin-top: var(--spacing-md);
 }
 
 @media (width <= 600px) {

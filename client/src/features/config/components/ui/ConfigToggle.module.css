@@ -1,0 +1,40 @@
+/* ConfigToggle Component Styles (BEM) */
+
+.ConfigToggle__root {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+}
+
+.ConfigToggle--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.ConfigToggle__content {
+    display: flex;
+    flex-direction: column;
+}
+
+.ConfigToggle__label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.ConfigToggle__hint {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-top: var(--spacing-xs);
+}
+
+.ConfigToggle__switch {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
