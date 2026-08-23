@@ -43,7 +43,7 @@ export const useInstitutionsController = () => {
                 description: inst.description || '',
                 status: inst.status,
                 base_price: inst.base_price || 0,
-                phoneNumbers: inst.phoneNumbers || (inst.phone ? [{ phone_number: inst.phone, is_primary: true, label: 'Celular' }] : [])
+                phoneNumbers: inst.phoneNumbers || (inst.phone ? [{ phone_number: inst.phone, is_primary: true, label: t('phone_label_mobile') }] : [])
             });
         } else {
             setEditingInstitution(null);
@@ -84,7 +84,7 @@ export const useInstitutionsController = () => {
             fetchInstitutions();
         } catch (err) {
             console.error(err);
-            showMessage(t('error_deleting') || 'Error al eliminar', 'error');
+            showMessage(t('error_deleting'), 'error');
         }
     }, [confirm, showMessage, fetchInstitutions, t]);
 

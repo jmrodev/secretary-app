@@ -167,6 +167,7 @@ export const general = {
     cash: "Cash",
     transfer: "Wire Transfer",
     mercadopago: "MercadoPago",
+    phone_label_mobile: "Mobile",
     credit: "Credit Card",
     debit: "Debit Card",
     // Keys mirrored from es/general.js (i18n parity)
@@ -739,5 +740,6 @@ export const general = {
     partial_payment_note: "Partial Payment",
     remainder_note: "Remaining",
     meds_note: "Meds",
-    mercadopago: "MercadoPago"
+    mercadopago: "MercadoPago",
+    phone_label_mobile: "Mobile"
 };

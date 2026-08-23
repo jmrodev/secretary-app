@@ -61,7 +61,7 @@ export const useInsurancesController = () => {
             cuit: ins.cuit || '',
             website: ins.website || '',
             email: ins.email || '',
-            phoneNumbers: ins.phoneNumbers || (ins.phone ? [{ phone_number: ins.phone, is_primary: true, label: 'Celular' }] : []),
+            phoneNumbers: ins.phoneNumbers || (ins.phone ? [{ phone_number: ins.phone, is_primary: true, label: t('phone_label_mobile') }] : []),
             address_notes: ins.address_notes || '',
             street_name: ins.street_name || '',
             street_number: ins.street_number || '',
@@ -79,28 +79,28 @@ export const useInsurancesController = () => {
         try {
             if (editingId) {
                 await api.put(`/insurances/${editingId}`, formData);
-                showMessage(t('update_success') || "Insurance updated", "success");
+                showMessage(t('update_success'), "success");
             } else {
                 await api.post('/insurances', formData);
-                showMessage(t('save_success') || "Insurance created", "success");
+                showMessage(t('save_success'), "success");
             }
             setModalOpen(false);
             fetchInsurances();
         } catch (err) {
             console.error(err);
-            showMessage(t('error_saving') || "Operation failed", "error");
+            showMessage(t('error_saving'), "error");
         }
     }, [editingId, formData, fetchInsurances, showMessage, t]);
 
     const handleDelete = useCallback(async (id) => {
-        if (!await confirm(t('delete_confirm_msg') || "Are you sure?")) return;
+        if (!await confirm(t('delete_confirm_msg'))) return;
         try {
             await api.delete(`/insurances/${id}`);
-            showMessage(t('delete_success') || "Insurance deleted", "success");
+            showMessage(t('delete_success'), "success");
             fetchInsurances();
         } catch (err) {
-            console.error(err);
-            showMessage(err.response?.data || t('error_deleting') || "Delete failed", "error");
+            console.error('Failed to delete insurance:', err);
+            showMessage(t('error_deleting'), "error");
         }
     }, [confirm, fetchInsurances, showMessage, t]);
 

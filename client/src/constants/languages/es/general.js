@@ -185,6 +185,7 @@ export const general = {
     cash: "Efectivo",
     transfer: "Transferencia",
     mercadopago: "MercadoPago",
+    phone_label_mobile: "Celular",
     credit: "Tarjeta de Crédito",
     debit: "Tarjeta de Débito",
     modal_close: "Cerrar modal",
@@ -738,5 +739,6 @@ export const general = {
     partial_payment_note: "Pago Parcial",
     remainder_note: "Resto",
     meds_note: "Meds",
-    mercadopago: "MercadoPago"
+    mercadopago: "MercadoPago",
+    phone_label_mobile: "Celular"
 };
