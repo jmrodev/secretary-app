@@ -214,7 +214,7 @@ export const getMonthsOptions = (t, allLabelKey = 'all_months') => {
     }));
 
     if (allLabelKey) {
-        return [{ value: 'all', label: t(allLabelKey) || 'Todos los meses' }, ...months];
+        return [{ value: 'all', label: t(allLabelKey) }, ...months];
     }
     return months;
 };
@@ -315,29 +315,33 @@ export const isDueSoon = (date, days = 2) => {
  * Returns a "time ago" string from a date.
  * e.g. "hace 2 horas", "hace 5 min", "Justo ahora"
  */
-export const timeAgo = (date) => {
+export const timeAgo = (date, locale) => {
     const d = parseDate(date);
     if (!d) return '';
     const diffMs = getNow() - d;
+    const resolvedLocale = locale
+        || (typeof navigator !== 'undefined' && navigator.language)
+        || 'es';
+    const rtf = new Intl.RelativeTimeFormat(resolvedLocale, { numeric: 'always' });
 
     const seconds = Math.floor(diffMs / 1000);
-    if (seconds < 60) return 'Justo ahora';
+    if (seconds < 60) return rtf.format(0, 'minute');
 
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `hace ${minutes} ${minutes === 1 ? 'min' : 'mins'}`;
+    if (minutes < 60) return rtf.format(-minutes, 'minute');
 
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `hace ${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+    if (hours < 24) return rtf.format(-hours, 'hour');
 
     const days = Math.floor(hours / 24);
-    if (days < 7) return `hace ${days} ${days === 1 ? 'día' : 'días'}`;
+    if (days < 7) return rtf.format(-days, 'day');
 
     const weeks = Math.floor(days / 7);
-    if (weeks < 5) return `hace ${weeks} ${weeks === 1 ? 'semana' : 'semanas'}`;
+    if (weeks < 5) return rtf.format(-weeks, 'week');
 
     const months = Math.floor(days / 30);
-    if (months < 12) return `hace ${months} ${months === 1 ? 'mes' : 'meses'}`;
+    if (months < 12) return rtf.format(-months, 'month');
 
     const years = Math.floor(days / 365);
-    return `hace ${years} ${years === 1 ? 'año' : 'años'}`;
+    return rtf.format(-years, 'year');
 };

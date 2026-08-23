@@ -738,5 +738,6 @@ export const general = {
     finance_virtual_consultation_label: "Virtual Consultation",
     partial_payment_note: "Partial Payment",
     remainder_note: "Remaining",
-    meds_note: "Meds"
+    meds_note: "Meds",
+    mercadopago: "MercadoPago"
 };

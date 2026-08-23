@@ -11,7 +11,7 @@ export const printReport = (data, options) => {
     try {
         const printWindow = window.open('', '_blank');
         const customAlert = options.alert || window.alert;
-        if (!printWindow) return customAlert(t('allow_popups_error') || "Por favor permita ventanas emergentes para imprimir.");
+        if (!printWindow) return customAlert(t('allow_popups_error'));
 
         const monthName = (t && t('months_array') && t('months_array')[month - 1]) || 'Mes';
         const pageTitle = activeTab === 'balance' ? t('balance_report_title') :
@@ -99,7 +99,7 @@ const generateBalancePrint = (reportData, monthName, year, t) => {
                 if (isAttended && ((a.pago === 'debt' || a.pago === 'debe') || debtAmt > 0)) {
                     allDebts.push({
                         date: day.date,
-                        type: 'Turno',
+                        type: t('bitacora_appointment_prefix'),
                         patient: a.nombre,
                         amount: debtAmt,
                         is_weekend: day.is_weekend,
@@ -196,9 +196,9 @@ const generateAppointmentsPrint = (reportData, monthName, year, t) => {
         return `
             <div class="day-group">
                 <div class="day-header ${day.is_weekend ? 'day-header--weekend' : ''} ${day.is_holiday ? 'day-header--holiday' : ''}">
-                    <span>${t('date_label') || 'Fecha'}: ${day.date || ''}</span>
+                    <span>${t('date_label')}: ${day.date || ''}</span>
                     ${day.is_holiday ? `<span class="tag tag--holiday">${day.holiday_description || t('holiday')}</span>` : ''}
-                    ${day.is_weekend && !day.is_holiday ? `<span style="font-size: 10px; opacity: 0.8;">(${t('weekend') || 'Finde'})</span>` : ''}
+                    ${day.is_weekend && !day.is_holiday ? `<span style="font-size: 10px; opacity: 0.8;">(${t('weekend')})</span>` : ''}
                 </div>
                 <table>
                     <thead>
