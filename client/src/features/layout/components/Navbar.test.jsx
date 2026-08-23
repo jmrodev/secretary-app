@@ -25,7 +25,7 @@ describe('Navbar - Role Boundaries', () => {
             logout: vi.fn(),
             t: (key) => key,
             settings: {},
-            location: { pathname: '/admin/users' },
+            location: { pathname: '/config', search: '?tab=users' },
             doctors: [],
             language: 'es',
             toggleLanguage: vi.fn(),
@@ -40,7 +40,6 @@ describe('Navbar - Role Boundaries', () => {
         renderNavbar();
 
         // Admin links visible
-        expect(screen.getByRole('link', { name: 'users' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'audit_logs' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'system_config' })).toBeInTheDocument();
 

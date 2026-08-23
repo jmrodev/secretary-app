@@ -27,7 +27,7 @@ export const useLayoutController = () => {
 
     // Logic to keep the administration section open if a subpath is active
     const [isAdminOpen, setIsAdminOpen] = useState(() => {
-        const adminPaths = ['/profile', '/doctors', '/reports', '/institutions', '/admin/users', '/logs', '/config'];
+        const adminPaths = ['/profile', '/doctors', '/reports', '/institutions', '/logs', '/config'];
         return adminPaths.some(path => location.pathname === path);
     });
 
