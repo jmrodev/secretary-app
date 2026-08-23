@@ -25,7 +25,7 @@ export const useDayScheduleHandlers = ({ date, appointments, doctor, onDateSelec
             })
             .sort((a, b) => new Date(a.appointment_date) - new Date(b.appointment_date));
 
-        let htmlContent = `
+        const htmlContent = `
             <html><head><title>${t('patients')} - ${dayName}</title><style>
                 body { font-family: sans-serif; padding: 40px; }
                 table { width: 100%; border-collapse: collapse; margin-top: 20px; }
@@ -37,7 +37,7 @@ export const useDayScheduleHandlers = ({ date, appointments, doctor, onDateSelec
                     ${appsToPrint.length > 0 ? appsToPrint.map(appt => `
                         <tr>
                             <td>${new Date(appt.appointment_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}</td>
-                            <td>${appt.patient_name || 'S/N'}</td><td>${appt.patient_phone || appt.phone || '-'}</td><td>${appt.reason || '-'}</td><td>${translateStatus(appt.status)}</td>
+                            <td>${appt.patient_name || t('no_name')}</td><td>${appt.patient_phone || appt.phone || '-'}</td><td>${appt.reason || '-'}</td><td>${translateStatus(appt.status)}</td>
                         </tr>`).join('') : `<tr><td colspan="5">${t('no_appointments_day')}</td></tr>`}
                 </tbody></table>
                 <script>window.onload = () => { window.print(); setTimeout(() => window.close(), 500); }</script>
@@ -52,7 +52,7 @@ export const useDayScheduleHandlers = ({ date, appointments, doctor, onDateSelec
     const handleSlotAction = async (slot) => {
         const isOutOfHours = slot.type === 'closed';
         if (isOutOfHours) {
-            if (await confirm(t('confirm_out_of_hours') || "¿Desea asignar un turno en horario NO LABORABLE?")) {
+            if (await confirm(t('confirm_out_of_hours'))) {
                 onSlotClick(slot.time.getHours(), null, slot.time.getMinutes(), true);
             }
         } else {
