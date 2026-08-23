@@ -705,5 +705,21 @@ export const general = {
     virtual_location: "Virtual (Cima Salud)",
     appointment_type_virtual: "VIRTUAL",
     appointment_type_in_person: "IN-PERSON",
-    default_secretary_name: "Secretary"
+    default_secretary_name: "Secretary",
+    config_google_connected_success: "Google Account Connected Successfully",
+    config_google_connect_error: "Error connecting to Google",
+    config_google_auth_start_error: "Error starting Google authentication",
+    config_google_disconnected: "Account disconnected successfully",
+    config_google_disconnect_error: "Error disconnecting account",
+    config_retry_started: "Retry started.",
+    config_retry_start_error: "Error starting retry.",
+    config_test_message_sent: "✅ Test message sent. Check your WhatsApp.",
+        config_disconnect_google_confirm: "Are you sure you want to disconnect Google Calendar? Appointments will stop syncing.",
+    config_test_phone_prompt: "Enter a test phone number (include country code, e.g.: 549...):",
+    config_duckdns_update_confirm: "Do you want to update your DuckDNS IP now?",
+    config_duckdns_updated: "DuckDNS IP updated successfully.",
+    integration_token_label: "Token",
+    integration_port_forwarding: "Port Forwarding",
+    dev_label: "Dev",
+    prod_label: "Prod"
 };

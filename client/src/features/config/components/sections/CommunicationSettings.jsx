@@ -56,7 +56,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         id="clinic-address"
                         label={t('physical_address_label')}
                         type="text"
-                        placeholder={t('address_placeholder_example') || "Calle X, Entre Y y Z"}
+                        placeholder={t('address_placeholder_example')}
                         value={settings.clinic_address || ''}
                         onChange={(e) => updateSetting('clinic_address', e.target.value)}
                         disabled={!isAdmin}
@@ -166,12 +166,12 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
             <div className={shared.ConfigSection}>
                 <div className={shared.ConfigSection__header}>
                     <Icon name="payments" size="1.2rem" className={shared.ConfigSection__icon} />
-                    <h4 className={shared.ConfigSection__title}>Recordatorios de Deuda</h4>
+                    <h4 className={shared.ConfigSection__title}>{t('debt_reminders_title')}</h4>
                 </div>
                 <div className={shared.ConfigSection__body}>
                     <MessageTemplateEditor
                         id="debt-template"
-                        label="Plantilla de Deuda"
+                        label={t('debt_template_label')}
                         value={localSettings.whatsapp_template_debt}
                         settingKey="whatsapp_template_debt"
                         variables={['{patient_name}', '{debt_amount}']}
@@ -187,13 +187,13 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
             <div className={shared.ConfigSection}>
                 <div className={shared.ConfigSection__header}>
                     <Icon name="pending_actions" size="1.2rem" className={shared.ConfigSection__icon} />
-                    <h4 className={shared.ConfigSection__title}>Gestión de Turnos Pendientes</h4>
+                    <h4 className={shared.ConfigSection__title}>{t('pending_appointments_title')}</h4>
                 </div>
                 <div className={shared.ConfigSection__body}>
                     <div className={`${shared.ConfigGrid} ${shared['ConfigGrid--1col']}`}>
                         <MessageTemplateEditor
                             id="accept-template"
-                            label="Aceptar Turno"
+                            label={t('accept_appointment_label')}
                             value={localSettings.whatsapp_template_accept}
                             settingKey="whatsapp_template_accept"
                             variables={['{patient_name}', '{date}', '{time}', '{doctor_name}']}
@@ -204,7 +204,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         />
                         <MessageTemplateEditor
                             id="alternative-template"
-                            label="Sugerir Alternativa"
+                            label={t('suggest_alternative_label')}
                             value={localSettings.whatsapp_template_alternative}
                             settingKey="whatsapp_template_alternative"
                             variables={['{patient_name}', '{date}', '{time}']}
@@ -271,15 +271,15 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                             label={
                                 <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
                                     <Icon name="star" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
-                                    {t('google_review_link_label') || 'Enlace de Reseñas de Google'}
+                                    {t('google_review_link_label')}
                                 </span>
                             }
                             type="url"
-                            placeholder={t('google_review_placeholder_example') || "Ej. https://g.page/r/.../review"}
+                            placeholder={t('google_review_placeholder_example')}
                             value={settings.google_review_link || ''}
                             onChange={(e) => updateSetting('google_review_link', e.target.value)}
                             disabled={!isAdmin}
-                            hint={t('google_review_hint') || 'Ingresa el enlace directo para que los pacientes te dejen una reseña en Google. Búscalo en tu perfil de Google My Business.'}
+                            hint={t('google_review_hint')}
                         />
 
                         <MessageTemplateEditor
@@ -287,7 +287,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                             label={
                                 <span className={`${styles.CommunicationSettings__labelWithIcon}`}>
                                     <Icon name="medication" size="1rem" className={`${styles.CommunicationSettings__labelIcon}`} /> 
-                                    {t('medication_refill_reminder_label') || 'Recordatorio de Renovación de Medicación'}
+                                    {t('medication_refill_reminder_label')}
                                 </span>
                             }
                             value={settings.medication_refill_reminder_template}
@@ -296,8 +296,8 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                             updateSetting={updateSetting}
                             insertVariable={insertVariable}
                             disabled={!isAdmin}
-                            description={t('medication_refill_hint') || 'Mensaje enviado para recordar la renovación de recetas.'}
-                            placeholder={t('medication_refill_placeholder_example') || "Hola {patient_name}, tu medicación {medication_name}..."}
+                            description={t('medication_refill_hint')}
+                            placeholder={t('medication_refill_placeholder_example')}
                             t={t}
                         />
                     </div>

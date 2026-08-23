@@ -25,7 +25,7 @@ export const useSystemConfigController = () => {
     // Active tab is derived from the URL (?tab=...) via the router so deep
     // links and browser back/forward work natively. No manual replaceState.
     const [searchParams, setSearchParams] = useSearchParams();
-    const activeTab = searchParams.get('tab') || 'modules';
+    const activeTab = searchParams.get('tab');
 
     const setActiveTab = useCallback((tab) => {
         setSearchParams((prev) => {
@@ -48,14 +48,14 @@ export const useSystemConfigController = () => {
         const status = searchParams.get('status');
 
         if (status === 'success') {
-            showMessage('Cuenta de Google Conectada con Éxito', 'success');
+            showMessage(t('config_google_connected_success'), 'success');
             setSearchParams((prev) => {
                 const next = new URLSearchParams(prev);
                 next.delete('status');
                 return next;
             });
         } else if (status === 'error') {
-            showMessage('Error al conectar con Google', 'error');
+            showMessage(t('config_google_connect_error'), 'error');
             setSearchParams((prev) => {
                 const next = new URLSearchParams(prev);
                 next.delete('status');
@@ -71,8 +71,9 @@ export const useSystemConfigController = () => {
         try {
             const { data } = await api.get('/google/auth-url');
             window.location.href = data.url;
-        } catch {
-            showMessage('Error al iniciar autenticación con Google', 'error');
+        } catch (err) {
+            console.error('Google auth start failed:', err);
+            showMessage(t('config_google_auth_start_error'), 'error');
         }
     }, [showMessage]);
 
@@ -80,13 +81,14 @@ export const useSystemConfigController = () => {
      * Disconnects Google Calendar integration securely
      */
     const handleDisconnectGoogle = useCallback(async () => {
-        if (!await confirm('¿Estás seguro de desconectar Google Calendar? Se dejarán de sincronizar los turnos.')) return;
+        if (!await confirm(t('config_disconnect_google_confirm'))) return;
         try {
             await api.post('/google/disconnect');
             await refreshSettings();
-            showMessage('Cuenta desconectada correctamente', 'success');
-        } catch {
-            showMessage('Error al desconectar cuenta', 'error');
+            showMessage(t('config_google_disconnected'), 'success');
+        } catch (err) {
+            console.error('Google disconnect failed:', err);
+            showMessage(t('config_google_disconnect_error'), 'error');
         }
     }, [confirm, refreshSettings, showMessage]);
 
@@ -97,9 +99,9 @@ export const useSystemConfigController = () => {
         try {
             setLoading(true);
             const res = await api.post('/google/retry-failed');
-            showMessage(res.data.message || 'Reintento iniciado.', 'success');
+            showMessage(res.data.message || t('config_retry_started'), 'success');
         } catch (err) {
-            showMessage('Error al iniciar reintento.', 'error');
+            showMessage(t('config_retry_start_error'), 'error');
             console.error(err);
         } finally {
             setLoading(false);
@@ -110,16 +112,16 @@ export const useSystemConfigController = () => {
      * Sends a test message via Meta Cloud API logic
      */
     const handleTestMeta = useCallback(async () => {
-        const phone = await prompt("Ingrese un número de teléfono de prueba (incluya código de país, ej: 549...):");
+        const phone = await prompt(t('config_test_phone_prompt'));
         if (!phone) return;
 
         try {
             setLoading(true);
             await api.post('/whatsapp/test', { to: phone });
-            showMessage('✅ Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
+            showMessage(t('config_test_message_sent'), 'success');
         } catch (error) {
             console.error(error);
-            showMessage(error.response?.data?.error || 'Error al enviar mensaje de prueba', 'error');
+            showMessage(error.response?.data?.error || t('config_test_message_error'), 'error');
         } finally {
             setLoading(false);
         }
@@ -152,14 +154,15 @@ export const useSystemConfigController = () => {
      * Forces a DuckDNS IP refresh/update
      */
     const handleRefreshTunnel = useCallback(async () => {
-        if (!await confirm("¿Desea actualizar su IP en DuckDNS ahora?")) return;
+        if (!await confirm(t('config_duckdns_update_confirm'))) return;
 
         try {
             setLoading(true);
             await api.post('/settings/refresh-tunnel');
-            showMessage("IP de DuckDNS actualizada correctamente.", 'info');
+            showMessage(t('config_duckdns_updated'), 'info');
             setTimeout(refreshSettings, 2000);
-        } catch {
+        } catch (err) {
+            console.error('DuckDNS IP update failed:', err);
             showMessage(t('error_saving'), 'error');
         } finally {
             setLoading(false);

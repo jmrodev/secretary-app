@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import { Button } from '@/components/atoms/Button';
+import { Modal } from '@/components/molecules/Modal';
 import { Icon } from '@/components/atoms/Icon';
 import { Badge } from '@/components/atoms/Badge';
 import { Loading } from '@/components/atoms/Loading';
@@ -23,6 +24,7 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
     const { t } = useLanguage();
     const [status, setStatus] = useState(null);
     const [checking, setChecking] = useState(false);
+    const [showDiagnosticModal, setShowDiagnosticModal] = useState(false);
 
     const isAdmin = user?.role === 'admin' || user?.role === 'secretary';
 
@@ -52,10 +54,11 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
         try {
             const res = await api.get('/billing/status');
             setStatus(res.data);
-            showMessage(t('afip_validated') || 'Conexión con AFIP validada', 'success');
+            showMessage(t('afip_validated'), 'success');
         } catch (err) {
+            console.error('AFIP connection validation failed:', err);
             setStatus({ error: err.response?.data?.error || t('afip_status_error') });
-            showMessage(t('afip_connection_failed') || 'Fallo al conectar con AFIP', 'error');
+            showMessage(t('afip_connection_failed'), 'error');
         } finally {
             setChecking(false);
         }
@@ -92,7 +95,7 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
         const { data } = modalState;
         try {
             await api.put(`/users/doctors/${data.id}`, data);
-            showMessage(t('doctor_updated') || 'Médico actualizado exitosamente', 'success');
+            showMessage(t('doctor_updated'), 'success');
             setModalState(prev => ({ ...prev, isOpen: false }));
             window.dispatchEvent(new CustomEvent('doctors-updated'));
             fetchDoctors();
@@ -105,103 +108,54 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
     const handleEnvironmentChange = useCallback((e) => {
         const value = e.target.value;
         updateSetting('afip_environment', value);
-        showMessage(t('environment_updated_success') || 'Entorno de facturación actualizado correctamente', 'success');
+        showMessage(t('environment_updated_success'), 'success');
     }, [updateSetting, showMessage, t]);
 
     return (
         <div className={`${sharedStyles.TabPanel} ${sharedStyles.AnimateFadeIn}`}>
-            {/* AFIP Global Environment & Health Verification */}
-            <div className={sharedStyles.ConfigSection}>
-                <div className={sharedStyles.ConfigSection__header}>
-                    <span className={sharedStyles.ConfigSection__icon}><Icon name="receipt_long" /></span>
-                    <h4 className={sharedStyles.ConfigSection__title}>{t('billing_settings_title')}</h4>
-                </div>
-                <div className={sharedStyles.ConfigSection__body}>
-                    <div className={`${sharedStyles.ConfigGrid} ${sharedStyles['ConfigGrid--2col']}`}>
-                        <ConfigField
-                            label={t('afip_environment')}
-                            type="select"
-                            value={settings.afip_environment || 'testing'}
-                            onChange={handleEnvironmentChange}
-                            disabled={!isAdmin}
-                            options={[
-                                { value: 'testing', label: t('afip_env_testing') },
-                                { value: 'production', label: t('afip_env_production') }
-                            ]}
-                            hint={t('afip_prod_warning')}
-                        />
+            {/* Doctor Fiscal Status Matrix */}
 
-                        <div className={styles.BillingSettings__group}>
-                            <div className={styles.BillingSettings__groupHeader}>
-                                <h5 className={styles.BillingSettings__groupTitle}>{t('connection_status')}</h5>
-                            </div>
-                            <div className={styles.BillingSettings__groupItems}>
-                                {status ? (
-                                    <div className={`${styles.BillingSettings__status} ${status.error ? styles.BillingSettings__statusError : styles.BillingSettings__statusSuccess}`}>
-                                        {status.error ? (
-                                            <p><Icon name="close" className="mr-1" />{t('afip_status_error')}: {status.error}</p>
-                                        ) : (
-                                            <>
-                                                <p><Icon name="check" className="mr-1" />{t('afip_status_connected')} ({status.environment})</p>
-                                                <p className={styles.BillingSettings__hint}>App: {status.afip_status?.AppServer}, DB: {status.afip_status?.DbServer}, Auth: {status.afip_status?.AuthServer}</p>
-                                            </>
-                                        )}
-                                        <div className={styles.BillingSettings__statusHeader}>
-                                            {status.error ? (
-                                                <Icon name="close" />
-                                            ) : (
-                                                <Icon name="check" />
-                                            )}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <p className={styles.BillingSettings__hint}>{t('not_verified')}</p>
-                                )}
-                            </div>
-
-                            <div className={`${styles.BillingSettings__actions} ${styles['BillingSettings__actions--mt1']}`}>
-                                <Button
-                                    variant="secondary"
-                                    onClick={checkStatus}
-                                    loading={checking}
-                                    icon={<Icon name="sync" />}
-                                >
-                                    {t('verify_afip_connection')}
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div className={styles.BillingSettings__actionsRow}>
+                <Button
+                    variant="secondary"
+                    onClick={async () => {
+                        await checkStatus();
+                        setShowDiagnosticModal(true);
+                    }}
+                    loading={checking}
+                    icon={<Icon name="sync" />}
+                >
+                    {t('verify_afip_connection')}
+                </Button>
             </div>
 
-            {/* Doctor Fiscal Status Matrix */}
             <div className={sharedStyles.ConfigSection}>
                 <div className={sharedStyles.ConfigSection__header}>
                     <span className={sharedStyles.ConfigSection__icon}><Icon name="badge" /></span>
                     <div className={sharedStyles.ConfigSection__text}>
-                        <h4 className={sharedStyles.ConfigSection__title}>{t('doctor_fiscal_status_title') || 'Estado Fiscal por Profesional'}</h4>
-                        <p className={styles.BillingSettings__hint}>{t('doctor_fiscal_status_desc') || 'Resumen del estado de credenciales fiscales y certificados AFIP de cada médico de la clínica.'}</p>
+                        <h4 className={sharedStyles.ConfigSection__title}>{t('doctor_fiscal_status_title')}</h4>
+                        <p className={styles.BillingSettings__hint}>{t('doctor_fiscal_status_desc')}</p>
                     </div>
                 </div>
 
                 <div className={sharedStyles.ConfigSection__body}>
                     {doctorsLoading ? (
-                        <Loading variant="centered" text={t('loading_doctors') || 'Cargando profesionales...'} />
+                        <Loading variant="centered" text={t('loading_doctors')} />
                     ) : doctors.length === 0 ? (
                         <div className={styles.BillingSettings__emptyState}>
-                            <p>{t('no_doctors_registered') || 'No hay profesionales registrados.'}</p>
+                            <p>{t('no_doctors_registered')}</p>
                         </div>
                     ) : (
                         <div className={styles.BillingSettings__tableWrapper}>
                             <table className={styles.BillingSettings__table}>
                                 <thead>
                                     <tr>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_doctor') || 'Profesional'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cuit') || 'CUIT'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_pto_vta') || 'Pto. Venta'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cert') || 'Certificado / Clave'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_status') || 'Estado AFIP'}</th>
-                                        <th className={`${styles.BillingSettings__th} ${styles['BillingSettings__th--right']}`}>{t('doctor_fiscal_th_actions') || 'Acciones'}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_doctor')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cuit')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_pto_vta')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cert')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_status')}</th>
+                                        <th className={`${styles.BillingSettings__th} ${styles['BillingSettings__th--right']}`}>{t('doctor_fiscal_th_actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -223,28 +177,28 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                                                     {hasCuit ? (
                                                         <Badge variant="blue">{doc.afip_cuit}</Badge>
                                                     ) : (
-                                                        <Badge variant="warning">{t('fiscal_cuit_missing') || 'Sin CUIT'}</Badge>
+                                                        <Badge variant="warning">{t('fiscal_cuit_missing')}</Badge>
                                                     )}
                                                 </td>
                                                 <td className={styles.BillingSettings__td}>
                                                     {hasPtoVta ? (
                                                         <Badge variant="default">#{doc.afip_pto_vta}</Badge>
                                                     ) : (
-                                                        <Badge variant="warning">{t('fiscal_pto_vta_missing') || 'Sin Pto Vta'}</Badge>
+                                                        <Badge variant="warning">{t('fiscal_pto_vta_missing')}</Badge>
                                                     )}
                                                 </td>
                                                 <td className={styles.BillingSettings__td}>
                                                     {hasCert ? (
-                                                        <Badge variant="success">{t('fiscal_cert_configured') || 'Configurado'}</Badge>
+                                                        <Badge variant="success">{t('fiscal_cert_configured')}</Badge>
                                                     ) : (
-                                                        <Badge variant="danger">{t('fiscal_cert_missing') || 'Falta Certificado'}</Badge>
+                                                        <Badge variant="danger">{t('fiscal_cert_missing')}</Badge>
                                                     )}
                                                 </td>
                                                 <td className={styles.BillingSettings__td}>
                                                     {isReady ? (
-                                                        <Badge variant="success">{t('fiscal_status_ready') || 'Listo'}</Badge>
+                                                        <Badge variant="success">{t('fiscal_status_ready')}</Badge>
                                                     ) : (
-                                                        <Badge variant="warning">{t('fiscal_status_incomplete') || 'Incompleto'}</Badge>
+                                                        <Badge variant="warning">{t('fiscal_status_incomplete')}</Badge>
                                                     )}
                                                 </td>
                                                 <td className={`${styles.BillingSettings__td} ${styles['BillingSettings__td--right']}`}>
@@ -253,9 +207,9 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                                                         size="sm"
                                                         onClick={() => handleEditDoctorFiscal(doc)}
                                                         icon={<Icon name="edit" size="1rem" />}
-                                                        title={t('edit_fiscal_config') || 'Editar Configuración Fiscal'}
+                                                        title={t('edit_fiscal_config')}
                                                     >
-                                                        {t('view_action') || 'Ver'}
+                                                        {t('view_action')}
                                                     </Button>
                                                 </td>
                                             </tr>
@@ -282,6 +236,27 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                     onSave={handleSaveDoctor}
                     t={t}
                 />
+            )}
+            {showDiagnosticModal && (
+                <Modal 
+                    isOpen={true} 
+                    onClose={() => setShowDiagnosticModal(false)} 
+                    title={t('arca_diagnostic_title')}
+                >
+                    <div className={styles.BillingSettings__formColumn}>
+                        <p>{t('arca_diagnostic_desc')}</p>
+                        {status?.error && (
+                            <div className={styles.BillingSettings__errorBox}>
+                                <strong>{t('afip_status_error')}:</strong> {status.error}
+                            </div>
+                        )}
+                        <div className={styles.BillingSettings__tariffBox}>
+                            <p><strong>{t('afip_status_app')}:</strong> {status?.data?.afip_status?.AppServer || t('unknown')}</p>
+                            <p><strong>{t('afip_status_db')}:</strong> {status?.data?.afip_status?.DbServer || t('unknown')}</p>
+                            <p><strong>{t('afip_status_auth')}:</strong> {status?.data?.afip_status?.AuthServer || t('unknown')}</p>
+                        </div>
+                    </div>
+                </Modal>
             )}
         </div>
     );

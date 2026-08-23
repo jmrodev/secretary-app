@@ -15,8 +15,6 @@
     gap: var(--spacing-lg, 1.5rem);
     padding: var(--spacing-lg, 1.5rem);
     background-color: var(--background-bg);
-    max-width: 960px;
-    margin: 0 auto;
     width: 100%;
     box-sizing: border-box;
 }
