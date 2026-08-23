@@ -45,10 +45,12 @@ exports.oauthCallback = async (req, res) => {
         }
 
         await googleAuthService.saveTokens(tokens, doctorId);
-        res.redirect('http://localhost:5173/config?status=success');
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        res.redirect(`${frontendUrl}/config?status=success`);
     } catch (err) {
         console.error("Callback Error:", err);
-        res.redirect('http://localhost:5173/config?status=error');
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        res.redirect(`${frontendUrl}/config?status=error`);
     }
 };
 
