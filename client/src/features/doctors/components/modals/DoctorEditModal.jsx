@@ -7,11 +7,13 @@ import { Input } from '@/components/atoms/Input';
 import { Switch } from '@/components/atoms/Switch';
 import { TabNav } from '@/components/molecules/TabNav';
 import { TabButton } from '@/components/atoms/TabButton';
+import { UserForm } from '@/features/users/components/UserForm';
 import { DoctorTariffsForm } from '@/features/doctors/components/sections/DoctorTariffsForm';
 import { DoctorGoogleSettings } from '@/features/doctors/components/sections/DoctorGoogleSettings';
 import { DoctorScheduleSettings } from '@/features/doctors/components/sections/DoctorScheduleSettings';
-import { DoctorFiscalSettings } from '@/features/doctors/components/sections/DoctorFiscalSettings';
+import { DoctorFiscalWizard } from '@/features/doctors/components/sections/DoctorFiscalWizard';
 import { DoctorMessagesForm } from '@/features/doctors/components/sections/DoctorMessagesForm';
+import { DoctorGoogleHandoverModal } from '@/features/doctors/components/modals/DoctorGoogleHandoverModal';
 import { useDoctorFiscalController } from '@/features/doctors/hooks/useDoctorFiscalController';
 import styles from './DoctorEditModal.module.css';
 
@@ -38,6 +40,8 @@ export const DoctorEditModal = ({
     onConnectGoogle,
     onDisconnectGoogle,
     onVerifyGoogleEvents,
+    onHandoverGoogle,
+    handoverUrl,
     onImportContacts,
     onResetSpreadsheet,
     UserFormComponent,
@@ -54,14 +58,17 @@ export const DoctorEditModal = ({
         uploadCert,
         connectionStatus,
         statusDetails,
-        testConnection
+        testConnection,
+        error
     } = useDoctorFiscalController(data.id);
+
+    const [isFiscalWizardOpen, setIsFiscalWizardOpen] = React.useState(false);
 
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={type === 'CREATE' ? (t('add_new_user') || 'Agregar Nuevo Médico') : t('edit_doctor_details')}
+            title={type === 'CREATE' ? (t('add_new_user')) : t('edit_doctor_details')}
             size="lg"
             footer={
                 <>
@@ -89,6 +96,7 @@ export const DoctorEditModal = ({
             {type === 'EDIT' && (
                 <TabNav className={`${styles.DoctorEditModal__tabs}`}>
                     {[
+                        { id: 'profile', label: t('profile'), icon: 'person' },
                         { id: 'tariffs', label: t('tariffs'), icon: 'payments' },
                         { id: 'schedule', label: t('schedule'), icon: 'calendar_today' },
                         { id: 'messages', label: t('messages'), icon: 'chat' },
@@ -107,9 +115,16 @@ export const DoctorEditModal = ({
                 </TabNav>
             )}
 
+            <DoctorGoogleHandoverModal 
+                isOpen={!!handoverUrl}
+                onClose={() => onHandoverGoogle(false)}
+                authUrl={handoverUrl}
+                doctorPhone={data.phoneNumbers?.[0]?.phone_number}
+            />
+
             {type === 'CREATE' && (
                 <div className={`${styles.DoctorEditModal__content} animate-fade-in`}>
-                    <UserFormComponent
+                    <UserForm
                         type="CREATE"
                         formData={data}
                         setFormData={onChangeData}
@@ -118,6 +133,14 @@ export const DoctorEditModal = ({
             )}
             {type === 'EDIT' && (
                 <div className={`${styles.DoctorEditModal__content} animate-fade-in`}>
+                    {activeTab === 'profile' && (
+                        <UserForm
+                            type="EDIT"
+                            formData={data}
+                            setFormData={onChangeData}
+                        />
+                    )}
+
                     {activeTab === 'tariffs' && (
                         <DoctorTariffsForm
                             data={data}
@@ -130,14 +153,14 @@ export const DoctorEditModal = ({
                     {activeTab === 'schedule' && (
                         <div className={`${styles.DoctorEditModal__scheduleConfig}`}>
                             <div className={`${styles.DoctorEditModal__durationGrid}`}>
-                                <FormGroup label={t('appointment_duration_min') || "Duración Turno (min)"}>
+                                <FormGroup label={t('appointment_duration_min')}>
                                     <Input
                                         type="number"
                                         value={data.appointment_duration}
                                         onChange={e => onChangeData({ appointment_duration: e.target.value })}
                                     />
                                 </FormGroup>
-                                <FormGroup label={t('break_duration_min') || "Descanso (min)"}>
+                                <FormGroup label={t('break_duration_min')}>
                                     <Input
                                         type="number"
                                         value={data.break_duration}
@@ -148,17 +171,17 @@ export const DoctorEditModal = ({
 
                             <div className={`${styles.DoctorEditModal__overturnSection}`}>
                                 <h4 className={`${styles.DoctorEditModal__overturnTitle}`}>
-                                    <Icon name="schedule" size="1rem" /> {t('overturn_range_title') || 'Horario Sobreturnos (Fuera de Horario)'}
+                                    <Icon name="schedule" size="1rem" /> {t('overturn_range_title')}
                                 </h4>
                                 <div className={`${styles.DoctorEditModal__overturnGrid}`}>
-                                    <FormGroup label={t('overturn_start_label') || 'Inicio Sobreturnos'}>
+                                    <FormGroup label={t('overturn_start_label')}>
                                         <Input
                                             type="time"
                                             value={data.overturn_start_time}
                                             onChange={e => onChangeData({ overturn_start_time: e.target.value })}
                                         />
                                     </FormGroup>
-                                    <FormGroup label={t('overturn_end_label') || 'Fin Sobreturnos'}>
+                                    <FormGroup label={t('overturn_end_label')}>
                                         <Input
                                             type="time"
                                             value={data.overturn_end_time}
@@ -168,12 +191,12 @@ export const DoctorEditModal = ({
                                 </div>
                                 <div className={`${styles.DoctorEditModal__overturnFooter}`}>
                                     <Switch
-                                        label={t('force_hour_alignment_label') || "Coordinar con minuto cero (:00)"}
+                                        label={t('force_hour_alignment_label')}
                                         checked={data.force_hour_alignment}
                                         onChange={val => onChangeData({ force_hour_alignment: val })}
                                     />
                                     <p className={`${styles.DoctorEditModal__overturnHelp}`}>
-                                        {t('force_hour_alignment_help') || "Si un turno arranca 8:15, el siguiente será clavado a las 9:00, luego 10:00, etc."}
+                                        {t('force_hour_alignment_help')}
                                     </p>
                                 </div>
                             </div>
@@ -207,26 +230,49 @@ export const DoctorEditModal = ({
                             onVerifyCalendar={onVerifyGoogleEvents}
                             onImportContacts={onImportContacts}
                             onResetSpreadsheet={onResetSpreadsheet}
+                            onHandover={() => onHandoverGoogle(true)}
                         />
                     )}
 
                     {activeTab === 'fiscal' && (
-                        <DoctorFiscalSettings
-                            data={data}
-                            onChangeData={onChangeData}
+                        <div className={`${styles.DoctorEditModal__fiscalSummary} animate-fade-in`}>
+                            <h4>{t('afip_billing_config_title')}</h4>
+                            <p style={{ margin: '1rem 0' }}>
+                                {t('afip_billing_config_desc')}
+                            </p>
+                            <Button 
+                                onClick={() => setIsFiscalWizardOpen(true)}
+                                icon={<Icon name="launch" size="1.2rem" />}
+                                variant="primary"
+                            >
+                                {t('open_afip_wizard')}
+                            </Button>
 
-                            generatedCsr={generatedCsr}
-                            generatingCsr={generatingCsr}
-                            showCsrInfo={showCsrInfo}
-                            uploading={uploading}
-                            connectionStatus={connectionStatus}
-                            statusDetails={statusDetails}
-
-                            onGenerateCsr={generateCsr}
-                            onUploadCert={uploadCert}
-                            onTestConnection={testConnection}
-                            onHideCsrInfo={hideCsrInfo}
-                        />
+                            {isFiscalWizardOpen && (
+                                <Modal
+                                    isOpen={true}
+                                    onClose={() => setIsFiscalWizardOpen(false)}
+                                    title={t('afip_wizard_title')}
+                                    size="lg"
+                                >
+                                    <div style={{ padding: '1rem' }}>
+                                        <DoctorFiscalWizard
+                                            data={data}
+                                            onChangeData={onChangeData}
+                                            generatedCsr={generatedCsr}
+                                            generatingCsr={generatingCsr}
+                                            uploading={uploading}
+                                            connectionStatus={connectionStatus}
+                                            statusDetails={statusDetails}
+                                            error={error}
+                                            onGenerateCsr={generateCsr}
+                                            onUploadCert={uploadCert}
+                                            onTestConnection={testConnection}
+                                        />
+                                    </div>
+                                </Modal>
+                            )}
+                        </div>
                     )}
                 </div>
             )}

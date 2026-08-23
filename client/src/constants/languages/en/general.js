@@ -732,6 +732,7 @@ export const general = {
     regenerate_finance_spreadsheet: "Re-generate Finances Spreadsheet",
     handover_title: "Link from Mobile",
     handover_instructions: "Scan this QR code with the doctor's phone, or send them the link via WhatsApp.",
+    loading_link: "Loading link...",
     link_via_phone: "Link from Mobile",
     view_arca_diagnostic: "View ARCA Diagnostic",
     arca_diagnostic_title: "ARCA Services Diagnostic",

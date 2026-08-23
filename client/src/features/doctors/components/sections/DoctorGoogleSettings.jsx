@@ -11,18 +11,19 @@ export const DoctorGoogleSettings = ({
     onDisconnect,
     onVerifyCalendar,
     onImportContacts,
-    onResetSpreadsheet
+    onResetSpreadsheet,
+    onHandover
 }) => {
     const { t } = useLanguage();
     return (
         <div className={`${styles.DoctorGoogleSettings__root}`}>
             <div className={`${styles.DoctorGoogleSettings__statusCard}`}>
                 <div className={`${styles.DoctorGoogleSettings__info}`}>
-                    <h4 className={`${styles.DoctorGoogleSettings__title}`}>{t('google_integration') || 'Google Integration'}</h4>
-                    <p className={`${styles.DoctorGoogleSettings__subtitle}`}>{t('google_integration_subtitle') || 'Sincroniza calendar y contactos.'}</p>
+                    <h4 className={`${styles.DoctorGoogleSettings__title}`}>{t('google_integration')}</h4>
+                    <p className={`${styles.DoctorGoogleSettings__subtitle}`}>{t('google_integration_subtitle')}</p>
                 </div>
                 <Badge variant={connected ? 'success' : 'secondary'}>
-                    {connected ? `● ${t('connected_caps') || 'CONECTADO'}` : `○ ${t('disconnected_caps') || 'DESCONECTADO'}`}
+                    {connected ? `● ${t('connected_caps')}` : `○ ${t('disconnected_caps')}`}
                 </Badge>
             </div>
 
@@ -36,10 +37,19 @@ export const DoctorGoogleSettings = ({
                             onClick={onConnect}
                             icon={<Icon name="link" />}
                         >
-                            Conectar Cuenta G-Suite
+                            {t('connect_gsuite')}
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className="w-full"
+                            size="md"
+                            onClick={onHandover}
+                            icon={<Icon name="qr_code_scanner" />}
+                        >
+                            {t('link_via_phone')}
                         </Button>
                         <p className={`${styles.DoctorGoogleSettings__helpText}`}>
-                            * Asegúrate de estar logueado en la cuenta de Google del doctor en este navegador antes de conectar.
+                            {t('gsuite_login_warning')}
                         </p>
                     </>
                 ) : (
@@ -50,7 +60,7 @@ export const DoctorGoogleSettings = ({
                         onClick={onDisconnect}
                         icon={<Icon name="close" />}
                     >
-                        Desvincular Cuenta
+                        {t('disconnect_account')}
                     </Button>
                 )}
             </div>
@@ -58,15 +68,15 @@ export const DoctorGoogleSettings = ({
             {connected && (
                 <div className={`${styles.DoctorGoogleSettings__tools}`}>
                     <Button variant="secondary" onClick={onVerifyCalendar} icon={<Icon name="calendar_today" />}>
-                        Verificar Turnos en Calendar
+                        {t('verify_calendar_appointments')}
                     </Button>
                     <Button variant="primary" onClick={onImportContacts} icon={<Icon name="file_download" />}>
-                        Sincronizar Contactos
+                        {t('sync_contacts')}
                     </Button>
                     <div className={`${styles.DoctorGoogleSettings__divider}`} />
                     <div className={`${styles.DoctorGoogleSettings__resetBox}`}>
                         <p className={`${styles.DoctorGoogleSettings__resetNotice}`}>
-                            <Icon name="warning" size="1rem" className="mr-1" />¿Problemas con la planilla? Si la borraste de Drive, usa este botón para que el sistema genere una nueva.
+                            <Icon name="warning" size="1rem" />{t('spreadsheet_problems_notice')}
                         </p>
                         <Button
                             variant="ghost"
@@ -75,7 +85,7 @@ export const DoctorGoogleSettings = ({
                             onClick={onResetSpreadsheet}
                             icon={<Icon name="restore" />}
                         >
-                            Re-generar Planilla de Finanzas
+                            {t('regenerate_finance_spreadsheet')}
                         </Button>
                     </div>
                 </div>
@@ -83,5 +93,3 @@ export const DoctorGoogleSettings = ({
         </div>
     );
 };
-
-

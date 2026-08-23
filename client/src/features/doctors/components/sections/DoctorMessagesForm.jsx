@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Icon } from '@/components/atoms/Icon';
 import { TabNav } from '@/components/molecules/TabNav';
 import { TabButton } from '@/components/atoms/TabButton';
+import { MessageTemplateEditor } from '@/features/config/components/forms/MessageTemplateEditor';
 import styles from './DoctorMessagesForm.module.css';
 
 /**
@@ -9,7 +10,7 @@ import styles from './DoctorMessagesForm.module.css';
  * 
  * Allows a doctor to customize their specific message templates.
  */
-export const DoctorMessagesForm = ({ data, onChange, settings, t, MessageTemplateEditorComponent }) => {
+export const DoctorMessagesForm = ({ data, onChange, settings, t }) => {
     const [activeSubTab, setActiveSubTab] = useState('templates'); // 'templates', 'confirmation'
 
     const commonVars = useMemo(() => [
@@ -63,7 +64,7 @@ export const DoctorMessagesForm = ({ data, onChange, settings, t, MessageTemplat
             <div className={`${styles.DoctorMessagesForm__content}`}>
                 {activeSubTab === 'templates' && (
                     <section className={`${styles.DoctorMessagesForm__section} animate-fade-in`}>
-                        <MessageTemplateEditorComponent
+                        <MessageTemplateEditor
                             id="doctor-reminder-template"
                             label={t('presential_reminder_label')}
                             value={data.reminder_template}
@@ -76,7 +77,7 @@ export const DoctorMessagesForm = ({ data, onChange, settings, t, MessageTemplat
 
                         <div className={`${styles.DoctorMessagesForm__divider}`}></div>
 
-                        <MessageTemplateEditorComponent
+                        <MessageTemplateEditor
                             id="doctor-reminder-virtual-template"
                             label={t('virtual_reminder_label')}
                             value={data.reminder_virtual_template}
@@ -91,7 +92,7 @@ export const DoctorMessagesForm = ({ data, onChange, settings, t, MessageTemplat
 
                 {activeSubTab === 'confirmation' && (
                     <section className={`${styles.DoctorMessagesForm__section} animate-fade-in`}>
-                        <MessageTemplateEditorComponent
+                        <MessageTemplateEditor
                             id="doctor-confirmation-template"
                             label={t('presential_confirmation_label')}
                             value={data.confirmation_template}
@@ -104,7 +105,7 @@ export const DoctorMessagesForm = ({ data, onChange, settings, t, MessageTemplat
 
                         <div className={`${styles.DoctorMessagesForm__divider}`}></div>
 
-                        <MessageTemplateEditorComponent
+                        <MessageTemplateEditor
                             id="doctor-confirmation-virtual-template"
                             label={t('virtual_confirmation_label')}
                             value={data.confirmation_virtual_template}

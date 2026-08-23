@@ -730,6 +730,7 @@ export const general = {
     regenerate_finance_spreadsheet: "Re-generar Planilla de Finanzas",
     handover_title: "Vincular desde Celular",
     handover_instructions: "Escaneá este código QR con el celular del doctor, o enviale el enlace por WhatsApp.",
+    loading_link: "Cargando enlace...",
     link_via_phone: "Vincular desde Celular",
     view_arca_diagnostic: "Ver Diagnóstico ARCA",
     arca_diagnostic_title: "Diagnóstico de Servicios ARCA",

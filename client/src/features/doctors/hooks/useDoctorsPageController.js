@@ -64,11 +64,12 @@ export const useDoctorsPageController = () => {
     const [modalState, setModalState] = useState({
         isOpen: false,
         type: 'EDIT', // 'EDIT' or 'CREATE'
-        activeTab: 'tariffs', // 'tariffs', 'schedule', 'google'
+        activeTab: 'profile', // 'tariffs', 'schedule', 'google'
         connected: false,
         loadingGoogle: false,
         loadingSchedule: false,
         schedule: [],
+        handoverUrl: null,
         data: {}
     });
 
@@ -120,7 +121,7 @@ export const useDoctorsPageController = () => {
             setModalState({
                 isOpen: true,
                 type: 'CREATE',
-                activeTab: 'tariffs',
+                activeTab: 'profile',
                 connected: false,
                 loadingGoogle: false,
                 loadingSchedule: false,
@@ -142,7 +143,7 @@ export const useDoctorsPageController = () => {
         setModalState({
             isOpen: true,
             type: 'EDIT',
-            activeTab: 'tariffs',
+            activeTab: 'profile',
             connected: false,
             loadingGoogle: false,
             loadingSchedule: false,
@@ -158,7 +159,7 @@ export const useDoctorsPageController = () => {
         const { type, data, schedule } = modalState;
         try {
             if (type === 'CREATE') {
-                await api.post('/users', {
+                await api.post('/users/admin/users', {
                     ...data,
                     fullName: data.full_name, // Backend expects fullName
                 });
@@ -231,6 +232,21 @@ export const useDoctorsPageController = () => {
             ...prev,
             schedule: typeof s === 'function' ? s(prev.schedule) : s
         })),
+        onHandoverGoogle: async (open) => {
+            if (!open) {
+                setModalState(prev => ({ ...prev, handoverUrl: null }));
+                return;
+            }
+            try {
+                const res = await api.get(`/google/auth-url?doctorId=${modalState.data.id}`);
+                let url = res.data.url;
+                // Reconstruct with duckdns domain if necessary
+                setModalState(prev => ({ ...prev, handoverUrl: url }));
+            } catch (err) {
+                console.error("Failed to initiate Google Handover", err);
+                showMessage(t('google_connect_failed'), 'error');
+            }
+        },
         onVerifyGoogleEvents: async () => {
             try {
                 const res = await api.get(`/google/appointments?doctorId=${modalState.data.id}`);
