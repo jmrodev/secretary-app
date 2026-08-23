@@ -31,7 +31,7 @@
     color: var(--text-main);
     border-radius: var(--radius-lg, 0.75rem);
     width: 100%;
-    max-width: 42rem; /* default max-width for md (antes 31.25rem) */
+    max-width: 52rem; /* default max-width for md */
     height: auto;
     max-height: calc(100vh - 2 * clamp(0.5rem, 3vw, 5rem));
     display: flex;

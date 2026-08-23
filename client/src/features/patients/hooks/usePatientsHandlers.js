@@ -42,7 +42,7 @@ export const usePatientsHandlers = ({
             setPatientDetails(patientData);
         } catch (err) {
             console.error(err);
-            showMessage(t('failed_load_history') || "Failed to load history", 'error');
+            showMessage(t('failed_load_history'), 'error');
             setSelectedPatientId(null);
         } finally {
             setDetailsLoading(false);
@@ -54,9 +54,9 @@ export const usePatientsHandlers = ({
         if (!patientData?.user_id) return;
 
         const adminPassword = await prompt(
-            t('delete_admin_password_hint') || 'Ingrese su contraseña para confirmar la eliminación.',
+            t('delete_admin_password_hint'),
             '',
-            t('delete_user') || 'Eliminar usuario',
+            t('delete_user'),
             'password'
         );
         if (!adminPassword) return;
@@ -225,12 +225,12 @@ export const usePatientsHandlers = ({
     const handleRestorePatient = useCallback(async (id) => {
         try {
             await api.post(`/users/patients/${id}/restore`);
-            showMessage(t('patient_restored') || 'Paciente restaurado', 'success');
+            showMessage(t('patient_restored'), 'success');
             fetchPatients();
             fetchRecycleBin();
         } catch (err) {
             console.error(err);
-            showMessage(t('restore_failed') || 'Error al restaurar paciente', 'error');
+            showMessage(t('restore_failed'), 'error');
         }
     }, [t, showMessage, fetchPatients, fetchRecycleBin]);
 

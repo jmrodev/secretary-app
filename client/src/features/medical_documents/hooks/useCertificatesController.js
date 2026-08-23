@@ -58,7 +58,7 @@ export const useCertificatesController = () => {
         return items.map(item => ({
             ...item,
             _origin: 'request',
-            title: t(item.type) || 'Solicitud',
+            title: t(item.type),
             subtitle: t('certificate'),
             details: item.request_note || t('no_description')
         }));
@@ -68,7 +68,7 @@ export const useCertificatesController = () => {
         if (!selectedCertificate) return;
         try {
             await api.put(`/medical/requests/${selectedCertificate.id}`, editData);
-            showMessage(t('request_updated') || 'Solicitud actualizada', 'success');
+            showMessage(t('request_updated'), 'success');
             setIsEditing(false);
             fetchHistory();
         } catch (err) {
@@ -77,10 +77,10 @@ export const useCertificatesController = () => {
     }, [selectedCertificate, editData, t, showMessage, fetchHistory]);
 
     const handleDelete = useCallback(async (id) => {
-        if (!await confirm(t('confirm_delete_request') || '¿Seguro que desea eliminar esta solicitud?')) return;
+        if (!await confirm(t('confirm_delete_request'))) return;
         try {
             await api.delete(`/medical/requests/${id}`);
-            showMessage(t('request_deleted') || 'Solicitud eliminada', 'success');
+            showMessage(t('request_deleted'), 'success');
             fetchHistory();
         } catch (err) {
             showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');

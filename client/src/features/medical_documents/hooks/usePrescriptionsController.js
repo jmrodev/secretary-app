@@ -80,7 +80,7 @@ export const usePrescriptionsController = () => {
                 request_note: editData.medications,
                 doctor_note: editData.instructions
             });
-            showMessage(t('prescription_updated') || 'Receta actualizada', 'success');
+            showMessage(t('prescription_updated'), 'success');
             setIsEditing(false);
             fetchHistory();
         } catch (err) {
@@ -89,10 +89,10 @@ export const usePrescriptionsController = () => {
     }, [selectedPrescription, editData, t, showMessage, fetchHistory]);
 
     const handleDelete = useCallback(async (id) => {
-        if (!await confirm(t('confirm_delete_prescription') || '¿Seguro que desea eliminar esta receta?')) return;
+        if (!await confirm(t('confirm_delete_prescription'))) return;
         try {
             await api.delete(`/medical/requests/${id}`);
-            showMessage(t('prescription_deleted') || 'Receta eliminada', 'success');
+            showMessage(t('prescription_deleted'), 'success');
             fetchHistory();
         } catch (err) {
             showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');

@@ -120,7 +120,7 @@ export const useRequirementManagerController = (user) => {
 
     const confirmAction = async () => {
         if (['rejected', 'consult', 'reply'].includes(actionModal.type) && !actionNote.trim()) {
-            showMessage(t('note_required') || 'Note is required', 'error'); return;
+            showMessage(t('note_required'), 'error'); return;
         }
         try {
             const payload = { status: actionModal.type === 'reply' ? 'consult' : actionModal.type };
@@ -129,13 +129,13 @@ export const useRequirementManagerController = (user) => {
                 else payload.doctor_note = actionNote;
             }
             await api.patch(`/medical/requests/${actionModal.id}`, payload);
-            showMessage(t('action_success') || 'Updated successfully', 'success');
+            showMessage(t('action_success'), 'success');
             setActionModal({ open: false, type: '', id: null });
             setSelectedRequestInternal(null);
             requestsHook.refetch();
         } catch (err) {
             console.error("[RequirementManagerController] Action error", err);
-            showMessage(err.response?.data?.error || t('error_update') || 'Failed to update', 'error');
+            showMessage(err.response?.data?.error || t('error_update'), 'error');
         }
     };
 

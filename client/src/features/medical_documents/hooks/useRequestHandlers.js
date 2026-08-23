@@ -37,7 +37,7 @@ export const useRequestHandlers = ({
         if (!selectedRequest) return;
         try {
             await api.put(`/medical/requests/${selectedRequest.id}`, requestEditData);
-            showMessage(t('request_updated') || 'Solicitud actualizada', 'success');
+            showMessage(t('request_updated'), 'success');
             setIsEditing(false);
             fetchRequests();
             setSelectedRequest(prev => ({ ...prev, ...requestEditData }));
@@ -47,10 +47,10 @@ export const useRequestHandlers = ({
     }, [selectedRequest, requestEditData, t, showMessage, fetchRequests, setIsEditing, setSelectedRequest]);
 
     const handleBonifyRequest = useCallback(async (id) => {
-        if (!await confirm(t('confirm_bonify') || '¿Seguro que desea marcar como bonificado? Esto cancelará deudas pendientes.')) return;
+        if (!await confirm(t('confirm_bonify'))) return;
         try {
             await api.put(`/medical/requests/${id}`, { payment_status: 'bonified' });
-            showMessage(t('bonified_success') || 'Carga realizada con bonificación exitosa', 'success');
+            showMessage(t('bonified_success'), 'success');
             fetchRequests();
         } catch (err) {
             showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
@@ -66,12 +66,12 @@ export const useRequestHandlers = ({
         }
 
         if (!await doubleConfirm(
-            t('confirm_delete') || '¿Seguro que desea eliminar?',
-            t('confirm_permanent_delete') || 'Esta acción eliminará el registro permanentemente. ¿Confirmar segunda vez?'
+            t('confirm_delete'),
+            t('confirm_permanent_delete')
         )) return;
         try {
             await api.delete(`/medical/requests/${id}`);
-            showMessage(t('deleted_success') || 'Eliminado correctamente', 'success');
+            showMessage(t('deleted_success'), 'success');
             fetchRequests();
         } catch (err) {
             showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');

@@ -74,7 +74,7 @@ export const useLicensesController = () => {
         if (!selectedLicense) return;
         try {
             await api.put(`/medical/requests/${selectedLicense.id}`, editData);
-            showMessage(t('license_updated') || 'Licencia actualizada', 'success');
+            showMessage(t('license_updated'), 'success');
             setIsEditing(false);
             fetchHistory();
         } catch (err) {
@@ -83,10 +83,10 @@ export const useLicensesController = () => {
     }, [selectedLicense, editData, t, showMessage, fetchHistory]);
 
     const handleDelete = useCallback(async (id) => {
-        if (!await confirm(t('confirm_delete_license') || '¿Seguro que desea eliminar esta licencia?')) return;
+        if (!await confirm(t('confirm_delete_license'))) return;
         try {
             await api.delete(`/medical/requests/${id}`);
-            showMessage(t('license_deleted') || 'Licencia eliminada', 'success');
+            showMessage(t('license_deleted'), 'success');
             fetchHistory();
         } catch (err) {
             showMessage(`${t('error')}: ${err.response?.data || err.message}`, 'error');
