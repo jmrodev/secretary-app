@@ -18,8 +18,7 @@ export const Navbar = () => {
         user, logout, t, settings,
         location, doctors,
         language, toggleLanguage,
-        isStaff, isAdmin, isSecretary, isPatient, isDoctor,
-        canManageUsers
+        isStaff, isAdmin, isSecretary, isPatient, isDoctor
     } = useLayoutController();
 
     const [openDropdown, setOpenDropdown] = useState(null); // 'admin' | 'spreadsheets' | 'user' | null
@@ -35,10 +34,9 @@ export const Navbar = () => {
         { path: '/finances', label: t('finances'), show: isSecretary },
         { path: '/institutions', label: t('institutions'), show: isSecretary },
         { path: '/holidays', label: t('holidays'), show: isSecretary },
-        { path: '/admin/users', label: t('users'), show: isAdmin || canManageUsers },
         { path: '/logs', label: t('audit_logs'), show: isAdmin },
         { path: '/config?tab=modules', label: t('system_config'), show: isStaff }
-    ].filter(l => l.show), [t, isAdmin, isPatient, isSecretary, isStaff, canManageUsers, settings?.enable_office_rentals]);
+    ].filter(l => l.show), [t, isAdmin, isPatient, isSecretary, isStaff, settings?.enable_office_rentals]);
 
     if (!user) return null;
 
@@ -49,7 +47,7 @@ export const Navbar = () => {
             <div className={styles.Navbar__container}>
                 {/* --- Left: Branding --- */}
                 <div className={styles.Navbar__left}>
-                    <Link to={isAdmin ? "/admin/users" : "/dashboard"} className={styles.Navbar__logo}>
+                    <Link to={isAdmin ? "/config?tab=users" : "/dashboard"} className={styles.Navbar__logo}>
                         <div className={styles.Navbar__logoIcon}>
                             <Icon name="DASHBOARD" size="1.5rem" color="var(--primary-color)" />
                         </div>

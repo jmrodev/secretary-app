@@ -25,7 +25,7 @@ describe('Navbar - Role Boundaries', () => {
             logout: vi.fn(),
             t: (key) => key,
             settings: {},
-            location: { pathname: '/admin/users' },
+            location: { pathname: '/dashboard' },
             doctors: [],
             language: 'es',
             toggleLanguage: vi.fn(),
@@ -40,11 +40,10 @@ describe('Navbar - Role Boundaries', () => {
         renderNavbar();
 
         // Admin links visible
-        expect(screen.getByRole('link', { name: 'users' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'audit_logs' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'system_config' })).toBeInTheDocument();
 
-        // Clinical links hidden
+        // Clinical / Patient links hidden
         expect(screen.queryByRole('link', { name: 'dashboard' })).toBeNull();
         expect(screen.queryByRole('link', { name: 'institutions' })).toBeNull();
         expect(screen.queryByRole('link', { name: 'holidays' })).toBeNull();

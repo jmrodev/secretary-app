@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 
 // Atomic Design Components
-import { MainLayout } from '@/components/templates/MainLayout';
 import { UserManagement } from '@/features/users/index';
 import { TabNav } from '@/components/molecules/TabNav';
 import { TabButton } from '@/components/atoms/TabButton';
@@ -28,12 +27,12 @@ export const AdminUsersPage = () => {
     const { t } = useLanguage();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const activeTab = resolveTab(searchParams.get('tab'));
+    const activeTab = resolveTab(searchParams.get('subtab'));
     const doctorsController = useDoctorsPageController();
 
     const switchTab = (tab) => {
         const next = new URLSearchParams(searchParams);
-        next.set('tab', tab);
+        next.set('subtab', tab);
         setSearchParams(next, { replace: true });
     };
 
@@ -56,33 +55,31 @@ export const AdminUsersPage = () => {
     );
 
     return (
-        <MainLayout wide flush title={t('user_management')}>
+        <div>
             <div>
-                <div>
-                    <div className="dashboard-nav-bar">
-                        <TabNav>
-                            <TabButton
-                                isActive={activeTab === 'secretaries'}
-                                onClick={() => switchTab('secretaries')}
-                                activeColor="blue"
-                            >
-                                {t('tab_secretaries')}
-                            </TabButton>
-                            <TabButton
-                                isActive={activeTab === 'doctor'}
-                                onClick={() => switchTab('doctor')}
-                                activeColor="blue"
-                            >
-                                {t('tab_doctors')}
-                            </TabButton>
-                        </TabNav>
-                        <div className={`${styles.AdminUsersPage__navActions}`}>
-                        </div>
+                <div className="dashboard-nav-bar">
+                    <TabNav>
+                        <TabButton
+                            isActive={activeTab === 'secretaries'}
+                            onClick={() => switchTab('secretaries')}
+                            activeColor="blue"
+                        >
+                            {t('tab_secretaries')}
+                        </TabButton>
+                        <TabButton
+                            isActive={activeTab === 'doctor'}
+                            onClick={() => switchTab('doctor')}
+                            activeColor="blue"
+                        >
+                            {t('tab_doctors')}
+                        </TabButton>
+                    </TabNav>
+                    <div className={`${styles.AdminUsersPage__navActions}`}>
                     </div>
-
-                    {activeTab === 'doctor' ? renderDoctorsTab() : renderSecretariesTab()}
                 </div>
+
+                {activeTab === 'doctor' ? renderDoctorsTab() : renderSecretariesTab()}
             </div>
-        </MainLayout>
+        </div>
     );
 };
