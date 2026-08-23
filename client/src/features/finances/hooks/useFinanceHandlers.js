@@ -15,12 +15,12 @@ export const useFinanceHandlers = ({
 }) => {
 
     const handleDeleteTransaction = useCallback(async (id) => {
-        if (!await confirm(t('confirm_delete_transaction') || "¿Eliminar esta operación?")) return;
+        if (!await confirm(t('confirm_delete_transaction'))) return;
         try {
             await api.delete(`/finances/transactions/${id}`);
-            showMessage(t('transaction_symbol_deleted') || "Operación eliminada", 'success');
+            showMessage(t('transaction_symbol_deleted'), 'success');
             fetchData();
-        } catch { alert(t('failed_delete_transaction')); }
+        } catch (err) { console.error('Failed to delete transaction:', err); alert(t('failed_delete_transaction')); }
     }, [confirm, t, showMessage, fetchData, alert]);
 
     /**
@@ -36,37 +36,36 @@ export const useFinanceHandlers = ({
                 balancing_date: balancingData.date,
                 theoretical_balance: balancingData.balance,
                 physical_balance: balancingData.balance, // Default to full delivery
-                notes: 'Cierre automático'
+                notes: t('finance_auto_close_note')
             };
 
             const res = await api.post('/finances/cash-box/balancing', payload);
             const { difference } = res.data.data;
 
-            let msg = t('box_closed_success_msg') || 'Caja cerrada exitosamente';
-            if (difference !== 0) {
-                msg += `. Diferencia: $${difference.toLocaleString()}`;
-            }
+            const msg = difference !== 0
+                ? `${t('box_closed_success_msg')}. ${t('finance_difference_label')}: $${difference.toLocaleString()}`
+                : t('box_closed_success_msg');
             
             showMessage(msg, difference === 0 ? 'success' : 'warning');
             fetchData();
         } catch (err) {
             console.error("[ECC-Finance] Balancing error:", err);
-            showMessage(t('error_processing_closure') || "Error al procesar el arqueo", 'error');
+            showMessage(t('error_processing_closure'), 'error');
         } finally {
             setLoading(false);
         }
     }, [setLoading, showMessage, fetchData, t]);
 
     const handleGenerateInvoice = useCallback(async (transactionId) => {
-        if (!await confirm(t('confirm_generate_invoice') || "¿Generar factura electrónica?")) return;
+        if (!await confirm(t('confirm_generate_invoice'))) return;
         try {
             const res = await api.post('/billing/invoice', { transactionId, cbteTipo: 11 });
-            const msg = t('invoice_generated_success')?.replace('{number}', res.data.invoice.number) || `Factura: ${res.data.invoice.number}`;
+            const msg = t('invoice_generated_success')?.replace('{number}', res.data.invoice.number) || `${t('invoice_fallback_label')} ${res.data.invoice.number}`;
             showMessage(msg, 'success');
             fetchData();
         } catch (err) {
             console.error(err);
-            showMessage(err.response?.data?.error || t('error_generating_invoice') || "Error al generar factura", 'error');
+            showMessage(err.response?.data?.error || t('error_generating_invoice'), 'error');
         }
     }, [confirm, showMessage, fetchData, t]);
 
@@ -80,17 +79,17 @@ export const useFinanceHandlers = ({
             return acc;
         }, []);
 
-        if (toDeleteIds.length === 0) return showMessage(t('no_withdrawals_found') || "No hay entregas.", "info");
-        if (!await confirm(t('confirm_reset_day') || "¿Eliminar las entregas de este día?")) return;
+        if (toDeleteIds.length === 0) return showMessage(t('no_withdrawals_found'), "info");
+        if (!await confirm(t('confirm_reset_day'))) return;
 
         setLoading(true);
         try {
             await Promise.all(toDeleteIds.map(id => api.delete(`/finances/transactions/${id}`)));
-            showMessage(t('reset_day_success_msg') || "Día reseteado", 'success');
+            showMessage(t('reset_day_success_msg'), 'success');
             fetchData();
         } catch (err) {
             console.error(err);
-            showMessage(t('error_reset_day') || "Error al resetear", 'error');
+            showMessage(t('error_reset_day'), 'error');
         } finally { setLoading(false); }
     }, [transactions, showMessage, confirm, setLoading, fetchData, t]);
 

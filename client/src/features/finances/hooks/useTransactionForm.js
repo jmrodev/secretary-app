@@ -7,7 +7,7 @@ import { getServiceTypes } from '@/constants/transactionOptions';
 import { capitalizeFirst } from '@/utils/core/stringUtils';
 import { toInputDateTime, getNow } from '@/utils/core/dateUtils';
 
-export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0) => {
+export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0, t = (k) => k) => {
     if (!appt) return '';
     const formatTime = (ts) => {
         if (!ts) return null;
@@ -16,16 +16,17 @@ export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0
             if (isNaN(d.getTime())) return null;
             return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         } catch (e) {
+            console.error('[useTransactionForm] formatTime failed for timestamp:', ts, e);
             return null;
         }
     };
 
     const milestones = [];
-    if (appt.created_at) milestones.push(`Creado: ${formatTime(appt.created_at)}`);
-    if (appt.confirmed_at) milestones.push(`Conf: ${formatTime(appt.confirmed_at)}`);
-    if (appt.arrived_at) milestones.push(`Sala: ${formatTime(appt.arrived_at)}`);
-    if (appt.completed_at) milestones.push(`Atendido: ${formatTime(appt.completed_at)}`);
-    if (appt.paid_at) milestones.push(`Pagado: ${formatTime(appt.paid_at)}`);
+    if (appt.created_at) milestones.push(`${t('bitacora_created')}: ${formatTime(appt.created_at)}`);
+    if (appt.confirmed_at) milestones.push(`${t('bitacora_confirmed_short')}: ${formatTime(appt.confirmed_at)}`);
+    if (appt.arrived_at) milestones.push(`${t('bitacora_waiting_room')}: ${formatTime(appt.arrived_at)}`);
+    if (appt.completed_at) milestones.push(`${t('bitacora_attended')}: ${formatTime(appt.completed_at)}`);
+    if (appt.paid_at) milestones.push(`${t('bitacora_paid')}: ${formatTime(appt.paid_at)}`);
 
     const totalCost = Number(appt.cost) || 0;
     const prevPaid = Number(appt.paid_amount) || 0;
@@ -34,14 +35,14 @@ export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0
     const saldoTurno = Math.max(0, totalCost - totalCobrado);
 
     const name = patientName || appt.patient_name || appt.full_name || '';
-    let desc = `Turno - ${name}`;
+    let desc = `${t('bitacora_appointment_prefix')} - ${name}`;
     if (milestones.length > 0) {
-        desc += ` | Hitos: ${milestones.join(', ')}`;
+        desc += ` | ${t('bitacora_milestones')}: ${milestones.join(', ')}`;
     } else if (appt.appointment_date) {
         desc += ` - ${new Date(appt.appointment_date).toLocaleDateString()}`;
     }
 
-    desc += ` | Total: $${totalCost} | Cobrado: $${totalCobrado} | Saldo: $${saldoTurno}`;
+    desc += ` | ${t('bitacora_total')}: $${totalCost} | ${t('bitacora_collected')}: $${totalCobrado} | ${t('bitacora_balance')}: $${saldoTurno}`;
     return desc;
 };
 
@@ -127,7 +128,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
         let initialDescription = data.description || '';
         if (data.appointment) {
-            initialDescription = generateAppointmentBitacora(data.appointment, data.patientName, data.amount !== undefined ? data.amount : 0);
+            initialDescription = generateAppointmentBitacora(data.appointment, data.patientName, data.amount !== undefined ? data.amount : 0, t);
         }
 
         const newFormState = {
@@ -144,7 +145,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         };
 
         if (initialServiceType === 'virtual_consultation' && (!newFormState.description || newFormState.description.includes('Payment for appointment'))) {
-            newFormState.description = `Consulta Virtual: ${data.patientName || ''}`;
+            newFormState.description = `${t('finance_virtual_consultation_label')}: ${data.patientName || ''}`;
         }
 
         setFormData(newFormState);
@@ -265,7 +266,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
     const saveTransaction = async () => {
         if (!formData.doctor_id) {
-            alert(t('please_select_doctor') || 'Por favor, seleccione un profesional');
+            alert(t('please_select_doctor'));
             return;
         }
         setLoading(true);
@@ -287,16 +288,16 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
                 if (debt > 0) {
                     payload.append('debt_amount', debt);
                     // Enrich description with partial payment details
-                    const existingDesc = payload.get('description') || '';
-                    payload.set('description', `${existingDesc} [Pago Parcial: $${totalPaid} / Resto: $${debt}]`);
+                    const existingDesc = payload.get('description');
+                    payload.set('description', `${existingDesc} [${t('partial_payment_note')}: $${totalPaid} / ${t('remainder_note')}: $${debt}]`);
                 }
             }
 
             // Append meds description if present
             if (medications.length > 0) {
                 const medList = medications.map(m => m.name || m.full_label).join(', ');
-                const existingDesc = payload.get('description') || '';
-                payload.set('description', `${existingDesc} [Meds: ${medList}]`);
+                const existingDesc = payload.get('description');
+                payload.set('description', `${existingDesc} [${t('meds_note')}: ${medList}]`);
             }
 
             if (requestId) payload.append('request_id', requestId);
@@ -308,7 +309,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         } catch (err) {
             const serverMsg = err.response?.data?.error || err.message;
             console.error("Error creating transaction:", serverMsg, err);
-            alert((t('failed_record_transaction') || 'Error al guardar') + (serverMsg ? `: ${serverMsg}` : ''));
+            alert((t('failed_record_transaction')) + (serverMsg ? `: ${serverMsg}` : ''));
         } finally {
             setLoading(false);
         }

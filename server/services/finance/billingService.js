@@ -56,6 +56,24 @@ class BillingService {
         });
     }
 
+    
+    async getGlobalAfipStatus() {
+        const { Wsfev1 } = require('afip-apis');
+        const production = await this.getAfipEnvironment() === 'production';
+        const wsfeUrl = production
+            ? 'https://servicos1.afip.gov.ar/wsfev1/service.asmx'
+            : 'https://wswhomo.afip.gov.ar/wsfev1/service.asmx';
+            
+        const wsfe = new Wsfev1(wsfeUrl);
+        try {
+            const res = await wsfe.FEDummy({}, { url: wsfeUrl });
+            return res.FEDummyResult || res;
+        } catch (err) {
+            console.error("[AFIP] Global FEDummy Error:", err);
+            throw err;
+        }
+    }
+
     getMockAfip() {
         return {
             getServerStatus: async () => ({

@@ -12,14 +12,20 @@ const sendResponse = (res, success, data, error = null, status = 200) => {
 exports.getServerStatus = async (req, res) => {
     try {
         const { doctor_id } = req.query;
-        const afip = (doctor_id && doctor_id !== 'undefined')
-            ? await billingService.getAfipInstance(null, doctor_id)
-            : billingService.getMockAfip();
-
-        const [afipStatus, environment] = await Promise.all([
-            afip.getServerStatus(),
-            billingService.getAfipEnvironment(),
-        ]);
+        let afipStatus;
+        const environment = await billingService.getAfipEnvironment();
+        
+        if (doctor_id && doctor_id !== 'undefined') {
+            const afip = await billingService.getAfipInstance(null, doctor_id);
+            afipStatus = await afip.getServerStatus();
+            // FEDummy in LocalAfipService sometimes returns { FEDummyResult: { AppServer: 'OK' } }
+            if (afipStatus && afipStatus.FEDummyResult) {
+                afipStatus = afipStatus.FEDummyResult;
+            }
+        } else {
+            // Global check: Hits the real AFIP servers anonymously
+            afipStatus = await billingService.getGlobalAfipStatus();
+        }
 
         sendResponse(res, true, { afip_status: afipStatus, environment });
     } catch (err) {

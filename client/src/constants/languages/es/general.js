@@ -720,5 +720,22 @@ export const general = {
     integration_token_label: "Token",
     integration_port_forwarding: "Redirección de puertos",
     dev_label: "Desarrollo",
-    prod_label: "Producción"
+    prod_label: "Producción",
+    finance_difference_label: "Diferencia",
+    finance_auto_close_note: "Cierre automático",
+    invoice_fallback_label: "Factura:",
+    bitacora_created: "Creado",
+    bitacora_confirmed_short: "Conf",
+    bitacora_waiting_room: "Sala",
+    bitacora_attended: "Atendido",
+    bitacora_paid: "Pagado",
+    bitacora_appointment_prefix: "Turno",
+    bitacora_milestones: "Hitos",
+    bitacora_total: "Total",
+    bitacora_collected: "Cobrado",
+    bitacora_balance: "Saldo",
+    finance_virtual_consultation_label: "Consulta Virtual",
+    partial_payment_note: "Pago Parcial",
+    remainder_note: "Resto",
+    meds_note: "Meds"
 };

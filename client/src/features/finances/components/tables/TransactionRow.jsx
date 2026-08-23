@@ -4,6 +4,7 @@ import { Icon } from '@/components/atoms/Icon';
 import { Badge } from '@/components/atoms/Badge';
 import { InvoiceDetailContent } from '@/features/finances/components/sections/InvoiceDetailContent';
 import styles from './TransactionsTable.module.css';
+import { formatCurrency } from '@/utils/core/format';
 
 /**
  * TransactionRow Feature Molecule.
@@ -41,32 +42,32 @@ export const TransactionRow = ({
 
     // Row color class logic: Pending takes precedence over income to highlight unpaid items in red
     const rowColorClass = isPending
-        ? styles.rowPending
+        ? styles.TransactionsTable__rowPending
         : (isWithdrawal
-            ? styles.rowWithdrawal
-            : (isIncome ? styles.rowIncome : styles.rowExpense));
+            ? styles.TransactionsTable__rowWithdrawal
+            : (isIncome ? styles.TransactionsTable__rowIncome : styles.TransactionsTable__rowExpense));
 
     return (
-        <tr className={`transactions-table__row ${rowColorClass} ${isGrouped ? 'transactions-table__row--grouped' : ''} animate-fade-in`}>
-            <td className="transactions-table__cell--first">
-                <div className="transactions-table__date">{formatDateUnambiguous(tx.transaction_date)}</div>
-                <div className="transactions-table__time">{formatTime(tx.transaction_date)}</div>
+        <tr className={`${styles.TransactionsTable__row} ${rowColorClass} ${isGrouped ? styles.TransactionsTable__rowGrouped : ''} animate-fade-in`}>
+            <td className={styles.TransactionsTable__cellFirst}>
+                <div className={styles.TransactionsTable__date}>{formatDateUnambiguous(tx.transaction_date)}</div>
+                <div className={styles.TransactionsTable__time}>{formatTime(tx.transaction_date)}</div>
             </td>
             <td>
-                <div className="transactions-table__description-wrapper">
+                <div className={styles.TransactionsTable__descriptionWrapper}>
                     <Badge 
                         variant={isIncome ? 'success' : 'rejected'} 
-                        className="transactions-table__type-tag"
+                        className={styles.TransactionsTable__typeTag}
                         size="sm"
                     >
                         {tx.appointment_id
-                            ? (t('appointment') || 'Turno')
+                            ? (t('appointment'))
                             : tx.request_type
                                 ? (t(tx.request_type) || tx.request_type)
                                 : (t(tx.type) || tx.type.replace('_', ' '))
                         }
                     </Badge>
-                    <span className="transactions-table__description">
+                    <span className={styles.TransactionsTable__description}>
                         {(() => {
                             let cleanDesc = translateDescription(tx.description) || '';
                             // Remove redundant prefixes matching the badge tag
@@ -77,34 +78,34 @@ export const TransactionRow = ({
                 </div>
             </td>
             <td>
-                <div className="transactions-table__beneficiary">
-                    <span className="transactions-table__beneficiary-name">
+                <div className={styles.TransactionsTable__beneficiary}>
+                    <span className={styles.TransactionsTable__beneficiaryName}>
                         {tx.patient_full_name ? (
                             <>
-                                <Icon name="PROFILE" size="1.2rem" className="transactions-table__beneficiary-icon" />
+                                <Icon name="PROFILE" size="1.2rem" className={styles.TransactionsTable__beneficiaryIcon} />
                                 {tx.patient_full_name}
                             </>
                         ) : (tx.doctor_name || t('general_clinic'))}
                     </span>
                     {tx.patient_full_name && tx.doctor_name && (
-                        <span className="transactions-table__patient">
+                        <span className={styles.TransactionsTable__patient}>
                             {tx.doctor_name}
                         </span>
                     )}
                 </div>
             </td>
-            <td className={`transactions-table__amount ${tx.is_withdrawal ? 'transactions-table__amount--withdrawal' : (isIncome ? 'transactions-table__amount--income' : 'transactions-table__amount--expense')}`}>
-                {tx.is_withdrawal ? '↩' : (isIncome ? '+' : '-')}${Math.abs(tx.amount).toLocaleString()}
+            <td className={`${styles.TransactionsTable__amount} ${tx.is_withdrawal ? styles.TransactionsTable__amountWithdrawal : (isIncome ? styles.TransactionsTable__amountIncome : styles.TransactionsTable__amountExpense)}`}>
+                {formatCurrency(Math.abs(tx.amount))}
             </td>
             {canManagerFinance && (
-                <td className="transactions-table__cell--right transactions-table__cell--last">
-                    <div className="transactions-table__actions">
+                <td className={`${styles.TransactionsTable__cellRight} ${styles.TransactionsTable__cellLast}`}>
+                    <div className={styles.TransactionsTable__actions}>
                         <Button 
                             size="sm-compact" 
                             variant="ghost" 
                             className={`${styles.actionBtn} ${styles.actionBtnView}`}
-                            onClick={() => alert(<InvoiceDetailContent tx={tx} formatDate={formatDateUnambiguous} />)}
-                            title={t('view_details') || 'Ver Detalle'} 
+                            onClick={() => console.log("View Details:", tx.id)}
+                            title={t('view_details')} 
                             icon={<Icon name="VIEW" />} 
                         />
                         {tx.type === 'income_patient' && tx.status === 'paid' && !tx.invoice_number && (
