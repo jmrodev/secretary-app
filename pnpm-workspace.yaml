@@ -1,6 +1,8 @@
 packages:
   - 'client'
   - 'server'
+overrides:
+  'form-data@>=2 <3': ^2.5.6
 allowBuilds:
   '@github/keytar': true
   bcrypt: true
