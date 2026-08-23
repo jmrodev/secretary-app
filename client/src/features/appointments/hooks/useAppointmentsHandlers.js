@@ -45,7 +45,7 @@ export const useAppointmentsHandlers = ({
             const isHoliday = holidays.find(h => toInputDate(h.date) === selectedYMD);
 
             if (isHoliday) {
-                showMessage((t('cannot_reschedule_holiday') || 'No se puede reprogramar a un feriado: {description}').replace('{description}', isHoliday.description), 'error');
+                showMessage((t('cannot_reschedule_holiday')).replace('{description}', isHoliday.description), 'error');
                 return;
             }
 
@@ -71,11 +71,11 @@ export const useAppointmentsHandlers = ({
             const isHoliday = holidays.find(h => toInputDate(h.date) === selectedYMD);
 
             if (isHoliday) {
-                showMessage((t('cannot_book_holiday') || 'No se puede reservar en un feriado: {description}').replace('{description}', isHoliday.description), 'error');
+                showMessage((t('cannot_book_holiday')).replace('{description}', isHoliday.description), 'error');
                 return;
             }
 
-            if (['patient', 'secretary', 'doctor', 'admin'].includes(user.role)) {
+            if (['patient', 'secretary', 'doctor', 'admin'].includes(user?.role)) {
                 const newDate = createDate(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate(), hour, minute);
                 const localISOTime = toInputDateTime(newDate);
 
@@ -102,8 +102,9 @@ export const useAppointmentsHandlers = ({
                 setActionModal(prev => (prev.open && prev.appt && String(prev.appt.id) === String(id)) ? { ...prev, appt: freshAppt } : prev);
                 return;
             }
-        } catch (_) {
+        } catch (refreshErr) {
             // Best-effort refresh of the modal's appointment; ignore failures.
+            console.error('Failed to refresh appointment modal after status update:', refreshErr);
         }
         setActionModal(prev => (prev.open && prev.appt && String(prev.appt.id) === String(id)) ? { ...prev, appt: { ...prev.appt, status } } : prev);
     }, [appointmentActions, fetchAppointments, setActionModal]);
@@ -111,11 +112,11 @@ export const useAppointmentsHandlers = ({
     const handleSaveNote = async (apptId, note, date) => {
         try {
             await api.put(`/appointments/${apptId}`, { reason: note, appointment_date: date });
-            showMessage(t('note_saved') || 'Nota actualizada', 'success');
+            showMessage(t('note_saved'), 'success');
             fetchAppointments();
         } catch (e) {
-            console.error(e);
-            showMessage('Error al guardar nota', 'error');
+            console.error('Failed to save note:', e);
+            showMessage(t('appointment_error_saving_note'), 'error');
         }
     };
 
@@ -129,9 +130,10 @@ export const useAppointmentsHandlers = ({
                 bonified: prescribeModal.bonified
             });
             setPrescribeModal({ open: false, apptId: null, patientName: '', medications: '', instructions: '', items: [] });
-            showMessage(t('prescription_saved') || 'Receta guardada', 'success');
-        } catch {
-            showMessage(t('prescription_error') || 'Error al guardar receta', 'error');
+            showMessage(t('prescription_saved'), 'success');
+        } catch (err) {
+            console.error('Failed to save prescription:', err);
+            showMessage(t('prescription_error'), 'error');
         }
     }, [savePrescription, setPrescribeModal, showMessage, t]);
 
@@ -159,12 +161,12 @@ export const useAppointmentsHandlers = ({
         setDate(localISOTime);
         setSelectedDoctor(appt.doctor_id);
         const prefillReason = appt.source === 'google-incomplete' ? appt.reason : appt.patient_name;
-        setReason(prefillReason || 'Consulta');
-        setSyncReferenceInfo(prefillReason || 'Sin descripción');
+        setReason(prefillReason || t('appointment_default_reason'));
+        setSyncReferenceInfo(prefillReason || t('no_description'));
         if (appt.source === 'google-incomplete') setSyncingZombieId(appt.id);
         setActionModal({ open: false, appt: null });
         setShowForm(true);
-        showMessage("Ajuste iniciado: Por favor seleccione el paciente para este turno.", "info");
+        showMessage(t('appointment_sync_started'), "info");
     };
 
     const handleBook = async (arg1, arg2) => {
@@ -177,7 +179,7 @@ export const useAppointmentsHandlers = ({
             const selectedDatePart = dateToCheck.split('T')[0];
             const isHoliday = holidays.find(h => h.date.startsWith(selectedDatePart));
             if (isHoliday) {
-                showMessage((t('cannot_book_holiday') || 'No se puede reservar en un feriado: {description}').replace('{description}', isHoliday.description), 'error');
+                showMessage((t('cannot_book_holiday')).replace('{description}', isHoliday.description), 'error');
                 return;
             }
         }
@@ -198,25 +200,32 @@ export const useAppointmentsHandlers = ({
 
         if (messageTemplate) {
             const slotPrice = isVirtualSlot ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0);
-            const address = isVirtualSlot ? 'Virtual (Cima Salud)' : (settings.clinic_address || 'Montiel 1255');
+            const address = isVirtualSlot ? t('virtual_location') : (settings.clinic_address || t('default_clinic_address'));
             
             message = messageTemplate
                 .replace(/{[\s]*doctor_name[\s]*}/gi, doctorName)
                 .replace(/{[\s]*date[\s]*}/gi, slot.formattedDate ? `${dayName} ${slot.formattedDate}` : `${dayName} ${dateStr}`)
                 .replace(/{[\s]*time[\s]*}/gi, timeStr)
-                .replace(/{[\s]*appointment_type[\s]*}/gi, isVirtualSlot ? 'VIRTUAL' : 'PRESENCIAL')
+                .replace(/{[\s]*appointment_type[\s]*}/gi, isVirtualSlot ? t('appointment_type_virtual') : t('appointment_type_in_person'))
                 .replace(/{[\s]*appointment_location[\s]*}/gi, address)
                 .replace(/{[\s]*price[\s]*}/gi, formatCurrency(slotPrice))
-                .replace(/{[\s]*secretary_name[\s]*}/gi, user.name || 'Secretaría');
+                .replace(/{[\s]*secretary_name[\s]*}/gi, user?.name || t('default_secretary_name'));
         } else {
-            message = `Hola, tenemos un turno ${isVirtualSlot ? 'VIRTUAL' : 'PRESENCIAL'} disponible el ${slot.formattedDate || dateStr} a las ${timeStr} con el/la Dr/a. ${doctorName}.`;
+            message = t('appointment_next_slot_fallback')
+                .replace('{appointment_type}', isVirtualSlot ? t('appointment_type_virtual') : t('appointment_type_in_person'))
+                .replace('{date}', slot.formattedDate || dateStr)
+                .replace('{time}', timeStr)
+                .replace('{doctor_name}', doctorName);
         }
 
         copyToClipboard(message).then(() => {
-            showMessage("Propuesta copiada! Abriendo WhatsApp...", "success");
+            showMessage(t('appointment_proposal_copied'), "success");
             let phone = (selectedPatientData?.phone || selectedPatientData?.mobile_phone || '').replace(/\D/g, '');
             if (phone && !phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
             window.location.href = `whatsapp://send?${phone ? `phone=${phone}&` : ''}text=${encodeURIComponent(message)}`;
+        }).catch((clipErr) => {
+            console.error('Failed to copy proposal to clipboard:', clipErr);
+            showMessage(t('appointment_proposal_copy_error'), 'error');
         });
     };
 
@@ -230,7 +239,12 @@ export const useAppointmentsHandlers = ({
     };
 
     const handleUpdateType = async (id, type) => {
-        await updateAppointment(id, { type }, fetchAppointments);
+        try {
+            await updateAppointment(id, { type }, fetchAppointments);
+        } catch (err) {
+            console.error('Failed to update appointment type:', err);
+            showMessage(t('appointment_type_update_error'), 'error');
+        }
     };
 
     return useMemo(() => ({
