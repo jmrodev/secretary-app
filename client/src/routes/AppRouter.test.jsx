@@ -10,8 +10,8 @@ vi.mock('@/hooks/usePermissions', () => ({
 vi.mock('@/components/templates/ProtectedRoute', () => ({
     ProtectedRoute: () => <Outlet />
 }));
-vi.mock('@/features/users', () => ({
-    AdminUsersPage: () => <div>ADMIN_USERS_PAGE</div>
+vi.mock('@/features/config', () => ({
+    SystemConfigPage: () => <div>SYSTEM_CONFIG_PAGE</div>
 }));
 
 const renderRouter = (initialPath) => (
@@ -32,23 +32,23 @@ describe('AppRouter - user management tabs', () => {
 
         renderRouter('/doctors');
 
-        expect(await screen.findByText('ADMIN_USERS_PAGE')).toBeTruthy();
+        expect(await screen.findByText('SYSTEM_CONFIG_PAGE')).toBeTruthy();
     });
 
-    it('lets an admin reach /admin/users', async () => {
+    it('lets an admin reach /config?tab=users via /admin/users redirect', async () => {
         usePermissionsMock.mockReturnValue({ user: { role: 'admin' }, canManageUsers: true, loading: false });
 
         renderRouter('/admin/users');
 
-        expect(await screen.findByText('ADMIN_USERS_PAGE')).toBeTruthy();
+        expect(await screen.findByText('SYSTEM_CONFIG_PAGE')).toBeTruthy();
     });
 
-    it('lets a granted secretary reach /admin/users', async () => {
+    it('lets a granted secretary reach /config?tab=users via /admin/users redirect', async () => {
         usePermissionsMock.mockReturnValue({ user: { role: 'secretary' }, canManageUsers: true, loading: false });
 
         renderRouter('/admin/users');
 
-        expect(await screen.findByText('ADMIN_USERS_PAGE')).toBeTruthy();
+        expect(await screen.findByText('SYSTEM_CONFIG_PAGE')).toBeTruthy();
     });
 
     it('redirects a non-granted secretary away from /admin/users', async () => {
@@ -56,6 +56,6 @@ describe('AppRouter - user management tabs', () => {
 
         renderRouter('/admin/users');
 
-        expect(screen.queryByText('ADMIN_USERS_PAGE')).toBeNull();
+        expect(screen.queryByText('SYSTEM_CONFIG_PAGE')).toBeNull();
     });
 });

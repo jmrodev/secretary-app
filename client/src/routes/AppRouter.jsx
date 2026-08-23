@@ -90,7 +90,7 @@ export const AppRouter = () => {
 
                 <Route path="/admin/users" element={
                     <RoleGuard allowedRoles={['admin', 'secretary']} permission="canManageUsers">
-                        <AdminUsersPage />
+                        <Navigate to="/config?tab=users" replace />
                     </RoleGuard>
                 } />
 
@@ -115,7 +115,7 @@ export const AppRouter = () => {
                     <Route path="certificates" element={<CertificatesView />} />
                 </Route>
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/doctors" element={<Navigate to="/admin/users?tab=doctor" replace />} />
+                <Route path="/doctors" element={<Navigate to="/config?tab=users&userTab=doctor" replace />} />
                 <Route path="/holidays" element={
                     <RoleGuard allowedRoles={['secretary']}>
                         <HolidaysPage />
