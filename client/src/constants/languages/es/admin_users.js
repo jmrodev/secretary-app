@@ -30,6 +30,8 @@ export const admin_users = {
     failed_create_user: "Error al crear usuario",
     user_updated: "Usuario actualizado exitosamente",
     failed_update_user: "Error al actualizar usuario",
+    delete_user_confirm_trash: "¿Estás seguro de que deseas eliminar a {name}? Esta acción moverá sus datos a la Papelera.",
+    delete_user_confirm_active: "¡AVISO! El usuario {name} será eliminado del listado activo. ¿Deseas continuar?",
     user_deleted: "Usuario eliminado exitosamente",
     failed_delete_user: "Error al eliminar usuario",
     password_reset: "Contraseña restablecida para",

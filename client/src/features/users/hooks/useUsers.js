@@ -34,15 +34,10 @@ export const useUsers = (options = {}) => {
 
     // Filtered data in-memory (as the backend returns all for admin management)
     const users = useMemo(() => {
-        let filtered = allUsers;
-        if (role) {
-            filtered = filtered.filter(u => u.role === role);
-        }
-        if (excludeRoles.length > 0) {
-            const excludeSet = new Set(excludeRoles);
-            filtered = filtered.filter(u => !excludeSet.has(u.role));
-        }
-        return filtered;
+        const excludeSet = new Set(excludeRoles);
+        return allUsers
+            .filter(u => !role || u.role === role)
+            .filter(u => !excludeSet.has(u.role));
     }, [allUsers, role, excludeRoles]);
 
     const createUser = async (formData, onSuccess) => {
@@ -90,8 +85,8 @@ export const useUsers = (options = {}) => {
 
         if (useDoubleConfirm) {
             const isConfirmed = await doubleConfirm(
-                `¿Estás seguro de que deseas eliminar a ${name}? esta acción moverá sus datos a la Papelera.`,
-                `¡AVISO! El usuario ${name} será eliminado del listado activo. ¿Deseas continuar?`
+                t('delete_user_confirm_trash', { name }),
+                t('delete_user_confirm_active', { name })
             );
             if (!isConfirmed) return { cancelled: true };
         }
