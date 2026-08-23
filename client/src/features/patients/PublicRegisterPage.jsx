@@ -15,7 +15,7 @@ const StepField = ({ step, formData, onChange, inputRef, t }) => {
             return (
                 <div className={`${styles.PublicRegisterPage__stepField} `}>
                     <label htmlFor="firstName" className={`${styles.PublicRegisterPage__accessibleLabel}`}>
-                        {t('what_is_your_first_name') || '¿Cuál es tu NOMBRE?'}
+                        {t('what_is_your_first_name')}
                     </label>
                     <input
                         id="firstName"
@@ -23,7 +23,7 @@ const StepField = ({ step, formData, onChange, inputRef, t }) => {
                         className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.firstName}
                         onChange={onChange}
-                        placeholder={t('write_your_first_name') || 'Escribí tu nombre...'}
+                        placeholder={t('write_your_first_name')}
                         autoComplete="off"
                         ref={inputRef}
                     />
@@ -33,7 +33,7 @@ const StepField = ({ step, formData, onChange, inputRef, t }) => {
             return (
                 <div className={`${styles.PublicRegisterPage__stepField} `}>
                     <label htmlFor="lastName" className={`${styles.PublicRegisterPage__accessibleLabel}`}>
-                        {t('what_is_your_last_name') || '¿Cuál es tu APELLIDO?'}
+                        {t('what_is_your_last_name')}
                     </label>
                     <input
                         id="lastName"
@@ -41,7 +41,7 @@ const StepField = ({ step, formData, onChange, inputRef, t }) => {
                         className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.lastName}
                         onChange={onChange}
-                        placeholder={t('write_your_last_name') || 'Escribí tu apellido...'}
+                        placeholder={t('write_your_last_name')}
                         autoComplete="off"
                         ref={inputRef}
                     />
@@ -51,7 +51,7 @@ const StepField = ({ step, formData, onChange, inputRef, t }) => {
             return (
                 <div className={`${styles.PublicRegisterPage__stepField} `}>
                     <label htmlFor="address" className={`${styles.PublicRegisterPage__accessibleLabel}`}>
-                        {t('what_is_your_address') || '¿Cuál es tu DIRECCIÓN?'}
+                        {t('what_is_your_address')}
                     </label>
                     <input
                         id="address"
@@ -59,7 +59,7 @@ const StepField = ({ step, formData, onChange, inputRef, t }) => {
                         className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.address}
                         onChange={onChange}
-                        placeholder={t('street_and_number') || 'Calle y número...'}
+                        placeholder={t('street_and_number')}
                         autoComplete="off"
                         ref={inputRef}
                     />
@@ -69,7 +69,7 @@ const StepField = ({ step, formData, onChange, inputRef, t }) => {
             return (
                 <div className={`${styles.PublicRegisterPage__stepField} `}>
                     <label htmlFor="dni" className={`${styles.PublicRegisterPage__accessibleLabel}`}>
-                        {t('what_is_your_dni') || '¿Cuál es tu DNI?'}
+                        {t('what_is_your_dni')}
                     </label>
                     <input
                         id="dni"
@@ -79,7 +79,7 @@ const StepField = ({ step, formData, onChange, inputRef, t }) => {
                         className={`${styles.PublicRegisterPage__accessibleInput}`}
                         value={formData.dni}
                         onChange={onChange}
-                        placeholder={t('only_numbers') || 'Sólo números...'}
+                        placeholder={t('only_numbers')}
                         autoComplete="off"
                         ref={inputRef}
                     />
@@ -89,7 +89,7 @@ const StepField = ({ step, formData, onChange, inputRef, t }) => {
             return (
                 <div className={`${styles.PublicRegisterPage__stepField} `}>
                     <label htmlFor="phone" className={`${styles.PublicRegisterPage__accessibleLabel}`}>
-                        {t('your_phone_is') || 'Tu TELÉFONO es:'}
+                        {t('your_phone_is')}
                     </label>
                     <input
                         id="phone"
@@ -125,7 +125,7 @@ export const PublicRegisterPage = () => {
         lastName: '',
         address: '',
         dni: '',
-        phone: searchParams.get('phone') || ''
+        phone: searchParams.get('phone')
     });
     
     const [success, setSuccess] = useState(false);
@@ -164,7 +164,7 @@ export const PublicRegisterPage = () => {
             setSuccess(true);
             setTimeout(() => navigate('/'), 5000);
         } catch (err) {
-            setError(err.message || t('error_saving_verify') || 'Error al guardar. Verifique los datos.');
+            setError(err.message || t('error_saving_verify'));
             setStep(4); // Back to DNI on error
         }
     };
@@ -174,15 +174,15 @@ export const PublicRegisterPage = () => {
             {success ? (
                 <div className={`${styles.PublicRegisterPage__successCard} step-card `}>
                     <span className={`${styles.PublicRegisterPage__successEmoji}`}>✅</span>
-                    <h1 className={`${styles.PublicRegisterPage__accessibleTitle}`}>{t('all_done') || '¡Todo Listo!'}</h1>
-                    <p className={`${styles.PublicRegisterPage__accessibleText}`}>{t('data_saved_successfully') || 'Tus datos se guardaron correctamente.'}</p>
-                    <p className={`${styles.PublicRegisterPage__accessibleSubtext}`}>{t('can_close_page_whatsapp') || 'Ya podés cerrar esta página y volver al WhatsApp.'}</p>
+                    <h1 className={`${styles.PublicRegisterPage__accessibleTitle}`}>{t('all_done')}</h1>
+                    <p className={`${styles.PublicRegisterPage__accessibleText}`}>{t('data_saved_successfully')}</p>
+                    <p className={`${styles.PublicRegisterPage__accessibleSubtext}`}>{t('can_close_page_whatsapp')}</p>
                 </div>
             ) : (
                 <>
                     <div className={`${styles.PublicRegisterPage__stepHeader}`}>
                         <div className={`${styles.PublicRegisterPage__progressText}`}>
-                            {t('step_x_of_y', { step, total: totalSteps }) || `Paso ${step} de ${totalSteps}`}
+                            {t('step_x_of_y', { step, total: totalSteps })}
                         </div>
                         <div className={`${styles.PublicRegisterPage__progressBar}`}>
                             <div className={`${styles.PublicRegisterPage__progressFill}`} style={{ width: `${(step / totalSteps) * 100}%` }}></div>
@@ -197,17 +197,17 @@ export const PublicRegisterPage = () => {
                         <footer className={`${styles.PublicRegisterPage__stepFooter}`}>
                             {step > 1 && (
                                 <button type="button" className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugeSecondary}`} onClick={prevStep} disabled={loading}>
-                                    {t('back') || 'ATRÁS'}
+                                    {t('back')}
                                 </button>
                             )}
                             
                             {step < totalSteps ? (
                                 <button type="button" className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugePrimary}`} onClick={nextStep}>
-                                    {t('next') || 'SIGUIENTE'}
+                                    {t('next')}
                                 </button>
                             ) : (
                                 <button type="button" className={`${styles.PublicRegisterPage__btnHuge} ${styles.PublicRegisterPage__btnHugeSuccess}`} onClick={handleSubmit} disabled={loading}>
-                                    {loading ? (t('saving') || 'GUARDANDO...') : (t('finish') || 'FINALIZAR')}
+                                    {loading ? (t('saving')) : (t('finish'))}
                                 </button>
                             )}
                         </footer>

@@ -41,7 +41,7 @@ export const Modal = ({ isOpen, onClose, title, children, footer, size = 'md', v
                 aria-label={t('modal_close')}
             />
             <div
-                className={`${styles.Modal__content} ${size && size !== 'md' ? styles['content' + size.charAt(0).toUpperCase() + size.slice(1)] : ''} ${className}`}
+                className={`${styles.Modal__content} ${size && size !== 'md' ? styles['Modal__content' + size.charAt(0).toUpperCase() + size.slice(1)] : ''} ${className}`}
                 onClick={e => e.stopPropagation()}
                 role="dialog"
                 aria-modal="true"

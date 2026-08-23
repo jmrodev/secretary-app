@@ -64,9 +64,9 @@ export const useNavigationHandlers = ({
             link.click();
             link.remove();
             window.URL.revokeObjectURL(url);
-            showMessage(t('export_success') || 'Exportación exitosa', 'success');
+            showMessage(t('export_success'), 'success');
         } catch {
-            showMessage(t('export_failed') || 'Error al exportar', 'error');
+            showMessage(t('export_failed'), 'error');
         }
     }, [t, showMessage]);
 
@@ -78,7 +78,7 @@ export const useNavigationHandlers = ({
                 window.print();
             }, 500);
         } catch {
-            showMessage(t('print_error') || 'Error al preparar impresión', 'error');
+            showMessage(t('print_error'), 'error');
         }
     }, [t, showMessage]);
 

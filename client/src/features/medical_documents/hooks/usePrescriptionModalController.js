@@ -254,7 +254,7 @@ export const usePrescriptionModalController = (patientId, onSubmit, showMessage,
         }
 
         if (finalItems.length === 0) {
-            showMessage(t('please_add_at_least_one_medication') || 'Debe agregar al menos un medicamento a la lista.', 'warning');
+            showMessage(t('please_add_at_least_one_medication'), 'warning');
             return;
         }
 

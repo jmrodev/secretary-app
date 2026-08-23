@@ -239,7 +239,7 @@ export const usePatientFormController = ({
                     // External override delegation (e.g. TempAccess)
                     if (onSubmitOverride) {
                         await onSubmitOverride(formData);
-                        showMessage(t('patient_updated') || 'Patient updated successfully', 'success');
+                        showMessage(t('patient_updated'), 'success');
                         if (onClose) onClose();
                         return;
                     }
@@ -267,7 +267,7 @@ export const usePatientFormController = ({
                         }) : []
                     };
 
-                    showMessage(t('patient_updated') || 'Patient updated successfully', 'success');
+                    showMessage(t('patient_updated'), 'success');
                     if (onUpdate) onUpdate(updatedPatient);
                 } else {
                     // CREATE
@@ -292,7 +292,7 @@ export const usePatientFormController = ({
                         insurance_name: insuranceName
                     };
 
-                    showMessage(t('patient_created') || 'Patient created successfully', 'success');
+                    showMessage(t('patient_created'), 'success');
 
                     // SEND WELCOME MESSAGE VIA WHATSAPP BRIDGE
                     if (derivedPhone && (settings.whatsapp_use_local_bridge === 'true' || settings.whatsapp_use_local_bridge === true)) {

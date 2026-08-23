@@ -110,7 +110,7 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
             if (res.data.success && res.data.suggestion) {
                 dispatch({ type: 'SET_NEW_MESSAGE', payload: res.data.suggestion });
             } else {
-                showMessage(t('ai_no_context') || "La IA no pudo generar una respuesta.", "warning");
+                showMessage(t('ai_no_context'), "warning");
             }
         } catch (error) {
             console.error("[AI] Error al obtener sugerencia:", error);
@@ -139,8 +139,8 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
 
             if (!finalPhone || finalPhone.replace(/\D/g, '').length < 8) {
                 const msg = patientName
-                    ? t('phone_required') || `${patientName} no tiene un teléfono válido registrado.`
-                    : t('phone_required') || "Por favor ingresá un número de teléfono válido (mínimo 10 dígitos).";
+                    ? t('phone_required')
+                    : t('phone_required');
                 showMessage(msg, "error");
                 dispatch({ type: 'SET_SENDING', payload: false });
                 return;
@@ -153,7 +153,7 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
             });
             
             if (res.data.success) {
-                showMessage(t('message_sent') || "Mensaje enviado", "success");
+                showMessage(t('message_sent'), "success");
                 dispatch({ type: 'SEND_SUCCESS' });
                 fetchHistory();
             } else {
