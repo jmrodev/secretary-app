@@ -15,7 +15,7 @@ export const useReportsController = () => {
     // Active tab is derived from the URL (?tab=...) via the router so deep
     // links and browser back/forward work natively. No manual replaceState.
     const [searchParams, setSearchParams] = useSearchParams();
-    const activeTab = searchParams.get('tab') || 'appointments'; // appointments | prescriptions | licenses | certificates | balance
+    const activeTab = searchParams.get('tab'); // appointments | prescriptions | licenses | certificates | balance
     const setActiveTab = useCallback((tab) => {
         setSearchParams((prev) => {
             const next = new URLSearchParams(prev);
@@ -35,7 +35,7 @@ export const useReportsController = () => {
         setError(null);
         if ((activeTab === 'appointments' || activeTab === 'balance') && !selectedDoctorId) {
             setReportData(null);
-            setError(t('please_select_doctor') || 'Por favor, seleccione un profesional');
+            setError(t('please_select_doctor'));
             setIsLoading(false);
             return;
         }

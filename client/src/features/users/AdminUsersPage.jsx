@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
+import { usePermissions } from '@/hooks/usePermissions';
 
 // Atomic Design Components
 import { MainLayout } from '@/components/templates/MainLayout';
@@ -24,23 +25,27 @@ import { resolveTab } from './utils/tabs';
  * split into two tabs: secretaries and doctors.
  * Guarded at route level: admin or secretary with can_manage_users.
  */
-export const AdminUsersPage = () => {
+export const AdminUsersPage = ({ isEmbedded = false }) => {
     const { t } = useLanguage();
+    const { isAdmin } = usePermissions();
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const activeTab = resolveTab(searchParams.get('tab'));
+    const activeTab = resolveTab(searchParams.get('userTab'));
     const doctorsController = useDoctorsPageController();
+
+    // Secretaries cannot manage admin accounts
+    const excludeRoles = isAdmin ? ['patient'] : ['patient', 'admin'];
 
     const switchTab = (tab) => {
         const next = new URLSearchParams(searchParams);
-        next.set('tab', tab);
+        next.set('userTab', tab);
         setSearchParams(next, { replace: true });
     };
 
     const renderSecretariesTab = () => (
         <section className={`${styles.AdminUsersPage__tableWrapper}`}>
             <UserManagement
-                excludeRoles={['patient']}
+                excludeRoles={excludeRoles}
             />
         </section>
     );
@@ -55,10 +60,9 @@ export const AdminUsersPage = () => {
         />
     );
 
-    return (
-        <MainLayout wide flush title={t('user_management')}>
+    const content = (
+        <div>
             <div>
-                <div>
                     <div className="dashboard-nav-bar">
                         <TabNav>
                             <TabButton
@@ -83,6 +87,15 @@ export const AdminUsersPage = () => {
                     {activeTab === 'doctor' ? renderDoctorsTab() : renderSecretariesTab()}
                 </div>
             </div>
+    );
+
+    if (isEmbedded) {
+        return content;
+    }
+
+    return (
+        <MainLayout wide flush title={t('user_management')}>
+            {content}
         </MainLayout>
     );
 };

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useUsers } from '@/features/users/hooks/useUsers';
+import { useAuth } from '@/features/auth';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useModal } from '@/context/ModalContext';
 
 // Atoms & Molecules
 import { Button } from '@/components/atoms/Button';
@@ -28,6 +30,10 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
         loading,
         isSubmitting
     } = useUsers({ role, excludeRoles });
+    
+    const { user: currentUser } = useAuth();
+    
+    const { prompt } = useModal();
 
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedSecretaryForPerms, setSelectedSecretaryForPerms] = useState(null);
@@ -44,11 +50,15 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
     const openModal = (type, u = null) => {
         let initialData = {};
         if (type === 'CREATE') {
-            initialData = { username: '', password: '', role: role || 'doctor', full_name: '', dni: '', phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }], specialty: '', adminPassword: '' };
+            initialData = { username: '', password: '', role: role || 'doctor', first_name: '', last_name: '', email: '', address: '', dni: '', phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }], specialty: '', adminPassword: '' };
         } else if (type === 'EDIT') {
             initialData = {
                 username: u.username,
                 role: u.role,
+                first_name: u.first_name || '',
+                last_name: u.last_name || '',
+                email: u.email || '',
+                address: u.address || '',
                 full_name: u.full_name || '',
                 dni: u.dni || '',
                 phoneNumbers: u.phoneNumbers || (u.phone ? [{ phone_number: u.phone, is_primary: true, label: 'Celular' }] : []),
@@ -73,9 +83,17 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
         const close = () => setModalState(prev => ({ ...prev, isOpen: false }));
         const refresh = () => { loadData(); close(); };
 
-        if (type === 'CREATE') await createUser(formData, refresh);
+        if (type === 'CREATE') {
+            const adminPassword = await prompt(t('enter_your_password'), '', t('confirm_action'), 'password');
+            if (!adminPassword) return;
+            await createUser({ ...formData, adminPassword }, refresh);
+        }
         else if (type === 'EDIT') await updateUser(user.id, formData, refresh);
-        else if (type === 'DELETE') await deleteUser(user.id, user.full_name, { adminPassword: formData.adminPassword, onSuccess: refresh });
+        else if (type === 'DELETE') {
+            const adminPassword = await prompt(t('enter_your_password'), '', t('confirm_action'), 'password');
+            if (!adminPassword) return;
+            await deleteUser(user.id, user.full_name, { adminPassword, onSuccess: refresh });
+        }
         else if (type === 'RESET_DNI' || type === 'RESET_MANUAL') await resetPassword(user.id, formData.password, close);
     };
 
@@ -124,6 +142,7 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
                 ) : (
                     <UserTable
                         users={filteredUsers}
+                        currentUser={currentUser}
                         onEdit={(u) => openModal('EDIT', u)}
                         onReset={(u) => openModal('RESET', u)}
                         onDelete={(u) => openModal('DELETE', u)}

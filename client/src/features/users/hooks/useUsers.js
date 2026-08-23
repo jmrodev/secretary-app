@@ -4,6 +4,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { useFetch } from '@/hooks/useFetch';
+import { composeFullName } from '@/features/users/utils/composeFullName';
 
 /**
  * useUsers Hook (Feature-based).
@@ -47,7 +48,8 @@ export const useUsers = (options = {}) => {
     const createUser = async (formData, onSuccess) => {
         try {
             setIsSubmitting(true);
-            const payload = { ...formData, fullName: formData.full_name, adminPassword: formData.adminPassword };
+            const fullName = composeFullName(formData);
+            const payload = { ...formData, fullName, adminPassword: formData.adminPassword };
             await api.post('/users/admin/users', payload);
             showMessage(t('user_created'), 'success');
             if (onSuccess) onSuccess();
@@ -66,7 +68,9 @@ export const useUsers = (options = {}) => {
     const updateUser = async (id, formData, onSuccess) => {
         try {
             setIsSubmitting(true);
-            await api.put(`/users/admin/users/${id}`, formData);
+            const fullName = composeFullName(formData);
+            const payload = { ...formData, fullName };
+            await api.put(`/users/admin/users/${id}`, payload);
             showMessage(t('user_updated'), 'success');
             if (onSuccess) onSuccess();
             fetchUsers();

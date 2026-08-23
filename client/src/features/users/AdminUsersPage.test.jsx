@@ -35,14 +35,14 @@ const renderPage = (initialPath) => (
 
 describe('AdminUsersPage - tabs', () => {
     it('renders the secretaries tab by default with UserManagement full-width', () => {
-        renderPage('/admin/users');
+        renderPage('/config?tab=users');
 
         expect(screen.getByText('USER_MANAGEMENT')).toBeTruthy();
         expect(screen.queryByText('DOCTORS_MANAGER')).toBeNull();
     });
 
-    it('renders the doctors tab when ?tab=doctor is present', () => {
-        renderPage('/admin/users?tab=doctor');
+    it('renders the doctors tab when ?userTab=doctor is present', () => {
+        renderPage('/config?tab=users&userTab=doctor');
 
         expect(screen.getByText('DOCTORS_MANAGER')).toBeTruthy();
         expect(screen.queryByText('USER_MANAGEMENT')).toBeNull();
