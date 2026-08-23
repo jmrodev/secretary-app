@@ -11,7 +11,7 @@ vi.mock('@/hooks/usePermissions', () => ({
 const ProtectedContent = () => <div>PROTECTED_CONTENT</div>;
 const FallbackContent = () => <div>FALLBACK_CONTENT</div>;
 
-const renderGuarded = (props, initialPath = '/admin/users') => (
+const renderGuarded = (props, initialPath = '/config?tab=users') => (
     render(
         <MemoryRouter initialEntries={[initialPath]}>
             <Routes>
@@ -81,7 +81,7 @@ describe('RoleGuard - permission prop', () => {
         expect(screen.getByText('PROTECTED_CONTENT')).toBeTruthy();
     });
 
-    it('redirects unauthorized admin users to /admin/users by default', () => {
+    it('redirects unauthorized admin users to /config?tab=users by default', () => {
         usePermissionsMock.mockReturnValue({
             user: { role: 'admin' },
             canManageUsers: true,
@@ -96,7 +96,7 @@ describe('RoleGuard - permission prop', () => {
                             <ProtectedContent />
                         </RoleGuard>
                     } />
-                    <Route path="/admin/users" element={<div>ADMIN_USERS_FALLBACK</div>} />
+                    <Route path="/config" element={<div>ADMIN_USERS_FALLBACK</div>} />
                 </Routes>
             </MemoryRouter>
         );

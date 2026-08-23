@@ -25,14 +25,14 @@ export const useLoginController = () => {
         try {
             const result = await login(username, password);
             if (result.success) {
-                const target = result.user?.role === 'admin' ? '/admin/users' : '/dashboard';
+                const target = result.user?.role === 'admin' ? '/config?tab=users' : '/dashboard';
                 navigate(target);
             } else {
                 setError(result.message || t('invalid_credentials'));
             }
         } catch (err) {
             console.error("[LoginController] Error during login:", err);
-            setError(t('error_occurred') || 'Ocurrió un error inesperado.');
+            setError(t('error_occurred'));
         } finally {
             setLoading(false);
         }

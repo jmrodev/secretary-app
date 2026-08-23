@@ -11,7 +11,7 @@ const { logAction } = require('../../utils/system/audit');
 
 exports.getUsersForAdmin = async (req, res) => {
     try {
-        const users = await userAccountService.getUsersForAdmin();
+        const users = await userAccountService.getUsersForAdmin(req.user);
         res.json({ users, totalCount: users.length });
     } catch (err) {
         console.error(err);
@@ -102,7 +102,7 @@ exports.createUser = async (req, res) => {
     try {
         const { adminPassword, ...userData } = req.body;
         if (!adminPassword) {
-            return res.status(400).json({ error: "Se requiere su contraseña de administrador para crear un usuario." });
+            return res.status(400).json({ error: "Se requiere su contraseña para crear un usuario." });
         }
 
         const userId = await userAccountService.createUser(req, userData);
@@ -120,7 +120,7 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        await userAccountService.updateUser(id, req.body);
+        await userAccountService.updateUser(id, req.body, req.user);
         logAction(req, 'ADMIN_UPDATE_USER', `Updated user ${id}`);
         res.json({ message: "User updated" });
     } catch (err) {
@@ -138,7 +138,7 @@ exports.deleteUser = async (req, res) => {
         const { adminPassword } = req.body;
 
         if (!adminPassword) {
-            return res.status(400).json({ error: "Se requiere su contraseña de administrador para eliminar un usuario." });
+            return res.status(400).json({ error: "Se requiere su contraseña para eliminar un usuario." });
         }
 
         await userAccountService.deleteUser(req, id);

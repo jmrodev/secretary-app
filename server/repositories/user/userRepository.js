@@ -72,6 +72,9 @@ class UserRepository {
 
     async update(id, updates, conn = this.pool) {
         const { username, role } = updates;
+        if (role === 'admin') {
+            throw Object.assign(new Error('Cannot promote a user to admin via update.'), { statusCode: 403 });
+        }
         return await conn.query("UPDATE users SET username = ?, role = ? WHERE id = ?", [username, role, id]);
     }
 

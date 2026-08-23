@@ -81,9 +81,14 @@ class UserAccountService {
 
     /**
      * Lists every staff account for the admin management table.
+     * Secretaries with can_manage_users cannot see admin accounts.
      */
-    async getUsersForAdmin() {
-        return await userRepository.findAllStaff();
+    async getUsersForAdmin(requester) {
+        const users = await userRepository.findAllStaff();
+        if (requester?.role !== 'admin') {
+            return users.filter(u => u.role !== 'admin');
+        }
+        return users;
     }
 
     /**
@@ -99,7 +104,7 @@ class UserAccountService {
         }
         const isMatch = await bcrypt.compare(adminPassword, adminUser.password_hash);
         if (!isMatch) {
-            const error = new Error('Contraseña de administrador incorrecta.');
+            const error = new Error('Su contraseña actual es incorrecta.');
             error.statusCode = 403;
             throw error;
         }
@@ -188,7 +193,14 @@ class UserAccountService {
         }
     }
 
-    async updateUser(userId, userData) {
+    async updateUser(userId, userData, requester) {
+        const target = await userRepository.findById(userId);
+        if (target?.role === 'admin' && requester?.role !== 'admin') {
+            const error = new Error('Solo un administrador puede modificar cuentas de administrador.');
+            error.statusCode = 403;
+            throw error;
+        }
+
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
