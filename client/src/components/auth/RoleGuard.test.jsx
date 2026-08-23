@@ -11,11 +11,14 @@ vi.mock('@/hooks/usePermissions', () => ({
 const ProtectedContent = () => <div>PROTECTED_CONTENT</div>;
 const FallbackContent = () => <div>FALLBACK_CONTENT</div>;
 
-const renderGuarded = (props, initialPath = '/admin/users') => (
-    render(
+const renderGuarded = (props, initialPath = '/config?tab=users') => {
+    // React Router matches on the pathname only, so split off any query
+    // string before registering the route pattern.
+    const [pathname] = initialPath.split('?');
+    return render(
         <MemoryRouter initialEntries={[initialPath]}>
             <Routes>
-                <Route path={initialPath} element={
+                <Route path={pathname} element={
                     <RoleGuard {...props}>
                         <ProtectedContent />
                     </RoleGuard>
@@ -24,8 +27,8 @@ const renderGuarded = (props, initialPath = '/admin/users') => (
                 <Route path="/" element={<div>LOGIN</div>} />
             </Routes>
         </MemoryRouter>
-    )
-);
+    );
+};
 
 describe('RoleGuard - permission prop', () => {
     beforeEach(() => {
@@ -81,7 +84,7 @@ describe('RoleGuard - permission prop', () => {
         expect(screen.getByText('PROTECTED_CONTENT')).toBeTruthy();
     });
 
-    it('redirects unauthorized admin users to /admin/users by default', () => {
+    it('redirects unauthorized admin users to /config?tab=users by default', () => {
         usePermissionsMock.mockReturnValue({
             user: { role: 'admin' },
             canManageUsers: true,
@@ -96,7 +99,7 @@ describe('RoleGuard - permission prop', () => {
                             <ProtectedContent />
                         </RoleGuard>
                     } />
-                    <Route path="/admin/users" element={<div>ADMIN_USERS_FALLBACK</div>} />
+                    <Route path="/config" element={<div>ADMIN_USERS_FALLBACK</div>} />
                 </Routes>
             </MemoryRouter>
         );

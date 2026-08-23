@@ -43,7 +43,7 @@ export const RoleGuard = ({
         || (permission === 'canManageUsers' ? Boolean(canManageUsers) : user[permission] === true);
 
     if (!hasRole || !hasPermission) {
-        const defaultFallback = user?.role === 'admin' ? '/admin/users' : '/dashboard';
+        const defaultFallback = user?.role === 'admin' ? '/config?tab=users' : '/dashboard';
         const effectiveFallback = fallbackPath === '/dashboard' ? defaultFallback : fallbackPath;
         return redirectTo ? <Navigate to={effectiveFallback} replace /> : null;
     }
