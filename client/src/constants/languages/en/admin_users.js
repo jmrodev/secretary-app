@@ -30,6 +30,8 @@ export const admin_users = {
     failed_create_user: "Failed to create user",
     user_updated: "User updated successfully",
     failed_update_user: "Failed to update user",
+    delete_user_confirm_trash: "Are you sure you want to delete {name}? This action will move their data to the Recycle Bin.",
+    delete_user_confirm_active: "WARNING! User {name} will be removed from the active list. Do you want to continue?",
     user_deleted: "User deleted successfully",
     failed_delete_user: "Failed to delete user",
     password_reset: "Password reset for",
