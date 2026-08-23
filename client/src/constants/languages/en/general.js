@@ -705,5 +705,9 @@ export const general = {
     virtual_location: "Virtual (Cima Salud)",
     appointment_type_virtual: "VIRTUAL",
     appointment_type_in_person: "IN-PERSON",
-    default_secretary_name: "Secretary"
+    default_secretary_name: "Secretary",
+    address: "Address",
+    email: "Email",
+    first_name: "First Name",
+    last_name: "Last Name"
 };
