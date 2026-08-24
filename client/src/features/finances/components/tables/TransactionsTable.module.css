@@ -4,7 +4,7 @@
     /* --- Local Component Tokens --- */
     --ledger-bg: var(--white, var(--text-main));
     --ledger-border: rgb(0, 0, 0, 0.08);
-    --ledger-row-hover: rgb(241, 245, 249, 0.7);
+    --ledger-row-hover: var(--row-hover-bg-selected);
     --ledger-group-bg: rgb(239, 246, 255, 0.5);
     --ledger-header-bg: rgb(248, 250, 252, 0.95);
 
@@ -109,23 +109,23 @@
 }
 
 .TransactionsTable__rowIncome:hover td {
-    background-color: #dcfce7 !important;
-    color: #0f172a !important;
+    background-color: var(--green-100) !important;
+    color: var(--gray-900) !important;
 }
 
 .TransactionsTable__rowExpense:hover td {
-    background-color: #fee2e2 !important;
-    color: #0f172a !important;
+    background-color: var(--red-100) !important;
+    color: var(--gray-900) !important;
 }
 
 .TransactionsTable__rowWithdrawal:hover td {
-    background-color: #fef9c3 !important;
-    color: #0f172a !important;
+    background-color: var(--yellow-100) !important;
+    color: var(--gray-900) !important;
 }
 
 .TransactionsTable__rowPending:hover td {
-    background-color: #fecaca !important;
-    color: #0f172a !important;
+    background-color: var(--red-200) !important;
+    color: var(--gray-900) !important;
 }
 
 .TransactionsTable__rowIncome:hover .TransactionsTable__description,
@@ -140,7 +140,7 @@
 .TransactionsTable__rowExpense:hover .TransactionsTable__date,
 .TransactionsTable__rowWithdrawal:hover .TransactionsTable__date,
 .TransactionsTable__rowPending:hover .TransactionsTable__date {
-    color: #0f172a !important;
+    color: var(--gray-900) !important;
 }
 
 .TransactionsTable__row:hover:not(.TransactionsTable__rowGrouped) td {
@@ -263,7 +263,7 @@
 .TransactionsTable__invoiceNumber {
     font-size: 0.75rem;
     font-weight: 800;
-    color: #1e40af;
+    color: var(--blue-800);
     background-color: #dbeafe;
     padding: 0.15rem 0.4rem;
     border-radius: 4px;
@@ -281,7 +281,7 @@
 }
 
 .TransactionsTable__actionBtnView:hover {
-    background-color: #4f46e5 !important;
+    background-color: var(--indigo-600) !important;
     transform: translateY(-2px) scale(1.05) !important;
     box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
 }
@@ -300,7 +300,7 @@
 }
 
 .TransactionsTable__proofLink:hover {
-    background-color: #0369a1;
+    background-color: var(--sky-700);
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 4px 8px var(--modal-bg-dark);
 }
@@ -343,7 +343,7 @@
 }
 
 .TransactionsTable__actionBtnPay:hover {
-    background-color: #166534 !important;
+    background-color: var(--green-800) !important;
 }
 
 .TransactionsTable__actionBtnInvoice {
@@ -352,7 +352,7 @@
 }
 
 .TransactionsTable__actionBtnInvoice:hover {
-    background-color: #1e40af !important;
+    background-color: var(--blue-800) !important;
 }
 
 .TransactionsTable__actionBtnEdit {
@@ -370,7 +370,7 @@
 }
 
 .TransactionsTable__actionBtnSync:hover {
-    background-color: #155e75 !important;
+    background-color: var(--cyan-800) !important;
 }
 
 .TransactionsTable__actionBtnDelete {
@@ -379,7 +379,7 @@
 }
 
 .TransactionsTable__actionBtnDelete:hover {
-    background-color: #991b1b !important;
+    background-color: var(--red-800) !important;
 }
 
 .TransactionsTable__groupFooter {

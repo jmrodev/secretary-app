@@ -54,7 +54,7 @@
 }
 
 .PatientRecycleBin__row:hover {
-    background-color: rgb(128, 128, 128, 0.08);
+    background-color: var(--row-hover-bg);
 }
 
 .PatientRecycleBin__patientName {
