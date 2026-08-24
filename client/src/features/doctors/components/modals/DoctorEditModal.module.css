@@ -116,3 +116,11 @@
     margin-left: 3rem;
     font-style: italic;
 }
+
+.DoctorEditModal__fiscalDesc {
+    margin: var(--spacing-md) 0;
+}
+
+.DoctorEditModal__wizardBody {
+    padding: var(--spacing-md);
+}

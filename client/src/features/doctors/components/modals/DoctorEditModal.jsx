@@ -51,9 +51,7 @@ export const DoctorEditModal = ({
     const {
         generatedCsr,
         generatingCsr,
-        showCsrInfo,
         generateCsr,
-        hideCsrInfo,
         uploading,
         uploadCert,
         connectionStatus,
@@ -237,7 +235,7 @@ export const DoctorEditModal = ({
                     {activeTab === 'fiscal' && (
                         <div className={`${styles.DoctorEditModal__fiscalSummary} animate-fade-in`}>
                             <h4>{t('afip_billing_config_title')}</h4>
-                            <p style={{ margin: '1rem 0' }}>
+                            <p className={styles['DoctorEditModal__fiscalDesc']}>
                                 {t('afip_billing_config_desc')}
                             </p>
                             <Button 
@@ -255,7 +253,7 @@ export const DoctorEditModal = ({
                                     title={t('afip_wizard_title')}
                                     size="lg"
                                 >
-                                    <div style={{ padding: '1rem' }}>
+                                    <div className={styles['DoctorEditModal__wizardBody']}>
                                         <DoctorFiscalWizard
                                             data={data}
                                             onChangeData={onChangeData}
