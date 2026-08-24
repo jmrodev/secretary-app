@@ -8,6 +8,8 @@ import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import styles from './TempAccessPage.module.css';
 
+const globalClass = (cls) => cls;
+
 const TempAccessFormWrapper = ({ initialData, insurances, onSubmit, isEdit }) => {
     const controller = usePatientFormController({
         initialValues: initialData,
@@ -85,7 +87,7 @@ export const TempAccessPage = () => {
                 <aside className={`${styles.TempAccessPage__downloadCard} `}>
                     <div className={`${styles.TempAccessPage__downloadInfo}`}>
                         <h4 className={`${styles.TempAccessPage__downloadTitle}`}>
-                            <Icon name="SMARTPHONE" className="mr-2" />
+                            <Icon name="SMARTPHONE" className={globalClass('mr-2')} />
                             {t('mobile_app')}
                         </h4>
                         <p className={`${styles.TempAccessPage__downloadText}`}>

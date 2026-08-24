@@ -9,6 +9,8 @@ import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import styles from './MedicalRequestList.module.css';
 
+const globalClass = (cls) => cls;
+
 /**
  * MedicalRequestList Organism (Feature-based).
  * Renders a list of medical requests (prescriptions, licenses, certificates).
@@ -31,7 +33,7 @@ export const MedicalRequestList = ({
 
     if (!loading && (!requests || requests.length === 0)) {
         return (
-            <section className={`${styles.MedicalRequestList__empty} animate-fade-in`}>
+            <section className={`${styles.MedicalRequestList__empty} ${globalClass('animate-fade-in')}`}>
                 <Icon name="description" size="3rem" className={`${styles.MedicalRequestList__emptyIcon}`} />
                 {t('no_requests')}
             </section>
@@ -39,9 +41,9 @@ export const MedicalRequestList = ({
     }
 
     return (
-        <section className={`${styles.MedicalRequestList__root} ${loading ? 'medical-requests--loading' : 'animate-fade-in'}`}>
+        <section className={`${styles.MedicalRequestList__root} ${loading ? globalClass('medical-requests--loading') : globalClass('animate-fade-in')}`}>
             <article className={`${styles.MedicalRequestList__container}`}>
-                <table className={`${styles.MedicalRequestList__table} table-base`}>
+                <table className={`${styles.MedicalRequestList__table} ${globalClass('table-base')}`}>
                     <thead>
                         <tr>
                             <th className={`${styles.MedicalRequestList__th} ${styles.MedicalRequestList__thType}`}>{t('type')}</th>
@@ -63,10 +65,10 @@ export const MedicalRequestList = ({
 
                             return (
                                 <tr key={r.id} className={`${styles.MedicalRequestList__row} ${!isPending ? styles.MedicalRequestList__rowCompleted : ''}`}>
-                                    <td className={`${styles.MedicalRequestList__td} medical-requests__td--type`}>
+                                    <td className={`${styles.MedicalRequestList__td} ${globalClass('medical-requests__td--type')}`}>
                                         <div className={`${styles.MedicalRequestList__typeCell}`}>
                                             <span
-                                                className={`${styles.MedicalRequestList__typeTag} ${styles.MedicalRequestList__typeTagClickable} medical-requests__type-tag--${r.type}`}
+                                                className={`${styles.MedicalRequestList__typeTag} ${styles.MedicalRequestList__typeTagClickable} ${globalClass(`medical-requests__type-tag--${r.type}`)}`}
                                                 onClick={() => handleEditRequest({ ...r, _origin: 'request', _readOnly: true })}
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter' || e.key === ' ') {
@@ -102,7 +104,7 @@ export const MedicalRequestList = ({
                                     </td>
                                     <td className={`${styles.MedicalRequestList__td}`}>
                                         <div className={`${styles.MedicalRequestList__statusCell}`}>
-                                            <span className={`${styles.MedicalRequestList__statusTag} medical-requests__status-tag--${r.status}`}>
+                                            <span className={`${styles.MedicalRequestList__statusTag} ${globalClass(`medical-requests__status-tag--${r.status}`)}`}>
                                                 {t(r.status) || r.status}
                                             </span>
                                             {r.doctor_note && (
@@ -114,7 +116,7 @@ export const MedicalRequestList = ({
                                     </td>
                                     <td className={`${styles.MedicalRequestList__td}`}>
                                         <div className={`${styles.MedicalRequestList__paymentInfo}`}>
-                                            <div className={`${styles.MedicalRequestList__paymentBadge} medical-requests__payment-badge--${paymentStatusClass}`}>
+                                            <div className={`${styles.MedicalRequestList__paymentBadge} ${globalClass(`medical-requests__payment-badge--${paymentStatusClass}`)}`}>
                                                 <span className={`${styles.MedicalRequestList__paymentDot}`}></span>
                                                 {r.payment_status === 'paid' ? t('paid') :
                                                     ((r.payment_status === 'debt' || r.payment_status === 'partial') ? `${t(r.payment_status) || (r.payment_status === 'partial' ? 'Parcial' : 'Deuda')} ${formatCurrency(r.debt_amount)}` :
@@ -126,14 +128,14 @@ export const MedicalRequestList = ({
                                                     <Icon
                                                         name={r.payment_method === 'cash' ? 'payments' : r.payment_method === 'transfer' ? 'account_balance' : 'credit_card'}
                                                         size="1rem"
-                                                        className="medical-requests__payment-method-icon"
+                                                        className={globalClass('medical-requests__payment-method-icon')}
                                                     />
                                                     {t(r.payment_method) || r.payment_method}
                                                 </div>
                                             )}
                                         </div>
                                     </td>
-                                    <td className={`${styles.MedicalRequestList__td} medical-requests__td--actions`}>
+                                    <td className={`${styles.MedicalRequestList__td} ${globalClass('medical-requests__td--actions')}`}>
                                         <div className={`${styles.MedicalRequestList__actions}`}>
                                             {(r.payment_status !== 'paid' && r.payment_status !== 'bonified') && (user?.role === 'secretary' || user?.role === 'doctor') && (
                                                 <>
@@ -232,7 +234,7 @@ export const MedicalRequestList = ({
             </article>
 
             {totalPages > 1 && (
-                <footer className="medical-requests__pagination">
+                <footer className={globalClass('medical-requests__pagination')}>
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}

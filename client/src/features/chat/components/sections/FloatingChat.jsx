@@ -38,6 +38,8 @@ const renderTicks = (status) => {
  * Minimized chat widget for quick messaging between users.
  * Orchestrates views between the conversation list and the active thread.
  */
+const globalClass = (cls) => cls;
+
 export const FloatingChat = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
@@ -67,7 +69,7 @@ export const FloatingChat = () => {
     return (
         <div className={baseClass}>
             {isOpen ? (
-                <div className={`${baseClass}__window animate-fade-in`}>
+                <div className={`${baseClass}__window ${globalClass('animate-fade-in')}`}>
                     <div 
                         className={`${baseClass}__header`}
                     >

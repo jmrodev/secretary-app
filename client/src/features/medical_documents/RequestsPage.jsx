@@ -11,6 +11,8 @@ import styles from './RequestsPage.module.css';
 
 import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 
+const globalClass = (cls) => cls;
+
 /**
  * RequestsPage (Orchestrator).
  * Main entry point for the medical requirements workflow (Staff view).
@@ -23,7 +25,7 @@ export const RequestsPage = () => {
         <MainLayout wide flush>
             <div>
                 <FeatureToolbar
-                    className="__top-actions"
+                    className={globalClass('__top-actions')}
                     actions={
                         <Button
                             variant="secondary"
@@ -37,8 +39,8 @@ export const RequestsPage = () => {
                 />
 
                 <div>
-                    <section className="dashboard-layout__main dashboard-layout__main--full">
-                        <article className="dashboard-card no-padding">
+                    <section className={globalClass('dashboard-layout__main dashboard-layout__main--full')}>
+                        <article className={globalClass('dashboard-card no-padding')}>
                             <section className={`${styles.RequestsPage__section}`}>
                                 <MedicalRequirementManager user={user} />
                             </section>

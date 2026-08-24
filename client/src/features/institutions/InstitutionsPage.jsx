@@ -8,6 +8,8 @@ import { useInstitutionsController, InstitutionFormModal } from '@/features/inst
 
 import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 
+const globalClass = (cls) => cls;
+
 /**
  * InstitutionsPage (Orchestrator).
  * Manages institutional payers and agreements.
@@ -44,7 +46,7 @@ export const InstitutionsPage = () => {
                     ) : (
                         <>
                             <FeatureToolbar
-                                className="__top-actions"
+                                className={globalClass('__top-actions')}
                                 tabs={institutions.map(inst => ({
                                     id: String(inst.id),
                                     label: inst.name,
@@ -54,7 +56,7 @@ export const InstitutionsPage = () => {
                                 activeTab={selectedInstId}
                                 onTabChange={setSelectedInstId}
                                 actions={
-                                    <div className="institutions-page__toolbar-actions">
+                                    <div className={globalClass('institutions-page__toolbar-actions')}>
                                         <Button
                                             variant="primary"
                                             size="sm"
@@ -65,7 +67,7 @@ export const InstitutionsPage = () => {
                                         </Button>
                                         
                                         {selectedInstId && (
-                                            <div className="institutions-page__selected-actions">
+                                            <div className={globalClass('institutions-page__selected-actions')}>
                                                 <Button
                                                     variant="secondary"
                                                     size="sm"
@@ -84,9 +86,9 @@ export const InstitutionsPage = () => {
                                 }
                             />
 
-                            <section className="dashboard-layout__main dashboard-layout__main--full">
-                                <div className="dashboard-card no-padding">
-                                    <div className="institutions__content ">
+                            <section className={globalClass('dashboard-layout__main dashboard-layout__main--full')}>
+                                <div className={globalClass('dashboard-card no-padding')}>
+                                    <div className={globalClass('institutions__content ')}>
                                         <InstitutionFinances
                                             institutions={institutions}
                                             selectedInstId={selectedInstId}

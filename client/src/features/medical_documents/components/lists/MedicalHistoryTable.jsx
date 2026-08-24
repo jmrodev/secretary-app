@@ -8,6 +8,8 @@ import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import styles from './MedicalHistoryTable.module.css';
 
+const globalClass = (cls) => cls;
+
 export const MedicalHistoryTable = ({ 
     items, 
     loading,
@@ -29,9 +31,9 @@ export const MedicalHistoryTable = ({
     const safeItems = Array.isArray(items) ? items : [];
 
     return (
-        <section className={`${styles.MedicalHistoryTable__root} ${loading ? 'medical-history--loading' : 'animate-fade-in'}`}>
-            <div className="medical-history__wrapper">
-                <table className={`${styles.MedicalHistoryTable__table} table-base`}>
+        <section className={`${styles.MedicalHistoryTable__root} ${loading ? globalClass('medical-history--loading') : globalClass('animate-fade-in')}`}>
+            <div className={globalClass('medical-history__wrapper')}>
+                <table className={`${styles.MedicalHistoryTable__table} ${globalClass('table-base')}`}>
                     <thead>
                         <tr>
                             <th className={`${styles.MedicalHistoryTable__th} ${styles.MedicalHistoryTable__thDate}`}>{t('date')}</th>
@@ -126,7 +128,7 @@ export const MedicalHistoryTable = ({
                 )}
 
                 {totalPages > 1 && (
-                    <footer className="medical-history__pagination">
+                    <footer className={globalClass('medical-history__pagination')}>
                         <Pagination 
                             currentPage={currentPage}
                             totalPages={totalPages}

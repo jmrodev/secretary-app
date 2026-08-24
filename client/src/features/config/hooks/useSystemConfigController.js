@@ -48,21 +48,21 @@ export const useSystemConfigController = () => {
         const status = searchParams.get('status');
 
         if (status === 'success') {
-            showMessage('Cuenta de Google Conectada con Éxito', 'success');
+            showMessage(t('google_account_connected_success') || 'Cuenta de Google Conectada con Éxito', 'success');
             setSearchParams((prev) => {
                 const next = new URLSearchParams(prev);
                 next.delete('status');
                 return next;
             });
         } else if (status === 'error') {
-            showMessage('Error al conectar con Google', 'error');
+            showMessage(t('google_connection_error') || 'Error al conectar con Google', 'error');
             setSearchParams((prev) => {
                 const next = new URLSearchParams(prev);
                 next.delete('status');
                 return next;
             });
         }
-    }, [searchParams, setSearchParams, showMessage]);
+    }, [searchParams, setSearchParams, showMessage, t]);
 
     /**
      * Initiates Google OAuth flow via backend-provided URL
@@ -72,23 +72,23 @@ export const useSystemConfigController = () => {
             const { data } = await api.get('/google/auth-url');
             window.location.href = data.url;
         } catch {
-            showMessage('Error al iniciar autenticación con Google', 'error');
+            showMessage(t('google_auth_init_error') || 'Error al iniciar autenticación con Google', 'error');
         }
-    }, [showMessage]);
+    }, [showMessage, t]);
 
     /**
      * Disconnects Google Calendar integration securely
      */
     const handleDisconnectGoogle = useCallback(async () => {
-        if (!await confirm('¿Estás seguro de desconectar Google Calendar? Se dejarán de sincronizar los turnos.')) return;
+        if (!await confirm(t('confirm_google_disconnect') || '¿Estás seguro de desconectar Google Calendar? Se dejarán de sincronizar los turnos.')) return;
         try {
             await api.post('/google/disconnect');
             await refreshSettings();
-            showMessage('Cuenta desconectada correctamente', 'success');
+            showMessage(t('google_account_disconnected') || 'Cuenta desconectada correctamente', 'success');
         } catch {
-            showMessage('Error al desconectar cuenta', 'error');
+            showMessage(t('google_disconnect_error') || 'Error al desconectar cuenta', 'error');
         }
-    }, [confirm, refreshSettings, showMessage]);
+    }, [confirm, refreshSettings, showMessage, t]);
 
     /**
      * Manually triggers retry of failed Google Sync items
@@ -97,33 +97,33 @@ export const useSystemConfigController = () => {
         try {
             setLoading(true);
             const res = await api.post('/google/retry-failed');
-            showMessage(res.data.message || 'Reintento iniciado.', 'success');
+            showMessage(res.data.message || t('retry_initiated') || 'Reintento iniciado.', 'success');
         } catch (err) {
-            showMessage('Error al iniciar reintento.', 'error');
+            showMessage(t('retry_init_error') || 'Error al iniciar reintento.', 'error');
             console.error(err);
         } finally {
             setLoading(false);
         }
-    }, [showMessage]);
+    }, [showMessage, t]);
 
     /**
      * Sends a test message via Meta Cloud API logic
      */
     const handleTestMeta = useCallback(async () => {
-        const phone = await prompt("Ingrese un número de teléfono de prueba (incluya código de país, ej: 549...):");
+        const phone = await prompt(t('enter_test_phone_number') || "Ingrese un número de teléfono de prueba (incluya código de país, ej: 549...):");
         if (!phone) return;
 
         try {
             setLoading(true);
             await api.post('/whatsapp/test', { to: phone });
-            showMessage('✅ Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
+            showMessage(t('test_message_sent_success') || '✅ Mensaje de prueba enviado. Verifique su WhatsApp.', 'success');
         } catch (error) {
             console.error(error);
-            showMessage(error.response?.data?.error || 'Error al enviar mensaje de prueba', 'error');
+            showMessage(error.response?.data?.error || t('test_message_send_error') || 'Error al enviar mensaje de prueba', 'error');
         } finally {
             setLoading(false);
         }
-    }, [showMessage]);
+    }, [showMessage, t]);
 
     /**
      * Utility to insert template variables at cursor position in textareas
@@ -152,12 +152,12 @@ export const useSystemConfigController = () => {
      * Forces a DuckDNS IP refresh/update
      */
     const handleRefreshTunnel = useCallback(async () => {
-        if (!await confirm("¿Desea actualizar su IP en DuckDNS ahora?")) return;
+        if (!await confirm(t('confirm_refresh_tunnel') || "¿Desea actualizar su IP en DuckDNS ahora?")) return;
 
         try {
             setLoading(true);
             await api.post('/settings/refresh-tunnel');
-            showMessage("IP de DuckDNS actualizada correctamente.", 'info');
+            showMessage(t('tunnel_refreshed_success') || "IP de DuckDNS actualizada correctamente.", 'info');
             setTimeout(refreshSettings, 2000);
         } catch {
             showMessage(t('error_saving'), 'error');

@@ -2,6 +2,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useAuth } from '@/features/auth/AuthContext';
 import { useModal } from '@/context/ModalContext';
+import { useLanguage } from '@/hooks/useLanguage';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
@@ -55,6 +56,7 @@ export const useWhatsAppUniversal = (doctors) => {
     const { settings } = useConfig();
     const { user } = useAuth();
     const { confirm } = useModal();
+    const { t } = useLanguage();
 
     const handleMetaSend = async (phone, templateName, paramsOrder, contextData) => {
         try {
@@ -68,13 +70,13 @@ export const useWhatsAppUniversal = (doctors) => {
                 })
             }];
 
-            showMessage('Enviando mensaje por WhatsApp API...', 'info');
+            showMessage(t('sending_whatsapp_api') || 'Enviando mensaje por WhatsApp API...', 'info');
             await api.post('/whatsapp/send', { to: phone, templateName, languageCode: 'es', components });
-            showMessage('Mensaje enviado por API correctamente', 'success');
+            showMessage(t('whatsapp_api_sent_success') || 'Mensaje enviado por API correctamente', 'success');
             return true;
         } catch (err) {
             console.error("Meta API Send Error:", err);
-            showMessage(err.response?.data?.error || 'Error enviando por Meta API', 'error');
+            showMessage(err.response?.data?.error || t('whatsapp_api_send_error') || 'Error enviando por Meta API', 'error');
             return false;
         }
     };
@@ -84,7 +86,7 @@ export const useWhatsAppUniversal = (doctors) => {
         if (!phone) {
             const phoneMatch = appt.reason?.match(/\d{9,13}/);
             if (phoneMatch) phone = phoneMatch[0];
-            else { showMessage("No phone number available.", "error"); return; }
+            else { showMessage(t('no_phone_number_available') || "No phone number available.", "error"); return; }
         }
 
         // Normalize phone upfront for all branches
@@ -94,7 +96,7 @@ export const useWhatsAppUniversal = (doctors) => {
         // --- CHAT branch: open GlobalWhatsappMessenger or fall back to wa.me ---
         if (type === 'chat') {
             const confirmed = await confirm(
-                `¿Abrir chat de WhatsApp con ${appt.patient_name || 'el paciente'}?`
+                t('confirm_open_whatsapp_chat', { name: appt.patient_name || t('the_patient') || 'el paciente' }) || `¿Abrir chat de WhatsApp con ${appt.patient_name || 'el paciente'}?`
             );
             if (!confirmed) return;
 
@@ -115,7 +117,7 @@ export const useWhatsAppUniversal = (doctors) => {
                     }
                 }));
             } else {
-                showMessage('Bridge desconectado — abriendo WhatsApp Web...', 'info');
+                showMessage(t('whatsapp_bridge_disconnected_web') || 'Bridge desconectado — abriendo WhatsApp Web...', 'info');
                 window.open(`https://wa.me/${normalizedPhone}`, '_blank');
             }
             return;
@@ -123,7 +125,7 @@ export const useWhatsAppUniversal = (doctors) => {
 
         if (type === 'reminder') {
             const confirmed = await confirm(
-                `¿Enviar recordatorio de WhatsApp a ${appt.patient_name || 'el paciente'}?`
+                t('confirm_send_whatsapp_reminder', { name: appt.patient_name || t('the_patient') || 'el paciente' }) || `¿Enviar recordatorio de WhatsApp a ${appt.patient_name || 'el paciente'}?`
             );
             if (!confirmed) return;
 
@@ -153,9 +155,9 @@ export const useWhatsAppUniversal = (doctors) => {
             // We prioritize the local bridge if it exists, regardless of the setting, 
             // to fulfill the user's request for "auto-send"
             try {
-                showMessage('Enviando mensaje automáticamente...', 'info');
+                showMessage(t('sending_automatic_message') || 'Enviando mensaje automáticamente...', 'info');
                 await api.post('/whatsapp/send-direct', { to: normalizedPhone, message });
-                showMessage('Mensaje enviado automáticamente', 'success');
+                showMessage(t('automatic_message_sent_success') || 'Mensaje enviado automáticamente', 'success');
                 return; // Exit if sent successfully
             } catch (err) {
                 console.error("Local Bridge Error:", err);
@@ -164,10 +166,10 @@ export const useWhatsAppUniversal = (doctors) => {
 
             try {
                 await copyToClipboard(message);
-                showMessage(`Recordatorio copiado! Abriendo WhatsApp...`, "success");
+                showMessage(`${t('reminder_copied') || 'Recordatorio copiado!'} ${t('opening_whatsapp') || 'Abriendo WhatsApp...'}`, "success");
                 window.location.href = `whatsapp://send?phone=${normalizedPhone}&text=${encodeURIComponent(message)}`;
                 setTimeout(() => { if (!document.hasFocus()) window.open(`https://web.whatsapp.com/send?phone=${normalizedPhone}&text=${encodeURIComponent(message)}`, '_blank') }, 2500);
-            } catch { showMessage("Error al procesar WhatsApp", "error"); }
+            } catch { showMessage(t('whatsapp_processing_error') || "Error al procesar WhatsApp", "error"); }
         }
     };
 
