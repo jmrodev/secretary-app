@@ -83,6 +83,9 @@ services:
     build: ./client
     restart: always
     container_name: secretary-app-client-1
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     command: sh -c "pnpm install --no-frozen-lockfile && pnpm run dev -- --host"
     logging: *default-logging
     networks:

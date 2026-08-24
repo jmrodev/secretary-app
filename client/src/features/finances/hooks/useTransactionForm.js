@@ -7,7 +7,7 @@ import { getServiceTypes } from '@/constants/transactionOptions';
 import { capitalizeFirst } from '@/utils/core/stringUtils';
 import { toInputDateTime, getNow } from '@/utils/core/dateUtils';
 
-export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0) => {
+const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0) => {
     if (!appt) return '';
     const formatTime = (ts) => {
         if (!ts) return null;

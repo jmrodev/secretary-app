@@ -7,9 +7,7 @@ import {
     rejectPending as rejectPendingRequest
 } from '@/api/pendingBookingApi';
 
-/** Polling interval for the pending-approval queue (design: every 10s). */
-// eslint-disable-next-line react-refresh/only-export-components -- constant imported by MainLayout for the polling interval
-export const POLL_INTERVAL_MS = 10000;
+const POLL_INTERVAL_MS = 10000;
 
 const PendingApprovalContext = createContext(null);
 

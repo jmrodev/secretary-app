@@ -117,16 +117,6 @@ export const addDays = (date, days) => {
     return result;
 };
 
-/**
- * Adds or subtracts months from a date.
- */
-export const addMonths = (date, months) => {
-    const d = parseDate(date);
-    if (!d) return null;
-    const result = new Date(d);
-    result.setMonth(result.getMonth() + months);
-    return result;
-};
 
 /**
  * Returns the number of days in the month for a given date.
