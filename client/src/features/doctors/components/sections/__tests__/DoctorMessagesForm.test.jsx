@@ -2,6 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { DoctorMessagesForm } from '@/features/doctors/components/sections/DoctorMessagesForm';
 
+vi.mock('@/features/config/components/forms/MessageTemplateEditor', () => ({
+    MessageTemplateEditor: ({ id, label }) => (
+        <div data-testid="template-editor">{`${id}:${label}`}</div>
+    )
+}));
+
 // t stub: labels resolve to their keys, so tests assert on stable keys and
 // prove the form renders no hardcoded literals.
 const t = (key) => key;

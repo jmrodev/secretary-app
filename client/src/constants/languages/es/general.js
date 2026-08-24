@@ -42,6 +42,7 @@ export const general = {
     copy_to_wsass: "Copia este texto en la web de ARCA WSASS",
     connection_test_title: "Estado de Conexión y Pruebas",
     afip_connection_success: "Conexión Exitosa con ARCA",
+    afip_connection_error: "Error de conexión con ARCA",
     afip_setup_guide: "Guía Rápida de Configuración (Click para ver)",
     afip_guide_step_1: "Completa CUIT y Punto de Venta y Habilita la facturación arriba.",
     afip_guide_step_2: "Haz clic en Generar CSR. Copia el texto generado.",
