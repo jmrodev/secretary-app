@@ -30,6 +30,7 @@
     --info: #0ea5e9;
     --info-hover: #0284c7;
     --row-hover-bg: rgb(255, 255, 255, 0.04);
+    --row-hover-bg-selected: rgb(255, 255, 255, 0.08);
 
     /* RGB channel triplets for translucent hover tints (hover audit PR2) */
     --success-rgb: 16, 185, 129;
@@ -217,6 +218,7 @@
     --info: #0ea5e9;
     --info-hover: #0369a1;
     --row-hover-bg: rgb(15, 23, 42, 0.04);
+    --row-hover-bg-selected: rgb(15, 23, 42, 0.06);
     --tab-nav-bg: #e2e8f0;
     --card-surface-bg: #f1f5f9;   /* interior claro de cards */
     --card-hover-bg: #e2e8f0;     /* hover claro de cards */
@@ -255,4 +257,5 @@
     --info: #38bdf8;
     --info-hover: #0ea5e9;
     --row-hover-bg: rgb(255, 255, 255, 0.06);
+    --row-hover-bg-selected: rgb(255, 255, 255, 0.1);
 }

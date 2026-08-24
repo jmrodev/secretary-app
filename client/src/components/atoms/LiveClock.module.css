@@ -59,10 +59,6 @@
     color: var(--primary-color);
 }
 
-.LiveClock__premium:hover {
-    border-color: transparent;
-}
-
 /* Compact (<768px): smaller clock font, stays readable */
 @media (width <= 768px) {
     .LiveClock__root {

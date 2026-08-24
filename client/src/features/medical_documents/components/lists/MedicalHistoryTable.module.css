@@ -19,7 +19,7 @@
     --history-bg: var(--dashboard-card-bg);
     --history-border: var(--border-color);
     --history-header-bg: var(--dashboard-card-bg);
-    --history-row-hover: rgb(128, 128, 128, 0.08);
+    --history-row-hover: var(--row-hover-bg);
 
     /* ------------------------------ */
 
@@ -172,7 +172,7 @@
 }
 
 .MedicalHistoryTable__actionBtnView:hover {
-    background-color: #4f46e5 !important;
+    background-color: var(--indigo-600) !important;
 }
 
 .MedicalHistoryTable__actionBtnEdit {
@@ -190,7 +190,7 @@
 }
 
 .MedicalHistoryTable__actionBtnDelete:hover {
-    background-color: #991b1b !important;
+    background-color: var(--red-800) !important;
 }
 
 .MedicalHistoryTable__empty {

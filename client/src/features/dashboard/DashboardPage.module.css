@@ -19,17 +19,10 @@
     padding: 1rem;
     box-shadow: 0 2px 8px rgb(0, 0, 0, 0.03); /* Soft subtle shadow */
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
     min-height: 0;
     min-width: 0;
-}
-
-.DashboardPage__bentoCard:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgb(0, 0, 0, 0.05); /* Nordic soft hover shadow */
-    border-color: var(--border-color);
 }
 
 .DashboardPage__cashMonitorCard {
