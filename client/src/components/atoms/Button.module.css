@@ -63,7 +63,7 @@
     --btn-text: var(--white);
     --btn-border: var(--success);
     --btn-shadow: 0 4px 10px rgb(0 182 122 / 20%);
-    --btn-hover-bg: #00a36c;
+    --btn-hover-bg: var(--success-hover);
 }
 
 .Button__danger {
@@ -71,7 +71,7 @@
     --btn-text: var(--white);
     --btn-border: var(--danger);
     --btn-shadow: none;
-    --btn-hover-bg: #e02d54;
+    --btn-hover-bg: var(--danger-hover);
     --btn-hover-shadow: var(--shadow-sm);
 }
 
@@ -79,14 +79,14 @@
     --btn-bg: #2d9cdb;
     --btn-text: var(--white);
     --btn-border: #2d9cdb;
-    --btn-hover-bg: #2791cc;
+    --btn-hover-bg: var(--info-hover);
 }
 
 .Button__warning {
     --btn-bg: var(--warning);
     --btn-text: var(--white);
     --btn-border: var(--warning);
-    --btn-hover-bg: #e6a23c;
+    --btn-hover-bg: var(--warning-hover);
 }
 
 .Button__secondary {
@@ -102,7 +102,7 @@
     --btn-text: var(--white);
     --btn-border: #8b5cf6;
     --btn-shadow: 0 4px 10px rgb(139 92 246 / 25%);
-    --btn-hover-bg: #7c3aed;
+    --btn-hover-bg: var(--violet-700);
 }
 
 .Button__purple {
@@ -110,7 +110,7 @@
     --btn-text: var(--white);
     --btn-border: #d946ef;
     --btn-shadow: 0 4px 10px rgb(217 70 239 / 25%);
-    --btn-hover-bg: #c026d3;
+    --btn-hover-bg: var(--purple-600);
 }
 
 .Button__teal {
@@ -118,7 +118,7 @@
     --btn-text: var(--white);
     --btn-border: #0ea5e9;
     --btn-shadow: 0 4px 10px rgb(14 165 233 / 25%);
-    --btn-hover-bg: #0284c7;
+    --btn-hover-bg: var(--sky-600);
 }
 
 .Button__darkDanger {
@@ -126,7 +126,7 @@
     --btn-text: var(--white);
     --btn-border: #991b1b;
     --btn-shadow: 0 4px 10px rgb(153 27 27 / 30%);
-    --btn-hover-bg: #7f1d1d;
+    --btn-hover-bg: var(--red-800);
 }
 
 .Button__outlineDanger {
@@ -134,7 +134,7 @@
     --btn-border: var(--red-700);
     --btn-text: var(--red-400);
     --btn-shadow: none;
-    --btn-hover-bg: rgb(239 68 68 / 10%);
+    --btn-hover-bg: rgb(var(--danger-rgb) / 10%);
     --btn-hover-border: var(--red-500);
     --btn-hover-text: var(--red-300);
 }
@@ -144,7 +144,7 @@
     --btn-border: var(--green-700);
     --btn-text: var(--green-400);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: rgb(34 197 94 / 10%);
+    --btn-hover-bg: rgb(var(--success-rgb) / 10%);
     --btn-hover-border: var(--green-500);
     --btn-hover-text: var(--green-300);
 }
@@ -154,7 +154,7 @@
     --btn-border: var(--amber-700);
     --btn-text: var(--amber-400);
     --btn-shadow: var(--shadow-sm);
-    --btn-hover-bg: rgb(245 158 11 / 10%);
+    --btn-hover-bg: rgb(var(--warning-rgb) / 10%);
     --btn-hover-border: var(--amber-500);
     --btn-hover-text: var(--amber-300);
 }
@@ -173,7 +173,7 @@
 .Button__link {
     --btn-bg: transparent;
     --btn-text: var(--primary-color);
-    --btn-hover-bg: rgb(72 128 255 / 5%);
+    --btn-hover-bg: rgb(var(--info-rgb) / 5%);
     --btn-hover-text: var(--primary-hover);
     --btn-hover-y: 0;
 }
