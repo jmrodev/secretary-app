@@ -31,6 +31,11 @@
     --info-hover: #0284c7;
     --row-hover-bg: rgb(255, 255, 255, 0.04);
 
+    /* RGB channel triplets for translucent hover tints (hover audit PR2) */
+    --success-rgb: 16, 185, 129;
+    --warning-rgb: 245, 158, 11;
+    --info-rgb: 2, 132, 199;
+
     /* Gray Scale (Using Slate for a premium feel) */
     --white: #fff;
     --gray-50: #f8fafc;

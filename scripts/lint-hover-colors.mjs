@@ -49,15 +49,15 @@ for (const file of files) {
     const hoverRe = /:hover[^{]*\{([^}]*)\}/g;
     let m;
     while ((m = hoverRe.exec(text)) !== null) {
-        const colors = m[1].match(COLOR_RE);
-        if (colors) violations.push({ file, colors: colors.map((c) => c.trim()), where: ':hover' });
+        const colors = (m[1].match(COLOR_RE) || []).filter((c) => !c.includes('var('));
+        if (colors.length) violations.push({ file, colors: colors.map((c) => c.trim()), where: ':hover' });
     }
 
     // 2. Hover custom properties with a literal color (skip the token source).
     if (!isTokenSource) {
         let p;
         while ((p = HOVER_PROP_RE.exec(text)) !== null) {
-            violations.push({ file, colors: [p[2]], where: p[1] });
+            if (!p[2].includes('var(')) violations.push({ file, colors: [p[2]], where: p[1] });
         }
     }
 }
