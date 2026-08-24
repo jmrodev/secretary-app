@@ -118,7 +118,7 @@
 }
 
 .PublicRequestPage__medChip:hover {
-    border-color: var(--blue-200, #bfdbfe);
+    border-color: var(--blue-200);
 }
 
 .PublicRequestPage__medChipActive {
@@ -164,7 +164,7 @@
 }
 
 .PublicRequestPage__remove:hover {
-    color: var(--red-500, #ef4444);
+    color: var(--red-500);
 }
 
 /* Search Area */

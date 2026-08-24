@@ -90,7 +90,7 @@
 
 .Navbar__link:hover {
     color: var(--text-main);
-    background: rgb(128, 128, 128, 0.08);
+    background: var(--row-hover-bg);
     transform: translateY(-1px);
 }
 
@@ -142,7 +142,7 @@
 }
 
 .Navbar__userButton:hover {
-    background: rgb(128, 128, 128, 0.08);
+    background: var(--row-hover-bg);
 }
 
 .Navbar__dropdownOpen .Navbar__userButton {
@@ -201,7 +201,7 @@
 
 .Navbar__dropdownTrigger:hover {
     color: var(--text-main);
-    background: rgb(128, 128, 128, 0.08);
+    background: var(--row-hover-bg);
 }
 
 .Navbar__dropdownOpen .Navbar__dropdownTrigger {

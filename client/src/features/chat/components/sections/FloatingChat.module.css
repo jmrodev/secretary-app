@@ -226,7 +226,7 @@
 
 .FloatingChat__minimized:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgb(59 130 246 / 40%);
+    box-shadow: 0 6px 16px rgb(var(--accent-rgb) / 0.4);
 }
 
 .FloatingChat__badge {

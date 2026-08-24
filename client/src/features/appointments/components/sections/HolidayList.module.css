@@ -14,7 +14,7 @@
     backdrop-filter: blur(10px);
 }
 
-.HolidayList__item:hover { transform: translateX(4px); border-color: rgb(239, 68, 68, 0.4); background: rgb(239, 68, 68, 0.1); }
+.HolidayList__item:hover { transform: translateX(4px); border-color: rgb(var(--danger-rgb) / 0.4); background: rgb(var(--danger-rgb) / 0.1); }
 
 .HolidayList__info { display: flex; flex-direction: column; gap: 0.25rem; }
 
@@ -37,6 +37,6 @@
 }
 
 .HolidayList__deleteBtn:hover {
-    background-color: rgb(239, 68, 68, 0.2);
+    background-color: rgb(var(--danger-rgb) / 0.2);
     color: white;
 }

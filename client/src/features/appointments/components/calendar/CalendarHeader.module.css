@@ -36,7 +36,7 @@
 
 .CalendarHeader__navButton:hover {
     color: var(--text-main);
-    background-color: rgb(128, 128, 128, 0.08);
+    background-color: var(--row-hover-bg);
     border-color: var(--primary-color);
     transform: scale(1.05);
 }

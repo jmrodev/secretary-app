@@ -75,7 +75,7 @@
 }
 
 .InsuranceFormModal__link:hover {
-    background: rgb(72 128 255 / 20%);
+    background: rgb(var(--accent-rgb) / 0.2);
     transform: translateX(4px);
 }
 

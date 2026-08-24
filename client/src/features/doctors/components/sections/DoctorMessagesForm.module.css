@@ -160,7 +160,7 @@
 .DoctorMessagesForm__varBtn:hover {
     border-color: var(--primary-color);
     color: var(--primary-color);
-    background: rgb(2, 132, 199, 0.08);
+    background: rgb(var(--accent-rgb) / 0.08);
     transform: translateY(-1px);
 }
 

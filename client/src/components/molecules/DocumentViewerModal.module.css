@@ -57,7 +57,7 @@
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
-    background: rgb(0, 0, 0, 0.4);
+    background: rgb(var(--black-rgb) / 0.4);
     color: var(--text-main);
     border: none;
     border-radius: 50%;
@@ -71,7 +71,7 @@
 }
 
 .DocumentViewerModal__navArrow:hover {
-    background: rgb(0, 0, 0, 0.8);
+    background: rgb(var(--black-rgb) / 0.8);
     transform: translateY(-50%) scale(1.1);
 }
 

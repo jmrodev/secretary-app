@@ -115,7 +115,7 @@
 .NextSlotCalendarModal__itemOutOnly:hover,
 .NextSlotCalendarModal__itemOutOnly:focus-visible {
     opacity: 1;
-    border-color: var(--warning-color, #f59e0b);
+    border-color: var(--warning-color);
 }
 
 /* Left: date info */

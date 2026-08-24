@@ -34,9 +34,9 @@
 }
 
 .WhatsappConfig__var-btn:hover {
-    background: var(--color-primary, #2563eb);
+    background: var(--blue-600);
     color: var(--text-main);
-    border-color: var(--color-primary, #2563eb);
+    border-color: var(--blue-600);
 }
 
 .WhatsappConfig__textarea {

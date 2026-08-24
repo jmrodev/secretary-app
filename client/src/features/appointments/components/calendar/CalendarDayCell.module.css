@@ -27,7 +27,7 @@
 }
 
 .CalendarDayCell__root:hover {
-  background: rgb(128, 128, 128, 0.08) !important;
+  background: var(--row-hover-bg) !important;
   border-color: var(--primary-color) !important;
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);

@@ -329,7 +329,7 @@
 }
 
 .GlobalWhatsappMessenger__actionBtn:hover {
-    background: rgb(255 255 255 / 20%);
+    background: rgb(var(--white-rgb) / 0.2);
 }
 
 .GlobalWhatsappMessenger__chatContent {
@@ -395,8 +395,8 @@
 }
 
 .GlobalWhatsappMessenger__tab:hover {
-    color: #075e54;
-    background: rgb(7 94 84 / 5%);
+    color: var(--teal-700);
+    background: rgb(var(--teal-700-rgb) / 0.05);
 }
 
 .GlobalWhatsappMessenger__tabActive {
@@ -438,7 +438,7 @@
     --btn-bg: rgb(255 255 255 / 13%);
     --btn-border: rgb(255 255 255 / 27%);
     --btn-text: var(--white);
-    --btn-hover-bg: rgb(255 255 255 / 27%);
+    --btn-hover-bg: rgb(var(--white-rgb) / 0.27);
 
     font-weight: 600;
     border-radius: 20px;

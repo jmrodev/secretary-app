@@ -16,7 +16,7 @@
 
 .Tooltip__root:hover .Tooltip__icon {
     opacity: 1;
-    color: var(--blue-600, #2563eb);
+    color: var(--blue-600);
 }
 
 .Tooltip__content {

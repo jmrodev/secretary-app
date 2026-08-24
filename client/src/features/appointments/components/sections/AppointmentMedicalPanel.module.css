@@ -14,7 +14,7 @@
 }
 
 .AppointmentMedicalPanel__root:hover {
-    background-color: rgb(59 130 246 / 8%);
+    background-color: rgb(var(--accent-rgb) / 0.08);
     box-shadow: var(--shadow-md);
 }
 

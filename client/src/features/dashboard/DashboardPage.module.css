@@ -28,7 +28,7 @@
 
 .DashboardPage__bentoCard:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgb(0, 0, 0, 0.05); /* Nordic soft hover shadow */
+    box-shadow: 0 4px 16px rgb(var(--black-rgb) / 0.05); /* Nordic soft hover shadow */
     border-color: var(--border-color);
 }
 

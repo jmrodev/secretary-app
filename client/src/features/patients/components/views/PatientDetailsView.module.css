@@ -66,7 +66,7 @@
 
 .PatientDetailsView__tabLink:hover {
     color: var(--primary-color);
-    background-color: rgb(128, 128, 128, 0.08);
+    background-color: var(--row-hover-bg);
 }
 
 .PatientDetailsView__tabLinkActive {
@@ -304,7 +304,7 @@
 }
 
 .PatientDetailsView__historyRow:hover {
-    background-color: rgb(128, 128, 128, 0.08);
+    background-color: var(--row-hover-bg);
 }
 
 .PatientDetailsView__historyCell {

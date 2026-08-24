@@ -63,7 +63,7 @@
 }
 
 .ScheduleTimeline__root::-webkit-scrollbar-thumb:hover {
-    background: rgb(128, 128, 128, 0.3);
+    background: rgb(var(--black-rgb) / 0.3);
 }
 
 /* --- Available / Empty Slot Card --- */
@@ -88,7 +88,7 @@
 .ScheduleTimeline__availableCard:hover {
     border-style: solid;
     border-color: var(--primary-color);
-    background: rgb(128, 128, 128, 0.05);
+    background: var(--row-hover-bg);
     transform: translateX(4px);
     box-shadow: var(--shadow-sm);
 }
@@ -147,7 +147,7 @@
 
 .ScheduleTimeline__availableClosed:hover {
     transform: none;
-    background: rgb(239, 68, 68, 0.05);
+    background: rgb(var(--danger-rgb) / 0.05);
     border-color: var(--danger);
     box-shadow: none;
 }

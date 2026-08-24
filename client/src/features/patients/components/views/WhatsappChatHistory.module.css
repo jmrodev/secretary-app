@@ -232,7 +232,7 @@
 
 .WhatsappChatHistory__aiBtn:hover:not(:disabled) {
     transform: scale(1.1) rotate(5deg);
-    box-shadow: 0 6px 15px rgb(74 0 224 / 40%);
+    box-shadow: 0 6px 15px rgb(var(--accent-rgb) / 0.4);
 }
 
 .WhatsappChatHistory__aiBtn:disabled {
@@ -267,7 +267,7 @@
 }
 
 .WhatsappChatHistory__sendBtn:hover:not(:disabled) {
-    background: #128c7e;
+    background: var(--teal-700);
     transform: translateY(-2px);
 }
 

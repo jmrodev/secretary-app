@@ -36,6 +36,9 @@
     --success-rgb: 16, 185, 129;
     --warning-rgb: 245, 158, 11;
     --info-rgb: 2, 132, 199;
+    --white-rgb: 255, 255, 255;
+    --black-rgb: 0, 0, 0;
+    --teal-700-rgb: 15, 118, 110;
 
     /* Gray Scale (Using Slate for a premium feel) */
     --white: #fff;

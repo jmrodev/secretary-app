@@ -17,7 +17,7 @@
 
 .ScheduleTimeBlock__container:hover {
     border-color: var(--primary-color);
-    background-color: rgb(128, 128, 128, 0.08);
+    background-color: var(--row-hover-bg);
 }
 
 .ScheduleTimeBlock__inputs {
@@ -93,7 +93,7 @@
 
 .ScheduleTimeBlock__remove:hover {
     color: var(--danger) !important;
-    background-color: rgb(249 55 93 / 10%) !important;
+    background-color: rgb(var(--danger-rgb) / 10%) !important;
 }
 
 @keyframes fade-in-up {

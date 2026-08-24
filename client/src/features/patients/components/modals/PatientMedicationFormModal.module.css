@@ -104,7 +104,7 @@
 }
 
 .PatientMedicationFormModal__dropdownItem:hover {
-    background: var(--primary-light, #e8f0fe);
+    background: var(--blue-50);
 }
 
 .PatientMedicationFormModal__itemTitle {

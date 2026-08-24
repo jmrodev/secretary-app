@@ -45,7 +45,7 @@
 }
 
 .VariantPreview__card:hover {
-    border-color: rgb(255 255 255 / 20%);
+    border-color: rgb(var(--white-rgb) / 0.2);
     box-shadow: 0 4px 12px var(--background-bg);
 }
 

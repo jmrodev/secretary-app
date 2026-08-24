@@ -40,7 +40,7 @@
 }
 
 .FinanceStatsCards__card:hover {
-    box-shadow: 0 8px 24px rgb(15, 23, 42, 0.12);
+    box-shadow: 0 8px 24px rgb(var(--black-rgb) / 0.12);
 }
 
 .FinanceStatsCards__title {

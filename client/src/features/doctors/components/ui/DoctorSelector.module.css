@@ -21,7 +21,7 @@
 }
 
 .DoctorSelector__trigger:hover {
-    background: rgb(128, 128, 128, 0.08);
+    background: var(--row-hover-bg);
     border-color: var(--primary-color);
 }
 
@@ -116,7 +116,7 @@
 }
 
 .DoctorSelector__option:hover {
-    background: rgb(128, 128, 128, 0.08);
+    background: var(--row-hover-bg);
     color: var(--text-main);
 }
 
