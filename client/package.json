@@ -9,6 +9,7 @@
     "lint": "pnpm lint:css && oxlint . && react-doctor -y --lint --fail-on=none . && eslint .",
     "lint:fix": "pnpm lint:css --fix && oxlint . --fix && eslint . --fix",
     "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:hover-colors": "node ../scripts/lint-hover-colors.mjs src",
     "doctor": "react-doctor",
     "doctor:report": "react-doctor --json . > reports/doctor-report.json",
     "preview": "vite preview",

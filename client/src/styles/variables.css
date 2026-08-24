@@ -23,6 +23,14 @@
     --success: #10b981;
     --warning: #f59e0b;
 
+    /* Hover tokens for interactive states (hover audit PR1) */
+    --success-hover: #059669;
+    --danger-hover: #dc2626;
+    --warning-hover: #d97706;
+    --info: #0ea5e9;
+    --info-hover: #0284c7;
+    --row-hover-bg: rgb(255, 255, 255, 0.04);
+
     /* Gray Scale (Using Slate for a premium feel) */
     --white: #fff;
     --gray-50: #f8fafc;
@@ -196,6 +204,14 @@
     --navbar-bg: #fff;
     --navbar-border: #cbd5e1;
     --navbar-link-color: #1e293b;
+
+    /* Hover tokens for interactive states (hover audit PR1) */
+    --success-hover: #059669;
+    --danger-hover: #dc2626;
+    --warning-hover: #d97706;
+    --info: #0ea5e9;
+    --info-hover: #0369a1;
+    --row-hover-bg: rgb(15, 23, 42, 0.04);
     --tab-nav-bg: #e2e8f0;
     --card-surface-bg: #f1f5f9;   /* interior claro de cards */
     --card-hover-bg: #e2e8f0;     /* hover claro de cards */
@@ -226,4 +242,12 @@
     --tab-nav-bg: #334155;
     --card-surface-bg: #1e293b;   /* interior de cards (dim) */
     --card-hover-bg: #334155;     /* hover de cards (dim) */
+
+    /* Hover tokens for interactive states (hover audit PR1) */
+    --success-hover: #059669;
+    --danger-hover: #dc2626;
+    --warning-hover: #d97706;
+    --info: #38bdf8;
+    --info-hover: #0ea5e9;
+    --row-hover-bg: rgb(255, 255, 255, 0.06);
 }
