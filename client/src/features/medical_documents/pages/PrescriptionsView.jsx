@@ -3,10 +3,11 @@ import { usePrescriptionsController } from '../hooks/usePrescriptionsController'
 import { MedicalHistoryTable } from '../components/lists/MedicalHistoryTable';
 import { EditPrescriptionModal } from '../components/modals/EditPrescriptionModal';
 import { MedicalRequestForm } from '../components/forms/MedicalRequestForm';
-import { PatientSearchSelect } from '@/features/patients';
+import { PatientSearchSelect } from '@/features/patients/components/ui/PatientSearchSelect';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import styles from '../MedicalDocumentsPage.module.css';
 
 export const PrescriptionsView = () => {
     const controller = usePrescriptionsController();
@@ -25,7 +26,7 @@ export const PrescriptionsView = () => {
 
     return (
         <article className={`medical-documents__prescriptions-layout`}>
-            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <div className={styles.MedicalDocumentsPage__actionHeader}>
                 <Button variant="primary" onClick={() => setIsCreating(true)} icon={<Icon name="add" />}>
                     {getNewButtonLabel()}
                 </Button>

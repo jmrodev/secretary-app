@@ -1,1 +1,0 @@
-export { WhatsappPage } from './WhatsappPage';

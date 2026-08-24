@@ -2,7 +2,9 @@ import React from 'react';
 import { formatDate } from '@/utils/core/dateUtils';
 
 // Molecules
-import { BalanceFinancialSummary, BalanceCashFlowTable, BalanceDebtsTable } from '@/features/finances';
+import { BalanceFinancialSummary } from '@/features/finances/components/sections/BalanceFinancialSummary';
+import { BalanceCashFlowTable } from '@/features/finances/components/tables/BalanceCashFlowTable';
+import { BalanceDebtsTable } from '@/features/finances/components/tables/BalanceDebtsTable';
 
 import styles from './BalanceView.module.css';
 

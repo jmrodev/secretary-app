@@ -1,6 +1,6 @@
 import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useModal } from '@/context/ModalContext';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
@@ -102,7 +102,9 @@ export const useWhatsAppUniversal = (doctors) => {
             try {
                 const res = await api.get('/whatsapp/status');
                 bridgeConnected = res.data?.status === 'connected';
-            } catch { /* ignore — treat as offline */ }
+            } catch (err) {
+                console.warn('[useWhatsAppUniversal] WhatsApp status check failed, assuming offline:', err);
+            }
 
             if (bridgeConnected) {
                 window.dispatchEvent(new CustomEvent('whatsapp:open-chat', {

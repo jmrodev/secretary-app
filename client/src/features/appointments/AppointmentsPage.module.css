@@ -225,3 +225,7 @@
         flex-direction: column;
     }
 }
+
+.AppointmentsPage__actionSlotWrapper {
+    position: relative;
+}

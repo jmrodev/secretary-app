@@ -14,11 +14,14 @@ import { AppointmentsModals } from './components/sections/AppointmentsModals';
 import { SlotExplorerDropdown } from './components/ui/SlotExplorerDropdown';
 
 // Shared/Domain Modals (Injectable slots)
-import { PrescriptionModal, MedicationInput } from '@/features/medical_documents';
-import { PatientHistoryModal, PatientManagerModal, PatientSearchSelect } from '@/features/patients';
+import { PrescriptionModal } from '@/features/medical_documents/components/modals/PrescriptionModal';
+import { MedicationInput } from '@/features/medical_documents/components/forms/MedicationInput';
+import { PatientHistoryModal } from '@/features/patients/components/modals/PatientHistoryModal';
+import { PatientManagerModal } from '@/features/patients/components/modals/PatientManagerModal';
+import { PatientSearchSelect } from '@/features/patients/components/ui/PatientSearchSelect';
 import { WhatsAppModal } from '@/features/chat/components/ui/WhatsAppModal';
 import { AdminAuthModal } from '@/features/auth/components/modals/AdminAuthModal';
-import { TransactionModal } from '@/features/finances';
+import { TransactionModal } from '@/features/finances/components/modals/TransactionModal';
 
 import styles from './AppointmentsPage.module.css';
 
@@ -54,7 +57,7 @@ export const AppointmentsPage = () => {
             wide flush 
             title={t('appointments_title')} 
             actionSlot={
-                <div style={{ position: 'relative' }}>
+                <div className={styles.AppointmentsPage__actionSlotWrapper}>
                     <Button 
                         variant="accent" 
                         size="sm" 

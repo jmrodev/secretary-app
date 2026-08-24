@@ -2,7 +2,7 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Pagination } from '@/components/atoms/Pagination';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import { timeAgo, formatDate } from '@/utils/core/dateUtils';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';

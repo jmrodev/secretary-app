@@ -1,5 +1,5 @@
 import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import {
     listPending,
     acceptPending as acceptPendingRequest,

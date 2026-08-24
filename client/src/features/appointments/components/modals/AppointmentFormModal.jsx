@@ -3,7 +3,7 @@ import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 
 import { AppointmentSyncAlert } from '../ui/AppointmentSyncAlert.jsx';
 import { AppointmentFormFields } from '../sections/AppointmentFormFields.jsx';

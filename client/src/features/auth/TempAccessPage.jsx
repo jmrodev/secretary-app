@@ -1,5 +1,6 @@
 import React from 'react';
-import { PatientForm, usePatientFormController } from '@/features/patients';
+import { PatientForm } from '@/features/patients/components/forms/PatientForm';
+import { usePatientFormController } from '@/features/patients/hooks/usePatientFormController';
 import { StatusDisplay } from '@/components/molecules/StatusDisplay';
 import { useTempAccessController } from '@/features/users/hooks/useTempAccessController';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -64,10 +65,10 @@ export const TempAccessPage = () => {
             <article className={`${styles.TempAccessPage__card}`}>
                     <header className={`${styles.TempAccessPage__header}`}>
                         <h1 className={`${styles.TempAccessPage__title}`}>
-                            {isNew ? 'Registro de Paciente' : 'Actualizar mis Datos'}
+                            {isNew ? (t('patient_registration') || 'Registro de Paciente') : (t('update_my_data') || 'Actualizar mis Datos')}
                         </h1>
                         <p className={`${styles.TempAccessPage__subtitle}`}>
-                            Por favor completa los siguientes campos para continuar.
+                            {t('temp_access_instruction') || 'Por favor completa los siguientes campos para continuar.'}
                         </p>
                     </header>
 
@@ -88,7 +89,7 @@ export const TempAccessPage = () => {
                             {t('mobile_app')}
                         </h4>
                         <p className={`${styles.TempAccessPage__downloadText}`}>
-                            Descarga nuestra aplicación para gestionar tus turnos y recetas más rápido.
+                            {t('temp_access_download_desc') || 'Descarga nuestra aplicación para gestionar tus turnos y recetas más rápido.'}
                         </p>
                     </div>
                     <Button

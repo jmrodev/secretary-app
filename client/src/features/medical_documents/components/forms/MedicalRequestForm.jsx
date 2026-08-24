@@ -1,6 +1,6 @@
 import React from 'react';
 import { isDueSoon } from '@/utils/core/dateUtils';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import { Card } from '@/components/atoms/Card';
@@ -9,7 +9,7 @@ import { Select } from '@/components/atoms/Select';
 import { Icon } from '@/components/atoms/Icon';
 import { Badge } from '@/components/atoms/Badge';
 import { formatDate } from '@/utils/core/dateUtils';
-import { PatientSearchSelect as DefaultPatientSearchSelect } from '@/features/patients';
+import { PatientSearchSelect as DefaultPatientSearchSelect } from '@/features/patients/components/ui/PatientSearchSelect';
 import styles from './MedicalRequestForm.module.css';
 
 // Hooks
@@ -125,7 +125,7 @@ export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, loc
                         onChange={e => setSendToDoctor(e.target.checked)}
                     />
                     <label htmlFor="req-forward" className={styles.MedicalRequestForm__panelLabel}>
-                        {t('send_to_doctor') === 'send_to_doctor' ? 'Enviar a revisión médica' : t('send_to_doctor')}
+                        {t('send_to_doctor') || 'Enviar a revisión médica'}
                     </label>
                 </div>
 
@@ -138,7 +138,7 @@ export const MedicalRequestForm = ({ doctors, onRequestCreated, initialType, loc
                         onChange={e => setBonified(e.target.checked)}
                     />
                     <label htmlFor="bonified-req" className={styles.MedicalRequestForm__panelLabel}>
-                        {t('bonified_request') === 'bonified_request' ? 'Solicitud Bonificada' : t('bonified_request')}
+                        {t('bonified_request') || 'Solicitud Bonificada'}
                     </label>
                 </div>
             </div>

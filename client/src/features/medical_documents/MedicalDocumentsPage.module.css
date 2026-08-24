@@ -237,3 +237,9 @@
     min-height: 400px;
     position: relative;
 }
+
+.MedicalDocumentsPage__actionHeader {
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}

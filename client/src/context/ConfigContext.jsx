@@ -1,5 +1,5 @@
 import { createContext, use } from 'react';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useConfigLogic } from '@/context/useConfigLogic';
 
 const defaultContextValue = {

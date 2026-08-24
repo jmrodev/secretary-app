@@ -6,7 +6,7 @@ import { App } from '@/App';
 // global stylesheet (tokens, resets, theme variables). Component styles live
 // in *.module.css; only this root file and App.css are global on purpose.
 import './index.css';
-import { AuthProvider } from '@/features/auth';
+import { AuthProvider } from '@/features/auth/AuthContext';
 import { MessageProvider } from '@/context/MessageContext';
 import { ConfigProvider } from '@/context/ConfigContext';
 

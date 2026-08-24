@@ -3,7 +3,7 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
-import { useAppointments } from '@/features/appointments';
+import { useAppointments } from '@/features/appointments/hooks/useAppointments';
 import { api } from '@/api/axios';
 
 import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats';
