@@ -19,7 +19,6 @@
     padding: 1rem;
     box-shadow: 0 2px 8px rgb(0, 0, 0, 0.03); /* Soft subtle shadow */
     overflow: hidden;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
     display: flex;
     flex-direction: column;
     min-height: 0;
