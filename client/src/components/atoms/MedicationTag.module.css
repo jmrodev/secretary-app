@@ -15,12 +15,6 @@
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.MedicationTag__root:hover {
-  border-color: var(--blue-300);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-}
-
 .MedicationTag__label {
   font-weight: 500;
   line-height: 1.2;

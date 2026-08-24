@@ -15,12 +15,6 @@
     min-width: 0;
 }
 
-.CashMonitorCard__root:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-    border-color: var(--border-color);
-}
-
 .CashMonitorCard__header {
     display: flex;
     align-items: center;
