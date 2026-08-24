@@ -39,7 +39,7 @@
 }
 
 .PatientList__row:hover {
-    background-color: rgb(128, 128, 128, 0.06);
+    background-color: var(--row-hover-bg);
 }
 
 .PatientList__table td {

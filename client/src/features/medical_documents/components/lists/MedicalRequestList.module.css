@@ -10,7 +10,7 @@
     --requests-bg: var(--dashboard-card-bg);
     --requests-border: var(--border-color);
     --requests-header-bg: var(--dashboard-card-bg);
-    --requests-row-hover: rgb(128, 128, 128, 0.08);
+    --requests-row-hover: var(--row-hover-bg);
     --type-rx-bg: var(--blue-100);
     --type-rx-text: var(--blue-700);
     --type-lic-bg: var(--amber-100);
@@ -264,12 +264,12 @@
 }
 
 .MedicalRequestList__actionBtnPay {
-    background-color: #15803d !important;
+    background-color: var(--green-700) !important;
     color: var(--text-main) !important;
 }
 
 .MedicalRequestList__actionBtnPay:hover {
-    background-color: #166534 !important;
+    background-color: var(--green-800) !important;
 }
 
 .MedicalRequestList__actionBtnBonify {
@@ -278,7 +278,7 @@
 }
 
 .MedicalRequestList__actionBtnBonify:hover {
-    background-color: #0369a1 !important;
+    background-color: var(--sky-700) !important;
 }
 
 .MedicalRequestList__actionBtnDone {
@@ -287,7 +287,7 @@
 }
 
 .MedicalRequestList__actionBtnDone:hover {
-    background-color: #15803d !important;
+    background-color: var(--green-700) !important;
 }
 
 .MedicalRequestList__actionBtnReject {
@@ -296,7 +296,7 @@
 }
 
 .MedicalRequestList__actionBtnReject:hover {
-    background-color: #b91c1c !important;
+    background-color: var(--red-700) !important;
 }
 
 .MedicalRequestList__actionBtnView {
@@ -305,7 +305,7 @@
 }
 
 .MedicalRequestList__actionBtnView:hover {
-    background-color: #4f46e5 !important;
+    background-color: var(--indigo-600) !important;
 }
 
 .MedicalRequestList__actionBtnEdit {
@@ -318,12 +318,12 @@
 }
 
 .MedicalRequestList__actionBtnDelete {
-    background-color: #b91c1c !important;
+    background-color: var(--red-700) !important;
     color: var(--text-main) !important;
 }
 
 .MedicalRequestList__actionBtnDelete:hover {
-    background-color: #991b1b !important;
+    background-color: var(--red-800) !important;
 }
 
 .MedicalRequestList__empty {
