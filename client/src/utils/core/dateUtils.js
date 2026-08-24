@@ -158,9 +158,9 @@ export const getArgentineNowISO = () => {
  * @param {string|Date} date 
  * @param {Object} options - { time: boolean, weekday: boolean, monthName: boolean, hideYear: boolean }
  */
-export const formatDate = (date, options = {}) => {
+export const formatDate = (date, options = {}, t = null) => {
     const d = parseDate(date);
-    if (!d) return options.fallback || 'N/A';
+    if (!d) return options.fallback || (t ? t('not_available') : 'N/A');
 
     const locale = options.locale || 'es-AR';
     const opts = {
@@ -275,9 +275,9 @@ export const toInputDate = (date) => {
  * Formats a date with full time and AM/PM (e.g. "20/02/2026 06:54 a. m.")
  * @param {string|Date} date 
  */
-export const formatDateTimeLong = (date) => {
+export const formatDateTimeLong = (date, t = null) => {
     const d = parseDate(date);
-    if (!d) return 'N/A';
+    if (!d) return t ? t('not_available') : 'N/A';
     return d.toLocaleString(undefined, {
         day: '2-digit',
         month: '2-digit',
@@ -305,29 +305,30 @@ export const isDueSoon = (date, days = 2) => {
  * Returns a "time ago" string from a date.
  * e.g. "hace 2 horas", "hace 5 min", "Justo ahora"
  */
-export const timeAgo = (date) => {
+export const timeAgo = (date, t = null) => {
     const d = parseDate(date);
     if (!d) return '';
     const diffMs = getNow() - d;
+    const translate = (key, fallback) => (t ? t(key) : fallback);
 
     const seconds = Math.floor(diffMs / 1000);
-    if (seconds < 60) return 'Justo ahora';
+    if (seconds < 60) return translate('just_now', 'Justo ahora');
 
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `hace ${minutes} ${minutes === 1 ? 'min' : 'mins'}`;
+    if (minutes < 60) return `${translate('ago', 'hace')} ${minutes} ${minutes === 1 ? translate('min', 'min') : translate('mins', 'mins')}`;
 
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `hace ${hours} ${hours === 1 ? 'hora' : 'horas'}`;
+    if (hours < 24) return `${translate('ago', 'hace')} ${hours} ${hours === 1 ? translate('hour', 'hora') : translate('hours', 'horas')}`;
 
     const days = Math.floor(hours / 24);
-    if (days < 7) return `hace ${days} ${days === 1 ? 'día' : 'días'}`;
+    if (days < 7) return `${translate('ago', 'hace')} ${days} ${days === 1 ? translate('day', 'día') : translate('days', 'días')}`;
 
     const weeks = Math.floor(days / 7);
-    if (weeks < 5) return `hace ${weeks} ${weeks === 1 ? 'semana' : 'semanas'}`;
+    if (weeks < 5) return `${translate('ago', 'hace')} ${weeks} ${weeks === 1 ? translate('week', 'semana') : translate('weeks', 'semanas')}`;
 
     const months = Math.floor(days / 30);
-    if (months < 12) return `hace ${months} ${months === 1 ? 'mes' : 'meses'}`;
+    if (months < 12) return `${translate('ago', 'hace')} ${months} ${months === 1 ? translate('month', 'mes') : translate('months', 'meses')}`;
 
     const years = Math.floor(days / 365);
-    return `hace ${years} ${years === 1 ? 'año' : 'años'}`;
+    return `${translate('ago', 'hace')} ${years} ${years === 1 ? translate('year', 'año') : translate('years', 'años')}`;
 };

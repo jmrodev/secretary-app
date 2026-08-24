@@ -7,8 +7,9 @@ import { getServiceTypes } from '@/constants/transactionOptions';
 import { capitalizeFirst } from '@/utils/core/stringUtils';
 import { toInputDateTime, getNow } from '@/utils/core/dateUtils';
 
-const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0) => {
+const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0, t = null) => {
     if (!appt) return '';
+    const translate = (key, fallback) => (t ? t(key) : fallback);
     const formatTime = (ts) => {
         if (!ts) return null;
         try {
@@ -16,16 +17,17 @@ const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0) => {
             if (isNaN(d.getTime())) return null;
             return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         } catch (e) {
+            console.error('[useTransactionForm] formatTime failed:', e);
             return null;
         }
     };
 
     const milestones = [];
-    if (appt.created_at) milestones.push(`Creado: ${formatTime(appt.created_at)}`);
-    if (appt.confirmed_at) milestones.push(`Conf: ${formatTime(appt.confirmed_at)}`);
-    if (appt.arrived_at) milestones.push(`Sala: ${formatTime(appt.arrived_at)}`);
-    if (appt.completed_at) milestones.push(`Atendido: ${formatTime(appt.completed_at)}`);
-    if (appt.paid_at) milestones.push(`Pagado: ${formatTime(appt.paid_at)}`);
+    if (appt.created_at) milestones.push(`${translate('created', 'Creado')}: ${formatTime(appt.created_at)}`);
+    if (appt.confirmed_at) milestones.push(`${translate('confirmed', 'Conf')}: ${formatTime(appt.confirmed_at)}`);
+    if (appt.arrived_at) milestones.push(`${translate('arrived', 'Sala')}: ${formatTime(appt.arrived_at)}`);
+    if (appt.completed_at) milestones.push(`${translate('completed', 'Atendido')}: ${formatTime(appt.completed_at)}`);
+    if (appt.paid_at) milestones.push(`${translate('paid', 'Pagado')}: ${formatTime(appt.paid_at)}`);
 
     const totalCost = Number(appt.cost) || 0;
     const prevPaid = Number(appt.paid_amount) || 0;
@@ -34,14 +36,14 @@ const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0) => {
     const saldoTurno = Math.max(0, totalCost - totalCobrado);
 
     const name = patientName || appt.patient_name || appt.full_name || '';
-    let desc = `Turno - ${name}`;
+    let desc = `${translate('appointment', 'Turno')} - ${name}`;
     if (milestones.length > 0) {
-        desc += ` | Hitos: ${milestones.join(', ')}`;
+        desc += ` | ${translate('milestones', 'Hitos')}: ${milestones.join(', ')}`;
     } else if (appt.appointment_date) {
         desc += ` - ${new Date(appt.appointment_date).toLocaleDateString()}`;
     }
 
-    desc += ` | Total: $${totalCost} | Cobrado: $${totalCobrado} | Saldo: $${saldoTurno}`;
+    desc += ` | ${translate('total', 'Total')}: $${totalCost} | ${translate('charged', 'Cobrado')}: $${totalCobrado} | ${translate('balance', 'Saldo')}: $${saldoTurno}`;
     return desc;
 };
 
@@ -127,7 +129,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
         let initialDescription = data.description || '';
         if (data.appointment) {
-            initialDescription = generateAppointmentBitacora(data.appointment, data.patientName, data.amount !== undefined ? data.amount : 0);
+            initialDescription = generateAppointmentBitacora(data.appointment, data.patientName, data.amount !== undefined ? data.amount : 0, t);
         }
 
         const newFormState = {
@@ -144,7 +146,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         };
 
         if (initialServiceType === 'virtual_consultation' && (!newFormState.description || newFormState.description.includes('Payment for appointment'))) {
-            newFormState.description = `Consulta Virtual: ${data.patientName || ''}`;
+            newFormState.description = `${t('virtual_consultation') || 'Consulta Virtual'}: ${data.patientName || ''}`;
         }
 
         setFormData(newFormState);

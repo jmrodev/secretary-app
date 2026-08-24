@@ -4,7 +4,7 @@ export const getPaymentMethods = (t) => [
     { value: 'debit', label: t('debit') || 'Débito' },
     { value: 'credit', label: t('credit') || 'Crédito' },
     { value: 'transfer', label: t('transfer') || 'Transferencia' },
-    { value: 'mercadopago', label: 'MercadoPago' }
+    { value: 'mercadopago', label: t('mercadopago') || 'MercadoPago' }
 ];
 
 export const getServiceTypes = (t) => [

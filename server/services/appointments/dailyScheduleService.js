@@ -145,7 +145,7 @@ class DailyScheduleService {
                         doctor_id: Number(doctorId),
                         doctor_name: appt.doctor_name,
                         patient_id: appt.patient_id,
-                        patient_name: appt.patient_name || (appt.reason ? `(Sin Paciente) ${appt.reason}` : 'Desconocido'),
+                        patient_name: appt.patient_name || null,
                         patient_phone: appt.patient_phone || '-',
                         status: appt.status,
                         reason: appt.reason || '-',

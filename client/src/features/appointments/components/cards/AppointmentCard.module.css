@@ -178,6 +178,12 @@
 .AppointmentCard__paymentInfoDebt { color: #dc2626; }
 .AppointmentCard__paymentInfoBonified { color: #0284c7; }
 
+.AppointmentCard__paymentResto {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    margin-right: 0.2rem;
+}
+
 /* --- Skeleton Loading State --- */
 .AppointmentCard__skeleton {
     cursor: default;

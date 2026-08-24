@@ -30,9 +30,10 @@ export const PendingApprovalProvider = ({ children }) => {
             const items = await listPending();
             setPendingItems(items);
         } catch (error) {
-            // Silently swallow expected auth/404 errors during initial render/polling when unauthenticated or feature inactive
             if (error.response?.status !== 404 && error.response?.status !== 403) {
                 console.error('[PendingApprovalContext] Error fetching pending bookings:', error);
+            } else {
+                console.debug(`[PendingApprovalContext] Suppressed status ${error.response?.status} during initial render/polling`);
             }
         } finally {
             setLoading(false);

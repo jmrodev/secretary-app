@@ -14,7 +14,7 @@ const mapAppointment = (a) => ({
     doctor_id: a.doctor_id,
     doctor_name: a.doctor_name,
     patient_id: a.patient_id,
-    patient_name: a.patient_name || (a.reason ? `(Sin Paciente) ${a.reason}` : 'Desconocido'),
+    patient_name: a.patient_name || null,
     patient_phone: a.patient_phone || a.phone || '-',
     status: a.status,
     reason: a.reason || '-',

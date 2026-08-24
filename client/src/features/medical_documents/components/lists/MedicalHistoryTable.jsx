@@ -47,12 +47,14 @@ export const MedicalHistoryTable = ({
                                 <td className={`${styles.MedicalHistoryTable__td}`}>
                                     <div className={`${styles.MedicalHistoryTable__dateCell}`}>
                                         <span className={`${styles.MedicalHistoryTable__date}`}>{formatDate(item.appointment_date || item.created_at)}</span>
-                                        <span className={`${styles.MedicalHistoryTable__timeAgo}`}>{timeAgo(item.appointment_date || item.created_at)}</span>
+                                        <span className={`${styles.MedicalHistoryTable__timeAgo}`}>{timeAgo(item.appointment_date || item.created_at, t)}</span>
                                     </div>
                                 </td>
                                 <td className={`${styles.MedicalHistoryTable__td}`}>
                                     <div className={`${styles.MedicalHistoryTable__patientCell}`}>
-                                        <span className={`${styles.MedicalHistoryTable__patientName}`}>{item.patient_name}</span>
+                                        <span className={`${styles.MedicalHistoryTable__patientName}`}>
+                                            {item.patient_name || (item.reason ? `${t('no_patient') || 'Sin Paciente'} (${item.reason})` : (t('unknown') || 'Desconocido'))}
+                                        </span>
                                         {item._origin === 'request' && (
                                             <span
                                                 className={`${styles.MedicalHistoryTable__originTag} ${styles.MedicalHistoryTable__originTagClickable}`}
@@ -78,7 +80,7 @@ export const MedicalHistoryTable = ({
                                     </div>
                                 </td>
                                 <td className={`${styles.MedicalHistoryTable__td}`}>
-                                    <div className={`${styles.MedicalHistoryTable__doctorName}`}>Dr. {item.doctor_name}</div>
+                                    <div className={`${styles.MedicalHistoryTable__doctorName}`}>{t('dr') || 'Dr.'} {item.doctor_name}</div>
                                 </td>
                                 <td className={`${styles.MedicalHistoryTable__td}`}>
                                     <div className={`${styles.MedicalHistoryTable__actions}`}>

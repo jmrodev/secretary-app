@@ -31,14 +31,14 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
         return (
             <div className={`${styles.AppointmentCard__root} ${styles.AppointmentCard__skeleton}`}>
                 <div className={`${styles.AppointmentCard__info}`}>
-                    <div className={`${styles.AppointmentCard__patientName}`}>Loading…</div>
+                    <div className={`${styles.AppointmentCard__patientName}`}>{t('loading') || 'Loading…'}</div>
                     <div className={`${styles.AppointmentCard__details}`}>
-                        <span className={`${styles.timeLine}`}>00:00</span>
-                        <span className={`${styles.AppointmentCard__doctor}`}>Loading details…</span>
+                        <span className={`${styles.timeLine}`}>{t('placeholder_time') || '00:00'}</span>
+                        <span className={`${styles.AppointmentCard__doctor}`}>{t('loading_details') || 'Loading details…'}</span>
                     </div>
                 </div>
                 <div className={`${styles.AppointmentCard__status}`}>
-                    <div className={`${styles.AppointmentCard__statusChip}`}>…</div>
+                    <div className={`${styles.AppointmentCard__statusChip}`}>{t('loading_status') || '…'}</div>
                 </div>
             </div>
         );
@@ -79,7 +79,8 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
                     {appt.type === 'virtual' && <Icon name="videocam" size="1.1rem" />}
                     <div className={`${styles.AppointmentCard__patientNameText}`}>
                         {(() => {
-                            const parts = (appt.patient_name || 'S/N').split(' ').filter(Boolean);
+                            const nameString = appt.patient_name || (appt.reason ? `${t('no_patient') || 'Sin Paciente'} (${appt.reason})` : (t('unknown') || 'Desconocido'));
+                            const parts = nameString.split(' ').filter(Boolean);
                             if (parts.length === 1) {
                                 return <span className={styles.AppointmentCard__surname}>{parts[0]}</span>;
                             }
@@ -155,23 +156,23 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
                         colorModifier = 'paid';
                         amountToDisplay = paid;
                         statusIcon = <Icon name="check_circle" className={styles.paymentIcon} />;
-                        titleTooltip = `Pagado totalmente: $${paid}`;
+                        titleTooltip = `${t('fully_paid') || 'Pagado totalmente'}: $${paid}`;
                     } else if (paid > 0 && paid < effectiveTotal) {
                         // Pago Parcial: Mostrar el saldo restante en rojo adeudado
                         colorModifier = 'debt';
                         const remaining = effectiveTotal - paid;
                         amountToDisplay = remaining;
                         statusIcon = <Icon name="error" className={styles.paymentIcon} />;
-                        titleTooltip = `Pago parcial: Cobrado $${paid} de $${effectiveTotal}. Saldo adeudado: $${remaining}`;
+                        titleTooltip = `${t('partial_payment') || 'Pago parcial'}: ${t('collected') || 'Cobrado'} $${paid} ${t('of') || 'de'} $${effectiveTotal}. ${t('balance_due') || 'Saldo adeudado'}: $${remaining}`;
                     } else if (!isAttended) {
                         colorModifier = 'pending';
                         statusIcon = <Icon name="payments" className={styles.paymentIcon} />;
-                        titleTooltip = `Pendiente de cobro: $${effectiveTotal}`;
+                        titleTooltip = `${t('pending_payment') || 'Pendiente de cobro'}: $${effectiveTotal}`;
                     } else if (pending > 0 || (!hasTransactions && cost > 0)) {
                         colorModifier = 'debt';
                         amountToDisplay = pending > 0 ? pending : cost;
                         statusIcon = <Icon name="error" className={styles.paymentIcon} />;
-                        titleTooltip = `Deuda pendiente: $${amountToDisplay}`;
+                        titleTooltip = `${t('pending_debt') || 'Deuda pendiente'}: $${amountToDisplay}`;
                     }
 
                     if (amountToDisplay === 0 && appt.payment_status !== 'paid') return null;
@@ -182,8 +183,8 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
                             title={titleTooltip}
                         >
                             {paid > 0 && paid < effectiveTotal && (
-                                <span style={{ fontSize: '0.75rem', opacity: 0.85, marginRight: '0.2rem' }}>
-                                    (Resto)
+                                <span className={styles.AppointmentCard__paymentResto}>
+                                    ({t('resto') || 'Resto'})
                                 </span>
                             )}
                             <span>{formatCurrency(amountToDisplay)}</span>
