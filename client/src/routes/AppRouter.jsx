@@ -8,36 +8,36 @@ import { Loading } from '@/components/atoms/Loading';
 
 // Features (Orchestrators) - Lazy Loaded
 // We use named exports for features, so we have to unwrap them in the lazy call.
-const AppointmentsPage = lazy(() => import('@/features/appointments').then(m => ({ default: m.AppointmentsPage })));
-const PatientsPage = lazy(() => import('@/features/patients').then(m => ({ default: m.PatientsPage })));
-const MedicalDocumentsPage = lazy(() => import('@/features/medical_documents').then(m => ({ default: m.MedicalDocumentsPage })));
+const AppointmentsPage = lazy(() => import('@/features/appointments/AppointmentsPage').then(m => ({ default: m.AppointmentsPage })));
+const PatientsPage = lazy(() => import('@/features/patients/PatientsPage').then(m => ({ default: m.PatientsPage })));
+const MedicalDocumentsPage = lazy(() => import('@/features/medical_documents/MedicalDocumentsPage').then(m => ({ default: m.MedicalDocumentsPage })));
 const RequestsView = lazy(() => import('@/features/medical_documents/pages/RequestsView').then(module => ({ default: module.RequestsView })));
 const PrescriptionsView = lazy(() => import('@/features/medical_documents/pages/PrescriptionsView').then(module => ({ default: module.PrescriptionsView })));
 const LicensesView = lazy(() => import('@/features/medical_documents/pages/LicensesView').then(module => ({ default: module.LicensesView })));
 const CertificatesView = lazy(() => import('@/features/medical_documents/pages/CertificatesView').then(module => ({ default: module.CertificatesView })));
 
-const FinancesPage = lazy(() => import('@/features/finances').then(m => ({ default: m.FinancesPage })));
-const DashboardPage = lazy(() => import('@/features/dashboard').then(m => ({ default: m.DashboardPage })));
-const SystemConfigPage = lazy(() => import('@/features/config').then(m => ({ default: m.SystemConfigPage })));
-const InstitutionsPage = lazy(() => import('@/features/institutions').then(m => ({ default: m.InstitutionsPage })));
-const InsurancesPage = lazy(() => import('@/features/insurances').then(m => ({ default: m.InsurancesPage })));
-const AuditLogsPage = lazy(() => import('@/features/reports').then(m => ({ default: m.AuditLogsPage })));
-const HolidaysPage = lazy(() => import('@/features/holidays').then(m => ({ default: m.HolidaysPage })));
-const RentalsPage = lazy(() => import('@/features/rentals').then(m => ({ default: m.RentalsPage })));
-const RequestsPage = lazy(() => import('@/features/medical_documents').then(m => ({ default: m.RequestsPage })));
-const PublicRequestPage = lazy(() => import('@/features/medical_documents').then(m => ({ default: m.PublicRequestPage })));
-const ChatPage = lazy(() => import('@/features/chat').then(m => ({ default: m.ChatPage })));
-const WhatsappPage = lazy(() => import('@/features/whatsapp').then(m => ({ default: m.WhatsappPage })));
-const OutreachPage = lazy(() => import('@/features/outreach').then(m => ({ default: m.OutreachPage })));
-const TempAccessPage = lazy(() => import('@/features/auth').then(m => ({ default: m.TempAccessPage })));
-const LoginPage = lazy(() => import('@/features/auth').then(m => ({ default: m.LoginPage })));
-const RegisterPage = lazy(() => import('@/features/auth').then(m => ({ default: m.RegisterPage })));
-const ProfilePage = lazy(() => import('@/features/auth').then(m => ({ default: m.ProfilePage })));
-const ReportsPage = lazy(() => import('@/features/reports').then(m => ({ default: m.ReportsPage })));
+const FinancesPage = lazy(() => import('@/features/finances/FinancesPage').then(m => ({ default: m.FinancesPage })));
+const DashboardPage = lazy(() => import('@/features/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })));
+const SystemConfigPage = lazy(() => import('@/features/config/SystemConfigPage').then(m => ({ default: m.SystemConfigPage })));
+const InstitutionsPage = lazy(() => import('@/features/institutions/InstitutionsPage').then(m => ({ default: m.InstitutionsPage })));
+const InsurancesPage = lazy(() => import('@/features/insurances/InsurancesPage').then(m => ({ default: m.InsurancesPage })));
+const AuditLogsPage = lazy(() => import('@/features/reports/AuditLogsPage').then(m => ({ default: m.AuditLogsPage })));
+const HolidaysPage = lazy(() => import('@/features/holidays/HolidaysPage').then(m => ({ default: m.HolidaysPage })));
+const RentalsPage = lazy(() => import('@/features/rentals/RentalsPage').then(m => ({ default: m.RentalsPage })));
+const RequestsPage = lazy(() => import('@/features/medical_documents/RequestsPage').then(m => ({ default: m.RequestsPage })));
+const PublicRequestPage = lazy(() => import('@/features/medical_documents/PublicRequestPage').then(m => ({ default: m.PublicRequestPage })));
+const ChatPage = lazy(() => import('@/features/chat/ChatPage').then(m => ({ default: m.ChatPage })));
+const WhatsappPage = lazy(() => import('@/features/whatsapp/WhatsappPage').then(m => ({ default: m.WhatsappPage })));
+const OutreachPage = lazy(() => import('@/features/outreach/pages/OutreachPage').then(m => ({ default: m.OutreachPage })));
+const TempAccessPage = lazy(() => import('@/features/auth/TempAccessPage').then(m => ({ default: m.TempAccessPage })));
+const LoginPage = lazy(() => import('@/features/auth/LoginPage').then(m => ({ default: m.LoginPage })));
+const RegisterPage = lazy(() => import('@/features/auth/RegisterPage').then(m => ({ default: m.RegisterPage })));
+const ProfilePage = lazy(() => import('@/features/auth/ProfilePage').then(m => ({ default: m.ProfilePage })));
+const ReportsPage = lazy(() => import('@/features/reports/ReportsPage').then(m => ({ default: m.ReportsPage })));
 
 const DayCellPlayground = lazy(() => import('@/features/appointments/components/calendar/v2/DayCellPlayground').then(m => ({ default: m.DayCellPlayground })));
 
-const PublicRegisterPage = lazy(() => import('@/features/patients').then(m => ({ default: m.PublicRegisterPage })));
+const PublicRegisterPage = lazy(() => import('@/features/patients/PublicRegisterPage').then(m => ({ default: m.PublicRegisterPage })));
 
 /**
  * AppRouter Component.

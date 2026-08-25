@@ -10,11 +10,8 @@ vi.mock('@/hooks/usePermissions', () => ({
 vi.mock('@/components/templates/ProtectedRoute', () => ({
     ProtectedRoute: () => <Outlet />
 }));
-vi.mock('@/features/config', () => ({
+vi.mock('@/features/config/SystemConfigPage', () => ({
     SystemConfigPage: () => <div>SYSTEM_CONFIG_PAGE</div>
-}));
-vi.mock('@/features/users', () => ({
-    AdminUsersPage: () => <div>ADMIN_USERS_PAGE</div>
 }));
 
 const renderRouter = (initialPath) => (

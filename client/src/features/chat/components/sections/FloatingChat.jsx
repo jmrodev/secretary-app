@@ -1,4 +1,4 @@
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useMessage } from '@/context/MessageContext';
 import { useFloatingChatController } from '@/features/chat/hooks/useFloatingChatController';
 import { Icon } from '@/components/atoms/Icon';
@@ -84,7 +84,7 @@ export const FloatingChat = () => {
                             ) : (
                                 <>
                                     <Icon name="chat" size="1.1rem" />
-                                    Mensajes
+                                    {t('messages')}
                                     {unreadCount > 0 && <span className={`${baseClass}__badge`}>{unreadCount}</span>}
                                 </>
                             )}

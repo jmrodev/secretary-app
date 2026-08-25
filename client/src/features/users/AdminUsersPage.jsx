@@ -3,15 +3,16 @@ import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 
 // Atomic Design Components
-import { UserManagement } from '@/features/users/index';
+import { UserManagement } from '@/features/users/components/UserManagement';
 import { TabNav } from '@/components/molecules/TabNav';
 import { TabButton } from '@/components/atoms/TabButton';
 
 // Doctor management tab
-import { DoctorsManager } from '@/features/doctors';
-import { useDoctorsPageController } from '@/features/doctors';
-import { ScheduleBulkActions, ScheduleTimeBlock } from '@/features/appointments';
-import { UserForm } from '@/features/users/index';
+import { DoctorsManager } from '@/features/doctors/components/views/DoctorsManager';
+import { useDoctorsPageController } from '@/features/doctors/hooks/useDoctorsPageController';
+import { ScheduleBulkActions } from '@/features/appointments/components/schedule/ScheduleBulkActions';
+import { ScheduleTimeBlock } from '@/features/appointments/components/schedule/ScheduleTimeBlock';
+import { UserForm } from '@/features/users/components/UserForm';
 import { MessageTemplateEditor } from '@/features/config/components/forms/MessageTemplateEditor';
 
 import styles from './AdminUsersPage.module.css';

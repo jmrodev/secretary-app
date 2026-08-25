@@ -7,7 +7,7 @@ const ModulesSettings = lazy(() => import('../components/sections/ModulesSetting
 const CommunicationSettings = lazy(() => import('../components/sections/CommunicationSettings').then(m => ({ default: m.CommunicationSettings })));
 const IntegrationSettings = lazy(() => import('../components/sections/IntegrationSettings').then(m => ({ default: m.IntegrationSettings })));
 const BillingSettings = lazy(() => import('../components/sections/BillingSettings').then(m => ({ default: m.BillingSettings })));
-const AdminUsersSettings = lazy(() => import('../../users').then(m => ({ default: m.AdminUsersPage })));
+const AdminUsersSettings = lazy(() => import('../../users/AdminUsersPage').then(m => ({ default: m.AdminUsersPage })));
 
 // --- Specialized Wrappers to map the common Controller to specific component props ---
 

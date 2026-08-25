@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { resolveCanManageUsers, usePermissions } from './usePermissions';
-import * as authModule from '@/features/auth';
+import * as authModule from '@/features/auth/AuthContext';
 
-vi.mock('@/features/auth', () => ({
+vi.mock('@/features/auth/AuthContext', () => ({
     useAuth: vi.fn()
 }));
 

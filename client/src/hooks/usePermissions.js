@@ -1,4 +1,4 @@
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 
 /**
  * Pure helper: resolves whether a user holds the can_manage_users grant

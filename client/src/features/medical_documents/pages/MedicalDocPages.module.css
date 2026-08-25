@@ -1,0 +1,7 @@
+/* Shared action-row styles for medical_documents page views (BEM) */
+
+.MedicalDocPages__actionRow {
+    margin-bottom: var(--spacing-md);
+    display: flex;
+    justify-content: flex-end;
+}
