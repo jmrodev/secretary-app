@@ -1,21 +1,21 @@
-.root {
+.DayNumber__root {
     display: flex;
     align-items: center;
     gap: 0.35rem;
 }
 
-.number {
+.DayNumber__number {
     font-size: 1.1rem;
     font-weight: 700;
     line-height: 1;
     color: rgb(255 255 255 / 95%);
 }
 
-.todayNumber {
+.DayNumber__todayNumber {
     color: var(--accent, #6366f1);
 }
 
-.todayIndicator {
+.DayNumber__todayIndicator {
     width: 6px;
     height: 6px;
     background: var(--accent, #6366f1);

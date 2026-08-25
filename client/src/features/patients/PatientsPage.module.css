@@ -1,6 +1,6 @@
 /* PatientsPage Feature Page Styles - BEM Strict */
 
-.root {
+.PatientsPage__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -13,14 +13,14 @@
     padding: 1.5rem;
 }
 
-.header {
+.PatientsPage__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
 }
 
-.title {
+.PatientsPage__title {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -31,35 +31,35 @@
     margin: 0;
 }
 
-.actions {
+.PatientsPage__actions {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-.content {
+.PatientsPage__content {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
 }
 
 /* Sidebar elements when they are integrated into the page orchestrator */
-.sidebarSearch {
+.PatientsPage__sidebarSearch {
     width: 100%;
 }
 
-.sidebarTools {
+.PatientsPage__sidebarTools {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.sidebarBtn {
+.PatientsPage__sidebarBtn {
     width: 100%;
     justify-content: flex-start;
 }
 
-.dotBadge {
+.PatientsPage__dotBadge {
     background: var(--danger);
     color: var(--white);
     padding: 0.125rem 0.375rem;
@@ -68,7 +68,7 @@
     font-weight: 700;
 }
 
-.modalActions {
+.PatientsPage__modalActions {
     margin-top: 1.5rem;
     display: flex;
     justify-content: flex-end;

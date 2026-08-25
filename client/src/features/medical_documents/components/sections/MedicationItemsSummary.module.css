@@ -1,10 +1,10 @@
-.root {
+.MedicationItemsSummary__root {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.item {
+.MedicationItemsSummary__item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -16,31 +16,31 @@
     box-shadow: var(--shadow-sm);
 }
 
-.info {
+.MedicationItemsSummary__info {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
     font-size: 0.875rem;
 }
 
-.name {
+.MedicationItemsSummary__name {
     font-weight: 700;
 }
 
-.dose {
+.MedicationItemsSummary__dose {
     color: var(--text-muted);
 }
 
-.freq {
+.MedicationItemsSummary__freq {
     color: var(--accent-color);
     font-weight: 500;
 }
 
-.qty {
+.MedicationItemsSummary__qty {
     font-weight: 700;
     color: var(--text-main);
 }
 
-.removeBtn:hover {
-    background-color: var(--gray-800);
+.MedicationItemsSummary__removeBtn:hover {
+    background-color: var(--card-hover-bg);
 }

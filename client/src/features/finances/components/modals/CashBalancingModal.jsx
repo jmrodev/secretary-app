@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Icon from '@/components/atoms/Icon';
-import FormGroup from '@/components/molecules/FormGroup';
-import styles from './PendingClosuresModal.module.css';
+import { Input } from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
+import { FormGroup } from '@/components/molecules/FormGroup';
+import styles from './CashBalancingModal.module.css';
 
 /**
  * CashBalancingModal Molecule.
  * Handles the actual balancing (Arqueo) of a specific day.
  */
-const CashBalancingModal = ({ isOpen, onClose, day, onConfirm, t }) => {
+const CashBalancingModalBase = ({ isOpen, onClose, day, onConfirm, t }) => {
     const [physicalBalance, setPhysicalBalance] = useState('');
     const [notes, setNotes] = useState('');
     const [loading, setLoading] = useState(false);
@@ -38,55 +38,55 @@ const CashBalancingModal = ({ isOpen, onClose, day, onConfirm, t }) => {
     };
 
     return (
-        <Modal
+<Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={`Arqueo de Caja - ${day?.date}`}
+            title={t('balancing_title', { date: day?.date })}
             size="md"
             footer={
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end', width: '100%' }}>
-                    <Button variant="secondary" onClick={onClose}>Cancelar</Button>
+                <div className={styles.CashBalancingModal__footer}>
+                    <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
                     <Button 
                         variant="primary" 
                         onClick={handleConfirm} 
                         disabled={loading || !physicalBalance}
                         icon={<Icon name="check" />}
                     >
-                        {loading ? 'Procesando...' : 'Confirmar y Cerrar'}
+                        {loading ? t('processing') : t('confirm_and_close')}
                     </Button>
                 </div>
             }
         >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div className={styles.statItem}>
-                        <div className={styles.statValue}>$${theoretical.toLocaleString()}</div>
-                        <div className={styles.statLabel}>Saldo Teórico (DB)</div>
+            <div className={styles.CashBalancingModal__body}>
+                <div className={styles.CashBalancingModal__statsGrid}>
+                    <div className={styles.CashBalancingModal__statItem}>
+                        <div className={styles.CashBalancingModal__statValue}>${theoretical.toLocaleString()}</div>
+                        <div className={styles.CashBalancingModal__statLabel}>{t('theoretical_balance')} (DB)</div>
                     </div>
-                    <div className={styles.statItem}>
-                        <div className={`${styles.statValue} ${difference < 0 ? styles.diffNegative : styles.diffPositive}`}>
+                    <div className={styles.CashBalancingModal__statItem}>
+                        <div className={`${styles.CashBalancingModal__statValue} ${difference < 0 ? styles.CashBalancingModal__diffNegative : styles.CashBalancingModal__diffPositive}`}>
                             $${difference.toLocaleString()}
                         </div>
-                        <div className={styles.statLabel}>Diferencia (Sobrante/Faltante)</div>
+                        <div className={styles.CashBalancingModal__statLabel}>{t('difference_label')} (Sobrante/Faltante)</div>
                     </div>
                 </div>
 
-                <FormGroup label="Efectivo Físico en Mano">
+                <FormGroup label={t('physical_cash')}>
                     <Input
                         type="number"
                         value={physicalBalance}
                         onChange={e => setPhysicalBalance(e.target.value)}
-                        placeholder="Ingrese el monto real..."
+                        placeholder={t('physical_cash_placeholder')}
                         autoFocus
-                        style={{ fontSize: '1.5rem', height: '60px', fontWeight: 'bold' }}
+                        className={styles.CashBalancingModal__amountInput}
                     />
                 </FormGroup>
 
-                <FormGroup label="Notas del Arqueo (Opcional)">
+                <FormGroup label={`${t('balancing_notes')} ${t('optional_label')}`}>
                     <Input
                         value={notes}
                         onChange={e => setNotes(e.target.value)}
-                        placeholder="Ej: Faltante por vuelto, error de registro..."
+                        placeholder={t('balancing_notes_placeholder')}
                     />
                 </FormGroup>
             </div>
@@ -94,4 +94,4 @@ const CashBalancingModal = ({ isOpen, onClose, day, onConfirm, t }) => {
     );
 };
 
-export default React.memo(CashBalancingModal);
+export const CashBalancingModal = React.memo(CashBalancingModalBase);

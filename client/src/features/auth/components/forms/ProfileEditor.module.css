@@ -1,13 +1,13 @@
 /* ProfileEditor Styles - Auth Feature Domain */
 
-.root {
+.ProfileEditor__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     animation: fade-in 0.4s ease-out;
 }
 
-.banner {
+.ProfileEditor__banner {
     background: linear-gradient(135deg, var(--blue-600) 0%, var(--blue-800) 100%);
     border-radius: 1.25rem;
     padding: 3rem 2rem;
@@ -17,7 +17,7 @@
     box-shadow: var(--shadow-lg);
 }
 
-.banner::before {
+.ProfileEditor__banner::before {
     content: '';
     position: absolute;
     inset: 0;
@@ -26,7 +26,7 @@
     z-index: 1;
 }
 
-.headerBody {
+.ProfileEditor__headerBody {
     display: flex;
     align-items: center;
     gap: 2rem;
@@ -34,7 +34,7 @@
     z-index: 10;
 }
 
-.avatar {
+.ProfileEditor__avatar {
     width: 90px;
     height: 90px;
     border-radius: 2rem;
@@ -46,17 +46,17 @@
     font-size: 2.75rem;
     font-weight: 800;
     color: white;
-    border: 2px solid rgb(255 255 255 / 30%);
-    box-shadow: 0 8px 32px rgb(0 0 0 / 15%);
+    border: 2px solid var(--text-muted);
+    box-shadow: 0 8px 32px var(--background-bg);
 }
 
-.headerInfo {
+.ProfileEditor__headerInfo {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.badge {
+.ProfileEditor__badge {
     display: inline-flex;
     align-items: center;
     padding: 0.25rem 0.85rem;
@@ -66,13 +66,13 @@
     font-size: 0.7rem;
     font-weight: 800;
     color: white;
-    border: 1px solid rgb(255 255 255 / 25%);
+    border: 1px solid var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     width: fit-content;
 }
 
-.title {
+.ProfileEditor__title {
     font-size: 2.25rem;
     font-weight: 900;
     color: white;
@@ -80,32 +80,32 @@
     letter-spacing: -0.02em;
 }
 
-.subtitle {
+.ProfileEditor__subtitle {
     color: rgb(255 255 255 / 85%);
     margin: 0;
     font-size: 0.95rem;
     font-weight: 500;
 }
 
-.grid {
+.ProfileEditor__grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
 }
 
-.card {
+.ProfileEditor__card {
     background: rgb(255 255 255 / 15%);
     backdrop-filter: blur(16px);
     padding: 2rem;
     border-radius: 1.25rem;
-    border: 1px solid rgb(255 255 255 / 8%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.sectionTitle {
+.ProfileEditor__sectionTitle {
     font-size: 0.875rem;
     font-weight: 800;
     color: var(--text-secondary);
@@ -117,20 +117,20 @@
     margin-bottom: 0.5rem;
 }
 
-.actions {
+.ProfileEditor__actions {
     display: flex;
     justify-content: flex-end;
     margin-top: 2.5rem;
     padding-bottom: 4rem;
 }
 
-.phoneSection {
+.ProfileEditor__phoneSection {
     margin-top: 0.5rem;
     border-top: 1px dashed var(--border-color);
     padding-top: 1.5rem;
 }
 
-.loading {
+.ProfileEditor__loading {
     padding: 4rem;
     text-align: center;
     color: var(--text-muted);
@@ -139,7 +139,7 @@
 }
 
 @media (width >= 992px) {
-    .grid {
+    .ProfileEditor__grid {
         grid-template-columns: 1fr 1fr;
     }
 }

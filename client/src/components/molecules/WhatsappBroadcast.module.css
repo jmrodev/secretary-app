@@ -1,4 +1,4 @@
-.root {
+.WhatsappBroadcast__root {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -8,13 +8,13 @@
     background: #f0f2f5;
 }
 
-.field {
+.WhatsappBroadcast__field {
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
 }
 
-.label {
+.WhatsappBroadcast__label {
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -25,19 +25,19 @@
     letter-spacing: 0.04em;
 }
 
-.filterRow {
+.WhatsappBroadcast__filterRow {
     display: flex;
     align-items: center;
     gap: 0.6rem;
 }
 
-.select {
+.WhatsappBroadcast__select {
     flex: 1;
     padding: 0.55rem 0.75rem;
     border: 1px solid #d1d5db;
     border-radius: 8px;
     font-size: 0.85rem;
-    background: #fff;
+    background: var(--text-main);
     color: #1f2937;
     cursor: pointer;
     appearance: none;
@@ -47,13 +47,13 @@
     padding-right: 2rem;
 }
 
-.select:focus {
+.WhatsappBroadcast__select:focus {
     outline: none;
     border-color: #075e54;
     box-shadow: 0 0 0 3px rgb(7 94 84 / 10%);
 }
 
-.countBadge {
+.WhatsappBroadcast__countBadge {
     flex-shrink: 0;
     font-size: 0.8rem;
     font-weight: 700;
@@ -65,7 +65,7 @@
     white-space: nowrap;
 }
 
-.textarea {
+.WhatsappBroadcast__textarea {
     width: 100%;
     padding: 0.65rem 0.75rem;
     border: 1px solid #d1d5db;
@@ -73,20 +73,20 @@
     font-size: 0.9rem;
     font-family: inherit;
     resize: vertical;
-    background: #fff;
+    background: var(--text-main);
     color: #1f2937;
     line-height: 1.5;
     box-sizing: border-box;
     transition: border-color 0.2s;
 }
 
-.textarea:focus {
+.WhatsappBroadcast__textarea:focus {
     outline: none;
     border-color: #075e54;
     box-shadow: 0 0 0 3px rgb(7 94 84 / 10%);
 }
 
-.hint {
+.WhatsappBroadcast__hint {
     display: flex;
     align-items: flex-start;
     gap: 0.35rem;
@@ -96,8 +96,8 @@
     line-height: 1.4;
 }
 
-.preview {
-    background: #fff;
+.WhatsappBroadcast__preview {
+    background: var(--text-main);
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 0.65rem 0.75rem;
@@ -109,7 +109,7 @@
     position: relative;
 }
 
-.preview::before {
+.WhatsappBroadcast__preview::before {
     content: '';
     position: absolute;
     top: 0;
@@ -120,7 +120,7 @@
     border-radius: 8px 8px 0 0;
 }
 
-.errorMsg {
+.WhatsappBroadcast__errorMsg {
     margin: 0;
     font-size: 0.82rem;
     color: #dc2626;
@@ -130,15 +130,15 @@
     padding: 0.5rem 0.75rem;
 }
 
-.sendBtn {
+.WhatsappBroadcast__sendBtn {
     margin-top: auto;
     width: 100%;
     justify-content: center;
 }
 
 /* Confirm and Result cards */
-.confirmCard,
-.resultCard {
+.WhatsappBroadcast__confirmCard,
+.WhatsappBroadcast__resultCard {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -149,36 +149,36 @@
     flex: 1;
 }
 
-.confirmIcon {
+.WhatsappBroadcast__confirmIcon {
     color: #f59e0b;
 }
 
-.resultIcon {
+.WhatsappBroadcast__resultIcon {
     color: #25d366;
 }
 
-.confirmTitle,
-.resultTitle {
+.WhatsappBroadcast__confirmTitle,
+.WhatsappBroadcast__resultTitle {
     margin: 0;
     font-size: 1.05rem;
     font-weight: 700;
     color: #1f2937;
 }
 
-.confirmDesc {
+.WhatsappBroadcast__confirmDesc {
     margin: 0;
     font-size: 0.85rem;
     color: #6b7280;
     line-height: 1.5;
 }
 
-.confirmActions {
+.WhatsappBroadcast__confirmActions {
     display: flex;
     gap: 0.75rem;
     margin-top: 0.5rem;
 }
 
-.spin {
+.WhatsappBroadcast__spin {
     animation: spin 1s linear infinite;
 }
 

@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * Controller Hook for Fiscal Settings Logic
@@ -23,8 +23,21 @@ export const useDoctorFiscalController = (doctorId) => {
 
         try {
             const res = await api.post('/billing/csr', { doctor_id: doctorId });
-            setGeneratedCsr(res.data.csr);
+            // Axios puts the body in res.data, and our API wraps payload in { data: ... }
+            const payload = res.data.data || res.data; 
+            setGeneratedCsr(payload.csr);
             setShowCsrInfo(true);
+
+            // Auto-copiar al portapapeles
+            try {
+                navigator.clipboard.writeText(payload.csr);
+            } catch (e) {
+                console.warn("Clipboard auto-copy failed", e);
+            }
+
+            // Abrir AFIP en nueva pestaña
+            window.open('https://auth.afip.gob.ar/contribuyente_/login.xhtml', '_blank');
+
         } catch (err) {
             const msg = err.response?.data?.error || err.message;
             setError(msg);

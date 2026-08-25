@@ -11,7 +11,7 @@ export const DoctorProvider = ({ children }) => {
     
     // Global filter state
     const [viewDoctorIdInternal, setViewDoctorIdInternal] = useState(
-        localStorage.getItem('global_selected_doctor_id') || ''
+        () => localStorage.getItem('global_selected_doctor_id') || ''
     );
 
     // Doctors List (Cached globally) - ECC Envelope support
@@ -29,12 +29,21 @@ export const DoctorProvider = ({ children }) => {
 
     const setViewDoctorId = useCallback((id) => {
         const stringId = id ? String(id) : '';
-        setViewDoctorIdInternal(prev => {
-            if (prev === stringId) return prev;
+        setViewDoctorIdInternal(stringId);
+        if (stringId) {
             localStorage.setItem('global_selected_doctor_id', stringId);
-            return stringId;
-        });
+        } else {
+            localStorage.removeItem('global_selected_doctor_id');
+        }
     }, []);
+
+    // Sanitize the persisted selection during render (same pattern as the
+    // auto-select below): a stored id that no longer exists (deleted doctor or
+    // empty DB) is dropped so no ghost doctorId survives.
+    if (viewDoctorIdInternal && doctorsFetched && !doctors.some(d => String(d.id) === String(viewDoctorIdInternal))) {
+        setViewDoctorIdInternal('');
+        localStorage.removeItem('global_selected_doctor_id');
+    }
 
     const viewDoctorId = useMemo(() => {
         if (viewDoctorIdInternal) return viewDoctorIdInternal;
@@ -44,6 +53,13 @@ export const DoctorProvider = ({ children }) => {
         }
         return '';
     }, [viewDoctorIdInternal, isDoctor, doctors, user]);
+
+    // Doctor selection is mandatory: auto-select the first doctor when none is
+    // selected and the list has loaded. Adjusted during render so the selection
+    // commits before the next paint (the setter also persists to localStorage).
+    if (!viewDoctorId && doctors.length > 0) {
+        setViewDoctorId(String(doctors[0].id));
+    }
 
     const currentDoctor = useMemo(() => 
         doctors.find(d => String(d.id) === String(viewDoctorId)) || null

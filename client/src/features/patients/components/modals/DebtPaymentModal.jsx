@@ -1,9 +1,9 @@
 
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import CurrencyInput from '@/components/atoms/CurrencyInput';
-import Select from '@/components/atoms/Select';
+import { CurrencyInput } from '@/components/atoms/CurrencyInput';
+import { Select } from '@/components/atoms/Select';
 import { getPaymentMethods } from '@/constants/transactionOptions';
 import styles from './DebtPaymentModal.module.css';
 
@@ -11,7 +11,7 @@ import styles from './DebtPaymentModal.module.css';
  * DebtPaymentModal Molecule (Executor).
  * Renders the dialog to process a patient's debt payment.
  */
-const DebtPaymentModal = ({
+export const DebtPaymentModal = ({
     isOpen,
     onClose,
     onConfirm,
@@ -35,17 +35,19 @@ const DebtPaymentModal = ({
                 </>
             }
         >
-            <div className={`${styles.root}`}>
-                <div className={`${styles.field}`}>
-                    <label className={`${styles.label}`}>{t('amount')} ($)</label>
+            <div className={`${styles.DebtPaymentModal__root}`}>
+                <div className={`${styles.DebtPaymentModal__field}`}>
+                    <label htmlFor="debt-payment-amount" className={`${styles.DebtPaymentModal__label}`}>{t('amount')} ($)</label>
                     <CurrencyInput
+                        id="debt-payment-amount"
                         value={amount}
                         onChange={(e) => onAmountChange(e.target.value)}
                     />
                 </div>
-                <div className={`${styles.field}`}>
-                    <label className={`${styles.label}`}>{t('payment_method')}</label>
+                <div className={`${styles.DebtPaymentModal__field}`}>
+                    <label htmlFor="debt-payment-method" className={`${styles.DebtPaymentModal__label}`}>{t('payment_method')}</label>
                     <Select
+                        id="debt-payment-method"
                         value={method}
                         onChange={(e) => onMethodChange(e.target.value)}
                         options={paymentMethods}
@@ -56,4 +58,3 @@ const DebtPaymentModal = ({
     );
 };
 
-export default DebtPaymentModal;

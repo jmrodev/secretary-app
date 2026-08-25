@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import MedicationAutocomplete from '@/features/medical_documents/components/ui/MedicationAutocomplete';
-import MedicationList from '@/features/medical_documents/components/lists/MedicationList';
+import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
+import { MedicationList } from '@/features/medical_documents/components/lists/MedicationList';
+import { useLanguage } from '@/hooks/useLanguage';
 import styles from './MedicationInput.module.css';
 
 const EMPTY_ARRAY = [];
@@ -10,7 +11,7 @@ const EMPTY_ARRAY = [];
  * Higher-level input that combines autocomplete search and a list of selected items.
  * Used across various medical forms within the medical_documents domain.
  */
-const MedicationInput = ({
+export const MedicationInput = ({
     medications = EMPTY_ARRAY,
     onAdd,
     onRemove,
@@ -19,6 +20,7 @@ const MedicationInput = ({
     optional = false,
     className = ''
 }) => {
+    const { t } = useLanguage();
     const [searchValue, setSearchValue] = useState('');
 
     const handleSelectMedication = (med) => {
@@ -27,31 +29,31 @@ const MedicationInput = ({
     };
 
     return (
-        <div className={`${styles.root} ${className} animate-fade-in`}>
-            <div className={`${styles.header}`}>
-                <label className={`${styles.label}`}>
+        <div className={`${styles.MedicationInput__root} ${className} animate-fade-in`}>
+            <div className={`${styles.MedicationInput__header}`}>
+                <label htmlFor="medication-search" className={`${styles.MedicationInput__label}`}>
                     {label}
                     {optional && (
-                        <span className={`${styles.optionalBadge}`}>Optional</span>
+                        <span className={`${styles.MedicationInput__optionalBadge}`}>{t('optional') || 'Optional'}</span>
                     )}
                 </label>
             </div>
 
             <MedicationAutocomplete
+                id="medication-search"
                 value={searchValue}
                 onChange={setSearchValue}
                 onSelectMedication={handleSelectMedication}
                 placeholder={placeholder}
-                className={`${styles.autocomplete}`}
+                className={`${styles.MedicationInput__autocomplete}`}
             />
 
             <MedicationList
                 medications={medications}
                 onRemove={onRemove}
-                className={`${styles.list}`}
+                className={`${styles.MedicationInput__list}`}
             />
         </div>
     );
 };
 
-export default MedicationInput;

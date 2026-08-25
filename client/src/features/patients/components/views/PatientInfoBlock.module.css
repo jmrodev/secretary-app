@@ -1,7 +1,7 @@
 
 /* PatientInfoBlock Styles (BEM) */
 
-.detailsBlock {
+.PatientInfoBlock__detailsBlock {
     --block-bg: var(--dashboard-card-bg);
     --block-border: var(--border-color);
     --block-header-bg: var(--dashboard-card-bg);
@@ -16,7 +16,7 @@
     flex-direction: column;
 }
 
-.header {
+.PatientInfoBlock__header {
     padding: 1.25rem 1.5rem;
     background-color: var(--block-header-bg);
     border-bottom: 2px solid var(--primary-color);
@@ -25,7 +25,7 @@
     align-items: center;
 }
 
-.title {
+.PatientInfoBlock__title {
     font-size: 1rem;
     font-weight: 800;
     color: var(--block-title-color);
@@ -37,29 +37,29 @@
     letter-spacing: 0.05em;
 }
 
-.content {
+.PatientInfoBlock__content {
     padding: 0;
 }
 
 /* Modifier for Info Block */
-.detailsBlockInfo .header {
+.PatientInfoBlock__detailsBlockInfo .PatientInfoBlock__header {
     border-bottom-color: var(--primary-color);
 }
 
-.infoTable {
+.PatientInfoBlock__infoTable {
     width: 100%;
     border-collapse: collapse;
 }
 
-.infoRow {
+.PatientInfoBlock__infoRow {
     border-bottom: 1px solid var(--border-color);
 }
 
-.infoRow:last-child {
+.PatientInfoBlock__infoRow:last-child {
     border-bottom: none;
 }
 
-.infoLabel {
+.PatientInfoBlock__infoLabel {
     width: 30%;
     padding: 1rem 1.5rem;
     text-align: left;
@@ -72,25 +72,25 @@
     border-right: 1px solid var(--border-color);
 }
 
-.infoValue {
+.PatientInfoBlock__infoValue {
     padding: 1rem 1.5rem;
     font-size: 1rem;
     font-weight: 600;
     color: var(--text-main);
 }
 
-.infoHint {
+.PatientInfoBlock__infoHint {
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--gray-400);
     margin-left: 0.5rem;
 }
 
-.addressBox {
+.PatientInfoBlock__addressBox {
     line-height: 1.5;
 }
 
-.mapLink {
+.PatientInfoBlock__mapLink {
     display: inline-block;
     margin-top: 0.5rem;
     font-size: 0.75rem;
@@ -99,84 +99,80 @@
     font-weight: 700;
 }
 
-.mapLink:hover {
+.PatientInfoBlock__mapLink:hover {
     text-decoration: underline;
 }
 
-.textEmpty {
+.PatientInfoBlock__textEmpty {
     font-style: italic;
     color: var(--slate-300);
     font-weight: 400;
 }
 
 /* Contact List */
-.contactList {
+.PatientInfoBlock__contactList {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
 }
 
-.contactItem {
+.PatientInfoBlock__contactItem {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 2rem;
-    border: 1px solid var(--slate-200);
 }
 
-.contactIndicator {
+.PatientInfoBlock__contactIndicator {
     width: 0.5rem;
     height: 0.5rem;
     border-radius: 50%;
     background-color: var(--slate-200);
 }
 
-.contactIndicatorPrimary {
+.PatientInfoBlock__contactIndicatorPrimary {
     background-color: var(--green-500);
     box-shadow: 0 0 0 3px rgb(34 197 94 / 10%);
 }
 
-.contactLink {
+.PatientInfoBlock__contactLink {
     color: var(--blue-600);
     text-decoration: none;
     font-weight: 700;
 }
 
-.contactLinkEmail {
+.PatientInfoBlock__contactLinkEmail {
     color: var(--indigo-600);
 }
 
 /* Indicators (Dates) */
-.dateIndicators {
+.PatientInfoBlock__dateIndicators {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
 }
 
-.dateIndicator {
+.PatientInfoBlock__dateIndicator {
     padding: 1rem;
     border-radius: 1rem;
     border: 1px solid transparent;
 }
 
-.dateIndicatorRose {
+.PatientInfoBlock__dateIndicatorRose {
     background-color: var(--rose-50);
     border-color: var(--rose-100);
 }
 
-.dateIndicatorAmber {
+.PatientInfoBlock__dateIndicatorAmber {
     background-color: var(--amber-50);
     border-color: var(--amber-100);
 }
 
-.dateIndicatorIndigo {
+.PatientInfoBlock__dateIndicatorIndigo {
     background-color: var(--indigo-50);
     border-color: var(--indigo-100);
 }
 
-.label {
+.PatientInfoBlock__label {
     display: block;
     font-size: 0.65rem;
     font-weight: 900;
@@ -185,25 +181,25 @@
     margin-bottom: 0.25rem;
 }
 
-.dateIndicatorRose .label {
+.PatientInfoBlock__dateIndicatorRose .PatientInfoBlock__label {
     color: var(--rose-600);
 }
 
-.dateIndicatorAmber .label {
+.PatientInfoBlock__dateIndicatorAmber .PatientInfoBlock__label {
     color: var(--amber-600);
 }
 
-.dateIndicatorIndigo .label {
+.PatientInfoBlock__dateIndicatorIndigo .PatientInfoBlock__label {
     color: var(--indigo-600);
 }
 
-.value {
+.PatientInfoBlock__value {
     font-size: 1rem;
     font-weight: 800;
     color: var(--slate-800);
 }
 
-.action {
+.PatientInfoBlock__action {
     background-color: white;
     border: 1px solid rgb(0 0 0 / 5%);
     box-shadow: var(--shadow-sm);
@@ -215,13 +211,13 @@
     transition: all 0.2s ease;
 }
 
-.action:hover {
+.PatientInfoBlock__action:hover {
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
     color: var(--blue-600);
 }
 
-.attendFlex {
+.PatientInfoBlock__attendFlex {
     display: flex;
     align-items: center;
     gap: 0.5rem;

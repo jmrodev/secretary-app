@@ -1,11 +1,11 @@
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Alert from '@/components/atoms/Alert';
-import FormGroup from '@/components/molecules/FormGroup';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
+import { Icon } from '@/components/atoms/Icon';
+import { Alert } from '@/components/atoms/Alert';
+import { FormGroup } from '@/components/molecules/FormGroup';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
 import styles from './InstitutionPaymentModal.module.css';
 
 /**
@@ -13,7 +13,7 @@ import styles from './InstitutionPaymentModal.module.css';
  * Modal for registering payments from institutions.
  * Refactored to use Atomic Design components and BEM.
  */
-const InstitutionPaymentModal = ({
+export const InstitutionPaymentModal = ({
     isOpen,
     onClose,
     paymentData,
@@ -36,7 +36,7 @@ const InstitutionPaymentModal = ({
             onClose={onClose}
             title={t('register_inst_payment')}
         >
-            <div className={`${styles.root}`}>
+            <div className={`${styles.InstitutionPaymentModal__root}`}>
                 <Alert
                     variant={hasTransactions ? 'success' : 'info'}
                     message={
@@ -63,7 +63,7 @@ const InstitutionPaymentModal = ({
                     />
                 </FormGroup>
 
-                <div className={`${styles.footer}`}>
+                <div className={`${styles.InstitutionPaymentModal__footer}`}>
                     <Button variant="secondary" onClick={onClose}>
                         {t('cancel')}
                     </Button>
@@ -79,6 +79,4 @@ const InstitutionPaymentModal = ({
         </Modal>
     );
 };
-
-export default InstitutionPaymentModal;
 

@@ -1,13 +1,13 @@
-.root {
+.Input__root {
     /* --- Local Component Tokens --- */
-    --input-bg: rgb(255 255 255 / 5%);
-    --input-border: rgb(255 255 255 / 10%);
+    --input-bg: var(--background-bg);
+    --input-border: var(--border-color);
     --input-text: var(--text-main);
     --input-focus-border: var(--primary-color);
     --input-focus-ring: rgb(72 128 255 / 15%);
     --input-error-border: var(--danger);
     --input-error-ring: rgb(249 55 93 / 10%);
-    --input-disabled-bg: rgb(255 255 255 / 2%);
+    --input-disabled-bg: var(--background-bg);
     --input-disabled-text: var(--text-muted);
 
     /* ------------------------------ */
@@ -27,38 +27,38 @@
     outline: none;
 }
 
-.root::placeholder {
+.Input__root::placeholder {
     color: var(--text-muted, rgb(156 163 175));
     opacity: 0.6;
 }
 
-.root:focus {
+.Input__root:focus {
     border-color: var(--input-focus-border);
     box-shadow: 0 0 0 4px var(--input-focus-ring);
     transform: translateY(-1px);
 }
 
-.root:disabled {
+.Input__root:disabled {
     background-color: var(--input-disabled-bg);
     color: var(--input-disabled-text);
     cursor: not-allowed;
     transform: none;
 }
 
-.textarea {
+.Input__textarea {
     resize: vertical;
     min-height: 100px;
 }
 
-.error {
+.Input__error {
     border-color: var(--red-500);
 }
 
-.error:focus {
+.Input__error:focus {
     box-shadow: 0 0 0 4px rgb(239 68 68 / 10%);
 }
 
-.sm {
+.Input__sm {
     padding: 0.5rem 0.75rem;
     font-size: 0.8125rem;
     border-radius: 0.5rem;

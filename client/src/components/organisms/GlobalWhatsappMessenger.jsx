@@ -1,12 +1,12 @@
-import React, { useEffect, useCallback } from 'react';
-import api from '@/api/axios';
-import Icon from '@/components/atoms/Icon';
+import React, { useEffect, useCallback, useRef } from 'react';
+import { api } from '@/api/axios';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
-import WhatsappChatHistory from '@/features/patients/components/views/WhatsappChatHistory';
+import { WhatsappChatHistory } from '@/features/patients/components/views/WhatsappChatHistory';
 import { useDoctors } from '@/context/DoctorContextDefinition';
-import WhatsappInbox from '../molecules/WhatsappInbox';
-import WhatsappPairing from '../molecules/WhatsappPairing';
-import WhatsappChatPlaceholder from '../molecules/WhatsappChatPlaceholder';
+import { WhatsappInbox } from '../molecules/WhatsappInbox';
+import { WhatsappPairing } from '../molecules/WhatsappPairing';
+import { WhatsappChatPlaceholder } from '../molecules/WhatsappChatPlaceholder';
 import { WhatsappBroadcast } from '../molecules/WhatsappBroadcast';
 import styles from './GlobalWhatsappMessenger.module.css';
 
@@ -25,7 +25,7 @@ const initialState = {
     activeChat: null,
     conversations: [],
     loading: false,
-    bridgeStatus: { status: 'connected', qr_code: '' },
+    bridgeStatus: { status: 'connected', qr_code: '', session_expired_since: null },
     statusLoading: true,
 };
 
@@ -43,8 +43,8 @@ function messengerReducer(state, action) {
     }
 }
 
-const GlobalWhatsappMessenger = ({ t }) => {
-    const { viewDoctorId, doctorDisplayName } = useDoctors();
+export const GlobalWhatsappMessenger = ({ t }) => {
+    useDoctors();
     const [state, dispatch] = React.useReducer(messengerReducer, initialState);
     const { isOpen, activeTab, activeChat, conversations, loading, bridgeStatus, statusLoading } = state;
 
@@ -69,6 +69,48 @@ const GlobalWhatsappMessenger = ({ t }) => {
         }
     }, []);
 
+    // Ref indirection breaks the circular fetchStatus <-> handleManualRefresh
+    // dependency so both can stay stable (useCallback) without stale closures.
+    const handleManualRefreshRef = useRef(null);
+
+    const fetchStatus = useCallback(async (isAutoCall = false) => {
+        try {
+            const res = await api.get('/whatsapp/status');
+            if (res.data.success) {
+                dispatch({ 
+                    type: 'UPDATE_MANY', 
+                    payload: { 
+                        bridgeStatus: { status: res.data.status, qr_code: res.data.qr_code, session_expired_since: res.data.session_expired_since || null },
+                        statusLoading: false
+                    } 
+                });
+
+                // Auto-refresh if QR timed out (disconnected/session_expired & empty QR) and we aren't already refreshing
+                if ((res.data.status === 'disconnected' || res.data.status === 'session_expired') && !res.data.qr_code && !isAutoCall) {
+                    console.log("[WhatsApp] Stale/Timeout QR detected. Auto-refreshing...");
+                    handleManualRefreshRef.current?.();
+                }
+            } else {
+                dispatch({ 
+                    type: 'UPDATE_MANY', 
+                    payload: { 
+                        bridgeStatus: { status: 'offline', qr_code: '', session_expired_since: null },
+                        statusLoading: false
+                    } 
+                });
+            }
+        } catch (error) {
+            console.error("[WhatsApp] Failed to fetch status:", error);
+            dispatch({ 
+                type: 'UPDATE_MANY', 
+                payload: { 
+                    bridgeStatus: { status: 'offline', qr_code: '', session_expired_since: null },
+                    statusLoading: false
+                } 
+            });
+        }
+    }, []);
+
     const handleManualRefresh = useCallback(async () => {
         dispatch({ type: 'SET_STATUS_LOADING', payload: true });
         try {
@@ -80,48 +122,15 @@ const GlobalWhatsappMessenger = ({ t }) => {
         } finally {
             fetchStatus(true);
         }
-    }, []);
+    }, [fetchStatus]);
 
-    const fetchStatus = async (isAutoCall = false) => {
-        try {
-            const res = await api.get('/whatsapp/status');
-            if (res.data.success) {
-                dispatch({ 
-                    type: 'UPDATE_MANY', 
-                    payload: { 
-                        bridgeStatus: { status: res.data.status, qr_code: res.data.qr_code },
-                        statusLoading: false
-                    } 
-                });
-
-                // Auto-refresh if QR timed out (disconnected & empty QR) and we aren't already refreshing
-                if (res.data.status === 'disconnected' && !res.data.qr_code && !isAutoCall) {
-                    console.log("[WhatsApp] Stale/Timeout QR detected. Auto-refreshing...");
-                    handleManualRefresh();
-                }
-            } else {
-                dispatch({ 
-                    type: 'UPDATE_MANY', 
-                    payload: { 
-                        bridgeStatus: { status: 'offline', qr_code: '' },
-                        statusLoading: false
-                    } 
-                });
-            }
-        } catch (error) {
-            console.error("[WhatsApp] Failed to fetch status:", error);
-            dispatch({ 
-                type: 'UPDATE_MANY', 
-                payload: { 
-                    bridgeStatus: { status: 'offline', qr_code: '' },
-                    statusLoading: false
-                } 
-            });
-        }
-    };
+    // Keep the latest handleManualRefresh reachable from the stable fetchStatus
+    useEffect(() => {
+        handleManualRefreshRef.current = handleManualRefresh;
+    }, [handleManualRefresh]);
 
     const handleLogout = useCallback(async () => {
-        if (!window.confirm(t('confirm_logout_bridge') || '¿Seguro que querés desconectar WhatsApp?')) return;
+        if (!window.confirm(t('confirm_logout_bridge'))) return;
         dispatch({ type: 'SET_STATUS_LOADING', payload: true });
         try {
             await api.post('/whatsapp/logout');
@@ -134,23 +143,22 @@ const GlobalWhatsappMessenger = ({ t }) => {
         }
     }, [fetchStatus, t]);
 
-    // Use React 19 useEffectEvent for stable, up-to-date callback references
-    const onPollStatus = React.useEffectEvent(() => {
+    const onPollStatus = useCallback(() => {
         fetchStatus();
-    });
+    }, [fetchStatus]);
 
-    const onPollConversations = React.useEffectEvent(() => {
+    const onPollConversations = useCallback(() => {
         if (bridgeStatus.status === 'connected' && !activeChat) {
             fetchConversations(true);
         }
-    });
+    }, [bridgeStatus.status, activeChat, fetchConversations]);
 
     useEffect(() => {
         if (!isOpen) return;
 
         // Initial fetch
         onPollStatus();
-        
+
         const statusInterval = setInterval(onPollStatus, 5000);
         const conversationsInterval = setInterval(onPollConversations, 5000);
 
@@ -158,7 +166,21 @@ const GlobalWhatsappMessenger = ({ t }) => {
             clearInterval(statusInterval);
             clearInterval(conversationsInterval);
         };
-    }, [isOpen]); // Only depends on isOpen now!
+    }, [isOpen, onPollStatus, onPollConversations]);
+
+    // Listen for external requests to open a specific patient chat
+    useEffect(() => {
+        const handleOpenChat = (e) => {
+            const { phone, patientId, patientName } = e.detail || {};
+            if (!phone) return;
+            dispatch({ type: 'SET_OPEN', payload: true });
+            dispatch({ type: 'SET_ACTIVE_CHAT', payload: { phone, patientId: patientId || null, patientName } });
+            fetchConversations();
+        };
+
+        window.addEventListener('whatsapp:open-chat', handleOpenChat);
+        return () => window.removeEventListener('whatsapp:open-chat', handleOpenChat);
+    }, [fetchConversations]);
 
     const handlePatientClick = (conv) => {
         setActiveChat({ patientId: conv.patientId || conv.patient_id, phone: conv.patient_phone });
@@ -171,9 +193,9 @@ const GlobalWhatsappMessenger = ({ t }) => {
 
     if (!isOpen) {
         return (
-            <div className={`${styles.globalWaTriggerContainer}`}>
+            <div className={`${styles.GlobalWhatsappMessenger__globalWaTriggerContainer}`}>
                 <Button 
-                    className={`${styles.globalWaSimpleBtn}`} 
+                    className={`${styles.GlobalWhatsappMessenger__globalWaSimpleBtn}`} 
                     onClick={() => setIsOpen(true)}
                     variant="success"
                     icon={<Icon name="CHAT" size="1.2rem" />}
@@ -185,21 +207,23 @@ const GlobalWhatsappMessenger = ({ t }) => {
     }
 
     return (
-        <aside className={`${styles.root} ${styles.animateSlideUp} ${activeChat ? styles.chatActive : ''}`}>
+        <aside className={`${styles.GlobalWhatsappMessenger__root} ${styles.GlobalWhatsappMessenger__animateSlideUp} ${activeChat ? styles.GlobalWhatsappMessenger__chatActive : ''}`}>
             {/* Sidebar: Conversations List */}
             {/* Tab bar - Inbox / Broadcast */}
-            <div className={styles.tabBar}>
+            <div className={styles.GlobalWhatsappMessenger__tabBar}>
                 <button
+                    type="button"
                     id="wa-tab-inbox"
-                    className={`${styles.tab} ${activeTab === 'inbox' ? styles.tabActive : ''}`}
+                    className={`${styles.GlobalWhatsappMessenger__tab} ${activeTab === 'inbox' ? styles.GlobalWhatsappMessenger__tabActive : ''}`}
                     onClick={() => dispatch({ type: 'SET_TAB', payload: 'inbox' })}
                 >
                     <Icon name="forum" size="1rem" />
                     {t('inbox_tab')}
                 </button>
                 <button
+                    type="button"
                     id="wa-tab-broadcast"
-                    className={`${styles.tab} ${activeTab === 'broadcast' ? styles.tabActive : ''}`}
+                    className={`${styles.GlobalWhatsappMessenger__tab} ${activeTab === 'broadcast' ? styles.GlobalWhatsappMessenger__tabActive : ''}`}
                     onClick={() => dispatch({ type: 'SET_TAB', payload: 'broadcast' })}
                 >
                     <Icon name="campaign" size="1rem" />
@@ -220,38 +244,38 @@ const GlobalWhatsappMessenger = ({ t }) => {
             />
 
             {/* Main: Chat View */}
-            <section className={`${styles.chatArea}`}>
-                <header className={`${styles.chatHeader}`}>
-                     <div className={`${styles.headerLeft}`}>
+            <section className={`${styles.GlobalWhatsappMessenger__chatArea}`}>
+                <header className={`${styles.GlobalWhatsappMessenger__chatHeader}`}>
+                     <div className={`${styles.GlobalWhatsappMessenger__headerLeft}`}>
                         {activeChat && (
                             <Button 
                                 variant="ghost"
                                 size="sm"
-                                className={`${styles.backBtn}`} 
+                                className={`${styles.GlobalWhatsappMessenger__backBtn}`} 
                                 onClick={handleBack}
                                 icon={<Icon name="arrow_back" size="1.2rem" />}
                             />
                         )}
-                        <div className={`${styles.chatUser}`}>
+                        <div className={`${styles.GlobalWhatsappMessenger__chatUser}`}>
                             {activeChat ? (
                                 <>
                                     <strong>{activeChat.patientId ? (conversations.find(c => (c.patientId === activeChat.patientId || c.patient_id === activeChat.patientId))?.patient_name) : activeChat.phone}</strong>
-                                    <span className={`${styles.onlineStatus}`}>{t('live')}</span>
+                                    <span className={`${styles.GlobalWhatsappMessenger__onlineStatus}`}>{t('live')}</span>
                                 </>
                             ) : (
-                                <div className={`${styles.chatPlaceholderHeader}`}>
+                                <div className={`${styles.GlobalWhatsappMessenger__chatPlaceholderHeader}`}>
                                     {t('whatsapp_messenger')}
                                 </div>
                             )}
                         </div>
                     </div>
                     
-                    <div className={`${styles.headerActions}`}>
+                    <div className={`${styles.GlobalWhatsappMessenger__headerActions}`}>
                         {activeChat && !activeChat.patientId && (
                             <Button 
                                 variant="primary" 
                                 size="sm" 
-                                className={`${styles.registerManualBtn}`}
+                                className={`${styles.GlobalWhatsappMessenger__registerManualBtn}`}
                                 onClick={() => {
                                     const event = new CustomEvent('openPatientRegistration', { 
                                         detail: { phone: activeChat.phone } 
@@ -260,24 +284,24 @@ const GlobalWhatsappMessenger = ({ t }) => {
                                 }}
                                 icon={<Icon name="person_add" size="1rem" />}
                             >
-                                {t('register_contact') || 'Registrar'}
+                                {t('register_contact')}
                             </Button>
                         )}
                         <Button 
                             variant="ghost"
                             size="sm"
-                            className={`${styles.closeBtn}`} 
+                            className={`${styles.GlobalWhatsappMessenger__closeBtn}`} 
                             onClick={() => setIsOpen(false)}
                             icon={<Icon name="close" size="1.2rem" />}
                         />
                     </div>
                 </header>
 
-                <div className={`${styles.chatContent}`}>
+                <div className={`${styles.GlobalWhatsappMessenger__chatContent}`}>
                     {activeTab === 'broadcast' ? (
                         <WhatsappBroadcast t={t} />
                     ) : activeChat ? (
-                        <div className={`${styles.chatWrapper}`}>
+                        <div className={`${styles.GlobalWhatsappMessenger__chatWrapper}`}>
                             <WhatsappChatHistory
                                 patientId={activeChat.patientId}
                                 phone={activeChat.phone}
@@ -293,7 +317,7 @@ const GlobalWhatsappMessenger = ({ t }) => {
 
             {/* Pairing overlay — visible in sidebar when bridge is not connected */}
             {bridgeStatus.status !== 'connected' && (
-                <div className={styles.pairingOverlay}>
+                <div className={styles.GlobalWhatsappMessenger__pairingOverlay}>
                     <WhatsappPairing
                         bridgeStatus={bridgeStatus}
                         onRefresh={handleManualRefresh}
@@ -306,4 +330,3 @@ const GlobalWhatsappMessenger = ({ t }) => {
     );
 };
 
-export default GlobalWhatsappMessenger;

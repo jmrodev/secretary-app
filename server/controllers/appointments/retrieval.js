@@ -38,7 +38,9 @@ exports.getMonthlyReport = async (req, res) => {
         sendResponse(res, true, report);
     } catch (err) {
         console.error("[ECC-Controller] getMonthlyReport error:", err);
-        sendResponse(res, false, null, "Internal Server Error", 500);
+        const status = err.statusCode || 500;
+        const message = err.statusCode ? err.message : "Internal Server Error";
+        sendResponse(res, false, null, message, status);
     }
 };
 
@@ -59,5 +61,19 @@ exports.getDailySchedule = async (req, res) => {
     } catch (err) {
         console.error("[ECC-Controller] getDailySchedule error:", err);
         sendResponse(res, false, null, "Error al recuperar la agenda diaria", 500);
+    }
+};
+
+exports.getAppointmentById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const appointment = await retrievalService.getAppointmentById(id);
+        if (!appointment) {
+            return sendResponse(res, false, null, "Turno no encontrado", 404);
+        }
+        sendResponse(res, true, appointment);
+    } catch (err) {
+        console.error("[ECC-Controller] getAppointmentById error:", err);
+        sendResponse(res, false, null, "Error al recuperar el turno", 500);
     }
 };

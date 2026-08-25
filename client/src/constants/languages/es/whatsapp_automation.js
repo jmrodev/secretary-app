@@ -1,17 +1,9 @@
 export const whatsapp_automation = {
     // WhatsApp Automation
     whatsapp_automation_title: "Automatización de WhatsApp (IA)",
-    whatsapp_auto_respond_unknown_label: "Responder automáticamente a números desconocidos",
-    whatsapp_auto_respond_unknown_hint: "Si está activado, la IA enviará automáticamente un saludo y el link de registro a cualquier número que no esté en tu agenda.",
 
     // WhatsApp Page Config
     wa_config_doctor: "Médico",
-    wa_config_prompt_label: "Prompt / Contexto de la IA",
-    wa_config_prompt_hint: "Este texto define cómo se comporta la IA al responder pacientes.",
-    wa_config_prompt_restore: "Restaurar base",
-    wa_config_model_label: "Configuración del modelo",
-    wa_config_model: "Modelo",
-    wa_config_history: "Historial (mensajes)",
     wa_config_quick_label: "Respuestas rápidas",
     wa_config_quick_hint: "Tocá una respuesta para copiarla al clipboard y usarla en el chat.",
     wa_config_save: "Guardar configuración",
@@ -36,4 +28,26 @@ export const whatsapp_automation = {
 
     // Copy button
     wa_copy_btn: "Copiar",
+
+    // Pending approvals queue (supervised auto-booking)
+    pending_approval_title: "Aprobaciones pendientes",
+    pending_approval_banner_one: "{count} aprobación pendiente",
+    pending_approval_banner_many: "{count} aprobaciones pendientes",
+    pending_approval_open: "Abrir aprobaciones pendientes",
+    pending_approval_close: "Cerrar aprobaciones pendientes",
+    pending_approval_empty: "No hay aprobaciones pendientes",
+    pending_approval_accept: "Aceptar",
+    pending_approval_suggest: "Sugerir alternativa",
+    pending_approval_reject: "Rechazar",
+    pending_approval_status_alternative: "Esperando respuesta del paciente",
+    pending_approval_accept_success: "Turno aprobado y confirmado ✅",
+    pending_approval_accept_error: "Error al aprobar el turno",
+    pending_approval_accept_taken: "Ya fue aprobado por otra persona",
+    pending_approval_accept_slot_taken: "El turno ya no está disponible",
+    pending_approval_accept_phone_changed: "El paciente cambió su número. El pedido fue rechazado.",
+    pending_approval_suggest_success: "Alternativa enviada al paciente",
+    pending_approval_suggest_error: "Error al enviar la alternativa",
+    pending_approval_reject_success: "Pedido rechazado",
+    pending_approval_reject_error: "Error al rechazar el pedido",
+    pending_approval_loading: "Cargando aprobaciones...",
 };

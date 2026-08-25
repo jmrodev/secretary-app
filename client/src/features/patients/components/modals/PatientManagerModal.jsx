@@ -1,9 +1,9 @@
 
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
-import PatientForm from '@/features/patients/components/forms/PatientForm';
-import Loading from '@/components/atoms/Loading';
-import Icon from '@/components/atoms/Icon';
+import { Modal } from '@/components/molecules/Modal';
+import { PatientForm } from '@/features/patients/components/forms/PatientForm';
+import { Loading } from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
 import { usePatientFormController } from '@/features/patients/hooks/usePatientFormController';
 import styles from './PatientManagerModal.module.css';
 
@@ -13,7 +13,7 @@ const EMPTY_ARRAY = [];
  * PatientManagerModal Molecule (Executor).
  * Orchestrator modal for adding or editing a patient.
  */
-const PatientManagerModal = ({
+export const PatientManagerModal = ({
     isOpen,
     onClose,
     patient,
@@ -39,14 +39,14 @@ const PatientManagerModal = ({
     } = controller;
 
     const title = isEdit ? t('edit_patient') : t('register_new_patient');
-    const baseClass = styles.root;
+    const baseClass = styles.PatientManagerModal__root;
 
     return (
         <Modal
             isOpen={isOpen}
             onClose={onClose}
             title={title}
-            size="xl"
+            size="lg"
         >
             <article className={`${baseClass} ${baseClass}--full-width`}>
                 {referenceInfo && !isEdit && (
@@ -76,4 +76,3 @@ const PatientManagerModal = ({
     );
 };
 
-export default PatientManagerModal;

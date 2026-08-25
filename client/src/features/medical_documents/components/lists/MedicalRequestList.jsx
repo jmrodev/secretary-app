@@ -1,19 +1,19 @@
 
 import React from 'react';
-import Pagination from '@/components/atoms/Pagination';
-import { useAuth } from '@/features/auth';
+import { Pagination } from '@/components/atoms/Pagination';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { isToday, formatDate } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './MedicalRequestList.module.css';
 
 /**
  * MedicalRequestList Organism (Feature-based).
  * Renders a list of medical requests (prescriptions, licenses, certificates).
  */
-const MedicalRequestList = ({
+export const MedicalRequestList = ({
     requests,
     loading,
     handleDeleteRequest,
@@ -31,29 +31,26 @@ const MedicalRequestList = ({
 
     if (!loading && (!requests || requests.length === 0)) {
         return (
-            <section className={`${styles.empty} animate-fade-in`}>
-                <h2 className="visually-hidden">{t('no_requests')}</h2>
-                <Icon name="description" size="3rem" className={`${styles.emptyIcon}`} />
+            <section className={`${styles.MedicalRequestList__empty} animate-fade-in`}>
+                <Icon name="description" size="3rem" className={`${styles.MedicalRequestList__emptyIcon}`} />
                 {t('no_requests')}
             </section>
         );
     }
 
     return (
-        <section className={`${styles.root} ${loading ? 'medical-requests--loading' : 'animate-fade-in'}`}>
-            <h2 className="visually-hidden">{t('medical_requests')}</h2>
-            <article className={`${styles.container}`}>
-                <h3 className="visually-hidden">{t('requests_list')}</h3>
-                <table className={`${styles.table} table-base`}>
+        <section className={`${styles.MedicalRequestList__root} ${loading ? 'medical-requests--loading' : 'animate-fade-in'}`}>
+            <article className={`${styles.MedicalRequestList__container}`}>
+                <table className={`${styles.MedicalRequestList__table} table-base`}>
                     <thead>
                         <tr>
-                            <th className={`${styles.th} ${styles.thType}`}>{t('type')}</th>
-                            <th className={`${styles.th}`}>{t('date') || 'Fecha'}</th>
-                            <th className={`${styles.th}`}>{t('patient')}</th>
-                            <th className={`${styles.th}`}>{t('doctor')}</th>
-                            <th className={`${styles.th} ${styles.thStatus}`}>{t('status')}</th>
-                            <th className={`${styles.th} ${styles.thPayment}`}>{t('payment')}</th>
-                            <th className={`${styles.th} ${styles.thActions}`}>{t('actions')}</th>
+                            <th className={`${styles.MedicalRequestList__th} ${styles.MedicalRequestList__thType}`}>{t('type')}</th>
+                            <th className={`${styles.MedicalRequestList__th}`}>{t('date') || 'Fecha'}</th>
+                            <th className={`${styles.MedicalRequestList__th}`}>{t('patient')}</th>
+                            <th className={`${styles.MedicalRequestList__th}`}>{t('doctor')}</th>
+                            <th className={`${styles.MedicalRequestList__th} ${styles.MedicalRequestList__thStatus}`}>{t('status')}</th>
+                            <th className={`${styles.MedicalRequestList__th} ${styles.MedicalRequestList__thPayment}`}>{t('payment')}</th>
+                            <th className={`${styles.MedicalRequestList__th} ${styles.MedicalRequestList__thActions}`}>{t('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -65,11 +62,11 @@ const MedicalRequestList = ({
                                     r.payment_status === 'bonified' ? 'bonified' : 'pending';
 
                             return (
-                                <tr key={r.id} className={`${styles.row} ${!isPending ? styles.rowCompleted : ''}`}>
-                                    <td className={`${styles.td} medical-requests__td--type`}>
-                                        <div className={`${styles.typeCell}`}>
+                                <tr key={r.id} className={`${styles.MedicalRequestList__row} ${!isPending ? styles.MedicalRequestList__rowCompleted : ''}`}>
+                                    <td className={`${styles.MedicalRequestList__td} medical-requests__td--type`}>
+                                        <div className={`${styles.MedicalRequestList__typeCell}`}>
                                             <span
-                                                className={`${styles.typeTag} ${styles.typeTagClickable} medical-requests__type-tag--${r.type}`}
+                                                className={`${styles.MedicalRequestList__typeTag} ${styles.MedicalRequestList__typeTagClickable} medical-requests__type-tag--${r.type}`}
                                                 onClick={() => handleEditRequest({ ...r, _origin: 'request', _readOnly: true })}
                                                 onKeyDown={(e) => {
                                                     if (e.key === 'Enter' || e.key === ' ') {
@@ -84,48 +81,48 @@ const MedicalRequestList = ({
                                                 {r.type === 'prescription' ? t('prescription') : (r.type === 'license' ? t('license') : (r.type === 'certificate' ? t('certificate') : r.type))}
                                             </span>
                                             {!!r.is_patient_submitted && (
-                                                <span className={`${styles.sourceTag}`}>
+                                                <span className={`${styles.MedicalRequestList__sourceTag}`}>
                                                     <Icon name="smartphone" size="1rem" /> App
                                                 </span>
                                             )}
                                         </div>
                                     </td>
-                                    <td className={`${styles.td}`}>
-                                        <div className={`${styles.date}`} title={formatDate(r.created_at, { time: true })}>
+                                    <td className={`${styles.MedicalRequestList__td}`}>
+                                        <div className={`${styles.MedicalRequestList__date}`} title={formatDate(r.created_at, { time: true })}>
                                             {formatDate(r.created_at)}
                                         </div>
                                     </td>
-                                    <td className={`${styles.td}`}>
-                                        <div className={`${styles.patientName}`}>{r.patient_name}</div>
+                                    <td className={`${styles.MedicalRequestList__td}`}>
+                                        <div className={`${styles.MedicalRequestList__patientName}`}>{r.patient_name}</div>
                                     </td>
-                                    <td className={`${styles.td}`}>
-                                        <div className={`${styles.doctorName}`}>
+                                    <td className={`${styles.MedicalRequestList__td}`}>
+                                        <div className={`${styles.MedicalRequestList__doctorName}`}>
                                             Dr. {r.doctor_name ? r.doctor_name.split(' ').pop() : '---'}
                                         </div>
                                     </td>
-                                    <td className={`${styles.td}`}>
-                                        <div className={`${styles.statusCell}`}>
-                                            <span className={`${styles.statusTag} medical-requests__status-tag--${r.status}`}>
+                                    <td className={`${styles.MedicalRequestList__td}`}>
+                                        <div className={`${styles.MedicalRequestList__statusCell}`}>
+                                            <span className={`${styles.MedicalRequestList__statusTag} medical-requests__status-tag--${r.status}`}>
                                                 {t(r.status) || r.status}
                                             </span>
                                             {r.doctor_note && (
-                                                <div className={`${styles.reply}`} title={r.doctor_note}>
+                                                <div className={`${styles.MedicalRequestList__reply}`} title={r.doctor_note}>
                                                     <b>{t('reply')}:</b> {r.doctor_note}
                                                 </div>
                                             )}
                                         </div>
                                     </td>
-                                    <td className={`${styles.td}`}>
-                                        <div className={`${styles.paymentInfo}`}>
-                                            <div className={`${styles.paymentBadge} medical-requests__payment-badge--${paymentStatusClass}`}>
-                                                <span className={`${styles.paymentDot}`}></span>
+                                    <td className={`${styles.MedicalRequestList__td}`}>
+                                        <div className={`${styles.MedicalRequestList__paymentInfo}`}>
+                                            <div className={`${styles.MedicalRequestList__paymentBadge} medical-requests__payment-badge--${paymentStatusClass}`}>
+                                                <span className={`${styles.MedicalRequestList__paymentDot}`}></span>
                                                 {r.payment_status === 'paid' ? t('paid') :
                                                     ((r.payment_status === 'debt' || r.payment_status === 'partial') ? `${t(r.payment_status) || (r.payment_status === 'partial' ? 'Parcial' : 'Deuda')} ${formatCurrency(r.debt_amount)}` :
                                                         (r.payment_status === 'bonified' ? (t('bonified') || 'Bonificado') : t('pending')))}
                                             </div>
 
                                             {r.payment_method && (
-                                                <div className={`${styles.paymentMethod}`}>
+                                                <div className={`${styles.MedicalRequestList__paymentMethod}`}>
                                                     <Icon
                                                         name={r.payment_method === 'cash' ? 'payments' : r.payment_method === 'transfer' ? 'account_balance' : 'credit_card'}
                                                         size="1rem"
@@ -136,13 +133,14 @@ const MedicalRequestList = ({
                                             )}
                                         </div>
                                     </td>
-                                    <td className={`${styles.td} medical-requests__td--actions`}>
-                                        <div className={`${styles.actions}`}>
+                                    <td className={`${styles.MedicalRequestList__td} medical-requests__td--actions`}>
+                                        <div className={`${styles.MedicalRequestList__actions}`}>
                                             {(r.payment_status !== 'paid' && r.payment_status !== 'bonified') && (user?.role === 'secretary' || user?.role === 'doctor') && (
                                                 <>
                                                     <Button
                                                         variant="ghost"
                                                         size="sm-compact"
+                                                        className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnPay}`}
                                                         onClick={() => setPaymentModal({
                                                             open: true,
                                                             initialData: {
@@ -158,12 +156,13 @@ const MedicalRequestList = ({
                                                             },
                                                             reqId: r.id
                                                         })}
-                                                        title="Cobrar"
+                                                        title={t('collect') || "Cobrar"}
                                                         icon={<Icon name="payments" size="1rem" />}
                                                     />
                                                     <Button
                                                         variant="ghost"
                                                         size="sm-compact"
+                                                        className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnBonify}`}
                                                         onClick={() => onBonify(r.id)}
                                                         title={t('bonify') || 'Bonificar'}
                                                         icon={<Icon name="card_giftcard" size="1rem" />}
@@ -175,6 +174,7 @@ const MedicalRequestList = ({
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
+                                                    className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnDone}`}
                                                     onClick={() => openActionModal('completed', r.id)}
                                                     title={t('mark_as_done')}
                                                     icon={<Icon name="task_alt" size="1rem" />}
@@ -185,6 +185,7 @@ const MedicalRequestList = ({
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
+                                                    className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnReject}`}
                                                     onClick={() => openActionModal('rejected', r.id)}
                                                     title={t('reject')}
                                                     icon={<Icon name="block" size="1rem" />}
@@ -194,6 +195,7 @@ const MedicalRequestList = ({
                                             <Button
                                                 variant="ghost"
                                                 size="sm-compact"
+                                                className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnView}`}
                                                 onClick={() => handleEditRequest({ ...r, _origin: 'request', _readOnly: true })}
                                                 title={t('view') || 'Ver'}
                                                 icon={<Icon name="visibility" size="1rem" />}
@@ -203,6 +205,7 @@ const MedicalRequestList = ({
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
+                                                    className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnEdit}`}
                                                     onClick={() => handleEditRequest({ ...r, _origin: 'request' })}
                                                     title={t('edit') || 'Editar'}
                                                     icon={<Icon name="edit" size="1rem" />}
@@ -213,8 +216,9 @@ const MedicalRequestList = ({
                                                 <Button
                                                     variant="ghost"
                                                     size="sm-compact"
+                                                    className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnDelete}`}
                                                     onClick={() => handleDeleteRequest(r.id, r)}
-                                                    title="Eliminar"
+                                                    title={t('delete') || 'Eliminar'}
                                                     icon={<Icon name="delete" size="1rem" />}
                                                 />
                                             )}
@@ -241,4 +245,3 @@ const MedicalRequestList = ({
     );
 };
 
-export default MedicalRequestList;

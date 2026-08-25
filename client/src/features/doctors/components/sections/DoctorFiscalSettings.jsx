@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
-import Switch from '@/components/atoms/Switch';
-import FormGroup from '@/components/molecules/FormGroup';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Switch } from '@/components/atoms/Switch';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './DoctorFiscalSettings.module.css';
 
@@ -11,7 +11,7 @@ import styles from './DoctorFiscalSettings.module.css';
  * Molecule for displaying Doctor's AFIP/Fiscal settings.
  * Pure Presentational Component.
  */
-const DoctorFiscalSettings = ({
+export const DoctorFiscalSettings = ({
     // Data Props
     data,
     generatedCsr,
@@ -49,9 +49,9 @@ const DoctorFiscalSettings = ({
     };
 
     return (
-        <div className={`${styles.root}`}>
-            <div className={`${styles.card}`}>
-                <div className={`${styles.header}`}>
+        <div className={`${styles.DoctorFiscalSettings__root}`}>
+            <div className={`${styles.DoctorFiscalSettings__card}`}>
+                <div className={`${styles.DoctorFiscalSettings__header}`}>
                     <Switch
                         label={t('enable_afip_billing')}
                         checked={data.afip_enabled === true || data.afip_enabled === 'true' || data.afip_enabled === 1}
@@ -59,16 +59,18 @@ const DoctorFiscalSettings = ({
                     />
                 </div>
 
-                <div className={`${styles.grid}`}>
-                    <FormGroup label={t('billing_cuit')}>
+                <div className={`${styles.DoctorFiscalSettings__grid}`}>
+                    <FormGroup label={t('billing_cuit')} htmlFor="fiscal-cuit">
                         <Input
+                            id="fiscal-cuit"
                             value={data.afip_cuit || ''}
                             onChange={(e) => onChangeData({ afip_cuit: e.target.value })}
                             placeholder="20123456789"
                         />
                     </FormGroup>
-                    <FormGroup label={t('pto_vta')}>
+                    <FormGroup label={t('pto_vta')} htmlFor="fiscal-pto-vta">
                         <Input
+                            id="fiscal-pto-vta"
                             value={data.afip_pto_vta || '1'}
                             onChange={(e) => onChangeData({ afip_pto_vta: e.target.value })}
                             type="number"
@@ -77,13 +79,13 @@ const DoctorFiscalSettings = ({
                 </div>
             </div>
 
-            <div className={`${styles.section}`}>
-                <h6 className={`${styles.title}`}>{t('digital_certificates')}</h6>
-                <p className={`${styles.description}`}>
+            <div className={`${styles.DoctorFiscalSettings__section}`}>
+                <h6 className={`${styles.DoctorFiscalSettings__title}`}>{t('digital_certificates')}</h6>
+                <p className={`${styles.DoctorFiscalSettings__description}`}>
                     {t('valid_certificate_needed')}
                 </p>
 
-                <div className={`${styles.actions}`}>
+                <div className={`${styles.DoctorFiscalSettings__actions}`}>
                     <Button size="sm" variant="secondary" onClick={onGenerateCsr} loading={generatingCsr} icon={<Icon name="settings" size="1.1rem" />}>
                         {t('generate_csr')}
                     </Button>
@@ -100,19 +102,20 @@ const DoctorFiscalSettings = ({
                 </div>
 
                 {generatedCsr && showCsrInfo && (
-                    <div className={`${styles.csrBox} animate-fade-in`}>
-                        <div className={`${styles.csrHeader}`}>
-                            <h6 className={`${styles.csrTitle}`}>{t('csr_generated_title')}</h6>
-                            <Button onClick={onHideCsrInfo} className={`${styles.csrClose}`} unstyled>{t('hide')}</Button>
+                    <div className={`${styles.DoctorFiscalSettings__csrBox} animate-fade-in`}>
+                        <div className={`${styles.DoctorFiscalSettings__csrHeader}`}>
+                            <h6 className={`${styles.DoctorFiscalSettings__csrTitle}`}>{t('csr_generated_title')}</h6>
+                            <Button onClick={onHideCsrInfo} className={`${styles.DoctorFiscalSettings__csrClose}`} unstyled>{t('hide')}</Button>
                         </div>
                         <textarea
                             readOnly
                             value={generatedCsr}
-                            className={`${styles.textarea}`}
+                            className={`${styles.DoctorFiscalSettings__textarea}`}
                             onClick={e => e.target.select()}
+                            aria-label={t('your_csr') || 'Your Certificate Request (CSR)'}
                         />
-                        <div className={`${styles.csrFooter}`}>
-                            <span className={`${styles.hint}`}>{t('copy_to_wsass')}</span>
+                        <div className={`${styles.DoctorFiscalSettings__csrFooter}`}>
+                            <span className={`${styles.DoctorFiscalSettings__hint}`}>{t('copy_to_wsass')}</span>
                             <Button size="sm" variant="primary" onClick={handleCopyCsr} icon={<Icon name="content_copy" size="1.1rem" />}>
                                 {t('copy_text')}
                             </Button>
@@ -120,9 +123,9 @@ const DoctorFiscalSettings = ({
                     </div>
                 )}
 
-                <div className={`${styles.statusSection}`}>
-                    <div className={`${styles.statusHeader}`}>
-                        <h6 className={`${styles.title}`}>{t('connection_test_title')}</h6>
+                <div className={`${styles.DoctorFiscalSettings__statusSection}`}>
+                    <div className={`${styles.DoctorFiscalSettings__statusHeader}`}>
+                        <h6 className={`${styles.DoctorFiscalSettings__title}`}>{t('connection_test_title')}</h6>
                         <Button
                             size="sm"
                             variant="secondary"
@@ -135,13 +138,13 @@ const DoctorFiscalSettings = ({
                     </div>
 
                     {connectionStatus === 'ok' && (
-                        <div className={`${styles.statusBox} ${styles.statusBoxSuccess} animate-fade-in`}>
-                            <div className={`${styles.statusIcon}`}>
+                        <div className={`${styles.DoctorFiscalSettings__statusBox} ${styles.DoctorFiscalSettings__statusBoxSuccess} animate-fade-in`}>
+                            <div className={`${styles.DoctorFiscalSettings__statusIcon}`}>
                                 <Icon name="check_circle" size="1.5rem" />
                             </div>
-                            <div className={`${styles.statusContent}`}>
+                            <div className={`${styles.DoctorFiscalSettings__statusContent}`}>
                                 <strong>{t('afip_connection_success')}</strong>
-                                <pre className={`${styles.statusDetails}`}>
+                                <pre className={`${styles.DoctorFiscalSettings__statusDetails}`}>
                                     {JSON.stringify(statusDetails, null, 2)}
                                 </pre>
                             </div>
@@ -149,23 +152,23 @@ const DoctorFiscalSettings = ({
                     )}
 
                     {connectionStatus === 'error' && (
-                        <div className={`${styles.statusBox} ${styles.statusBoxError} animate-fade-in`}>
-                            <div className={`${styles.statusIcon}`}>
+                        <div className={`${styles.DoctorFiscalSettings__statusBox} ${styles.DoctorFiscalSettings__statusBoxError} animate-fade-in`}>
+                            <div className={`${styles.DoctorFiscalSettings__statusIcon}`}>
                                 <Icon name="error" size="1.5rem" />
                             </div>
-                            <div className={`${styles.statusContent}`}>
+                            <div className={`${styles.DoctorFiscalSettings__statusContent}`}>
                                 <strong>{t('afip_connection_error')}</strong>
-                                <p className={`${styles.statusMessage}`}>{String(statusDetails)}</p>
+                                <p className={`${styles.DoctorFiscalSettings__statusMessage}`}>{String(statusDetails)}</p>
                             </div>
                         </div>
                     )}
 
-                    <details className={`${styles.guide}`}>
-                        <summary className={`${styles.guideSummary}`}>
+                    <details className={`${styles.DoctorFiscalSettings__guide}`}>
+                        <summary className={`${styles.DoctorFiscalSettings__guideSummary}`}>
                             <Icon name="history_edu" size="1.2rem" />
                             {t('afip_setup_guide')}
                         </summary>
-                        <ol className={`${styles.guideList}`}>
+                        <ol className={`${styles.DoctorFiscalSettings__guideList}`}>
                             <li>{t('afip_guide_step_1')}</li>
                             <li>{t('afip_guide_step_2')}</li>
                             <li>{t('afip_guide_step_3')}</li>
@@ -182,4 +185,4 @@ const DoctorFiscalSettings = ({
     );
 };
 
-export default DoctorFiscalSettings;
+

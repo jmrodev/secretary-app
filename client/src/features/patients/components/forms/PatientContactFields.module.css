@@ -1,46 +1,42 @@
-.root {
-    --card-padding: 1.5rem;
-    
-    background-color: var(--dashboard-card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: var(--card-padding);
-    box-shadow: var(--shadow-sm);
+.PatientContactFields__root {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
     grid-column: span 12;
 }
 
-.header {
+.PatientContactFields__header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     color: var(--primary-color);
 }
 
-.title {
+.PatientContactFields__title {
     font-size: 1rem;
     font-weight: 700;
     margin: 0;
     letter-spacing: -0.02em;
 }
 
-.bento {
+.PatientContactFields__bento {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 1.25rem;
 }
 
-.group {
+.PatientContactFields__group {
     display: flex;
     flex-direction: column;
     gap: 0.125rem;
 }
 
-.groupSpan12 { grid-column: span 12; }
+.PatientContactFields__groupSpan12 { grid-column: span 12; }
+.PatientContactFields__groupSpan7 { grid-column: span 7; }
+.PatientContactFields__groupSpan6 { grid-column: span 6; }
+.PatientContactFields__groupSpan5 { grid-column: span 5; }
 
-.label {
+.PatientContactFields__label {
     font-size: 0.625rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -48,22 +44,19 @@
     letter-spacing: 0.05em;
 }
 
-.inputWithAction {
+.PatientContactFields__inputWithAction {
     display: flex;
     gap: 0.5rem;
     align-items: center;
 }
 
-.inputWithAction :first-child {
+.PatientContactFields__inputWithAction :first-child {
     flex: 1;
 }
 
-.phones {
-    margin-top: 0.5rem;
-}
 
 @media (width <= 48rem) {
-    .bento {
+    .PatientContactFields__bento {
         display: flex;
         flex-direction: column;
     }

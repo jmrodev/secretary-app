@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
 import styles from './AppointmentMedicalPanel.module.css';
 
 /**
  * AppointmentMedicalPanel Molecule (Internal to feature).
  */
-const AppointmentMedicalPanel = ({
+export const AppointmentMedicalPanel = ({
     appt, user, permissions, t, onHistory, onPrescribe, onUpdateStatus, note, setNote, onSaveNote, confirm, onClose
 }) => {
     const { canDeletePrescription, canDeleteFile } = permissions;
@@ -15,7 +15,7 @@ const AppointmentMedicalPanel = ({
     const showPrescribe = user.role === 'doctor' || user.role === 'admin' || canDeletePrescription;
     const isDoctorOrAdmin = user.role === 'doctor' || user.role === 'admin';
 
-    const baseClass = styles.root;
+    const baseClass = styles.AppointmentMedicalPanel__root;
 
     return (
         <section className={baseClass}>
@@ -72,4 +72,3 @@ const AppointmentMedicalPanel = ({
     );
 };
 
-export default AppointmentMedicalPanel;

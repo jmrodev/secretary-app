@@ -7,6 +7,44 @@ import { getServiceTypes } from '@/constants/transactionOptions';
 import { capitalizeFirst } from '@/utils/core/stringUtils';
 import { toInputDateTime, getNow } from '@/utils/core/dateUtils';
 
+export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0) => {
+    if (!appt) return '';
+    const formatTime = (ts) => {
+        if (!ts) return null;
+        try {
+            const d = new Date(ts);
+            if (isNaN(d.getTime())) return null;
+            return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        } catch (e) {
+            return null;
+        }
+    };
+
+    const milestones = [];
+    if (appt.created_at) milestones.push(`Creado: ${formatTime(appt.created_at)}`);
+    if (appt.confirmed_at) milestones.push(`Conf: ${formatTime(appt.confirmed_at)}`);
+    if (appt.arrived_at) milestones.push(`Sala: ${formatTime(appt.arrived_at)}`);
+    if (appt.completed_at) milestones.push(`Atendido: ${formatTime(appt.completed_at)}`);
+    if (appt.paid_at) milestones.push(`Pagado: ${formatTime(appt.paid_at)}`);
+
+    const totalCost = Number(appt.cost) || 0;
+    const prevPaid = Number(appt.paid_amount) || 0;
+    const currentPaid = Number(paymentAmount) || 0;
+    const totalCobrado = prevPaid + currentPaid;
+    const saldoTurno = Math.max(0, totalCost - totalCobrado);
+
+    const name = patientName || appt.patient_name || appt.full_name || '';
+    let desc = `Turno - ${name}`;
+    if (milestones.length > 0) {
+        desc += ` | Hitos: ${milestones.join(', ')}`;
+    } else if (appt.appointment_date) {
+        desc += ` - ${new Date(appt.appointment_date).toLocaleDateString()}`;
+    }
+
+    desc += ` | Total: $${totalCost} | Cobrado: $${totalCobrado} | Saldo: $${saldoTurno}`;
+    return desc;
+};
+
 export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, onClose) => {
     const { t } = useLanguage();
     const { alert } = useModal();
@@ -49,19 +87,27 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         }
     }, []);
 
-    const fetchPricing = useCallback(async (docId, patId, serviceType = 'consultation') => {
+    const fetchPricing = useCallback(async (docId, patId, serviceType = 'consultation', initialAmount = null) => {
         if (!docId) return;
         try {
             const data = await financeService.getPricing(docId, patId || null, serviceType);
-            if (data) {
+            if (data && data.price !== undefined) {
+                const recommendedPrice = Number(data.price) || 0;
+                // Only override if no pre-existing fixed positive initialAmount was provided
+                const finalPrice = (initialAmount !== null && initialAmount !== undefined && Number(initialAmount) > 0)
+                    ? Number(initialAmount)
+                    : recommendedPrice;
+
                 setFormData(prev => {
                     const newPayments = prev.payments.map((p, index) => 
-                        index === 0 ? { ...p, amount: data.price } : p
+                        index === 0 ? { ...p, amount: finalPrice } : p
                     );
                     return { ...prev, payments: newPayments };
                 });
-                setTotalPrice(Number(data.price) || 0);
-                setPricingInfo(data.explanation);
+                setTotalPrice(finalPrice);
+                if (data.explanation) {
+                    setPricingInfo(data.explanation);
+                }
             }
         } catch (err) {
             console.error("Failed to fetch pricing", err);
@@ -79,10 +125,15 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
         const localIso = toInputDateTime(getNow());
 
+        let initialDescription = data.description || '';
+        if (data.appointment) {
+            initialDescription = generateAppointmentBitacora(data.appointment, data.patientName, data.amount !== undefined ? data.amount : 0);
+        }
+
         const newFormState = {
             type: data.type || 'income_patient',
             payments: data.payments ? data.payments.map(p => ({ ...p, _tmpId: p._tmpId || Math.random() })) : [{ _tmpId: Date.now(), amount: data.amount !== undefined ? data.amount : '', method: data.method || 'cash' }],
-            description: data.description || '',
+            description: initialDescription,
             related_user_id: (data.related_user_id || data.patientUserId) ? String(data.related_user_id || data.patientUserId) : '',
             patient_id: data.patientId || data.patient_id || '',
             doctor_id: data.doctorId ? String(data.doctorId) : '',
@@ -110,12 +161,12 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             setSelectedPatient(null);
         }
 
-        if (data.amount) {
-            setTotalPrice(Number(data.amount) || 0);
+        if (data.amount !== undefined && data.amount !== null && data.amount !== '' && Number(data.amount) > 0) {
+            setTotalPrice(Number(data.amount));
         }
 
-        if (data.doctorId && (!data.amount || Number(data.amount) === 0)) {
-            fetchPricing(data.doctorId, data.patientId || null, initialServiceType);
+        if (data.doctorId) {
+            fetchPricing(data.doctorId, data.patientId || null, initialServiceType, data.amount);
         }
     }, [initialData, fetchPricing]);
 
@@ -159,24 +210,24 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             const pName = selectedPatient ? selectedPatient.full_name : '';
 
             if (pName) {
-                const labels = getServiceTypes(t).reduce((acc, curr) => ({ ...acc, [curr.value]: curr.label }), {});
+                const labels = Object.fromEntries(getServiceTypes(t).map(({ value, label }) => [value, label]));
                 const typeLabel = labels[newType] || newType;
                 newDesc = `${typeLabel}: ${pName}`;
             }
             return { ...prev, service_type: newType, description: newDesc };
         });
 
-        // Re-fetch pricing
-        if (formData.doctor_id && selectedPatient) {
-            fetchPricing(formData.doctor_id, selectedPatient.id, newType);
+        // Re-fetch pricing when service type changes
+        if (formData.doctor_id) {
+            fetchPricing(formData.doctor_id, selectedPatient?.id || formData.patient_id || null, newType);
         }
     };
 
     const updateDoctor = (newDocId) => {
         const docIdStr = newDocId ? String(newDocId) : '';
         setFormData(prev => ({ ...prev, doctor_id: docIdStr }));
-        if (formData.type === 'income_patient' && selectedPatient) {
-            fetchPricing(docIdStr, selectedPatient.id, formData.service_type);
+        if (docIdStr && formData.type === 'income_patient') {
+            fetchPricing(docIdStr, selectedPatient?.id || formData.patient_id || null, formData.service_type);
         }
     };
 
@@ -223,7 +274,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             Object.keys(formData).forEach(key => {
                 if (key === 'payments') {
                     payload.append(key, JSON.stringify(formData[key]));
-                } else if (formData[key] !== null) {
+                } else if (formData[key] !== null && formData[key] !== undefined && formData[key] !== '') {
                     payload.append(key, formData[key]);
                 }
             });
@@ -255,8 +306,9 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             if (onSuccess) await onSuccess(data);
             onClose();
         } catch (err) {
-            alert(t('failed_record_transaction') || 'Error al guardar');
-            console.error(err);
+            const serverMsg = err.response?.data?.error || err.message;
+            console.error("Error creating transaction:", serverMsg, err);
+            alert((t('failed_record_transaction') || 'Error al guardar') + (serverMsg ? `: ${serverMsg}` : ''));
         } finally {
             setLoading(false);
         }

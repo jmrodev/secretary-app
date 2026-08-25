@@ -1,75 +1,84 @@
 /* AuditLogTable Styles (BEM) */
 
-.auditLogTableContainer {
-    background-color: var(--white);
+.AuditLogTable__auditLogTableContainer {
+    background-color: var(--dashboard-card-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-lg, 12px);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
 }
 
-.root {
+.AuditLogTable__root {
     width: 100%;
     border-collapse: collapse;
 }
 
-.thead {
-    background-color: var(--gray-50);
-    border-bottom: 1px solid var(--border-color);
+.AuditLogTable__thead {
+    background-color: var(--gray-900);
 }
 
-.th {
-    padding: 0.75rem 1rem;
+.AuditLogTable__th {
+    padding: 0.875rem 1rem;
     text-align: left;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    color: var(--text-main);
+    background-color: var(--gray-900);
+    border-bottom: 2px solid var(--dashboard-card-bg);
 }
 
-.thDetails {
+.AuditLogTable__thDetails {
     width: 33.333%;
 }
 
-.row {
-    border-bottom: 1px solid var(--gray-100);
-    transition: background-color 0.2s;
+.AuditLogTable__tbody {
+    background-color: var(--dashboard-card-bg);
 }
 
-.row:hover {
-    background-color: var(--gray-50);
+.AuditLogTable__row {
+    border-bottom: 1px solid var(--gray-100, var(--gray-100));
+    transition: background-color 0.15s ease-in-out;
 }
 
-.cell {
-    padding: 0.75rem 1rem;
+.AuditLogTable__row:hover {
+    background-color: var(--gray-100) !important;
+}
+
+.AuditLogTable__row:hover .AuditLogTable__cell {
+    color: var(--gray-900) !important;
+}
+
+.AuditLogTable__cell {
+    padding: 0.875rem 1rem;
     font-size: 0.875rem;
-    color: var(--text-main);
+    color: var(--text-main, var(--background-bg));
 }
 
-.cellTime {
+.AuditLogTable__cellTime {
     white-space: nowrap;
     color: var(--text-muted);
 }
 
-.cellUser {
-    font-weight: 500;
+.AuditLogTable__cellUser {
+    font-weight: 600;
 }
 
-.cellDetails {
+.AuditLogTable__cellDetails {
     max-width: 320px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.detailsWrapper {
+.AuditLogTable__detailsWrapper {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.detailsText {
+.AuditLogTable__detailsText {
     display: block;
     max-width: 200px;
     overflow: hidden;
@@ -78,14 +87,15 @@
     color: var(--text-muted);
 }
 
-.cellIp {
+.AuditLogTable__cellIp {
     font-size: 0.75rem;
     color: var(--text-muted);
     font-family: var(--font-mono, monospace);
 }
 
-.empty {
-    padding: 2rem;
+.AuditLogTable__empty {
+    padding: 3rem 2rem;
     text-align: center;
     color: var(--text-muted);
+    font-weight: 500;
 }

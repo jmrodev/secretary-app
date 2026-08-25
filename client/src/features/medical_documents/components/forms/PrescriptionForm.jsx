@@ -3,8 +3,8 @@ import React, { useState, useMemo } from 'react';
 import { getNow, formatDate } from '@/utils/core/dateUtils';
 
 // Molecules
-import PrescriptionHabitualMeds from '@/features/medical_documents/components/sections/PrescriptionHabitualMeds';
-import PrescriptionItemsList from '@/features/medical_documents/components/lists/PrescriptionItemsList';
+import { PrescriptionHabitualMeds } from '@/features/medical_documents/components/sections/PrescriptionHabitualMeds';
+import { PrescriptionItemsList } from '@/features/medical_documents/components/lists/PrescriptionItemsList';
 
 import styles from '../modals/PrescriptionModal.module.css';
 
@@ -23,7 +23,7 @@ const FREQ_PRESETS = [
  * PrescriptionForm Organism.
  * Orchestrates medication searching, selection from habitual history, and listing for batch processing.
  */
-const PrescriptionForm = ({
+export const PrescriptionForm = ({
     t,
     patientMeds,
     medicationItems,
@@ -223,4 +223,3 @@ const PrescriptionForm = ({
     );
 };
 
-export default PrescriptionForm;

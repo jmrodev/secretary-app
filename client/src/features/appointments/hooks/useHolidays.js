@@ -1,5 +1,5 @@
 import { useFetch } from '@/hooks/useFetch';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 
 /**

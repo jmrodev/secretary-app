@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useAuth } from '@/features/auth';
+import { useSearchParams } from 'react-router-dom';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
 import { useConfig } from '@/context/ConfigContext';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * System Configuration Controller (Feature Hook).
@@ -20,20 +21,19 @@ export const useSystemConfigController = () => {
 
     // Local State
     const [loading, setLoading] = useState(false);
-    const [activeTab, setActiveTab] = useState(() => {
-        const params = new URLSearchParams(window.location.search);
-        return params.get('tab') || 'general';
-    });
 
-    // Synchronize URL search params when activeTab changes
-    useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('tab') !== activeTab) {
-            params.set('tab', activeTab);
-            const newUrl = `${window.location.pathname}?${params.toString()}`;
-            window.history.replaceState({}, '', newUrl);
-        }
-    }, [activeTab]);
+    // Active tab is derived from the URL (?tab=...) via the router so deep
+    // links and browser back/forward work natively. No manual replaceState.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const activeTab = searchParams.get('tab') || 'modules';
+
+    const setActiveTab = useCallback((tab) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set('tab', tab);
+            return next;
+        });
+    }, [setSearchParams]);
 
     // QR Modal State (Managed as a simple object)
     const [qrModal, setQrModal] = useState({ open: false, url: '', expiry: null });
@@ -45,23 +45,24 @@ export const useSystemConfigController = () => {
      * Handles side-effects of OAuth callbacks from URL params
      */
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const status = urlParams.get('status');
+        const status = searchParams.get('status');
 
         if (status === 'success') {
             showMessage('Cuenta de Google Conectada con Éxito', 'success');
-            urlParams.delete('status');
-            const newSearch = urlParams.toString();
-            const newUrl = newSearch ? `${window.location.pathname}?${newSearch}` : window.location.pathname;
-            window.history.replaceState({}, document.title, newUrl);
+            setSearchParams((prev) => {
+                const next = new URLSearchParams(prev);
+                next.delete('status');
+                return next;
+            });
         } else if (status === 'error') {
             showMessage('Error al conectar con Google', 'error');
-            urlParams.delete('status');
-            const newSearch = urlParams.toString();
-            const newUrl = newSearch ? `${window.location.pathname}?${newSearch}` : window.location.pathname;
-            window.history.replaceState({}, document.title, newUrl);
+            setSearchParams((prev) => {
+                const next = new URLSearchParams(prev);
+                next.delete('status');
+                return next;
+            });
         }
-    }, [showMessage, activeTab]);
+    }, [searchParams, setSearchParams, showMessage]);
 
     /**
      * Initiates Google OAuth flow via backend-provided URL

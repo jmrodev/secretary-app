@@ -1,13 +1,13 @@
 /* WhatsAppModal Feature Styles (BEM) */
 
-.root {
+.WhatsAppModal__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     padding: 0.5rem;
 }
 
-.title {
+.WhatsAppModal__title {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -15,29 +15,29 @@
     font-weight: 800;
 }
 
-.footer {
+.WhatsAppModal__footer {
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
     width: 100%;
-    border-top: 1px solid rgb(255 255 255 / 8%);
+    border-top: 1px solid var(--border-color);
     padding-top: 1rem;
     margin-top: 0.5rem;
 }
 
-.info {
+.WhatsAppModal__info {
     padding: 1rem;
     background-color: rgb(34 197 94 / 10%);
     backdrop-filter: blur(16px);
     border: 1px solid rgb(34 197 94 / 20%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.icon {
+.WhatsAppModal__icon {
     width: 2.5rem;
     height: 2.5rem;
     background: rgb(34 197 94 / 20%);
@@ -48,14 +48,14 @@
     font-size: 1.25rem;
 }
 
-.recipient {
+.WhatsAppModal__recipient {
     font-size: 0.875rem;
     color: #22c55e;
     font-weight: 800;
     margin: 0;
 }
 
-.help {
+.WhatsAppModal__help {
     font-size: 0.7rem;
     color: var(--green-700);
     text-transform: uppercase;
@@ -64,29 +64,29 @@
     margin: 0.25rem 0 0;
 }
 
-.textarea {
+.WhatsAppModal__textarea {
     min-height: 120px;
     resize: vertical;
-    border: 1px solid rgb(255 255 255 / 8%);
+    border: 1px solid var(--border-color);
     width: 100%;
     padding: 0.75rem;
     font-size: 0.875rem;
     border-radius: var(--radius-sm);
-    background: rgb(0 0 0 / 20%);
+    background: var(--modal-bg-dark);
     backdrop-filter: blur(16px);
     font-weight: 500;
 }
 
-.textarea:focus {
+.WhatsAppModal__textarea:focus {
     border-color: var(--green-500);
     box-shadow: 0 0 0 3px var(--green-100);
     outline: none;
 }
 
-.sendBtn {
+.WhatsAppModal__sendBtn {
     background-color: var(--green-500);
 }
 
-.sendBtn:hover {
+.WhatsAppModal__sendBtn:hover {
     background-color: var(--green-600);
 }

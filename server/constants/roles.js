@@ -9,10 +9,10 @@ const ACCESS_LEVELS = {
     SYSTEM_ADMIN: [ROLES.ADMIN],
 
     // Core Management (Finance, Institutions, Insurances, Consultorios)
-    MANAGE_CORE_DATA: [ROLES.ADMIN, ROLES.SECRETARY],
+    MANAGE_CORE_DATA: [ROLES.ADMIN, ROLES.SECRETARY, ROLES.DOCTOR],
 
     // Patient Management (Patients details, stats, reminders)
-    MANAGE_PATIENTS: [ROLES.ADMIN, ROLES.SECRETARY],
+    MANAGE_PATIENTS: [ROLES.ADMIN, ROLES.SECRETARY, ROLES.DOCTOR],
 
     // Staff/User Management (Create users, reset passwords)
     MANAGE_USERS: [ROLES.ADMIN, ROLES.SECRETARY],
@@ -21,7 +21,7 @@ const ACCESS_LEVELS = {
     MANAGE_INTEGRATIONS: [ROLES.ADMIN, ROLES.SECRETARY, ROLES.DOCTOR],
 
     // Finance (Transactions, Stats)
-    MANAGE_FINANCE: [ROLES.ADMIN, ROLES.SECRETARY]
+    MANAGE_FINANCE: [ROLES.ADMIN, ROLES.SECRETARY, ROLES.DOCTOR]
 };
 
 module.exports = { ROLES, ACCESS_LEVELS };

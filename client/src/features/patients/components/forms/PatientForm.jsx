@@ -1,17 +1,16 @@
 
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 
 // Local Feature Components
-import PatientIdentityFields from '@/features/patients/components/forms/PatientIdentityFields';
-import PatientInsuranceFields from '@/features/patients/components/forms/PatientInsuranceFields';
-import PatientAccountFields from '@/features/patients/components/forms/PatientAccountFields';
-import PatientContactFields from '@/features/patients/components/forms/PatientContactFields';
-import PatientAddressFields from '@/features/patients/components/forms/PatientAddressFields';
-import PatientInstitutionFields from '@/features/patients/components/forms/PatientInstitutionFields';
-import PatientAdminFields from '@/features/patients/components/forms/PatientAdminFields';
-import PatientMedicalNotes from '@/features/patients/components/forms/PatientMedicalNotes';
+import { PatientIdentityFields } from '@/features/patients/components/forms/PatientIdentityFields';
+import { PatientInsuranceFields } from '@/features/patients/components/forms/PatientInsuranceFields';
+import { PatientAccountFields } from '@/features/patients/components/forms/PatientAccountFields';
+import { PatientContactFields } from '@/features/patients/components/forms/PatientContactFields';
+import { PatientAddressFields } from '@/features/patients/components/forms/PatientAddressFields';
+import { PatientAdminFields } from '@/features/patients/components/forms/PatientAdminFields';
+import { PatientMedicalNotes } from '@/features/patients/components/forms/PatientMedicalNotes';
 import styles from './PatientForm.module.css';
 
 
@@ -22,7 +21,7 @@ const STEPS = [
     { id: 'address', labelKey: 'step_address', icon: 'map' },
     { id: 'contact', labelKey: 'step_contact', icon: 'alternate_email' },
     { id: 'medical', labelKey: 'step_medical', icon: 'medical_services' },
-    { id: 'admin', labelKey: 'step_admin', icon: 'settings' }
+    { id: 'admin', labelKey: 'Administración', icon: 'settings' }
 ];
 
 /**
@@ -30,7 +29,7 @@ const STEPS = [
  * Orchestrates various molecules to provide a comprehensive patient management form.
  * Follows Arquitectura.md: Atomic Design, BEM, and Bento Box contrast.
  */
-const PatientForm = ({
+export const PatientForm = ({
     controller,
     onCancel,
     isEdit = false,
@@ -41,7 +40,6 @@ const PatientForm = ({
         insurances,
         doctors,
         institutions,
-        coveredByInstitution,
         isSubmitting,
         t,
         handlers
@@ -52,7 +50,6 @@ const PatientForm = ({
         setPatientValue,
         toggleDoctorAssignment,
         updatePhoneNumbers,
-        toggleInstitutionCoverage,
         savePatient
     } = handlers;
 
@@ -74,47 +71,39 @@ const PatientForm = ({
     // --- Steps Mapping ---
     const stepContents = {
         personal: (
-            <section className={`${styles.stepContent}`}>
+            <section className={`${styles.PatientForm__stepContent}`}>
                 <PatientIdentityFields formData={formData} updatePatientData={updatePatientData} t={t} />
                 {!isEdit && <PatientAccountFields formData={formData} updatePatientData={updatePatientData} t={t} />}
             </section>
         ),
         insurance: (
-            <section className={`${styles.stepContent}`}>
+            <section className={`${styles.PatientForm__stepContent}`}>
                 <PatientInsuranceFields formData={formData} updatePatientData={updatePatientData} insurances={insurances} t={t} />
             </section>
         ),
         address: (
-            <section className={`${styles.stepContent}`}>
+            <section className={`${styles.PatientForm__stepContent}`}>
                 <PatientAddressFields formData={formData} updatePatientData={updatePatientData} t={t} />
             </section>
         ),
         contact: (
-            <section className={`${styles.stepContent}`}>
+            <section className={`${styles.PatientForm__stepContent}`}>
                 <PatientContactFields formData={formData} updatePatientData={updatePatientData} updatePhoneNumbers={updatePhoneNumbers} t={t} />
             </section>
         ),
         medical: (
-            <section className={`${styles.stepContent}`}>
-                <PatientInstitutionFields
-                    coveredByInstitution={coveredByInstitution}
-                    toggleInstitutionCoverage={toggleInstitutionCoverage}
-                    formData={formData}
-                    updatePatientData={updatePatientData}
-                    institutions={institutions}
-                    t={t}
-                />
-                <PatientMedicalNotes formData={formData} updatePatientData={updatePatientData} t={t} />
+            <section className={`${styles.PatientForm__stepContent}`}>
+                <PatientMedicalNotes formData={formData} updatePatientData={updatePatientData} institutions={institutions} t={t} />
             </section>
         ),
         admin: (
-            <section className={`${styles.stepContent}`}>
+            <section className={`${styles.PatientForm__stepContent}`}>
                 <PatientAdminFields
                     formData={formData}
                     doctors={doctors}
                     handleDoctorToggle={toggleDoctorAssignment}
                     handleManualValueChange={setPatientValue}
-                    handleChange={updatePatientData}
+                    updateAdminFields={updatePatientData}
                     t={t}
                 />
             </section>
@@ -122,16 +111,16 @@ const PatientForm = ({
     };
 
     return (
-        <form onSubmit={savePatient} className={`${styles.root}`} autoComplete="off">
+        <form onSubmit={savePatient} className={`${styles.PatientForm__root}`} autoComplete="off">
             {/* 1. HEADER: Stepper Indicator (Fixed) */}
-            <header className={`${styles.header}`}>
-                <nav className={`${styles.stepper}`}>
+            <header className={`${styles.PatientForm__header}`}>
+                <nav className={`${styles.PatientForm__stepper}`}>
                     {activeSteps.map((step, index) => {
                         const isClickable = index < currentStep;
                         return (
                             <div 
                                 key={step.id} 
-                                className={`${styles.step} ${index === currentStep ? styles.stepActive : ''} ${isClickable ? styles.stepCompleted : ''}`}
+                                className={`${styles.PatientForm__step} ${index === currentStep ? styles.PatientForm__stepActive : ''} ${isClickable ? styles.PatientForm__stepCompleted : ''}`}
                                 onClick={() => isClickable && setCurrentStep(index)}
                                 onKeyDown={(e) => {
                                     if (isClickable && (e.key === 'Enter' || e.key === ' ')) {
@@ -143,10 +132,10 @@ const PatientForm = ({
                                 tabIndex={isClickable ? 0 : -1}
                                 aria-current={index === currentStep ? 'step' : undefined}
                             >
-                                <div className={`${styles.stepIcon}`}>
+                                <div className={`${styles.PatientForm__stepIcon}`}>
                                     <Icon name={index < currentStep ? 'check' : step.icon} size="1.2rem" />
                                 </div>
-                                <span className={`${styles.stepLabel}`}>{t(step.labelKey)}</span>
+                                <span className={`${styles.PatientForm__stepLabel}`}>{t(step.labelKey)}</span>
                             </div>
                         );
                     })}
@@ -154,14 +143,14 @@ const PatientForm = ({
             </header>
 
             {/* 2. MAIN: Form Content (Scrollable) */}
-            <main className={`${styles.main}`}>
+            <main className={`${styles.PatientForm__main}`}>
                 {stepContents[stepId] || null}
             </main>
 
             {/* 3. FOOTER: Navigation Actions (Fixed) */}
-            <footer className={`${styles.footer}`}>
-                <div className={`${styles.actions}`}>
-                    <div className={`${styles.actionsLeft}`}>
+            <footer className={`${styles.PatientForm__footer}`}>
+                <div className={`${styles.PatientForm__actions}`}>
+                    <div className={`${styles.PatientForm__actionsLeft}`}>
                         {currentStep > 0 && (
                             <Button
                                 variant="secondary"
@@ -183,7 +172,7 @@ const PatientForm = ({
                         )}
                     </div>
 
-                    <div className={`${styles.actionsRight}`}>
+                    <div className={`${styles.PatientForm__actionsRight}`}>
                         {currentStep < activeSteps.length - 1 ? (
                             <Button
                                 variant="primary"
@@ -212,4 +201,3 @@ const PatientForm = ({
     );
 };
 
-export default PatientForm;

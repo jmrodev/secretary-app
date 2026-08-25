@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import ThemeToggle from './ThemeToggle';
+import { ThemeToggle } from './ThemeToggle';
 
 describe('ThemeToggle Atom', () => {
     beforeEach(() => {
@@ -12,21 +12,25 @@ describe('ThemeToggle Atom', () => {
 
     it('renders theme toggle button', () => {
         render(<ThemeToggle />);
-        expect(screen.getByRole('button', { name: /modo/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /change_theme_mode|modo/i })).toBeInTheDocument();
     });
 
-    it('toggles data-theme attribute on document.body from dark to light on click', () => {
+    it('cycles data-theme attribute through dark -> dim -> light -> dark', () => {
         render(<ThemeToggle />);
-        const btn = screen.getByRole('button', { name: /modo/i });
-        
-        // Initial state is dark (no light theme)
-        expect(document.body.getAttribute('data-theme')).not.toBe('light');
+        const btn = screen.getByRole('button', { name: /change_theme_mode|modo/i });
 
-        // Click to switch to light theme (Tiza)
+        // Initial state is dark
+        expect(document.body.getAttribute('data-theme')).toBe('dark');
+
+        // Click to switch to dim (Suave)
+        fireEvent.click(btn);
+        expect(document.body.getAttribute('data-theme')).toBe('dim');
+
+        // Click again to switch to light (Tiza)
         fireEvent.click(btn);
         expect(document.body.getAttribute('data-theme')).toBe('light');
 
-        // Click again to switch back to dark theme
+        // Click again to cycle back to dark
         fireEvent.click(btn);
         expect(document.body.getAttribute('data-theme')).toBe('dark');
     });

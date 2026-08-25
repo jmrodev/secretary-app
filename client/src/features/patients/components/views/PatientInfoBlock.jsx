@@ -1,6 +1,6 @@
 
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { formatDate, calculateAge } from '@/utils/core/dateUtils';
 
@@ -11,7 +11,7 @@ import styles from './PatientInfoBlock.module.css';
  * PatientInfoBlock (Executor).
  * Renders the basic information table for a patient.
  */
-const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGeneratePrescriptionLink }) => {
+export const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGeneratePrescriptionLink }) => {
     return (
         <section className="patient-details__block patient-details__block--info">
             <header className="patient-details__block-header">
@@ -22,43 +22,43 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGenerateP
             </header>
 
             <div className="patient-details__block-content">
-                <table className={`${styles.infoTable}`}>
+                <table className={`${styles.PatientInfoBlock__infoTable}`}>
                     <tbody>
-                        <tr className={`${styles.infoRow}`}>
-                            <th className={`${styles.infoLabel}`}>{t('full_name')}</th>
-                            <td className={`${styles.infoValue}`}>
+                        <tr className={`${styles.PatientInfoBlock__infoRow}`}>
+                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('full_name')}</th>
+                            <td className={`${styles.PatientInfoBlock__infoValue}`}>
                                 <span className="patient-details__table-cell-bold">
                                     {details.full_name || `${details.first_name || ''} ${details.last_name || ''}`.trim() || 'N/A'}
                                 </span>
                             </td>
                         </tr>
-                        <tr className={`${styles.infoRow}`}>
-                            <th className={`${styles.infoLabel}`}>{t('dni')}</th>
-                            <td className={`${styles.infoValue}`}>{details.dni || 'N/A'}</td>
+                        <tr className={`${styles.PatientInfoBlock__infoRow}`}>
+                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('dni')}</th>
+                            <td className={`${styles.PatientInfoBlock__infoValue}`}>{details.dni || 'N/A'}</td>
                         </tr>
 
-                        <tr className={`${styles.infoRow}`}>
-                            <th className={`${styles.infoLabel}`}>{t('insurance_short')}</th>
-                            <td className={`${styles.infoValue}`}>
+                        <tr className={`${styles.PatientInfoBlock__infoRow}`}>
+                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('insurance_short')}</th>
+                            <td className={`${styles.PatientInfoBlock__infoValue}`}>
                                 {details.insurance_name || t('particular')}
-                                {details.affiliate_number && <span className={`${styles.infoHint}`}>({details.affiliate_number})</span>}
+                                {details.affiliate_number && <span className={`${styles.PatientInfoBlock__infoHint}`}>({details.affiliate_number})</span>}
                             </td>
                         </tr>
-                        <tr className={`${styles.infoRow}`}>
-                            <th className={`${styles.infoLabel}`}>{t('dob') || 'Fecha Nac.'}</th>
-                            <td className={`${styles.infoValue}`}>
+                        <tr className={`${styles.PatientInfoBlock__infoRow}`}>
+                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('dob') || 'Fecha Nac.'}</th>
+                            <td className={`${styles.PatientInfoBlock__infoValue}`}>
                                 {formatDate(details.dob)}
                                 {details.dob && (
-                                    <span className={`${styles.infoHint}`}>
+                                    <span className={`${styles.PatientInfoBlock__infoHint}`}>
                                         ({calculateAge(details.dob)} {t('years')})
                                     </span>
                                 )}
                             </td>
                         </tr>
-                        <tr className={`${styles.infoRow}`}>
-                            <th className={`${styles.infoLabel}`}>{t('address') || 'Dirección'}</th>
-                            <td className={`${styles.infoValue}`}>
-                                <div className={`${styles.addressBox}`}>
+                        <tr className={`${styles.PatientInfoBlock__infoRow}`}>
+                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('address') || 'Dirección'}</th>
+                            <td className={`${styles.PatientInfoBlock__infoValue}`}>
+                                <div className={`${styles.PatientInfoBlock__addressBox}`}>
                                     {(() => {
                                         const street = details.street_name || details.address;
                                         const hasStreet = Boolean(street && String(street).trim());
@@ -68,7 +68,7 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGenerateP
 
                                         if (!hasStreet) {
                                             return (
-                                                <span className={`${styles.textEmpty}`}>
+                                                <span className={`${styles.PatientInfoBlock__textEmpty}`}>
                                                     {t('no_address_loaded') || 'Sin calle ni altura cargada'}
                                                     {(details.city || details.province) ? ` (${[details.city, details.province].filter(Boolean).join(', ')})` : ''}
                                                 </span>
@@ -86,7 +86,7 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGenerateP
                                         target="_blank"
                                         variant="link"
                                         size="sm"
-                                        className={`${styles.mapLink}`}
+                                        className={`${styles.PatientInfoBlock__mapLink}`}
                                         icon={<Icon name="map" size="0.9rem" />}
                                     >
                                         {t('view_on_map')}
@@ -94,10 +94,10 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGenerateP
                                 )}
                             </td>
                         </tr>
-                        <tr className={`${styles.infoRow}`}>
-                            <th className={`${styles.infoLabel}`}>{t('contact')}</th>
-                            <td className={`${styles.infoValue}`}>
-                                <div className={`${styles.contactList}`}>
+                        <tr className={`${styles.PatientInfoBlock__infoRow}`}>
+                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('contact')}</th>
+                            <td className={`${styles.PatientInfoBlock__infoValue}`}>
+                                <div className={`${styles.PatientInfoBlock__contactList}`}>
                                     {(() => {
                                         const validPhones = (details.phoneNumbers || []).filter(p => p && p.phone_number && String(p.phone_number).trim() !== '');
                                         const hasPhone = validPhones.length > 0;
@@ -105,30 +105,30 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGenerateP
 
                                         if (hasPhone) {
                                             return validPhones.map((p, idx) => (
-                                                <div key={p.phone_number || `phone-${idx}`} className={`${styles.contactItem}`}>
-                                                    <span className={`${styles.contactIndicator} ${p.is_primary ? styles.contactIndicatorPrimary : ''}`}></span>
+                                                <div key={`phone-${p.phone_number}-${p.is_primary}`} className={`${styles.PatientInfoBlock__contactItem}`}>
+                                                    <span className={`${styles.PatientInfoBlock__contactIndicator} ${p.is_primary ? styles.PatientInfoBlock__contactIndicatorPrimary : ''}`}></span>
                                                     <Button
                                                         to={`tel:${String(p.phone_number).replace(/[^0-9+]/g, '')}`}
                                                         variant="phone"
                                                         size="sm"
-                                                        className={`${styles.contactLink}`}
+                                                        className={`${styles.PatientInfoBlock__contactLink}`}
                                                         icon={<Icon name="call" size="0.9rem" />}
                                                     >
                                                         {p.phone_number}
                                                     </Button>
-                                                    {p.label && <span className={`${styles.infoHint}`}>({p.label})</span>}
+                                                    {p.label && <span className={`${styles.PatientInfoBlock__infoHint}`}>({p.label})</span>}
                                                 </div>
                                             ));
                                         }
 
                                         if (fallbackPhone) {
                                             return (
-                                                <div className={`${styles.contactItem}`}>
+                                                <div className={`${styles.PatientInfoBlock__contactItem}`}>
                                                     <Button
                                                         to={`tel:${String(details.phone).replace(/[^0-9+]/g, '')}`}
                                                         variant="phone"
                                                         size="sm"
-                                                        className={`${styles.contactLink}`}
+                                                        className={`${styles.PatientInfoBlock__contactLink}`}
                                                         icon={<Icon name="call" size="0.9rem" />}
                                                     >
                                                         {details.phone}
@@ -138,19 +138,19 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGenerateP
                                         }
 
                                         if (!details.email) {
-                                            return <span className={`${styles.textEmpty}`}>N/A</span>;
+                                            return <span className={`${styles.PatientInfoBlock__textEmpty}`}>{t('not_available_short') || 'N/A'}</span>;
                                         }
 
                                         return null;
                                     })()}
 
                                     {details.email && (
-                                        <div className={`${styles.contactItem} patient-details__contact-item--email`}>
+                                        <div className={`${styles.PatientInfoBlock__contactItem} patient-details__contact-item--email`}>
                                             <Button
                                                 to={`mailto:${details.email}`}
                                                 variant="link"
                                                 size="sm"
-                                                className={`${styles.contactLink} ${styles.contactLinkEmail}`}
+                                                className={`${styles.PatientInfoBlock__contactLink} ${styles.PatientInfoBlock__contactLinkEmail}`}
                                                 icon={<Icon name="mail" size="0.9rem" />}
                                             >
                                                 {details.email}
@@ -160,12 +160,12 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGenerateP
                                 </div>
                             </td>
                         </tr>
-                        <tr className={`${styles.infoRow}`}>
-                            <th className={`${styles.infoLabel}`}>{t('assigned_doctors')}</th>
-                            <td className={`${styles.infoValue}`}>
+                        <tr className={`${styles.PatientInfoBlock__infoRow}`}>
+                            <th className={`${styles.PatientInfoBlock__infoLabel}`}>{t('assigned_doctors')}</th>
+                            <td className={`${styles.PatientInfoBlock__infoValue}`}>
                                 {details.assignedDoctors && details.assignedDoctors.length > 0
                                     ? details.assignedDoctors.map(d => d.full_name).join(', ')
-                                    : <span className={`${styles.textEmpty}`}>{t('none')}</span>}
+                                    : <span className={`${styles.PatientInfoBlock__textEmpty}`}>{t('none')}</span>}
                             </td>
                         </tr>
                     </tbody>
@@ -177,4 +177,3 @@ const PatientInfoBlock = ({ details, t, onGeneratePrescriptionLink: _onGenerateP
     );
 };
 
-export default PatientInfoBlock;

@@ -1,6 +1,6 @@
 /* PatientDetailsView Styles (BEM) - Feature Specific */
 
-.root {
+.PatientDetailsView__root {
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -8,7 +8,7 @@
     animation: fade-in 0.3s ease-out;
 }
 
-.header {
+.PatientDetailsView__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -16,12 +16,12 @@
     border-bottom: 1px solid var(--dashboard-card-border);
 }
 
-.titleArea {
+.PatientDetailsView__titleArea {
     display: flex;
     flex-direction: column;
 }
 
-.title {
+.PatientDetailsView__title {
     font-size: 2.2rem;
     font-weight: 900;
     text-transform: capitalize;
@@ -31,14 +31,14 @@
     margin: 0;
 }
 
-.subtitle {
+.PatientDetailsView__subtitle {
     font-size: 1rem;
     color: var(--text-muted);
     font-weight: 500;
     margin-top: 0.25rem;
 }
 
-.tabsNav {
+.PatientDetailsView__tabsNav {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 1.5rem;
@@ -49,7 +49,7 @@
     border: 1px solid var(--border-color);
 }
 
-.tabLink {
+.PatientDetailsView__tabLink {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -64,44 +64,44 @@
     transition: all 0.2s ease;
 }
 
-.tabLink:hover {
+.PatientDetailsView__tabLink:hover {
     color: var(--primary-color);
     background-color: rgb(128, 128, 128, 0.08);
 }
 
-.tabLinkActive {
+.PatientDetailsView__tabLinkActive {
     background-color: rgb(13, 148, 136, 0.12);
     color: var(--primary-color);
     box-shadow: var(--shadow-sm);
     border: 1px solid rgb(13, 148, 136, 0.25);
 }
 
-.grid {
+.PatientDetailsView__grid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
 }
 
 @media (width >= 1024px) {
-    .grid {
+    .PatientDetailsView__grid {
         grid-template-columns: 2fr 1fr;
     }
 }
 
-.main {
+.PatientDetailsView__main {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.sidebar {
+.PatientDetailsView__sidebar {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
 /* Unified Block Structure (Internal Molecule) */
-.block {
+.PatientDetailsView__block {
     background-color: var(--dashboard-card-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
@@ -111,7 +111,7 @@
     flex-direction: column;
 }
 
-.blockHeader {
+.PatientDetailsView__blockHeader {
     padding: 1rem 1.5rem;
     background-color: var(--dashboard-card-bg);
     border-bottom: 2px solid var(--primary-color);
@@ -120,7 +120,7 @@
     align-items: center;
 }
 
-.blockTitle {
+.PatientDetailsView__blockTitle {
     font-size: 0.9rem;
     font-weight: 800;
     color: var(--text-main);
@@ -132,47 +132,47 @@
     letter-spacing: 0.05em;
 }
 
-.blockContent {
+.PatientDetailsView__blockContent {
     padding: 0;
 }
 
-.blockContentPadded {
+.PatientDetailsView__blockContentPadded {
     padding: 1.5rem;
 }
 
 /* Modifier for sidebar blocks */
-.blockSidebar .blockHeader {
+.PatientDetailsView__blockSidebar .PatientDetailsView__blockHeader {
     padding: 1rem;
     border-bottom-width: 1px;
     background: transparent;
 }
 
-.blockSidebar .blockTitle {
+.PatientDetailsView__blockSidebar .PatientDetailsView__blockTitle {
     font-size: 0.75rem;
 }
 
 /* Colors for headers (Semantics) */
-.blockInfo .blockHeader { border-bottom-color: var(--primary-color); }
-.blockHistory .blockHeader { border-bottom-color: var(--border-color); }
-.blockFinancial .blockHeader { border-bottom-color: var(--danger); }
-.blockTools .blockHeader { border-bottom-color: var(--success); }
-.blockMedications .blockHeader { border-bottom-color: var(--accent-color); }
+.PatientDetailsView__blockInfo .PatientDetailsView__blockHeader { border-bottom-color: var(--primary-color); }
+.PatientDetailsView__blockHistory .PatientDetailsView__blockHeader { border-bottom-color: var(--border-color); }
+.PatientDetailsView__blockFinancial .PatientDetailsView__blockHeader { border-bottom-color: var(--danger); }
+.PatientDetailsView__blockTools .PatientDetailsView__blockHeader { border-bottom-color: var(--success); }
+.PatientDetailsView__blockMedications .PatientDetailsView__blockHeader { border-bottom-color: var(--accent-color); }
 
 /* Info Table Section */
-.infoTable {
+.PatientDetailsView__infoTable {
     width: 100%;
     border-collapse: collapse;
 }
 
-.infoRow {
+.PatientDetailsView__infoRow {
     border-bottom: 1px solid var(--border-color);
 }
 
-.infoRow:last-child {
+.PatientDetailsView__infoRow:last-child {
     border-bottom: none;
 }
 
-.infoLabel {
+.PatientDetailsView__infoLabel {
     width: 30%;
     padding: 1rem 1.5rem;
     text-align: left;
@@ -185,14 +185,14 @@
     border-right: 1px solid var(--border-color);
 }
 
-.infoValue {
+.PatientDetailsView__infoValue {
     padding: 1rem 1.5rem;
     font-size: 1.1rem;
     font-weight: 600;
     color: var(--text-main);
 }
 
-.infoHint {
+.PatientDetailsView__infoHint {
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-muted);
@@ -200,24 +200,24 @@
 }
 
 /* Date Indicators Section */
-.dateIndicators {
+.PatientDetailsView__dateIndicators {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 1rem;
 }
 
-.dateIndicator {
+.PatientDetailsView__dateIndicator {
     padding: 1rem;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-color);
     background: var(--dashboard-card-bg);
 }
 
-.dateIndicatorRose { border-left: 4px solid var(--rose-500); }
-.dateIndicatorAmber { border-left: 4px solid var(--amber-500); }
-.dateIndicatorIndigo { border-left: 4px solid var(--primary-color); }
+.PatientDetailsView__dateIndicatorRose { border-left: 4px solid var(--rose-500); }
+.PatientDetailsView__dateIndicatorAmber { border-left: 4px solid var(--amber-500); }
+.PatientDetailsView__dateIndicatorIndigo { border-left: 4px solid var(--primary-color); }
 
-.dateLabel {
+.PatientDetailsView__dateLabel {
     display: block;
     font-size: 0.6rem;
     font-weight: 900;
@@ -227,14 +227,14 @@
     color: var(--text-muted);
 }
 
-.dateValue {
+.PatientDetailsView__dateValue {
     font-size: 1rem;
     font-weight: 800;
     color: var(--text-main);
 }
 
 /* Financial Debt Block */
-.financialCard {
+.PatientDetailsView__financialCard {
     background: var(--dashboard-card-bg);
     color: var(--text-main);
     text-align: center;
@@ -244,12 +244,12 @@
     border: 1px solid var(--border-color);
 }
 
-.financialHeader {
+.PatientDetailsView__financialHeader {
     padding: 1.25rem;
     border-bottom: 1px solid var(--border-color);
 }
 
-.financialContent {
+.PatientDetailsView__financialContent {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -257,34 +257,34 @@
     padding: 2rem 1.5rem;
 }
 
-.financialAmount {
+.PatientDetailsView__financialAmount {
     font-size: 3.5rem;
     font-weight: 900;
     letter-spacing: -0.05em;
     line-height: 1;
 }
 
-.financialAmountDebt {
+.PatientDetailsView__financialAmountDebt {
     color: var(--danger);
 }
 
-.financialAmountClear {
+.PatientDetailsView__financialAmountClear {
     color: var(--success);
 }
 
 /* History Table Section */
-.historyContainer {
+.PatientDetailsView__historyContainer {
     max-height: 500px;
     overflow-y: auto;
 }
 
-.historyTable {
+.PatientDetailsView__historyTable {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
 }
 
-.historyTh {
+.PatientDetailsView__historyTh {
     position: sticky;
     top: 0;
     padding: 1rem;
@@ -298,16 +298,16 @@
     z-index: 10;
 }
 
-.historyRow {
+.PatientDetailsView__historyRow {
     border-bottom: 1px solid var(--border-color);
     transition: background-color 0.2s ease;
 }
 
-.historyRow:hover {
+.PatientDetailsView__historyRow:hover {
     background-color: rgb(128, 128, 128, 0.08);
 }
 
-.historyCell {
+.PatientDetailsView__historyCell {
     padding: 1rem;
     color: var(--text-main);
 }
@@ -320,9 +320,9 @@
 
 /* Print Styles */
 @media print {
-    .root { padding: 0; }
-    .tabsNav, .header, .noPrint { display: none; }
-    .block { border: 1px solid #ccc; box-shadow: none; }
-    .title { color: black; }
+    .PatientDetailsView__root { padding: 0; }
+    .PatientDetailsView__tabsNav, .PatientDetailsView__header, .PatientDetailsView__noPrint { display: none; }
+    .PatientDetailsView__block { border: 1px solid #ccc; box-shadow: none; }
+    .PatientDetailsView__title { color: black; }
 }
 

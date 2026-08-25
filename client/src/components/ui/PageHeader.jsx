@@ -1,14 +1,15 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
-import LiveClock from '@/components/atoms/LiveClock';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { LiveClock } from '@/components/atoms/LiveClock';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './PageHeader.module.css';
 
 /**
  * PageHeader Organism.
  * Pure UI component for the clinical header.
  */
-const PageHeader = ({
+export const PageHeader = ({
     title,
     actionSlot,
     divider = false,
@@ -31,13 +32,13 @@ const PageHeader = ({
     // Standard variant
     if (!isPremium) {
         return (
-            <header className={`${styles.root} ${divider ? styles.divider : ''} ${className} animate-fade-in`}>
-                <div className={`${styles.content}`}>
-                    <div className={`${styles.titleContainer}`}>
-                        {!hideTitle && <h1 className={`${styles.title}`}>{title}</h1>}
+            <header className={`${styles.PageHeader__root} ${divider ? styles.PageHeader__divider : ''} ${className} ${sharedStyles.AnimateFadeIn}`}>
+                <div className={`${styles.PageHeader__content}`}>
+                    <div className={`${styles.PageHeader__titleContainer}`}>
+                        {!hideTitle && <h1 className={`${styles.PageHeader__title}`}>{title}</h1>}
                     </div>
                     {actionSlot && (
-                        <div className={`${styles.actions}`}>
+                        <div className={`${styles.PageHeader__actions}`}>
                             {actionSlot}
                         </div>
                     )}
@@ -48,18 +49,18 @@ const PageHeader = ({
 
     // Premium variant
     return (
-        <header className={`${styles.root} ${styles.premium} ${className} animate-fade-in`}>
+        <header className={`${styles.PageHeader__root} ${styles.PageHeader__premium} ${className} ${sharedStyles.AnimateFadeIn}`}>
 
 
-            <div className={`${styles.content}`}>
+            <div className={`${styles.PageHeader__content}`}>
                 {/* UTILITIES ROW: Search + Clock + Stats + Actions */}
-                <div className={`${styles.utilities}`}>
+                <div className={`${styles.PageHeader__utilities}`}>
                     {!hideSearch && (
-                        <div className={`${styles.searchContainer}`}>
-                            <Icon name="search" size="1rem" className={`${styles.searchIcon}`} />
+                        <div className={`${styles.PageHeader__searchContainer}`}>
+                            <Icon name="search" size="1rem" className={`${styles.PageHeader__searchIcon}`} />
                             <Input
                                 type="text"
-                                className={`${styles.searchInput}`}
+                                className={`${styles['PageHeader__searchInput--input']}`}
                                 placeholder={labels.searchPlaceholder}
                                 value={searchTerm}
                                 onChange={(e) => onSearchChange(e?.target ? e.target.value : e)}
@@ -67,18 +68,18 @@ const PageHeader = ({
                         </div>
                     )}
 
-                    <div className={`${styles.center}`}>
+                    <div className={`${styles.PageHeader__center}`}>
                         {doctorSelectorSlot && (
-                            <div className={`${styles.inlineSelectors}`}>
+                            <div className={`${styles.PageHeader__inlineSelectors}`}>
                                 {doctorSelectorSlot}
                             </div>
                         )}
-                        {!hideClock && <LiveClock hideDate={!!doctorSelectorSlot} className="live-clock--premium" />}
+                        {!hideClock && <LiveClock hideDate={!!doctorSelectorSlot} premium />}
                     </div>
 
-                    <div className={`${styles.statsContainer}`}>
+                    <div className={`${styles.PageHeader__statsContainer}`}>
                         {statsSlot}
-                        {actionSlot && <div className="page-header__extra-actions">{actionSlot}</div>}
+                        {actionSlot && <div className={styles.PageHeader__extraActions}>{actionSlot}</div>}
                     </div>
                 </div>
 
@@ -87,4 +88,3 @@ const PageHeader = ({
     );
 };
 
-export default PageHeader;

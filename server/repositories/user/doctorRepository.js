@@ -36,11 +36,7 @@ const ALLOWED_FIELDS = [
     "reminder_template",
     "confirmation_template",
     "reminder_virtual_template",
-    "confirmation_virtual_template",
-    "gemini_context",
-    "gemini_history_limit",
-    "gemini_model",
-    "gemini_api_version"
+    "confirmation_virtual_template"
 ];
 
 class DoctorRepository {

@@ -34,6 +34,26 @@ static ALLOWED_FIELDS = [
         }
     }
 
+    async findByPhone(phone, conn = this.pool) {
+        if (!phone) return null;
+        const connection = conn || await this.pool.getConnection();
+        try {
+            const cleanDigits = phone.toString().replace(/\D/g, '');
+            if (!cleanDigits) return null;
+            const rows = await connection.query(`
+                SELECT DISTINCT p.* 
+                FROM patients p
+                LEFT JOIN phone_numbers pn ON pn.entity_type = 'patient' AND pn.entity_id = p.id
+                WHERE REPLACE(REPLACE(p.phone, '+', ''), ' ', '') LIKE ? 
+                   OR REPLACE(REPLACE(pn.phone_number, '+', ''), ' ', '') LIKE ?
+                LIMIT 1
+            `, [`%${cleanDigits.slice(-8)}%`, `%${cleanDigits.slice(-8)}%`]);
+            return rows.length > 0 ? rows[0] : null;
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
 
     async findTariffAndInstitutionPrice(patientId, appointmentInstitutionId, conn = this.pool) {
         let query;

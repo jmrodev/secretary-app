@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
 import styles from './PatientAddressFields.module.css';
 
 /**
@@ -9,18 +9,16 @@ import styles from './PatientAddressFields.module.css';
  * Contains street, city, province, country and notes with Google Maps integration.
  * Optimized for Bento Box layout.
  */
-const PatientAddressFields = ({ formData, updatePatientData, t }) => {
+export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
     return (
-        <article className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <Icon name="location_on" size="1.25rem" />
-                <h3 className={`${styles.title}`}>{t('geographic_identity')}</h3>
-            </header>
+        <article className={`${styles.PatientAddressFields__root}`}>
+            
 
-            <div className={`${styles.bento}`}>
-                <div className={`${styles.group} ${styles.groupSpan9}`}>
-                    <label className={`${styles.label}`}>{t('street_name')}</label>
+            <div className={`${styles.PatientAddressFields__bento}`}>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan6}`}>
+                    <label htmlFor="patient-street" className={`${styles.PatientAddressFields__label}`}>{t('street_name')}</label>
                     <Input
+                        id="patient-street"
                         name="street_name"
                         className="patient-address-fields__field"
                         value={formData.street_name || ''}
@@ -28,9 +26,10 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                         placeholder={t('street_placeholder')}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan3}`}>
-                    <label className={`${styles.label}`}>{t('street_number')}</label>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan2}`}>
+                    <label htmlFor="patient-street-number" className={`${styles.PatientAddressFields__label}`}>{t('street_number')}</label>
                     <Input
+                        id="patient-street-number"
                         name="street_number"
                         className="patient-address-fields__field"
                         value={formData.street_number || ''}
@@ -39,9 +38,10 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
 
-                <div className={`${styles.group} ${styles.groupSpan4}`}>
-                    <label className={`${styles.label}`}>{t('floor')}</label>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan2}`}>
+                    <label htmlFor="patient-floor" className={`${styles.PatientAddressFields__label}`}>{t('floor')}</label>
                     <Input
+                        id="patient-floor"
                         name="floor"
                         className="patient-address-fields__field"
                         value={formData.floor || ''}
@@ -49,9 +49,10 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                         placeholder="2"
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan8}`}>
-                    <label className={`${styles.label}`}>{t('apartment')}</label>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan2}`}>
+                    <label htmlFor="patient-apartment" className={`${styles.PatientAddressFields__label}`}>{t('apartment')}</label>
                     <Input
+                        id="patient-apartment"
                         name="apartment"
                         className="patient-address-fields__field"
                         value={formData.apartment || ''}
@@ -60,33 +61,33 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     />
                 </div>
 
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
-                    <label className={`${styles.label}`}>{t('city')}</label>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan3}`}>
+                    <label htmlFor="patient-city" className={`${styles.PatientAddressFields__label}`}>{t('city')}</label>
                     <Input
+                        id="patient-city"
                         name="city"
                         className="patient-address-fields__field"
                         value={formData.city || ''}
                         onChange={updatePatientData}
                     />
                 </div>
-                <div className={`${styles.group} ${styles.groupSpan6}`}>
-                    <label className={`${styles.label}`}>{t('province')}</label>
+                <div className={`${styles.PatientAddressFields__group} ${styles.PatientAddressFields__groupSpan3}`}>
+                    <label htmlFor="patient-province" className={`${styles.PatientAddressFields__label}`}>{t('province')}</label>
                     <Input
+                        id="patient-province"
                         name="province"
                         className="patient-address-fields__field"
                         value={formData.province || ''}
                         onChange={updatePatientData}
                     />
                 </div>
-            </div>
-
             {formData.street_name && (
-                <footer className={`${styles.mapCard}`}>
-                    <div className={`${styles.mapInfo}`}>
+                <div className={`${styles.PatientAddressFields__mapCard} ${styles.PatientAddressFields__groupSpan6}`}>
+                    <div className={`${styles.PatientAddressFields__mapInfo}`}>
                         <Icon name="map" size="1.25rem" />
-                        <div className={`${styles.mapText}`}>
-                            <span className={`${styles.mapLabel}`}>{t('geolocalized_address')}</span>
-                            <p className={`${styles.mapAddress}`}>
+                        <div className={`${styles.PatientAddressFields__mapText}`}>
+                            <span className={`${styles.PatientAddressFields__mapLabel}`}>{t('geolocalized_address')}</span>
+                            <p className={`${styles.PatientAddressFields__mapAddress}`}>
                                 {formData.street_name} {formData.street_number}, {formData.city}
                             </p>
                         </div>
@@ -104,10 +105,10 @@ const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     >
                         {t('verify_on_map')}
                     </Button>
-                </footer>
+                </div>
             )}
+            </div>
         </article>
     );
 };
 
-export default PatientAddressFields;

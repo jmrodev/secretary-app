@@ -18,10 +18,11 @@ exports.createRequest = async (req, res) => {
 
 exports.getRequests = async (req, res) => {
     try {
-        const { page = 1, limit = 50, status, patientId, doctorId: queryDoctorId, search } = req.query;
+        const { page = 1, limit = 50, status, type, patientId, doctorId: queryDoctorId, search } = req.query;
         const filters = {
             patientId,
             doctorId: req.doctorId || queryDoctorId,
+            type,
             status,
             search: search?.trim() || undefined,
             limit: parseInt(limit),

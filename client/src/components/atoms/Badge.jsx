@@ -13,7 +13,7 @@ import styles from './Badge.module.css';
  * @param {number} count - For notification mode: the count to display
  * @param {string} position - For notification mode: 'top-right', 'top-left', 'bottom-right', 'bottom-left'
  */
-const Badge = ({
+export const Badge = ({
     children,
     variant = 'default',
     className = '',
@@ -28,7 +28,7 @@ const Badge = ({
 
         return (
             <span
-                className={`${styles.root} ${styles.notification} badge--${position} ${className}`}
+                className={`${styles.Badge__root} ${styles.Badge__notification} badge--${position} ${className}`}
                 title={title}
             >
                 {count > 99 ? '99+' : count}
@@ -37,7 +37,7 @@ const Badge = ({
     }
 
     // Standard badge mode
-    const baseClass = styles.root;
+    const baseClass = styles.Badge__root;
     const normalizedVariant = variant.replace('status-', '').replace('chip-', '');
     const variantClass = `${baseClass}--${normalizedVariant}`;
     const interactiveClass = onClick ? `${baseClass}--interactive` : '';
@@ -75,5 +75,5 @@ const Badge = ({
     );
 };
 
-export default Badge;
+
 

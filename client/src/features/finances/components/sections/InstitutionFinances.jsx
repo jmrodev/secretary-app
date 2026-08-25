@@ -3,14 +3,14 @@ import { useInstitutionFinances } from '@/features/finances/hooks/useInstitution
 import { formatDate } from '@/utils/core/dateUtils';
 
 // Molecules
-import InstitutionSummary from '@/features/finances/components/sections/InstitutionSummary';
-import InstitutionTransactionsTable from '@/features/finances/components/tables/InstitutionTransactionsTable';
-import InstitutionPatientsTable from '@/features/finances/components/tables/InstitutionPatientsTable';
-import InstitutionPaymentModal from '@/features/finances/components/modals/InstitutionPaymentModal';
+import { InstitutionSummary } from '@/features/finances/components/sections/InstitutionSummary';
+import { InstitutionTransactionsTable } from '@/features/finances/components/tables/InstitutionTransactionsTable';
+import { InstitutionPatientsTable } from '@/features/finances/components/tables/InstitutionPatientsTable';
+import { InstitutionPaymentModal } from '@/features/finances/components/modals/InstitutionPaymentModal';
 
 // Atoms
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 
 import styles from './InstitutionFinances.module.css';
 
@@ -19,7 +19,14 @@ import styles from './InstitutionFinances.module.css';
  * Orchestrates financial reports and patient data for health insurance institutions.
  * Institution selection is managed by the parent sidebar (Institutions.jsx).
  */
-const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMode, t }) => {
+const isRealDebt = (tr) => {
+    const paymentLower = (tr.payment_status || '').toLowerCase();
+    const statusLower = (tr.appointment_status || '').toLowerCase();
+    const done = ['completed', 'attended', 'arrived', 'absent'].includes(statusLower);
+    return paymentLower === 'pending' && (!tr.appointment_id || done);
+};
+
+export const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMode, t }) => {
     const {
         report,
         patients,
@@ -36,13 +43,6 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
 
     // Reset selection when institution changes
     React.useEffect(() => { queueMicrotask(() => setSelectedTrs(new Set())); }, [selectedInstId]);
-
-    const isRealDebt = (tr) => {
-        const paymentLower = (tr.payment_status || '').toLowerCase();
-        const statusLower = (tr.appointment_status || '').toLowerCase();
-        const done = ['completed', 'attended', 'arrived', 'absent'].includes(statusLower);
-        return paymentLower === 'pending' && (!tr.appointment_id || done);
-    };
 
     const filteredTransactions = report?.transactions.filter(tr =>
         showPendingOnly ? isRealDebt(tr) : true
@@ -80,10 +80,10 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
 
     if (!selectedInstId) {
         return (
-            <div className={`${styles.root}`}>
-                <div className={`${styles.emptyState}`}>
-                    <span className={`${styles.emptyIcon}`}><Icon name="local_hospital" size="2rem" /></span>
-                    <p className={`${styles.emptyText}`}>
+            <div className={`${styles.InstitutionFinances__root}`}>
+                <div className={`${styles.InstitutionFinances__emptyState}`}>
+                    <span className={`${styles.InstitutionFinances__emptyIcon}`}><Icon name="local_hospital" size="2rem" /></span>
+                    <p className={`${styles.InstitutionFinances__emptyText}`}>
                         {t('select_institution_desc') || 'Seleccioná una institución del panel izquierdo'}
                     </p>
                 </div>
@@ -92,10 +92,10 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
     }
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.InstitutionFinances__root}`}>
             {/* View mode toggle: Finanzas / Pacientes */}
-            <div className={`${styles.selectorBar}`}>
-                <div className={`${styles.viewToggle}`}>
+            <div className={`${styles.InstitutionFinances__selectorBar}`}>
+                <div className={`${styles.InstitutionFinances__viewToggle}`}>
                     <Button
                         variant={viewMode === 'transactions' ? 'primary' : 'ghost'}
                         size="sm-compact"
@@ -115,10 +115,10 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
                 </div>
             </div>
 
-            {loadingReport && <div className={`${styles.loading}`}>{t('loading_report')}</div>}
+            {loadingReport && <div className={`${styles.InstitutionFinances__loading}`}>{t('loading_report')}</div>}
 
             {report && viewMode === 'transactions' && (
-                <div className={`${styles.grid}`}>
+                <div className={`${styles.InstitutionFinances__grid}`}>
                     <InstitutionSummary
                         report={report}
                         selectedAmount={selectedAmount}
@@ -146,7 +146,7 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
             )}
 
             {report && viewMode === 'patients' && (
-                <div className={`${styles.grid}`}>
+                <div className={`${styles.InstitutionFinances__grid}`}>
                     <InstitutionPatientsTable
                         patients={patients}
                         formatDate={(d) => formatDate(d, { monthName: true })}
@@ -167,4 +167,3 @@ const InstitutionFinances = ({ institutions, selectedInstId, viewMode, setViewMo
     );
 };
 
-export default InstitutionFinances;

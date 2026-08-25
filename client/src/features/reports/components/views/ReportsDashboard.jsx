@@ -1,17 +1,15 @@
 import React from 'react';
-import ReportFilters from '@/features/reports/components/ui/ReportFilters';
-import AppointmentReportTable from '@/features/reports/components/tables/AppointmentReportTable';
-import PrescriptionReportTable from '@/features/reports/components/tables/PrescriptionReportTable';
-import LicenseReportTable from '@/features/reports/components/tables/LicenseReportTable';
-import CertificateReportTable from '@/features/reports/components/tables/CertificateReportTable';
-import BalanceView from '@/features/reports/components/views/BalanceView';
-import PageHeader from '@/components/ui/PageHeader';
-
+import { ReportFilters } from '@/features/reports/components/ui/ReportFilters';
+import { AppointmentReportTable } from '@/features/reports/components/tables/AppointmentReportTable';
+import { PrescriptionReportTable } from '@/features/reports/components/tables/PrescriptionReportTable';
+import { LicenseReportTable } from '@/features/reports/components/tables/LicenseReportTable';
+import { CertificateReportTable } from '@/features/reports/components/tables/CertificateReportTable';
+import { BalanceView } from '@/features/reports/components/views/BalanceView';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 import styles from './ReportsDashboard.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
-
-const ReportsDashboard = ({
+export const ReportsDashboard = ({
     t,
     activeTab,
     setActiveTab,
@@ -22,6 +20,7 @@ const ReportsDashboard = ({
     selectedDoctorId: _selectedDoctorId,
     setSelectedDoctorId: _setSelectedDoctorId,
     reportData,
+    error,
     isSubmitting,
     doctors: _doctors,
     handleGenerateReport,
@@ -30,14 +29,14 @@ const ReportsDashboard = ({
     onPrint
 }) => {
     return (
-        <section className="reports-dashboard">
+        <section className={styles.ReportsDashboard}>
             <PageHeader 
                 title={t('reports_page_title')}
                 subtitle={t('reports_page_subtitle')}
             />
 
             <FeatureToolbar
-                className="reports-dashboard-orchestrator__top-actions"
+                className={styles.ReportsDashboard__topActions}
                 tabs={[
                     { id: 'appointments', label: t('appointments'), icon: 'event' },
                     { id: 'prescriptions', label: t('prescriptions'), icon: 'medication' },
@@ -65,10 +64,15 @@ const ReportsDashboard = ({
                 }
             />
 
-            <div className="dashboard-layout__grid animate-fade-in">
-                <main className="dashboard-layout__main dashboard-layout__main--full">
-                    <div className="dashboard-card no-padding">
-                        <div className={`${styles.results}`}>
+            <div className={`${styles.ReportsDashboard__grid} animate-fade-in`}>
+                <main className={styles.ReportsDashboard__main}>
+                    <div className={styles.ReportsDashboard__card}>
+                        <div className={styles.ReportsDashboard__results}>
+                            {error && (
+                                <div className={styles.ReportsDashboard__errorState}>
+                                    {error}
+                                </div>
+                            )}
                             {activeTab === 'appointments' && (
                                 <AppointmentReportTable data={reportData} t={t} />
                             )}
@@ -92,4 +96,5 @@ const ReportsDashboard = ({
     );
 };
 
-export default ReportsDashboard;
+
+

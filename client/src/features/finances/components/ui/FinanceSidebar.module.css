@@ -1,28 +1,28 @@
 /* FinanceSidebar Organism Styles (BEM) */
 
-.root {
+.FinanceSidebar__root {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.card {
+.FinanceSidebar__card {
     margin-bottom: 0;
 }
 
-.stack {
+.FinanceSidebar__stack {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
 }
 
-.section {
+.FinanceSidebar__section {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.label {
+.FinanceSidebar__label {
     font-size: 0.65rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -31,22 +31,22 @@
     padding-left: 0.1rem;
 }
 
-.actions {
+.FinanceSidebar__actions {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.actionBtn {
+.FinanceSidebar__actionBtn {
     justify-content: flex-start;
     width: 100%;
 }
 
-.actionBtnBadge {
+.FinanceSidebar__actionBtnBadge {
     position: relative;
 }
 
-.doctorFilter {
+.FinanceSidebar__doctorFilter {
     margin-bottom: 0;
 }
 

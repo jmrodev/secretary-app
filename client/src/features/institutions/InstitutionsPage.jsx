@@ -1,19 +1,19 @@
 import React from 'react';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { Button } from '@/components/atoms/Button';
-import Loading from '@/components/atoms/Loading';
-import Icon from '@/components/atoms/Icon';
-import { InstitutionFinances } from '@/features/finances';
-import { useInstitutionsController, InstitutionFormModal } from '@/features/institutions/index';
-import styles from './InstitutionsPage.module.css';
+import { Loading } from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
+import { InstitutionFinances } from '@/features/finances/components/sections/InstitutionFinances';
+import { useInstitutionsController } from '@/features/institutions/hooks/useInstitutionsController';
+import { InstitutionFormModal } from '@/features/institutions/components/forms/InstitutionFormModal';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 
 /**
  * InstitutionsPage (Orchestrator).
  * Manages institutional payers and agreements.
  */
-const InstitutionsPage = () => {
+export const InstitutionsPage = () => {
     const {
         institutions,
         loading,
@@ -38,14 +38,14 @@ const InstitutionsPage = () => {
 
     return (
         <MainLayout wide flush title={t('institutions') || 'Instituciones'}>
-            <div className={`${styles.institutionsPageOrchestrator}`}>
-                <div className="layout-content-area animate-fade-in">
+            <div>
+                <div>
                     {loading && institutions.length === 0 ? (
                         <Loading variant="centered" text={t('loading') || "Cargando..."} />
                     ) : (
                         <>
                             <FeatureToolbar
-                                className="institutions-page-orchestrator__top-actions"
+                                className="__top-actions"
                                 tabs={institutions.map(inst => ({
                                     id: String(inst.id),
                                     label: inst.name,
@@ -85,9 +85,9 @@ const InstitutionsPage = () => {
                                 }
                             />
 
-                            <main className="dashboard-layout__main dashboard-layout__main--full">
+                            <section className="dashboard-layout__main dashboard-layout__main--full">
                                 <div className="dashboard-card no-padding">
-                                    <div className="institutions__content animate-fade-in">
+                                    <div className="institutions__content ">
                                         <InstitutionFinances
                                             institutions={institutions}
                                             selectedInstId={selectedInstId}
@@ -97,7 +97,7 @@ const InstitutionsPage = () => {
                                         />
                                     </div>
                                 </div>
-                            </main>
+                            </section>
                         </>
                     )}
                 </div>
@@ -115,5 +115,3 @@ const InstitutionsPage = () => {
         </MainLayout>
     );
 };
-
-export default InstitutionsPage;

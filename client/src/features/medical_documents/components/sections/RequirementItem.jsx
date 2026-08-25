@@ -1,7 +1,7 @@
 import React from 'react';
-import Badge from '@/components/atoms/Badge';
+import { Badge } from '@/components/atoms/Badge';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
 import styles from './RequirementItem.module.css';
 
@@ -10,7 +10,7 @@ import styles from './RequirementItem.module.css';
  * Represents a single row in the documentary requirements table.
  * Orchestrates status transitions and administrative actions for medical requests.
  */
-const RequirementItem = ({
+export const RequirementItem = ({
     request,
     typeLabel,
     onSelect,
@@ -24,23 +24,23 @@ const RequirementItem = ({
     const { id, type, created_at, patient_name, status, payment_status, debt_amount, payment_method, patient_id, patient_user_id, doctor_id } = request;
 
     return (
-        <tr className={`${styles.root} animate-fade-in`}>
-            <td className={`${styles.cell}`}>
+        <tr className={`${styles.RequirementItem__root} animate-fade-in`}>
+            <td className={`${styles.RequirementItem__cell}`}>
                 <Badge
                     variant={type === 'prescription' ? 'blue' : 'green'}
-                    className={`${styles.badgeClickable}`}
+                    className={`${styles.RequirementItem__badgeClickable}`}
                     onClick={() => onSelect(request)}
                     title={t('view_detail') || "Ver detalle"}
                 >
                     {typeLabel}
                 </Badge>
             </td>
-            <td className={`${styles.cell}`}>{formatDate(created_at)}</td>
-            <td className={`${styles.cell} ${styles.patientName}`}>
+            <td className={`${styles.RequirementItem__cell}`}>{formatDate(created_at)}</td>
+            <td className={`${styles.RequirementItem__cell} ${styles.RequirementItem__patientName}`}>
                 {patient_name}
             </td>
-            <td className={`${styles.cell}`}>
-                <div className={`${styles.statusGroup}`}>
+            <td className={`${styles.RequirementItem__cell}`}>
+                <div className={`${styles.RequirementItem__statusGroup}`}>
                     <Badge variant={status}>
                         {t(status) || status}
                     </Badge>
@@ -51,8 +51,8 @@ const RequirementItem = ({
                     )}
                 </div>
             </td>
-            <td className={`${styles.cell}`}>
-                <div className={`${styles.actions}`}>
+            <td className={`${styles.RequirementItem__cell}`}>
+                <div className={`${styles.RequirementItem__actions}`}>
                     <Button
                         variant="ghost"
                         size="sm-compact"
@@ -132,4 +132,3 @@ const RequirementItem = ({
     );
 };
 
-export default RequirementItem;

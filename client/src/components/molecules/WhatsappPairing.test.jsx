@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import WhatsappPairing from './WhatsappPairing';
+import { WhatsappPairing } from './WhatsappPairing';
 
 describe('WhatsappPairing Component (TDD)', () => {
     const mockT = (key) => key;
@@ -51,5 +51,24 @@ describe('WhatsappPairing Component (TDD)', () => {
         const refreshBtn = screen.getByText('whatsapp_refresh');
         fireEvent.click(refreshBtn);
         expect(mockRefresh).toHaveBeenCalledTimes(1);
+    });
+
+    it('renders session_expired distinctly with QR (R8)', () => {
+        const bridgeStatus = { status: 'session_expired', qr_code: 'session-qr' };
+        render(
+            <WhatsappPairing bridgeStatus={bridgeStatus} onRefresh={mockRefresh} statusLoading={false} t={mockT} />
+        );
+        expect(screen.getByText('bridge_session_expired_title')).toBeInTheDocument();
+        expect(screen.getByText('bridge_session_expired_desc')).toBeInTheDocument();
+        expect(document.querySelector('svg')).toBeInTheDocument();
+    });
+
+    it('renders awaiting_admin banner with guidance (R9)', () => {
+        const bridgeStatus = { status: 'awaiting_admin', qr_code: '' };
+        render(
+            <WhatsappPairing bridgeStatus={bridgeStatus} onRefresh={mockRefresh} statusLoading={false} t={mockT} />
+        );
+        expect(screen.getByText('bridge_awaiting_admin_title')).toBeInTheDocument();
+        expect(screen.getByText('bridge_awaiting_admin_desc')).toBeInTheDocument();
     });
 });

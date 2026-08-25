@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 
 /**

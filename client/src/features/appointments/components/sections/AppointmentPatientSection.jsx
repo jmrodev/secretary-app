@@ -1,5 +1,6 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
+import { PhoneInput } from '@/components/molecules/PhoneInput';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import styles from './AppointmentPatientSection.module.css';
 
@@ -8,7 +9,7 @@ import styles from './AppointmentPatientSection.module.css';
  * Compact version for the appointment form.
  * Decoupled via PatientSearchSelectComponent injection.
  */
-const AppointmentPatientSection = ({
+export const AppointmentPatientSection = ({
     selectedPatient, selectedPatientData, missingData, handlePatientChange, handlePhoneChange, onOpenEditPatient, t,
     PatientSearchSelectComponent
 }) => {
@@ -16,56 +17,55 @@ const AppointmentPatientSection = ({
     const PatientSearchSelect = PatientSearchSelectComponent;
 
     return (
-        <div className={styles.root}>
-            <div className={styles.searchGroup}>
-                <label className={styles.groupLabel}>{t('patients') || 'Paciente'}</label>
-                {PatientSearchSelect ? (
-                    <PatientSearchSelect
-                        value={selectedPatient}
-                        selectedData={selectedPatientData}
-                        placeholder="Buscar Paciente..."
-                        onCreatePatient={async (name) => {
-                            handlePatientChange(null, { full_name: capitalizeWords(name) });
-                            onOpenEditPatient();
-                        }}
-                        onChange={handlePatientChange}
+        <div className={styles.AppointmentPatientSection__root}>
+            <div className={styles.AppointmentPatientSection__fieldsRow}>
+                <div className={styles.AppointmentPatientSection__searchGroup}>
+                    <label htmlFor="patient-search-input" className={styles.AppointmentPatientSection__groupLabel}>{t('patients') || 'Paciente'}</label>
+                    {PatientSearchSelect ? (
+                        <div style={{ maxWidth: '35ch', width: '100%' }}>
+                            <PatientSearchSelect
+                                value={selectedPatient}
+                                selectedData={selectedPatientData}
+                                placeholder={t('search_patient_placeholder') || "Buscar Paciente..."}
+                                onCreatePatient={async (name) => {
+                                    handlePatientChange(null, { full_name: capitalizeWords(name) });
+                                    onOpenEditPatient();
+                                }}
+                                onChange={handlePatientChange}
+                            />
+                        </div>
+                    ) : (
+                        <div className="error-placeholder">{t('patient_search_component_missing') || "Error: PatientSearchSelectComponent missing"}</div>
+                    )}
+                </div>
+
+                <div className={styles.AppointmentPatientSection__searchGroup} style={{ width: '18ch', flexShrink: 0 }}>
+                    <span className={styles.AppointmentPatientSection__groupLabel}>
+                        <Icon name="phone" size="0.8rem" style={{ marginRight: '0.35rem' }} />
+                        {t('phone') || 'Teléfono'}
+                    </span>
+                    <PhoneInput
+                        value={selectedPatientData?.phone || ''}
+                        onChange={newValue => handlePhoneChange(newValue)}
+                        disabled={!selectedPatient}
                     />
-                ) : (
-                    <div className="error-placeholder">Error: PatientSearchSelectComponent missing</div>
-                )}
+                </div>
             </div>
 
             {missingData.length > 0 && (
-                <div className={styles.missingAlert}>
-                    <span className={styles.missingText}>
+                <div className={styles.AppointmentPatientSection__missingAlert}>
+                    <span className={styles.AppointmentPatientSection__missingText}>
                         <Icon name="warning" size="0.9rem" />
-                        <strong>Falta:</strong> {missingData.join(', ')}
+                        <strong>{t('missing_data_prefix') || 'Falta'}:</strong> {missingData.join(', ')}
                     </span>
-                    <button type="button" className={styles.missingAction} onClick={onOpenEditPatient}>
-                        Completar
+                    <button type="button" className={styles.AppointmentPatientSection__missingAction} onClick={onOpenEditPatient}>
+                        {t('complete') || 'Completar'}
                     </button>
                 </div>
             )}
 
-            {selectedPatient && (
-                <div className={styles.quickInfo}>
-                    <div className={styles.field}>
-                        <span className={styles.label}>
-                            <Icon name="phone" size="0.8rem" />
-                            Teléfono del Paciente
-                        </span>
-                        <input
-                            type="text"
-                            className={styles.input}
-                            value={selectedPatientData?.phone || ''}
-                            onChange={e => handlePhoneChange(e.target.value)}
-                            placeholder="Sin teléfono registrado"
-                        />
-                    </div>
-                </div>
-            )}
+
         </div>
     );
 };
 
-export default AppointmentPatientSection;

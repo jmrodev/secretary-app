@@ -1,21 +1,24 @@
 import React from 'react';
-import MainLayout from '@/components/templates/MainLayout';
-import Loading from '@/components/atoms/Loading';
+import { MainLayout } from '@/components/templates/MainLayout';
+import { Loading } from '@/components/atoms/Loading';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Badge from '@/components/atoms/Badge';
+import { Icon } from '@/components/atoms/Icon';
+import { Badge } from '@/components/atoms/Badge';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import { formatCurrency } from '@/utils/core/format';
 import { formatDate } from '@/utils/core/dateUtils';
 import { useRentalsController } from '@/features/rentals/hooks/useRentalsController';
 import styles from './RentalsPage.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 
 /**
  * RentalsPage (Orchestrator).
  * Interface for doctors to book offices and for staff to manage availability.
  */
-const RentalsPage = () => {
+export const RentalsPage = () => {
     const {
         user,
         t,
@@ -35,10 +38,10 @@ const RentalsPage = () => {
 
     return (
         <MainLayout wide flush title={t('office_rentals') || 'Alquiler de Consultorios'}>
-            <div className="rentals-page-orchestrator">
-                <div className="layout-content-area animate-fade-in">
+            <div>
+                <div>
                     <FeatureToolbar
-                        className="rentals-page-orchestrator__top-actions"
+                        
                         actions={
                             <div className="rentals-page__toolbar-actions">
                                 <div className="rentals-page__status-info">
@@ -52,41 +55,64 @@ const RentalsPage = () => {
                     {loading ? (
                         <Loading variant="centered" text={t('loading_rentals')} />
                     ) : (
-                        <main className="rentals-page__content">
-                            <div className="dashboard-layout__grid dashboard-layout__grid--full">
+                        <section className="rentals-page__content">
+                                <div className={`${styles.RentalsPage__grid}`}>
                                 {/* Booking Area */}
                                 {user && user.role === 'doctor' && (
-                                    <section className="rentals-page__booking-section">
-                                        <article className="dashboard-card">
-                                            <h3 className="dashboard-card__title">
-                                                <Icon name="calendar_month" size="1.2rem" />
-                                                {t('book_office') || 'Nueva Reserva'}
-                                            </h3>
-                                            <form onSubmit={handleRent} className="rentals-page__form">
-                                                <div className="rentals-page__form-grid">
-                                                    <div className="input-group">
-                                                        <label className="input-label">{t('select_office')}</label>
-                                                        <select className="input-field" value={selectedOffice} onChange={(e) => setSelectedOffice(e.target.value)} required>
-                                                            <option value="">-- {t('select_office')} --</option>
-                                                            {consultorios.map(c => (
-                                                                <option key={c.id} value={c.id}>{c.name} - {t(c.status) || c.status}</option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-                                                    <div className="input-group">
-                                                        <label className="input-label">{t('date')}</label>
-                                                        <input type="date" className="input-field" value={date} onChange={(e) => setDate(e.target.value)} required />
-                                                    </div>
-                                                    <div className="input-group">
-                                                        <label className="input-label">{t('start_time')}</label>
-                                                        <input type="time" className="input-field" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
-                                                    </div>
-                                                    <div className="input-group">
-                                                        <label className="input-label">{t('end_time')}</label>
-                                                        <input type="time" className="input-field" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
-                                                    </div>
+                                    <section className={`${styles.RentalsPage__sidebar}`}>
+                                        <article className={`${styles.RentalsPage__card}`}>
+                                            <div className={`${styles.RentalsPage__cardHeader}`}>
+                                                <h3 className={`${styles.RentalsPage__cardTitle}`}>
+                                                    <Icon name="calendar_month" size="1.2rem" />
+                                                    {t('book_office') || 'Nueva Reserva'}
+                                                </h3>
+                                            </div>
+                                            <form onSubmit={handleRent} className={`${styles.RentalsPage__bookingForm}`}>
+                                                <div className={`${styles.RentalsPage__formRow}`}>
+                                                    <FormGroup label={t('select_office')} htmlFor="rental-office">
+                                                        <Select
+                                                            id="rental-office"
+                                                            value={selectedOffice}
+                                                            onChange={(e) => setSelectedOffice(e.target.value)}
+                                                            required
+                                                            placeholder={`-- ${t('select_office')} --`}
+                                                            options={consultorios.map(c => ({
+                                                                value: c.id,
+                                                                label: `${c.name} - ${t(c.status) || c.status}`
+                                                            }))}
+                                                        />
+                                                    </FormGroup>
+                                                    <FormGroup label={t('date')} htmlFor="rental-date">
+                                                        <Input
+                                                            id="rental-date"
+                                                            type="date"
+                                                            value={date}
+                                                            onChange={(e) => setDate(e.target.value)}
+                                                            required
+                                                        />
+                                                    </FormGroup>
                                                 </div>
-                                                <div className="rentals-page__form-actions">
+                                                <div className={`${styles.RentalsPage__formRow}`}>
+                                                    <FormGroup label={t('start_time')} htmlFor="rental-start-time">
+                                                        <Input
+                                                            id="rental-start-time"
+                                                            type="time"
+                                                            value={startTime}
+                                                            onChange={(e) => setStartTime(e.target.value)}
+                                                            required
+                                                        />
+                                                    </FormGroup>
+                                                    <FormGroup label={t('end_time')} htmlFor="rental-end-time">
+                                                        <Input
+                                                            id="rental-end-time"
+                                                            type="time"
+                                                            value={endTime}
+                                                            onChange={(e) => setEndTime(e.target.value)}
+                                                            required
+                                                        />
+                                                    </FormGroup>
+                                                </div>
+                                                <div>
                                                     <Button type="submit" variant="primary">
                                                         {t('book_rental_btn') || 'Confirmar Reserva'}
                                                     </Button>
@@ -95,21 +121,23 @@ const RentalsPage = () => {
                                         </article>
 
                                         {/* Available Offices List */}
-                                        <article className="dashboard-card">
-                                            <h3 className="dashboard-card__title">
-                                                <Icon name="meeting_room" size="1.2rem" />
-                                                {t('available_offices') || 'Espacios Disponibles'}
-                                            </h3>
-                                            <div className="rentals-page__offices-list">
+                                        <article className={`${styles.RentalsPage__card}`}>
+                                            <div className={`${styles.RentalsPage__cardHeader}`}>
+                                                <h3 className={`${styles.RentalsPage__cardTitle}`}>
+                                                    <Icon name="meeting_room" size="1.2rem" />
+                                                    {t('available_offices') || 'Espacios Disponibles'}
+                                                </h3>
+                                            </div>
+                                            <div className={`${styles.RentalsPage__officeList}`}>
                                                 {consultorios.map(c => (
-                                                    <div key={c.id} className={`${styles.officeItem}`}>
-                                                        <div className="rentals-page__office-header">
-                                                            <strong className={`${styles.officeName}`}>{c.name}</strong>
-                                                            <span className={`rentals-page__status-badge rentals-page__status-badge--${c.status}`}>
+                                                    <div key={c.id} className={`${styles.RentalsPage__officeItem}`}>
+                                                        <div className={`${styles.RentalsPage__officeInfo}`}>
+                                                            <strong className={`${styles.RentalsPage__officeName}`}>{c.name}</strong>
+                                                            <Badge variant={c.status === 'available' ? 'success' : 'warning'}>
                                                                 {t(c.status) || c.status}
-                                                            </span>
+                                                            </Badge>
                                                         </div>
-                                                        <p className={`${styles.officeDesc}`}>{c.description || 'Sin descripción'}</p>
+                                                        <p className={`${styles.RentalsPage__officeDesc}`}>{c.description || 'Sin descripción'}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -119,68 +147,66 @@ const RentalsPage = () => {
 
                                 {/* My Rentals List */}
                                 {user && user.role === 'doctor' && (
-                                    <article className="dashboard-card no-padding">
-                                        <div className="dashboard-card__header">
-                                            <h3 className="dashboard-card__title">{t('my_rentals') || 'Mis Alquileres'}</h3>
-                                        </div>
-                                        <div className="table-responsive">
-                                            {rentals.length === 0 ? (
-                                                <div className="empty-state">
-                                                    <p className="empty-state__text">No tienes alquileres registrados.</p>
-                                                </div>
-                                            ) : (
-                                                <table className="table-base">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>{t('office')}</th>
-                                                            <th>{t('date')}</th>
-                                                            <th>{t('time')}</th>
-                                                            <th className="text-right">{t('cost')}</th>
-                                                            <th className="text-center">{t('status') || 'Estado'}</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {rentals.map(r => (
-                                                            <tr key={r.id}>
-                                                                <td className="font-bold">{r.consultorio_name}</td>
-                                                                <td>{formatDate(r.rental_date)}</td>
-                                                                <td>{r.start_time} - {r.end_time}</td>
-                                                                <td className="text-right font-mono font-bold text-success">{formatCurrency(r.cost)}</td>
-                                                                <td className="text-center">
-                                                                    <Badge variant={r.is_paid ? 'success' : 'danger'}>
-                                                                        {r.is_paid ? (t('paid') || 'Pagado') : (t('pending') || 'Impago')}
-                                                                    </Badge>
-                                                                </td>
+                                    <section className={`${styles.RentalsPage__main}`}>
+                                        <article className={`${styles.RentalsPage__card}`}>
+                                            <div className={`${styles.RentalsPage__cardHeader}`}>
+                                                <h3 className={`${styles.RentalsPage__cardTitle}`}>{t('my_rentals') || 'Mis Alquileres'}</h3>
+                                            </div>
+                                            <div className={`${styles.RentalsPage__tableContainer}`}>
+                                                {rentals.length === 0 ? (
+                                                    <div className={`${styles.RentalsPage__emptyState}`}>
+                                                        <p>{t('no_rentals_registered') || 'No tienes alquileres registrados.'}</p>
+                                                    </div>
+                                                ) : (
+                                                    <table className={`${styles.RentalsPage__table}`}>
+                                                        <thead>
+                                                            <tr>
+                                                                <th className={`${styles.RentalsPage__th}`}>{t('office')}</th>
+                                                                <th className={`${styles.RentalsPage__th}`}>{t('date')}</th>
+                                                                <th className={`${styles.RentalsPage__th}`}>{t('time')}</th>
+                                                                <th className={`${styles.RentalsPage__th} ${styles.RentalsPage__thRight}`}>{t('cost')}</th>
+                                                                <th className={`${styles.RentalsPage__th}`}>{t('status') || 'Estado'}</th>
                                                             </tr>
-                                                        ))}
-                                                    </tbody>
-                                                </table>
-                                            )}
-                                        </div>
-                                    </article>
+                                                        </thead>
+                                                        <tbody>
+                                                            {rentals.map(r => (
+                                                                <tr key={r.id} className={`${styles.RentalsPage__tr}`}>
+                                                                    <td className={`${styles.RentalsPage__td} ${styles.RentalsPage__tdBold}`}>{r.consultorio_name}</td>
+                                                                    <td className={`${styles.RentalsPage__td}`}>{formatDate(r.rental_date)}</td>
+                                                                    <td className={`${styles.RentalsPage__td}`}>{r.start_time} - {r.end_time}</td>
+                                                                    <td className={`${styles.RentalsPage__td} ${styles.RentalsPage__tdPrice}`}>{formatCurrency(r.cost)}</td>
+                                                                    <td className={`${styles.RentalsPage__td}`}>
+                                                                        <Badge variant={r.is_paid ? 'success' : 'danger'}>
+                                                                            {r.is_paid ? (t('paid') || 'Pagado') : (t('pending') || 'Impago')}
+                                                                        </Badge>
+                                                                    </td>
+                                                                </tr>
+                                                            ))}
+                                                        </tbody>
+                                                    </table>
+                                                )}
+                                            </div>
+                                        </article>
+                                    </section>
                                 )}
 
                                 {/* Staff View (Secretary/Admin) */}
                                 {user && (user.role === 'secretary' || user.role === 'admin') && (
-                                    <section className="rentals-page__staff-view">
-                                        <article className="dashboard-card">
-                                            <div className="empty-state">
-                                                <Icon name="payments" size="3rem" className="empty-state__icon" />
-                                                <h3 className="empty-state__title">Panel de Gestión de Alquileres</h3>
-                                                <p className="empty-state__text">
-                                                    Próximamente podrá ver el resumen de alquileres de todos los médicos.
-                                                </p>
+                                    <section className={`${styles.RentalsPage__main}`}>
+                                        <article className={`${styles.RentalsPage__card}`}>
+                                            <div className={`${styles.RentalsPage__staffPlaceholder}`}>
+                                                <Icon name="payments" size="3rem" />
+                                                <h3>{t('rentals_management_panel') || 'Panel de Gestión de Alquileres'}</h3>
+                                                <p>{t('rentals_management_soon') || 'Próximamente podrá ver el resumen de alquileres de todos los médicos.'}</p>
                                             </div>
                                         </article>
                                     </section>
                                 )}
                             </div>
-                        </main>
+                        </section>
                     )}
                 </div>
             </div>
         </MainLayout>
     );
 };
-
-export default RentalsPage;

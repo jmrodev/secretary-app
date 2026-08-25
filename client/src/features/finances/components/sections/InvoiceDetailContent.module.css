@@ -1,58 +1,110 @@
-.root {
+.InvoiceDetailContent__root {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    padding: 0.5rem;
+    gap: 1.25rem;
+    padding: 0.25rem;
 }
 
-.title {
-    font-size: 1.25rem;
+.InvoiceDetailContent__title {
+    font-size: 1.2rem;
     font-weight: 800;
-    color: var(--blue-700);
-    margin: 0;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--blue-100);
+    color: var(--text-main);
+    background: var(--card-surface-bg);
+    margin: -0.25rem -0.25rem 0.5rem;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    border: 1px solid var(--dashboard-card-border);
+    box-shadow: 0 4px 12px rgb(15, 23, 42, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-.content {
+.InvoiceDetailContent__content {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    background: var(--gray-50);
+    gap: 0.85rem;
+    background: var(--dashboard-card-bg);
     padding: 1.25rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    border: 1px solid var(--dashboard-card-border);
+    box-shadow: inset 0 1px 3px rgb(0, 0, 0, 0.02);
 }
 
-.row {
+.InvoiceDetailContent__row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 0;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: var(--text-secondary);
 }
 
-.row strong {
+.InvoiceDetailContent__row strong {
     color: var(--text-main);
     font-weight: 700;
 }
 
-.divider {
+.InvoiceDetailContent__row span {
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.InvoiceDetailContent__statusBadge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.InvoiceDetailContent__statusPaid {
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.InvoiceDetailContent__statusPending {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.InvoiceDetailContent__statusBonified {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+}
+
+.InvoiceDetailContent__divider {
     margin: 0.5rem 0;
     border: 0;
-    border-top: 1px dashed var(--gray-300);
+    border-top: 1px dashed var(--text-secondary);
     width: 100%;
 }
 
-.actions {
+.InvoiceDetailContent__actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
 }
 
-.amount {
-    font-size: 1.125rem;
+.InvoiceDetailContent__amount {
+    font-size: 1.2rem;
     font-weight: 900;
-    color: var(--success);
+    color: #16a34a;
+    background: #f0fdf4;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #bbf7d0;
+}
+
+.InvoiceDetailContent__afipHeader {
+    margin: 0.5rem 0 0.25rem;
+    color: #1e40af;
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }

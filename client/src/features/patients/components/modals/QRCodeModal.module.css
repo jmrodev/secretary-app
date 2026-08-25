@@ -1,6 +1,6 @@
 /* QRCodeModal Styles (BEM) */
 
-.root {
+.QRCodeModal__root {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,35 +8,35 @@
     padding: 1rem;
 }
 
-.text {
+.QRCodeModal__text {
     text-align: center;
     color: var(--text-main);
     margin-bottom: 1rem;
 }
 
-.wrapper {
+.QRCodeModal__wrapper {
     padding: 1rem;
     background-color: rgb(255 255 255 / 15%);
     backdrop-filter: blur(16px);
     border: 1px solid rgb(255 255 255 / 20%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 15%);
+    box-shadow: 0 8px 32px 0 var(--background-bg);
     border-radius: var(--radius);
 }
 
-.expiry {
+.QRCodeModal__expiry {
     font-size: 0.75rem;
     color: var(--slate-500);
     margin-top: 0.5rem;
 }
 
-.qrModalFooter {
+.QRCodeModal__qrModalFooter {
     display: flex;
     gap: 0.5rem;
     justify-content: flex-end;
     width: 100%;
 }
 
-.whatsapp {
+.QRCodeModal__whatsapp {
     background-color: #25D366;
     border-color: #25D366;
     color: white;
@@ -51,6 +51,6 @@
     transition: filter 0.2s;
 }
 
-.whatsapp:hover {
+.QRCodeModal__whatsapp:hover {
     filter: brightness(0.9);
 }

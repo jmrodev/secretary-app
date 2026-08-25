@@ -5,16 +5,6 @@ class AppointmentRepository {
         this.pool = pool;
     }
 
-    async getDailySchedule(doctorId, dateStr, conn) {
-        const connection = conn || await this.pool.getConnection();
-        try {
-            const rows = await connection.query(`CALL sp_get_daily_schedule(?, ?)`, [doctorId, dateStr]);
-            // Procedures return arrays of results, the first element is the rows array
-            return Array.isArray(rows) && rows.length > 0 ? rows[0] : [];
-        } finally {
-            if (!conn) connection.release();
-        }
-    }
 
     async callSpGetFreeSlots(filters, conn = this.pool) {
         const { doctor_id, start_date, days_to_check = 30, include_out_of_hours = 0 } = filters;
@@ -54,7 +44,7 @@ class AppointmentRepository {
         const connection = conn || await this.pool.getConnection();
         try {
             const result = await connection.query(
-                "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id, bonified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                "INSERT INTO appointments (patient_id, doctor_id, appointment_date, reason, is_out_of_hours, type, status, institution_id, bonified, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())",
                 [data.patient_id, data.doctor_id, data.appointment_date, data.reason, data.is_out_of_hours || false, data.type || 'consultation', data.status || 'pending', data.institution_id, data.bonified || false]
             );
             return result.insertId;
@@ -212,6 +202,16 @@ class AppointmentRepository {
         return await conn.query(sql, params);
     }
 
+    async findDetailedByDoctorAndDate(doctorId, dateStr, conn = this.pool) {
+        return await conn.query(`
+            SELECT * FROM v_appointment_details
+            WHERE doctor_id = ?
+              AND DATE(appointment_date) = ?
+              AND status NOT IN ('cancelled', 'suspended')
+            ORDER BY appointment_date ASC
+        `, [doctorId, dateStr]);
+    }
+
     async findInRange(doctorId, start, end, excludedStatuses = [], conn) {
         const connection = conn || await this.pool.getConnection();
         let query = "SELECT appointment_date, duration, is_out_of_hours, status FROM appointments WHERE doctor_id = ? AND appointment_date >= ? AND appointment_date <= ?";
@@ -231,9 +231,10 @@ class AppointmentRepository {
 
     async findByPatientId(patientId, conn = this.pool) {
         return await conn.query(`
-            SELECT a.*, d.full_name as doctor_name 
+            SELECT a.*, d.full_name as doctor_name, t.method as payment_method 
             FROM appointments a 
             JOIN doctors d ON a.doctor_id = d.id 
+            LEFT JOIN transactions t ON t.appointment_id = a.id
             WHERE a.patient_id = ? 
             ORDER BY a.appointment_date DESC`, [patientId]);
     }

@@ -131,7 +131,8 @@ class PatientService {
         const patient = await patientRepository.findById(id);
         if (!patient) throw new Error("Patient not found");
 
-        const newStatus = !patient.is_new_patient;
+        const isCurrentlyNew = patient.is_new_patient === 1 || patient.is_new_patient === '1' || patient.is_new_patient === true || (Buffer.isBuffer(patient.is_new_patient) && patient.is_new_patient[0] === 1);
+        const newStatus = !isCurrentlyNew;
         await patientRepository.update(id, {
             is_new_patient: newStatus ? 1 : 0,
             marked_new_at: newStatus ? nowLocalSQL() : null

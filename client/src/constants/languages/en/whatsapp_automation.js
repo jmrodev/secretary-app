@@ -1,17 +1,9 @@
 export const whatsapp_automation = {
     // WhatsApp Automation
     whatsapp_automation_title: "WhatsApp Automation (AI)",
-    whatsapp_auto_respond_unknown_label: "Auto-respond to unknown numbers",
-    whatsapp_auto_respond_unknown_hint: "If enabled, AI will send a greeting and registration link to any number not in your contact list.",
 
     // WhatsApp Page Config
     wa_config_doctor: "Doctor",
-    wa_config_prompt_label: "AI Prompt / Context",
-    wa_config_prompt_hint: "This text defines how the AI behaves when responding to patients.",
-    wa_config_prompt_restore: "Restore default",
-    wa_config_model_label: "Model settings",
-    wa_config_model: "Model",
-    wa_config_history: "History (messages)",
     wa_config_quick_label: "Quick responses",
     wa_config_quick_hint: "Tap a response to copy it to clipboard and use it in chat.",
     wa_config_save: "Save config",
@@ -36,4 +28,26 @@ export const whatsapp_automation = {
 
     // Copy button
     wa_copy_btn: "Copy",
+
+    // Pending approvals queue (supervised auto-booking)
+    pending_approval_title: "Pending approvals",
+    pending_approval_banner_one: "{count} pending approval",
+    pending_approval_banner_many: "{count} pending approvals",
+    pending_approval_open: "Open pending approvals",
+    pending_approval_close: "Close pending approvals",
+    pending_approval_empty: "No pending approvals",
+    pending_approval_accept: "Accept",
+    pending_approval_suggest: "Suggest alternative",
+    pending_approval_reject: "Reject",
+    pending_approval_status_alternative: "Waiting for patient reply",
+    pending_approval_accept_success: "Appointment approved and confirmed ✅",
+    pending_approval_accept_error: "Error approving the appointment",
+    pending_approval_accept_taken: "Already accepted by someone else",
+    pending_approval_accept_slot_taken: "Slot no longer available",
+    pending_approval_accept_phone_changed: "Patient changed their phone number. The booking was rejected.",
+    pending_approval_suggest_success: "Alternative sent to patient",
+    pending_approval_suggest_error: "Error sending alternative",
+    pending_approval_reject_success: "Booking rejected",
+    pending_approval_reject_error: "Error rejecting booking",
+    pending_approval_loading: "Loading approvals...",
 };

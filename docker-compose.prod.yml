@@ -11,7 +11,7 @@ services:
     container_name: secretary-db-prod
     logging: *default-logging
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD_PROD:-cima1255}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD_PROD:?DB_ROOT_PASSWORD_PROD no definida en .env}
       MYSQL_DATABASE: ${DB_NAME_PROD:-clinical_management}
       TZ: America/Argentina/Buenos_Aires
     volumes:
@@ -32,18 +32,21 @@ services:
       dockerfile: Dockerfile.prod
     restart: always
     container_name: secretary-server-prod
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     logging: *default-logging
     ports:
       - "5001:5000"
     environment:
       - DB_HOST=db-prod
       - DB_USER=root
-      - DB_PASSWORD=cima1255
+      - DB_PASSWORD=${DB_ROOT_PASSWORD_PROD:?DB_ROOT_PASSWORD_PROD no definida en .env}
       - DB_NAME=clinical_management
       - PORT=5000
       - TZ=America/Argentina/Buenos_Aires
       - NODE_ENV=production
-      - JWT_SECRET=${JWT_SECRET:-supersecretkey123}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET no definida en .env}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
@@ -51,6 +54,7 @@ services:
       - GROQ_API_KEY=${GROQ_API_KEY}
       - WHATSAPP_BRIDGE_URL=http://whatsapp-bridge:8090/api/send
       - WHATSAPP_BRIDGE_STATUS_URL=http://whatsapp-bridge:8090/api/status
+      - WHATSAPP_BRIDGE_SECRET=${WHATSAPP_BRIDGE_SECRET:?WHATSAPP_BRIDGE_SECRET no definida en .env}
     depends_on:
       db-prod:
         condition: service_healthy
@@ -67,6 +71,9 @@ services:
     build: ./whatsapp-bridge-go
     restart: always
     container_name: secretary-whatsapp-bridge
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     logging: *default-logging
     networks:
       - internal-network
@@ -75,6 +82,13 @@ services:
     environment:
       - TZ=America/Argentina/Buenos_Aires
       - WHATSAPP_WEBHOOK_URL=http://server-prod:5000/api/whatsapp/webhook
+      - WHATSAPP_BRIDGE_SECRET=${WHATSAPP_BRIDGE_SECRET:?WHATSAPP_BRIDGE_SECRET no definida en .env}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:8090/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   client-prod:
     build:

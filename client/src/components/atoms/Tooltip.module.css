@@ -1,4 +1,4 @@
-.root {
+.Tooltip__root {
     display: inline-flex;
     position: relative;
     cursor: help;
@@ -8,22 +8,22 @@
     justify-content: center;
 }
 
-.icon {
+.Tooltip__icon {
     color: var(--blue-500, #3b82f6);
     opacity: 0.7;
     transition: opacity 0.2s, color 0.2s;
 }
 
-.root:hover .icon {
+.Tooltip__root:hover .Tooltip__icon {
     opacity: 1;
     color: var(--blue-600, #2563eb);
 }
 
-.content {
+.Tooltip__content {
     visibility: hidden;
     position: absolute;
     background-color: var(--grey-800, #1f2937);
-    color: #fff;
+    color: var(--text-main);
     text-align: center;
     padding: 8px 12px;
     border-radius: 6px;
@@ -39,13 +39,13 @@
 }
 
 /* Position: Top */
-.top .content {
+.Tooltip__top .Tooltip__content {
     bottom: 150%;
     left: 50%;
     transform: translateX(-50%);
 }
 
-.top .content::after {
+.Tooltip__top .Tooltip__content::after {
     content: "";
     position: absolute;
     top: 100%;
@@ -57,14 +57,14 @@
 }
 
 /* Show on hover */
-.root:hover .content {
+.Tooltip__root:hover .Tooltip__content {
     visibility: visible;
     opacity: 1;
 }
 
 /* Mobile adjustments */
 @media (width <= 768px) {
-    .content {
+    .Tooltip__content {
         width: 150px;
         font-size: 0.7rem;
     }

@@ -4,7 +4,7 @@ import React from 'react';
  * ChatMessageBubble Molecule (Feature Component).
  * Renders a single message bubble with text, timestamp, and read status ticks.
  */
-const ChatMessageBubble = ({ msg, isSent, formatDate, renderTicks }) => {
+export const ChatMessageBubble = ({ msg, isSent, formatDate, renderTicks }) => {
     return (
         <div className={`floating-chat__bubble ${isSent ? 'floating-chat__bubble--sent' : 'floating-chat__bubble--received'}`}>
             <div className="floating-chat__bubble-text">{msg.message}</div>
@@ -15,5 +15,3 @@ const ChatMessageBubble = ({ msg, isSent, formatDate, renderTicks }) => {
         </div>
     );
 };
-
-export default ChatMessageBubble;

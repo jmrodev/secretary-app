@@ -1,72 +1,72 @@
-.root {
+.AppointmentFormModal__root {
     display: flex;
     flex-direction: column;
 }
 
-.content {
+.AppointmentFormModal__content {
     display: flex;
     flex-direction: column;
     gap: 0.4rem; /* Even tighter gap */
     padding: 0;
 }
 
-.panel {
-    background-color: rgb(255 255 255 / 3%);
+.AppointmentFormModal__panel {
+    background-color: var(--glass);
     backdrop-filter: blur(8px);
     padding: 0.5rem 0.8rem; /* Ultra compact padding */
     border-radius: 10px;
-    border: 1px solid rgb(255, 255, 255, 0.05);
+    border: 1px solid var(--glass);
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
 }
 
-.grid {
+.AppointmentFormModal__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.5rem;
 }
 
-.fieldFull {
+.AppointmentFormModal__fieldFull {
     grid-column: span 2;
 }
 
-.field {
+.AppointmentFormModal__field {
     display: flex;
     flex-direction: column;
     gap: 1px;
 }
 
-.label {
+.AppointmentFormModal__label {
     font-size: 0.6rem;
     font-weight: 700;
-    color: rgb(255, 255, 255, 0.3);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.02em;
 }
 
-.actions {
+.AppointmentFormModal__actions {
     display: flex;
     justify-content: flex-end;
 }
 
-.submit {
+.AppointmentFormModal__submit {
     min-width: 140px;
     height: 36px;
     font-size: 0.85rem !important;
 }
 
-.readOnlyField {
+.AppointmentFormModal__readOnlyField {
     padding: 0.35rem 0.6rem;
-    background: rgb(255, 255, 255, 0.02);
-    border: 1px solid rgb(255, 255, 255, 0.05);
+    background: var(--glass);
+    border: 1px solid var(--glass);
     border-radius: 6px;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-main);
     font-size: 0.8rem;
 }
 
-.extraBadge {
+.AppointmentFormModal__extraBadge {
     display: flex;
     align-items: center;
     gap: 0.3rem;
@@ -78,30 +78,30 @@
     border-radius: 4px;
 }
 
-.checkboxContainer {
+.AppointmentFormModal__checkboxContainer {
     display: flex;
     align-items: center;
     gap: 0.4rem;
     cursor: pointer;
 }
 
-.checkbox {
+.AppointmentFormModal__checkbox {
     width: 0.85rem;
     height: 0.85rem;
 }
 
-.checkboxLabel {
+.AppointmentFormModal__checkboxLabel {
     font-size: 0.7rem;
     font-weight: 600;
-    color: rgb(255, 255, 255, 0.5);
+    color: var(--text-muted);
 }
 
 /* ECC: Utility to remove padding from the parent modal body if needed */
-.compactModalBody :global(.modal__body) {
+.AppointmentFormModal__compactModalBody :global(.AppointmentFormModal__body) {
     padding: 0.5rem !important;
 }
 
 @media (width <= 768px) {
-    .grid { grid-template-columns: 1fr; }
-    .fieldFull { grid-column: span 1; }
+    .AppointmentFormModal__grid { grid-template-columns: 1fr; }
+    .AppointmentFormModal__fieldFull { grid-column: span 1; }
 }

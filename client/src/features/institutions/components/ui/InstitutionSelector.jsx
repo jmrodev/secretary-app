@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './InstitutionSelector.module.css';
 
 /**
@@ -8,7 +9,7 @@ import styles from './InstitutionSelector.module.css';
  * UI component for switching between institutions and view modes (Finances/Patients).
  * Core navigation element within the institutions domain.
  */
-const InstitutionSelector = ({
+export const InstitutionSelector = ({
     institutions,
     selectedInstId,
     setSelectedInstId,
@@ -17,14 +18,15 @@ const InstitutionSelector = ({
     t
 }) => {
     return (
-        <div className={`${styles.root} animate-fade-in`}>
-            <div className={`${styles.group}`}>
-                <label className={`${styles.label}`}>
+        <div className={`${styles.InstitutionSelector__root} ${sharedStyles.AnimateFadeIn}`}>
+            <div className={`${styles.InstitutionSelector__group}`}>
+                <label htmlFor="institution-selector-select" className={`${styles.InstitutionSelector__label}`}>
                     <Icon name="business" size="1.2rem" color="var(--accent-color)" />
                     {t('institutions') || 'Instituciones'}:
                 </label>
                 <select
-                    className={`${styles.select}`}
+                    id="institution-selector-select"
+                    className={`${styles.InstitutionSelector__select}`}
                     value={selectedInstId}
                     onChange={e => setSelectedInstId(e.target.value)}
                 >
@@ -36,9 +38,9 @@ const InstitutionSelector = ({
             </div>
 
             {selectedInstId && (
-                <div className={`${styles.viewToggle}`}>
+                <div className={`${styles.InstitutionSelector__viewToggle}`}>
                     <Button
-                        className={`${styles.toggleBtn} ${ viewMode === 'transactions' ? styles.toggleBtnActive : '' }`}
+                        className={`${styles.InstitutionSelector__toggleBtn} ${ viewMode === 'transactions' ? styles['InstitutionSelector__toggleBtn--active'] : '' }`}
                         onClick={() => setViewMode('transactions')}
                         unstyled
                     >
@@ -46,7 +48,7 @@ const InstitutionSelector = ({
                         {t('finances')}
                     </Button>
                     <Button
-                        className={`${styles.toggleBtn} ${ viewMode === 'patients' ? styles.toggleBtnActive : '' }`}
+                        className={`${styles.InstitutionSelector__toggleBtn} ${ viewMode === 'patients' ? styles['InstitutionSelector__toggleBtn--active'] : '' }`}
                         onClick={() => setViewMode('patients')}
                         unstyled
                     >
@@ -59,5 +61,3 @@ const InstitutionSelector = ({
     );
 };
 
-
-export default InstitutionSelector;

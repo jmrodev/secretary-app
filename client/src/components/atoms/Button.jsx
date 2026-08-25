@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Loading from './Loading';
+import { Loading } from './Loading';
 import styles from './Button.module.css';
 
 /**
@@ -33,26 +33,33 @@ export const Button = React.memo(({
     const isIconOnly = !children && icon;
     
     const combinedClassName = unstyled ? className : [
-        styles.root,
+        styles.Button__root,
         variant && styles[variant],
         size && size !== 'md' && styles[size],
-        active && styles.active,
-        isIconOnly && styles.iconOnly,
-        round && styles.round, // Support for round prop
-        loading && styles.loading,
+        active && styles.Button__active,
+        isIconOnly && styles.Button__iconOnly,
+        round && styles.Button__round, // Support for round prop
+        loading && styles.Button__loading,
         className
     ].filter(Boolean).join(' ');
 
     const content = (
         <>
-            {loading && <Loading size="sm" variant="inline" className={styles.spinner} />}
-            {!loading && icon && <span className={styles.icon}>{icon}</span>}
-            {children && <span className={styles.content}>{children}</span>}
-            {!loading && iconRight && <span className={styles.icon}>{iconRight}</span>}
+            {loading && <Loading size="sm" variant="inline" className={styles.Button__spinner} />}
+            {!loading && icon && <span className={styles.Button__icon}>{icon}</span>}
+            {children && <span className={styles.Button__content}>{children}</span>}
+            {!loading && iconRight && <span className={styles.Button__icon}>{iconRight}</span>}
         </>
     );
 
-    const isExternal = to && (to.startsWith('http') || to.startsWith('tel:') || to.startsWith('mailto:') || to.startsWith('whatsapp:'));
+    const isExternal = to && (
+        to.startsWith('http') || 
+        to.startsWith('tel:') || 
+        to.startsWith('mailto:') || 
+        to.startsWith('whatsapp:') || 
+        to.startsWith('/uploads') || 
+        target === '_blank'
+    );
 
     // ECC: Props for the underlying element
     const elementProps = {

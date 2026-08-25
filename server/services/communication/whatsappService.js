@@ -2,12 +2,12 @@ const axios = require('axios');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
 const whatsappRepository = require('../../repositories/communication/whatsappRepository');
+const whatsappRetryQueue = require('./whatsappRetryQueue');
 const { formatDateDisplay, formatTimeDisplay } = require('../../utils/core/dateUtils');
 
 const getMetaCredentials = async () => {
     const rows = await systemSettingsRepository.findManyByKeys(['meta_phone_number_id', 'meta_access_token']);
-    const settings = {};
-    rows.forEach(r => settings[r.setting_key] = r.setting_value);
+    const settings = Object.fromEntries(rows.map(r => [r.setting_key, r.setting_value]));
     return settings;
 };
 
@@ -54,33 +54,83 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
     }
 };
 
+const normalizePhoneForWhatsapp = (phone) => {
+    if (!phone) return phone;
+    const cleanedDigits = phone.toString().replace(/\D/g, '');
+    if (cleanedDigits.startsWith('549')) {
+        return '54' + cleanedDigits.slice(3);
+    }
+    return cleanedDigits;
+};
+
 /**
  * Send a direct text message using the local WhatsApp Bridge (MCP/Go)
  * @param {string} to - Recipient phone number
  * @param {string} message - Plain text message
  */
 const sendMessageDirect = async (to, message, patientId = null) => {
+    const formattedRecipient = normalizePhoneForWhatsapp(to);
+    const bridgeUrl = process.env.WHATSAPP_BRIDGE_URL || 'http://127.0.0.1:8090/api/send';
+
     try {
-        const bridgeUrl = process.env.WHATSAPP_BRIDGE_URL || 'http://127.0.0.1:8090/api/send';
-        console.log(`[WhatsApp Bridge] Sending to: ${to}, URL: ${bridgeUrl}`);
-        
+        console.log(`[WhatsApp Bridge] Sending to: ${formattedRecipient} (original: ${to}), URL: ${bridgeUrl}`);
         const response = await axios.post(bridgeUrl, {
-            recipient: to,
+            recipient: formattedRecipient,
             message: message
         });
-        
+
         if (patientId) {
             await whatsappRepository.createMessage(patientId, 'outbound', message, null, 'sent');
         } else {
-            // Save for unknown contact
             await whatsappRepository.createMessage(null, 'outbound', message, null, 'sent', to);
         }
 
         console.log(`[WhatsApp Bridge] Response:`, response.data);
         return response.data;
     } catch (error) {
+        const status = error.response?.status;
+        const retriable = status === 401 || status === 503;
+
+        // Bridge is unauthenticated/unavailable: queue for retry instead of failing.
+        if (retriable) {
+            whatsappRetryQueue.enqueue({ to, message, patientId });
+            whatsappRetryQueue.flush().catch((flushErr) => {
+                console.error('[WhatsApp RetryQueue] Background flush error:', flushErr);
+            });
+            const detailMsg = error.response?.data || error.message || 'WhatsApp Bridge unavailable';
+            return { queued: true, error: detailMsg };
+        }
+
         console.error('Local WhatsApp Bridge Error:', error.response?.data || error.message);
-        throw new Error('Local WhatsApp bridge is not responding. Ensure the bridge service is running.', { cause: error });
+
+        // Save failed message to history for UI feedback
+        try {
+            if (patientId) {
+                await whatsappRepository.createMessage(patientId, 'outbound', message, null, 'failed');
+            } else {
+                await whatsappRepository.createMessage(null, 'outbound', message, null, 'failed', to);
+            }
+        } catch (dbErr) {
+            console.error('[WhatsApp Service] Error saving failed message:', dbErr);
+        }
+
+        const detailMsg = error.response?.data || error.message || 'WhatsApp Bridge error';
+        throw new Error(`No se pudo enviar el mensaje por WhatsApp: ${detailMsg}`);
+    }
+};
+
+/**
+ * Get bridge liveness/health from Go service (/api/health).
+ * Always resolves; a reachable bridge reports its auth state.
+ */
+const getBridgeHealth = async () => {
+    try {
+        const bridgeBase = (process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status').replace('/api/status', '');
+        const response = await axios.get(`${bridgeBase}/api/health`, { timeout: 2000 });
+        return { success: true, authenticated: Boolean(response.data?.authenticated) };
+    } catch (error) {
+        console.error('[WhatsApp Service] getBridgeHealth failed:', error.response?.data || error.message);
+        return { success: false, authenticated: false };
     }
 };
 
@@ -105,28 +155,21 @@ const sendAutomatedReminders = async () => {
 
         // Fetch global settings for templates
         const settingsRows = await systemSettingsRepository.findAll();
-        const settings = {};
-        settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
+        const settings = Object.fromEntries(settingsRows.map(r => [r.setting_key, r.setting_value]));
 
         for (const appt of appointments) {
             try {
-                const isVirtual = appt.type === 'virtual';
-                let template = isVirtual ? appt.reminder_virtual_template : appt.reminder_template;
-                
-                if (!template?.trim()) {
-                    template = isVirtual ? settings.appointment_reminder_virtual_template : settings.appointment_reminder_template;
-                }
+                const template = settings.whatsapp_template_reminder;
 
                 if (!template?.trim()) {
-                    template = isVirtual 
-                        ? "Hola {patient_name}, recordamos tu turno VIRTUAL para el {date} a las {time} con Dr/a. {doctor_name}."
-                        : "Hola {patient_name}, recordamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}. Confirma asistencia.";
+                    throw new Error('Template missing or empty');
                 }
 
                 const dateStr = formatDateDisplay(appt.appointment_date);
                 const timeStr = formatTimeDisplay(appt.appointment_date);
                 const address = settings.clinic_address || '';
 
+                const isVirtual = appt.type === 'virtual';
                 const message = template
                     .replace(/{patient_name}/g, appt.patient_name)
                     .replace(/{date}/g, dateStr)
@@ -135,16 +178,18 @@ const sendAutomatedReminders = async () => {
                     .replace(/{appointment_location}/g, isVirtual ? 'Virtual' : address)
                     .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL');
 
-                let phone = appt.patient_phone.replace(/\D/g, '');
-                if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+                const rawPhone = appt.patient_phone.replace(/\D/g, '');
+                const phone = (!rawPhone.startsWith('54') && rawPhone.length >= 10) ? '549' + rawPhone : rawPhone;
 
                 await sendMessageDirect(phone, message, appt.patient_id);
                 console.log(`[WhatsApp Bridge] Automated reminder sent to ${phone} (${appt.patient_name})`);
             } catch (err) {
+                if (err.message === 'Template missing or empty') throw err;
                 console.error(`[WhatsApp] Failed to send automated reminder to ${appt.patient_name}:`, err.message);
             }
         }
     } catch (err) {
+        if (err.message === 'Template missing or empty') throw err;
         console.error('[WhatsApp] Error in sendAutomatedReminders task:', err);
     }
 };
@@ -165,7 +210,8 @@ const getBridgeStatus = async () => {
         const bridgeUrl = process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status';
         const response = await axios.get(bridgeUrl, { timeout: 2000 });
         return response.data;
-    } catch (_) {
+    } catch (error) {
+        console.error('[WhatsApp Service] getBridgeStatus failed:', error.response?.data || error.message);
         return { status: 'offline', qr_code: '' };
     }
 };
@@ -195,16 +241,12 @@ const sendConfirmationMessage = async (appt) => {
 
         // Fetch global settings for templates
         const settingsRows = await systemSettingsRepository.findAll();
-        const settings = {};
-        settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
+        const settings = Object.fromEntries(settingsRows.map(r => [r.setting_key, r.setting_value]));
 
-        const isVirtual = appt.type === 'virtual';
-        let template = isVirtual ? settings.appointment_confirmation_virtual_template : settings.appointment_confirmation_template;
+        const template = settings.whatsapp_template_confirmation;
 
         if (!template?.trim()) {
-            template = isVirtual 
-                ? "¡Hola {patient_name}! Confirmamos tu turno VIRTUAL para el {date} a las {time} con Dr/a. {doctor_name}. Recibirás el link minutos antes."
-                : "¡Hola {patient_name}! Confirmamos tu turno para el {date} a las {time} con Dr/a. {doctor_name} en {appointment_location}.";
+            throw new Error('Template missing or empty');
         }
 
         const dateStr = formatDateDisplay(appt.appointment_date);
@@ -219,6 +261,7 @@ const sendConfirmationMessage = async (appt) => {
             if (doctor) doctorName = doctor.full_name || doctor.name;
         }
 
+        const isVirtual = appt.type === 'virtual';
         const message = template
             .replace(/{patient_name}/g, appt.patient_name || 'Paciente')
             .replace(/{date}/g, dateStr)
@@ -227,12 +270,13 @@ const sendConfirmationMessage = async (appt) => {
             .replace(/{appointment_location}/g, isVirtual ? 'Virtual' : address)
             .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL');
 
-        let phone = appt.patient_phone.replace(/\D/g, '');
-        if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+        const rawPhone2 = appt.patient_phone.replace(/\D/g, '');
+        const phone = (!rawPhone2.startsWith('54') && rawPhone2.length >= 10) ? '549' + rawPhone2 : rawPhone2;
 
         await sendMessageDirect(phone, message, appt.patient_id);
         console.log(`[WhatsApp Bridge] Confirmation sent to ${phone} (${appt.patient_name})`);
     } catch (err) {
+        if (err.message === 'Template missing or empty') throw err;
         console.error(`[WhatsApp] Failed to send confirmation to ${appt.patient_name}:`, err.message);
     }
 };
@@ -247,10 +291,17 @@ const sendDebtReminder = async (data) => {
         const isEnabled = await systemSettingsRepository.findByKey('whatsapp_use_local_bridge');
         if (!isEnabled || isEnabled.setting_value !== 'true') return;
 
-        const message = `¡Hola ${patient_name || 'Paciente'}! 👋 Te escribimos del consultorio para recordarte que tienes un saldo pendiente de $${debt_amount}. Podés abonarlo en tu próxima visita o por transferencia. ¡Muchas gracias!`;
+        const templateSetting = await systemSettingsRepository.findByKey('whatsapp_template_debt');
+        if (!templateSetting || !templateSetting.setting_value?.trim()) {
+            throw new Error('Template missing or empty');
+        }
 
-        let phone = patient_phone.replace(/\D/g, '');
-        if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+        const message = templateSetting.setting_value
+            .replace(/{patient_name}/g, patient_name || 'Paciente')
+            .replace(/{debt_amount}/g, debt_amount);
+
+        const rawPhoneDebt = patient_phone.replace(/\D/g, '');
+        const phone = (!rawPhoneDebt.startsWith('54') && rawPhoneDebt.length >= 10) ? '549' + rawPhoneDebt : rawPhoneDebt;
 
         await sendMessageDirect(phone, message, patient_id);
         console.log(`[WhatsApp Bridge] Debt reminder sent to ${phone} (${patient_name})`);
@@ -269,6 +320,49 @@ const refreshBridge = async () => {
     }
 };
 
+const handleWebhook = async (sender, message, isFromMe) => {
+    const phone = sender.split('@')[0];
+    const patientId = await whatsappRepository.findPatientByPhone(phone);
+    const direction = isFromMe ? 'outbound' : 'inbound';
+    await whatsappRepository.createMessage(patientId, direction, message, null, 'delivered', patientId ? null : phone);
+};
+
+const getPatientHistory = async (patientId, phone) => {
+    return whatsappRepository.getHistoryByPatient(patientId, phone);
+};
+
+const getRecentConversations = async (doctorId) => {
+    return whatsappRepository.getRecentConversations(doctorId);
+};
+
+const deleteConversation = async (patientId, phone) => {
+    return whatsappRepository.deleteConversation(patientId, phone);
+};
+
+const getBroadcastPreview = async (filter = 'last_12_months') => {
+    const patients = await whatsappRepository.getPatientsForBroadcast(filter);
+    return patients.length;
+};
+
+const broadcastDirect = async (message, filter = 'last_12_months', delayMs = 4000) => {
+    const patients = await whatsappRepository.getPatientsForBroadcast(filter);
+    if (patients.length === 0) return { success: [], failed: [] };
+    const results = { success: [], failed: [] };
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+    for (const patient of patients) {
+        const personalizedMessage = message.replace(/\{patient_name\}/gi, patient.full_name || patient.phone);
+        try {
+            await sendMessageDirect(patient.phone, personalizedMessage, patient.id);
+            results.success.push({ phone: patient.phone, name: patient.full_name });
+        } catch (error) {
+            console.error(`[Broadcast] Failed for ${patient.phone}:`, error.message);
+            results.failed.push({ phone: patient.phone, name: patient.full_name, error: error.message });
+        }
+        await sleep(Number(delayMs) || 4000);
+    }
+    return results;
+};
+
 module.exports = {
     sendTemplateMessage,
     sendTestMessage,
@@ -277,6 +371,13 @@ module.exports = {
     sendAutomatedReminders,
     sendDebtReminder,
     getBridgeStatus,
+    getBridgeHealth,
     logoutBridge,
-    refreshBridge
+    refreshBridge,
+    handleWebhook,
+    getPatientHistory,
+    getRecentConversations,
+    deleteConversation,
+    getBroadcastPreview,
+    broadcastDirect
 };

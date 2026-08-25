@@ -1,39 +1,35 @@
-.root {
+.PatientForm__root {
     --form-bg: var(--background-bg);
     --step-content-bg: var(--white);
     --accent: var(--primary-color);
 
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 32rem;
     overflow: hidden;
-    background-color: var(--form-bg);
 }
 
 /* 1. HEADER: Stepper Indicator (Fixed & Premium) */
-.header {
+.PatientForm__header {
     flex-shrink: 0;
-    background: var(--dashboard-card-bg);
-    border-bottom: 1px solid var(--border-color);
     z-index: 10;
-    box-shadow: var(--shadow-sm);
 }
 
-.stepper {
+.PatientForm__stepper {
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
-    padding: 1.5rem 2rem;
+    padding: 0 2rem 0.5rem;
     max-width: 62.5rem;
     margin: 0 auto;
     width: 100%;
 }
 
-.stepper::before {
+.PatientForm__stepper::before {
     content: '';
     position: absolute;
-    top: 2.35rem;
+    top: 0.85rem;
     left: 4.5rem;
     right: 4.5rem;
     height: 0.125rem;
@@ -42,7 +38,7 @@
 }
 
 /* 2. MAIN: Content (High-Density Bento Grid) */
-.main {
+.PatientForm__main {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem 2rem;
@@ -53,7 +49,7 @@
 }
 
 /* Bento Card Style */
-.stepContent {
+.PatientForm__stepContent {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -61,30 +57,30 @@
 }
 
 /* 3. FOOTER: Actions (Fixed & Tonal) */
-.footer {
+.PatientForm__footer {
     flex-shrink: 0;
     background: var(--dashboard-card-bg);
     border-top: 1px solid var(--border-color);
-    padding: 1.25rem 2rem;
+    padding: 0.75rem 2rem;
     z-index: 10;
     box-shadow: var(--shadow-sm);
 }
 
-.actions {
+.PatientForm__actions {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
 }
 
-.actionsLeft,
-.actionsRight {
+.PatientForm__actionsLeft,
+.PatientForm__actionsRight {
     display: flex;
     gap: 0.75rem;
 }
 
 /* Stepper Elements Refinement */
-.step {
+.PatientForm__step {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -95,7 +91,7 @@
     transition: all 0.2s ease;
 }
 
-.stepIcon {
+.PatientForm__stepIcon {
     width: 1.75rem;
     height: 1.75rem;
     border-radius: 50%;
@@ -108,7 +104,7 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.stepLabel {
+.PatientForm__stepLabel {
     font-size: 0.625rem;
     font-weight: 700;
     color: var(--gray-500);
@@ -117,7 +113,7 @@
     transition: color 0.2s ease;
 }
 
-.stepActive .stepIcon {
+.PatientForm__stepActive .PatientForm__stepIcon {
     background: var(--accent);
     border-color: var(--accent);
     color: white;
@@ -125,11 +121,11 @@
     box-shadow: 0 0 0 0.25rem rgb(0 61 155 / 10%);
 }
 
-.stepActive .stepLabel {
+.PatientForm__stepActive .PatientForm__stepLabel {
     color: var(--accent);
 }
 
-.stepCompleted .stepIcon {
+.PatientForm__stepCompleted .PatientForm__stepIcon {
     background: var(--blue-800);
     border-color: var(--blue-600);
     color: var(--blue-200);
@@ -137,7 +133,7 @@
 
 /* High-Density Bento Grid Pro */
 @media (width >= 48rem) {
-    .stepContent {
+    .PatientForm__stepContent {
         display: grid;
         grid-template-columns: repeat(12, 1fr);
         gap: 1.25rem;
@@ -145,15 +141,15 @@
 }
 
 @media (width <= 37.5rem) {
-    .stepLabel {
+    .PatientForm__stepLabel {
         display: none;
     }
 
-    .stepper {
+    .PatientForm__stepper {
         padding: 1rem;
     }
 
-    .main {
+    .PatientForm__main {
         padding: 1rem;
     }
 }

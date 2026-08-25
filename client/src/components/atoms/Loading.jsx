@@ -10,13 +10,13 @@ import styles from './Loading.module.css';
  * @param {string} text - Optional loading text
  * @param {string} className - Additional classes
  */
-const Loading = ({
+export const Loading = ({
     variant = 'centered',
     size = 'md',
     text,
     className = ''
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.Loading__root;
     const variantClass = `${baseClass}--${variant}`;
     const sizeClass = `${baseClass}__spinner--${size}`;
 
@@ -27,5 +27,3 @@ const Loading = ({
         </div>
     );
 };
-
-export default Loading;

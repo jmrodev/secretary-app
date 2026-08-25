@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 export const useNavigationHandlers = ({
     t,
@@ -56,16 +56,17 @@ export const useNavigationHandlers = ({
     const handleExportJSON = useCallback(async () => {
         try {
             const response = await api.get('/medical/prescriptions/export/json', { responseType: 'blob' });
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', 'prescriptions_backup.json');
             document.body.appendChild(link);
             link.click();
             link.remove();
-            showMessage(t('export_success') || 'Exportación exitosa', 'success');
+            window.URL.revokeObjectURL(url);
+            showMessage(t('export_success'), 'success');
         } catch {
-            showMessage(t('export_failed') || 'Error al exportar', 'error');
+            showMessage(t('export_failed'), 'error');
         }
     }, [t, showMessage]);
 
@@ -77,7 +78,7 @@ export const useNavigationHandlers = ({
                 window.print();
             }, 500);
         } catch {
-            showMessage(t('print_error') || 'Error al preparar impresión', 'error');
+            showMessage(t('print_error'), 'error');
         }
     }, [t, showMessage]);
 

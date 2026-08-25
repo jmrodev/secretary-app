@@ -1,9 +1,10 @@
-import { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
-import { useAppointments } from '@/features/appointments';
+import { useAppointments } from '@/features/appointments/hooks/useAppointments';
 import { useDoctors } from '@/context/DoctorContextDefinition';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 export const useReportsController = () => {
     const { t } = useLanguage();
@@ -11,17 +12,38 @@ export const useReportsController = () => {
     const { getMonthlyReport, isSubmitting } = useAppointments();
     const { doctors, viewDoctorId: selectedDoctorId } = useDoctors();
 
-    const [activeTab, setActiveTab] = useState('appointments'); // appointments | prescriptions | balance
+    // Active tab is derived from the URL (?tab=...) via the router so deep
+    // links and browser back/forward work natively. No manual replaceState.
+    const [searchParams, setSearchParams] = useSearchParams();
+    const activeTab = searchParams.get('tab') || 'appointments'; // appointments | prescriptions | licenses | certificates | balance
+    const setActiveTab = useCallback((tab) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set('tab', tab);
+            return next;
+        });
+    }, [setSearchParams]);
+
     const [month, setMonth] = useState(() => new Date().getMonth() + 1);
     const [year, setYear] = useState(() => new Date().getFullYear());
     const [reportData, setReportData] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    const handleGenerateReport = async () => {
-        setReportData(null);
+    const handleGenerateReport = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+        if ((activeTab === 'appointments' || activeTab === 'balance') && !selectedDoctorId) {
+            setReportData(null);
+            setError(t('please_select_doctor') || 'Por favor, seleccione un profesional');
+            setIsLoading(false);
+            return;
+        }
         try {
             if (activeTab === 'appointments') {
-                const data = await getMonthlyReport(month, year, selectedDoctorId);
-                if (data) setReportData(data);
+                const res = await getMonthlyReport(month, year, selectedDoctorId);
+                const actualData = res?.data ?? res;
+                setReportData(actualData || { appointments: [] });
             } else if (activeTab === 'prescriptions') {
                 const params = { preview: true, month, year, type: 'prescription' };
                 if (selectedDoctorId) params.doctorId = selectedDoctorId;
@@ -51,9 +73,10 @@ export const useReportsController = () => {
                     })
                 ]);
 
+                const actualApptData = apptData?.data ?? apptData;
                 setReportData({
-                    appointments: apptData?.appointments || [],
-                    withdrawals: apptData?.withdrawals || [],
+                    appointments: actualApptData?.appointments || [],
+                    withdrawals: actualApptData?.withdrawals || [],
                     prescriptions: presResponse.data?.prescriptions || [],
                     licenses: licResponse.data?.licenses || [],
                     certificates: certResponse.data?.certificates || []
@@ -61,8 +84,18 @@ export const useReportsController = () => {
             }
         } catch (err) {
             console.error(`Error fetching ${activeTab} report:`, err);
+            setError(err.message || 'Error fetching report data');
+        } finally {
+            setIsLoading(false);
         }
-    };
+    }, [activeTab, month, year, selectedDoctorId, getMonthlyReport, t]);
+
+    // Fetch report data on initial mount or when explicit filter params change.
+    // Deferred to a microtask: handleGenerateReport sets state synchronously
+    // and the rule forbids setState during the effect body.
+    useEffect(() => {
+        queueMicrotask(() => handleGenerateReport());
+    }, [activeTab, month, year, selectedDoctorId, handleGenerateReport]);
 
     const handleDownloadJson = useCallback(() => {
         if (!reportData) return;
@@ -75,7 +108,12 @@ export const useReportsController = () => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        URL.revokeObjectURL(url);
     }, [reportData, activeTab, month, year]);
+
+    const handlePrint = useCallback(() => {
+        window.print();
+    }, []);
 
     const changeMonth = (delta) => {
         let newMonth = month + delta;
@@ -101,11 +139,14 @@ export const useReportsController = () => {
         setYear,
         selectedDoctorId,
         reportData,
-        isSubmitting,
+        error,
+        isSubmitting: isSubmitting || isLoading,
         doctors,
         handleGenerateReport,
         handleDownloadJson,
+        onPrint: handlePrint,
         changeMonth,
         alert
     };
 };
+

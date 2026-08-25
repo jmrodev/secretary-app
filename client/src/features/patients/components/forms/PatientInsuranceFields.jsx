@@ -1,6 +1,7 @@
 import React from 'react';
-import Input from '@/components/atoms/Input';
-import Icon from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './PatientInsuranceFields.module.css';
 
 /**
@@ -8,53 +9,51 @@ import styles from './PatientInsuranceFields.module.css';
  * Handles insurance selection and affiliate number.
  * Optimized for Bento Box layout.
  */
-const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) => {
+export const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) => {
     const selectedInsurance = insurances.find(i => i.id === parseInt(formData.insurance_id));
 
     return (
-        <article className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <Icon name="verified_user" size="1.25rem" />
-                <h3 className={`${styles.title}`}>{t('health_coverage')}</h3>
-            </header>
+        <article className={`${styles.PatientInsuranceFields__root}`}>
+            
 
-            <div className={`${styles.bento}`}>
-                <div className={`${styles.group} ${styles.groupSpan7}`}>
-                    <label className={`${styles.label}`}>{t('insurance_entities')}</label>
-                    <select
+            <div className={`${styles.PatientInsuranceFields__bento}`}>
+                <div className={`${styles.PatientInsuranceFields__group} ${styles.PatientInsuranceFields__groupSpan7}`}>
+                    <label htmlFor="patient-insurance" className={`${styles.PatientInsuranceFields__label}`}>{t('os_prepaga') || 'OS / Prepaga'}</label>
+                    <Select
+                        id="patient-insurance"
                         name="insurance_id"
-                        className={`${styles.select}`}
                         value={formData.insurance_id || ''}
                         onChange={updatePatientData}
-                    >
-                        <option value="">{t('particular')}</option>
-                        {insurances.map(insurance => (
-                            <option key={insurance.id} value={insurance.id}>
-                                {insurance.name}
-                            </option>
-                        ))}
-                    </select>
+                        options={[
+                            { value: '', label: t('particular') },
+                            ...insurances.map(insurance => ({
+                                value: insurance.id,
+                                label: insurance.name
+                            }))
+                        ]}
+                    />
                 </div>
 
-                <div className={`${styles.group} ${styles.groupSpan5}`}>
-                    <label className={`${styles.label}`}>{t('affiliate_number')}</label>
+                <div className={`${styles.PatientInsuranceFields__group} ${styles.PatientInsuranceFields__groupSpan5}`}>
+                    <label htmlFor="patient-affiliate-number" className={`${styles.PatientInsuranceFields__label}`}>{t('affiliate_number')}</label>
                     <Input
+                        id="patient-affiliate-number"
                         name="affiliate_number"
                         className="patient-insurance-fields__field"
                         value={formData.affiliate_number || ''}
                         onChange={updatePatientData}
-                        placeholder="Ej: 123456789/00"
+                        placeholder={t('affiliate_number_placeholder') || "Ej: 123456789/00"}
                     />
                 </div>
             </div>
 
             {formData.insurance_id && (
-                <div className={`${styles.statusCard}`}>
-                    <div className={`${styles.statusInfo}`}>
+                <div className={`${styles.PatientInsuranceFields__statusCard}`}>
+                    <div className={`${styles.PatientInsuranceFields__statusInfo}`}>
                         <Icon name="info" size="1.1rem" />
                         <div>
-                            <span className={`${styles.statusLabel}`}>{t('coverage_active')}</span>
-                            <p className={`${styles.statusDetail}`}>
+                            <span className={`${styles.PatientInsuranceFields__statusLabel}`}>{t('coverage_active')}</span>
+                            <p className={`${styles.PatientInsuranceFields__statusDetail}`}>
                                 {selectedInsurance?.name} - {t('requires_order_verification')}
                             </p>
                         </div>
@@ -65,4 +64,3 @@ const PatientInsuranceFields = ({ formData, updatePatientData, insurances, t }) 
     );
 };
 
-export default PatientInsuranceFields;

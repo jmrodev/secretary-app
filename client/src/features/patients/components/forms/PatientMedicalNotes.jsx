@@ -1,41 +1,58 @@
 import React from 'react';
-import Input from '@/components/atoms/Input';
-import Icon from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
 import styles from './PatientMedicalNotes.module.css';
 
 /**
  * PatientMedicalNotes Molecule.
- * Handles clinical history and medical observations.
+ * Handles clinical history and institution coverage.
  */
-const PatientMedicalNotes = ({ formData, updatePatientData, t }) => {
-    return (
-        <article className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <Icon name="history_edu" size="1.25rem" />
-                <h3 className={`${styles.title}`}>{t('clinical_history')}</h3>
-            </header>
+export const PatientMedicalNotes = ({ formData, updatePatientData, institutions, t }) => {
+    const institutionOptions = React.useMemo(() => {
+        const safeInstitutions = Array.isArray(institutions) ? institutions : (institutions?.institutions || []);
+        return [
+            { value: '', label: t('select_institution') },
+            ...safeInstitutions.reduce((acc, inst) => {
+                if (inst.status === 'active') {
+                    acc.push({ value: inst.id, label: inst.name });
+                }
+                return acc;
+            }, [])
+        ];
+    }, [institutions, t]);
 
-            <div className={`${styles.content}`}>
-                <div className={`${styles.group}`}>
-                    <label className={`${styles.label}`}>{t('medical_history_notes')}</label>
+    return (
+        <article className={`${styles.PatientMedicalNotes__root}`}>
+            
+
+            <div className={`${styles.PatientMedicalNotes__content}`}>
+                <div className={`${styles.PatientMedicalNotes__group} ${styles.groupInstitution}`}>
+                    <label htmlFor="patient-paying-institution" className={`${styles.PatientMedicalNotes__label}`}>{t('paying_institution')}</label>
+                    <Select
+                        id="patient-paying-institution"
+                        name="institution_id"
+                        value={formData.institution_id || ''}
+                        options={institutionOptions}
+                        onChange={updatePatientData}
+                    />
+                </div>
+
+                <div className={`${styles.PatientMedicalNotes__group}`}>
+                    <label htmlFor="patient-medical-history" className={`${styles.PatientMedicalNotes__label}`}>{t('medical_history_notes')}</label>
                     <Input
+                        id="patient-medical-history"
                         type="textarea"
                         name="medical_history"
-                        rows={6}
+                        rows={4}
                         value={formData.medical_history || ''}
                         onChange={updatePatientData}
                         placeholder={t('medical_history_placeholder')}
-                        className={`${styles.textarea}`}
+                        className={`${styles.PatientMedicalNotes__textarea}`}
                     />
                 </div>
             </div>
 
-            <footer className={`${styles.footer}`}>
-                <Icon name="lock" size="0.9rem" />
-                <span>{t('clinical_data_encrypted_notice')}</span>
-            </footer>
         </article>
     );
 };
 
-export default PatientMedicalNotes;

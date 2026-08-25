@@ -4,7 +4,7 @@ import React from 'react';
  * DayNumber (Atom Component)
  * Displays the numeric day and visual indicator if it is today.
  */
-const DayNumber = ({ day, isToday = false }) => {
+export const DayNumber = ({ day, isToday = false }) => {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
       <span style={{ fontSize: '1.1rem', fontWeight: 700, color: isToday ? 'var(--accent, #6366f1)' : 'rgba(255, 255, 255, 0.95)', lineHeight: 1 }}>
@@ -26,4 +26,3 @@ const DayNumber = ({ day, isToday = false }) => {
   );
 };
 
-export default DayNumber;

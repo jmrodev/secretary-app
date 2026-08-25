@@ -3,7 +3,7 @@ import styles from './Select.module.css';
 
 const EMPTY_ARRAY = [];
 
-const Select = ({
+export const Select = ({
     value,
     onChange,
     options = EMPTY_ARRAY,
@@ -14,9 +14,11 @@ const Select = ({
     name,
     required = false,
     variant = 'default', // 'default', 'error'
-    size = 'md' // 'sm', 'md', 'lg'
+    size = 'md', // 'sm', 'md', 'lg'
+    ariaLabel,
+    ariaLabelledby
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.Select__root;
 
     const variantClass = variant !== 'default' ? `${baseClass}--${variant}` : '';
     const sizeClass = size !== 'md' ? `${baseClass}--${size}` : '';
@@ -37,6 +39,8 @@ const Select = ({
             className={combinedClassName}
             disabled={disabled}
             required={required}
+            aria-label={ariaLabel}
+            aria-labelledby={ariaLabelledby}
         >
             {placeholder && (
                 <option value="" disabled={required}>
@@ -51,5 +55,3 @@ const Select = ({
         </select>
     );
 };
-
-export default Select;

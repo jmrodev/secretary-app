@@ -20,14 +20,26 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Configuración de Nginx con Proxy para la API
 RUN echo 'server { \
     listen 80; \
+    root /usr/share/nginx/html; \
+    index index.html index.htm; \
     # Compresión gzip para mejor performance \
     gzip on; \
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript; \
     \
     location / { \
-    root /usr/share/nginx/html; \
-    index index.html index.htm; \
     try_files $uri $uri/ /index.html; \
+    } \
+    \
+    # index.html: siempre revalidar para recibir nuevos hashes de assets \
+    location = /index.html { \
+    add_header Cache-Control "no-cache"; \
+    } \
+    \
+    # Assets con hash (Vite): cachear de forma inmutable \
+    location /assets/ { \
+    try_files $uri =404; \
+    expires 1y; \
+    add_header Cache-Control "public, immutable"; \
     } \
     \
     # Proxy para el Backend (API) \

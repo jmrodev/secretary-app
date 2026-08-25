@@ -1,4 +1,4 @@
-.headerInfo {
+.DoctorEditModal__headerInfo {
     display: flex;
     align-items: center;
     gap: 1.25rem;
@@ -11,7 +11,7 @@
     box-shadow: 0 8px 32px 0 rgb(0 0 0 / 10%);
 }
 
-.avatar {
+.DoctorEditModal__avatar {
     width: 3.5rem;
     height: 3.5rem;
     background: var(--primary-color);
@@ -23,20 +23,20 @@
     box-shadow: 0 4px 12px rgb(var(--primary-rgb), 0.2);
 }
 
-.doctorInfo {
+.DoctorEditModal__doctorInfo {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.doctorName {
+.DoctorEditModal__doctorName {
     margin: 0;
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--slate-900);
 }
 
-.doctorSpecialty {
+.DoctorEditModal__doctorSpecialty {
     margin: 0;
     font-size: 0.85rem;
     color: var(--slate-500);
@@ -44,39 +44,39 @@
     letter-spacing: 0.05em;
 }
 
-.tabs {
+.DoctorEditModal__tabs {
     margin-bottom: 2rem;
     border-bottom: 1px solid var(--slate-200);
 }
 
-.tabIcon {
+.DoctorEditModal__tabIcon {
     margin-right: 0.5rem;
 }
 
-.content {
+.DoctorEditModal__content {
     min-height: 450px;
 }
 
 /* Schedule Tab Styles */
-.scheduleConfig {
+.DoctorEditModal__scheduleConfig {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
-.durationGrid {
+.DoctorEditModal__durationGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     backdrop-filter: blur(16px);
     padding: 1.5rem;
     border-radius: var(--radius);
-    border: 1px solid rgb(255 255 255 / 10%);
+    border: 1px solid var(--border-color);
     box-shadow: 0 8px 32px 0 rgb(0 0 0 / 5%);
 }
 
-.overturnSection {
+.DoctorEditModal__overturnSection {
     background: rgb(239 246 255 / 20%);
     backdrop-filter: blur(16px);
     padding: 1.5rem;
@@ -85,7 +85,7 @@
     box-shadow: 0 8px 32px 0 rgb(0 0 0 / 5%);
 }
 
-.overturnTitle {
+.DoctorEditModal__overturnTitle {
     font-size: 0.875rem;
     font-weight: 800;
     color: var(--blue-800);
@@ -97,22 +97,30 @@
     letter-spacing: 0.025em;
 }
 
-.overturnGrid {
+.DoctorEditModal__overturnGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
 }
 
-.overturnFooter {
+.DoctorEditModal__overturnFooter {
     margin-top: 1.5rem;
     padding-top: 1rem;
     border-top: 1px solid var(--blue-100);
 }
 
-.overturnHelp {
+.DoctorEditModal__overturnHelp {
     font-size: 0.7rem;
     color: var(--blue-600);
     margin-top: 0.5rem;
     margin-left: 3rem;
     font-style: italic;
+}
+
+.DoctorEditModal__fiscalDesc {
+    margin: var(--spacing-md) 0;
+}
+
+.DoctorEditModal__wizardBody {
+    padding: var(--spacing-md);
 }

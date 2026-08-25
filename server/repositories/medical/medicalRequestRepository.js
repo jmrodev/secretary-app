@@ -25,6 +25,7 @@ class MedicalRequestRepository {
         const whereClauses = [];
 
         if (filters.patientId) { whereClauses.push("r.patient_id = ?"); params.push(filters.patientId); }
+        if (filters.type) { whereClauses.push("r.type = ?"); params.push(filters.type); }
         if (filters.doctorId) {
             whereClauses.push("(r.doctor_id = ? OR r.doctor_id IS NULL)");
             params.push(filters.doctorId);
@@ -65,6 +66,7 @@ class MedicalRequestRepository {
         const whereClauses = [];
 
         if (filters.patientId) { whereClauses.push("r.patient_id = ?"); params.push(filters.patientId); }
+        if (filters.type) { whereClauses.push("r.type = ?"); params.push(filters.type); }
         if (filters.doctorId) {
             whereClauses.push("(r.doctor_id = ? OR r.doctor_id IS NULL)");
             params.push(filters.doctorId);

@@ -1,50 +1,44 @@
-.root {
-    --card-padding: 1.5rem;
-    
-    background-color: var(--dashboard-card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: var(--card-padding);
-    box-shadow: var(--shadow-sm);
+.PatientAddressFields__root {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
     grid-column: span 12;
 }
 
-.header {
+.PatientAddressFields__header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     color: var(--primary-color);
 }
 
-.title {
+.PatientAddressFields__title {
     font-size: 1rem;
     font-weight: 700;
     margin: 0;
     letter-spacing: -0.02em;
 }
 
-.bento {
+.PatientAddressFields__bento {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 1rem;
 }
 
-.group {
+.PatientAddressFields__group {
     display: flex;
     flex-direction: column;
     gap: 0.125rem;
 }
 
-.groupSpan9 { grid-column: span 9; }
-.groupSpan8 { grid-column: span 8; }
-.groupSpan6 { grid-column: span 6; }
-.groupSpan4 { grid-column: span 4; }
-.groupSpan3 { grid-column: span 3; }
+.PatientAddressFields__groupSpan9 { grid-column: span 9; }
+.PatientAddressFields__groupSpan8 { grid-column: span 8; }
+.PatientAddressFields__groupSpan6 { grid-column: span 6; }
+.PatientAddressFields__groupSpan4 { grid-column: span 4; }
+.PatientAddressFields__groupSpan3 { grid-column: span 3; }
+.PatientAddressFields__groupSpan2 { grid-column: span 2; }
 
-.label {
+.PatientAddressFields__label {
     font-size: 0.625rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -52,38 +46,36 @@
     letter-spacing: 0.05em;
 }
 
-.mapCard {
-    margin-top: 0.5rem;
+.PatientAddressFields__mapCard {
     padding: 1rem;
     background-color: rgb(128, 128, 128, 0.08);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+    width: 100%;
 }
 
-.mapInfo {
+.PatientAddressFields__mapInfo {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     color: var(--primary-color);
 }
 
-.mapText {
+.PatientAddressFields__mapText {
     display: flex;
     flex-direction: column;
 }
 
-.mapLabel {
+.PatientAddressFields__mapLabel {
     font-size: 0.625rem;
     font-weight: 800;
     text-transform: uppercase;
     color: var(--gray-500);
 }
 
-.mapAddress {
+.PatientAddressFields__mapAddress {
     font-size: 0.875rem;
     font-weight: 600;
     margin: 0;
@@ -91,11 +83,11 @@
 }
 
 @media (width <= 48rem) {
-    .group {
+    .PatientAddressFields__group {
         grid-column: span 12 !important;
     }
     
-    .mapCard {
+    .PatientAddressFields__mapCard {
         flex-direction: column;
         align-items: stretch;
     }

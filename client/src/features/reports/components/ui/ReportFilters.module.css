@@ -1,71 +1,56 @@
 /* ReportFilters Component Styles (BEM) */
 
-.root {
-    /* --- Local Component Tokens --- */
-    --filter-bg: var(--white);
-    --filter-border: var(--gray-300);
-
-    /* ------------------------------ */
-
+.ReportFilters {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
-    align-items: flex-end;
-    padding: 1.5rem;
-    background-color: var(--filter-bg);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 2rem;
-    border: 1px solid var(--filter-border);
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
 }
 
-.group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    border: none;
-    padding: 0;
-    margin: 0;
-    min-width: 0;
-}
-
-.label {
-    display: block;
-    padding: 0;
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.controlRow {
+.ReportFilters__controls {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
-.select {
-    min-width: 150px;
+.ReportFilters__field {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background-color: var(--dashboard-card-bg);
+    padding: 0.25rem;
+    border-radius: var(--radius-md, 8px);
+    border: 1px solid var(--border-color);
 }
 
-.selectDoctor {
-    min-width: 240px;
+.ReportFilters__selectMonth {
+    min-width: 140px;
 }
 
-.input {
-    width: 110px;
+.ReportFilters__inputYear {
+    width: 90px;
     text-align: center;
 }
 
-.actions {
+.ReportFilters__actions {
     display: flex;
+    align-items: center;
     gap: 0.75rem;
     margin-left: auto;
 }
 
+.ReportFilters__exportGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--border-color);
+}
+
 @media (width <= 1024px) {
-    .actions {
+    .ReportFilters__actions {
         margin-left: 0;
         width: 100%;
         justify-content: flex-end;
@@ -73,32 +58,27 @@
 }
 
 @media (width <= 768px) {
-    .root {
+    .ReportFilters {
         flex-direction: column;
         align-items: stretch;
-        padding: 1.25rem;
     }
 
-    .group {
+    .ReportFilters__controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ReportFilters__field {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .ReportFilters__selectMonth,
+    .ReportFilters__inputYear {
         width: 100%;
     }
 
-    .select,
-    .selectDoctor,
-    .input {
-        width: 100%;
-        min-width: unset;
-    }
-
-    .actions {
+    .ReportFilters__actions {
         flex-direction: column;
     }
-
-    .btn {
-        width: 100%;
-    }
-}
-
-.btnIcon {
-    margin-right: 0.5rem;
 }

@@ -1,25 +1,25 @@
 import React from 'react';
-import FormGroup from '@/components/molecules/FormGroup';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import CurrencyInput from '@/components/atoms/CurrencyInput';
-import AutoTextarea from '@/components/atoms/AutoTextarea';
+import { FormGroup } from '@/components/molecules/FormGroup';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { CurrencyInput } from '@/components/atoms/CurrencyInput';
+import { AutoTextarea } from '@/components/atoms/AutoTextarea';
 import styles from './DoctorTariffsForm.module.css';
 
-const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
+export const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
     // Helper to update specific field
     const handleTariffChange = (field, value) => onChange({ ...data, [field]: value });
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.DoctorTariffsForm__root}`}>
             {settings.enable_office_rentals === 'true' && (
-                <div className={`${styles.section} ${styles.sectionRental}`}>
-                    <h4 className={`${styles.title}`}>{t('rental_configuration') || 'Configuración de Alquiler'}</h4>
-                    <div className={`${styles.grid}`}>
+                <div className={`${styles.DoctorTariffsForm__section} ${styles.DoctorTariffsForm__sectionRental}`}>
+                    <h4 className={`${styles.DoctorTariffsForm__title}`}>{t('rental_configuration') || 'Configuración de Alquiler'}</h4>
+                    <div className={`${styles.DoctorTariffsForm__grid}`}>
                         <FormGroup label={t('office_number')}>
                             <Input value={data.office_number} onChange={e => handleTariffChange('office_number', e.target.value)} />
                         </FormGroup>
-                        <div className={`${styles.nestedGrid}`}>
+                        <div className={`${styles.DoctorTariffsForm__nestedGrid}`}>
                             <FormGroup label={t('type')}>
                                 <Select
                                     value={data.rental_type}
@@ -40,11 +40,11 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                 </div>
             )}
 
-            <div className={`${styles.section}`}>
-                <h4 className={`${styles.title}`}>
+            <div className={`${styles.DoctorTariffsForm__section}`}>
+                <h4 className={`${styles.DoctorTariffsForm__title}`}>
                     {t('consultation_prices') || 'Precios de Consulta'} ({data.appointment_duration}m)
                 </h4>
-                 <div className={`${styles.grid} ${styles.grid3col}`}>
+                 <div className={`${styles.DoctorTariffsForm__grid} ${styles.DoctorTariffsForm__grid3col}`}>
                     <FormGroup label={t('consultation_price')}>
                         <CurrencyInput value={data.consultation_price} onChange={e => handleTariffChange('consultation_price', e.target.value)} />
                     </FormGroup>
@@ -63,7 +63,7 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                 </div>
             </div>
 
-            <div className={`${styles.grid}`}>
+            <div className={`${styles.DoctorTariffsForm__grid}`}>
                 <FormGroup label={t('specialty')}>
                     <Input value={data.specialty} onChange={e => handleTariffChange('specialty', e.target.value)} />
                 </FormGroup>
@@ -71,14 +71,14 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
                     <Input value={data.cbu || ''} onChange={(e) => handleTariffChange('cbu', e.target.value)} placeholder="28500..." />
                 </FormGroup>
                 <FormGroup label={t('alias_label')}>
-                    <Input value={data.alias || ''} onChange={(e) => handleTariffChange('alias', e.target.value)} placeholder="mi.alias.pago" />
+                    <Input value={data.alias || ''} onChange={(e) => handleTariffChange('alias', e.target.value)} placeholder={t('alias_placeholder_example') || "mi.alias.pago"} />
                 </FormGroup>
                 <FormGroup label={t('professional_bio') || 'Bio Profesional'}>
                     <AutoTextarea
-                        className={`${styles.bioField}`}
+                        className={`${styles.DoctorTariffsForm__bioField}`}
                         value={data.bio || ''}
                         onChange={(e) => handleTariffChange('bio', e.target.value)}
-                        placeholder="Breve currículum o información relevante..."
+                        placeholder={t('bio_placeholder_example') || "Breve currículum o información relevante..."}
                     />
                 </FormGroup>
             </div>
@@ -86,4 +86,4 @@ const DoctorTariffsForm = ({ data, settings, onChange, t }) => {
     );
 };
 
-export default DoctorTariffsForm;
+

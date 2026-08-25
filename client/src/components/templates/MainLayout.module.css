@@ -1,4 +1,4 @@
-.appLayout {
+.MainLayout__appLayout {
     /* --- Local Component Tokens --- */
     --layout-bg: var(--background-bg);
 
@@ -17,13 +17,13 @@
 /* --- ECC-Pattern: Z-Index & Layout Management --- */
 
 /* The Navbar MUST have a higher stacking context than the main content */
-.appLayout > header {
+.MainLayout__appLayout > header {
     z-index: 1000; /* Higher than content */
     position: sticky;
     top: 0;
 }
 
-.appLayout > main {
+.MainLayout__appLayout > main {
     z-index: 10; /* Lower than header */
     position: relative;
     flex: 1;
@@ -36,10 +36,10 @@
 
 /* ---------------------------------------- */
 
-.inner {
-    padding: 0.75rem 1.5rem;
-    width: 100%;
-    max-width: 1800px;
+.MainLayout__pageShell {
+    padding: var(--spacing-md) var(--spacing-xl);
+    width: 80%;
+    max-width: 1600px;
     margin: 0 auto;
     flex: 1;
     display: flex;
@@ -47,22 +47,25 @@
     min-height: 0;
 }
 
-.root {
-    --content-padding: 0.75rem 1.5rem;
+.MainLayout__root {
+    --content-padding: var(--spacing-md) var(--spacing-xl);
 }
 
-.root.dashboardWide .inner {
-    padding: 0.75rem 1.5rem;
-    max-width: 1800px;
+.MainLayout__root--dashboardWide .MainLayout__pageShell {
+    padding: var(--spacing-md) var(--spacing-xl);
+    width: 80%;
+    max-width: 1600px;
 }
 
-.flush .inner {
-    padding: 0.75rem 1.5rem;
-    max-width: 1800px;
+.MainLayout__root--flush .MainLayout__pageShell {
+    padding: var(--spacing-md) var(--spacing-xl);
+    width: 80%;
+    max-width: 1600px;
 }
 
 @media screen and (width <= 1024px) {
-    .inner {
-        padding: 1rem;
+    .MainLayout__pageShell {
+        padding: var(--spacing-lg);
+        width: 100%;
     }
 }

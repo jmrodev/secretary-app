@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
-import { useAppointments } from '@/features/appointments';
-import api from '@/api/axios';
+import { useAppointments } from '@/features/appointments/hooks/useAppointments';
+import { api } from '@/api/axios';
 
 import { useDashboardStats } from '@/features/dashboard/hooks/useDashboardStats';
 import { useDashboardReminders } from '@/features/dashboard/hooks/useDashboardReminders';
@@ -39,12 +39,16 @@ export const useDashboardController = () => {
         statsHook.refetch();
     };
 
+    // React 19 useEffectEvent: stable polling callback that always reads the
+    // latest refreshDashboard / remindersHook without effect dependency churn.
+    const onPollDashboard = React.useEffectEvent(() => {
+        refreshDashboard();
+        remindersHook.fetchReminders();
+    });
+
     useEffect(() => {
         if (!user || isPatient) return;
-        const interval = setInterval(() => {
-            refreshDashboard();
-            remindersHook.fetchReminders();
-        }, 30000);
+        const interval = setInterval(onPollDashboard, 30000);
         return () => clearInterval(interval);
     }, [user, isPatient]);
 
@@ -153,8 +157,8 @@ export const useDashboardController = () => {
 
     return {
         user, t, settings,
-        loading: statsHook.loadingStats || doctorsLoading,
-        error: statsHook.errorStats || statsHook.errorDoctors || remindersHook.errorReminders,
+        loading: statsHook.loading || doctorsLoading,
+        error: statsHook.error || remindersHook.errorReminders,
         stats: statsHook.stats,
         newPatientStats: statsHook.newPatientStats,
         reminders: remindersHook.reminders,

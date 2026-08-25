@@ -2,16 +2,16 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useRegisterController } from '@/features/auth/hooks/useRegisterController';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import FormGroup from '@/components/molecules/FormGroup';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import styles from './RegisterForm.module.css';
 
 /**
  * RegisterForm - Executor Component.
  * Implements the registration UI and connects it to the useRegisterController.
  */
-const RegisterForm = () => {
+export const RegisterForm = () => {
     const {
         formData,
         error,
@@ -22,18 +22,18 @@ const RegisterForm = () => {
     const { updateRegisterData, handleSubmit } = handlers;
 
     return (
-        <div className={`${styles.authLayout} ${styles.authLayoutHero}`}>
-            <div className={`${styles.overlay}`}></div>
+        <div className={`${styles.RegisterForm__authLayout} ${styles.RegisterForm__authLayoutHero}`}>
+            <div className={`${styles.RegisterForm__overlay}`}></div>
 
-            <main className={`${styles.root} ${styles.register}`}>
-                <header className={`${styles.header}`}>
-                    <h1 className={`${styles.title}`}>{t('create_account')}</h1>
-                    <p className={`${styles.subtitle}`}>Completa el formulario para unirte.</p>
+            <main className={`${styles.RegisterForm__root} ${styles.RegisterForm__register}`}>
+                <header className={`${styles.RegisterForm__header}`}>
+                    <h1 className={`${styles.RegisterForm__title}`}>{t('create_account')}</h1>
+                    <p className={`${styles.RegisterForm__subtitle}`}>{t('complete_form_to_join') || 'Completa el formulario para unirte.'}</p>
                 </header>
 
-                {error && <div className={`${styles.error}`}>{error}</div>}
+                {error && <div className={`${styles.RegisterForm__error}`}>{error}</div>}
 
-                <form className={`${styles.form}`} onSubmit={handleSubmit}>
+                <form className={`${styles.RegisterForm__form}`} onSubmit={handleSubmit}>
                     <FormGroup label={t('i_am')}>
                         <Select
                             name="role"
@@ -53,7 +53,7 @@ const RegisterForm = () => {
                             name="fullName"
                             value={formData.fullName}
                             onChange={updateRegisterData}
-                            placeholder="Nombre completo"
+                            placeholder={t('full_name') || "Nombre completo"}
                             disabled={loading}
                             required
                         />
@@ -75,7 +75,7 @@ const RegisterForm = () => {
                             name="username"
                             value={formData.username}
                             onChange={updateRegisterData}
-                            placeholder="Usuario"
+                            placeholder={t('username') || "Usuario"}
                             disabled={loading}
                             required
                         />
@@ -95,13 +95,13 @@ const RegisterForm = () => {
 
                     {/* Role specific fields */}
                     {formData.role === 'doctor' && (
-                        <div className={`${styles.animateFadeIn}`}>
+                        <div className={`${styles.RegisterForm__animateFadeIn}`}>
                             <FormGroup label={t('specialty')}>
                                 <Input
                                     name="specialty"
                                     value={formData.specialty}
                                     onChange={updateRegisterData}
-                                    placeholder="Especialidad médica"
+                                    placeholder={t('medical_specialty_placeholder') || "Especialidad médica"}
                                     disabled={loading}
                                 />
                             </FormGroup>
@@ -110,7 +110,7 @@ const RegisterForm = () => {
                                     name="cbu"
                                     value={formData.cbu}
                                     onChange={updateRegisterData}
-                                    placeholder="CBU para transferencias"
+                                    placeholder={t('cbu_placeholder_example') || "CBU para transferencias"}
                                     disabled={loading}
                                 />
                             </FormGroup>
@@ -118,7 +118,7 @@ const RegisterForm = () => {
                     )}
 
                     {formData.role === 'patient' && (
-                        <div className={`${styles.animateFadeIn}`}>
+                        <div className={`${styles.RegisterForm__animateFadeIn}`}>
                             <FormGroup label={t('dob')}>
                                 <Input
                                     type="date"
@@ -134,22 +134,20 @@ const RegisterForm = () => {
                     <Button
                         type="submit"
                         variant="primary"
-                        className={`${styles.buttonSubmit}`}
+                        className={`${styles.RegisterForm__buttonSubmit}`}
                         disabled={loading}
                     >
                         {loading ? 'Preparando todo...' : t('register')}
                     </Button>
                 </form>
 
-                <footer className={`${styles.footer}`}>
-                    <p className={`${styles.footerText}`}>
+                <footer className={`${styles.RegisterForm__footer}`}>
+                    <p className={`${styles.RegisterForm__footerText}`}>
                         {t('already_account')}
-                        <Link to="/" className={`${styles.link}`}>{t('login')}</Link>
+                        <Link to="/" className={`${styles.RegisterForm__link}`}>{t('login')}</Link>
                     </p>
                 </footer>
             </main>
         </div>
     );
 };
-
-export default RegisterForm;

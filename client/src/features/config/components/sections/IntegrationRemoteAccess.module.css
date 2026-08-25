@@ -1,64 +1,141 @@
 /* IntegrationRemoteAccess Component Styles (BEM) */
 
-.root {
-    /* Root styles */
+.IntegrationRemoteAccess__hint {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
 }
 
-.urlBox {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    background-color: var(--gray-50);
-    padding: 1rem;
-    border-radius: var(--radius-sm);
+.IntegrationRemoteAccess__label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: var(--spacing-xs);
+}
+
+.IntegrationRemoteAccess__hintSmall {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-top: var(--spacing-xs);
+}
+
+.IntegrationRemoteAccess__urlDisplay {
+    flex: 1;
+    font-size: 0.875rem;
+    color: var(--text-main);
+    font-family: var(--font-mono, monospace);
+    background-color: var(--card-surface-bg);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
 }
 
-.urlText {
-    flex: 1;
-    font-family: var(--font-mono, monospace);
-    font-size: 0.875rem;
-    color: var(--primary-color);
+.IntegrationRemoteAccess__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.IntegrationRemoteAccess__configActions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.IntegrationRemoteAccess__guide {
+    background-color: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.IntegrationRemoteAccess__guideTitle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0 0 var(--spacing-sm) 0;
+}
+
+.IntegrationRemoteAccess__guideList {
+    margin: 0;
+    padding-left: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.IntegrationRemoteAccess__guideList li b {
+    color: var(--text-main);
+}
+
+.IntegrationRemoteAccess__link {
+    color: var(--accent-color);
+    text-decoration: underline;
     font-weight: 600;
 }
 
-.guide {
-    background-color: var(--blue-50);
-    padding: 1.5rem;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--blue-100);
-    margin-top: 2rem;
+.IntegrationRemoteAccess__link:hover {
+    color: var(--accent-hover);
 }
 
-.guideTitle {
+.IntegrationRemoteAccess__mobileCard {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--blue-800);
-    margin-bottom: 1rem;
-    text-transform: uppercase;
+    justify-content: space-between;
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
 }
 
-.guideList {
-    margin: 0;
-    padding-left: 1.25rem;
+.IntegrationRemoteAccess__mobileInfo {
     display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    font-size: 0.875rem;
-    color: var(--blue-900);
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
-.guideList li::marker {
-    font-weight: 800;
-    color: var(--blue-600);
+.IntegrationRemoteAccess__mobileIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background-color: rgb(var(--primary-rgb) / 10%);
+    color: var(--primary-color);
 }
 
-.link {
-    color: var(--blue-600);
-    text-decoration: underline;
+.IntegrationRemoteAccess__mobileTitle {
+    margin: 0;
+    font-size: 0.9rem;
     font-weight: 700;
+    color: var(--text-main);
+}
+
+.IntegrationRemoteAccess__mobileDesc {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+@media (width <= 600px) {
+    .IntegrationRemoteAccess__mobileCard {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: var(--spacing-md);
+    }
 }

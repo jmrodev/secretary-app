@@ -1,19 +1,38 @@
 /* ChatPage.css */
-
-.chatPageOrchestrator {
+.ChatPage__bridgeStatus {
     display: flex;
-    height: calc(100vh - 64px); /* Subtract header height */
-    overflow: hidden;
-    background: rgb(255 255 255 / 10%);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 10%);
-    border-radius: 1rem;
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
-    position: relative;
+    gap: var(--spacing-sm);
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius);
+    margin-bottom: var(--spacing-sm);
 }
 
+.ChatPage__statusDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gray-400);
+}
+
+.ChatPage__statusDot--connected { background: var(--success); }
+.ChatPage__statusDot--disconnected { background: var(--warning); }
+.ChatPage__statusDot--session-expired { background: var(--warning); }
+.ChatPage__statusDot--awaiting-admin { background: var(--danger); }
+.ChatPage__statusDot--offline { background: var(--gray-500); }
+
+.ChatPage__container {
+    display: flex;
+    gap: var(--spacing-md);
+    height: calc(100vh - 200px);
+}
+
+
+
 @media (width <= 768px) {
-    .chatPageOrchestrator .chatSidebar {
+    .ChatPage__chatPageOrchestrator .ChatPage__chatSidebar {
         width: 100%;
         position: absolute;
         inset: 0;
@@ -21,7 +40,7 @@
         transition: transform 0.3s ease;
     }
 
-    .chatPageOrchestrator .chatWindow {
+    .ChatPage__chatPageOrchestrator .ChatPage__chatWindow {
         width: 100%;
         position: absolute;
         inset: 0;
@@ -29,11 +48,11 @@
     }
 
     /* When a convo is selected, slide out the sidebar */
-    .chatPageOrchestratorConvoSelected .chatSidebar {
+    .ChatPage__chatPageOrchestratorConvoSelected .ChatPage__chatSidebar {
         transform: translateX(-100%);
     }
 
-    .chatPageOrchestratorConvoSelected .chatWindow {
+    .ChatPage__chatPageOrchestratorConvoSelected .ChatPage__chatWindow {
         z-index: 30;
     }
 }
