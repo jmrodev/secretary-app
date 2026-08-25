@@ -159,6 +159,9 @@ android_sdk/
 .gradle/
 .atl/
 
+# Go bridge binary (built locally, never commit)
+whatsapp-bridge-go/whatsapp-bridge-go
+
 # OpenSpec cache
 /openspec/.cache/
 /openspec/cache/

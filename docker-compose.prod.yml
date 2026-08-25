@@ -54,6 +54,7 @@ services:
       - GROQ_API_KEY=${GROQ_API_KEY}
       - WHATSAPP_BRIDGE_URL=http://whatsapp-bridge:8090/api/send
       - WHATSAPP_BRIDGE_STATUS_URL=http://whatsapp-bridge:8090/api/status
+      - WHATSAPP_BRIDGE_SECRET=${WHATSAPP_BRIDGE_SECRET:?WHATSAPP_BRIDGE_SECRET no definida en .env}
     depends_on:
       db-prod:
         condition: service_healthy
@@ -81,6 +82,13 @@ services:
     environment:
       - TZ=America/Argentina/Buenos_Aires
       - WHATSAPP_WEBHOOK_URL=http://server-prod:5000/api/whatsapp/webhook
+      - WHATSAPP_BRIDGE_SECRET=${WHATSAPP_BRIDGE_SECRET:?WHATSAPP_BRIDGE_SECRET no definida en .env}
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:8090/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   client-prod:
     build:

@@ -1,0 +1,185 @@
+/* WhatsappPairing molecule styles - extracted for component isolation */
+.WhatsappPairing__pairing {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #f0f2f5;
+}
+
+.WhatsappPairing__pairingCard {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgb(0 0 0 / 8%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 320px;
+}
+
+.WhatsappPairing__pairingIconWrapper {
+    position: relative;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.WhatsappPairing__pairingIcon {
+    width: 80px;
+    height: 80px;
+    background: #f0f2f5;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #075e54;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.WhatsappPairing__pairingIconOffline { color: #ef4444; }
+
+.WhatsappPairing__pulseRing {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: rgb(37 211 102 / 20%);
+    z-index: 1;
+    animation: pulse 2s infinite;
+}
+
+.WhatsappPairing__pulseRingOffline { background: rgb(239 68 68 / 20%); }
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.6); opacity: 0; }
+}
+
+.WhatsappPairing__pairing h3 {
+    margin: 0 0 0.5rem;
+    color: #1f2937;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.WhatsappPairing__pairing p {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.WhatsappPairing__qrWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.WhatsappPairing__pairingActions {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+.WhatsappPairing__qrContainer {
+    position: relative;
+    padding: 1rem;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgb(0 0 0 / 5%);
+    overflow: hidden;
+}
+
+.WhatsappPairing__qrImage {
+    display: block;
+    width: 200px;
+    height: 200px;
+    image-rendering: pixelated;
+}
+
+.WhatsappPairing__qrPlaceholder {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #9ca3af;
+    background: #f9fafb;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.WhatsappPairing__pairingFooter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+.WhatsappPairing__statusIndicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: #f3f4f6;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.WhatsappPairing__statusIndicator::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.WhatsappPairing__statusIndicatorOffline::before { background: #ef4444; }
+.WhatsappPairing__statusIndicatorDisconnected::before { background: #f59e0b; }
+.WhatsappPairing__statusIndicatorConnected::before { background: #25d366; }
+
+.WhatsappPairing__animateFadeIn {
+    animation: fade-in 0.4s ease-out;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.WhatsappPairing__animateZoomIn {
+    animation: zoom-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes zoom-in {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.WhatsappPairing__loader {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #25D366;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.WhatsappPairing__animateSpin {
+    animation: spin 2s linear infinite;
+}

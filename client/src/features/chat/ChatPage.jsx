@@ -4,6 +4,7 @@ import { ChatSidebar } from '@/features/chat/components/sections/ChatSidebar';
 import { ChatWindow } from '@/features/chat/components/sections/ChatWindow';
 import { MainLayout } from '@/components/templates/MainLayout';
 import { useLanguage } from '@/hooks/useLanguage';
+import { WhatsappPairing } from '@/components/molecules/WhatsappPairing';
 import styles from './ChatPage.module.css';
 
 
@@ -26,14 +27,35 @@ export const ChatPage = () => {
         messageText, setMessageText,
         scrollRef,
         handleSendMessage,
-        startNewChat
+        startNewChat,
+        bridgeStatus,
+        bridgeStatusLoading,
+        handleRefreshBridge
     } = useMessagesPageController();
+
+    const isBridgeConnected = bridgeStatus.status === 'connected';
+    const showInlineQR = !isBridgeConnected && bridgeStatus.status !== 'offline';
 
     return (
         <MainLayout wide flush title={t('whatsapp_history')}>
-            <section className={`${selectedConvo ? styles.ConvoSelected : ''} `}>
+            <section className={`${selectedConvo ? styles['ChatPage__chatPageOrchestratorConvoSelected'] : ''} `}>
+                {/* Bridge status indicator */}
+                <div className={styles.ChatPage__bridgeStatus} data-testid="bridge-status">
+                    <span className={`${styles.ChatPage__statusDot} ${styles[`ChatPage__statusDot--${bridgeStatus.status.replace(/_/g, '-')}`]}`} />
+                    <span>{t(`bridge_status_${bridgeStatus.status}`)}</span>
+                    {!isBridgeConnected && (
+                        <button type="button" onClick={handleRefreshBridge} disabled={bridgeStatusLoading} data-testid="bridge-reconnect">
+                            {t('whatsapp_refresh')}
+                        </button>
+                    )}
+                </div>
+                {showInlineQR && (
+                    <div data-testid="bridge-qr">
+                        <WhatsappPairing bridgeStatus={bridgeStatus} onRefresh={handleRefreshBridge} statusLoading={bridgeStatusLoading} t={t} qrCode={bridgeStatus.qr_code} />
+                    </div>
+                )}
                 <div>
-                    <div className="chat-page-container">
+                    <div className={styles.ChatPage__container}>
                         <ChatSidebar
                             className={`${styles.ChatPage__chatSidebar}`}
                             conversations={conversations}

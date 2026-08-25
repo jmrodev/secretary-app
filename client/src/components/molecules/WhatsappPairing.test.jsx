@@ -52,4 +52,23 @@ describe('WhatsappPairing Component (TDD)', () => {
         fireEvent.click(refreshBtn);
         expect(mockRefresh).toHaveBeenCalledTimes(1);
     });
+
+    it('renders session_expired distinctly with QR (R8)', () => {
+        const bridgeStatus = { status: 'session_expired', qr_code: 'session-qr' };
+        render(
+            <WhatsappPairing bridgeStatus={bridgeStatus} onRefresh={mockRefresh} statusLoading={false} t={mockT} />
+        );
+        expect(screen.getByText('bridge_session_expired_title')).toBeInTheDocument();
+        expect(screen.getByText('bridge_session_expired_desc')).toBeInTheDocument();
+        expect(document.querySelector('svg')).toBeInTheDocument();
+    });
+
+    it('renders awaiting_admin banner with guidance (R9)', () => {
+        const bridgeStatus = { status: 'awaiting_admin', qr_code: '' };
+        render(
+            <WhatsappPairing bridgeStatus={bridgeStatus} onRefresh={mockRefresh} statusLoading={false} t={mockT} />
+        );
+        expect(screen.getByText('bridge_awaiting_admin_title')).toBeInTheDocument();
+        expect(screen.getByText('bridge_awaiting_admin_desc')).toBeInTheDocument();
+    });
 });
