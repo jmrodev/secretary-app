@@ -1,13 +1,14 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
-import ChatConversationItem from '@/features/chat/components/ui/ChatConversationItem';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { ChatConversationItem } from '@/features/chat/components/ui/ChatConversationItem';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * ChatList Molecule (Feature Component).
  * Renders the searchable list of conversations and potential recipients.
  */
-const ChatList = ({
+export const ChatList = ({
     conversations,
     recipients,
     searchTerm,
@@ -15,12 +16,13 @@ const ChatList = ({
     setSelectedConvo,
     startNewChat
 }) => {
+    const { t } = useLanguage();
     const q = searchTerm.toLowerCase().trim();
 
     const filteredConvos = conversations.filter(c =>
         (c.other_display_name || '').toLowerCase().includes(q) ||
         (c.message || '').toLowerCase().includes(q) ||
-        (c.other_phone || '').includes(q)
+        (c.other_phone || '').toLowerCase().includes(q)
     );
 
     const existingUserIds = new Set(conversations.map(c => c.other_user_id));
@@ -33,7 +35,7 @@ const ChatList = ({
         <div className="floating-chat__list">
             <div className="floating-chat__search">
                 <Input
-                    placeholder="Buscar..."
+                    placeholder={t('search') || "Buscar..."}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     size="sm"
@@ -75,5 +77,3 @@ const ChatList = ({
         </div>
     );
 };
-
-export default ChatList;

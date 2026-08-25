@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import styles from './TabButton.module.css';
 
-const TabButton = ({
+export const TabButton = ({
     children,
     isActive,
     onClick,
@@ -10,19 +10,15 @@ const TabButton = ({
     activeColor = 'blue', // 'blue' | 'purple' | 'green' | 'amber' | 'default'
     className = ''
 }) => {
-    const baseClass = styles.tabBtn;
+    const colorKey = `TabButton__tabBtn--${activeColor}`;
 
-    const variantClass = `${baseClass}--${variant}`;
-    const colorClass = isActive ? `${baseClass}--${activeColor}` : '';
-    const activeClass = isActive ? `${baseClass}--active` : '';
-
-    const combinedClassName = `
-        ${baseClass} 
-        ${variantClass} 
-        ${colorClass} 
-        ${activeClass} 
-        ${className}
-    `.trim().replace(/\s+/g, ' ');
+    const combinedClassName = [
+        styles.TabButton__tabBtn,
+        variant === 'underline' && isActive && styles[`TabButton__tabBtn--underline-${activeColor}`],
+        isActive && styles['TabButton__tabBtn--active'],
+        isActive && styles[colorKey],
+        className
+    ].filter(Boolean).join(' ');
 
     return (
         <Button
@@ -35,5 +31,3 @@ const TabButton = ({
         </Button>
     );
 };
-
-export default TabButton;

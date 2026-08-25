@@ -1,24 +1,25 @@
 import React from 'react';
 import { useAuditLogsController } from '@/features/reports/hooks/useAuditLogsController';
-import AuditLogManager from '@/features/reports/components/views/AuditLogManager';
+import { AuditLogManager } from '@/features/reports/components/views/AuditLogManager';
 
-import MainLayout from '@/components/templates/MainLayout';
-import styles from './AuditLogsPage.module.css';
+import { MainLayout } from '@/components/templates/MainLayout';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * AuditLogsPage (Orchestrator).
  * Interface for viewing and filtering system audit logs.
  */
-const AuditLogsPage = () => {
+export const AuditLogsPage = () => {
     const controller = useAuditLogsController();
+    const { t } = useLanguage();
     
     return (
-        <MainLayout wide>
-            <main className={`${styles.auditLogsPageOrchestrator} animate-fade-in`}>
+        <MainLayout wide flush title={t('audit_logs')}>
+            <section>
                 <AuditLogManager {...controller} />
-            </main>
+            </section>
         </MainLayout>
     );
 };
 
-export default AuditLogsPage;
+

@@ -1,16 +1,19 @@
 
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import PrescriptionItemsList from '@/features/medical_documents/components/lists/PrescriptionItemsList';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Checkbox } from '@/components/atoms/Checkbox';
+import { FormGroup } from '@/components/molecules/FormGroup';
+import { PrescriptionItemsList } from '@/features/medical_documents/components/lists/PrescriptionItemsList';
 import styles from './EditRequestModal.module.css';
 
 /**
  * EditRequestModal Molecule.
  * Modal for editing general medical requests and their replies.
  */
-const EditRequestModal = ({
+export const EditRequestModal = ({
     isOpen,
     onClose,
     request,
@@ -29,7 +32,7 @@ const EditRequestModal = ({
             onClose={onClose}
             size="xl"
             title={
-                <div className={`${styles.titleFlex}`}>
+                <div className={`${styles.EditRequestModal__titleFlex}`}>
                     <Icon name="edit_note" size="1.5rem" color="var(--accent-color)" />
                     {t('edit_request')}
                 </div>
@@ -53,10 +56,10 @@ const EditRequestModal = ({
                 )
             }
         >
-            <div className={`${styles.body}`}>
+            <div className={`${styles.EditRequestModal__body}`}>
                 {request.type === 'prescription' && editData.items && editData.items.length > 0 && (
-                    <div className={`${styles.section}`}>
-                        <div className={`${styles.prescriptions}`}>
+                    <div className={`${styles.EditRequestModal__section}`}>
+                        <div className={`${styles.EditRequestModal__prescriptions}`}>
                             <PrescriptionItemsList
                                 items={editData.items}
                                 handleRemoveItem={() => { }}
@@ -67,55 +70,58 @@ const EditRequestModal = ({
                     </div>
                 )}
 
-                <div className="input-group">
-                    <label className="input-group__label">
-                        <Icon name="description" size="1rem" />
-                        {request.type === 'prescription' ? t('medications') : t('request_note')}
-                    </label>
-                    <textarea
-                        className="input-group__textarea"
-                        rows="3"
+                <FormGroup
+                    label={(
+                        <>
+                            <Icon name="description" size="1rem" />
+                            {request.type === 'prescription' ? t('medications') : t('request_note')}
+                        </>
+                    )}
+                    htmlFor="edit-request-note"
+                >
+                    <Input
+                        type="textarea"
+                        id="edit-request-note"
+                        rows={3}
                         readOnly={isReadOnly}
                         value={editData.request_note || ''}
                         onChange={e => onEditDataChange('request_note', e.target.value)}
                         placeholder={t('no_description')}
                     />
-                </div>
+                </FormGroup>
 
-                <div className="input-group">
-                    <label className="input-group__label">
-                        <Icon name="medical_services" size="1rem" />
-                        {t('doctor_says')}
-                    </label>
-                    <textarea
-                        className="input-group__textarea"
-                        rows="3"
+                <FormGroup
+                    label={(
+                        <>
+                            <Icon name="medical_services" size="1rem" />
+                            {t('doctor_says')}
+                        </>
+                    )}
+                    htmlFor="edit-request-doctor-note"
+                >
+                    <Input
+                        type="textarea"
+                        id="edit-request-doctor-note"
+                        rows={3}
                         readOnly={isReadOnly}
                         value={editData.doctor_note || ''}
                         onChange={e => onEditDataChange('doctor_note', e.target.value)}
                         placeholder={t('instructions_notes')}
                     />
-                </div>
+                </FormGroup>
 
                 {!isReadOnly && (
-                    <div className="input-group">
-                        <label className="input-group__label">
+                    <div className={`${styles.EditRequestModal__paymentStatus}`}>
+                        <span className={`${styles.EditRequestModal__groupLabel}`}>
                             <Icon name="payments" size="1rem" />
                             {t('appointment_payment')}
-                        </label>
-                        <div className={`${styles.paymentStatus}`}>
-                            <label className={`${styles.checkboxContainer}`}>
-                                <input
-                                    type="checkbox"
-                                    checked={editData.payment_status === 'bonified'}
-                                    onChange={e => onEditDataChange('payment_status', e.target.checked ? 'bonified' : 'debt')}
-                                />
-                                <span className="checkmark"></span>
-                                <span className="checkbox-label">
-                                    {t('bonified')}
-                                </span>
-                            </label>
-                        </div>
+                        </span>
+                        <Checkbox
+                            id="edit-request-payment-bonified"
+                            checked={editData.payment_status === 'bonified'}
+                            onChange={e => onEditDataChange('payment_status', e.target.checked ? 'bonified' : 'debt')}
+                            label={t('bonified')}
+                        />
                     </div>
                 )}
             </div>
@@ -123,4 +129,3 @@ const EditRequestModal = ({
     );
 };
 
-export default EditRequestModal;

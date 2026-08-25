@@ -1,13 +1,13 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { PhoneNumbersManager } from '@/components/molecules/PhoneNumbersManager';
 import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import styles from './InstitutionForm.module.css';
 
-const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting = false }) => {
+export const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting = false }) => {
     const { t } = useLanguage();
 
     const statusOptions = [
@@ -16,10 +16,11 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
     ];
 
     return (
-        <form onSubmit={onSubmit} className={`${styles.root}`}>
-            <div className={`${styles.group}`}>
-                <label className={`${styles.label}`}>{t('institution_name')} *</label>
+        <form onSubmit={onSubmit} className={`${styles.InstitutionForm__root}`}>
+            <div className={`${styles.InstitutionForm__group}`}>
+                <label htmlFor="institution-name" className={`${styles.InstitutionForm__label}`}>{t('institution_name')} *</label>
                 <Input
+                    id="institution-name"
                     type="text"
                     className="institution-form__input"
                     value={formData.name}
@@ -28,9 +29,10 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
                 />
             </div>
 
-            <div className={`${styles.group}`}>
-                <label className={`${styles.label}`}>{t('base_amount_label')}</label>
+            <div className={`${styles.InstitutionForm__group}`}>
+                <label htmlFor="institution-base-price" className={`${styles.InstitutionForm__label}`}>{t('base_amount_label')}</label>
                 <Input
+                    id="institution-base-price"
                     type="number"
                     className="institution-form__input"
                     value={formData.base_price}
@@ -46,9 +48,10 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
                 />
             </div>
 
-            <div className={`${styles.group}`}>
-                <label className={`${styles.label}`}>{t('description')}</label>
+            <div className={`${styles.InstitutionForm__group}`}>
+                <label htmlFor="institution-description" className={`${styles.InstitutionForm__label}`}>{t('description')}</label>
                 <Input
+                    id="institution-description"
                     type="textarea"
                     rows={3}
                     className="institution-form__input"
@@ -57,9 +60,10 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
                 />
             </div>
 
-            <div className={`${styles.group}`}>
-                <label className={`${styles.label}`}>{t('status')}</label>
+            <div className={`${styles.InstitutionForm__group}`}>
+                <label htmlFor="institution-status" className={`${styles.InstitutionForm__label}`}>{t('status')}</label>
                 <Select
+                    id="institution-status"
                     className="institution-form__input"
                     value={formData.status}
                     options={statusOptions}
@@ -67,7 +71,7 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
                 />
             </div>
 
-            <div className={`${styles.footer}`}>
+            <div className={`${styles.InstitutionForm__footer}`}>
                 {onCancel && (
                     <Button variant="secondary" onClick={onCancel} type="button">
                         {t('cancel')}
@@ -81,5 +85,5 @@ const InstitutionForm = ({ formData, onChange, onSubmit, onCancel, isSubmitting 
     );
 };
 
-export default InstitutionForm;
+
 

@@ -1,6 +1,6 @@
 /* OutreachPage — 3-step broadcast orchestrator */
 
-.outreach {
+.OutreachPage__outreach {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -20,7 +20,7 @@
     }
 }
 
-.outreach__title {
+.OutreachPage__title {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--color-text-primary, #e2e8f0);
@@ -29,16 +29,16 @@
 
 /* Step Indicator */
 
-.outreach__steps {
+.OutreachPage__steps {
     display: flex;
     gap: 0;
     background: rgb(255 255 255 / 6%);
-    border: 1px solid rgb(255 255 255 / 8%);
+    border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     overflow: hidden;
 }
 
-.outreach__step {
+.OutreachPage__step {
     flex: 1;
     display: flex;
     align-items: center;
@@ -55,37 +55,37 @@
     position: relative;
 }
 
-.outreach__step:not(:last-child)::after {
+.OutreachPage__step:not(:last-child)::after {
     content: '';
     position: absolute;
     right: 0;
     top: 25%;
     height: 50%;
     width: 1px;
-    background: rgb(255 255 255 / 8%);
+    background: var(--border-color);
 }
 
-.outreach__step:hover:not(:disabled) {
-    background: rgb(255 255 255 / 4%);
-    color: var(--color-text-secondary, #94a3b8);
+.OutreachPage__step:hover:not(:disabled) {
+    background: var(--glass);
+    color: var(--color-text-secondary, var(--text-muted));
 }
 
-.outreach__step:disabled {
+.OutreachPage__step:disabled {
     cursor: not-allowed;
     opacity: 0.5;
 }
 
-.outreach__step--active {
+.OutreachPage__step--active {
     background: rgb(59 130 246 / 15%);
     color: #60a5fa;
     font-weight: 600;
 }
 
-.outreach__step--completed {
+.OutreachPage__step--completed {
     color: #86efac;
 }
 
-.outreach__step-number {
+.OutreachPage__step-number {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -94,27 +94,27 @@
     border-radius: 50%;
     font-size: 0.75rem;
     font-weight: 700;
-    background: rgb(255 255 255 / 8%);
+    background: var(--border-color);
     flex-shrink: 0;
 }
 
-.outreach__step--active .outreach__step-number {
+.OutreachPage__step--active .OutreachPage__step-number {
     background: #3b82f6;
-    color: #fff;
+    color: var(--text-main);
 }
 
-.outreach__step--completed .outreach__step-number {
+.OutreachPage__step--completed .OutreachPage__step-number {
     background: #22c55e;
-    color: #fff;
+    color: var(--text-main);
 }
 
-.outreach__step-label {
+.OutreachPage__step-label {
     white-space: nowrap;
 }
 
 /* Step Content */
 
-.outreach__content {
+.OutreachPage__content {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -123,15 +123,15 @@
 
 /* Send Progress */
 
-.outreach__progress {
+.OutreachPage__progress {
     width: 100%;
     height: 0.5rem;
-    background: rgb(255 255 255 / 8%);
+    background: var(--border-color);
     border-radius: 0.25rem;
     overflow: hidden;
 }
 
-.outreach__progress-bar {
+.OutreachPage__progress-bar {
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #22c55e);
     border-radius: 0.25rem;
@@ -139,7 +139,7 @@
 }
 
 @media (width <= 640px) {
-    .outreach__step-label {
+    .OutreachPage__step-label {
         display: none;
     }
 }

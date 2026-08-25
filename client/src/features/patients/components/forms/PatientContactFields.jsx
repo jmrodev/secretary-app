@@ -1,8 +1,8 @@
 import React from 'react';
-import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
+import { PhoneNumbersManager } from '@/components/molecules/PhoneNumbersManager';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
 import styles from './PatientContactFields.module.css';
 
 /**
@@ -10,25 +10,24 @@ import styles from './PatientContactFields.module.css';
  * Manages email and multiple phone numbers through PhoneNumbersManager.
  * Optimized for Bento Box layout.
  */
-const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers, t }) => {
+export const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers, t }) => {
     return (
-        <article className={`${styles.root}`}>
-            <header className={`${styles.header}`}>
-                <Icon name="smartphone" size="1.25rem" />
-                <h3 className={`${styles.title}`}>{t('contact_phones')}</h3>
-            </header>
+        <article className={`${styles.PatientContactFields__root}`}>
+            
 
-            <div className={`${styles.bento}`}>
-                <div className={`${styles.group} ${styles.groupSpan12}`}>
-                    <label className={`${styles.label}`}>{t('primary_email')}</label>
-                    <div className={`${styles.inputWithAction}`}>
+            <div className={`${styles.PatientContactFields__bento}`}>
+                <div className={`${styles.PatientContactFields__group} ${styles.PatientContactFields__groupSpan5}`}>
+                    <label htmlFor="patient-email" className={`${styles.PatientContactFields__label}`}>{t('primary_email')}</label>
+                    <div className={`${styles.PatientContactFields__inputWithAction}`}>
                         <Input
+                            id="patient-email"
                             type="email"
                             name="email"
                             className="patient-contact-fields__field"
+                            style={{ maxWidth: '40ch' }}
                             value={formData.email || ''}
                             onChange={updatePatientData}
-                            placeholder="paciente@ejemplo.com"
+                            placeholder={t('patient_email_placeholder') || "paciente@ejemplo.com"}
                         />
                         {formData.email && (
                             <Button
@@ -42,7 +41,8 @@ const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers,
                     </div>
                 </div>
 
-                <div className={`${styles.phones} ${styles.groupSpan12}`}>
+                <div className={`${styles.PatientContactFields__group} ${styles.PatientContactFields__groupSpan7}`}>
+                    <span className={`${styles.PatientContactFields__label}`}>{t('contact_phones') || 'Teléfonos'}</span>
                     <PhoneNumbersManager
                         phoneNumbers={formData.phoneNumbers}
                         onChange={updatePhoneNumbers}
@@ -53,4 +53,3 @@ const PatientContactFields = ({ formData, updatePatientData, updatePhoneNumbers,
     );
 };
 
-export default PatientContactFields;

@@ -7,7 +7,7 @@ import styles from './Icon.module.css';
  * Uses Material Symbols Outlined.
  * Supports semantic names from ICONS configuration.
  */
-const Icon = ({
+export const Icon = ({
     name,
     className = '',
     size = 'inherit',
@@ -24,8 +24,8 @@ const Icon = ({
 
     const combinedClasses = [
         'material-symbols-outlined',
-        styles.root,
-        onIconClick ? styles.clickable : '',
+        styles.Icon__root,
+        onIconClick ? styles.Icon__clickable : '',
         className
     ].filter(Boolean).join(' ');
 
@@ -44,7 +44,7 @@ const Icon = ({
                 style={{ ...style, background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                 onClick={onIconClick}
                 onKeyDown={handleKeyDown}
-                aria-label={typeof name === 'string' ? name.toLowerCase().replace(/_/g, ' ') : styles.root}
+                aria-label={typeof name === 'string' ? name.toLowerCase().replace(/_/g, ' ') : styles.Icon__root}
             >
                 {symbol}
             </button>
@@ -62,5 +62,3 @@ const Icon = ({
         </span>
     );
 };
-
-export default Icon;

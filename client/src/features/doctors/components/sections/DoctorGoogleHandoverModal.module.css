@@ -1,0 +1,57 @@
+.DoctorGoogleHandoverModal__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem 0;
+    gap: 1.5rem;
+}
+
+.DoctorGoogleHandoverModal__instruction {
+    font-size: 0.95rem;
+    color: var(--text-main);
+    line-height: 1.5;
+}
+
+.DoctorGoogleHandoverModal__qrContainer {
+    background: white;
+    padding: 1rem;
+    border-radius: var(--radius-md, 0.5rem);
+    border: 1px solid var(--border-color);
+    display: inline-flex;
+}
+
+.DoctorGoogleHandoverModal__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.DoctorGoogleHandoverModal__urlBox {
+    background: var(--gray-50);
+    border: 1px dashed var(--gray-300);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm, 4px);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    word-break: break-all;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.DoctorGoogleHandoverModal__copyBtn {
+    cursor: pointer;
+    background: none;
+    border: none;
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    padding: 0.25rem;
+}
+
+.DoctorGoogleHandoverModal__copyBtn:hover {
+    color: var(--accent-hover);
+}

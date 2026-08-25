@@ -1,7 +1,7 @@
 const validate = (schema) => {
     return (req, res, next) => {
         const errors = [];
-        const data = req.body;
+        const data = req.body || {};
 
         Object.keys(schema).forEach(field => {
             const rules = schema[field];
@@ -17,6 +17,19 @@ const validate = (schema) => {
                 }
                 if (rules.type === 'date' && isNaN(Date.parse(value))) {
                     errors.push(`El campo '${field}' debe ser una fecha válida.`);
+                }
+                if (rules.type === 'boolean' && typeof value !== 'boolean') {
+                    errors.push(`El campo '${field}' debe ser un booleano.`);
+                }
+                if (rules.type === 'array') {
+                    if (!Array.isArray(value)) {
+                        errors.push(`El campo '${field}' debe ser un arreglo.`);
+                    } else if (rules.items && rules.items.type === 'integer') {
+                        const hasInvalid = value.some(item => !Number.isInteger(Number(item)) || Number(item) <= 0);
+                        if (hasInvalid) {
+                            errors.push(`El campo '${field}' solo acepta enteros positivos.`);
+                        }
+                    }
                 }
                 if (rules.enum && !rules.enum.includes(value)) {
                     errors.push(`El campo '${field}' debe ser uno de: ${rules.enum.join(', ')}.`);

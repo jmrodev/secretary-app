@@ -60,14 +60,22 @@ class AuthService {
     }
 
     async register(req, registrationData) {
+        const { username, password, role, fullName } = registrationData;
+        if (!(username && password && role && fullName)) throw new Error('All input is required');
+
+        const validRoles = ['admin', 'secretary', 'doctor', 'patient'];
+        if (!validRoles.includes(role)) throw new Error('Invalid role');
+
+        // Privilege-escalation guard: only an admin may register another
+        // admin account (mirrors the createUser path in UserAccountService).
+        if (role === 'admin' && req.user?.role !== 'admin') {
+            const error = new Error('Solo un administrador puede crear cuentas de administrador.');
+            error.statusCode = 403;
+            throw error;
+        }
+
         const conn = await pool.getConnection();
         try {
-            const { username, password, role, fullName } = registrationData;
-            if (!(username && password && role && fullName)) throw new Error('All input is required');
-
-            const validRoles = ['admin', 'secretary', 'doctor', 'patient'];
-            if (!validRoles.includes(role)) throw new Error('Invalid role');
-
             await conn.beginTransaction();
 
             const existingUser = await userRepository.findByUsername(username, conn);
@@ -120,19 +128,52 @@ class AuthService {
 
         if (!(await bcrypt.compare(password, user.password_hash))) throw new Error("Invalid Credentials");
 
-        const token = this._generateToken(user.id, username, user.role, user.token_version);
+        const permissions = {
+            can_manage_users: Boolean(user.can_manage_users),
+            can_crud_appointments: Boolean(user.can_crud_appointments),
+            can_edit_past_appointments: Boolean(user.can_edit_past_appointments),
+            can_crud_requests: Boolean(user.can_crud_requests),
+            can_crud_prescriptions: Boolean(user.can_crud_prescriptions),
+            can_crud_licenses: Boolean(user.can_crud_licenses),
+            can_crud_files: Boolean(user.can_crud_files),
+            can_crud_finances: Boolean(user.can_crud_finances)
+        };
+
+        const token = this._generateToken(user.id, username, user.role, user.token_version, permissions);
         const name = await this._getDisplayName(user);
 
         logAction({ user: { user_id: user.id, username: user.username }, ip: req.ip }, 'LOGIN', 'Success');
 
-        return { user_id: user.id, username: user.username, role: user.role, token, name };
+        return { user_id: user.id, username: user.username, role: user.role, token, name, permissions };
     }
 
     // --- Private Helpers ---
 
-    _generateToken(userId, username, role, version) {
+    _generateToken(userId, username, role, version, permissions = {}) {
+        const perms = typeof permissions === 'boolean' 
+            ? { can_manage_users: permissions } 
+            : permissions;
+
+        const permissionsPayload = {
+            can_manage_users: Boolean(perms.can_manage_users),
+            can_crud_appointments: Boolean(perms.can_crud_appointments),
+            can_edit_past_appointments: Boolean(perms.can_edit_past_appointments),
+            can_crud_requests: Boolean(perms.can_crud_requests),
+            can_crud_prescriptions: Boolean(perms.can_crud_prescriptions),
+            can_crud_licenses: Boolean(perms.can_crud_licenses),
+            can_crud_files: Boolean(perms.can_crud_files),
+            can_crud_finances: Boolean(perms.can_crud_finances)
+        };
+
         return jwt.sign(
-            { user_id: userId, username, role, token_version: version },
+            {
+                user_id: userId,
+                username,
+                role,
+                token_version: version,
+                permissions: permissionsPayload,
+                canManageUsers: permissionsPayload.can_manage_users
+            },
             process.env.JWT_SECRET,
             { expiresIn: "24h" }
         );

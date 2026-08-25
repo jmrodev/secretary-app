@@ -1,46 +1,46 @@
 /* MessageComposer — Step 2 of the outreach flow */
 
-.message-composer {
+.MessageComposer__message-composer {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
     padding: 1.5rem;
-    background: rgb(255 255 255 / 8%);
-    border: 1px solid rgb(255 255 255 / 10%);
+    background: var(--border-color);
+    border: 1px solid var(--border-color);
     border-radius: 0.75rem;
     backdrop-filter: blur(8px);
 }
 
-.message-composer__title {
+.MessageComposer__title {
     font-size: 1.125rem;
     font-weight: 600;
     color: var(--color-text-primary, #e2e8f0);
     margin: 0;
 }
 
-.message-composer__form {
+.MessageComposer__form {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.message-composer__field {
+.MessageComposer__field {
     display: flex;
     flex-direction: column;
     gap: 0.375rem;
 }
 
-.message-composer__label {
+.MessageComposer__label {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--color-text-secondary, #94a3b8);
+    color: var(--color-text-secondary, var(--text-muted));
 }
 
-.message-composer__input-wrapper {
+.MessageComposer__input-wrapper {
     position: relative;
 }
 
-.message-composer__char-count {
+.MessageComposer__char-count {
     position: absolute;
     bottom: 0.625rem;
     right: 0.75rem;
@@ -49,7 +49,7 @@
     pointer-events: none;
 }
 
-.message-composer__error {
+.MessageComposer__error {
     padding: 0.625rem 0.875rem;
     background: rgb(239 68 68 / 15%);
     border: 1px solid rgb(239 68 68 / 30%);
@@ -58,12 +58,12 @@
     font-size: 0.8125rem;
 }
 
-.message-composer__actions {
+.MessageComposer__actions {
     display: flex;
     justify-content: flex-end;
 }
 
-.message-composer__hint {
+.MessageComposer__hint {
     margin: 0;
     font-size: 0.8125rem;
     color: var(--color-text-tertiary, #64748b);

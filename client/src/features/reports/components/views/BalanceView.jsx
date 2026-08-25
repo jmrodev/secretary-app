@@ -2,16 +2,24 @@ import React from 'react';
 import { formatDate } from '@/utils/core/dateUtils';
 
 // Molecules
-import { BalanceFinancialSummary, BalanceCashFlowTable, BalanceDebtsTable } from '@/features/finances';
+import { BalanceFinancialSummary } from '@/features/finances/components/sections/BalanceFinancialSummary';
+import { BalanceCashFlowTable } from '@/features/finances/components/tables/BalanceCashFlowTable';
+import { BalanceDebtsTable } from '@/features/finances/components/tables/BalanceDebtsTable';
 
 import styles from './BalanceView.module.css';
+
+const calculateItemTotal = (items) => items.reduce((acc, item) =>
+    (item.payment_status?.toLowerCase() === 'paid' || item.payment_status?.toLowerCase() === 'pagado')
+        ? acc + Number(item.amount || 0)
+        : acc, 0
+);
 
 /**
  * BalanceView Organism.
  * Orchestrates financial reporting by aggregating data for a specific period and 
  * presenting summaries of income, cash flow, and outstanding debts.
  */
-const BalanceView = ({ reportData, month, year, t }) => {
+export const BalanceView = ({ reportData, month, year, t }) => {
     if (!reportData) return null;
 
     const appts = Array.isArray(reportData?.appointments) ? reportData.appointments : [];
@@ -24,12 +32,6 @@ const BalanceView = ({ reportData, month, year, t }) => {
     const totalIncome = appts.reduce((acc, day) => acc + Number(day.total_paid || 0), 0);
     const totalAppts = appts.reduce((acc, day) =>
         acc + day.appointments.reduce((sum, a) => sum + Number(a.monto_pagado || 0), 0), 0);
-
-    const calculateItemTotal = (items) => items.reduce((acc, item) =>
-        (item.payment_status?.toLowerCase() === 'paid' || item.payment_status?.toLowerCase() === 'pagado')
-            ? acc + Number(item.amount || 0)
-            : acc, 0
-    );
 
     const totalPres = calculateItemTotal(pres);
     const totalLicenses = calculateItemTotal(licenses);
@@ -78,13 +80,16 @@ const BalanceView = ({ reportData, month, year, t }) => {
     const netTotal = totalIncome - totalWithdrawals;
     const totalDebt = allDebts.reduce((a, b) => a + b.amount, 0);
 
+    const monthName = t('months_array') ? t('months_array')[month - 1] : '';
+    const balanceTitle = t('balance_report') || t('general_balance') || 'Balance General';
+
     return (
-        <div className={`${styles.root}`}>
-            <h2 className={`${styles.title}`}>
-                Balance General - {t('months_array')[month - 1]} {year}
+        <div className={styles.BalanceView}>
+            <h2 className={styles.BalanceView__title}>
+                {balanceTitle} - {monthName} {year}
             </h2>
 
-            <div className={`${styles.grid}`}>
+            <div className={styles.BalanceView__grid}>
                 <BalanceFinancialSummary
                     totalAppts={totalAppts}
                     totalPres={totalPres}
@@ -112,4 +117,4 @@ const BalanceView = ({ reportData, month, year, t }) => {
     );
 };
 
-export default BalanceView;
+

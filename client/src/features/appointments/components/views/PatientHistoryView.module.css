@@ -1,6 +1,6 @@
 /* PatientHistoryView — Compact List/Table Layout (BEM) - Dark Mode Standard */
 
-.root {
+.PatientHistoryView__root {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -9,7 +9,7 @@
 }
 
 /* ── Header ─────────────────────────────────────────── */
-.header {
+.PatientHistoryView__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -18,13 +18,13 @@
     background: var(--dashboard-card-bg);
 }
 
-.headerInfo {
+.PatientHistoryView__headerInfo {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-.title {
+.PatientHistoryView__title {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -34,7 +34,7 @@
     margin: 0;
 }
 
-.count {
+.PatientHistoryView__count {
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-muted);
@@ -44,18 +44,18 @@
 }
 
 /* ── Table ──────────────────────────────────────────── */
-.tableWrapper {
+.PatientHistoryView__tableWrapper {
     overflow: auto;
     flex: 1;
 }
 
-.table {
+.PatientHistoryView__table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.85rem;
 }
 
-.th {
+.PatientHistoryView__th {
     padding: 0.75rem 1rem;
     text-align: left;
     font-size: 0.7rem;
@@ -71,58 +71,58 @@
     z-index: 10;
 }
 
-.thStatus { width: 7rem; }
-.thPayment { width: 6rem; }
-.thActions { width: 3.5rem; text-align: center; }
+.PatientHistoryView__thStatus { width: 7rem; }
+.PatientHistoryView__thPayment { width: 6rem; }
+.PatientHistoryView__thActions { width: 3.5rem; text-align: center; }
 
 /* ── Row ────────────────────────────────────────────── */
-.row {
+.PatientHistoryView__row {
     cursor: pointer;
     transition: background-color 0.2s ease;
     border-bottom: 1px solid var(--dashboard-card-border);
 }
 
-.row:hover {
+.PatientHistoryView__row:hover {
     background-color: rgb(128, 128, 128, 0.08);
 }
 
-.row:last-child {
+.PatientHistoryView__row:last-child {
     border-bottom: none;
 }
 
 /* Subtle left accent by status */
-.rowCompleted { border-left: 4px solid var(--success); }
-.rowCancelled { border-left: 4px solid var(--danger); opacity: 0.6; }
-.rowAbsent    { border-left: 4px solid var(--warning); opacity: 0.8; }
-.rowPending   { border-left: 4px solid var(--primary-color); }
-.rowConfirmed { border-left: 4px solid var(--info); }
+.PatientHistoryView__rowCompleted { border-left: 4px solid var(--success); }
+.PatientHistoryView__rowCancelled { border-left: 4px solid var(--danger); opacity: 0.6; }
+.PatientHistoryView__rowAbsent    { border-left: 4px solid var(--warning); opacity: 0.8; }
+.PatientHistoryView__rowPending   { border-left: 4px solid var(--primary-color); }
+.PatientHistoryView__rowConfirmed { border-left: 4px solid var(--info); }
 
-.td {
+.PatientHistoryView__td {
     padding: 0.75rem 1rem;
     color: var(--text-main);
     vertical-align: middle;
 }
 
-.tdTime {
+.PatientHistoryView__tdTime {
     font-weight: 800;
     color: var(--primary-color);
 }
 
-.tdDoctor {
+.PatientHistoryView__tdDoctor {
     color: var(--text-secondary);
     font-weight: 600;
 }
 
-.tdMuted {
+.PatientHistoryView__tdMuted {
     color: var(--text-muted);
 }
 
-.virtualIcon {
+.PatientHistoryView__virtualIcon {
     margin-left: 0.5rem;
     color: var(--primary-color);
 }
 
-.tdReason {
+.PatientHistoryView__tdReason {
     max-width: 15rem;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -131,7 +131,7 @@
 }
 
 /* ── Status chip (Using Atomic standard tokens) ── */
-.statusChip {
+.PatientHistoryView__statusChip {
     display: inline-block;
     padding: 0.2rem 0.6rem;
     border-radius: var(--radius-sm, 0.35rem);
@@ -141,14 +141,14 @@
     letter-spacing: 0.03em;
 }
 
-.statusChipCompleted  { background: rgb(0 182 122 / 10%);  color: var(--success); }
-.statusChipPending    { background: rgb(59 130 246 / 10%); color: var(--primary-color); }
-.statusChipConfirmed  { background: rgb(14 165 233 / 10%); color: var(--info); }
-.statusChipCancelled  { background: rgb(249 55 93 / 10%);  color: var(--danger); }
-.statusChipAbsent     { background: rgb(245 158 11 / 10%); color: var(--warning); }
+.PatientHistoryView__statusChipCompleted  { background: rgb(0 182 122 / 10%);  color: var(--success); }
+.PatientHistoryView__statusChipPending    { background: rgb(59 130 246 / 10%); color: var(--primary-color); }
+.PatientHistoryView__statusChipConfirmed  { background: rgb(14 165 233 / 10%); color: var(--info); }
+.PatientHistoryView__statusChipCancelled  { background: rgb(249 55 93 / 10%);  color: var(--danger); }
+.PatientHistoryView__statusChipAbsent     { background: rgb(245 158 11 / 10%); color: var(--warning); }
 
 /* ── Payment badge ─────────────────────────────────── */
-.paymentBadge {
+.PatientHistoryView__paymentBadge {
     display: inline-block;
     padding: 0.2rem 0.5rem;
     border-radius: var(--radius-xs);
@@ -157,12 +157,12 @@
     border: 1px solid transparent;
 }
 
-.paymentBadgePaid     { background: rgb(0 182 122 / 10%); color: var(--success); border-color: rgb(0 182 122 / 20%); }
-.paymentBadgeDebt     { background: rgb(249 55 93 / 10%); color: var(--danger); border-color: rgb(249 55 93 / 20%); }
-.paymentBadgeBonified { background: rgb(59 130 246 / 10%); color: var(--primary-color); border-color: rgb(59 130 246 / 20%); }
+.PatientHistoryView__paymentBadgePaid     { background: rgb(0 182 122 / 10%); color: var(--success); border-color: rgb(0 182 122 / 20%); }
+.PatientHistoryView__paymentBadgeDebt     { background: rgb(249 55 93 / 10%); color: var(--danger); border-color: rgb(249 55 93 / 20%); }
+.PatientHistoryView__paymentBadgeBonified { background: rgb(59 130 246 / 10%); color: var(--primary-color); border-color: rgb(59 130 246 / 20%); }
 
 /* ── Empty State ───────────────────────────────────── */
-.empty {
+.PatientHistoryView__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -175,11 +175,11 @@
     border: 1px dashed var(--dashboard-card-border);
 }
 
-.emptyIcon {
+.PatientHistoryView__emptyIcon {
     color: var(--gray-700);
 }
 
-.emptyTitle {
+.PatientHistoryView__emptyTitle {
     font-size: 1rem;
     font-weight: 700;
     color: var(--text-muted);

@@ -1,22 +1,22 @@
 import React from 'react';
-import MainLayout from '@/components/templates/MainLayout';
-import DoctorsManager from '@/features/doctors/components/views/DoctorsManager';
+import { MainLayout } from '@/components/templates/MainLayout';
+import { DoctorsManager } from '@/features/doctors/components/views/DoctorsManager';
 import { useDoctorsPageController } from '@/features/doctors/hooks/useDoctorsPageController';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * DoctorsPage (Orchestrator).
  * Main interface for managing the medical staff and their schedules.
  */
-const DoctorsPage = () => {
+export const DoctorsPage = () => {
     const controller = useDoctorsPageController();
+    const { t } = useLanguage();
 
     return (
-        <MainLayout wide flush title="Gestión de Profesionales">
-            <div className="layout-content-area animate-fade-in">
+        <MainLayout wide flush title={t('doctors_management') || "Gestión de Profesionales"}>
+            <div>
                 <DoctorsManager {...controller} />
             </div>
         </MainLayout>
     );
 };
-
-export default DoctorsPage;

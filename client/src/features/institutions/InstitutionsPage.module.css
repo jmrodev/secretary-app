@@ -1,31 +1,21 @@
 /* InstitutionsPage Orchestrator Styles – BEM */
 
-.institutionsPageOrchestrator {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    background: rgb(255 255 255 / 10%);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 5%);
-    border-radius: 1rem;
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
-    padding: 1.5rem;
-}
+
 
 /* Sidebar institution list */
-.actions {
+.InstitutionsPage__actions {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.addBtn {
+.InstitutionsPage__addBtn {
     justify-content: flex-start;
     width: 100%;
 }
 
 
-.listLabel {
+.InstitutionsPage__listLabel {
     font-size: 0.7rem;
     font-weight: 700;
     color: var(--text-muted);
@@ -34,7 +24,7 @@
     margin-bottom: 0.25rem;
 }
 
-.list {
+.InstitutionsPage__list {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -42,25 +32,25 @@
 }
 
 /* Institution item row */
-.root {
+.InstitutionsPage__root {
     display: flex;
     align-items: center;
     gap: 0.25rem;
     border-radius: var(--radius-sm);
-    border: 1px solid rgb(255 255 255 / 5%);
-    background: rgb(255 255 255 / 10%);
+    border: 1px solid var(--glass);
+    background: var(--border-color);
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     overflow: hidden;
     transition: border-color 0.2s, background 0.2s;
 }
 
-.active {
+.InstitutionsPage__root--active {
     border-color: var(--accent-color);
     background: var(--blue-50);
 }
 
-.btn {
+.InstitutionsPage__btn {
     flex: 1;
     display: flex;
     justify-content: space-between;
@@ -76,18 +66,18 @@
     transition: color 0.2s;
 }
 
-.btnActive {
+.InstitutionsPage__btn--active {
     color: var(--accent-color);
     font-weight: 700;
 }
 
-.name {
+.InstitutionsPage__name {
     flex: 1;
     line-height: 1.3;
     margin-right: 0.4rem;
 }
 
-.badge {
+.InstitutionsPage__badge {
     background: var(--red-500);
     color: white;
     border-radius: 999px;
@@ -97,13 +87,13 @@
     flex-shrink: 0;
 }
 
-.actions {
+.InstitutionsPage__actions {
     display: flex;
     border-left: 1px solid var(--border-color);
     flex-shrink: 0;
 }
 
-.actionBtn {
+.InstitutionsPage__actionBtn {
     padding: 0.4rem 0.45rem;
     cursor: pointer;
     background: none;
@@ -113,14 +103,14 @@
     transition: background 0.2s;
 }
 
-.actionBtnEdit {
+.InstitutionsPage__actionBtn--edit {
     color: var(--blue-500);
 }
 
-.actionBtnDelete {
+.InstitutionsPage__actionBtn--delete {
     color: var(--red-500);
 }
 
-.actionBtn:hover {
+.InstitutionsPage__actionBtn:hover {
     background: var(--gray-50);
 }

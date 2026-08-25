@@ -1,16 +1,16 @@
 /* AppointmentsBadge.module.css */
 
-.badge {
+.AppointmentsBadge__badge {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  background: rgb(255, 255, 255, 0.04);
+  background: var(--glass);
   padding: 0.15rem 0.45rem;
   border-radius: 0.5rem;
-  border: 1px solid rgb(255, 255, 255, 0.05);
+  border: 1px solid var(--glass);
 }
 
-.count {
+.AppointmentsBadge__count {
   font-size: 0.75rem;
   font-weight: 700;
   color: rgb(255, 255, 255, 0.85);

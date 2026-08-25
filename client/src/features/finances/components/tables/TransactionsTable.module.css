@@ -1,137 +1,178 @@
 /* TransactionsTable Feature Styles (BEM) */
 
-.container {
+.TransactionsTable__container {
     /* --- Local Component Tokens --- */
-    --ledger-bg: var(--white);
-    --ledger-border: var(--gray-300);
-    --ledger-row-hover: var(--gray-50);
-    --ledger-group-bg: var(--blue-50);
-    --ledger-header-bg: var(--gray-50);
+    --ledger-bg: var(--white, var(--text-main));
+    --ledger-border: rgb(0, 0, 0, 0.08);
+    --ledger-row-hover: var(--row-hover-bg-selected);
+    --ledger-group-bg: rgb(239, 246, 255, 0.5);
+    --ledger-header-bg: rgb(248, 250, 252, 0.95);
 
     /* ------------------------------ */
 
     padding: 0;
     overflow: hidden;
-    margin-top: 1rem;
+    margin-top: 1.25rem;
+    border-radius: var(--radius-lg, 12px);
+    border: 1px solid var(--ledger-border);
+    box-shadow: 0 4px 20px -2px rgb(0, 0, 0, 0.04);
 }
 
-.wrapper {
+.TransactionsTable__wrapper {
     overflow: auto;
     width: 100%;
-    max-height: 700px;
+    max-height: 720px;
 }
 
-.table {
+.TransactionsTable__table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
     table-layout: fixed;
 }
 
-.table th {
-    background-color: var(--ledger-header-bg);
-    padding: 1rem 0.5rem;
+.TransactionsTable__table th {
+    background-color: var(--card-surface-bg);
+    padding: 0.875rem 0.75rem;
     text-align: left;
     font-weight: 800;
-    color: var(--text-secondary);
-    border-bottom: 2px solid var(--ledger-border);
+    color: var(--text-main);
+    border-bottom: 2px solid var(--dashboard-card-bg);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
     position: sticky;
     top: 0;
     z-index: 10;
 }
 
-.table td {
-    padding: 0.75rem 0.5rem;
-    border-bottom: 1px solid var(--gray-100);
+.TransactionsTable__table td {
+    padding: 0.875rem 0.75rem;
+    border-bottom: 1px solid rgb(0, 0, 0, 0.05);
     vertical-align: middle;
 }
 
-/* Column Proportion Definitions */
-.table th:nth-child(1),
-.table td:nth-child(1) {
-    width: 12%;
-    min-width: 100px;
+/* Column Proportion Definitions (5 Columns) */
+.TransactionsTable__table th:nth-child(1),
+.TransactionsTable__table td:nth-child(1) {
+    width: 15%;
+    min-width: 110px;
 }
 
-.table th:nth-child(2),
-.table td:nth-child(2) {
-    width: 28%;
-    min-width: 200px;
+.TransactionsTable__table th:nth-child(2),
+.TransactionsTable__table td:nth-child(2) {
+    width: 35%;
+    min-width: 220px;
 }
 
-.table th:nth-child(3),
-.table td:nth-child(3) {
-    width: 20%;
+.TransactionsTable__table th:nth-child(3),
+.TransactionsTable__table td:nth-child(3) {
+    width: 22%;
     min-width: 160px;
 }
 
-.table th:nth-child(4),
-.table td:nth-child(4) {
-    width: 10%;
-    min-width: 90px;
-}
-
-.table th:nth-child(5),
-.table td:nth-child(5) {
-    width: 10%;
-    min-width: 90px;
-}
-
-.table th:nth-child(6),
-.table td:nth-child(6) {
-    width: 10%;
+.TransactionsTable__table th:nth-child(4),
+.TransactionsTable__table td:nth-child(4) {
+    width: 13%;
     min-width: 100px;
 }
 
-.table th:nth-child(7),
-.table td:nth-child(7) {
-    width: 10%;
-    min-width: 100px;
+.TransactionsTable__table th:nth-child(5),
+.TransactionsTable__table td:nth-child(5) {
+    width: 15%;
+    min-width: 140px;
 }
 
-.table th:nth-child(8),
-.table td:nth-child(8) {
-    width: 14%;
-    min-width: 120px;
-}
-
-.rowGrouped {
+.TransactionsTable__rowGrouped {
     background-color: var(--ledger-group-bg);
 }
 
-.row:hover:not(.rowGrouped) td {
+/* Logical Row Color coding */
+.TransactionsTable__rowIncome {
+    background-color: rgb(240, 253, 244, 0.6);
+    border-left: 3px solid #22c55e;
+}
+
+.TransactionsTable__rowExpense {
+    background-color: rgb(254, 242, 242, 0.6);
+    border-left: 3px solid #ef4444;
+}
+
+.TransactionsTable__rowWithdrawal {
+    background-color: rgb(254, 252, 232, 0.6);
+    border-left: 3px solid #eab308;
+}
+
+.TransactionsTable__rowPending {
+    background-color: rgb(254, 242, 242, 0.7);
+    border-left: 4px solid #dc2626;
+}
+
+.TransactionsTable__rowIncome:hover td {
+    background-color: var(--green-100) !important;
+    color: var(--gray-900) !important;
+}
+
+.TransactionsTable__rowExpense:hover td {
+    background-color: var(--red-100) !important;
+    color: var(--gray-900) !important;
+}
+
+.TransactionsTable__rowWithdrawal:hover td {
+    background-color: var(--yellow-100) !important;
+    color: var(--gray-900) !important;
+}
+
+.TransactionsTable__rowPending:hover td {
+    background-color: var(--red-200) !important;
+    color: var(--gray-900) !important;
+}
+
+.TransactionsTable__rowIncome:hover .TransactionsTable__description,
+.TransactionsTable__rowExpense:hover .TransactionsTable__description,
+.TransactionsTable__rowWithdrawal:hover .TransactionsTable__description,
+.TransactionsTable__rowPending:hover .TransactionsTable__description,
+.TransactionsTable__rowIncome:hover .TransactionsTable__beneficiaryName,
+.TransactionsTable__rowExpense:hover .TransactionsTable__beneficiaryName,
+.TransactionsTable__rowWithdrawal:hover .TransactionsTable__beneficiaryName,
+.TransactionsTable__rowPending:hover .TransactionsTable__beneficiaryName,
+.TransactionsTable__rowIncome:hover .TransactionsTable__date,
+.TransactionsTable__rowExpense:hover .TransactionsTable__date,
+.TransactionsTable__rowWithdrawal:hover .TransactionsTable__date,
+.TransactionsTable__rowPending:hover .TransactionsTable__date {
+    color: var(--gray-900) !important;
+}
+
+.TransactionsTable__row:hover:not(.TransactionsTable__rowGrouped) td {
     background-color: var(--ledger-row-hover);
 }
 
-.date {
+.TransactionsTable__date {
     font-weight: 700;
     color: var(--text-main);
     font-size: 0.75rem;
     line-height: 1.2;
 }
 
-.time {
+.TransactionsTable__time {
     font-size: 0.65rem;
     color: var(--text-muted);
 }
 
-.descriptionWrapper {
+.TransactionsTable__descriptionWrapper {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
 }
 
-.typeTag {
+.TransactionsTable__typeTag {
     align-self: flex-start;
     font-size: 0.6rem;
     font-weight: 800;
     letter-spacing: 0.02em;
 }
 
-.description {
+.TransactionsTable__description {
     font-weight: 500;
     color: var(--text-main);
     font-size: 0.8125rem;
@@ -140,36 +181,36 @@
     text-overflow: ellipsis;
 }
 
-.highlight {
+.TransactionsTable__highlight {
     color: var(--blue-700);
     background-color: var(--blue-50);
     padding: 0 0.2rem;
     border-radius: 2px;
 }
 
-.cellFirst {
+.TransactionsTable__cellFirst {
     padding-left: 1.5rem;
 }
 
-.cellLast {
+.TransactionsTable__cellLast {
     padding-right: 1.5rem;
 }
 
-.cellCenter {
+.TransactionsTable__cellCenter {
     text-align: center;
 }
 
-.cellRight {
+.TransactionsTable__cellRight {
     text-align: right;
 }
 
-.beneficiary {
+.TransactionsTable__beneficiary {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
 }
 
-.beneficiaryName {
+.TransactionsTable__beneficiaryName {
     font-weight: 700;
     font-size: 0.875rem;
     color: var(--text-main);
@@ -178,80 +219,174 @@
     gap: 0.5rem;
 }
 
-.beneficiaryIcon {
+.TransactionsTable__beneficiaryIcon {
     color: var(--blue-600);
     opacity: 0.8;
 }
 
-.patient {
+.TransactionsTable__patient {
     font-size: 0.7rem;
     color: var(--text-muted);
     font-weight: 500;
 }
 
-.method {
+.TransactionsTable__method {
     font-weight: 500;
     color: var(--text-secondary);
 }
 
-.amount {
+.TransactionsTable__amount {
     font-weight: 800;
     font-size: 0.9375rem;
     white-space: nowrap;
 }
 
-.amountIncome {
+.TransactionsTable__amountIncome {
     color: var(--success);
 }
 
-.amountExpense {
+.TransactionsTable__amountExpense {
     color: var(--error);
 }
 
-.amountWithdrawal {
+.TransactionsTable__amountWithdrawal {
     color: var(--warning, #f59e0b);
 }
 
-.invoiceInfo {
+.TransactionsTable__invoiceInfo {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
 }
 
-.invoiceNumber {
-    font-size: 0.7rem;
+.TransactionsTable__invoiceNumber {
+    font-size: 0.75rem;
     font-weight: 800;
-    color: var(--blue-600);
-    font-family: inherit;
+    color: var(--blue-800);
+    background-color: #dbeafe;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-family: monospace;
 }
 
-.proofLink {
-    color: var(--text-muted);
+.TransactionsTable__actionBtnView {
+    background-color: #6366f1 !important;
+    color: var(--text-main) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 0.35rem 0.6rem !important;
+    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1) !important;
+    transition: all 0.15s ease-in-out !important;
+}
+
+.TransactionsTable__actionBtnView:hover {
+    background-color: var(--indigo-600) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
+}
+
+.TransactionsTable__proofLink {
     display: inline-flex;
-    transition: color 0.2s;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background-color: #0284c7;
+    color: var(--text-main) !important;
+    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1);
+    transition: all 0.15s ease-in-out;
 }
 
-.proofLink:hover {
-    color: var(--accent-color);
+.TransactionsTable__proofLink:hover {
+    background-color: var(--sky-700);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 8px var(--modal-bg-dark);
 }
 
-.noProof {
+.TransactionsTable__noProof {
     color: var(--text-muted);
-    opacity: 0.5;
+    font-weight: 700;
 }
 
-.actions {
+.TransactionsTable__invoiceInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.TransactionsTable__actions {
     display: flex;
     justify-content: flex-end;
-    gap: 0.15rem;
+    align-items: center;
+    gap: 0.6rem;
 }
 
-.groupFooter {
+.TransactionsTable__actionBtn {
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 0.35rem 0.5rem !important;
+    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1) !important;
+    transition: all 0.15s ease-in-out !important;
+}
+
+.TransactionsTable__actionBtn:hover {
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
+}
+
+.TransactionsTable__actionBtnPay {
+    background-color: #15803d !important;
+    color: var(--text-main) !important;
+}
+
+.TransactionsTable__actionBtnPay:hover {
+    background-color: var(--green-800) !important;
+}
+
+.TransactionsTable__actionBtnInvoice {
+    background-color: #1d4ed8 !important;
+    color: var(--text-main) !important;
+}
+
+.TransactionsTable__actionBtnInvoice:hover {
+    background-color: var(--blue-800) !important;
+}
+
+.TransactionsTable__actionBtnEdit {
+    background-color: var(--dashboard-card-bg) !important;
+    color: var(--text-main) !important;
+}
+
+.TransactionsTable__actionBtnEdit:hover {
+    background-color: var(--background-bg) !important;
+}
+
+.TransactionsTable__actionBtnSync {
+    background-color: #0e7490 !important;
+    color: var(--text-main) !important;
+}
+
+.TransactionsTable__actionBtnSync:hover {
+    background-color: var(--cyan-800) !important;
+}
+
+.TransactionsTable__actionBtnDelete {
+    background-color: #b91c1c !important;
+    color: var(--text-main) !important;
+}
+
+.TransactionsTable__actionBtnDelete:hover {
+    background-color: var(--red-800) !important;
+}
+
+.TransactionsTable__groupFooter {
     background-color: var(--ledger-header-bg);
 }
 
-.groupTotal {
+.TransactionsTable__groupTotal {
     padding: 1rem 1.5rem;
     text-align: right;
     font-weight: 800;
@@ -260,7 +395,7 @@
     font-size: 0.875rem;
 }
 
-.cellEmptyState {
+.TransactionsTable__cellEmptyState {
     padding: 6rem;
     text-align: center;
     color: var(--text-muted);
@@ -268,19 +403,19 @@
 }
 
 /* Invoice Detail Overlay */
-.invoiceDetail {
+.TransactionsTable__invoiceDetail {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
 }
 
-.title {
+.TransactionsTable__title {
     font-size: 1.25rem;
     font-weight: 800;
     color: var(--text-main);
 }
 
-.content {
+.TransactionsTable__content {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;

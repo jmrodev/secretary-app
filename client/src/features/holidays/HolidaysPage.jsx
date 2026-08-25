@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useHolidays } from '@/features/appointments/hooks/useHolidays';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import HolidayList from '@/features/appointments/components/sections/HolidayList';
-import Input from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
+import { HolidayList } from '@/features/appointments/components/sections/HolidayList';
+import { Input } from '@/components/atoms/Input';
 import styles from './HolidaysPage.module.css';
 
 export const HolidaysPage = () => {
@@ -24,36 +24,36 @@ export const HolidaysPage = () => {
 
     return (
         <MainLayout wide flush title={t('holidays') || 'Feriados y Días No Laborables'}>
-            <div className={styles.root}>
+            <div className={styles.HolidaysPage__root}>
 
-                <div className={styles.content}>
-                    <div className={styles.card}>
-                        <h3 className={styles.cardTitle}>Agregar Feriado</h3>
-                        <form onSubmit={handleAdd} className={styles.form}>
+                <div className={styles.HolidaysPage__content}>
+                    <div className={styles.HolidaysPage__card}>
+                        <h3 className={styles.HolidaysPage__cardTitle}>{t('add_holiday') || 'Agregar Feriado'}</h3>
+                        <form onSubmit={handleAdd} className={styles.HolidaysPage__form}>
                             <Input 
                                 type="date" 
-                                label="Fecha" 
+                                label={t('date') || "Fecha"} 
                                 value={date} 
                                 onChange={(e) => setDate(e.target.value)} 
                                 required 
                             />
                             <Input 
                                 type="text" 
-                                label="Descripción (Opcional)" 
-                                placeholder="Ej: Año Nuevo, Feriado Nacional..."
+                                label={t('description_optional') || "Descripción (Opcional)"} 
+                                placeholder={t('holiday_example_placeholder') || "Ej: Año Nuevo, Feriado Nacional..."}
                                 value={description} 
                                 onChange={(e) => setDescription(e.target.value)} 
                             />
                             <Button type="submit" variant="primary" icon={<Icon name="add" />}>
-                                Agregar
+                                {t('add') || 'Agregar'}
                             </Button>
                         </form>
                     </div>
 
-                    <div className={styles.card}>
-                        <h3 className={styles.cardTitle}>Feriados Registrados</h3>
+                    <div className={styles.HolidaysPage__card}>
+                        <h3 className={styles.HolidaysPage__cardTitle}>{t('registered_holidays') || 'Feriados Registrados'}</h3>
                         {loading ? (
-                            <div style={{ textAlign: 'center', padding: '2rem' }}>Cargando…</div>
+                            <div style={{ textAlign: 'center', padding: '2rem' }}>{t('loading') || 'Cargando…'}</div>
                         ) : (
                             <HolidayList holidays={holidays} onDelete={deleteHoliday} />
                         )}

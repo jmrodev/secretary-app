@@ -1,4 +1,4 @@
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 export const financeService = {
     getPricing: async (doctorId, patientId, serviceType) => {
@@ -7,7 +7,7 @@ export const financeService = {
             patientId: patientId,
             service_type: serviceType
         });
-        return response.data;
+        return response.data?.data || response.data;
     },
 
     createTransaction: async (data) => {

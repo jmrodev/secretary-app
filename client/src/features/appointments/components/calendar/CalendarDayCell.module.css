@@ -1,4 +1,4 @@
-.root {
+.CalendarDayCell__root {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -18,15 +18,15 @@
   box-shadow: var(--shadow-sm);
 }
 
-.compact {
+.CalendarDayCell__compact {
   min-height: 3.5rem;
 }
 
-.root:not(.compact) {
+.CalendarDayCell__root:not(.CalendarDayCell__compact) {
   min-height: 3.5rem;
 }
 
-.root:hover {
+.CalendarDayCell__root:hover {
   background: rgb(128, 128, 128, 0.08) !important;
   border-color: var(--primary-color) !important;
   box-shadow: var(--shadow-md);
@@ -34,25 +34,25 @@
   z-index: 5;
 }
 
-.today {
+.CalendarDayCell__today {
   background-color: rgb(14, 165, 233, 0.12) !important;
   border: 2px solid #0284c7 !important;
   z-index: 2;
 }
 
-.today .number {
+.CalendarDayCell__today .CalendarDayCell__number {
   color: #0284c7 !important;
   font-weight: 900;
 }
 
-.selected {
+.CalendarDayCell__selected {
   background: rgb(13, 148, 136, 0.15) !important;
   border: 1px solid var(--primary-color) !important;
   z-index: 3;
   box-shadow: var(--shadow-sm);
 }
 
-.selected::before {
+.CalendarDayCell__selected::before {
   content: '';
   position: absolute;
   top: 0;
@@ -62,7 +62,7 @@
   background: var(--primary-color);
 }
 
-.numberWrapper {
+.CalendarDayCell__numberWrapper {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -72,101 +72,88 @@
   border-radius: 50%;
 }
 
-.numberWrapper::before {
+.CalendarDayCell__numberWrapper::before {
   content: '';
   position: absolute;
-  inset: -3px;
+  inset: -4px;
   border-radius: 50%;
-  padding: 3px;
+  padding: 4px;
   background: conic-gradient(
     var(--primary-color) 0%,
     var(--primary-color) var(--occupancy-normal, 0%),
-    var(--border-color) var(--occupancy-normal, 0%),
-    var(--border-color) 100%
+    color-mix(in srgb, var(--text-main) 18%, transparent) var(--occupancy-normal, 0%),
+    color-mix(in srgb, var(--text-main) 18%, transparent) 100%
   );
   mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+    linear-gradient(var(--text-main) 0 0) content-box,
+    linear-gradient(var(--text-main) 0 0);
   mask-composite: exclude;
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
 
-.numberWrapper::after {
+.CalendarDayCell__numberWrapper::after {
   content: '';
   position: absolute;
-  inset: -7px;
+  inset: -8px;
   border-radius: 50%;
   padding: 2px;
   background: conic-gradient(
-    var(--warning) 0%,
-    var(--warning) var(--occupancy-extra, 0%),
-    var(--border-color) var(--occupancy-extra, 0%),
-    var(--border-color) 100%
+    var(--overtime-color, var(--warning)) 0%,
+    var(--overtime-color, var(--warning)) var(--occupancy-extra, 0%),
+    color-mix(in srgb, var(--text-main) 18%, transparent) var(--occupancy-extra, 0%),
+    color-mix(in srgb, var(--text-main) 18%, transparent) 100%
   );
   mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
+    linear-gradient(var(--text-main) 0 0) content-box,
+    linear-gradient(var(--text-main) 0 0);
   mask-composite: exclude;
   pointer-events: none;
   opacity: var(--extra-opacity, 0);
   transition: opacity 0.3s ease;
 }
 
-.selected .numberWrapper::before,
-.selected .numberWrapper::after {
-  opacity: 0;
+.CalendarDayCell__selected .CalendarDayCell__number {
+  color: var(--primary-color) !important;
+  font-weight: 900;
 }
 
-.selected .number {
-  background: var(--primary-color);
-  color: #fff !important;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.5rem;
-  height: 3.5rem;
-  box-shadow: var(--shadow-sm);
-  font-weight: 800;
-}
-
-.holiday {
+.CalendarDayCell__holiday {
   background-color: rgb(var(--danger-rgb), 0.02);
   border-style: dashed;
   border-color: rgb(var(--danger-rgb), 0.25);
 }
 
-.holiday:hover {
+.CalendarDayCell__holiday:hover {
   border-color: rgb(var(--danger-rgb), 0.5);
   background-color: rgb(var(--danger-rgb), 0.04);
 }
 
-.weekend {
+.CalendarDayCell__weekend {
   background-color: rgb(99, 102, 241, 0.05) !important;
 }
 
-:root[data-theme="dark"] .weekend,
-html[data-theme="dark"] .weekend,
-body:not(.theme-light) .weekend {
+:root[data-theme="dark"] .CalendarDayCell__weekend,
+html[data-theme="dark"] .CalendarDayCell__weekend,
+body:not(.CalendarDayCell__theme-light) .CalendarDayCell__weekend {
   background-color: rgb(99, 102, 241, 0.1) !important;
 }
 
-.past {
+.CalendarDayCell__past {
   background-color: rgb(0, 0, 0, 0.04) !important;
 }
 
-:root[data-theme="dark"] .past,
-html[data-theme="dark"] .past,
-body:not(.theme-light) .past {
+:root[data-theme="dark"] .CalendarDayCell__past,
+html[data-theme="dark"] .CalendarDayCell__past,
+body:not(.CalendarDayCell__theme-light) .CalendarDayCell__past {
   background-color: rgb(0, 0, 0, 0.25) !important;
 }
 
-.past .number {
+.CalendarDayCell__past .CalendarDayCell__number {
   color: var(--text-muted);
 }
 
-.content {
+.CalendarDayCell__content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -177,7 +164,7 @@ body:not(.theme-light) .past {
   padding: 0.5rem;
 }
 
-.date {
+.CalendarDayCell__date {
   position: absolute;
   top: 0.4rem;
   left: 0.5rem;
@@ -188,7 +175,7 @@ body:not(.theme-light) .past {
   z-index: 2;
 }
 
-.markers {
+.CalendarDayCell__markers {
   position: absolute;
   top: 0.35rem;
   right: 0.35rem;
@@ -198,7 +185,7 @@ body:not(.theme-light) .past {
   gap: 0.2rem;
 }
 
-.number {
+.CalendarDayCell__number {
   font-weight: 800;
   font-size: 1.8rem;
   color: var(--text-main);
@@ -211,37 +198,32 @@ body:not(.theme-light) .past {
   justify-content: center;
 }
 
-.compact .numberWrapper {
+.CalendarDayCell__compact .CalendarDayCell__numberWrapper {
   width: 2.5rem;
   height: 2.5rem;
 }
 
-.compact .number {
+.CalendarDayCell__compact .CalendarDayCell__number {
   font-size: 1.25rem;
 }
 
-.compact.selected .number {
-  width: 2.5rem;
-  height: 2.5rem;
-}
-
-.compact .content {
+.CalendarDayCell__compact .CalendarDayCell__content {
   padding: 0.2rem;
 }
 
-.compact .date {
+.CalendarDayCell__compact .CalendarDayCell__date {
   top: 0.2rem;
   left: 0.35rem;
   right: 0.35rem;
 }
 
-.compact .todayMarker,
-.compact .holidayMarker {
+.CalendarDayCell__compact .CalendarDayCell__todayMarker,
+.CalendarDayCell__compact .CalendarDayCell__holidayMarker {
   font-size: 0.5rem;
 }
 
-.todayMarker,
-.holidayMarker {
+.CalendarDayCell__todayMarker,
+.CalendarDayCell__holidayMarker {
   font-size: 0.58rem;
   font-weight: 800;
   text-transform: uppercase;
@@ -249,12 +231,12 @@ body:not(.theme-light) .past {
   font-family: var(--font-manrope);
 }
 
-.todayMarker {
+.CalendarDayCell__todayMarker {
   color: #0284c7;
   font-weight: 800;
 }
 
-.holidayMarker {
+.CalendarDayCell__holidayMarker {
   color: var(--danger);
   background-color: rgb(var(--danger-rgb), 0.12);
   display: flex;
@@ -263,4 +245,19 @@ body:not(.theme-light) .past {
   width: 1.15rem;
   height: 1.15rem;
   border-radius: var(--radius-full);
+}
+
+/* Overtime: the day has appointments in the doctor's configured overtime window.
+   The number turns amber to reinforce the visible outer ring. */
+.CalendarDayCell__overtime .CalendarDayCell__number {
+  color: var(--warning) !important;
+}
+
+/* Full day: every official slot is booked. The inner ring turns solid green so
+   fully-booked days stand out from partially occupied ones. */
+.CalendarDayCell__full .CalendarDayCell__numberWrapper::before {
+  background: conic-gradient(
+    var(--success) 0%,
+    var(--success) 100%
+  );
 }

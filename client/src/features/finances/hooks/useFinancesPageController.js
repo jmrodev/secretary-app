@@ -1,5 +1,5 @@
 import { useReducer, useEffect, useCallback, useMemo } from 'react';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { useMessage } from '@/context/MessageContext';
@@ -113,7 +113,6 @@ export const useFinancesPageController = () => {
         fetchData, 
         setEditingTx: (val) => dispatch({ type: 'SET_EDITING_TX', payload: val }), 
         setModalOpen: (val) => dispatch({ type: 'SET_MODAL_OPEN', payload: val }),
-        setHistoricalWithdrawalOpen: () => {},
         setPendingClosuresOpen: (val) => dispatch({ type: 'SET_CLOSURES_OPEN', payload: val }),
         setCloseBoxModal: (val) => dispatch({ type: 'SET_CLOSE_BOX', payload: val }), 
         setCloseAmount: (val) => dispatch({ type: 'SET_CLOSE_AMOUNT', payload: val }), 

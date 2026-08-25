@@ -1,13 +1,13 @@
-.container {
+.PrescriptionItemsList__container {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     margin-top: 1rem;
-    border-top: 1px solid rgb(255 255 255 / 10%);
+    border-top: 1px solid var(--border-color);
     padding-top: 1rem;
 }
 
-.label {
+.PrescriptionItemsList__label {
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-secondary);
@@ -15,7 +15,7 @@
     letter-spacing: 0.05em;
 }
 
-.tableWrapper {
+.PrescriptionItemsList__tableWrapper {
     background: transparent;
     border: none;
     border-radius: 0;
@@ -23,111 +23,111 @@
     backdrop-filter: none;
 }
 
-.table {
+.PrescriptionItemsList__table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
 }
 
-.table th {
+.PrescriptionItemsList__table th {
     padding: 0.25rem 0.5rem;
     font-size: 0.7rem;
     font-weight: 500;
-    color: rgb(255 255 255 / 40%);
+    color: var(--text-muted);
     text-transform: uppercase;
-    border-bottom: 1px solid rgb(255 255 255 / 10%);
+    border-bottom: 1px solid var(--border-color);
     background: transparent;
 }
 
-.table td {
+.PrescriptionItemsList__table td {
     padding: 0.5rem;
     vertical-align: middle;
-    border-bottom: 1px dashed rgb(255 255 255 / 5%);
+    border-bottom: 1px dashed var(--glass);
     color: var(--text-main);
 }
 
-.table tr:last-child td {
+.PrescriptionItemsList__table tr:last-child td {
     border-bottom: none;
 }
 
-.table tr:hover td {
-    background: rgb(128, 128, 128, 0.08);
+.PrescriptionItemsList__table tr:hover td {
+    background: var(--dashboard-card-bg);
 }
 
-.nameWrap {
+.PrescriptionItemsList__nameWrap {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
 }
 
-.nameCell {
+.PrescriptionItemsList__nameCell {
     width: 45%;
 }
 
-.name {
+.PrescriptionItemsList__name {
     font-weight: 600;
     font-size: 0.85rem;
 }
 
-.dose {
+.PrescriptionItemsList__dose {
     font-size: 0.75rem;
-    color: rgb(255 255 255 / 70%);
+    color: var(--text-muted);
 }
 
-.metaCell {
+.PrescriptionItemsList__metaCell {
     font-size: 0.8rem;
-    color: rgb(255 255 255 / 80%);
+    color: var(--text-muted);
 }
 
-.metaItem {
+.PrescriptionItemsList__metaItem {
     display: flex;
     align-items: center;
     gap: 0.35rem;
     margin-bottom: 0.2rem;
 }
 
-.metaItem:last-child {
+.PrescriptionItemsList__metaItem:last-child {
     margin-bottom: 0;
 }
 
-.metaItem i {
-    color: rgb(255 255 255 / 90%);
+.PrescriptionItemsList__metaItem i {
+    color: var(--text-secondary);
 }
 
-.daysSupply {
+.PrescriptionItemsList__daysSupply {
     color: var(--green-300);
 }
 
-.actionsCol {
+.PrescriptionItemsList__actionsCol {
     text-align: right;
     width: 1%;
     white-space: nowrap;
 }
 
-.formRow {
+.PrescriptionItemsList__formRow {
     background: transparent;
-    border-bottom: 1px dashed rgb(255 255 255 / 15%);
+    border-bottom: 1px dashed var(--border-color);
 }
 
-.formCell {
+.PrescriptionItemsList__formCell {
     padding: 0.25rem !important;
     vertical-align: middle !important;
 }
 
-.formGroup {
+.PrescriptionItemsList__formGroup {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.qtyInputs {
+.PrescriptionItemsList__qtyInputs {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.supplyPreviewInline {
+.PrescriptionItemsList__supplyPreviewInline {
     font-size: 0.75rem;
     color: var(--green-300);
     margin-top: 0.25rem;

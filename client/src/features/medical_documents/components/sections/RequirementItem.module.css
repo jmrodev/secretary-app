@@ -1,49 +1,49 @@
 /* RequirementItem Feature Styles */
-.root {
+.RequirementItem__root {
     transition: background-color 0.2s;
 }
 
-.root:hover {
+.RequirementItem__root:hover {
     background-color: rgb(128, 128, 128, 0.08);
 }
 
-.cell {
+.RequirementItem__cell {
     padding: 0.5rem 0.75rem; /* Reduced from 0.75/1 */
     border-bottom: 1px solid var(--dashboard-card-border);
     vertical-align: middle;
 }
 
-.patientName {
+.RequirementItem__patientName {
     font-weight: 700;
     color: var(--text-main);
 }
 
-.doctor {
+.RequirementItem__doctor {
     color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
-.author {
+.RequirementItem__author {
     font-size: 0.85rem;
     color: var(--text-muted);
 }
 
-.actions {
+.RequirementItem__actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.4rem;
 }
 
-.badgeClickable {
+.RequirementItem__badgeClickable {
     cursor: pointer;
     transition: transform 0.2s;
 }
 
-.badgeClickable:hover {
+.RequirementItem__badgeClickable:hover {
     transform: scale(1.05);
 }
 
-.statusGroup {
+.RequirementItem__statusGroup {
     display: flex;
     flex-direction: row;
     gap: 0.375rem;

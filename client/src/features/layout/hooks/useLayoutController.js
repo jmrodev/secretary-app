@@ -10,7 +10,7 @@ import { useFetch } from '@/hooks/useFetch';
  * Handles navigation state, user session, and external data fetching (doctors/spreadsheets).
  */
 export const useLayoutController = () => {
-    const { user, logout, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff } = usePermissions();
+    const { user, logout, isAdmin, isSecretary, isDoctor, isPatient, isStaff, isMedicalStaff, canManageUsers } = usePermissions();
     const { t, language } = useLanguage();
     const { toggleLanguage } = useLanguageActions();
     const { settings } = useConfig();
@@ -67,6 +67,7 @@ export const useLayoutController = () => {
         isSecretary,
         isDoctor,
         isPatient,
-        isMedicalStaff
+        isMedicalStaff,
+        canManageUsers
     };
 };

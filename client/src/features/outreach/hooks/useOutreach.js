@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { generateVariants } from '@/features/outreach/utils/variantGenerator';
 
 /**

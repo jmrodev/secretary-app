@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * ECC-Pattern: useFinanceHandlers Hook
@@ -10,7 +10,7 @@ export const useFinanceHandlers = ({
     transactions, pendingClosures, duplicateClosures,
     closeBoxModal, closeAmount, editingTx,
     setLoading, fetchData, setEditingTx, setModalOpen,
-    setHistoricalWithdrawalOpen, setPendingClosuresOpen,
+    setPendingClosuresOpen,
     setCloseBoxModal, setCloseAmount, setSelectedDoctorFilter
 }) => {
 
@@ -105,7 +105,6 @@ export const useFinanceHandlers = ({
         onCloseNewTransaction: () => setModalOpen(false),
         onGenerateInvoice: handleGenerateInvoice,
         setEditingTx,
-        setHistoricalWithdrawalOpen,
         setPendingClosuresOpen
     };
 };

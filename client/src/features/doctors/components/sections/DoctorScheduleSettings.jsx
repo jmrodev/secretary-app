@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/atoms/Button';
+import { ScheduleBulkActions } from '@/features/appointments/components/schedule/ScheduleBulkActions';
+import { ScheduleTimeBlock } from '@/features/appointments/components/schedule/ScheduleTimeBlock';
 
 import styles from './DoctorScheduleSettings.module.css';
 
@@ -19,13 +21,11 @@ const DAYS = [
  * DoctorScheduleSettings Organism.
  * Provides a specialized interface for configuring a doctor's weekly work schedule.
  */
-const DoctorScheduleSettings = ({
+export const DoctorScheduleSettings = ({
     doctorId: _doctorId,
     schedule = EMPTY_SCHEDULE,
     setSchedule,
-    loading,
-    ScheduleBulkActionsComponent,
-    ScheduleTimeBlockComponent
+    loading
 }) => {
     const { t } = useLanguage();
     const [focusedIndex, setFocusedIndex] = useState(null);
@@ -89,8 +89,9 @@ const DoctorScheduleSettings = ({
     const [bulkEnd, setBulkEnd] = useState('20:00');
 
     const applyBulk = (daysToApply) => {
+        const daysToApplySet = new Set(daysToApply);
         setSchedule(prev => {
-            let newSched = prev.filter(s => !daysToApply.includes(s.day_of_week));
+            let newSched = prev.filter(s => !daysToApplySet.has(s.day_of_week));
             daysToApply.forEach(dayId => {
                 newSched.push({
                     day_of_week: dayId,
@@ -104,16 +105,16 @@ const DoctorScheduleSettings = ({
         });
     };
 
-    if (loading) return <div className={`${styles.loading}`}>Cargando horarios…</div>;
+    if (loading) return <div className={`${styles.DoctorScheduleSettings__loading}`}>{t('loading_schedules')}</div>;
 
     return (
-        <section className={`${styles.scheduleSettings}`}>
+        <section className={`${styles.DoctorScheduleSettings__scheduleSettings}`}>
             <header className="schedule-settings__header">
-                <h3 className={`${styles.title}`}>Configuración de Horarios de Atención</h3>
-                <p className={`${styles.desc}`}>Defina los días y franjas horarias en las que este médico atiende.</p>
+                <h3 className={`${styles.DoctorScheduleSettings__title}`}>{t('doctor_schedule_settings_title')}</h3>
+                <p className={`${styles.DoctorScheduleSettings__desc}`}>{t('doctor_schedule_settings_desc')}</p>
             </header>
 
-            <ScheduleBulkActionsComponent
+            <ScheduleBulkActions
                 bulkStart={bulkStart}
                 setBulkStart={setBulkStart}
                 bulkEnd={bulkEnd}
@@ -122,7 +123,7 @@ const DoctorScheduleSettings = ({
                 t={t}
             />
 
-            <div className={`${styles.days}`}>
+            <div className={`${styles.DoctorScheduleSettings__days}`}>
                 {DAYS.map(day => {
                     const dayBlocks = (Array.isArray(schedule) ? schedule : []).reduce((acc, s, idx) => {
                         if (s.day_of_week === day.id) {
@@ -142,26 +143,26 @@ const DoctorScheduleSettings = ({
                     const isActive = dayBlocks.length > 0;
 
                     return (
-                        <article key={day.id} className={`${styles.scheduleDay} ${isActive ? styles.scheduleDayActive : ''}`}>
-                            <div className={`${styles.header}`}>
-                                <header className={`${styles.toggle}`}>
+                        <article key={day.id} className={`${styles.DoctorScheduleSettings__scheduleDay} ${isActive ? styles.DoctorScheduleSettings__scheduleDayActive : ''}`}>
+                            <div className={`${styles.DoctorScheduleSettings__header}`}>
+                                <header className={`${styles.DoctorScheduleSettings__toggle}`}>
                                     <input
                                         type="checkbox"
                                         id={`day-${day.id}`}
                                         checked={isActive}
                                         onChange={() => toggleDay(day.id)}
-                                        className={`${styles.checkbox}`}
+                                        className={`${styles.DoctorScheduleSettings__checkbox}`}
                                     />
                                 </header>
-                                <div className={`${styles.content}`}>
-                                    <label htmlFor={`day-${day.id}`} className={`${styles.name}`}>
+                                <div className={`${styles.DoctorScheduleSettings__content}`}>
+                                    <label htmlFor={`day-${day.id}`} className={`${styles.DoctorScheduleSettings__name}`}>
                                         {day.name}
                                     </label>
 
                                     {isActive && (
-                                        <div className={`${styles.scheduleBlocks}`}>
+                                        <div className={`${styles.DoctorScheduleSettings__scheduleBlocks}`}>
                                             {dayBlocks.map((block) => (
-                                                <ScheduleTimeBlockComponent
+                                                <ScheduleTimeBlock
                                                     key={block._key || block.originalIndex}
                                                     block={block}
                                                     onFocus={() => setFocusedIndex(block.originalIndex)}
@@ -176,10 +177,10 @@ const DoctorScheduleSettings = ({
                                                 variant="ghost"
                                                 size="sm"
                                                 onClick={() => handleAddBlock(day.id)}
-                                                className={`${styles.addBtn}`}
+                                                className={`${styles.DoctorScheduleSettings__addBtn}`}
                                                 icon="+"
                                             >
-                                                {t('add_extra_block') || 'Agregar Turno Cortado / Extra'}
+                                                {t('add_extra_block')}
                                             </Button>
                                         </div>
                                     )}
@@ -193,4 +194,4 @@ const DoctorScheduleSettings = ({
     );
 };
 
-export default DoctorScheduleSettings;
+

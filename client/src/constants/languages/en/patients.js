@@ -50,4 +50,15 @@ export const patients = {
     rating_attendance_tooltip: "Attendance based on appointment history",
     rating_behavior_tooltip: "Staff perception rating (Click to change)",
     attended_appointments: "Visits",
+    write_message: "Write message",
+    send_message: "Send message",
+    whatsapp_target_phone: "Target phone",
+    os_prepaga: "OS / Prepaid insurance",
+    admin_tariff_percent: "Tariff Adjustment (%)",
+    admin_fixed_tariff: "Fixed Tariff",
+    admin_visit_interval_days: "Visit Interval (Days)",
+    admin_prescription_interval_days: "Prescription Interval (Days)",
+    admin_next_visit: "Next Visit",
+    admin_next_prescription: "Next Prescription",
+    admin_license_expiry: "License Expiry"
 };

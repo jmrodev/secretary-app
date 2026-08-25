@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Loading from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
+import { Checkbox } from '@/components/atoms/Checkbox';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getNow } from '@/utils/core/dateUtils';
 import styles from './NextSlotModal.module.css';
@@ -11,13 +12,16 @@ import styles from './NextSlotModal.module.css';
  * NextSlotModal (ECC Redesign).
  * Features: Horizontal Month Navigation + Vertical Timeline.
  */
-const NextSlotModal = ({
+export const NextSlotModal = ({
     isOpen, onClose, loading, nextSlotData, includeOutOfHours, onToggleOutOfHours,
     slotsPage, setSlotsPage, slotPages, onSelect, onWhatsApp, jumpToMonth,
     fetchNextFreeSlots, hasNextGroup
 }) => {
     const { t } = useLanguage();
-    const monthNames = t('months_short_array') || ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    const monthNames = useMemo(
+        () => t('months_short_array') || ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        [t]
+    );
     
     // Generate next 6 months for navigation bar
     const navMonths = useMemo(() => {
@@ -51,7 +55,7 @@ const NextSlotModal = ({
             title={t('search_free_slots') || "Explorador de Turnos Libres"}
             size="md"
             footer={
-                <div className={styles.footer}>
+                <div className={styles.NextSlotModal__footer}>
                     <Button 
                         variant="secondary" 
                         onClick={() => setSlotsPage(p => Math.max(0, p - 1))}
@@ -61,7 +65,7 @@ const NextSlotModal = ({
                         {t('prev') || 'Ant.'}
                     </Button>
                     
-                    <div className={styles.pageInfo}>
+                    <div className={styles.NextSlotModal__pageInfo}>
                         {slotsPage + 1} / {slotPages.length || 1}
                     </div>
 
@@ -76,56 +80,54 @@ const NextSlotModal = ({
                 </div>
             }
         >
-            <div className={styles.root}>
+            <div className={styles.NextSlotModal__root}>
                 {/* 1. Horizontal Month Bar */}
-                <nav className={styles.monthBar}>
+                <nav className={styles.NextSlotModal__monthBar}>
                     {navMonths.map((m, idx) => (
-                        <div 
-                            key={`month-${idx}`} 
-                            className={`${styles.monthItem} ${currentMonth === m.month ? styles.monthActive : ''}`}
+                        <button
+                            type="button"
+                            key={`month-${m.month}-${m.year}`} 
+                            className={`${styles.NextSlotModal__monthItem} ${currentMonth === m.month ? styles.NextSlotModal__monthActive : ''}`}
                             onClick={() => jumpToMonth(m.month, m.year)}
                         >
                             {m.label}
-                        </div>
+                        </button>
                     ))}
                 </nav>
 
                 {/* 2. Extra Options */}
-                <div className={styles.options}>
-                    <label className={styles.checkboxLabel}>
-                        <input 
-                            type="checkbox" 
-                            checked={includeOutOfHours} 
-                            onChange={e => onToggleOutOfHours(e.target.checked)} 
-                        />
-                        <span>{t('include_overtime') || 'Incluir fuera de horario'}</span>
-                    </label>
+                <div className={styles.NextSlotModal__options}>
+                    <Checkbox
+                        checked={includeOutOfHours}
+                        onChange={e => onToggleOutOfHours(e.target.checked)}
+                        label={t('include_overtime') || 'Incluir fuera de horario'}
+                    />
                 </div>
 
                 {/* 3. Slot Timeline List */}
-                <div className={styles.content}>
+                <div className={styles.NextSlotModal__content}>
                     {loading && <Loading variant="centered" />}
                     {!loading && currentSlots.length === 0 && (
-                        <div className={styles.empty}>{t('no_slots_found')}</div>
+                        <div className={styles.NextSlotModal__empty}>{t('no_slots_found')}</div>
                     )}
                     
-                    <div className={styles.timeline}>
+                    <div className={styles.NextSlotModal__timeline}>
                         {currentSlots.map((slot, idx) => {
                             const date = new Date(slot.dayDate + 'T12:00:00');
                             const showDateHeader = idx === 0 || currentSlots[idx-1].dayDate !== slot.dayDate;
 
                             return (
-                                <React.Fragment key={`slot-${slot.iso}-${idx}`}>
+                                <React.Fragment key={`slot-${slot.iso}`}>
                                     {showDateHeader && (
-                                        <div className={styles.dateHeader}>
-                                            <span className={styles.dayNum}>{date.getDate()}</span>
-                                            <span className={styles.dayMonth}>{monthNames[date.getMonth()]}</span>
-                                            <span className={styles.dayName}>{slot.dayName}</span>
+                                        <div className={styles.NextSlotModal__dateHeader}>
+                                            <span className={styles.NextSlotModal__dayNum}>{date.getDate()}</span>
+                                            <span className={styles.NextSlotModal__dayMonth}>{monthNames[date.getMonth()]}</span>
+                                            <span className={styles.NextSlotModal__dayName}>{slot.dayName}</span>
                                         </div>
                                     )}
-                                    <div className={`${styles.slotItem} ${slot.is_out_of_hours ? styles.slotExtra : ''}`}>
-                                        <div className={styles.slotTime}>{slot.time} hs</div>
-                                        <div className={styles.slotActions}>
+                                    <div className={`${styles.NextSlotModal__slotItem} ${slot.is_out_of_hours ? styles.NextSlotModal__slotExtra : ''}`}>
+                                        <div className={styles.NextSlotModal__slotTime}>{slot.time} hs</div>
+                                        <div className={styles.NextSlotModal__slotActions}>
                                             <Button 
                                                 variant="whatsapp" 
                                                 size="sm" 
@@ -152,4 +154,3 @@ const NextSlotModal = ({
     );
 };
 
-export default NextSlotModal;

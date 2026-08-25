@@ -1,10 +1,10 @@
 import React from 'react';
-import MedicationAutocomplete from '@/features/medical_documents/components/ui/MedicationAutocomplete';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import Tooltip from '@/components/atoms/Tooltip';
+import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { Tooltip } from '@/components/atoms/Tooltip';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 
 
 /**
@@ -12,7 +12,7 @@ import Icon from '@/components/atoms/Icon';
  * Orchestrates the search, dosage, and frequency fields for adding medications.
  * The primary interface for data entry in the medical_documents prescription workflow.
  */
-const MedicationInputSection = ({
+export const MedicationInputSection = ({
     tempMed, setTempMed,
     tempDose, setTempDose,
     tempFreqPreset, setTempFreqPreset,
@@ -43,10 +43,11 @@ const MedicationInputSection = ({
         <div className={`${baseClass ? `${baseClass}__med-input-row` : ''} ${compClass}__med-input-row animate-fade-in`}>
             <div className={`${baseClass ? `${baseClass}__inputs-grid` : ''} ${compClass}__inputs-grid`}>
                 <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
-                    <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
+                    <label htmlFor="med-input-search" className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                         {t('medication')}
                     </label>
                     <MedicationAutocomplete
+                        id="med-input-search"
                         value={tempMed}
                         onChange={setTempMed}
                         onSelectMedication={onVademecumSelect}
@@ -56,11 +57,12 @@ const MedicationInputSection = ({
 
                 <div className={`${baseClass ? `${baseClass}__field-group-row` : ''} ${compClass}__field-group-row`}>
                     <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
-                        <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
+                        <label htmlFor="med-input-dose" className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                             {t('dose')}
                             <Tooltip text={t('dose_help') || "Concentración (ej: 500mg, 10mg/ml)"} />
                         </label>
                         <Input
+                            id="med-input-dose"
                             size="sm"
                             placeholder={t('dose_placeholder') || "Dosis (ej: 500mg)"}
                             value={tempDose}
@@ -69,10 +71,10 @@ const MedicationInputSection = ({
                     </div>
 
                     <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
-                        <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
+                        <span className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                             {t('frequency')}
                             <Tooltip text={t('freq_help') || "Selecciona o escribe la frecuencia"} />
-                        </label>
+                        </span>
                         <div className={`${baseClass ? `${baseClass}__freq-presets` : ''} ${compClass}__freq-presets`}>
                             {freqPresets.map((p, idx) => (
                                 <Button
@@ -96,10 +98,11 @@ const MedicationInputSection = ({
 
                 <div className={`${baseClass ? `${baseClass}__field-group-row` : ''} ${compClass}__field-group-row ${compClass}__field-group-row--numeric`}>
                     <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
-                        <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
+                        <label htmlFor="med-input-units-per-box" className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                             {t('units_per_box')}
                         </label>
                         <Select
+                            id="med-input-units-per-box"
                             size="sm"
                             value={tempUnitsPerBox}
                             options={unitsPerBoxOptions}
@@ -109,10 +112,11 @@ const MedicationInputSection = ({
                     </div>
 
                     <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
-                        <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
+                        <label htmlFor="med-input-daily-units" className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                             {t('daily_units')}
                         </label>
                         <Select
+                            id="med-input-daily-units"
                             size="sm"
                             value={tempDailyUnits}
                             options={dailyUnitsOptions}
@@ -136,10 +140,11 @@ const MedicationInputSection = ({
                     </div>
 
                     <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
-                        <label className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
+                        <label htmlFor="med-input-quantity" className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                             {t('quantity')}
                         </label>
                         <Input
+                            id="med-input-quantity"
                             size="sm"
                             type="number"
                             min="1"
@@ -175,4 +180,3 @@ const MedicationInputSection = ({
     );
 };
 
-export default MedicationInputSection;

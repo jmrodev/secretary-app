@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styles from './Input.module.css';
 
 /**
@@ -6,8 +6,9 @@ import styles from './Input.module.css';
  * Renders a text input, textarea, or any other input type.
  * Accepts all native HTML input props via `...rest`
  * (checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.)
+ * Forwards `ref` to the underlying native element.
  */
-const Input = ({
+export const Input = forwardRef(({
     type = 'text',
     value,
     onChange,
@@ -20,13 +21,14 @@ const Input = ({
     rows = 3,
     variant = 'default', // 'default' | 'error' | 'success'
     size = 'md',         // 'sm' | 'md' | 'lg'
+    htmlSize,            // Native HTML size attribute
     ...rest              // forwards: checked, autoFocus, readOnly, accept, tabIndex, min, max, etc.
-}) => {
-    const baseClass = styles.root;
+}, ref) => {
+    const baseClass = styles.Input__root;
 
     const variantClass = variant !== 'default' && styles[variant] ? styles[variant] : '';
     const sizeClass = size !== 'md' && styles[size] ? styles[size] : '';
-    const typeClass = type === 'textarea' && styles.textarea ? styles.textarea : '';
+    const typeClass = type === 'textarea' && styles.Input__textarea ? styles.Input__textarea : '';
 
     const combinedClassName = `
         ${baseClass} 
@@ -39,6 +41,7 @@ const Input = ({
     if (type === 'textarea') {
         return (
             <textarea
+                ref={ref}
                 id={id}
                 name={name}
                 value={value}
@@ -55,6 +58,7 @@ const Input = ({
 
     return (
         <input
+            ref={ref}
             id={id}
             name={name}
             type={type}
@@ -64,9 +68,10 @@ const Input = ({
             className={combinedClassName}
             disabled={disabled}
             required={required}
+            size={htmlSize}
             {...rest}
         />
     );
-};
+});
 
-export default Input;
+Input.displayName = 'Input';

@@ -1,6 +1,6 @@
 import React from 'react';
-import AppointmentActionModal from '../modals/AppointmentActionModal';
-import AppointmentFormModal from '../modals/AppointmentFormModal';
+import { AppointmentActionModal } from '../modals/AppointmentActionModal';
+import { AppointmentFormModal } from '../modals/AppointmentFormModal';
 
 export const AppointmentsModals = ({
     doctors, institutions, booking, nextSlot,
@@ -28,6 +28,7 @@ export const AppointmentsModals = ({
             onPrescribe={handlers.handleOpenPrescribe} onUpdateStatus={handlers.handleUpdateStatus}
             onReschedule={handlers.handleOpenReschedule} onCancel={handlers.handleCancel} onDelete={handlers.handleDelete}
             onSync={handlers.handleOpenSync} onPay={handlers.handleOpenPayment} onWhatsApp={handlers.handleWhatsAppUniversal}
+            onWhatsAppConfirmation={handlers.handleWhatsAppConfirmation}
             onUpdateType={handlers.handleUpdateType} onHardEdit={handlers.handleHardEdit} onBonify={handlers.handleBonify}
             onSaveNote={handlers.handleSaveNote} fetchAppointments={handlers.fetchAppointments}
         />

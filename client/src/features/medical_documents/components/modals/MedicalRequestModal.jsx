@@ -1,12 +1,12 @@
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
-import MedicalRequestForm from '../forms/MedicalRequestForm';
+import { Modal } from '@/components/molecules/Modal';
+import { MedicalRequestForm } from '../forms/MedicalRequestForm';
 
 /**
  * MedicalRequestModal Organism (Feature-based).
  * Modal wrapper for MedicalRequestForm.
  */
-const MedicalRequestModal = ({ isOpen, onClose, doctors, t, onRequestCreated }) => {
+export const MedicalRequestModal = ({ isOpen, onClose, doctors, t, onRequestCreated }) => {
     return (
         <Modal
             isOpen={isOpen}
@@ -17,8 +17,12 @@ const MedicalRequestModal = ({ isOpen, onClose, doctors, t, onRequestCreated }) 
             <MedicalRequestForm 
                 doctors={doctors} 
                 onRequestCreated={() => {
-                    onRequestCreated();
-                    onClose();
+                    if (typeof onRequestCreated === 'function') {
+                        onRequestCreated();
+                    }
+                    if (typeof onClose === 'function') {
+                        onClose();
+                    }
                 }}
                 noCard
             />
@@ -26,4 +30,3 @@ const MedicalRequestModal = ({ isOpen, onClose, doctors, t, onRequestCreated }) 
     );
 };
 
-export default MedicalRequestModal;

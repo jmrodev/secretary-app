@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import CalendarHeader from './CalendarHeader.jsx';
-import CalendarGrid from './CalendarGrid.jsx';
-import DayHeaders from '../schedule/DayHeaders.jsx';
+import { CalendarHeader } from './CalendarHeader.jsx';
+import { CalendarGrid } from './CalendarGrid.jsx';
+import { DayHeaders } from '../schedule/DayHeaders.jsx';
 import { useLanguage } from '@/hooks/useLanguage';
 import { getNow, parseDate, createDate, getDaysInMonth, formatKeyDate } from '@/utils/core/dateUtils';
 import styles from './Calendar.module.css';
@@ -14,7 +14,7 @@ import styles from './Calendar.module.css';
 const EMPTY_ARRAY = [];
 const EMPTY_OBJECT = {};
 
-const Calendar = ({ 
+export const Calendar = ({ 
     selectedDate, 
     onDateSelect, 
     appointments = EMPTY_ARRAY, 
@@ -65,7 +65,7 @@ const Calendar = ({
     };
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.Calendar__root}`}>
             {!hideNavigation && (
                 <CalendarHeader
                     month={months[viewDate.getMonth()]} year={viewDate.getFullYear()}
@@ -73,13 +73,13 @@ const Calendar = ({
                 />
             )}
             {hideNavigation && (
-                <div className={`${styles.simpleTitle}`}>
+                <div className={`${styles.Calendar__simpleTitle}`}>
                     {months[viewDate.getMonth()]} {viewDate.getFullYear()}
                 </div>
             )}
-            <div className={`${styles.mainContainer}`}>
+            <div className={`${styles.Calendar__mainContainer}`}>
                 <DayHeaders daysOfWeek={daysOfWeek} />
-                <div className={`${styles.body}`}>
+                <div className={`${styles.Calendar__body}`}>
                     <CalendarGrid 
                         viewDate={viewDate}
                         selectedDate={selectedDate}
@@ -99,4 +99,3 @@ const Calendar = ({
     );
 };
 
-export default Calendar;

@@ -23,6 +23,13 @@ class PrescriptionRepository {
     }
 
     async create(data, conn = this.pool) {
+        if (data.patient_id) {
+            const result = await conn.query(
+                "INSERT INTO prescriptions (appointment_id, patient_id, medications, instructions, bonified) VALUES (?, ?, ?, ?, ?)",
+                [data.appointment_id || null, data.patient_id, data.medications || '', data.instructions || '', data.bonified || false]
+            );
+            return result.insertId;
+        }
         const result = await conn.query(
             "INSERT INTO prescriptions (appointment_id, medications, instructions, bonified) VALUES (?, ?, ?, ?)",
             [data.appointment_id || null, data.medications || '', data.instructions || '', data.bonified || false]
@@ -54,20 +61,8 @@ class PrescriptionRepository {
         }
 
         if (filters.patient_id) {
-            whereClauses.push("(pr.patient_id = ? OR a.patient_id = ?)");
-            params.push(filters.patient_id, filters.patient_id);
-        }
-
-        if (filters.search) {
-            whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");
-            const searchTerm = `%${filters.search}%`;
-            params.push(searchTerm, searchTerm, searchTerm);
-        }
-
-        if (filters.search) {
-            whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");
-            const searchTerm = `%${filters.search}%`;
-            params.push(searchTerm, searchTerm, searchTerm);
+            whereClauses.push("a.patient_id = ?");
+            params.push(filters.patient_id);
         }
 
         if (filters.search) {
@@ -105,18 +100,8 @@ class PrescriptionRepository {
             params.push(filters.doctor_id);
         }
         if (filters.patient_id) {
-            whereClauses.push("(pr.patient_id = ? OR a.patient_id = ?)");
-            params.push(filters.patient_id, filters.patient_id);
-        }
-        if (filters.search) {
-            whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");
-            const searchTerm = `%${filters.search}%`;
-            params.push(searchTerm, searchTerm, searchTerm);
-        }
-        if (filters.search) {
-            whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");
-            const searchTerm = `%${filters.search}%`;
-            params.push(searchTerm, searchTerm, searchTerm);
+            whereClauses.push("a.patient_id = ?");
+            params.push(filters.patient_id);
         }
         if (filters.search) {
             whereClauses.push("(p.full_name LIKE ? OR p.dni LIKE ? OR pr.medications LIKE ?)");

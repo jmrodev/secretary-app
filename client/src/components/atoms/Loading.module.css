@@ -1,4 +1,4 @@
-.root {
+.Loading__root {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -6,12 +6,12 @@
     gap: 1.25rem;
 }
 
-.centered {
+.Loading__centered {
     width: 100%;
     padding: 3rem;
 }
 
-.fullPage {
+.Loading__fullPage {
     position: fixed;
     inset: 0;
     background: rgb(15 23 42 / 70%);
@@ -19,14 +19,14 @@
     z-index: 10000;
 }
 
-.inline {
+.Loading__inline {
     display: inline-flex;
     flex-direction: row;
     gap: 0.75rem;
     padding: 0;
 }
 
-.spinner {
+.Loading__spinner {
     position: relative;
     border-radius: 50%;
     border: 2px solid transparent;
@@ -36,26 +36,26 @@
 }
 
 /* Size Modifiers */
-.spinnerSm {
+.Loading__spinnerSm {
     width: 1.1rem;
     height: 1.1rem;
     border-width: 2px;
 }
 
-.spinnerMd {
+.Loading__spinnerMd {
     width: 2.75rem;
     height: 2.75rem;
     border-width: 3px;
 }
 
-.spinnerLg {
+.Loading__spinnerLg {
     width: 4.5rem;
     height: 4.5rem;
     border-width: 4px;
 }
 
 /* Premium Ring Effect (Pseudo-element) */
-.spinner::after {
+.Loading__spinner::after {
     content: '';
     position: absolute;
     inset: -6px;
@@ -66,7 +66,7 @@
     animation: loading-spin 1.2s linear infinite reverse;
 }
 
-.text {
+.Loading__text {
     font-size: 0.8rem;
     font-weight: 800;
     color: var(--text-main);

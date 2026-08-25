@@ -1,86 +1,23 @@
-import React, { lazy, Suspense } from 'react';
+/* eslint-disable react-refresh/only-export-components -- registry module: lazy component wrappers and the loadDefaultConfigSections initializer are module-level exports */
+import React, { lazy } from 'react';
 import { registerConfigSection } from '../registry/configRegistry';
-import Loading from '@/components/atoms/Loading';
 
-// Lazy loading to maintain performance and avoid eager cross-feature coupling at the module level
-const GeneralSettings = lazy(() => import('../components/sections/GeneralSettings'));
-const CommunicationSettings = lazy(() => import('../components/sections/CommunicationSettings'));
-const IntegrationSettings = lazy(() => import('../components/sections/IntegrationSettings'));
-const BillingSettings = lazy(() => import('../components/sections/BillingSettings'));
-const AiSettings = lazy(() => import('../components/sections/AiSettings'));
-
-// Domain Features
-const DoctorsManager = lazy(() => import('@/features/doctors').then(m => ({ default: m.DoctorsManager })));
-const ProfileEditor = lazy(() => import('@/features/auth').then(m => ({ default: m.ProfileEditor })));
-const ReportsDashboard = lazy(() => import('@/features/reports').then(m => ({ default: m.ReportsDashboard })));
-const InstitutionManager = lazy(() => import('@/features/institutions').then(m => ({ default: m.InstitutionManager })));
-const UserManager = lazy(() => import('@/features/users').then(m => ({ default: m.UserManager })));
-const AuditLogManager = lazy(() => import('@/features/reports').then(m => ({ default: m.AuditLogManager })));
-
-// Cross-feature imports for Slots (kept inside the loader to keep SystemConfigPage pure)
-import { ScheduleBulkActions, ScheduleTimeBlock } from '@/features/appointments';
-import { UserForm } from '@/features/users';
-import { InstitutionFinances } from '@/features/finances';
-import MessageTemplateEditor from './forms/MessageTemplateEditor';
-
-// Eager imports for hooks to avoid undef require at runtime/eslint
-import { useDoctorsPageController } from '@/features/doctors';
-import { useReportsController, useAuditLogsController } from '@/features/reports';
-import { useInstitutionsController } from '@/features/institutions';
+// Lazy loading for config sections
+const ModulesSettings = lazy(() => import('../components/sections/ModulesSettings').then(m => ({ default: m.ModulesSettings })));
+const CommunicationSettings = lazy(() => import('../components/sections/CommunicationSettings').then(m => ({ default: m.CommunicationSettings })));
+const IntegrationSettings = lazy(() => import('../components/sections/IntegrationSettings').then(m => ({ default: m.IntegrationSettings })));
+const BillingSettings = lazy(() => import('../components/sections/BillingSettings').then(m => ({ default: m.BillingSettings })));
+const AdminUsersSettings = lazy(() => import('../../users/AdminUsersPage').then(m => ({ default: m.AdminUsersPage })));
 
 // --- Specialized Wrappers to map the common Controller to specific component props ---
 
-const GeneralSettingsWrapper = ({ controller }) => {
-    const { user, settings, handlers } = controller;
-    return (
-        <GeneralSettings 
-            user={user} 
-            settings={settings} 
-            updateSetting={handlers.updateSetting}
-            onShowQr={() => {
-                const url = settings.staff_base_url || window.location.origin;
-                handlers.setQrModal({ open: true, url, expiry: null });
-            }}
-        />
-    );
-};
-
-const ProfileEditorWrapper = ({ controller }) => {
-    // In auth feature, useProfileController is usually called inside ProfileEditor 
-    // or passed down. Here we can use a custom hook from auth if needed.
-    // For now, let's assume it handles its own logic or use a specific import.
-    return <ProfileEditor />;
-};
-
-const DoctorsManagerWrapper = ({ controller }) => {
-    const doctorsController = useDoctorsPageController();
-    
-    return (
-        <DoctorsManager 
-            {...doctorsController} 
-            ScheduleBulkActionsComponent={ScheduleBulkActions}
-            ScheduleTimeBlockComponent={ScheduleTimeBlock}
-            UserFormComponent={UserForm}
-            MessageTemplateEditorComponent={MessageTemplateEditor}
-        />
-    );
-};
-
-const ReportsDashboardWrapper = ({ controller }) => {
-    const reportsController = useReportsController();
-    return <ReportsDashboard {...reportsController} />;
-};
-
-const InstitutionManagerWrapper = ({ controller }) => {
-    const instController = useInstitutionsController();
-    return <InstitutionManager {...instController} InstitutionFinancesComponent={InstitutionFinances} />;
-};
-
-const UserManagerWrapper = ({ controller }) => <UserManager t={controller.t} />;
-const AuditLogManagerWrapper = ({ controller }) => {
-    const logsController = useAuditLogsController();
-    return <AuditLogManager {...logsController} />;
-};
+const ModulesSettingsWrapper = ({ controller }) => (
+    <ModulesSettings 
+        user={controller.user} 
+        settings={controller.settings} 
+        updateSetting={controller.handlers.updateSetting}
+    />
+);
 
 const CommunicationSettingsWrapper = ({ controller }) => (
     <CommunicationSettings 
@@ -100,6 +37,10 @@ const IntegrationSettingsWrapper = ({ controller }) => (
         onRetryGoogle={controller.handlers.handleRetryGoogleFailed}
         onRefreshTunnel={controller.handlers.handleRefreshTunnel}
         onTestMeta={controller.handlers.handleTestMeta}
+        onShowQr={() => {
+            const url = controller.settings.staff_base_url || window.location.origin;
+            controller.handlers.setQrModal({ open: true, url, expiry: null });
+        }}
     />
 );
 
@@ -111,12 +52,8 @@ const BillingSettingsWrapper = ({ controller }) => (
     />
 );
 
-const AiSettingsWrapper = ({ controller }) => (
-    <AiSettings 
-        user={controller.user} 
-        settings={controller.settings} 
-        updateSetting={controller.handlers.updateSetting}
-    />
+const UsersSettingsWrapper = ({ controller }) => (
+    <AdminUsersSettings />
 );
 
 /**
@@ -125,15 +62,9 @@ const AiSettingsWrapper = ({ controller }) => (
  * By centralizing this, we allow SystemConfigPage to be a pure, decoupled renderer.
  */
 export const loadDefaultConfigSections = (t) => {
-    registerConfigSection('general', { title: t('general'), icon: 'settings', desc: 'Configuración básica y enlaces de ayuda.' }, GeneralSettingsWrapper);
-    registerConfigSection('profile', { title: t('profile'), icon: 'person', desc: 'Gestiona tu información personal y profesional.' }, ProfileEditorWrapper);
-    registerConfigSection('communications', { title: t('communications'), icon: 'chat', desc: 'Plantillas de mensajes y automatización de WhatsApp.' }, CommunicationSettingsWrapper);
-    registerConfigSection('ai', { title: t('ai'), icon: 'psychology', desc: 'Configuración de modelos de IA y asistentes.' }, AiSettingsWrapper);
-    registerConfigSection('doctors', { title: t('doctors'), icon: 'medical_services', desc: 'Administra la lista de profesionales.' }, DoctorsManagerWrapper);
-    registerConfigSection('integrations', { title: t('integrations'), icon: 'extension', desc: 'Conexión con servicios externos.' }, IntegrationSettingsWrapper);
-    registerConfigSection('institutions', { title: t('institutions'), icon: 'business', desc: 'Configura las clínicas y centros.' }, InstitutionManagerWrapper);
-    registerConfigSection('users', { title: t('users'), icon: 'group', desc: 'Gestiona los accesos y roles.' }, UserManagerWrapper);
-    registerConfigSection('billing', { title: t('billing'), icon: 'payments', desc: 'Configuración de facturación.' }, BillingSettingsWrapper);
-    registerConfigSection('logs', { title: t('logs'), icon: 'list_alt', desc: 'Historial de auditoría.' }, AuditLogManagerWrapper);
-    registerConfigSection('reports', { title: t('reports'), icon: 'assessment', desc: 'Estadísticas del sistema.' }, ReportsDashboardWrapper);
+    registerConfigSection('modules', { title: t('modules') || 'Módulos', icon: 'view_module', desc: t('modules_desc') || 'Habilita o deshabilita módulos opcionales de la clínica.', allowedRoles: ['admin'] }, ModulesSettingsWrapper);
+    registerConfigSection('communications', { title: t('communications') || 'Comunicaciones', icon: 'chat', desc: t('communications_desc') || 'Plantillas de mensajes automáticos.', allowedRoles: ['secretary'] }, CommunicationSettingsWrapper);
+    registerConfigSection('integrations', { title: t('integrations') || 'Integraciones', icon: 'extension', desc: t('integrations_desc') || 'Servicios externos y conectividad.', allowedRoles: ['admin'] }, IntegrationSettingsWrapper);
+    registerConfigSection('billing', { title: t('billing') || 'Facturación AFIP', icon: 'payments', desc: t('billing_desc') || 'Parámetros fiscales de facturación.', allowedRoles: ['admin', 'secretary'] }, BillingSettingsWrapper);
+    registerConfigSection('users', { title: t('users') || 'Usuarios', icon: 'people', desc: t('users_desc') || 'Gestión de personal médico y administrativo.', allowedRoles: ['admin'] }, UsersSettingsWrapper);
 };

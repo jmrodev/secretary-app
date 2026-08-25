@@ -1,4 +1,4 @@
-.root {
+.Alert__root {
     /* --- Local Component Tokens --- */
     --alert-bg: var(--gray-50);
     --alert-border: var(--gray-200);
@@ -17,31 +17,31 @@
     margin-bottom: 1rem;
 }
 
-.info {
+.Alert__root--info {
     --alert-bg: var(--blue-50);
     --alert-border: var(--blue-200);
     --alert-text: var(--blue-800);
 }
 
-.warning {
+.Alert__root--warning {
     --alert-bg: var(--amber-50);
     --alert-border: var(--amber-200);
     --alert-text: var(--amber-800);
 }
 
-.success {
+.Alert__root--success {
     --alert-bg: var(--green-50);
     --alert-border: var(--green-200);
     --alert-text: var(--green-800);
 }
 
-.title {
+.Alert__title {
     font-weight: 700;
     margin: 0;
     font-size: 1rem;
 }
 
-.message {
+.Alert__message {
     font-size: 0.875rem;
     margin: 0;
     line-height: 1.5;

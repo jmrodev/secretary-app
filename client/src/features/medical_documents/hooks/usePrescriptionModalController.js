@@ -2,6 +2,12 @@ import { useReducer, useMemo } from 'react';
 import { formatDate } from '@/utils/core/dateUtils';
 import { usePatientMedications } from '@/features/medical_documents/hooks/usePatientMedications';
 
+const ds = (upb, boxes, daily) => {
+    const u = upb || 30;
+    if (!boxes || !daily || daily <= 0) return null;
+    return Math.floor((u * boxes) / daily);
+};
+
 const generateId = () => `${Date.now()}-${Math.random()}`;
 
 const getFrequencyText = (selectedPreset, dailyUnits) => {
@@ -64,12 +70,6 @@ export const usePrescriptionModalController = (patientId, onSubmit, showMessage,
     const setTempFreqPreset = (v) => dispatch({ field: 'tempFreqPreset', value: v });
     const setCurrentVademecumId = (v) => dispatch({ field: 'currentVademecumId', value: v });
     const setTempDays = (v) => dispatch({ field: 'tempDays', value: v });
-
-    const ds = (upb, boxes, daily) => {
-        const u = upb || 30;
-        if (!boxes || !daily || daily <= 0) return null;
-        return Math.floor((u * boxes) / daily);
-    };
 
     const resetFields = () => {
         dispatch({
@@ -254,7 +254,7 @@ export const usePrescriptionModalController = (patientId, onSubmit, showMessage,
         }
 
         if (finalItems.length === 0) {
-            showMessage(t('please_add_at_least_one_medication') || 'Debe agregar al menos un medicamento a la lista.', 'warning');
+            showMessage(t('please_add_at_least_one_medication'), 'warning');
             return;
         }
 

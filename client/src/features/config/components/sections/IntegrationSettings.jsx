@@ -1,15 +1,16 @@
 import React from 'react';
+import shared from '@/styles/shared.module.css';
 
 // Feature Molecules
-import IntegrationGoogleCalendar from '@/features/config/components/sections/IntegrationGoogleCalendar';
-import IntegrationMetaWhatsApp from '@/features/config/components/sections/IntegrationMetaWhatsApp';
-import IntegrationRemoteAccess from '@/features/config/components/sections/IntegrationRemoteAccess';
+import { IntegrationGoogleCalendar } from '@/features/config/components/sections/IntegrationGoogleCalendar';
+import { IntegrationMetaWhatsApp } from '@/features/config/components/sections/IntegrationMetaWhatsApp';
+import { IntegrationRemoteAccess } from '@/features/config/components/sections/IntegrationRemoteAccess';
 
 /**
  * IntegrationSettings Feature Organism.
  * Orchestrates third-party service configurations within the config domain.
  */
-const IntegrationSettings = ({
+export const IntegrationSettings = ({
     user,
     settings,
     updateSetting,
@@ -20,13 +21,14 @@ const IntegrationSettings = ({
     onRefreshToken,
     onRetryGoogle,
     onRefreshTunnel,
-    onTestMeta
+    onTestMeta,
+    onShowQr
 }) => {
     // Shared authorization logic for integration management
     const isAuthorized = user?.role === 'admin' || user?.role === 'secretary';
 
     return (
-        <div className="tab-panel animate-fade-in">
+        <div className={`${shared.TabPanel} ${shared.AnimateFadeIn}`}>
             <IntegrationGoogleCalendar
                 googleUnlinked={googleUnlinked}
                 settings={settings}
@@ -50,6 +52,7 @@ const IntegrationSettings = ({
                 settings={settings}
                 updateSetting={updateSetting}
                 onRefreshTunnel={onRefreshTunnel}
+                onShowQr={onShowQr}
                 loading={loading}
                 isAuthorized={isAuthorized}
             />
@@ -57,4 +60,3 @@ const IntegrationSettings = ({
     );
 };
 
-export default IntegrationSettings;

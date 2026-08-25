@@ -1,150 +1,152 @@
-/* BalanceView Component Styles (BEM) */
+/* BalanceView Organism BEM Styles */
 
-.root {
+.BalanceView {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    width: 100%;
 }
 
-.title {
+.BalanceView__title {
     font-size: 1.5rem;
     font-weight: 800;
-    color: var(--text-main);
+    color: var(--text-main, #0f172a);
     margin-bottom: 0.5rem;
 }
 
-.grid {
+.BalanceView__grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
 }
 
-.card {
-    background: var(--card-bg);
-    border-radius: var(--radius);
+.BalanceView__card {
+    background: var(--card-bg, var(--text-main));
+    border-radius: var(--radius-lg, 12px);
     padding: 2rem;
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-color, #e2e8f0);
 }
 
-.cardSummary {
+.BalanceView__cardSummary {
     grid-column: span 1;
 }
 
-.cardTitle {
+.BalanceView__cardTitle {
     font-size: 1.125rem;
     font-weight: 800;
-    color: var(--text-main);
+    color: var(--text-main, #0f172a);
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--gray-100, #f1f5f9);
 }
 
-.summaryItem {
+.BalanceView__summaryItem {
     display: flex;
     justify-content: space-between;
     padding: 0.75rem 0;
     font-weight: 600;
-    color: var(--text-secondary);
+    color: var(--text-secondary, #475569);
 }
 
-.amountPositive {
-    color: var(--success);
+.BalanceView__amountPositive {
+    color: var(--success, #16a34a);
     font-weight: 700;
 }
 
-.summaryItemSubtotal {
+.BalanceView__summaryItemSubtotal {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--gray-200);
+    border-top: 1px solid var(--gray-200, #e2e8f0);
     font-weight: 800;
-    color: var(--text-main);
+    color: var(--text-main, #0f172a);
 }
 
-.summaryItemWithdrawals {
-    color: var(--error);
+.BalanceView__summaryItemWithdrawals {
+    color: var(--error, #dc2626);
 }
 
-.summaryItemNet {
+.BalanceView__summaryItemNet {
     margin-top: 1rem;
     padding: 1.25rem;
-    background: var(--gray-900);
-    color: white;
-    border-radius: var(--radius-sm);
+    background: #0f172a;
+    color: var(--text-main);
+    border-radius: var(--radius-sm, 6px);
     font-size: 1.25rem;
     font-weight: 900;
 }
 
-.table {
+.BalanceView__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.table th {
+.BalanceView__table th {
     text-align: left;
     padding: 0.75rem;
-    font-size: 0.7rem;
-    color: var(--text-muted);
+    font-size: 0.75rem;
+    color: var(--text-main);
+    background-color: #0f172a;
     text-transform: uppercase;
     font-weight: 800;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 2px solid var(--dashboard-card-bg);
 }
 
-.table td {
+.BalanceView__table td {
     padding: 0.75rem;
     font-size: 0.875rem;
-    border-bottom: 1px solid var(--gray-50);
+    border-bottom: 1px solid var(--gray-100, #f1f5f9);
 }
 
-.tableFooter {
-    background: var(--gray-50);
+.BalanceView__tableFooter {
+    background: var(--gray-50, var(--text-main));
     font-weight: 800;
 }
 
-.cellRight {
+.BalanceView__cellRight {
     text-align: right;
 }
 
-.cellBold {
+.BalanceView__cellBold {
     font-weight: 800;
 }
 
-.emptyState {
+.BalanceView__emptyState {
     padding: 3rem 1rem;
     text-align: center;
-    border: 2px dashed var(--gray-100);
-    border-radius: var(--radius);
-    background: var(--gray-50);
+    border: 2px dashed var(--gray-100, #e2e8f0);
+    border-radius: var(--radius-lg, 12px);
+    background: var(--gray-50, var(--text-main));
 }
 
-.emptyMsg {
+.BalanceView__emptyMsg {
     font-style: italic;
-    color: var(--text-muted);
+    color: var(--text-muted, #64748b);
     font-weight: 600;
     margin: 0;
 }
 
-.debtTotal {
+.BalanceView__debtTotal {
     margin-top: 2rem;
     padding: 1.25rem;
-    background: var(--red-50);
-    color: var(--red-800);
+    background: #fef2f2;
+    color: #991b1b;
     text-align: right;
     font-weight: 700;
-    border-radius: var(--radius-sm);
-    border-left: 4px solid var(--error);
+    border-radius: var(--radius-sm, 6px);
+    border-left: 4px solid #dc2626;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.amountBold {
+.BalanceView__amountBold {
     font-size: 1.25rem;
     font-weight: 900;
 }
 
 @media (width <= 1200px) {
-    .grid {
+    .BalanceView__grid {
         grid-template-columns: 1fr;
     }
 }

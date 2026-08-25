@@ -1,0 +1,106 @@
+/* CashMonitorCard Molecule — standalone styles (no longer coupled to DashboardPage CSS) */
+
+.CashMonitorCard__root {
+    position: relative;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+}
+
+.CashMonitorCard__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: var(--spacing-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.CashMonitorCard__headerIcon {
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.CashMonitorCard__statsRow {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    flex: 1;
+    min-width: 0;
+}
+
+.CashMonitorCard__statItem {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.CashMonitorCard__statItem--divider {
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-xs);
+}
+
+.CashMonitorCard__statValue {
+    font-size: 1.15rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 0.15rem;
+    color: var(--text-main);
+    overflow-wrap: break-word;
+}
+
+.CashMonitorCard__statValue--muted {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+.CashMonitorCard__statLabel {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.CashMonitorCard__breakdown {
+    margin-top: var(--spacing-xs);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    opacity: 0.9;
+    min-width: 0;
+}
+
+.CashMonitorCard__breakdownItem {
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.CashMonitorCard__breakdownIncome {
+    color: var(--success);
+}
+
+.CashMonitorCard__breakdownExpense {
+    color: var(--error);
+}

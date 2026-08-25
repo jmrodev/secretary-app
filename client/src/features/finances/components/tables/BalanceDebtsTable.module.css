@@ -1,8 +1,8 @@
 
 /* BalanceDebtsTable Molecule Styles (BEM) */
 
-.root {
-    background: white;
+.BalanceDebtsTable__root {
+    background: var(--dashboard-card-bg);
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
     padding: 1.5rem;
@@ -12,72 +12,72 @@
     gap: 1.25rem;
 }
 
-.title {
+.BalanceDebtsTable__title {
     font-size: 0.875rem;
     font-weight: 800;
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--dashboard-card-border);
     padding-bottom: 0.75rem;
     margin: 0;
 }
 
-.tableWrapper {
+.BalanceDebtsTable__tableWrapper {
     overflow-x: auto;
 }
 
-.table {
+.BalanceDebtsTable__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.table th {
+.BalanceDebtsTable__table th {
     text-align: left;
     font-size: 0.72rem;
     font-weight: 800;
     color: var(--text-muted);
     text-transform: uppercase;
     padding: 0.75rem 0.5rem;
-    border-bottom: 2px solid var(--gray-50);
+    border-bottom: 2px solid var(--dashboard-card-border);
 }
 
-.table td {
+.BalanceDebtsTable__table td {
     padding: 0.85rem 0.5rem;
-    border-bottom: 1px solid var(--gray-50);
+    border-bottom: 1px solid var(--dashboard-card-border);
     font-size: 0.875rem;
 }
 
-.cellRight {
+.BalanceDebtsTable__cellRight {
     text-align: right;
 }
 
-.cellBold {
+.BalanceDebtsTable__cellBold {
     font-weight: 700;
     color: var(--text-main);
 }
 
-.total {
+.BalanceDebtsTable__total {
     margin-top: 0.5rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--gray-100);
+    border-top: 1px solid var(--dashboard-card-border);
     text-align: right;
     font-weight: 600;
     color: var(--text-secondary);
 }
 
-.totalAmount {
+.BalanceDebtsTable__totalAmount {
     font-weight: 900;
     color: var(--error);
     font-size: 1.1rem;
     margin-left: 0.5rem;
 }
 
-.empty {
+.BalanceDebtsTable__empty {
     padding: 2rem;
     text-align: center;
     color: var(--text-muted);
     font-style: italic;
-    background: var(--gray-50);
+    background: var(--card-surface-bg);
     border-radius: var(--radius-sm);
 }

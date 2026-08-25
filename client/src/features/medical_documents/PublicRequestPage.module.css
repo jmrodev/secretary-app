@@ -1,15 +1,15 @@
 /* PublicRequestPage Styles (BEM) */
 
-.root {
+.PublicRequestPage__root {
     min-height: 100vh;
-    background-color: var(--slate-50, #f8fafc);
+    background-color: var(--slate-50, var(--text-main));
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 2.5rem 1rem;
 }
 
-.container {
+.PublicRequestPage__container {
     max-width: 36rem;
     width: 100%;
     display: flex;
@@ -17,12 +17,12 @@
     gap: 1.5rem;
 }
 
-.header {
+.PublicRequestPage__header {
     text-align: center;
     margin-bottom: 1rem;
 }
 
-.iconWrapper {
+.PublicRequestPage__iconWrapper {
     width: 4rem;
     height: 4rem;
     background-color: rgb(37 99 235 / 80%);
@@ -35,26 +35,26 @@
     justify-content: center;
     font-size: 1.875rem;
     margin: 0 auto 1rem;
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.title {
+.PublicRequestPage__title {
     font-size: 1.5rem;
     font-weight: 900;
-    color: var(--slate-800, #1e293b);
+    color: var(--slate-800, var(--background-bg));
     line-height: normal;
 }
 
-.subtitle {
+.PublicRequestPage__subtitle {
     color: var(--slate-500, #64748b);
     font-weight: 500;
 }
 
-.patientName {
+.PublicRequestPage__patientName {
     color: var(--blue-600, #2563eb);
 }
 
-.errorBanner {
+.PublicRequestPage__errorBanner {
     padding: 1rem;
     background-color: rgb(220 38 38 / 10%);
     backdrop-filter: blur(16px);
@@ -63,7 +63,7 @@
     border-radius: 1rem;
 }
 
-.errorText {
+.PublicRequestPage__errorText {
     color: var(--red-600, #dc2626);
     font-weight: 700;
     font-size: 0.875rem;
@@ -74,7 +74,7 @@
 }
 
 /* Section styling */
-.section {
+.PublicRequestPage__section {
     background: rgb(255 255 255 / 20%);
     backdrop-filter: blur(16px);
     border: 1px solid rgb(255 255 255 / 20%);
@@ -83,29 +83,29 @@
     box-shadow: 0 8px 32px 0 rgb(0 0 0 / 10%);
 }
 
-.sectionTitle {
+.PublicRequestPage__sectionTitle {
     font-size: 0.75rem;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--slate-400, #94a3b8);
+    color: var(--slate-400, var(--text-muted));
     margin-bottom: 1rem;
 }
 
 /* Medication chip grid */
-.medChipGrid {
+.PublicRequestPage__medChipGrid {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
 }
 
-.medChip {
+.PublicRequestPage__medChip {
     padding: 0.5rem 1rem;
     border-radius: 0.75rem;
     font-size: 0.875rem;
     font-weight: 700;
-    border: 1px solid rgb(255 255 255 / 30%);
-    background: rgb(255 255 255 / 10%);
+    border: 1px solid var(--text-muted);
+    background: var(--border-color);
     backdrop-filter: blur(8px);
     color: var(--slate-600, #475569);
     cursor: pointer;
@@ -117,11 +117,11 @@
     white-space: nowrap;
 }
 
-.medChip:hover {
+.PublicRequestPage__medChip:hover {
     border-color: var(--blue-200, #bfdbfe);
 }
 
-.medChipActive {
+.PublicRequestPage__medChipActive {
     background-color: var(--blue-600, #2563eb);
     border-color: var(--blue-600, #2563eb);
     color: white;
@@ -130,13 +130,13 @@
 }
 
 /* Selected list */
-.selectedList {
+.PublicRequestPage__selectedList {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.selectedItem {
+.PublicRequestPage__selectedItem {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -147,12 +147,12 @@
     border-radius: 0.75rem;
 }
 
-.name {
+.PublicRequestPage__name {
     font-weight: 700;
     color: var(--blue-900, #1e3a8a);
 }
 
-.remove {
+.PublicRequestPage__remove {
     background: none;
     border: none;
     color: var(--blue-400, #60a5fa);
@@ -163,39 +163,49 @@
     transition: color 0.2s;
 }
 
-.remove:hover {
+.PublicRequestPage__remove:hover {
     color: var(--red-500, #ef4444);
 }
 
 /* Search Area */
-.searchWrapper {
+.PublicRequestPage__searchWrapper {
     position: relative;
 }
 
-.searchInput {
+.PublicRequestPage__label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.PublicRequestPage__searchInput {
     width: 100%;
     padding: 1rem;
-    background-color: rgb(255 255 255 / 30%);
+    background-color: var(--text-muted);
     backdrop-filter: blur(12px);
     border-radius: 1rem;
-    border: 1px solid rgb(255 255 255 / 40%);
+    border: 1px solid var(--text-muted);
     box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 5%);
     outline: none;
     font-weight: 700;
     transition: all 0.2s ease;
 }
 
-.searchInput:focus {
+.PublicRequestPage__searchInput:focus {
     border-color: var(--blue-400, #60a5fa);
     background-color: white;
 }
 
 /* Search Area */
-.searchWrapper {
+.PublicRequestPage__searchWrapper {
     position: relative;
 }
 
-.searchInput {
+.PublicRequestPage__searchInput {
     width: 100%;
     padding: 1rem;
     background-color: var(--slate-100, #f1f5f9);
@@ -206,29 +216,29 @@
     transition: all 0.2s ease;
 }
 
-.searchInput:focus {
+.PublicRequestPage__searchInput:focus {
     border-color: var(--blue-400, #60a5fa);
     background-color: white;
 }
 
-.searchResults {
+.PublicRequestPage__searchResults {
     margin-top: 1rem;
     max-height: 15rem;
     overflow-y: auto;
     border-radius: 1rem;
-    border: 1px solid rgb(255 255 255 / 30%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
-    background: rgb(255 255 255 / 40%);
+    border: 1px solid var(--text-muted);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
+    background: var(--text-muted);
     backdrop-filter: blur(16px);
 }
 
-.searchResultItem {
+.PublicRequestPage__searchResultItem {
     width: 100%;
     padding: 1rem;
     text-align: left;
     background: none;
     border: none;
-    border-bottom: 1px solid var(--slate-50, #f8fafc);
+    border-bottom: 1px solid var(--slate-50, var(--text-main));
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -236,21 +246,21 @@
     transition: background 0.2s;
 }
 
-.searchResultItem:hover {
-    background-color: var(--slate-50, #f8fafc);
+.PublicRequestPage__searchResultItem:hover {
+    background-color: var(--slate-50, var(--text-main));
 }
 
-.name {
+.PublicRequestPage__name {
     font-weight: 700;
-    color: var(--slate-800, #1e293b);
+    color: var(--slate-800, var(--background-bg));
 }
 
-.desc {
+.PublicRequestPage__desc {
     font-size: 0.75rem;
-    color: var(--slate-400, #94a3b8);
+    color: var(--slate-400, var(--text-muted));
 }
 
-.emptyState {
+.PublicRequestPage__emptyState {
     margin-top: 1rem;
     padding: 1rem;
     background-color: rgb(245 158 11 / 10%);
@@ -260,7 +270,7 @@
     box-shadow: 0 8px 32px 0 rgb(0 0 0 / 10%);
 }
 
-.text {
+.PublicRequestPage__text {
     font-size: 0.875rem;
     color: var(--amber-800, #92400e);
     font-weight: 500;
@@ -268,29 +278,29 @@
 }
 
 /* Footer actions */
-.footer {
+.PublicRequestPage__footer {
     margin-top: 1rem;
 }
 
-.root .btnSubmit,
-.footer .btnSubmit {
+.PublicRequestPage__root .PublicRequestPage__btnSubmit,
+.PublicRequestPage__footer .PublicRequestPage__btnSubmit {
     padding: 1.5rem;
     border-radius: 1.5rem;
     font-size: 1.125rem;
     box-shadow: 0 10px 15px -3px rgb(37 99 235 / 20%);
 }
 
-.brand {
+.PublicRequestPage__brand {
     text-align: center;
     font-size: 10px;
-    color: var(--slate-400, #94a3b8);
+    color: var(--slate-400, var(--text-muted));
     margin-top: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 0.1em;
     font-weight: 900;
 }
 
-.notes {
+.PublicRequestPage__notes {
     min-height: 120px;
 }
 

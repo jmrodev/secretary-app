@@ -5,14 +5,13 @@ import styles from './DayHeaders.module.css';
  * DayHeaders (Internal to feature).
  * Small grid showing day-of-week abbreviations for the Monthly Calendar.
  */
-const DayHeaders = ({ daysOfWeek }) => {
+export const DayHeaders = ({ daysOfWeek }) => {
   return (
-    <div className={`${styles.root}`}>
+    <div className={`${styles.DayHeaders__root}`}>
       {daysOfWeek.map((day) => (
-        <div key={day} className={`${styles.day}`}>{day}</div>
+        <div key={day} className={`${styles.DayHeaders__day}`}>{day}</div>
       ))}
     </div>
   );
 };
 
-export default DayHeaders;

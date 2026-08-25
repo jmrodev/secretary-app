@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -23,6 +23,7 @@ export const useProfileController = () => {
         dni: '',
     });
 
+    // react-doctor-disable-next-line react-doctor/no-set-state-after-await-in-effect
     useEffect(() => {
         let isCurrent = true;
         const fetchProfile = async () => {

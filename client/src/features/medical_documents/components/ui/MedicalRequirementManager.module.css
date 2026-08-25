@@ -1,26 +1,28 @@
 /* MedicalRequirementManager.css (Migrated from RequirementsList.css) */
 
-.root {
+.MedicalRequirementManager__root {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     padding: 0;
+    min-width: 0;
+    width: 100%;
 }
 
-.tabs {
+.MedicalRequirementManager__tabs {
     display: flex;
     gap: 0.75rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--dashboard-card-border);
 }
 
-.tabWrapper {
+.MedicalRequirementManager__tabWrapper {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.badge {
+.MedicalRequirementManager__badge {
     position: absolute;
     top: -5px;
     right: -5px;
@@ -35,17 +37,19 @@
     box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
 }
 
-.filters {
+.MedicalRequirementManager__filters {
     display: flex;
     gap: 0.5rem;
     margin-bottom: 1rem;
 }
 
-.content {
+.MedicalRequirementManager__content {
     min-height: 200px;
+    min-width: 0;
+    width: 100%;
 }
 
-.empty {
+.MedicalRequirementManager__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -58,27 +62,29 @@
     gap: 1rem;
 }
 
-.empty p {
+.MedicalRequirementManager__empty p {
     font-size: 1rem;
     font-weight: 500;
     margin: 0;
 }
 
-.tableContainer {
+.MedicalRequirementManager__tableContainer {
     background: var(--dashboard-card-bg);
     border-radius: var(--radius-sm);
     border: 1px solid var(--dashboard-card-border);
-    overflow: hidden;
+    overflow-x: auto;
+    max-width: 100%;
+    width: 100%;
 }
 
-.table {
+.MedicalRequirementManager__table {
     width: 100%;
     border-collapse: collapse;
     text-align: left;
 }
 
-.tableHeader {
-    background-color: var(--gray-800);
+.MedicalRequirementManager__tableHeader {
+    background-color: var(--card-surface-bg);
     padding: 0.5rem 0.75rem;
     font-size: 0.7rem;
     font-weight: 700;

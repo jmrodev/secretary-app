@@ -1,6 +1,6 @@
 /* ScheduleTimeline Styles (BEM) - Dark Mode Standard */
 
-.root {
+.ScheduleTimeline__root {
     display: flex;
     flex-direction: column;
     gap: 0;
@@ -16,7 +16,7 @@
     box-shadow: var(--shadow-sm);
 }
 
-.currentTimeLine {
+.ScheduleTimeline__currentTimeLine {
     position: absolute;
     left: -10px;
     right: -10px;
@@ -27,7 +27,7 @@
     align-items: center;
 }
 
-.currentTimeLineLabel {
+.ScheduleTimeline__currentTimeLineLabel {
     position: absolute;
     left: 0;
     font-size: 0.7rem;
@@ -42,32 +42,32 @@
     white-space: nowrap;
 }
 
-.currentTimeLineBar {
+.ScheduleTimeline__currentTimeLineBar {
     width: 100%;
     height: 2px;
     background: linear-gradient(90deg, rgb(220, 38, 38, 0.8) 0%, rgb(220, 38, 38, 1) 50%, rgb(220, 38, 38, 0.8) 100%);
     box-shadow: 0 0 8px rgb(220, 38, 38, 0.6);
 }
 
-.root::-webkit-scrollbar {
+.ScheduleTimeline__root::-webkit-scrollbar {
     width: 6px;
 }
 
-.root::-webkit-scrollbar-track {
+.ScheduleTimeline__root::-webkit-scrollbar-track {
     background: transparent;
 }
 
-.root::-webkit-scrollbar-thumb {
+.ScheduleTimeline__root::-webkit-scrollbar-thumb {
     background: rgb(128, 128, 128, 0.2);
     border-radius: 10px;
 }
 
-.root::-webkit-scrollbar-thumb:hover {
+.ScheduleTimeline__root::-webkit-scrollbar-thumb:hover {
     background: rgb(128, 128, 128, 0.3);
 }
 
 /* --- Available / Empty Slot Card --- */
-.availableCard {
+.ScheduleTimeline__availableCard {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -85,7 +85,7 @@
     transition: all 0.2s ease;
 }
 
-.availableCard:hover {
+.ScheduleTimeline__availableCard:hover {
     border-style: solid;
     border-color: var(--primary-color);
     background: rgb(128, 128, 128, 0.05);
@@ -93,7 +93,7 @@
     box-shadow: var(--shadow-sm);
 }
 
-.availableTimeTop {
+.ScheduleTimeline__availableTimeTop {
     font-size: 1.05rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -104,7 +104,7 @@
     font-family: var(--font-manrope);
 }
 
-.availableBody {
+.ScheduleTimeline__availableBody {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -115,21 +115,21 @@
     opacity: 0.8;
 }
 
-.availableCard:hover .availableBody {
+.ScheduleTimeline__availableCard:hover .ScheduleTimeline__availableBody {
     opacity: 1;
 }
 
-.availableIcon {
+.ScheduleTimeline__availableIcon {
     color: var(--text-muted);
     transition: all 0.2s ease;
 }
 
-.availableCard:hover .availableIcon {
+.ScheduleTimeline__availableCard:hover .ScheduleTimeline__availableIcon {
     color: var(--primary-color);
     transform: rotate(90deg);
 }
 
-.availableLabel {
+.ScheduleTimeline__availableLabel {
     font-size: 0.8rem;
     color: var(--text-muted);
     font-weight: 600;
@@ -138,27 +138,27 @@
     text-align: left;
 }
 
-.availableClosed {
+.ScheduleTimeline__availableClosed {
     background: rgb(239, 68, 68, 0.03);
     border-color: rgb(239, 68, 68, 0.2);
     cursor: not-allowed;
     opacity: 0.5;
 }
 
-.availableClosed:hover {
+.ScheduleTimeline__availableClosed:hover {
     transform: none;
     background: rgb(239, 68, 68, 0.05);
     border-color: var(--danger);
     box-shadow: none;
 }
 
-.availableClosed:hover .availableIcon {
+.ScheduleTimeline__availableClosed:hover .ScheduleTimeline__availableIcon {
     transform: none;
     color: var(--danger);
 }
 
 /* --- Google Blocked Card --- */
-.googleBlocked {
+.ScheduleTimeline__googleBlocked {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -175,24 +175,24 @@
     opacity: 0.6;
 }
 
-.googleBlocked span {
+.ScheduleTimeline__googleBlocked span {
     font-size: 0.8rem;
     font-weight: 600;
     text-transform: uppercase;
     text-align: center;
 }
 
-.googleBlocked span {
+.ScheduleTimeline__googleBlocked span {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-size: 0.75rem;
 }
 
 /* Past and closed slot modifiers for blocked placeholders */
-.slotClosed .googleBlocked {
+.ScheduleTimeline__slotClosed .ScheduleTimeline__googleBlocked {
     opacity: 0.6;
 }
 
-.slotPast .googleBlocked {
+.ScheduleTimeline__slotPast .ScheduleTimeline__googleBlocked {
     opacity: 0.45;
 }

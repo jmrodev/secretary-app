@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import Select from '@/components/atoms/Select';
-import Input from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
 import styles from './SegmentSelector.module.css';
 
@@ -44,15 +44,15 @@ export const SegmentSelector = ({
     }));
 
     return (
-        <section className={styles['segment-selector']}>
-            <h3 className={styles['segment-selector__title']}>
+        <section className={styles['SegmentSelector__segment-selector']}>
+            <h3 className={styles['SegmentSelector__title']}>
                 {t('outreach_step_1')}
             </h3>
 
-            <div className={styles['segment-selector__form']}>
-                <div className={styles['segment-selector__field']}>
+            <div className={styles['SegmentSelector__form']}>
+                <div className={styles['SegmentSelector__field']}>
                     <label
-                        className={styles['segment-selector__label']}
+                        className={styles['SegmentSelector__label']}
                         htmlFor="segment-type"
                     >
                         {t('outreach_segment_label')}
@@ -67,10 +67,10 @@ export const SegmentSelector = ({
                 </div>
 
                 {requiresDates && (
-                    <div className={styles['segment-selector__date-row']}>
-                        <div className={styles['segment-selector__field']}>
+                    <div className={styles['SegmentSelector__date-row']}>
+                        <div className={styles['SegmentSelector__field']}>
                             <label
-                                className={styles['segment-selector__label']}
+                                className={styles['SegmentSelector__label']}
                                 htmlFor="segment-start-date"
                             >
                                 {t('outreach_segment_start_date')}
@@ -84,9 +84,9 @@ export const SegmentSelector = ({
                                 }
                             />
                         </div>
-                        <div className={styles['segment-selector__field']}>
+                        <div className={styles['SegmentSelector__field']}>
                             <label
-                                className={styles['segment-selector__label']}
+                                className={styles['SegmentSelector__label']}
                                 htmlFor="segment-end-date"
                             >
                                 {t('outreach_segment_end_date')}
@@ -103,7 +103,7 @@ export const SegmentSelector = ({
                     </div>
                 )}
 
-                <div className={styles['segment-selector__actions']}>
+                <div className={styles['SegmentSelector__actions']}>
                     <Button
                         onClick={onLoadPatients}
                         disabled={!canLoad || loading}
@@ -118,19 +118,19 @@ export const SegmentSelector = ({
             </div>
 
             {error && (
-                <div className={styles['segment-selector__error']} role="alert">
+                <div className={styles['SegmentSelector__error']} role="alert">
                     {error}
                 </div>
             )}
 
             {fetched && !hasPatients && !loading && !error && (
-                <div className={styles['segment-selector__empty']} role="status">
+                <div className={styles['SegmentSelector__empty']} role="status">
                     {t('outreach_segment_empty')}
                 </div>
             )}
 
             {hasPatients && !loading && (
-                <div className={styles['segment-selector__count']} role="status" data-count={patients.length}>
+                <div className={styles['SegmentSelector__count']} role="status" data-count={patients.length}>
                     {t('outreach_segment_count', { count: patients.length })}
                 </div>
             )}

@@ -1,5 +1,5 @@
 import React, { createContext, use, useMemo } from 'react';
-import ConfirmModal from '@/components/ui/ConfirmModal';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModalLogic } from '@/context/useModalLogic';
 
@@ -42,6 +42,7 @@ export const ModalProvider = ({ children }) => {
                 message={modalConfig.message}
                 type={modalConfig.type}
                 initialValue={modalConfig.initialValue}
+                inputType={modalConfig.inputType}
                 onConfirm={handleConfirm}
                 onCancel={handleCancel}
                 labels={{

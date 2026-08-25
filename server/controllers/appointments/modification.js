@@ -12,7 +12,7 @@ const handleError = (res, err, context) => {
 
 exports.deleteAppointment = async (req, res) => {
     try {
-        await modificationService.deleteAppointment(req.params.id, req.user.user_id, req.user.role, req.body.adminPassword);
+        await modificationService.deleteAppointment(req.params.id, req.user.user_id, req.user, req.body.adminPassword);
         logAction(req, 'DELETE_APPOINTMENT', `Deleted appointment ID ${req.params.id}`);
         res.json({ message: "Appointment deleted" });
     } catch (err) {
@@ -23,7 +23,7 @@ exports.deleteAppointment = async (req, res) => {
 exports.updateAppointment = async (req, res) => {
     try {
         const { adminPassword, ...updates } = req.body;
-        await modificationService.updateAppointment(req.params.id, updates, req.user.user_id, req.user.role, adminPassword);
+        await modificationService.updateAppointment(req.params.id, updates, req.user.user_id, req.user, adminPassword);
         logAction(req, 'UPDATE_APPOINTMENT', `Updated appointment ID ${req.params.id}`);
         res.json({ message: "Appointment updated" });
     } catch (err) {

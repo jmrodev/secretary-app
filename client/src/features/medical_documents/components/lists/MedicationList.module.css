@@ -1,15 +1,15 @@
 /* MedicationList Feature Styles */
-.root {
+.MedicationList__root {
     width: 100%;
 }
 
-.items {
+.MedicationList__items {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
 }
 
-.empty {
+.MedicationList__empty {
     padding: 1rem;
     text-align: center;
     color: var(--gray-400);

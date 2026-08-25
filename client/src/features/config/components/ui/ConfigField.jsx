@@ -1,6 +1,6 @@
 import React from 'react';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
 import styles from './ConfigField.module.css';
 
 /**
@@ -10,7 +10,7 @@ import styles from './ConfigField.module.css';
  */
 const EMPTY_OPTIONS = [];
 
-const ConfigField = ({
+export const ConfigField = ({
     label,
     hint,
     type = 'text',
@@ -21,17 +21,25 @@ const ConfigField = ({
     id,
     variant = '', // e.g., 'monospace'
     className = '',
-    options = EMPTY_OPTIONS // Only used if type="select"
+    options = EMPTY_OPTIONS, // Only used if type="select"
+    readOnly = false,
+    rows = 3,
+    ...rest
 }) => {
     const isSelect = type === 'select';
-    const rootClass = `config-field ${variant ? `config-field--${variant}` : ''}`;
-    const inputClassName = `config-field__input ${className}`.trim();
+    const variantClass = variant === 'monospace'
+        ? (styles['ConfigField--monospace'] || 'ConfigField--monospace')
+        : (variant ? (styles[`ConfigField--${variant}`] || `ConfigField--${variant}`) : '');
+    const rootClass = `${styles.ConfigField__root} ${variantClass} ${className}`.trim();
+    const inputClassName = `${styles.ConfigField__input}`.trim();
 
     return (
         <div className={rootClass}>
-            <label className={`${styles.label}`} htmlFor={id}>
-                {label}
-            </label>
+            {label && (
+                <label className={styles.ConfigField__label} htmlFor={id}>
+                    {label}
+                </label>
+            )}
             
             {isSelect ? (
                 <Select
@@ -51,14 +59,15 @@ const ConfigField = ({
                     disabled={disabled}
                     placeholder={placeholder}
                     className={inputClassName}
+                    readOnly={readOnly}
+                    rows={rows}
+                    {...rest}
                 />
             )}
 
             {hint && (
-                <span className={`${styles.hint}`}>{hint}</span>
+                <span className={styles.ConfigField__hint}>{hint}</span>
             )}
         </div>
     );
 };
-
-export default ConfigField;

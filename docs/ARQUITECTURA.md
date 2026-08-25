@@ -19,6 +19,14 @@ Clasificamos y ubicamos los componentes estrictamente en su nivel jerárquico co
 - **CSS Modules**: Usamos exclusivamente CSS Modules (`styles.module.css`) para todos los componentes de React, previniendo colisiones de selectores en el árbol global.
 - **Metodología BEM**: Los nombres de clases dentro del CSS deben seguir la convención BEM (`bloque__elemento--modificador`).
 - **Sin Estilos inline**: Está estrictamente prohibido usar estilos en línea (`style={{...}}`) salvo para valores dinámicos calculados por JavaScript en tiempo de ejecución.
+- **Design Tokens (obligatorio)**: Todos los estilos deben usar las variables CSS definidas en `client/src/styles/variables.css` (temas dark, light y dim vía `data-theme`). Prohibido hardcodear valores si existe un token equivalente; si un valor no tiene token, se agrega como token nuevo en `variables.css` antes que inline.
+  - **Colores semánticos**: `--primary-color` / `--primary-hover`, `--accent-color` / `--accent-hover`, `--secondary-color`, `--danger` / `--error`, `--success`, `--warning`.
+  - **Superficies**: `--background-bg`, `--dashboard-card-bg`, `--dashboard-card-border`, `--modal-bg` / `--modal-bg-dark`, `--card-surface-bg`, `--card-hover-bg`, `--glass` / `--glass-dark` / `--glass-border`.
+  - **Texto**: `--text-main`, `--text-secondary`, `--text-muted`.
+  - **Bordes y UI**: `--border-color`, `--radius` / `--radius-sm` / `--radius-md` / `--radius-lg`, `--shadow-sm` / `--shadow-md` / `--shadow-lg` / `--shadow-premium`, `--navbar-bg` / `--navbar-border` / `--navbar-link-color`.
+  - **Tipografía**: `--font-main` (Nunito Sans), `--font-manrope` (títulos/logo), `--font-newsreader` (serif académico), `--font-nunito` (cuerpo).
+  - **Escalas de color**: `--gray-50..950`, `--blue-50..800`, `--red-*`, `--green-*`, `--amber-*`, `--sky-*`, `--teal-*`, `--purple-*`, `--violet-*`, `--indigo-*`, `--pink-*`, `--rose-*`, `--orange-*`, `--cyan-*`, `--yellow-*`.
+  - **Espaciado**: `--spacing-xs` (4px), `--spacing-sm` (8px), `--spacing-md` (16px), `--spacing-lg` (24px), `--spacing-xl` (32px). Los layouts usan `gap` en los contenedores padres (flexbox para distribuciones unidimensionales, CSS Grid para estructuras bidimensionales) y múltiplos de la escala base.
 
 ---
 

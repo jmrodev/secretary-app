@@ -6,7 +6,7 @@ import { formatDate } from '@/utils/core/dateUtils';
  * Renders the printable version of medical documents and requests.
  * Isolated to reduce main page complexity.
  */
-const MedicalDocumentsPrintView = ({ printData, printDate, t }) => {
+export const MedicalDocumentsPrintView = ({ printData, printDate, t }) => {
     if (!printData || printData.length === 0) return null;
 
     return (
@@ -66,4 +66,3 @@ const MedicalDocumentsPrintView = ({ printData, printDate, t }) => {
     );
 };
 
-export default MedicalDocumentsPrintView;

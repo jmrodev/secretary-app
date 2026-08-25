@@ -1,17 +1,17 @@
 
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
 import inputStyles from '@/components/atoms/Input.module.css';
-import MedicationAutocomplete from '@/features/medical_documents/components/ui/MedicationAutocomplete';
+import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
 import styles from './PrescriptionItemsList.module.css';
 
 /**
  * PrescriptionItemsList Molecule.
  * Displays the current medications added to the batch prescription.
  */
-const PrescriptionItemsList = ({
+export const PrescriptionItemsList = ({
     items, handleRemoveItem, t, readOnly: _readOnly,
     tempMed, setTempMed,
     tempDose, setTempDose,
@@ -24,145 +24,149 @@ const PrescriptionItemsList = ({
     canAdd, daysSupply: _daysSupply, refillDateStr: _refillDateStr, freqPresets
 }) => {
     return (
-        <div className={styles.container}>
-            <div className={styles.tableWrapper} style={{ overflow: 'visible' }}>
-                <table className={styles.table}>
+        <div className={styles.PrescriptionItemsList__container}>
+            <div className={styles.PrescriptionItemsList__tableWrapper} style={{ overflow: 'visible' }}>
+                <table className={styles.PrescriptionItemsList__table}>
                     <thead>
                         <tr>
-                            <th style={{ width: '32%' }}>Medicamento</th>
-                            <th style={{ width: '8%' }}>Dosis</th>
-                            <th style={{ width: '15%' }}>Frecuencia</th>
-                            <th style={{ width: '15%' }}>Cant/Caja</th>
-                            <th style={{ width: '15%' }}>Envases</th>
-                            <th style={{ width: '15%' }}>Duración</th>
-                            <th className={styles.actionsCol}></th>
+                            <th style={{ width: '32%' }}>{t('medication') || 'Medicamento'}</th>
+                            <th style={{ width: '8%' }}>{t('dose') || 'Dosis'}</th>
+                            <th style={{ width: '15%' }}>{t('frequency') || 'Frecuencia'}</th>
+                            <th style={{ width: '15%' }}>{t('units_per_box_short') || 'Cant/Caja'}</th>
+                            <th style={{ width: '15%' }}>{t('boxes') || 'Envases'}</th>
+                            <th style={{ width: '15%' }}>{t('duration') || 'Duración'}</th>
+                            <th className={styles.PrescriptionItemsList__actionsCol}></th>
                         </tr>
                     </thead>
                     <tbody>
                         {/* Inline Form Row */}
-                        <tr className={styles.formRow}>
-                            <td className={styles.formCell}>
-                                <MedicationAutocomplete
-                                    value={tempMed}
-                                    onChange={setTempMed}
-                                    placeholder={t('search_medication') || 'Buscar medicamento...'}
-                                    onSelectMedication={handleSelectMedication}
-                                />
-                            </td>
-                            <td className={styles.formCell}>
-                                <Input
-                                    placeholder={t('dose_placeholder') || 'Dosis'}
-                                    value={tempDose}
-                                    onChange={e => setTempDose(e.target.value)}
-                                    style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
-                                />
-                            </td>
-                            <td className={styles.formCell}>
-                                <select
-                                    className={`${inputStyles.root} ${inputStyles.sm}`}
-                                    style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
-                                    value={tempFreqPreset !== null ? tempFreqPreset : ''}
-                                    onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
-                                >
-                                    <option value="" disabled style={{ color: 'black' }}>Frecuencia…</option>
-                                    {freqPresets && freqPresets.map((p, idx) => {
-                                        const safeKey = p.label.replace('½', 'half').replace('¼', 'quarter').replace('¾', 'three_quarters').replace('/', '_per_').replace(' ', '_').toLowerCase();
-                                        const translationKey = `freq_${safeKey}`;
-                                        const labelText = t(translationKey) === translationKey ? (p.text.charAt(0).toUpperCase() + p.text.slice(1)) : t(translationKey);
-                                        return <option key={idx} value={idx} style={{ color: 'black' }}>{labelText}</option>;
-                                    })}
-                                </select>
-                            </td>
-                            <td className={styles.formCell}>
-                                <select
-                                    className={`${inputStyles.root} ${inputStyles.sm}`}
-                                    style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '100%', textAlign: 'center' }}
-                                    value={tempUnitsPerBox}
-                                    onChange={e => handleQuantityChange('units_per_box', e.target.value)}
-                                >
-                                    <option value="" style={{ color: 'black' }}>-</option>
-                                    {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
-                                        <option key={v} value={v} style={{ color: 'black' }}>{v}</option>
-                                    ))}
-                                </select>
-                            </td>
-                            <td className={styles.formCell}>
-                                <div className={styles.qtyInputs} style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'nowrap' }}>
+                        {!_readOnly && (
+                            <tr className={styles.PrescriptionItemsList__formRow}>
+                                <td className={styles.PrescriptionItemsList__formCell}>
+                                    <MedicationAutocomplete
+                                        value={tempMed}
+                                        onChange={setTempMed}
+                                        placeholder={t('search_medication') || 'Buscar medicamento...'}
+                                        onSelectMedication={handleSelectMedication}
+                                    />
+                                </td>
+                                <td className={styles.PrescriptionItemsList__formCell}>
+                                    <Input
+                                        placeholder={t('dose_placeholder') || 'Dosis'}
+                                        value={tempDose}
+                                        onChange={e => setTempDose(e.target.value)}
+                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
+                                    />
+                                </td>
+                                <td className={styles.PrescriptionItemsList__formCell}>
                                     <select
-                                        className={`${inputStyles.root} ${inputStyles.sm}`}
-                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '55px', textAlign: 'center' }}
-                                        value={tempBoxes}
-                                        onChange={e => handleQuantityChange('boxes', e.target.value)}
-                                        title="Cantidad de envases"
+                                        className={`${inputStyles.Input__root} ${inputStyles.Input__sm}`}
+                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
+                                        value={tempFreqPreset !== null ? tempFreqPreset : ''}
+                                        onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
+                                        aria-label={t('frequency') || 'Frecuencia'}
+                                    >
+                                        <option value="" disabled style={{ color: 'black' }}>{t('frequency') || 'Frecuencia'}…</option>
+                                        {freqPresets && freqPresets.map((p, idx) => {
+                                            const safeKey = p.label.replace('½', 'half').replace('¼', 'quarter').replace('¾', 'three_quarters').replace('/', '_per_').replace(' ', '_').toLowerCase();
+                                            const translationKey = `freq_${safeKey}`;
+                                            const labelText = t(translationKey) === translationKey ? (p.text.charAt(0).toUpperCase() + p.text.slice(1)) : t(translationKey);
+                                            return <option key={`option-${p.label}`} value={idx} style={{ color: 'black' }}>{labelText}</option>;
+                                        })}
+                                    </select>
+                                </td>
+                                <td className={styles.PrescriptionItemsList__formCell}>
+                                    <select
+                                        className={`${inputStyles.Input__root} ${inputStyles.Input__sm}`}
+                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '100%', textAlign: 'center' }}
+                                        value={tempUnitsPerBox}
+                                        onChange={e => handleQuantityChange('units_per_box', e.target.value)}
+                                        aria-label={t('units_per_box') || 'Unidades por caja'}
                                     >
                                         <option value="" style={{ color: 'black' }}>-</option>
-                                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(v => (
+                                        {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
                                             <option key={v} value={v} style={{ color: 'black' }}>{v}</option>
                                         ))}
                                     </select>
-                                </div>
-                            </td>
-                            <td className={styles.formCell} style={{ textAlign: 'center' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', justifyContent: 'center', flexWrap: 'nowrap' }}>
-                                    <Input
-                                        value={tempDays}
-                                        onChange={e => handleQuantityChange('days', e.target.value)}
-                                        placeholder="-"
+                                </td>
+                                <td className={styles.PrescriptionItemsList__formCell}>
+                                    <div className={styles.PrescriptionItemsList__qtyInputs} style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'nowrap' }}>
+                                        <select
+                                            className={`${inputStyles.Input__root} ${inputStyles.Input__sm}`}
+                                            style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '55px', textAlign: 'center' }}
+                                            value={tempBoxes}
+                                            onChange={e => handleQuantityChange('boxes', e.target.value)}
+                                            title={t('boxes_quantity') || 'Cantidad de envases'}
+                                        >
+                                            <option value="" style={{ color: 'black' }}>-</option>
+                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(v => (
+                                                <option key={v} value={v} style={{ color: 'black' }}>{v}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </td>
+                                <td className={styles.PrescriptionItemsList__formCell} style={{ textAlign: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', justifyContent: 'center', flexWrap: 'nowrap' }}>
+                                        <Input
+                                            value={tempDays}
+                                            onChange={e => handleQuantityChange('days', e.target.value)}
+                                            placeholder="-"
+                                            size="sm"
+                                            style={{ width: '55px', textAlign: 'center', padding: '0.25rem' }}
+                                        />
+                                        <span style={{ fontSize: '0.75rem', color: 'rgb(255 255 255 / 50%)', whiteSpace: 'nowrap' }}>{t('days') || 'días'}</span>
+                                    </div>
+                                </td>
+                                <td className={styles.PrescriptionItemsList__actionsCol}>
+                                    <Button
+                                        type="button"
+                                        variant="primary"
+                                        onClick={handleAddItem}
+                                        disabled={!canAdd}
                                         size="sm"
-                                        style={{ width: '55px', textAlign: 'center', padding: '0.25rem' }}
-                                    />
-                                    <span style={{ fontSize: '0.75rem', color: 'rgb(255 255 255 / 50%)', whiteSpace: 'nowrap' }}>días</span>
-                                </div>
-                            </td>
-                            <td className={styles.actionsCol}>
-                                <Button
-                                    type="button"
-                                    variant="primary"
-                                    onClick={handleAddItem}
-                                    disabled={!canAdd}
-                                    size="sm"
-                                    icon={<Icon name="ADD" />}
-                                    style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
-                                >
-                                    {t('add') || 'Añadir'}
-                                </Button>
-                            </td>
-                        </tr>
+                                        icon={<Icon name="ADD" />}
+                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
+                                    >
+                                        {t('add') || 'Añadir'}
+                                    </Button>
+                                </td>
+                            </tr>
+                        )}
 
                         {/* Added Items */}
                         {items && items.map((item, idx) => (
-                            <tr key={item._id || idx} className="animate-slide-in">
-                                <td className={styles.nameCell}>
-                                    <span className={styles.name}>{item.name}</span>
+                            <tr key={item._id || `item-${item.name}-${item.frequency || ''}`} className="animate-slide-in">
+                                <td className={styles.PrescriptionItemsList__nameCell}>
+                                    <span className={styles.PrescriptionItemsList__name}>{item.name}</span>
                                 </td>
-                                <td className={styles.metaCell}>
-                                    {item.dose && <span className={styles.dose}>{item.dose}</span>}
+                                <td className={styles.PrescriptionItemsList__metaCell}>
+                                    {item.dose && <span className={styles.PrescriptionItemsList__dose}>{item.dose}</span>}
                                 </td>
-                                <td className={styles.metaCell}>
-                                    <div className={styles.metaItem}>
+                                <td className={styles.PrescriptionItemsList__metaCell}>
+                                    <div className={styles.PrescriptionItemsList__metaItem}>
                                         <Icon name="schedule" size="0.9rem" />
                                         {item.frequency}
                                     </div>
                                 </td>
-                                <td className={styles.metaCell}>
+                                <td className={styles.PrescriptionItemsList__metaCell}>
                                     {item.units_per_box ? `${item.units_per_box} u.` : '-'}
                                 </td>
-                                <td className={styles.metaCell}>
+                                <td className={styles.PrescriptionItemsList__metaCell}>
                                     {item.quantity && item.quantity !== '0' && (
-                                        <div className={styles.metaItem}>
+                                        <div className={styles.PrescriptionItemsList__metaItem}>
                                             <Icon name="inventory_2" size="0.9rem" />
                                             {item.quantity} {parseInt(item.quantity) === 1 ? (t('box') || 'caja') : (t('boxes_plural') || 'cajas')}
                                         </div>
                                     )}
                                 </td>
-                                <td className={styles.metaCell} style={{ textAlign: 'center' }}>
+                                <td className={styles.PrescriptionItemsList__metaCell} style={{ textAlign: 'center' }}>
                                     {item.days_supply && (
-                                        <div className={`${styles.metaItem} ${styles.daysSupply}`} style={{ justifyContent: 'center' }}>
+                                        <div className={`${styles.PrescriptionItemsList__metaItem} ${styles.PrescriptionItemsList__daysSupply}`} style={{ justifyContent: 'center' }}>
                                             ~{item.days_supply} {t('days') || 'días'}
                                         </div>
                                     )}
                                 </td>
-                                <td className={styles.actionsCol}>
+                                <td className={styles.PrescriptionItemsList__actionsCol}>
                                     <Button
                                         variant="danger"
                                         size="sm"
@@ -179,4 +183,3 @@ const PrescriptionItemsList = ({
     );
 };
 
-export default PrescriptionItemsList;

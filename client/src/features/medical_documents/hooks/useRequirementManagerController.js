@@ -5,7 +5,7 @@ import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { usePermissions } from '@/hooks/usePermissions';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { extractMedicationDetails } from '@/features/medical_documents/utils/medicationHelpers';
 
 const initialState = { isEditing: false, editMeds: [], editNotes: '', editDoctorNote: '' };
@@ -19,13 +19,15 @@ function editReducer(state, action) {
     }
 }
 
+const unpack = (response, fallback = []) => response?.data || (Array.isArray(response) ? response : fallback);
+
 /**
  * ECC-Pattern: useRequirementManagerController Hook (Global Search Integrated)
  */
 export const useRequirementManagerController = (user) => {
     const { showMessage } = useMessage();
     const { t } = useLanguage();
-    const { doubleConfirm, confirm } = useModal();
+    const { doubleConfirm } = useModal();
     const { canDeleteRequest } = usePermissions();
     const { searchTerm: globalSearchTerm } = useSearch();
 
@@ -33,8 +35,6 @@ export const useRequirementManagerController = (user) => {
     const [filter, setFilter] = useState('active');
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(25);
-
-    const unpack = (response, fallback = []) => response?.data || (Array.isArray(response) ? response : fallback);
 
     const [debouncedSearch, setDebouncedSearch] = useState(globalSearchTerm);
     useEffect(() => {
@@ -80,9 +80,15 @@ export const useRequirementManagerController = (user) => {
     const totalCount = requestsHook.data?.meta?.totalCount || requests.length || 0;
     const recycleRequests = useMemo(() => recycleBinData.filter(item => item.entity_type === 'medical_request'), [recycleBinData]);
 
-    useEffect(() => {
+    // Reset to page 1 whenever the debounced search or filter changes. Applied
+    // during render so the new page commits before the fetch effect runs.
+    const [prevSearch, setPrevSearch] = useState(debouncedSearch);
+    const [prevFilter, setPrevFilter] = useState(filter);
+    if (prevSearch !== debouncedSearch || prevFilter !== filter) {
+        setPrevSearch(debouncedSearch);
+        setPrevFilter(filter);
         setCurrentPage(1);
-    }, [debouncedSearch, filter]);
+    }
 
     const setSelectedRequest = useCallback((req) => {
         setSelectedRequestInternal(req);
@@ -114,7 +120,7 @@ export const useRequirementManagerController = (user) => {
 
     const confirmAction = async () => {
         if (['rejected', 'consult', 'reply'].includes(actionModal.type) && !actionNote.trim()) {
-            showMessage(t('note_required') || 'Note is required', 'error'); return;
+            showMessage(t('note_required'), 'error'); return;
         }
         try {
             const payload = { status: actionModal.type === 'reply' ? 'consult' : actionModal.type };
@@ -123,13 +129,13 @@ export const useRequirementManagerController = (user) => {
                 else payload.doctor_note = actionNote;
             }
             await api.patch(`/medical/requests/${actionModal.id}`, payload);
-            showMessage(t('action_success') || 'Updated successfully', 'success');
+            showMessage(t('action_success'), 'success');
             setActionModal({ open: false, type: '', id: null });
             setSelectedRequestInternal(null);
             requestsHook.refetch();
         } catch (err) {
             console.error("[RequirementManagerController] Action error", err);
-            showMessage(err.response?.data?.error || t('error_update') || 'Failed to update', 'error');
+            showMessage(err.response?.data?.error || t('error_update'), 'error');
         }
     };
 

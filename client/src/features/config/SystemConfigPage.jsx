@@ -1,16 +1,17 @@
-import React, { Suspense, useEffect, useMemo } from 'react';
+import React, { Suspense, useMemo, useState } from 'react';
 import { useSystemConfigController } from '@/features/config/hooks/useSystemConfigController';
 import { getConfigSections, getConfigSection } from './registry/configRegistry';
 import { loadDefaultConfigSections } from './components/ConfigRegistryLoader';
 
 // Global Atomic Components
-import MainLayout from '@/components/templates/MainLayout';
-import Icon from '@/components/atoms/Icon';
-import Loading from '@/components/atoms/Loading';
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
-import { QRCodeModal } from '@/features/patients';
+import { MainLayout } from '@/components/templates/MainLayout';
+import { Icon } from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
+import { QRCodeModal } from '@/features/patients/components/modals/QRCodeModal';
 
 import styles from './SystemConfigPage.module.css';
+import shared from '@/styles/shared.module.css';
 
 /**
  * SettingsContent (Slot Renderer).
@@ -25,17 +26,17 @@ const SettingsContent = ({ activeTab, controller }) => {
     const { metadata, Component } = section;
 
     return (
-        <section className="settings-content-wrapper animate-fade-in-up">
-            <header className="settings-content-header">
-                <div className="settings-content-header__icon">
+        <section className={`${shared.ConfigSection} -up`}>
+            <header className={shared.ConfigSection__header}>
+                <div className={shared.ConfigSection__icon}>
                     <Icon name={metadata.icon} size="1.5rem" />
                 </div>
-                <div className="settings-content-header__text">
-                    <h2 className="settings-content-title">{metadata.title}</h2>
-                    <p className="settings-content-description">{metadata.desc}</p>
+                <div className={shared.ConfigSection__text}>
+                    <h2 className={shared.ConfigSection__title}>{metadata.title}</h2>
+                    <p className={shared.ConfigSection__desc}>{metadata.desc}</p>
                 </div>
             </header>
-            <div className="settings-content-body">
+            <div className={shared.ConfigSection__body}>
                 <Suspense fallback={<Loading variant="centered" />}>
                     <Component controller={controller} />
                 </Suspense>
@@ -48,37 +49,43 @@ const SettingsContent = ({ activeTab, controller }) => {
  * SystemConfigPage (Orchestrator).
  * Now fully decoupled using a Slot/Registry pattern.
  */
-const SystemConfigPage = () => {
+export const SystemConfigPage = () => {
     const controller = useSystemConfigController();
     const { t, activeTab, qrModal, handlers } = controller;
 
-    // Initialize the registry once. 
-    // In a larger app, this would happen at the app level.
-    useEffect(() => {
+    // Initialize the registry once, lazily, so the first paint already shows
+    // the configured sections without an extra effect round-trip.
+    const [sections] = useState(() => {
         loadDefaultConfigSections(t);
-    }, [t]);
+        return getConfigSections();
+    });
+
+    const userRole = controller.user?.role;
+    const visibleSections = useMemo(() => 
+        sections.filter(s => !s.metadata?.allowedRoles || s.metadata.allowedRoles.includes(userRole)),
+        [sections, userRole]
+    );
 
     const tabs = useMemo(() => 
-        getConfigSections().map(s => ({
+        visibleSections.map(s => ({
             id: s.id,
             label: s.metadata.title,
             icon: s.metadata.icon
-        })), []);
+        })), [visibleSections]);
 
     return (
         <MainLayout wide flush title={t('config') || 'Configuración del Sistema'}>
-            <div className="system-config-page-orchestrator layout-content-area animate-fade-in">
+            <div className={`${styles.SystemConfigPage__root}  `}>
                 <FeatureToolbar
-                    className="system-config-page__toolbar"
                     tabs={tabs.length > 0 ? tabs : [
-                        { id: 'general', label: t('general'), icon: 'settings' }
+                        { id: 'modules', label: t('modules') || 'Módulos', icon: 'view_module' }
                     ]}
                     activeTab={activeTab}
                     onTabChange={handlers.setActiveTab}
                 />
 
-                <main className="system-config-page-orchestrator__main">
-                    <div className={`${styles.systemConfigContainer}`}>
+                <section className={styles.SystemConfigPage__systemConfigMain}>
+                    <div className={styles.SystemConfigPage__systemConfigContainer}>
                         <Suspense fallback={<Loading variant="centered" />}>
                             <SettingsContent activeTab={activeTab} controller={controller} />
                         </Suspense>
@@ -90,10 +97,9 @@ const SystemConfigPage = () => {
                             expiresAt={qrModal.expiry}
                         />
                     </div>
-                </main>
+                </section>
             </div>
         </MainLayout>
     );
 };
 
-export default SystemConfigPage;

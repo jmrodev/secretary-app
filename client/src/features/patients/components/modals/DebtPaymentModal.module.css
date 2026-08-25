@@ -1,19 +1,19 @@
 /* DebtPaymentModal Styles (BEM) - Feature Specific */
 
-.root {
+.DebtPaymentModal__root {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
     padding: 0.5rem 0;
 }
 
-.field {
+.DebtPaymentModal__field {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.label {
+.DebtPaymentModal__label {
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--text-muted);

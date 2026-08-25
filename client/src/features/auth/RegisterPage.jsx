@@ -1,16 +1,14 @@
 import React from 'react';
-import { RegisterForm } from '@/features/auth/index';
+import { RegisterForm } from '@/features/auth/components/forms/RegisterForm';
 
 /**
  * RegisterPage (Orchestrator).
  * Entry point for new user registration.
  */
-const RegisterPage = () => {
+export const RegisterPage = () => {
     return (
-        <main className="register-page-orchestrator animate-fade-in">
+        <section>
             <RegisterForm />
-        </main>
+        </section>
     );
 };
-
-export default RegisterPage;

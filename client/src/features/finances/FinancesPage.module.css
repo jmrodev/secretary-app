@@ -1,27 +1,22 @@
 /* FinancesPage Styles (BEM) */
 
-.financesPageOrchestrator {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-}
+
 
 /* Include any refinement needed for the dashboard grid layout */
 
-.glassContainer {
+.FinancesPage__glassContainer {
     background: rgb(255 255 255 / 20%);
     backdrop-filter: blur(16px);
     border-radius: var(--radius-lg);
-    border: 1px solid rgb(255 255 255 / 8%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     padding: 1.5rem;
 }
 
-.glassCard {
-    background: rgb(255 255 255 / 10%);
+.FinancesPage__glassCard {
+    background: var(--border-color);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 8%);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     box-shadow: 0 4px 16px 0 rgb(0 0 0 / 10%);
     padding: 1.25rem;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './MedicationItemsSummary.module.css';
 
 /**
@@ -8,13 +8,13 @@ import styles from './MedicationItemsSummary.module.css';
  * Compact list view for medications already added to a prescription or request.
  * Part of the item review and deletion workflow in medical_documents.
  */
-const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
+export const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
     if (!items || items.length === 0) return null;
 
     return (
-        <ul className={`${baseClass ? `${baseClass}__med-list` : styles.root} animate-fade-in`}>
+        <ul className={`${baseClass ? `${baseClass}__med-list` : styles.MedicationItemsSummary__root} animate-fade-in`}>
             {items.map((item, idx) => (
-                <li key={item.id || `${item.name}-${idx}`} className={`${baseClass ? `${baseClass}__med-item` : ''} medication-items-summary__item`}>
+                <li key={item.id || item.name} className={`${baseClass ? `${baseClass}__med-item` : ''} medication-items-summary__item`}>
                     <div className={`${baseClass ? `${baseClass}__med-info` : ''} medication-items-summary__info`}>
                         <span className={`${baseClass ? `${baseClass}__med-name` : ''} medication-items-summary__name`}>{item.name}</span>
                         {item.dose && <span className={`${baseClass ? `${baseClass}__med-dose` : ''} medication-items-summary__dose`}>{item.dose}</span>}
@@ -26,7 +26,7 @@ const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
                         size="sm-compact"
                         onClick={() => onRemove(idx)}
                         icon={<Icon name="close" size="1.1rem" color="var(--error)" />}
-                        className={`${styles.removeBtn}`}
+                        className={`${styles.MedicationItemsSummary__removeBtn}`}
                     />
                 </li>
             ))}
@@ -34,4 +34,3 @@ const MedicationItemsSummary = ({ items, onRemove, baseClass }) => {
     );
 };
 
-export default MedicationItemsSummary;

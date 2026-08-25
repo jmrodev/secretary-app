@@ -1,4 +1,4 @@
-.page {
+.WhatsappPage__page {
     display: flex;
     flex-direction: column;
     height: calc(100vh - var(--header-height, 64px));
@@ -6,16 +6,16 @@
     overflow: hidden;
 }
 
-.tabBar {
+.WhatsappPage__tabBar {
     display: flex;
     gap: 0.5rem;
     padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--color-border, #e2e8f0);
-    background: var(--color-surface, #fff);
+    background: var(--color-surface, var(--text-main));
     flex-shrink: 0;
 }
 
-.tab {
+.WhatsappPage__tab {
     display: flex;
     align-items: center;
     gap: 0.4rem;
@@ -30,26 +30,26 @@
     transition: all 0.2s;
 }
 
-.tab:hover {
+.WhatsappPage__tab:hover {
     background: var(--color-hover, #f1f5f9);
 }
 
-.tabActive {
+.WhatsappPage__tabActive {
     background: var(--color-primary, #2563eb);
-    color: #fff;
+    color: var(--text-main);
 }
 
-.tabActive:hover {
+.WhatsappPage__tabActive:hover {
     background: var(--color-primary-dark, #1d4ed8);
 }
 
-.chatsContainer {
+.WhatsappPage__chatsContainer {
     display: flex;
     flex: 1;
     overflow: hidden;
 }
 
-.broadcastContainer {
+.WhatsappPage__broadcastContainer {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem;
@@ -58,45 +58,45 @@
     width: 100%;
 }
 
-.chatArea {
+.WhatsappPage__chatArea {
     flex: 1;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
-.chatWrapper {
+.WhatsappPage__chatWrapper {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
 
-.chatHeader {
+.WhatsappPage__chatHeader {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--color-border, #e2e8f0);
-    background: var(--color-surface, #fff);
+    background: var(--color-surface, var(--text-main));
     flex-shrink: 0;
 }
 
-.placeholder {
+.WhatsappPage__placeholder {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1rem;
     height: 100%;
-    color: var(--color-text-muted, #94a3b8);
+    color: var(--color-text-muted, var(--text-muted));
 }
 
-.placeholder p {
+.WhatsappPage__placeholder p {
     font-size: 1rem;
     margin: 0;
 }
 
-.pairingOverlay {
+.WhatsappPage__pairingOverlay {
     position: absolute;
     inset: 0;
     background: rgb(255, 255, 255, 0.92);
@@ -107,7 +107,7 @@
 }
 
 /* Config tab */
-.configContainer {
+.WhatsappPage__configContainer {
     flex: 1;
     overflow-y: auto;
     padding: 1.5rem 2rem;
@@ -116,64 +116,64 @@
     width: 100%;
 }
 
-.configRoot {
+.WhatsappPage__configRoot {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.configMessage {
+.WhatsappPage__configMessage {
     padding: 0.75rem 1rem;
     border-radius: 8px;
     font-size: 0.9rem;
     font-weight: 500;
 }
 
-.configSuccess {
+.WhatsappPage__configSuccess {
     background: #dcfce7;
     color: #166534;
 }
 
-.configError {
+.WhatsappPage__configError {
     background: #fef2f2;
     color: #991b1b;
 }
 
-.configSection {
+.WhatsappPage__configSection {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.configSectionHeader {
+.WhatsappPage__configSectionHeader {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.configLabel {
+.WhatsappPage__configLabel {
     font-weight: 600;
     font-size: 0.95rem;
-    color: var(--color-text, #1e293b);
+    color: var(--color-text, var(--background-bg));
 }
 
-.configHint {
+.WhatsappPage__configHint {
     font-size: 0.85rem;
-    color: var(--color-text-muted, #94a3b8);
+    color: var(--color-text-muted, var(--text-muted));
     margin: 0;
 }
 
-.configVars {
+.WhatsappPage__configVars {
     display: flex;
     flex-wrap: wrap;
     gap: 0.35rem;
 }
 
-.configVarBtn {
+.WhatsappPage__configVarBtn {
     padding: 0.25rem 0.5rem;
     border: 1px solid var(--color-border, #e2e8f0);
     border-radius: 4px;
-    background: var(--color-surface, #f8fafc);
+    background: var(--color-surface, var(--text-main));
     font-size: 0.8rem;
     font-family: monospace;
     cursor: pointer;
@@ -181,13 +181,13 @@
     transition: all 0.15s;
 }
 
-.configVarBtn:hover {
+.WhatsappPage__configVarBtn:hover {
     background: var(--color-primary, #2563eb);
-    color: #fff;
+    color: var(--text-main);
     border-color: var(--color-primary, #2563eb);
 }
 
-.configTextarea {
+.WhatsappPage__configTextarea {
     width: 100%;
     padding: 0.75rem;
     border: 1px solid var(--color-border, #e2e8f0);
@@ -196,81 +196,81 @@
     font-size: 0.85rem;
     line-height: 1.5;
     resize: vertical;
-    background: var(--color-surface, #f8fafc);
+    background: var(--color-surface, var(--text-main));
 }
 
-.configTextarea:focus {
+.WhatsappPage__configTextarea:focus {
     outline: none;
     border-color: var(--color-primary, #2563eb);
     box-shadow: 0 0 0 2px rgb(37, 99, 235, 0.15);
 }
 
-.configSmallBtn {
+.WhatsappPage__configSmallBtn {
     align-self: flex-start;
 }
 
-.configRow {
+.WhatsappPage__configRow {
     display: flex;
     gap: 1.5rem;
 }
 
-.configField {
+.WhatsappPage__configField {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
     flex: 1;
 }
 
-.configFieldLabel {
+.WhatsappPage__configFieldLabel {
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--color-text-secondary, #64748b);
 }
 
-.configSelect,
-.configInput {
+.WhatsappPage__configSelect,
+.WhatsappPage__configInput {
     padding: 0.5rem 0.75rem;
     border: 1px solid var(--color-border, #e2e8f0);
     border-radius: 6px;
     font-size: 0.9rem;
-    background: var(--color-surface, #fff);
+    background: var(--color-surface, var(--text-main));
 }
 
-.configSelect:focus,
-.configInput:focus {
+.WhatsappPage__configSelect:focus,
+.WhatsappPage__configInput:focus {
     outline: none;
     border-color: var(--color-primary, #2563eb);
 }
 
-.quickResponses {
+.WhatsappPage__quickResponses {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 0.75rem;
 }
 
-.quickResponseCard {
+.WhatsappPage__quickResponseCard {
     padding: 0.75rem;
     border: 1px solid var(--color-border, #e2e8f0);
     border-radius: 8px;
-    background: var(--color-surface, #fff);
+    background: var(--color-surface, var(--text-main));
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
 }
 
-.quickResponseCard strong {
+.WhatsappPage__quickResponseCard strong {
     font-size: 0.85rem;
-    color: var(--color-text, #1e293b);
+    color: var(--color-text, var(--background-bg));
 }
 
-.quickResponseCard p {
+.WhatsappPage__quickResponseCard p {
     font-size: 0.8rem;
     color: var(--color-text-secondary, #64748b);
     margin: 0;
     line-height: 1.4;
 }
 
-.configActions {
+.WhatsappPage__configActions {
     display: flex;
     justify-content: flex-end;
     padding-top: 0.5rem;

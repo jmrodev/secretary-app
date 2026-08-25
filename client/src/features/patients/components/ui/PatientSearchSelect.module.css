@@ -1,18 +1,18 @@
 
 /* PatientSearchSelect Styles (BEM/Custom) */
 
-.root {
+.PatientSearchSelect__root {
     width: 100%;
 }
 
 /* React Select Custom Class Mappings */
 
-.placeholder {
+.PatientSearchSelect__placeholder {
     color: var(--text-muted);
     font-size: 0.875rem;
 }
 
-.control {
+.PatientSearchSelect__control {
     background-color: var(--dashboard-card-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
@@ -24,12 +24,12 @@
     backdrop-filter: blur(8px);
 }
 
-.controlFocused {
+.PatientSearchSelect__controlFocused {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 2px rgb(13, 148, 136, 0.15);
 }
 
-.menu {
+.PatientSearchSelect__menu {
     background-color: var(--modal-bg);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
@@ -38,7 +38,7 @@
     z-index: 1000;
 }
 
-.option {
+.PatientSearchSelect__option {
     padding: 0.75rem 1rem;
     cursor: pointer;
     font-size: 0.875rem;
@@ -46,40 +46,40 @@
     border-bottom: 1px solid var(--border-color);
 }
 
-.option:last-child {
+.PatientSearchSelect__option:last-child {
     border-bottom: none;
 }
 
-.optionFocused {
+.PatientSearchSelect__optionFocused {
     background-color: rgb(128, 128, 128, 0.08);
     color: var(--text-main);
 }
 
-.optionSelected {
+.PatientSearchSelect__optionSelected {
     background-color: rgb(13, 148, 136, 0.15);
     color: var(--primary-color);
     font-weight: 700;
 }
 
-.singleValue {
+.PatientSearchSelect__singleValue {
     color: var(--text-main);
     font-size: 0.9rem;
     font-weight: 600;
 }
 
-.valueContainer {
+.PatientSearchSelect__valueContainer {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.input {
+.PatientSearchSelect__input {
     color: var(--text-main);
     font-size: 0.9rem;
 }
 
 /* No Results section */
-.formSelectNoResults {
+.PatientSearchSelect__formSelectNoResults {
     padding: 1.5rem;
     text-align: center;
     display: flex;
@@ -88,7 +88,7 @@
     gap: 1rem;
 }
 
-.formSelectNoResults p {
+.PatientSearchSelect__formSelectNoResults p {
     color: var(--slate-500);
     font-size: 0.85rem;
     font-style: italic;

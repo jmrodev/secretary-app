@@ -2,6 +2,7 @@ import React, { useReducer, useMemo, useCallback } from 'react';
 import { parseDate } from '@/utils/core/dateUtils';
 import { PatientPrintableFilters } from '../sections/PatientPrintableFilters';
 import { PatientPrintableContent } from '../sections/PatientPrintableContent';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './PatientPrintableView.module.css';
 
 const initialState = {
@@ -41,12 +42,45 @@ function printReducer(state, action) {
     }
 }
 
+const formatMedicationData = (dataStr) => {
+    if (!dataStr) return '-';
+    let cleanStr = String(dataStr);
+    let prev;
+    do {
+        prev = cleanStr;
+        cleanStr = cleanStr.replace(/<[^>]*>/g, '');
+    } while (cleanStr !== prev);
+    cleanStr = cleanStr.trim();
+    if (cleanStr.startsWith('[') || cleanStr.startsWith('{')) {
+        try {
+            const parsed = JSON.parse(cleanStr);
+            if (Array.isArray(parsed)) {
+                return (
+                    <ul className={`${styles.PatientPrintableView__printableSublist}`}>
+                        {parsed.map((m) => <li key={m.name}>{m.name}</li>)}
+                    </ul>
+                );
+            }
+        } catch { /* fallback */ }
+    }
+    
+    const lines = cleanStr.split(/[\r\n]+/).filter(l => l.trim().length > 0);
+    if (lines.length > 1) {
+        return (
+            <ul className={`${styles.PatientPrintableView__printableSublist}`}>
+                {lines.map((line) => <li key={line}>{line.trim()}</li>)}
+            </ul>
+        );
+    }
+    return <p className={`${styles.PatientPrintableView__printableText} text-preline`}>{cleanStr}</p>;
+};
+
 /**
  * PatientPrintableView Organism (Executor).
  * Renders a clean printable view of patient records.
  * Provides filters for specific sections and date ranges.
  */
-const PatientPrintableView = ({ 
+const PatientPrintableViewBase = ({ 
     details, 
     chronicMeds, 
     recentRequests, 
@@ -100,41 +134,8 @@ const PatientPrintableView = ({
         [recentRequests, filterByDateAndLimit]
     );
 
-    const formatMedicationData = (dataStr) => {
-        if (!dataStr) return '-';
-        let cleanStr = String(dataStr);
-        let prev;
-        do {
-            prev = cleanStr;
-            cleanStr = cleanStr.replace(/<[^>]*>/g, '');
-        } while (cleanStr !== prev);
-        cleanStr = cleanStr.trim();
-        if (cleanStr.startsWith('[') || cleanStr.startsWith('{')) {
-            try {
-                const parsed = JSON.parse(cleanStr);
-                if (Array.isArray(parsed)) {
-                    return (
-                        <ul className={`${styles.printableSublist}`}>
-                            {parsed.map((m) => <li key={m.name}>{m.name}</li>)}
-                        </ul>
-                    );
-                }
-            } catch { /* fallback */ }
-        }
-        
-        const lines = cleanStr.split(/[\r\n]+/).filter(l => l.trim().length > 0);
-        if (lines.length > 1) {
-            return (
-                <ul className={`${styles.printableSublist}`}>
-                    {lines.map((line) => <li key={line}>{line.trim()}</li>)}
-                </ul>
-            );
-        }
-        return <p className={`${styles.printableText} text-preline`}>{cleanStr}</p>;
-    };
-
     return (
-        <div className={`${styles.fullscreen} printable-patient-sheet animate-fade-in`}>
+        <div className={`${styles.PatientPrintableView__fullscreen} ${sharedStyles.AnimateFadeIn}`}>
             <PatientPrintableFilters
                 printOptions={printOptions}
                 fromDate={fromDate}
@@ -160,4 +161,4 @@ const PatientPrintableView = ({
     );
 };
 
-export default React.memo(PatientPrintableView);
+export const PatientPrintableView = React.memo(PatientPrintableViewBase);

@@ -79,6 +79,7 @@ class TransactionRepository {
         for (const key of Object.keys(updates)) {
             if (ALLOWED_UPDATES.includes(key)) validUpdates[key] = updates[key];
         }
+        if (Object.keys(validUpdates).length === 0) return 0;
         const connection = conn || await this.pool.getConnection();
         try {
             const setClauses = Object.keys(validUpdates).map(key => `${key} = ?`).join(', ');
@@ -94,6 +95,72 @@ class TransactionRepository {
         const connection = conn || await this.pool.getConnection();
         try {
             const result = await connection.query("DELETE FROM transactions WHERE id = ?", [id]);
+            return result.affectedRows;
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async findByAppointmentId(appointmentId, conn) {
+        const connection = conn || await this.pool.getConnection();
+        try {
+            return await connection.query("SELECT * FROM transactions WHERE appointment_id = ?", [appointmentId]);
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async findByRequestId(requestId, conn) {
+        const connection = conn || await this.pool.getConnection();
+        try {
+            return await connection.query("SELECT * FROM transactions WHERE request_id = ?", [requestId]);
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    /**
+     * Detaches transactions from their source rows and prefixes the retention label.
+     * Idempotent: rows already prefixed with the label are skipped (NOT LIKE guard),
+     * so re-running never double-prefixes the description.
+     */
+    async detachAndLabel(ids, label, conn) {
+        if (!ids || ids.length === 0) return 0;
+        const connection = conn || await this.pool.getConnection();
+        try {
+            const result = await connection.query(`
+                UPDATE transactions
+                SET appointment_id = NULL, request_id = NULL,
+                    description = CONCAT(?, ': ', COALESCE(description, ''))
+                WHERE id IN (?)
+                  AND (description IS NULL OR description NOT LIKE CONCAT(?, ':%'))
+            `, [label, ids, label]);
+            return result.affectedRows;
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async deletePendingByAppointmentId(appointmentId, conn) {
+        const connection = conn || await this.pool.getConnection();
+        try {
+            const result = await connection.query(
+                "DELETE FROM transactions WHERE appointment_id = ? AND status = 'pending'",
+                [appointmentId]
+            );
+            return result.affectedRows;
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async deletePendingByRequestId(requestId, conn) {
+        const connection = conn || await this.pool.getConnection();
+        try {
+            const result = await connection.query(
+                "DELETE FROM transactions WHERE request_id = ? AND status = 'pending'",
+                [requestId]
+            );
             return result.affectedRows;
         } finally {
             if (!conn) connection.release();
@@ -133,6 +200,7 @@ class TransactionRepository {
             let whereClauses = ["1=1"];
             let params = [];
             if (filters.doctor_id) { whereClauses.push("t.doctor_id = ?"); params.push(filters.doctor_id); }
+            if (whereClauses.length > 0) query += " WHERE " + whereClauses.join(" AND ");
             const [row] = await connection.query(query, params);
             return Number(row.count);
         } finally {
@@ -147,6 +215,38 @@ class TransactionRepository {
             const query = `SELECT transaction_date as date, doctor_id, doctor_name, cash_balance as balance, transfer_balance as transferBalance
                             FROM view_daily_balances ${doctorClause} ORDER BY date DESC`;
             return await connection.query(query, doctorId ? [doctorId] : []);
+        } finally {
+            if (!conn) connection.release();
+        }
+    }
+
+    async findFullDetailsById(id, conn) {
+        const connection = conn || await this.pool.getConnection();
+        try {
+            const query = `
+                SELECT t.*, u.username as related_user_name, d.full_name as doctor_name, 
+                       p.full_name as patient_name, p.dni as patient_dni,
+                       a.appointment_date, a.type as service_type, a.cost, a.created_at,
+                       a.confirmed_at, a.arrived_at, a.completed_at, a.paid_at,
+                       a.payment_status as appt_payment_status,
+                       tx_summary.paid_amount, tx_summary.pending_amount
+                FROM transactions t
+                LEFT JOIN users u ON t.related_user_id = u.id
+                LEFT JOIN patients p ON u.id = p.user_id
+                LEFT JOIN doctors d ON t.doctor_id = d.id
+                LEFT JOIN appointments a ON t.appointment_id = a.id
+                LEFT JOIN (
+                    SELECT appointment_id,
+                           SUM(CASE WHEN status = 'paid' THEN amount ELSE 0 END) as paid_amount,
+                           SUM(CASE WHEN status = 'pending' THEN amount ELSE 0 END) as pending_amount
+                    FROM transactions
+                    WHERE appointment_id IS NOT NULL
+                    GROUP BY appointment_id
+                ) tx_summary ON t.appointment_id = tx_summary.appointment_id
+                WHERE t.id = ?
+            `;
+            const rows = await connection.query(query, [id]);
+            return rows[0] || null;
         } finally {
             if (!conn) connection.release();
         }

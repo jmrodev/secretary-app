@@ -12,13 +12,16 @@ export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectM
     const debounceTimer = useRef(null);
 
     const { 
-        data: suggestions = [], 
+        data: fetchedData = [], 
         loading, 
         refetch: fetchSuggestions 
     } = useFetch((searchTerm && searchTerm.length >= 2) ? `/medical/vademecum/search?q=${encodeURIComponent(searchTerm)}` : null, {
         initialData: [],
         immediate: false // We control it with debounce
     });
+
+    const suggestions = Array.isArray(fetchedData) ? fetchedData : (fetchedData?.data || []);
+
 
     const [prevInitialValue, setPrevInitialValue] = useState(initialValue);
     if (initialValue !== prevInitialValue) {
@@ -34,8 +37,9 @@ export const useMedicationAutocomplete = (initialValue = '', onChange, onSelectM
         debounceTimer.current = setTimeout(async () => {
             if (text && text.length >= 2) {
                 try {
-                    const data = await fetchSuggestions(`/medical/vademecum/search?q=${encodeURIComponent(text)}`);
-                    if (data && data.length > 0) {
+                    const result = await fetchSuggestions(`/medical/vademecum/search?q=${encodeURIComponent(text)}`);
+                    const resultData = Array.isArray(result) ? result : (result?.data || []);
+                    if (resultData && resultData.length > 0) {
                         setShowSuggestions(true);
                         setCursor(-1);
                     } else {

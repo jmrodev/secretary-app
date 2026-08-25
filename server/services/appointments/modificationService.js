@@ -1,26 +1,32 @@
 const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
 const googleSyncService = require('./googleSyncService');
 const financeService = require('../finance/financeService');
+const debtLifecycleService = require('../finance/debtLifecycleService');
 const helper = require('./appointmentHelper');
 const { pool } = require('../../db');
+const { nowLocalSQL } = require('../../utils/core/dateUtils');
 
 /**
  * ModificationService
  * Handles updates, deletions, and status changes for appointments.
  */
 class ModificationService {
-    async deleteAppointment(id, userId, role, adminPassword) {
+    async deleteAppointment(id, userId, userOrRole, adminPassword) {
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
             const appt = await appointmentRepository.findById(id, conn);
             if (!appt) throw new Error("Appointment not found");
 
-            await helper.checkModificationPermissions(conn, appt, { role }, adminPassword);
+            const userObj = typeof userOrRole === 'object' && userOrRole !== null ? userOrRole : { role: userOrRole };
+            await helper.checkModificationPermissions(conn, appt, userObj, adminPassword);
 
             // Check for medical records before deletion
             const medical = await conn.query("SELECT id FROM prescriptions WHERE appointment_id = ? UNION SELECT id FROM medical_licenses WHERE appointment_id = ?", [id, id]);
             if (medical.length > 0) throw new Error("No se puede eliminar: tiene registros médicos asociados.");
+
+            // Apply debt policy atomically within this transaction (R1-R6)
+            await debtLifecycleService.handleAppointmentDelete(conn, appt);
 
             await helper.freeSlot(conn, appt.doctor_id, appt.appointment_date);
             await appointmentRepository.delete(id, conn);
@@ -65,7 +71,16 @@ class ModificationService {
             }
 
             const updates = { status, cancellation_reason: reason || null };
-            if (['cancelled', 'absent', 'suspended'].includes(status) && ['pending', 'debt'].includes(appt.payment_status)) {
+            if (status === 'confirmed') {
+                updates.confirmed_at = nowLocalSQL();
+            } else if (status === 'arrived') {
+                updates.arrived_at = nowLocalSQL();
+            } else if (status === 'completed') {
+                updates.completed_at = nowLocalSQL();
+            }
+
+            // R4: absent retains payment_status (debt is kept and charged); cancelled/suspended legacy nulls it
+            if (['cancelled', 'suspended'].includes(status) && ['pending', 'debt'].includes(appt.payment_status)) {
                 updates.payment_status = null;
             }
 
@@ -82,6 +97,8 @@ class ModificationService {
             
             if (['cancelled', 'absent', 'suspended'].includes(status)) {
                 await this._handleCancellation(conn, appt, status);
+                // Apply debt policy atomically within this transaction (R4/R5/R6 + suspended legacy)
+                await debtLifecycleService.handleAppointmentStatusChange(conn, appt, status);
                 eventBus.emit(EVENTS.APPOINTMENT_CANCELLED, { id, status, appt, userId, conn });
             }
 
@@ -95,14 +112,15 @@ class ModificationService {
         }
     }
 
-    async updateAppointment(id, updates, userId, role, adminPassword) {
+    async updateAppointment(id, updates, userId, userOrRole, adminPassword) {
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
             const appt = await appointmentRepository.findById(id, conn);
             if (!appt) throw new Error("Appointment not found");
 
-            await helper.checkModificationPermissions(conn, appt, { role }, adminPassword);
+            const userObj = typeof userOrRole === 'object' && userOrRole !== null ? userOrRole : { role: userOrRole };
+            await helper.checkModificationPermissions(conn, appt, userObj, adminPassword);
 
             if (updates.appointment_date) {
                 const newDate = helper.formatDateForDB(updates.appointment_date);
@@ -116,6 +134,12 @@ class ModificationService {
             }
 
             if (updates.bonified === 1 || updates.bonified === true || updates.bonified === 'true') {
+                if (appt.bonified === 1 || appt.bonified === true) {
+                    throw new Error("El turno ya se encuentra bonificado.");
+                }
+                if (appt.payment_status === 'paid') {
+                    throw new Error("No se puede bonificar un turno que ya ha sido pagado.");
+                }
                 await financeService.markAsBonified(id, 'appointment', conn);
                 delete updates.bonified;
                 if (updates.payment_status) delete updates.payment_status;

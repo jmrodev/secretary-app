@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Card from '@/components/atoms/Card';
-import Badge from '@/components/atoms/Badge';
-import CashBoxSummary from '@/features/finances/components/sections/CashBoxSummary';
-import FinanceFilters from '@/features/finances/components/ui/FinanceFilters';
+import { Icon } from '@/components/atoms/Icon';
+import { Card } from '@/components/atoms/Card';
+import { Badge } from '@/components/atoms/Badge';
+import { CashBoxSummary } from '@/features/finances/components/sections/CashBoxSummary';
+import { FinanceFilters } from '@/features/finances/components/ui/FinanceFilters';
 import styles from './FinanceSidebar.module.css';
 
 /**
@@ -12,7 +12,7 @@ import styles from './FinanceSidebar.module.css';
  * Encapsulates all sidebar actions, filters, and summaries for the Finance page.
  * Refactored to follow BEM and Atomic Design standards.
  */
-const FinanceSidebar = ({
+export const FinanceSidebar = ({
     user,
     doctors,
     selectedDoctorFilter,
@@ -28,17 +28,17 @@ const FinanceSidebar = ({
     t
 }) => {
     return (
-        <aside className={`${styles.root} dashboard-layout__sidebar`}>
+        <aside className={`${styles.FinanceSidebar__root} dashboard-layout__sidebar`}>
             {/* Main Action & Doctor Filter Card */}
-            <Card className={`${styles.card}`}>
-                <div className={`${styles.stack}`}>
+            <Card className={`${styles.FinanceSidebar__card}`}>
+                <div className={`${styles.FinanceSidebar__stack}`}>
                     {user.role !== 'patient' && (
-                        <div className={`${styles.section}`}>
-                            <div className={`${styles.actions}`}>
+                        <div className={`${styles.FinanceSidebar__section}`}>
+                            <div className={`${styles.FinanceSidebar__actions}`}>
                                 <Button
                                     variant="primary"
                                     size="sm"
-                                    className={`${styles.actionBtn}`}
+                                    className={`${styles.FinanceSidebar__actionBtn}`}
                                     onClick={onOpenNewTransaction}
                                     icon={<Icon name="add" size="1.1rem" />}
                                 >
@@ -48,7 +48,7 @@ const FinanceSidebar = ({
                                 <Button
                                     variant="secondary"
                                     size="sm"
-                                    className={`${styles.actionBtn} ${styles.actionBtnBadge}`}
+                                    className={`${styles.FinanceSidebar__actionBtn} ${styles.FinanceSidebar__actionBtnBadge}`}
                                     onClick={onOpenPendingClosures}
                                     icon={<Icon name="calendar_view_week" size="1.1rem" />}
                                 >
@@ -68,11 +68,11 @@ const FinanceSidebar = ({
                         const balances = calculateBalanceByMethod(selectedDoctorFilter);
                         if (d && balances.cash > 0) {
                             return (
-                                <div className={`${styles.section}`}>
+                                <div className={`${styles.FinanceSidebar__section}`}>
                                     <Button
                                         variant="secondary"
                                         size="sm"
-                                        className={`${styles.actionBtn}`}
+                                        className={`${styles.FinanceSidebar__actionBtn}`}
                                         onClick={() => onOpenCloseBox(d, balances.cash)}
                                         icon={<Icon name="payments" size="1rem" />}
                                     >
@@ -89,7 +89,7 @@ const FinanceSidebar = ({
             {/* Cash Summary Card (Only for Secretary) */}
             {
                 user.role === 'secretary' && (
-                    <Card className={`${styles.card}`}>
+                    <Card className={`${styles.FinanceSidebar__card}`}>
                         <CashBoxSummary
                             doctors={doctors}
                             selectedDoctorFilter={selectedDoctorFilter}
@@ -104,7 +104,7 @@ const FinanceSidebar = ({
             }
 
             {/* Filters Card */}
-            <Card className={`${styles.card}`}>
+            <Card className={`${styles.FinanceSidebar__card}`}>
                 <FinanceFilters
                     filters={filters}
                     handlers={handlers}
@@ -114,7 +114,4 @@ const FinanceSidebar = ({
         </aside >
     );
 };
-
-export default FinanceSidebar;
-
 

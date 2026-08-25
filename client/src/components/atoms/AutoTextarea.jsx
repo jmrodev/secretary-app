@@ -5,7 +5,7 @@ import React, { useEffect, useRef } from 'react';
  * Automatically adjusts height based on content.
  * Reuses standard input styles from design system.
  */
-const AutoTextarea = ({
+export const AutoTextarea = ({
     value,
     className = '',
     size = 'md',
@@ -44,5 +44,3 @@ const AutoTextarea = ({
         />
     );
 };
-
-export default AutoTextarea;

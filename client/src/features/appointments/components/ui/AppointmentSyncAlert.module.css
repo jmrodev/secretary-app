@@ -1,6 +1,6 @@
 /* AppointmentSyncAlert Molecule Styles (BEM) - Dark Mode Standard */
 
-.root {
+.AppointmentSyncAlert__root {
     grid-column: 1 / -1;
     margin-bottom: 1.5rem;
     padding: 1.25rem;
@@ -14,17 +14,17 @@
     animation: fade-in 0.3s ease-out;
 }
 
-.icon { 
+.AppointmentSyncAlert__icon { 
     color: var(--warning); 
 }
 
-.content {
+.AppointmentSyncAlert__content {
     display: flex;
     flex-direction: column;
     gap: 0.125rem;
 }
 
-.title { 
+.AppointmentSyncAlert__title { 
     font-size: 0.7rem; 
     font-weight: 900; 
     color: var(--warning); 
@@ -32,13 +32,13 @@
     letter-spacing: 0.05em;
 }
 
-.text { 
+.AppointmentSyncAlert__text { 
     font-size: 0.9rem; 
     margin: 0; 
     color: var(--text-main); 
 }
 
-.text em {
+.AppointmentSyncAlert__text em {
     font-style: normal;
     font-weight: 700;
     color: var(--primary-color);

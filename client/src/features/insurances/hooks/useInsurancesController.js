@@ -1,11 +1,21 @@
 import { useState, useCallback, useMemo } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useModal } from '@/context/ModalContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/core/stringUtils';
 import { useFetch } from '@/hooks/useFetch';
 import { useSearch } from '@/hooks/useSearch';
+
+const capitalizeFormData = (data) => ({
+    ...data,
+    name: data.name ? capitalizeWords(data.name) : data.name,
+    address_notes: data.address_notes ? capitalizeWords(data.address_notes) : data.address_notes,
+    street_name: data.street_name ? capitalizeWords(data.street_name) : data.street_name,
+    city: data.city ? capitalizeWords(data.city) : data.city,
+    province: data.province ? capitalizeWords(data.province) : data.province,
+    country: data.country ? capitalizeWords(data.country) : data.country,
+});
 
 export const useInsurancesController = () => {
     const { showMessage } = useMessage();
@@ -14,10 +24,17 @@ export const useInsurancesController = () => {
 
     // Data State using custom hook
     const { data: insData, loading, refetch: fetchInsurances } = useFetch('/insurances', { 
-        initialData: { insurances: [], totalCount: 0 } 
+        initialData: [] 
     });
 
-    const insurances = useMemo(() => insData?.insurances || [], [insData]);
+    const insurances = useMemo(() => {
+        if (!insData) return [];
+        if (Array.isArray(insData)) return insData;
+        if (Array.isArray(insData.data)) return insData.data;
+        if (insData.data && Array.isArray(insData.data.insurances)) return insData.data.insurances;
+        if (Array.isArray(insData.insurances)) return insData.insurances;
+        return [];
+    }, [insData]);
 
     const { searchTerm, setSearchTerm } = useSearch();
     const [modalOpen, setModalOpen] = useState(false);
@@ -110,25 +127,9 @@ export const useInsurancesController = () => {
         setModalOpen,
         setFormData: (data) => {
             if (typeof data === 'function') {
-                setFormData(prev => {
-                    const next = data(prev);
-                    if (next.name) next.name = capitalizeWords(next.name);
-                    if (next.address_notes) next.address_notes = capitalizeWords(next.address_notes);
-                    if (next.street_name) next.street_name = capitalizeWords(next.street_name);
-                    if (next.city) next.city = capitalizeWords(next.city);
-                    if (next.province) next.province = capitalizeWords(next.province);
-                    if (next.country) next.country = capitalizeWords(next.country);
-                    return next;
-                });
+                setFormData(prev => capitalizeFormData(data(prev)));
             } else {
-                const updated = { ...data };
-                if (updated.name) updated.name = capitalizeWords(updated.name);
-                if (updated.address_notes) updated.address_notes = capitalizeWords(updated.address_notes);
-                if (updated.street_name) updated.street_name = capitalizeWords(updated.street_name);
-                if (updated.city) updated.city = capitalizeWords(updated.city);
-                if (updated.province) updated.province = capitalizeWords(updated.province);
-                if (updated.country) updated.country = capitalizeWords(updated.country);
-                setFormData(updated);
+                setFormData(capitalizeFormData(data));
             }
         },
 

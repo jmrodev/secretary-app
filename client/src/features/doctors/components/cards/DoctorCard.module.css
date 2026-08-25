@@ -1,12 +1,12 @@
 /* DoctorCard Component Styles */
 
-.root {
+.DoctorCard__root {
     /* --- Local Component Tokens --- */
-    --doc-card-bg: var(--white);
-    --doc-card-border: var(--gray-300);
-    --doc-avatar-bg: var(--blue-100);
-    --doc-avatar-text: var(--blue-600);
-    --doc-price-bg: var(--gray-50);
+    --doc-card-bg: var(--dashboard-card-bg);
+    --doc-card-border: var(--dashboard-card-border);
+    --doc-avatar-bg: var(--brand-blue-alpha);
+    --doc-avatar-text: var(--brand-blue);
+    --doc-price-bg: var(--background-bg);
 
     /* ------------------------------ */
 
@@ -19,20 +19,20 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.root:hover {
+.DoctorCard__root:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
     border-color: var(--gray-400);
 }
 
-.header {
+.DoctorCard__header {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
 
-.avatar {
+.DoctorCard__avatar {
     width: 3.5rem;
     height: 3.5rem;
     border-radius: 50%;
@@ -47,12 +47,12 @@
     flex-shrink: 0;
 }
 
-.info {
+.DoctorCard__info {
     flex: 1;
     min-width: 0;
 }
 
-.name {
+.DoctorCard__name {
     font-size: 1.125rem;
     font-weight: 800;
     color: var(--text-main);
@@ -63,11 +63,11 @@
     transition: color 0.2s;
 }
 
-.root:hover .name {
+.DoctorCard__root:hover .DoctorCard__name {
     color: var(--accent-color);
 }
 
-.specialty {
+.DoctorCard__specialty {
     font-size: 0.75rem;
     font-weight: 700;
     color: var(--accent-color);
@@ -76,14 +76,14 @@
     margin-top: 0.25rem;
 }
 
-.details {
+.DoctorCard__details {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
 }
 
-.detailItem {
+.DoctorCard__detailItem {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -91,53 +91,53 @@
     color: var(--text-secondary);
 }
 
-.detailIcon {
+.DoctorCard__detailIcon {
     font-size: 1.25rem;
     width: 1.5rem;
     text-align: center;
 }
 
-.phoneLink {
+.DoctorCard__phoneLink {
     font-weight: 600;
     color: var(--text-main);
     text-decoration: none;
     transition: color 0.2s;
 }
 
-.phoneLink:hover {
+.DoctorCard__phoneLink:hover {
     color: var(--accent-color);
     text-decoration: underline;
 }
 
-.phoneEmpty {
+.DoctorCard__phoneEmpty {
     font-style: italic;
     color: var(--text-muted);
 }
 
-.officeLabel {
+.DoctorCard__officeLabel {
     font-weight: 600;
 }
 
-.officeValue {
+.DoctorCard__officeValue {
     color: var(--text-main);
 }
 
-.prices {
+.DoctorCard__prices {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
 }
 
-.priceBox {
+.DoctorCard__priceBox {
     background-color: var(--doc-price-bg);
     padding: 0.75rem;
     border-radius: 0.75rem;
     text-align: center;
-    border: 1px solid var(--gray-200);
+    border: 1px solid var(--dashboard-card-border);
 }
 
-.priceLabel {
+.DoctorCard__priceLabel {
     font-size: 0.625rem;
     font-weight: 900;
     color: var(--text-muted);
@@ -146,16 +146,16 @@
     margin-bottom: 0.25rem;
 }
 
-.priceValue {
+.DoctorCard__priceValue {
     font-size: 1rem;
     font-weight: 800;
     color: var(--text-main);
 }
 
-.footer {
+.DoctorCard__footer {
     margin-top: auto;
 }
 
-.configBtn {
+.DoctorCard__configBtn {
     width: 100%;
 }

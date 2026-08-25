@@ -1,0 +1,122 @@
+/* PendingApprovalQueue Organism Styles (BEM) — non-blocking collapsible panel */
+
+.PendingApprovalQueue {
+    position: fixed;
+    bottom: 5.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: min(440px, calc(100vw - 2rem));
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    background: rgb(15 23 42 / 92%);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgb(59 130 246 / 30%);
+    border-radius: var(--radius-md, 0.5rem);
+    box-shadow: 0 20px 40px -10px rgb(0 0 0 / 50%);
+    color: var(--text-main);
+    overflow: hidden;
+    animation: panel-up 0.25s ease-out;
+}
+
+.PendingApprovalQueue__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid rgb(148 163 184 / 20%);
+}
+
+.PendingApprovalQueue__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.PendingApprovalQueue__collapse {
+    cursor: pointer;
+    color: var(--text-muted, var(--text-muted));
+}
+
+.PendingApprovalQueue__body {
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.PendingApprovalQueue__empty {
+    margin: 0;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+.PendingApprovalQueue__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.PendingApprovalQueue__item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.75rem;
+    border: 1px solid rgb(148 163 184 / 15%);
+    border-radius: var(--radius-sm, 0.35rem);
+    background: rgb(30 41 59 / 60%);
+}
+
+.PendingApprovalQueue__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.PendingApprovalQueue__patient {
+    font-size: 0.9rem;
+    font-weight: 800;
+}
+
+.PendingApprovalQueue__doctor,
+.PendingApprovalQueue__slot,
+.PendingApprovalQueue__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    opacity: 0.85;
+}
+
+.PendingApprovalQueue__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.PendingApprovalQueue__status {
+    color: var(--warning, #fbbf24);
+    font-weight: 600;
+}
+
+@keyframes panel-up {
+    from { transform: translate(-50%, 12px); opacity: 0; }
+    to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+@media (width <= 600px) {
+    .PendingApprovalQueue {
+        bottom: 5rem;
+        width: calc(100vw - 1rem);
+    }
+}

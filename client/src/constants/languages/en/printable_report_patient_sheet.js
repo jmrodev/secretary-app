@@ -39,4 +39,7 @@ export const printable_report_patient_sheet = {
     whatsapp_chat_with: "Chat with",
     you: "You",
     unread_messages: "Unread messages",
+    include_in_print: "Include in print",
+    from_date: "From date",
+    to_date: "To date",
 };

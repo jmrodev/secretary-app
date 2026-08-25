@@ -1,8 +1,8 @@
-.root {
+.LanguageSelector__root {
     width: 100%;
 }
 
-.button {
+.LanguageSelector__button {
     width: 100%;
     display: flex;
     align-items: center;
@@ -11,12 +11,12 @@
     padding-right: 0.75rem;
 }
 
-.icon {
+.LanguageSelector__icon {
     font-size: 1.25rem;
     margin-right: 0.5rem;
 }
 
-.text {
+.LanguageSelector__text {
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--text-secondary, #475569);

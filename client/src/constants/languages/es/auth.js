@@ -5,6 +5,7 @@ export const auth = {
     username: "Usuario",
     username_placeholder: "Usuario",
     password: "Contraseña",
+    master_password: "Contraseña maestra",
     sign_in: "Iniciar Sesión",
     signing_in: "Accediendo...",
     no_account: "¿No tienes una cuenta?",

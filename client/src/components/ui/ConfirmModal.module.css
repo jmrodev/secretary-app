@@ -1,4 +1,4 @@
-.modalOverlayBem {
+.ConfirmModal__modalOverlayBem {
     position: fixed;
     inset: 0;
     background-color: rgb(0 0 0 / 50%);
@@ -8,31 +8,31 @@
     z-index: 100000;
 }
 
-.modalContentBem {
-    background-color: rgb(255 255 255 / 10%);
+.ConfirmModal__modalContentBem {
+    background-color: var(--border-color);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 5%);
+    border: 1px solid var(--glass);
     border-radius: 12px;
     padding: 24px;
     max-width: 400px;
     width: 90%;
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.modalHeaderBem {
+.ConfirmModal__modalHeaderBem {
     margin-bottom: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.title {
+.ConfirmModal__title {
     margin: 0;
     font-size: 18px;
     font-weight: bold;
 }
 
-.close {
+.ConfirmModal__close {
     background: none;
     border: none;
     font-size: 24px;
@@ -41,27 +41,41 @@
     line-height: 1;
 }
 
-.root {
+.ConfirmModal__root {
     margin-bottom: 20px;
 }
 
-.text {
+.ConfirmModal__text {
     white-space: pre-wrap;
     font-size: 14px;
     line-height: 1.5;
 }
 
-.textPrompt {
+.ConfirmModal__textPrompt {
     margin-bottom: 1rem;
 }
 
-.modalFooterBem {
+.ConfirmModal__label {
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.625rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.ConfirmModal__promptInput {
+    width: 100%;
+}
+
+.ConfirmModal__modalFooterBem {
     display: flex;
     gap: 8px;
     justify-content: flex-end;
 }
 
-.animateFadeIn {
+.ConfirmModal__animateFadeIn {
     animation: fade-in 0.2s ease-in-out;
 }
 

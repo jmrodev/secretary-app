@@ -12,7 +12,131 @@ const bcrypt = require('bcrypt');
  * Handles complex multi-table transactions for user management.
  */
 class UserAccountService {
+    /**
+     * Lists every secretary account with their permission flags.
+     */
+    async getSecretaryPermissions() {
+        return await userRepository.findSecretaryPermissions();
+    }
+
+    /**
+     * Gets granular permissions for a single secretary.
+     */
+    async getSecretaryPermissionsById(userId) {
+        const user = await userRepository.findById(userId);
+        if (!user || user.role !== 'secretary') {
+            const error = new Error('Secretaria no encontrada');
+            error.statusCode = 404;
+            throw error;
+        }
+        return await userRepository.getSecretaryPermissions(userId);
+    }
+
+    /**
+     * Updates granular permissions for a single secretary by user ID.
+     */
+    async updateSecretaryPermissionsById(userId, permissions) {
+        const user = await userRepository.findById(userId);
+        if (!user || user.role !== 'secretary') {
+            const error = new Error('Secretaria no encontrada');
+            error.statusCode = 404;
+            throw error;
+        }
+
+        // Validate that provided values are boolean
+        for (const [key, val] of Object.entries(permissions)) {
+            if (typeof val !== 'boolean') {
+                const error = new Error(`El valor para '${key}' debe ser un booleano.`);
+                error.statusCode = 400;
+                throw error;
+            }
+        }
+
+        await userRepository.updatePermissions(userId, permissions);
+        return await userRepository.getSecretaryPermissions(userId);
+    }
+
+    /**
+     * Grants or revokes can_manage_users for the targeted secretaries
+     * (individual ids or grantToAll). Bumps token_version so existing
+     * JWTs are evicted and affected users must re-authenticate.
+     */
+    async updateSecretaryPermissions({ secretaryIds, grantToAll, revoke }) {
+        let ids = [];
+        if (grantToAll) {
+            ids = await userRepository.findSecretaryUserIds();
+        } else if (Array.isArray(secretaryIds) && secretaryIds.length > 0) {
+            // Defense in depth: keep only finite positive integers
+            ids = secretaryIds.map(Number).filter(n => Number.isInteger(n) && n > 0);
+        }
+
+        if (ids.length === 0) {
+            const error = new Error('No secretary ids provided');
+            error.statusCode = 400;
+            throw error;
+        }
+
+        await userRepository.updateCanManageUsers(ids, !revoke);
+    }
+
+    /**
+     * Lists every staff account for the admin management table.
+     */
+    async getUsersForAdmin() {
+        return await userRepository.findAllStaff();
+    }
+
+    /**
+     * Verifies the requester's admin credentials (re-entered password).
+     * Throws 401 when the admin account is missing, 403 on mismatch.
+     */
+    async _verifyAdminCredentials(adminId, adminPassword) {
+        const adminUser = await userRepository.findById(adminId);
+        if (!adminUser) {
+            const error = new Error('Admin no encontrado.');
+            error.statusCode = 401;
+            throw error;
+        }
+        const isMatch = await bcrypt.compare(adminPassword, adminUser.password_hash);
+        if (!isMatch) {
+            const error = new Error('Contraseña de administrador incorrecta.');
+            error.statusCode = 403;
+            throw error;
+        }
+        return adminUser;
+    }
+
+    /**
+     * Resets a user's password. Only an admin may reset another admin's
+     * password, so a granted secretary cannot escalate to an admin account.
+     */
+    async adminResetPassword(userId, newPassword, requester) {
+        const target = await userRepository.findById(userId);
+        if (target?.role === 'admin' && requester.role !== 'admin') {
+            const error = new Error('Solo un administrador puede restablecer la contraseña de otro administrador.');
+            error.statusCode = 403;
+            throw error;
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await userRepository.updatePassword(userId, hashedPassword);
+    }
+
+    /**
+     * Creates a user after re-verifying the requester's admin credentials.
+     * Only an admin may create another admin account.
+     */
     async createUser(req, userData) {
+        const { adminPassword } = req.body;
+        const adminUser = await this._verifyAdminCredentials(req.user.user_id, adminPassword);
+        if (userData.role === 'admin' && adminUser.role !== 'admin') {
+            const error = new Error('Solo un administrador puede crear cuentas de administrador.');
+            error.statusCode = 403;
+            throw error;
+        }
+        return await this._createUserTransaction(req, userData);
+    }
+
+    async _createUserTransaction(req, userData) {
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
@@ -45,7 +169,11 @@ class UserAccountService {
                 if (primaryPhone) {
                     const repo = this._getRepoForRole(role);
                     if (repo) {
-                        await repo.updateById ? await repo.updateById(profileId, { phone: primaryPhone }, conn) : await repo.update(profileId, { phone: primaryPhone }, conn);
+                        if (repo.updateById) {
+                            await repo.updateById(profileId, { phone: primaryPhone }, conn);
+                        } else {
+                            await repo.update(profileId, { phone: primaryPhone }, conn);
+                        }
                     }
                 }
             }
@@ -71,7 +199,7 @@ class UserAccountService {
             await userRepository.update(userId, { username, role }, conn);
 
             let profileId;
-            let repo = this._getRepoForRole(role);
+            const repo = this._getRepoForRole(role);
 
             if (role === 'doctor') {
                 const p = await doctorRepository.findByUserId(userId, conn);
@@ -95,7 +223,11 @@ class UserAccountService {
                 const primaryPhone = await phoneRepository.syncPhones(role, profileId, phoneNumbers, conn);
                 if (primaryPhone) {
                     if (repo) {
-                        await repo.updateById ? await repo.updateById(profileId, { phone: primaryPhone }, conn) : await repo.update(profileId, { phone: primaryPhone }, conn);
+                        if (repo.updateById) {
+                            await repo.updateById(profileId, { phone: primaryPhone }, conn);
+                        } else {
+                            await repo.update(profileId, { phone: primaryPhone }, conn);
+                        }
                     }
                 }
             }
@@ -109,7 +241,23 @@ class UserAccountService {
         }
     }
 
+    /**
+     * Deletes a user after re-verifying the requester's admin credentials.
+     * Only an admin may delete another admin account.
+     */
     async deleteUser(req, userId) {
+        const { adminPassword } = req.body;
+        const adminUser = await this._verifyAdminCredentials(req.user.user_id, adminPassword);
+        const target = await userRepository.findById(userId);
+        if (target?.role === 'admin' && adminUser.role !== 'admin') {
+            const error = new Error('Solo un administrador puede eliminar cuentas de administrador.');
+            error.statusCode = 403;
+            throw error;
+        }
+        await this._deleteUserTransaction(req, userId);
+    }
+
+    async _deleteUserTransaction(req, userId) {
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
