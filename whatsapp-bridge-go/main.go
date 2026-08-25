@@ -12,6 +12,7 @@ import (
 	"strings"
 	"sync"
 	"syscall"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/skip2/go-qrcode"
@@ -32,7 +33,20 @@ var (
 	clientMu  sync.Mutex
 	clientLog waLog.Logger
 	dbLog     waLog.Logger
+
+	// Reconnection lifecycle state (guarded by reconnectMu).
+	reconnectMu         sync.Mutex
+	reconnectState      string // "idle" | "reconnecting" | "awaiting_admin"
+	reconnectAttempts   int
+	sessionExpiredSince time.Time
 )
+
+// isClientAuthenticated reports whether the bridge holds a live WhatsApp session.
+// Declared as a var (instead of a plain func) so tests can inject a fake client
+// without constructing a real whatsmeow device.
+var isClientAuthenticated = func(c *whatsmeow.Client) bool {
+	return c != nil && c.IsLoggedIn()
+}
 
 func eventHandler(evt interface{}) {
 	switch v := evt.(type) {
@@ -71,16 +85,23 @@ func eventHandler(evt interface{}) {
 				resp.Body.Close()
 			}
 		}
-	case *events.LoggedOut:
+	case *events.LoggedOut, *events.Disconnected:
+		// Session lost, but the SQLite store is preserved (NO DB nuke).
+		// Re-enter QR pairing via the guarded reconnect lifecycle.
 		clientMu.Lock()
 		if client != nil {
 			client.Disconnect()
 			lastQR = ""
 		}
 		clientMu.Unlock()
-		os.Remove("data/examplestore.db")
-		os.Remove("data/examplestore.db-wal")
-		os.Remove("data/examplestore.db-shm")
+		scheduleReconnect()
+	case *events.Connected:
+		// Successful (re)connection resets the reconnect lifecycle.
+		reconnectMu.Lock()
+		reconnectState = "idle"
+		reconnectAttempts = 0
+		sessionExpiredSince = time.Time{}
+		reconnectMu.Unlock()
 	}
 }
 
@@ -112,8 +133,16 @@ func handleSend(w http.ResponseWriter, r *http.Request) {
 	c := client
 	clientMu.Unlock()
 
-	if c == nil || !c.IsConnected() {
-		http.Error(w, "WhatsApp not connected", http.StatusServiceUnavailable)
+	if c == nil {
+		http.Error(w, "WhatsApp bridge not available", http.StatusServiceUnavailable)
+		return
+	}
+	if !isClientAuthenticated(c) {
+		http.Error(w, "not authenticated", http.StatusUnauthorized)
+		return
+	}
+	if !c.IsConnected() {
+		http.Error(w, "bridge unavailable", http.StatusServiceUnavailable)
 		return
 	}
 
@@ -173,21 +202,88 @@ func handleStatus(w http.ResponseWriter, r *http.Request) {
 	clientMu.Lock()
 	c := client
 	qr := lastQR
+	reconnectMu.Lock()
+	state := reconnectState
+	since := sessionExpiredSince
+	reconnectMu.Unlock()
 	clientMu.Unlock()
 
 	status := "disconnected"
-	if c != nil {
-		if c.IsLoggedIn() {
+	if c != nil && c.Store != nil {
+		if isClientAuthenticated(c) {
 			status = "connected"
 		} else if c.Store.ID != nil {
-			status = "connecting"
+			status = "session_expired"
 		}
 	}
+	if state == "awaiting_admin" {
+		status = "awaiting_admin"
+	}
 
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	resp := map[string]interface{}{
 		"status":  status,
 		"qr_code": qr,
+	}
+	if (status == "session_expired" || status == "disconnected") && !since.IsZero() {
+		resp["session_expired_since"] = since.Format(time.RFC3339)
+	}
+
+	json.NewEncoder(w).Encode(resp)
+}
+
+// handleHealth is a liveness probe for the Docker healthcheck.
+// It always returns 200 and reports whether the bridge holds a session.
+func handleHealth(w http.ResponseWriter, r *http.Request) {
+	clientMu.Lock()
+	c := client
+	clientMu.Unlock()
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"authenticated": isClientAuthenticated(c),
 	})
+}
+
+// attemptReconnect performs one guarded reconnect attempt, updating the
+// lifecycle state. Returns the resulting state. Exposed (and side-effect free
+// apart from state mutation) so it can be unit tested without timers.
+func attemptReconnect() string {
+	reconnectMu.Lock()
+	defer reconnectMu.Unlock()
+
+	if reconnectState == "awaiting_admin" {
+		return reconnectState
+	}
+
+	reconnectState = "reconnecting"
+	if sessionExpiredSince.IsZero() {
+		sessionExpiredSince = time.Now()
+	}
+
+	reconnectAttempts++
+	if reconnectAttempts >= 3 {
+		reconnectState = "awaiting_admin"
+	}
+	return reconnectState
+}
+
+// scheduleReconnect waits out the antiflicker delay, then performs one
+// reconnect attempt. After 3 failures it stops in awaiting_admin.
+func scheduleReconnect() {
+	reconnectMu.Lock()
+	if reconnectState == "awaiting_admin" {
+		reconnectMu.Unlock()
+		return
+	}
+	reconnectMu.Unlock()
+
+	go func() {
+		time.Sleep(5 * time.Second) // antiflicker guard
+		state := attemptReconnect()
+		if state != "awaiting_admin" {
+			connectClient()
+		}
+	}()
 }
 
 func handleLogout(w http.ResponseWriter, r *http.Request) {
@@ -234,6 +330,10 @@ func connectClient() {
 	clientMu.Lock()
 	c := client
 	clientMu.Unlock()
+
+	if c == nil {
+		return
+	}
 
 	if c.Store.ID == nil {
 		fmt.Println("No session found. Starting pairing process...")
@@ -331,6 +431,7 @@ func main() {
 
 	http.HandleFunc("/api/send", handleSend)
 	http.HandleFunc("/api/status", handleStatus)
+	http.HandleFunc("/api/health", handleHealth)
 	http.HandleFunc("/api/logout", handleLogout)
 	http.HandleFunc("/api/refresh", handleRefresh)
 
