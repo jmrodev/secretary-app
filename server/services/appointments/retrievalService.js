@@ -3,6 +3,7 @@ const transactionRepository = require('../../repositories/finance/transactionRep
 const holidayRepository = require('../../repositories/appointments/holidayRepository');
 const patientRepository = require('../../repositories/user/patientRepository');
 const doctorRepository = require('../../repositories/user/doctorRepository');
+const dailyScheduleService = require('./dailyScheduleService');
 
 /**
  * ECC-Pattern: Domain Data Mapping (Immutability)
@@ -13,7 +14,7 @@ const mapAppointment = (a) => ({
     doctor_id: a.doctor_id,
     doctor_name: a.doctor_name,
     patient_id: a.patient_id,
-    patient_name: a.patient_name || (a.reason ? `(Sin Paciente) ${a.reason}` : 'Desconocido'),
+    patient_name: a.patient_name || null,
     patient_phone: a.patient_phone || a.phone || '-',
     status: a.status,
     reason: a.reason || '-',
@@ -77,9 +78,7 @@ class RetrievalService {
     }
 
     async getDailySchedule(doctorId, dateStr) {
-        const rows = await appointmentRepository.getDailySchedule(doctorId, dateStr);
-        // Use mapSlot to preserve slot_time and slot_status
-        return rows.map(mapSlot);
+        return await dailyScheduleService.getDailySchedule(doctorId, dateStr);
     }
 
     async getMonthlyReport(doctorId, month, year) {
