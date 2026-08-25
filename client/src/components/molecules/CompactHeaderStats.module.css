@@ -1,3 +1,4 @@
+/* stylelint-disable plugin/selector-bem-pattern */
 .root {
     --stats-gap: 1.25rem;
     --stats-pill-bg: var(--dashboard-card-bg);
