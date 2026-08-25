@@ -1,5 +1,7 @@
 # Proposal: WhatsApp Bridge Reconnection
 
+> **Status (2026-08-25):** `server/services/communication/whatsappBridgeService.js` was removed as dead code in PR #430 (its `require` in `server/app.js` was commented out and it had zero live importers — never wired in). Server-side reconnection work now targets the active bridge client `whatsappService.js` (see Affected Areas). The Go bridge (`whatsapp-bridge-go/main.go`) reconnection scope is unchanged.
+
 ## Intent
 
 The WhatsApp bridge enters a dead state when the session expires: `c.Store.ID` persists but `c.IsLoggedIn()` returns false without generating a new QR. No auto-recovery exists — the only fix is nuking the SQLite DB via `/api/refresh`. Users lose queued messages and must re-pair manually. We need automatic reconnection, message queueing during downtime, and QR display in both Config and ChatPage.
@@ -44,8 +46,7 @@ Guarded reconnection lifecycle (Approach 2 from exploration):
 | Area | Impact | Description |
 |------|--------|-------------|
 | `whatsapp-bridge-go/main.go` | Modified | Event handlers, auto-reconnect, status granularity, /api/health |
-| `server/services/communication/whatsappService.js` | Modified | Send retry with queue, status passthrough |
-| `server/services/communication/whatsappBridgeService.js` | Modified | Health check sophistication |
+| `server/services/communication/whatsappService.js` | Modified | Send retry with queue, status passthrough (absorbs the former `whatsappBridgeService.js` health-check role) |
 | `server/controllers/communication/whatsappController.js` | Modified | Pass through new status fields |
 | `server/routes/communication/whatsappRoutes.js` | Modified | Any new endpoints |
 | `client/src/features/chat/ChatPage.jsx` | Modified | Bridge status indicator + inline QR |
