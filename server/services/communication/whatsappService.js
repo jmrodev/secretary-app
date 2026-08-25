@@ -7,8 +7,7 @@ const { formatDateDisplay, formatTimeDisplay } = require('../../utils/core/dateU
 
 const getMetaCredentials = async () => {
     const rows = await systemSettingsRepository.findManyByKeys(['meta_phone_number_id', 'meta_access_token']);
-    const settings = {};
-    rows.forEach(r => settings[r.setting_key] = r.setting_value);
+    const settings = Object.fromEntries(rows.map(r => [r.setting_key, r.setting_value]));
     return settings;
 };
 
@@ -156,8 +155,7 @@ const sendAutomatedReminders = async () => {
 
         // Fetch global settings for templates
         const settingsRows = await systemSettingsRepository.findAll();
-        const settings = {};
-        settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
+        const settings = Object.fromEntries(settingsRows.map(r => [r.setting_key, r.setting_value]));
 
         for (const appt of appointments) {
             try {
@@ -180,8 +178,8 @@ const sendAutomatedReminders = async () => {
                     .replace(/{appointment_location}/g, isVirtual ? 'Virtual' : address)
                     .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL');
 
-                let phone = appt.patient_phone.replace(/\D/g, '');
-                if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+                const rawPhone = appt.patient_phone.replace(/\D/g, '');
+                const phone = (!rawPhone.startsWith('54') && rawPhone.length >= 10) ? '549' + rawPhone : rawPhone;
 
                 await sendMessageDirect(phone, message, appt.patient_id);
                 console.log(`[WhatsApp Bridge] Automated reminder sent to ${phone} (${appt.patient_name})`);
@@ -243,8 +241,7 @@ const sendConfirmationMessage = async (appt) => {
 
         // Fetch global settings for templates
         const settingsRows = await systemSettingsRepository.findAll();
-        const settings = {};
-        settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
+        const settings = Object.fromEntries(settingsRows.map(r => [r.setting_key, r.setting_value]));
 
         const template = settings.whatsapp_template_confirmation;
 
@@ -273,8 +270,8 @@ const sendConfirmationMessage = async (appt) => {
             .replace(/{appointment_location}/g, isVirtual ? 'Virtual' : address)
             .replace(/{appointment_type}/g, isVirtual ? 'VIRTUAL' : 'PRESENCIAL');
 
-        let phone = appt.patient_phone.replace(/\D/g, '');
-        if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+        const rawPhone2 = appt.patient_phone.replace(/\D/g, '');
+        const phone = (!rawPhone2.startsWith('54') && rawPhone2.length >= 10) ? '549' + rawPhone2 : rawPhone2;
 
         await sendMessageDirect(phone, message, appt.patient_id);
         console.log(`[WhatsApp Bridge] Confirmation sent to ${phone} (${appt.patient_name})`);
@@ -303,8 +300,8 @@ const sendDebtReminder = async (data) => {
             .replace(/{patient_name}/g, patient_name || 'Paciente')
             .replace(/{debt_amount}/g, debt_amount);
 
-        let phone = patient_phone.replace(/\D/g, '');
-        if (!phone.startsWith('54') && phone.length >= 10) phone = '549' + phone;
+        const rawPhoneDebt = patient_phone.replace(/\D/g, '');
+        const phone = (!rawPhoneDebt.startsWith('54') && rawPhoneDebt.length >= 10) ? '549' + rawPhoneDebt : rawPhoneDebt;
 
         await sendMessageDirect(phone, message, patient_id);
         console.log(`[WhatsApp Bridge] Debt reminder sent to ${phone} (${patient_name})`);
@@ -323,6 +320,49 @@ const refreshBridge = async () => {
     }
 };
 
+const handleWebhook = async (sender, message, isFromMe) => {
+    const phone = sender.split('@')[0];
+    const patientId = await whatsappRepository.findPatientByPhone(phone);
+    const direction = isFromMe ? 'outbound' : 'inbound';
+    await whatsappRepository.createMessage(patientId, direction, message, null, 'delivered', patientId ? null : phone);
+};
+
+const getPatientHistory = async (patientId, phone) => {
+    return whatsappRepository.getHistoryByPatient(patientId, phone);
+};
+
+const getRecentConversations = async (doctorId) => {
+    return whatsappRepository.getRecentConversations(doctorId);
+};
+
+const deleteConversation = async (patientId, phone) => {
+    return whatsappRepository.deleteConversation(patientId, phone);
+};
+
+const getBroadcastPreview = async (filter = 'last_12_months') => {
+    const patients = await whatsappRepository.getPatientsForBroadcast(filter);
+    return patients.length;
+};
+
+const broadcastDirect = async (message, filter = 'last_12_months', delayMs = 4000) => {
+    const patients = await whatsappRepository.getPatientsForBroadcast(filter);
+    if (patients.length === 0) return { success: [], failed: [] };
+    const results = { success: [], failed: [] };
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+    for (const patient of patients) {
+        const personalizedMessage = message.replace(/\{patient_name\}/gi, patient.full_name || patient.phone);
+        try {
+            await sendMessageDirect(patient.phone, personalizedMessage, patient.id);
+            results.success.push({ phone: patient.phone, name: patient.full_name });
+        } catch (error) {
+            console.error(`[Broadcast] Failed for ${patient.phone}:`, error.message);
+            results.failed.push({ phone: patient.phone, name: patient.full_name, error: error.message });
+        }
+        await sleep(Number(delayMs) || 4000);
+    }
+    return results;
+};
+
 module.exports = {
     sendTemplateMessage,
     sendTestMessage,
@@ -333,5 +373,11 @@ module.exports = {
     getBridgeStatus,
     getBridgeHealth,
     logoutBridge,
-    refreshBridge
+    refreshBridge,
+    handleWebhook,
+    getPatientHistory,
+    getRecentConversations,
+    deleteConversation,
+    getBroadcastPreview,
+    broadcastDirect
 };

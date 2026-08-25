@@ -36,10 +36,10 @@ export const ChatPage = () => {
 
     return (
         <MainLayout wide flush title={t('whatsapp_history')}>
-            <section className={`${selectedConvo ? styles.ConvoSelected : ''} `}>
+            <section className={`${selectedConvo ? styles['ChatPage__chatPageOrchestratorConvoSelected'] : ''} `}>
                 {/* Bridge status indicator */}
                 <div className={styles.ChatPage__bridgeStatus} data-testid="bridge-status">
-                    <span className={`${styles.ChatPage__statusDot} ${styles[`ChatPage__statusDot--${bridgeStatus.status}`]}`} />
+                    <span className={`${styles.ChatPage__statusDot} ${styles[`ChatPage__statusDot--${bridgeStatus.status.replace(/_/g, '-')}`]}`} />
                     <span>{t(`bridge_status_${bridgeStatus.status}`)}</span>
                     {!isBridgeConnected && (
                         <button type="button" onClick={handleRefreshBridge} disabled={bridgeStatusLoading} data-testid="bridge-reconnect">

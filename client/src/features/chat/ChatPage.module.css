@@ -19,8 +19,8 @@
 
 .ChatPage__statusDot--connected { background: var(--success); }
 .ChatPage__statusDot--disconnected { background: var(--warning); }
-.ChatPage__statusDot--session_expired { background: var(--warning); }
-.ChatPage__statusDot--awaiting_admin { background: var(--danger); }
+.ChatPage__statusDot--session-expired { background: var(--warning); }
+.ChatPage__statusDot--awaiting-admin { background: var(--danger); }
 .ChatPage__statusDot--offline { background: var(--gray-500); }
 
 .ChatPage__container {
