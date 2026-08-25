@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { api } from '@/api/axios';
 import { useAuth } from '@/features/auth';
 import { useMessage } from '@/context/MessageContext';
 import { useFetch } from '@/hooks/useFetch';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * Controller hook for the Messages full-page view.
@@ -10,12 +11,15 @@ import { useFetch } from '@/hooks/useFetch';
 export const useMessagesPageController = () => {
     const { user } = useAuth();
     const { showMessage } = useMessage();
+    const { t } = useLanguage();
 
     // State
     const [selectedConvo, setSelectedConvo] = useState(null);
     const [sending, setSending] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [messageText, setMessageText] = useState('');
+    const [bridgeStatus, setBridgeStatus] = useState({ status: 'connected', qr_code: '', session_expired_since: null });
+    const [bridgeStatusLoading, setBridgeStatusLoading] = useState(true);
     const scrollRef = useRef(null);
 
     // --- Data Fetching using useFetch ---
@@ -61,6 +65,33 @@ export const useMessagesPageController = () => {
         }
     });
 
+    const fetchBridgeStatus = useCallback(async (isAuto = false) => {
+        if (!isAuto) setBridgeStatusLoading(true);
+        try {
+            const res = await api.get('/whatsapp/status');
+            if (res.data.success) {
+                setBridgeStatus({ status: res.data.status, qr_code: res.data.qr_code, session_expired_since: res.data.session_expired_since || null });
+            }
+        } catch (error) {
+            console.error('[WhatsApp] Failed to fetch bridge status:', error);
+            setBridgeStatus({ status: 'offline', qr_code: '', session_expired_since: null });
+        } finally {
+            setBridgeStatusLoading(false);
+        }
+    }, []);
+
+    const handleRefreshBridge = useCallback(async () => {
+        setBridgeStatusLoading(true);
+        try {
+            await api.post('/whatsapp/refresh');
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+        } catch (error) {
+            console.error('[WhatsApp] Failed to refresh bridge:', error);
+        } finally {
+            fetchBridgeStatus(true);
+        }
+    }, [fetchBridgeStatus]);
+
     // Polling Logic
     useEffect(() => {
         const interval = setInterval(() => {
@@ -73,6 +104,12 @@ export const useMessagesPageController = () => {
 
         return () => clearInterval(interval);
     }, [fetchConversations, fetchUnreadCount, fetchThread, selectedConvo]);
+
+    useEffect(() => {
+        fetchBridgeStatus();
+        const bridgeInterval = setInterval(() => fetchBridgeStatus(true), 5000);
+        return () => clearInterval(bridgeInterval);
+    }, [fetchBridgeStatus]);
 
     // Scroll to bottom
     useEffect(() => {
@@ -100,7 +137,7 @@ export const useMessagesPageController = () => {
             fetchConversations();
         } catch (err) {
             console.error('Error sending message:', err);
-            showMessage('Error al enviar mensaje', 'error');
+            showMessage(t('error_sending_message'), 'error');
         } finally {
             setSending(false);
         }
@@ -114,7 +151,7 @@ export const useMessagesPageController = () => {
             setSelectedConvo({
                 other_user_id: recipient.id,
                 other_display_name: recipient.display_name,
-                subject: 'Nuevo Mensaje'
+                subject: t('new_message_subject')
             });
         }
         setSearchTerm(''); // Clear search to show the chat
@@ -133,6 +170,10 @@ export const useMessagesPageController = () => {
         messageText, setMessageText,
         scrollRef,
         handleSendMessage,
-        startNewChat
+        startNewChat,
+        bridgeStatus,
+        bridgeStatusLoading,
+        fetchBridgeStatus,
+        handleRefreshBridge
     };
 };

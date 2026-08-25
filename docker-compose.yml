@@ -114,6 +114,12 @@ services:
     environment:
       - TZ=America/Argentina/Buenos_Aires
       - WHATSAPP_WEBHOOK_URL=http://server:5000/api/whatsapp/webhook
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:8090/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
 
   dozzle:
     image: amir20/dozzle:latest

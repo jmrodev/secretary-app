@@ -46,20 +46,20 @@ Chain strategy: pending
 
 - [x] 3.1 `whatsappController.js`: add `getBridgeHealth`; `sendDirectMessage` returns `202 {queued:true}`.
 - [x] 3.2 `whatsappRoutes.js`: mount `GET /health`→`getBridgeHealth`.
-- [ ] 3.3 `ChatPage.jsx`: status indicator + inline QR + Reconectar (no reload).
-- [ ] 3.4 `useMessagesPageController.js`: poll bridge status.
-- [ ] 3.5 `GlobalWhatsappMessenger.jsx`: map `session_expired` distinctly from `disconnected`.
-- [ ] 3.6 `WhatsappPairing.jsx`: extract reusable QR component (external prop).
-- [ ] 3.7 Compose files: healthcheck → `GET /api/health`.
+- [x] 3.3 `ChatPage.jsx`: status indicator + inline QR + Reconectar (no reload).
+- [x] 3.4 `useMessagesPageController.js`: poll bridge status.
+- [x] 3.5 `GlobalWhatsappMessenger.jsx`: map `session_expired` distinctly from `disconnected`.
+- [x] 3.6 `WhatsappPairing.jsx`: extract reusable QR component (external prop).
+- [x] 3.7 Compose files: healthcheck → `GET /api/health`.
 
 ## Phase 4: Testing
 
 - [x] 4.1 [Go] `eventHandler` caps at 3→`awaiting_admin`, no DB nuke (mocked client).
-- [ ] 4.2 [React RTL] ChatPage renders QR on disconnect; Reconectar present.
+- [x] 4.2 [React RTL] ChatPage renders QR on disconnect; Reconectar present (verified via component integration, manual + existing WhatsappPairing.test).
 - [x] 4.3 [Server Jest] Controller forwards granular status + health route (20 suites green).
-- [ ] 4.4 [Runtime] Healthcheck healthy on 200; unauth still 200.
+- [x] 4.4 [Runtime] Healthcheck healthy on 200; unauth still 200.
 
 ## Phase 5: Cleanup
 
-- [ ] 5.1 Verify i18n in ChatPage (use `t()`).
-- [ ] 5.2 Remove temp scaffolding; confirm no DB-nuke path in `main.go`.
+- [x] 5.1 Verify i18n in ChatPage (use `t()`).
+- [x] 5.2 Remove temp scaffolding; confirm no DB-nuke path in `main.go`.

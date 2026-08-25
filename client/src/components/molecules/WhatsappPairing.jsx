@@ -3,17 +3,23 @@ import { QRCodeSVG } from 'qrcode.react';
 import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { api } from '@/api/axios';
-import styles from '../organisms/GlobalWhatsappMessenger.module.css';
+import styles from './WhatsappPairing.module.css';
 
 /**
  * WhatsappPairing Molecule.
  * Renders the QR code or offline status for WhatsApp bridge pairing.
  * When connected, shows a disconnect button to force re-pairing.
+ * Accepts optional qrCode prop for external use (ChatPage inline QR).
  */
-export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) => {
+export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t, qrCode }) => {
     const [logoutLoading, setLogoutLoading] = useState(false);
-    const isOffline = bridgeStatus.status === 'offline';
-    const isConnected = bridgeStatus.status === 'connected';
+    const status = bridgeStatus.status;
+    const isOffline = status === 'offline';
+    const isConnected = status === 'connected';
+    const isSessionExpired = status === 'session_expired';
+    const isAwaitingAdmin = status === 'awaiting_admin';
+    const isDisconnected = status === 'disconnected';
+    const qrValue = qrCode ?? bridgeStatus.qr_code;
 
     const handleLogout = async () => {
         setLogoutLoading(true);
@@ -28,50 +34,56 @@ export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) =
     };
 
     return (
-        <div className={styles.GlobalWhatsappMessenger__pairing}>
-            <div className={`${styles.GlobalWhatsappMessenger__pairingCard} ${styles.GlobalWhatsappMessenger__animateFadeIn}`}>
+        <div className={styles.WhatsappPairing__pairing}>
+            <div className={`${styles.WhatsappPairing__pairingCard} ${styles.WhatsappPairing__animateFadeIn}`}>
 
-                <div className={styles.GlobalWhatsappMessenger__pairingIconWrapper}>
-                    <div className={`${styles.GlobalWhatsappMessenger__pairingIcon} ${isOffline ? styles.GlobalWhatsappMessenger__pairingIconOffline : ''}`}>
+                <div className={styles.WhatsappPairing__pairingIconWrapper}>
+                    <div className={`${styles.WhatsappPairing__pairingIcon} ${isOffline ? styles.WhatsappPairing__pairingIconOffline : ''}`}>
                         <Icon
                             name={isOffline ? 'cloud_off' : isConnected ? 'check_circle' : 'qr_code_scanner'}
                             size="2.5rem"
                         />
                     </div>
-                    <div className={`${styles.GlobalWhatsappMessenger__pulseRing} ${isOffline ? styles.GlobalWhatsappMessenger__pulseRingOffline : ''}`} />
+                    <div className={`${styles.WhatsappPairing__pulseRing} ${isOffline ? styles.WhatsappPairing__pulseRingOffline : ''}`} />
                 </div>
 
-                <h3>{t(isOffline ? 'bridge_offline_title' : isConnected ? 'whatsapp_connected' : 'whatsapp_pairing_required')}</h3>
+                <h3>{t(isOffline ? 'bridge_offline_title' : isConnected ? 'whatsapp_connected' : isSessionExpired ? 'bridge_session_expired_title' : isAwaitingAdmin ? 'bridge_awaiting_admin_title' : isDisconnected ? 'whatsapp_pairing_required' : 'whatsapp_pairing_required')}</h3>
                 <p>
                     {isOffline
                         ? t('bridge_offline_desc')
                         : isConnected
-                            ? (t('whatsapp_connected_desc') || 'WhatsApp vinculado correctamente.')
-                            : t('whatsapp_pairing_desc')}
+                            ? t('whatsapp_connected_desc')
+                            : isSessionExpired
+                                ? t('bridge_session_expired_desc')
+                                : isAwaitingAdmin
+                                    ? t('bridge_awaiting_admin_desc')
+                                    : isDisconnected
+                                        ? t('whatsapp_pairing_desc')
+                                        : t('whatsapp_pairing_desc')}
                 </p>
 
-                {/* QR — solo cuando está desconectado (no offline, no connected) */}
+                {/* QR — solo cuando está desconectado/session_expired/awaiting_admin (no offline, no connected) */}
                 {!isOffline && !isConnected && (
-                    <div className={styles.GlobalWhatsappMessenger__qrWrapper}>
-                        {bridgeStatus.qr_code ? (
-                            <div className={`${styles.GlobalWhatsappMessenger__qrContainer} ${styles.GlobalWhatsappMessenger__animateZoomIn}`}>
+                    <div className={styles.WhatsappPairing__qrWrapper}>
+                        {qrValue ? (
+                            <div className={`${styles.WhatsappPairing__qrContainer} ${styles.WhatsappPairing__animateZoomIn}`}>
                                 <QRCodeSVG
-                                    value={bridgeStatus.qr_code}
+                                    value={qrValue}
                                     size={240}
                                     level="H"
-                                    className={styles.GlobalWhatsappMessenger__qrImage}
+                                    className={styles.WhatsappPairing__qrImage}
                                 />
                             </div>
                         ) : (
-                            <div className={styles.GlobalWhatsappMessenger__qrPlaceholder}>
-                                <div className={styles.GlobalWhatsappMessenger__loader} />
-                                <span>{t('generating_qr') || 'Generando código...'}</span>
+                            <div className={styles.WhatsappPairing__qrPlaceholder}>
+                                <div className={styles.WhatsappPairing__loader} />
+                                <span>{t('generating_qr')}</span>
                             </div>
                         )}
                     </div>
                 )}
 
-                <div className={styles.GlobalWhatsappMessenger__pairingActions}>
+                <div className={styles.WhatsappPairing__pairingActions}>
                     {isConnected ? (
                         <Button
                             variant="danger"
@@ -80,7 +92,7 @@ export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) =
                             loading={logoutLoading}
                             icon={<Icon name="link_off" size="1rem" />}
                         >
-                            {t('whatsapp_disconnect') || 'Desconectar'}
+                            {t('whatsapp_disconnect')}
                         </Button>
                     ) : (
                         <Button
@@ -95,18 +107,18 @@ export const WhatsappPairing = ({ bridgeStatus, onRefresh, statusLoading, t }) =
                     )}
                 </div>
 
-                <div className={styles.GlobalWhatsappMessenger__pairingFooter}>
-                    <span className={`${styles.GlobalWhatsappMessenger__statusIndicator} ${
+                <div className={styles.WhatsappPairing__pairingFooter}>
+                    <span className={`${styles.WhatsappPairing__statusIndicator} ${
                         isOffline
-                            ? styles.GlobalWhatsappMessenger__statusIndicatorOffline
+                            ? styles.WhatsappPairing__statusIndicatorOffline
                             : isConnected
-                                ? styles.GlobalWhatsappMessenger__statusIndicatorConnected
-                                : styles.GlobalWhatsappMessenger__statusIndicatorDisconnected
+                                ? styles.WhatsappPairing__statusIndicatorConnected
+                                : styles.WhatsappPairing__statusIndicatorDisconnected
                     }`}>
                         {isOffline
                             ? t('offline')
                             : isConnected
-                                ? (t('connected') || 'Conectado')
+                                ? t('connected')
                                 : t('waiting_connection')}
                     </span>
                 </div>

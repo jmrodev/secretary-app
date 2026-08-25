@@ -25,7 +25,7 @@ const initialState = {
     activeChat: null,
     conversations: [],
     loading: false,
-    bridgeStatus: { status: 'connected', qr_code: '' },
+    bridgeStatus: { status: 'connected', qr_code: '', session_expired_since: null },
     statusLoading: true,
 };
 
@@ -80,13 +80,13 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                 dispatch({ 
                     type: 'UPDATE_MANY', 
                     payload: { 
-                        bridgeStatus: { status: res.data.status, qr_code: res.data.qr_code },
+                        bridgeStatus: { status: res.data.status, qr_code: res.data.qr_code, session_expired_since: res.data.session_expired_since || null },
                         statusLoading: false
                     } 
                 });
 
-                // Auto-refresh if QR timed out (disconnected & empty QR) and we aren't already refreshing
-                if (res.data.status === 'disconnected' && !res.data.qr_code && !isAutoCall) {
+                // Auto-refresh if QR timed out (disconnected/session_expired & empty QR) and we aren't already refreshing
+                if ((res.data.status === 'disconnected' || res.data.status === 'session_expired') && !res.data.qr_code && !isAutoCall) {
                     console.log("[WhatsApp] Stale/Timeout QR detected. Auto-refreshing...");
                     handleManualRefreshRef.current?.();
                 }
@@ -94,7 +94,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                 dispatch({ 
                     type: 'UPDATE_MANY', 
                     payload: { 
-                        bridgeStatus: { status: 'offline', qr_code: '' },
+                        bridgeStatus: { status: 'offline', qr_code: '', session_expired_since: null },
                         statusLoading: false
                     } 
                 });
@@ -104,7 +104,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
             dispatch({ 
                 type: 'UPDATE_MANY', 
                 payload: { 
-                    bridgeStatus: { status: 'offline', qr_code: '' },
+                    bridgeStatus: { status: 'offline', qr_code: '', session_expired_since: null },
                     statusLoading: false
                 } 
             });
@@ -130,7 +130,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
     }, [handleManualRefresh]);
 
     const handleLogout = useCallback(async () => {
-        if (!window.confirm(t('confirm_logout_bridge') || '¿Seguro que querés desconectar WhatsApp?')) return;
+        if (!window.confirm(t('confirm_logout_bridge'))) return;
         dispatch({ type: 'SET_STATUS_LOADING', payload: true });
         try {
             await api.post('/whatsapp/logout');
@@ -285,7 +285,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                                 }}
                                 icon={<Icon name="person_add" size="1rem" />}
                             >
-                                {t('register_contact') || 'Registrar'}
+                                {t('register_contact')}
                             </Button>
                         )}
                         <Button 
