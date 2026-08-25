@@ -13,10 +13,8 @@ The `/api/send` endpoint returns 503 `"WhatsApp not connected"` when client is n
 
 The event handler only processes `*events.Message` — it does NOT listen for `events.Disconnected`, `events.LoggedOut`, or other lifecycle events that could trigger auto-repair.
 
-**Server (whatsappBridgeService.js)**
-- `isBridgeRunning()`: only checks HTTP 200 — does NOT check auth status
-- `startBridge()`: spawns `go run main.go` for dev (redundant in Docker where `restart: always` handles this)
-- Restarts only on exit code `!= 0` with 5s delay
+**Server (`whatsappBridgeService.js` — REMOVED as dead code in PR #430)**
+- This file (`isBridgeRunning()`, `startBridge()`) was never active: its `require` in `server/app.js` was commented out and it had zero live importers. The reconnection work below targets the active bridge client `whatsappService.js` instead.
 
 **Server (whatsappService.js)**
 - `getBridgeStatus()`: proxies GET to `/api/status` — returns whatever the Go bridge says
