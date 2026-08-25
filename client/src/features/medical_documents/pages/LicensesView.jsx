@@ -3,10 +3,11 @@ import { useLicensesController } from '../hooks/useLicensesController';
 import { MedicalHistoryTable } from '../components/lists/MedicalHistoryTable';
 import { EditLicenseModal } from '../components/modals/EditLicenseModal';
 import { MedicalRequestForm } from '../components/forms/MedicalRequestForm';
-import { PatientSearchSelect } from '@/features/patients';
+import { PatientSearchSelect } from '@/features/patients/components/ui/PatientSearchSelect';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import styles from './MedicalDocPages.module.css';
 
 export const LicensesView = () => {
     const controller = useLicensesController();
@@ -25,7 +26,7 @@ export const LicensesView = () => {
 
     return (
         <article className={`medical-documents__licenses-layout`}>
-            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+            <div className={styles.MedicalDocPages__actionRow}>
                 <Button variant="primary" onClick={() => setIsCreating(true)} icon={<Icon name="add" />}>
                     {getNewButtonLabel()}
                 </Button>

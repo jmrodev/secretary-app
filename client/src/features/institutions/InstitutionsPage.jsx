@@ -3,8 +3,9 @@ import { MainLayout } from '@/components/templates/MainLayout';
 import { Button } from '@/components/atoms/Button';
 import { Loading } from '@/components/atoms/Loading';
 import { Icon } from '@/components/atoms/Icon';
-import { InstitutionFinances } from '@/features/finances';
-import { useInstitutionsController, InstitutionFormModal } from '@/features/institutions/index';
+import { InstitutionFinances } from '@/features/finances/components/sections/InstitutionFinances';
+import { useInstitutionsController } from '@/features/institutions/hooks/useInstitutionsController';
+import { InstitutionFormModal } from '@/features/institutions/components/forms/InstitutionFormModal';
 
 import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 

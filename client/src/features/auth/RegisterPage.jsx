@@ -1,5 +1,5 @@
 import React from 'react';
-import { RegisterForm } from '@/features/auth/index';
+import { RegisterForm } from '@/features/auth/components/forms/RegisterForm';
 
 /**
  * RegisterPage (Orchestrator).

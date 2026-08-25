@@ -3,7 +3,9 @@ import { Button } from '@/components/atoms/Button';
 import { Loading } from '@/components/atoms/Loading';
 import { Card } from '@/components/atoms/Card';
 import { Icon } from '@/components/atoms/Icon';
-import { useInsurancesController, InsuranceList, InsuranceFormModal } from '@/features/insurances/index';
+import { useInsurancesController } from '@/features/insurances/hooks/useInsurancesController';
+import { InsuranceList } from '@/features/insurances/components/InsuranceList';
+import { InsuranceFormModal } from '@/features/insurances/components/InsuranceFormModal';
 import { MainLayout } from '@/components/templates/MainLayout';
 import styles from './InsurancesPage.module.css';
 

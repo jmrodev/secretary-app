@@ -13,12 +13,16 @@ vi.mock('@/hooks/useLanguage', () => ({
 vi.mock('@/features/users/components/UserManagement', () => ({
     UserManagement: () => <div>USER_MANAGEMENT</div>
 }));
-vi.mock('@/features/doctors', () => ({
-    DoctorsManager: () => <div>DOCTORS_MANAGER</div>,
+vi.mock('@/features/doctors/components/views/DoctorsManager', () => ({
+    DoctorsManager: () => <div>DOCTORS_MANAGER</div>
+}));
+vi.mock('@/features/doctors/hooks/useDoctorsPageController', () => ({
     useDoctorsPageController: () => ({})
 }));
-vi.mock('@/features/appointments', () => ({
-    ScheduleBulkActions: () => null,
+vi.mock('@/features/appointments/components/schedule/ScheduleBulkActions', () => ({
+    ScheduleBulkActions: () => null
+}));
+vi.mock('@/features/appointments/components/schedule/ScheduleTimeBlock', () => ({
     ScheduleTimeBlock: () => null
 }));
 vi.mock('@/features/config/components/forms/MessageTemplateEditor', () => ({

@@ -12,11 +12,11 @@ vi.mock('@/api/axios', () => ({
     api: { get: mockGet, post: vi.fn() }
 }));
 
-vi.mock('@/features/auth', () => ({
+vi.mock('@/features/auth/AuthContext', () => ({
     useAuth: mockUseAuth
 }));
 
-vi.mock('@/features/layout', () => ({
+vi.mock('@/features/layout/components/Navbar', () => ({
     Navbar: () => <nav>Navbar</nav>
 }));
 
@@ -24,7 +24,7 @@ vi.mock('@/components/ui/PageHeader', () => ({
     PageHeader: () => <header>PageHeader</header>
 }));
 
-vi.mock('@/features/doctors', () => ({
+vi.mock('@/features/doctors/components/ui/DoctorSelector', () => ({
     DoctorSelector: () => null
 }));
 

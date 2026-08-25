@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
-import { useAppointments } from '@/features/appointments';
+import { useAppointments } from '@/features/appointments/hooks/useAppointments';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 import { api } from '@/api/axios';
 

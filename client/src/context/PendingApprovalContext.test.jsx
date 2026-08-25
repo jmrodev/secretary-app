@@ -17,7 +17,7 @@ vi.mock('@/api/pendingBookingApi', () => ({
     rejectPending: mockRejectPending
 }));
 
-vi.mock('@/features/auth', () => ({
+vi.mock('@/features/auth/AuthContext', () => ({
     useAuth: mockUseAuth
 }));
 

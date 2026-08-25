@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { MedicalRequirementManager } from './components/ui/MedicalRequirementManager';
 import { MainLayout } from '@/components/templates/MainLayout';

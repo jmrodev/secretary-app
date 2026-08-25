@@ -1,5 +1,5 @@
 import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import {
     listPending,
     acceptPending as acceptPendingRequest,
@@ -32,8 +32,12 @@ export const PendingApprovalProvider = ({ children }) => {
             const items = await listPending();
             setPendingItems(items);
         } catch (error) {
-            // Silently swallow expected auth/404 errors during initial render/polling when unauthenticated or feature inactive
-            if (error.response?.status !== 404 && error.response?.status !== 403) {
+            // 404/403 are expected during initial render/polling when unauthenticated or the
+            // feature is inactive, but we still record them to avoid silently swallowing errors.
+            const status = error.response?.status;
+            if (status === 404 || status === 403) {
+                console.warn('[PendingApprovalContext] Pending bookings unavailable (expected during unauth/inactive):', status);
+            } else {
                 console.error('[PendingApprovalContext] Error fetching pending bookings:', error);
             }
         } finally {

@@ -3,7 +3,7 @@ import { useMedicalRequestsController } from '../hooks/useMedicalRequestsControl
 import { MedicalRequestList } from '../components/lists/MedicalRequestList';
 import { StatusActionModal } from '../components/modals/StatusActionModal';
 import { EditRequestModal } from '../components/modals/EditRequestModal';
-import { TransactionModal } from '@/features/finances';
+import { TransactionModal } from '@/features/finances/components/modals/TransactionModal';
 import { MedicationInput } from '@/features/medical_documents/components/forms/MedicationInput';
 
 export const RequestsView = () => {

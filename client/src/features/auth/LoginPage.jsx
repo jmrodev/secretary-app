@@ -1,5 +1,5 @@
 import React from 'react';
-import { LoginForm } from '@/features/auth/index';
+import { LoginForm } from '@/features/auth/components/forms/LoginForm';
 import styles from './LoginPage.module.css';
 
 /**

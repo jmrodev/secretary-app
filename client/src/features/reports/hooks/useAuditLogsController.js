@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useFetch } from '@/hooks/useFetch';
 

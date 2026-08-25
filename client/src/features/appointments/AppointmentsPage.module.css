@@ -20,6 +20,10 @@
     background: transparent;
 }
 
+.AppointmentsPage__actionSlot {
+    position: relative;
+}
+
 .AppointmentsPage__toolbarActions {
     display: flex;
     align-items: center;
