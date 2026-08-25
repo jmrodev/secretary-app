@@ -76,21 +76,6 @@ export const Button = React.memo(({
         ...rest
     };
 
-    // ECC: Props for the underlying element
-    const elementProps = {
-        className: combinedClassName,
-        title,
-        'data-tooltip': tooltip,
-        onClick: (e) => {
-            if (disabled || loading) {
-                e.preventDefault();
-                return;
-            }
-            if (onClick) onClick(e);
-        },
-        ...rest
-    };
-
     if (to && !isExternal) {
         return (
             <Link to={to} {...elementProps}>

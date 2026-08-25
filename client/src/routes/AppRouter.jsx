@@ -39,10 +39,6 @@ const DayCellPlayground = lazy(() => import('@/features/appointments/components/
 
 const PublicRegisterPage = lazy(() => import('@/features/patients/PublicRegisterPage').then(m => ({ default: m.PublicRegisterPage })));
 
-import DayCellPlayground from '@/features/appointments/components/calendar/v2/DayCellPlayground';
-
-const PublicRegisterPage = lazy(() => import('@/features/patients').then(m => ({ default: m.PublicRegisterPage })));
-
 /**
  * AppRouter Component.
  * Pure Executor component that defines the routing tree.
