@@ -102,6 +102,15 @@ class FinanceService {
                         throw new Error(`El monto a ingresar ($${incomingTotal}) supera el saldo pendiente del turno ($${remainingDebt}).`);
                     }
                 }
+
+                lastTransactionId = await transactionRepository.callSpCreateTransaction({
+                    ...data,
+                    amount,
+                    method: p.method || 'cash',
+                    related_user_id: relatedUserId,
+                    transaction_date: finalDate,
+                    idempotency_key: `${idempotencyKey}_${i}`
+                }, connection);
             }
 
             if (data.request_id || data.requestId) {
@@ -374,6 +383,35 @@ class FinanceService {
         if (type === 'appointment') {
             await conn.query("UPDATE appointments SET paid_at = NOW() WHERE id = ? AND paid_at IS NULL", [id]);
         }
+    }
+
+    async payDebt(data, _userId) {
+        const payAmount = parseFloat(data.amount);
+        if (isNaN(payAmount) || payAmount <= 0) throw new Error("Invalid amount");
+        
+        if (data.patientId) {
+            const idempotencyKey = data.idempotency_key || `pay_pat_${data.patientId}_${Date.now()}`;
+            await pool.query("CALL proc_pay_patient_debt(?, ?, ?, ?, ?, ?)", [
+                data.patientId, payAmount, data.method, data.doctor_id || null, 'PAGO_DEUDA', idempotencyKey
+            ]);
+            return { amount: payAmount, idempotencyKey };
+        } else if (data.doctorId) {
+            const idempotencyKey = data.idempotency_key || `pay_doc_${data.doctorId}_${Date.now()}`;
+            await pool.query("CALL proc_pay_doctor_debt(?, ?, ?, ?, ?)", [
+                data.doctorId, payAmount, data.method, 'PAGO_ALQUILER', idempotencyKey
+            ]);
+            return { amount: payAmount, idempotencyKey };
+        } else {
+            throw new Error("Patient ID or Doctor ID is required to pay debt");
+        }
+    }
+
+    async syncRequestPaymentStatus(requestId, conn = pool) {
+        await conn.query("CALL sp_sync_request_payment_status(?)", [requestId]);
+    }
+
+    async markAsBonified(id, type, conn = pool) {
+        await transactionRepository.callSpMarkAsBonified(id, type, conn);
     }
 }
 

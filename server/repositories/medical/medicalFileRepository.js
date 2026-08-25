@@ -51,6 +51,15 @@ class MedicalFileRepository {
         if (whereClauses.length > 0) {
             query += " WHERE " + whereClauses.join(" AND ");
         }
+
+        if (doctorId) {
+            whereClauses.push("EXISTS (SELECT 1 FROM patient_doctors pd WHERE pd.patient_id = f.patient_id AND pd.doctor_id = ?)");
+            params.push(doctorId);
+        }
+
+        if (whereClauses.length > 0) {
+            query += " WHERE " + whereClauses.join(" AND ");
+        }
         query += " ORDER BY f.created_at DESC";
         return await conn.query(query, params);
     }

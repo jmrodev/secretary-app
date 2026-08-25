@@ -1,3 +1,4 @@
+import React from 'react';
 import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
 import { useAuth } from '@/features/auth/AuthContext';

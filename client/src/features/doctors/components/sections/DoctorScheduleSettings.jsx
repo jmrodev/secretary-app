@@ -114,7 +114,7 @@ export const DoctorScheduleSettings = ({
                 <p className={`${styles.DoctorScheduleSettings__desc}`}>{t('doctor_schedule_settings_desc')}</p>
             </header>
 
-            <ScheduleBulkActions
+            <ScheduleBulkActionsComponent
                 bulkStart={bulkStart}
                 setBulkStart={setBulkStart}
                 bulkEnd={bulkEnd}
@@ -162,7 +162,7 @@ export const DoctorScheduleSettings = ({
                                     {isActive && (
                                         <div className={`${styles.DoctorScheduleSettings__scheduleBlocks}`}>
                                             {dayBlocks.map((block) => (
-                                                <ScheduleTimeBlock
+                                                <ScheduleTimeBlockComponent
                                                     key={block._key || block.originalIndex}
                                                     block={block}
                                                     onFocus={() => setFocusedIndex(block.originalIndex)}

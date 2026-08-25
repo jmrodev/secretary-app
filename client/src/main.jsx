@@ -17,7 +17,7 @@ import { SearchProvider } from '@/context/SearchProvider';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <AuthProvider>
         <LanguageProvider>
           <MessageProvider>
@@ -33,6 +33,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           </MessageProvider>
         </LanguageProvider>
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>
 );

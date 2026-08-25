@@ -32,6 +32,16 @@ exports.publicRegister = async (req, res) => {
     }
 };
 
+exports.publicRegister = async (req, res) => {
+    try {
+        const result = await authService.publicRegister(req, req.body);
+        res.status(201).json(result);
+    } catch (err) {
+        console.error("Public Register Error:", err);
+        res.status(err.message === 'User already exists' ? 409 : 400).send(err.message);
+    }
+};
+
 /**
  * login
  * Delegating login logic to AuthService.
