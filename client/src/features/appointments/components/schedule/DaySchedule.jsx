@@ -3,8 +3,8 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useDayScheduleHandlers } from '@/features/appointments/hooks/useDayScheduleHandlers';
 import { useDayScheduleController } from '@/features/appointments/hooks/useDayScheduleController';
 
-import DayScheduleHeader from './DayScheduleHeader.jsx';
-import ScheduleTimeline from './ScheduleTimeline.jsx';
+import { DayScheduleHeader } from './DayScheduleHeader.jsx';
+import { ScheduleTimeline } from './ScheduleTimeline.jsx';
 
 import styles from './DaySchedule.module.css';
 
@@ -14,7 +14,7 @@ const EMPTY_ARRAY = [];
  * ECC-Pattern: Optimized DaySchedule (Executor).
  * Orchestrates the display of daily appointments using server-side fetching.
  */
-const DaySchedule = ({
+export const DaySchedule = ({
     date, onSlotClick, doctor, schedule, onDateSelect,
     holidays = EMPTY_ARRAY, showOutOfHours, setShowOutOfHours, onNextFreeSlot,
     isLoading = false
@@ -48,7 +48,7 @@ const DaySchedule = ({
     };
 
     return (
-        <div className={styles.root} data-scroll-container>
+        <div className={styles.DaySchedule__root} data-scroll-container>
             <DayScheduleHeader
                 date={date} holiday={null} showOutOfHours={showOutOfHours} setShowOutOfHours={setShowOutOfHours}
                 showCancelled={showCancelled} setShowCancelled={setShowCancelled}
@@ -66,4 +66,3 @@ const DaySchedule = ({
     );
 };
 
-export default DaySchedule;

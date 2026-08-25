@@ -1,31 +1,31 @@
 /* CashBoxSummary Component Styles (BEM) */
 
-.root {
+.CashBoxSummary__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.compact {
-    background-color: var(--gray-50);
+.CashBoxSummary__compact {
+    background-color: var(--card-surface-bg);
     padding: 0.75rem 1rem;
     border-radius: var(--radius-sm);
-    border: 1px solid var(--gray-200);
+    border: 1px solid var(--dashboard-card-border);
 }
 
-.header {
+.CashBoxSummary__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.title {
+.CashBoxSummary__title {
     font-size: 1.125rem;
     font-weight: 800;
     color: var(--text-main);
 }
 
-.headerCompact {
+.CashBoxSummary__headerCompact {
     font-size: 0.65rem;
     font-weight: 900;
     text-transform: uppercase;
@@ -34,67 +34,67 @@
     letter-spacing: 0.05em;
 }
 
-.grid {
+.CashBoxSummary__grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.25rem;
 }
 
-.card {
+.CashBoxSummary__card {
     padding: 1.5rem;
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.card:hover {
+.CashBoxSummary__card:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
 
-.itemCompact {
+.CashBoxSummary__itemCompact {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 0;
-    border-bottom: 1px dashed var(--gray-200);
+    border-bottom: 1px dashed var(--dashboard-card-border);
 }
 
-.itemCompact:last-of-type {
+.CashBoxSummary__itemCompact:last-of-type {
     border-bottom: none;
 }
 
-.doctorName {
+.CashBoxSummary__doctorName {
     font-size: 1.1rem;
     font-weight: 800;
     margin-bottom: 1.25rem;
     color: var(--blue-700);
 }
 
-.nameCompact {
+.CashBoxSummary__nameCompact {
     font-size: 0.8125rem;
     font-weight: 700;
     color: var(--text-main);
 }
 
-.details {
+.CashBoxSummary__details {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.valuesCompact {
+.CashBoxSummary__valuesCompact {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.row {
+.CashBoxSummary__row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0.25rem 0;
 }
 
-.label {
+.CashBoxSummary__label {
     font-size: 0.875rem;
     font-weight: 700;
     color: var(--text-secondary);
@@ -103,7 +103,7 @@
     gap: 0.5rem;
 }
 
-.hint {
+.CashBoxSummary__hint {
     font-size: 0.65rem;
     color: var(--text-muted);
     font-weight: 600;
@@ -111,24 +111,24 @@
     letter-spacing: 0.02em;
 }
 
-.amount {
+.CashBoxSummary__amount {
     font-size: 1rem;
     font-weight: 900;
 }
 
-.amountCash {
+.CashBoxSummary__amountCash {
     color: var(--success);
 }
 
-.amountTransfer {
+.CashBoxSummary__amountTransfer {
     color: var(--blue-600);
 }
 
-.amountNegative {
+.CashBoxSummary__amountNegative {
     color: var(--error);
 }
 
-.methodCompact {
+.CashBoxSummary__methodCompact {
     font-weight: 800;
     font-size: 0.8125rem;
     display: flex;
@@ -136,32 +136,32 @@
     gap: 0.25rem;
 }
 
-.methodCompactCash {
+.CashBoxSummary__methodCompactCash {
     color: var(--success);
 }
 
-.methodCompactTransfer {
+.CashBoxSummary__methodCompactTransfer {
     color: var(--blue-600);
 }
 
-.iconCompact {
+.CashBoxSummary__iconCompact {
     opacity: 0.8;
 }
 
-.iconCash {
+.CashBoxSummary__iconCash {
     color: var(--success);
 }
 
-.iconTransfer {
+.CashBoxSummary__iconTransfer {
     color: var(--blue-500);
 }
 
-.separatorCompact {
+.CashBoxSummary__separatorCompact {
     color: var(--gray-300);
     font-size: 0.75rem;
 }
 
-.viewAllBtn {
+.CashBoxSummary__viewAllBtn {
     margin-top: 1rem;
     width: 100%;
     justify-content: center;

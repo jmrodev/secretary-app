@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Badge from '@/components/atoms/Badge';
-import InvoiceDetailContent from '@/features/finances/components/sections/InvoiceDetailContent';
+import { Icon } from '@/components/atoms/Icon';
+import { Badge } from '@/components/atoms/Badge';
+import { InvoiceDetailContent } from '@/features/finances/components/sections/InvoiceDetailContent';
 import styles from './TransactionsTable.module.css';
 
 /**
@@ -10,7 +10,7 @@ import styles from './TransactionsTable.module.css';
  * Renders a specialized row for the financial ledger in the finances domain.
  * Refactored to follow BEM and Atomic Design standards.
  */
-const TransactionRow = ({
+export const TransactionRow = ({
     tx,
     groupLength,
     canManagerFinance,
@@ -45,15 +45,6 @@ const TransactionRow = ({
         : (isWithdrawal
             ? styles.rowWithdrawal
             : (isIncome ? styles.rowIncome : styles.rowExpense));
-
-    // Normalizing status for Badge atom
-    const getStatusVariant = (status, bonified) => {
-        if (bonified === 1 || status === 'bonified') return 'blue';
-        if (status === 'paid' || status === 'completed') return 'success';
-        if (status === 'pending') return 'warning';
-        if (status === 'rejected' || status === 'cancelled') return 'danger';
-        return 'default';
-    };
 
     return (
         <tr className={`transactions-table__row ${rowColorClass} ${isGrouped ? 'transactions-table__row--grouped' : ''} animate-fade-in`}>
@@ -168,7 +159,4 @@ const TransactionRow = ({
         </tr>
     );
 };
-
-export default TransactionRow;
-
 

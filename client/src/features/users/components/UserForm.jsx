@@ -1,17 +1,18 @@
 import React from 'react';
-import FormGroup from '@/components/molecules/FormGroup';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import PhoneNumbersManager from '@/components/molecules/PhoneNumbersManager';
+import { FormGroup } from '@/components/molecules/FormGroup';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { PhoneNumbersManager } from '@/components/molecules/PhoneNumbersManager';
 import { useLanguage } from '@/hooks/useLanguage';
 import { capitalizeWords } from '@/utils/core/stringUtils';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './UserForm.module.css';
 
-const UserForm = ({ type, formData, setFormData }) => {
+export const UserForm = ({ type, formData, setFormData }) => {
     const { t } = useLanguage();
 
     const handleUserUpdate = (field, value) => {
-        if (['full_name', 'specialty'].includes(field) && typeof value === 'string') {
+        if (['first_name', 'last_name', 'full_name', 'specialty'].includes(field) && typeof value === 'string') {
             value = capitalizeWords(value);
         }
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -19,29 +20,21 @@ const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'DELETE') {
         return (
-            <div className={`${styles.root} animate-fade-in`}>
-                <p className={`${styles.hint}`}>
-                    {t('delete_confirmation') || '¿Eliminar usuario?'} <strong>{formData.username}</strong>?
+            <div className={`${styles.UserForm__root} ${sharedStyles.AnimateFadeIn}`}>
+                <p className={`${styles.UserForm__hint}`}>
+                    {t('delete_confirmation')} <strong>{formData.username}</strong>?
                     <br />
-                    <span className={`${styles.hintDanger}`}>{t('action_cannot_undone')}</span>
+                    <span className={`${styles.UserForm__hintDanger}`}>{t('action_cannot_undone')}</span>
                 </p>
-                <FormGroup label="Código de Seguridad (1234)">
-                    <Input
-                        type="password"
-                        placeholder="Ingrese 1234 para confirmar"
-                        value={formData.securityCode || ''}
-                        onChange={e => handleUserUpdate('securityCode', e.target.value)}
-                    />
-                </FormGroup>
             </div>
         );
     }
 
     if (type === 'RESET_DNI') {
         return (
-            <div className={`${styles.alert} animate-fade-in`}>
-                <p className={`${styles.alertText}`}>
-                    ¿Reiniciar contraseña de <strong>{formData.username}</strong> al DNI (<strong>{formData.dni}</strong>)?
+            <div className={`${styles.UserForm__alert} ${sharedStyles.AnimateFadeIn}`}>
+                <p className={`${styles.UserForm__alertText}`}>
+                    {t('reset_password_to_dni_confirm')} <strong>{formData.username}</strong> {t('to_dni')} (<strong>{formData.dni}</strong>)?
                 </p>
             </div>
         );
@@ -49,12 +42,12 @@ const UserForm = ({ type, formData, setFormData }) => {
 
     if (type === 'RESET_MANUAL') {
         return (
-            <div className={`${styles.root} animate-fade-in`}>
+            <div className={`${styles.UserForm__root} ${sharedStyles.AnimateFadeIn}`}>
                 <FormGroup label={t('new_password')}>
                     <Input
                         value={formData.password}
                         onChange={e => handleUserUpdate('password', e.target.value)}
-                        placeholder="Nueva contraseña"
+                        placeholder={t('new_password_placeholder')}
                     />
                 </FormGroup>
             </div>
@@ -62,8 +55,8 @@ const UserForm = ({ type, formData, setFormData }) => {
     }
 
     return (
-        <div className={`${styles.root} animate-fade-in`}>
-            <div className={`${styles.row}`}>
+        <div className={`${styles.UserForm__root} ${sharedStyles.AnimateFadeIn}`}>
+            <div className={`${styles.UserForm__row}`}>
                 <FormGroup label={t('username')} required>
                     <Input
                         value={formData.username}
@@ -74,6 +67,7 @@ const UserForm = ({ type, formData, setFormData }) => {
                     <FormGroup label={t('password')} required>
                         <Input
                             type="password"
+                            autoComplete="new-password"
                             value={formData.password}
                             onChange={e => handleUserUpdate('password', e.target.value)}
                         />
@@ -88,17 +82,41 @@ const UserForm = ({ type, formData, setFormData }) => {
                     options={[
                         { value: 'doctor', label: t('doctor') },
                         { value: 'secretary', label: t('secretary') },
-                        { value: 'admin', label: 'Administrador' }
+                        { value: 'admin', label: t('admin') }
                     ]}
                 />
             </FormGroup>
 
-            <FormGroup label={t('full_name')} required>
-                <Input
-                    value={formData.full_name}
-                    onChange={e => handleUserUpdate('full_name', e.target.value)}
-                />
-            </FormGroup>
+            <div className={`${styles.UserForm__row}`}>
+                <FormGroup label={t('first_name')} required>
+                    <Input
+                        value={formData.first_name || ''}
+                        onChange={e => handleUserUpdate('first_name', e.target.value)}
+                    />
+                </FormGroup>
+                <FormGroup label={t('last_name')} required>
+                    <Input
+                        value={formData.last_name || ''}
+                        onChange={e => handleUserUpdate('last_name', e.target.value)}
+                    />
+                </FormGroup>
+            </div>
+
+            <div className={`${styles.UserForm__row}`}>
+                <FormGroup label={t('email')}>
+                    <Input
+                        type="email"
+                        value={formData.email || ''}
+                        onChange={e => handleUserUpdate('email', e.target.value)}
+                    />
+                </FormGroup>
+                <FormGroup label={t('address')}>
+                    <Input
+                        value={formData.address || ''}
+                        onChange={e => handleUserUpdate('address', e.target.value)}
+                    />
+                </FormGroup>
+            </div>
 
             <FormGroup label={t('dni')}>
                 <Input
@@ -107,7 +125,7 @@ const UserForm = ({ type, formData, setFormData }) => {
                 />
             </FormGroup>
 
-            <div className={`${styles.divider}`}>
+            <div className={`${styles.UserForm__divider}`}>
                 <PhoneNumbersManager
                     phoneNumbers={formData.phoneNumbers}
                     onChange={(newPhones) => handleUserUpdate('phoneNumbers', newPhones)}
@@ -119,12 +137,10 @@ const UserForm = ({ type, formData, setFormData }) => {
                     <Input
                         value={formData.specialty}
                         onChange={e => handleUserUpdate('specialty', e.target.value)}
-                        placeholder="E.g. Cardiología"
+                        placeholder={t('specialty_placeholder')}
                     />
                 </FormGroup>
             )}
         </div>
     );
 };
-
-export default UserForm;

@@ -1,15 +1,15 @@
 import React from 'react';
-import ReportFilters from '@/features/reports/components/ui/ReportFilters';
-import AppointmentReportTable from '@/features/reports/components/tables/AppointmentReportTable';
-import PrescriptionReportTable from '@/features/reports/components/tables/PrescriptionReportTable';
-import LicenseReportTable from '@/features/reports/components/tables/LicenseReportTable';
-import CertificateReportTable from '@/features/reports/components/tables/CertificateReportTable';
-import BalanceView from '@/features/reports/components/views/BalanceView';
-import PageHeader from '@/components/ui/PageHeader';
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { ReportFilters } from '@/features/reports/components/ui/ReportFilters';
+import { AppointmentReportTable } from '@/features/reports/components/tables/AppointmentReportTable';
+import { PrescriptionReportTable } from '@/features/reports/components/tables/PrescriptionReportTable';
+import { LicenseReportTable } from '@/features/reports/components/tables/LicenseReportTable';
+import { CertificateReportTable } from '@/features/reports/components/tables/CertificateReportTable';
+import { BalanceView } from '@/features/reports/components/views/BalanceView';
+import { PageHeader } from '@/components/ui/PageHeader';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 import styles from './ReportsDashboard.module.css';
 
-const ReportsDashboard = ({
+export const ReportsDashboard = ({
     t,
     activeTab,
     setActiveTab,
@@ -29,14 +29,14 @@ const ReportsDashboard = ({
     onPrint
 }) => {
     return (
-        <section className={styles.reportsDashboard}>
+        <section className={styles.ReportsDashboard}>
             <PageHeader 
                 title={t('reports_page_title')}
                 subtitle={t('reports_page_subtitle')}
             />
 
             <FeatureToolbar
-                className={styles.reportsDashboard__topActions}
+                className={styles.ReportsDashboard__topActions}
                 tabs={[
                     { id: 'appointments', label: t('appointments'), icon: 'event' },
                     { id: 'prescriptions', label: t('prescriptions'), icon: 'medication' },
@@ -64,12 +64,12 @@ const ReportsDashboard = ({
                 }
             />
 
-            <div className={`${styles.reportsDashboard__grid} animate-fade-in`}>
-                <main className={styles.reportsDashboard__main}>
-                    <div className={styles.reportsDashboard__card}>
-                        <div className={styles.results}>
+            <div className={`${styles.ReportsDashboard__grid} animate-fade-in`}>
+                <main className={styles.ReportsDashboard__main}>
+                    <div className={styles.ReportsDashboard__card}>
+                        <div className={styles.ReportsDashboard__results}>
                             {error && (
-                                <div className={styles.errorState}>
+                                <div className={styles.ReportsDashboard__errorState}>
                                     {error}
                                 </div>
                             )}
@@ -96,5 +96,5 @@ const ReportsDashboard = ({
     );
 };
 
-export default ReportsDashboard;
+
 

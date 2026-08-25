@@ -1,11 +1,11 @@
-.body {
+.EditRequestModal__body {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
     padding: 0.5rem 0;
 }
 
-.section {
+.EditRequestModal__section {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -13,34 +13,44 @@
     border-bottom: 1px dashed var(--border-color);
 }
 
-.prescriptions {
-    background: rgb(255 255 255 / 10%);
+.EditRequestModal__prescriptions {
+    background: var(--border-color);
     border-radius: 12px;
     padding: 0.5rem;
     max-height: 200px;
     overflow-y: auto;
-    border: 1px solid rgb(255 255 255 / 5%);
+    border: 1px solid var(--glass);
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.paymentStatus {
+.EditRequestModal__paymentStatus {
     padding: 1rem;
     background: rgb(var(--accent-color-rgb), 0.10);
-    border: 1px solid rgb(255 255 255 / 5%);
+    border: 1px solid var(--glass);
     border-radius: 12px;
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.titleFlex {
+.EditRequestModal__titleFlex {
     display: flex;
     align-items: center;
     gap: 0.75rem;
 }
 
-/* Checkbox specific to this modal */
-.paymentStatus .checkboxContainer {
-    margin: 0;
-    padding: 0;
+.EditRequestModal__groupLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.EditRequestModal__paymentStatus {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
 }

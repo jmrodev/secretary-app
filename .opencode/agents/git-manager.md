@@ -1,7 +1,7 @@
 ---
 description: Git branch management, PR creation, sync operations, and cleanup across branches
 mode: subagent
-model: anthropic/claude-sonnet-4-6
+model: opencode/hy3-free
 permission:
   bash: allow
   edit: deny

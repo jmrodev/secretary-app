@@ -1,15 +1,15 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import ChatMessageBubble from '@/features/chat/components/ui/ChatMessageBubble';
+import { Input } from '@/components/atoms/Input';
+import { ChatMessageBubble } from '@/features/chat/components/ui/ChatMessageBubble';
 import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * ChatThread Molecule (Feature Component).
  * Renders the active message thread and the input area to send new messages.
  */
-const ChatThread = ({
+export const ChatThread = ({
     thread,
     user,
     loading,
@@ -50,14 +50,14 @@ const ChatThread = ({
                 )}
                 {isOtherTyping && (
                     <div className="floating-chat__bubble floating-chat__bubble--received typing-indicator">
-                        <em>Escribiendo…</em>
+                        <em>{t('typing') || 'Escribiendo…'}</em>
                     </div>
                 )}
             </div>
             <form className="floating-chat__input-area" onSubmit={handleSendMessage}>
                 <div className="floating-chat__input-wrapper">
                     <Input
-                        placeholder="Responde aquí…"
+                        placeholder={t('reply_here_placeholder') || "Responde aquí…"}
                         value={messageText}
                         onChange={handleTyping}
                         disabled={sending}
@@ -76,5 +76,3 @@ const ChatThread = ({
         </>
     );
 };
-
-export default ChatThread;

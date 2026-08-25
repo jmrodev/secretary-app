@@ -1,4 +1,4 @@
-.root {
+.Pagination__root {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -8,31 +8,31 @@
     background: var(--dashboard-card-bg);
 }
 
-.info {
+.Pagination__info {
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--text-muted);
 }
 
-.controls {
+.Pagination__controls {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.pages {
+.Pagination__pages {
     display: flex;
     align-items: center;
     gap: 0.35rem;
 }
 
-.ellipsis {
+.Pagination__ellipsis {
     color: var(--text-muted);
     font-size: 0.9rem;
     user-select: none;
 }
 
-.pageBtn {
+.Pagination__pageBtn {
     min-width: 2rem;
     height: 2rem;
     display: flex;

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * AdminAuthModal Feature Molecule.
@@ -10,7 +12,8 @@ import Icon from '@/components/atoms/Icon';
  */
 import styles from './AdminAuthModal.module.css';
 
-const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
+export const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
+    const { t } = useLanguage();
     const [password, setPassword] = useState('');
     const inputRef = React.useRef(null);
 
@@ -31,28 +34,32 @@ const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
             isOpen={isOpen}
             onClose={onClose}
             title={
-                <div className={`${styles.title}`}>
+                <div className={`${styles.AdminAuthModal__title}`}>
                     <Icon name="lock" size="1.2rem" />
                     Autorización de Administrador
                 </div>
             }
         >
-            <form onSubmit={handleSubmit} className={`${styles.body}`}>
-                <p className={`${styles.instruction}`}>
+            <form onSubmit={handleSubmit} className={`${styles.AdminAuthModal__body}`}>
+                <p className={`${styles.AdminAuthModal__instruction}`}>
                     <Icon name="warning" size="1.1rem" color="var(--warning)" className="inline-icon" />
                     Esta acción está restringida por seguridad. Por favor, ingrese la contraseña maestra de administrador para continuar con el proceso.
                 </p>
-                <div className={`${styles.inputGroup}`}>
-                    <input
+                <div className={`${styles.AdminAuthModal__inputGroup}`}>
+                    <label htmlFor="admin-master-password" className={`${styles.AdminAuthModal__label}`}>
+                        {t('master_password') || 'Contraseña maestra'}
+                    </label>
+                    <Input
+                        id="admin-master-password"
                         type="password"
-                        className={`${styles.passwordInput} input-field`}
+                        className={styles.AdminAuthModal__passwordInput}
                         placeholder="••••••••"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         ref={inputRef}
                     />
                 </div>
-                <div className={`${styles.footer}`}>
+                <div className={`${styles.AdminAuthModal__footer}`}>
                     <Button
                         type="button" 
                         variant="ghost"
@@ -72,5 +79,3 @@ const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
         </Modal>
     );
 };
-
-export default AdminAuthModal;

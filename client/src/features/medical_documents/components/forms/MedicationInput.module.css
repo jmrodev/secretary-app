@@ -1,5 +1,5 @@
 /* MedicationInput Feature Styles */
-.root {
+.MedicationInput__root {
     width: 100%;
     padding: 0.75rem;
     background-color: var(--dashboard-card-bg);
@@ -7,11 +7,11 @@
     border-radius: var(--radius-sm);
 }
 
-.header {
+.MedicationInput__header {
     margin-bottom: 0.5rem;
 }
 
-.label {
+.MedicationInput__label {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -21,7 +21,7 @@
     margin-bottom: 0;
 }
 
-.optionalBadge {
+.MedicationInput__optionalBadge {
     display: inline-block;
     padding: 0.125rem 0.5rem;
     font-size: 0.65rem;
@@ -33,12 +33,12 @@
     letter-spacing: 0.025em;
 }
 
-.autocomplete {
+.MedicationInput__autocomplete {
     background-color: var(--dashboard-card-bg);
     border: 1px solid var(--dashboard-card-border);
 }
 
 
-.list {
+.MedicationInput__list {
     margin-top: 0.75rem;
 }

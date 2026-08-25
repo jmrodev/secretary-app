@@ -1,41 +1,41 @@
-.publicRegisterPaginated {
+.PublicRegisterPage__publicRegisterPaginated {
     min-height: 100vh;
-    background: #fff;
+    background: var(--text-main);
     display: flex;
     flex-direction: column;
     color: #000;
     font-family: system-ui, -apple-system, sans-serif;
 }
 
-.stepHeader {
+.PublicRegisterPage__stepHeader {
     padding: 1.5rem;
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgb(255 255 255 / 5%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    border-bottom: 1px solid var(--glass);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.progressText {
+.PublicRegisterPage__progressText {
     font-size: 1.5rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
 }
 
-.progressBar {
+.PublicRegisterPage__progressBar {
     height: 12px;
     background: #e9ecef;
     border-radius: 6px;
     overflow: hidden;
 }
 
-.progressFill {
+.PublicRegisterPage__progressFill {
     height: 100%;
     background: #007bff;
     transition: width 0.3s ease;
 }
 
-.stepContainer {
+.PublicRegisterPage__stepContainer {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -46,11 +46,11 @@
     width: 100%;
 }
 
-.stepField {
+.PublicRegisterPage__stepField {
     margin-bottom: 3rem;
 }
 
-.accessibleLabel {
+.PublicRegisterPage__accessibleLabel {
     display: block;
     font-size: 2.5rem;
     font-weight: 900;
@@ -59,40 +59,40 @@
     color: #000;
 }
 
-.accessibleInput {
+.PublicRegisterPage__accessibleInput {
     width: 100%;
     font-size: 2rem;
     padding: 1.5rem;
-    border: 1px solid rgb(255 255 255 / 5%);
+    border: 1px solid var(--glass);
     border-radius: 1rem;
-    background: rgb(255 255 255 / 10%);
+    background: var(--border-color);
     backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     color: #000;
     font-weight: 700;
 }
 
-.accessibleInput:focus {
+.PublicRegisterPage__accessibleInput:focus {
     outline: none;
     border-color: #007bff;
-    background: #fff;
+    background: var(--text-main);
     box-shadow: 0 0 0 6px rgb(0 123 255 / 20%);
 }
 
-.accessibleInputDisabled {
+.PublicRegisterPage__accessibleInputDisabled {
     background: #e9ecef;
     border-color: #adb5bd;
     color: #495057;
 }
 
-.stepFooter {
+.PublicRegisterPage__stepFooter {
     display: flex;
     gap: 1rem;
     margin-top: auto;
     padding-bottom: 2rem;
 }
 
-.btnHuge {
+.PublicRegisterPage__btnHuge {
     flex: 1;
     height: 6rem;
     font-size: 1.75rem;
@@ -106,23 +106,23 @@
     justify-content: center;
 }
 
-.btnHugePrimary {
+.PublicRegisterPage__btnHugePrimary {
     background: #000;
-    color: #fff;
+    color: var(--text-main);
 }
 
-.btnHugeSecondary {
+.PublicRegisterPage__btnHugeSecondary {
     background: #e9ecef;
     color: #000;
     border: 3px solid #000;
 }
 
-.btnHugeSuccess {
+.PublicRegisterPage__btnHugeSuccess {
     background: #28a745;
-    color: #fff;
+    color: var(--text-main);
 }
 
-.accessibleError {
+.PublicRegisterPage__accessibleError {
     background: rgb(255 0 0 / 10%);
     backdrop-filter: blur(16px);
     color: #c92a2a;
@@ -132,49 +132,49 @@
     border-radius: 1rem;
     margin-bottom: 2rem;
     border: 1px solid rgb(255 0 0 / 20%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
 }
 
-.successCard {
+.PublicRegisterPage__successCard {
     text-align: center;
     padding: 3rem;
 }
 
-.successEmoji {
+.PublicRegisterPage__successEmoji {
     font-size: 6rem;
     display: block;
     margin-bottom: 2rem;
 }
 
-.accessibleTitle {
+.PublicRegisterPage__accessibleTitle {
     font-size: 3rem;
     font-weight: 900;
     margin-bottom: 1.5rem;
 }
 
-.accessibleText {
+.PublicRegisterPage__accessibleText {
     font-size: 1.75rem;
     font-weight: 700;
     margin-bottom: 1rem;
 }
 
-.accessibleSubtext {
+.PublicRegisterPage__accessibleSubtext {
     font-size: 1.25rem;
     color: #495057;
 }
 
 /* Specific adjustments for very small phones */
 @media (width <= 400px) {
-    .accessibleLabel {
+    .PublicRegisterPage__accessibleLabel {
         font-size: 1.8rem;
     }
 
-    .accessibleInput {
+    .PublicRegisterPage__accessibleInput {
         font-size: 1.5rem;
         padding: 1rem;
     }
 
-    .btnHuge {
+    .PublicRegisterPage__btnHuge {
         font-size: 1.25rem;
         height: 5rem;
     }

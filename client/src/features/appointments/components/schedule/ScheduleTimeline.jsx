@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import AppointmentCard from '../cards/AppointmentCard';
-import Icon from '@/components/atoms/Icon';
+import { AppointmentCard } from '../cards/AppointmentCard';
+import { Icon } from '@/components/atoms/Icon';
 import { formatTime } from '@/utils/core/dateUtils';
 import styles from './ScheduleTimeline.module.css';
 
@@ -8,11 +8,10 @@ import styles from './ScheduleTimeline.module.css';
  * ScheduleTimeline (Executor Component).
  * Renders the list of time slots and their associated appointments.
  */
-const ScheduleTimeline = ({
+export const ScheduleTimeline = ({
     timeSlots, showOutOfHours, showCancelled, onSlotClick, onSlotAction, getAppointmentsForSlot, t,
     isLoading = false
 }) => {
-    let timeMarkerRendered = false;
     const now = new Date();
     const markerRef = useRef(null);
 
@@ -42,10 +41,23 @@ const ScheduleTimeline = ({
         return acc;
     }, []);
 
+    // Pure computation of the visible slot that currently contains "now".
+    // -1 means no slot qualifies (e.g. the visible list is empty or not today).
+    const currentSlotIndex = isTodaySchedule
+        ? filteredSlots.findIndex((slot, index) => {
+              const nextTime = index < filteredSlots.length - 1
+                  ? filteredSlots[index + 1].time
+                  : new Date(slot.time.getTime() + 60 * 60 * 1000);
+              if (index === 0 && now < slot.time) return true;
+              if (now >= slot.time && now < nextTime) return true;
+              return index === filteredSlots.length - 1 && now >= nextTime;
+          })
+        : -1;
+
 
 
     return (
-        <div className={`${styles.root}`}>
+        <div className={`${styles.ScheduleTimeline__root}`}>
             {filteredSlots.map((slot, index) => {
                 const { slotApps, type, isBlockedByGoogle, time } = slot;
                 const isSlotClosed = type === 'closed';
@@ -59,44 +71,36 @@ const ScheduleTimeline = ({
                     }
                 };
 
-                let isCurrentSlot = false;
-                let progressPercent = 0;
-                
-                if (isTodaySchedule && !timeMarkerRendered) {
-                    const nextTime = index < filteredSlots.length - 1 ? filteredSlots[index+1].time : new Date(time.getTime() + 60*60*1000);
-                    
+                const isCurrentSlot = index === currentSlotIndex;
+                const progressPercent = (() => {
+                    if (!isCurrentSlot) return 0;
+                    const nextTime = index < filteredSlots.length - 1 ? filteredSlots[index + 1].time : new Date(time.getTime() + 60 * 60 * 1000);
                     if (index === 0 && now < time) {
                         // La hora actual es anterior al primer slot visible (ej. son las 08:30 y el primer turno es a las 09:00)
-                        isCurrentSlot = true;
-                        timeMarkerRendered = true;
-                        progressPercent = 0;
-                    } else if (now >= time && now < nextTime) {
+                        return 0;
+                    }
+                    if (now >= time && now < nextTime) {
                         // La hora actual cae dentro de este slot
-                        isCurrentSlot = true;
-                        timeMarkerRendered = true;
                         const totalDuration = nextTime.getTime() - time.getTime();
                         const elapsed = now.getTime() - time.getTime();
-                        progressPercent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-                    } else if (index === filteredSlots.length - 1 && now >= nextTime) {
-                        // La hora actual es posterior a todo el rango visible dentro de horario (ej. pasadas las 12:00 p.m.)
-                        isCurrentSlot = true;
-                        timeMarkerRendered = true;
-                        progressPercent = 100;
+                        return Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
                     }
-                }
+                    // La hora actual es posterior a todo el rango visible dentro de horario (ej. pasadas las 12:00 p.m.)
+                    return 100;
+                })();
 
                 return (
                     <div key={timeKey} style={{ position: 'relative', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%' }}>
                         {isCurrentSlot && (
-                            <div ref={markerRef} className={styles.currentTimeLine} style={{ top: `${progressPercent}%`, left: 0, right: 0 }}>
-                                <div className={styles.currentTimeLineLabel}>AHORA</div>
-                                <div className={styles.currentTimeLineBar}></div>
+                            <div ref={markerRef} className={styles.ScheduleTimeline__currentTimeLine} style={{ top: `${progressPercent}%`, left: 0, right: 0 }}>
+                                <div className={styles.ScheduleTimeline__currentTimeLineLabel}>{t('now') || 'AHORA'}</div>
+                                <div className={styles.ScheduleTimeline__currentTimeLineBar}></div>
                             </div>
                         )}
                         {isBlockedByGoogle ? (
-                            <div className={`${styles.googleBlocked}`}>
+                            <div className={`${styles.ScheduleTimeline__googleBlocked}`}>
                                 <Icon name="lock" size="1.2rem" />
-                                <span>Bloqueado</span>
+                                <span>{t('blocked') || 'Bloqueado'}</span>
                             </div>
                         ) : slotApps.length > 0 ? (
                             slotApps.map(appt => {
@@ -113,21 +117,21 @@ const ScheduleTimeline = ({
                             })
                         ) : !isBlocked && (
                             <div
-                                className={`${styles.availableCard} ${isSlotClosed ? styles.availableClosed : ''}`}
+                                className={`${styles.ScheduleTimeline__availableCard} ${isSlotClosed ? styles.ScheduleTimeline__availableClosed : ''}`}
                                 onClick={() => onSlotAction(slot)}
                                 onKeyDown={handleKeyDown}
                                 role="button"
                                 tabIndex={0}
                                 aria-label={`${t('available')} ${formatTime(time)}`}
                             >
-                                <div className={styles.availableTimeTop}>
+                                <div className={styles.ScheduleTimeline__availableTimeTop}>
                                     {formatTime(time)}
                                 </div>
-                                <div className={styles.availableBody}>
-                                    <span className={`${styles.availableIcon}`}>
+                                <div className={styles.ScheduleTimeline__availableBody}>
+                                    <span className={`${styles.ScheduleTimeline__availableIcon}`}>
                                         <Icon name={isSlotClosed ? 'lock' : 'add'} size="1.5rem" />
                                     </span>
-                                    <span className={`${styles.availableLabel}`}>
+                                    <span className={`${styles.ScheduleTimeline__availableLabel}`}>
                                         {isSlotClosed ? (t('closed_hours') || 'Fuera de Horario') : (t('available') || 'Disponible')}
                                     </span>
                                 </div>
@@ -137,15 +141,14 @@ const ScheduleTimeline = ({
                 );
             })}
             
-            {/* If it's today and marker was never rendered, it means all slots are in the past. Render at the very end. */}
-            {isTodaySchedule && !timeMarkerRendered && (
-                <div ref={markerRef} className={styles.currentTimeLine}>
-                    <div className={styles.currentTimeLineLabel}>AHORA</div>
-                    <div className={styles.currentTimeLineBar}></div>
+            {/* If it's today and no slot contains "now", all visible slots are in the past. Render at the very end. */}
+            {isTodaySchedule && currentSlotIndex === -1 && (
+                <div ref={markerRef} className={styles.ScheduleTimeline__currentTimeLine}>
+                    <div className={styles.ScheduleTimeline__currentTimeLineLabel}>{t('now') || 'AHORA'}</div>
+                    <div className={styles.ScheduleTimeline__currentTimeLineBar}></div>
                 </div>
             )}
         </div>
     );
 };
 
-export default ScheduleTimeline;

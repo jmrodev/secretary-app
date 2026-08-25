@@ -1,10 +1,11 @@
 import React from 'react';
-import { PatientForm, usePatientFormController } from '@/features/patients';
-import StatusDisplay from '@/components/molecules/StatusDisplay';
+import { PatientForm } from '@/features/patients/components/forms/PatientForm';
+import { usePatientFormController } from '@/features/patients/hooks/usePatientFormController';
+import { StatusDisplay } from '@/components/molecules/StatusDisplay';
 import { useTempAccessController } from '@/features/users/hooks/useTempAccessController';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './TempAccessPage.module.css';
 
 const TempAccessFormWrapper = ({ initialData, insurances, onSubmit, isEdit }) => {
@@ -22,7 +23,7 @@ const TempAccessFormWrapper = ({ initialData, insurances, onSubmit, isEdit }) =>
  * TempAccessPage (Orchestrator).
  * Allows patients to register or update their data via a temporary link.
  */
-const TempAccessPage = () => {
+export const TempAccessPage = () => {
     const {
         loading,
         error,
@@ -36,14 +37,14 @@ const TempAccessPage = () => {
     const { t } = useLanguage();
 
     if (loading) {
-        return <StatusDisplay type="loading" message="Cargando perfil..." />;
+        return <StatusDisplay type="loading" message={t('loading_profile') || "Cargando perfil..."} />;
     }
 
     if (error) {
         return (
             <StatusDisplay
                 type="error"
-                title="Enlace Inválido"
+                title={t('invalid_link') || "Enlace Inválido"}
                 message={error}
             />
         );
@@ -53,26 +54,25 @@ const TempAccessPage = () => {
         return (
             <StatusDisplay
                 type="success"
-                title="¡Datos Guardados!"
-                message="Gracias por completar tu información. Ya puedes cerrar esta ventana y devolver el dispositivo o esperar a ser llamado."
+                title={t('data_saved_success_title') || "¡Datos Guardados!"}
+                message={t('temp_access_success_message') || "Gracias por completar tu información. Ya puedes cerrar esta ventana y devolver el dispositivo o esperar a ser llamado."}
             />
         );
     }
 
     return (
-        <div className={`${styles.tempAccessOrchestrator}`}>
-            <div className={`${styles.container}`}>
-                <article className={`${styles.card}`}>
-                    <header className={`${styles.header}`}>
-                        <h1 className={`${styles.title}`}>
-                            {isNew ? 'Registro de Paciente' : 'Actualizar mis Datos'}
+        <section className={`${styles.TempAccessPage__container}`}>
+            <article className={`${styles.TempAccessPage__card}`}>
+                    <header className={`${styles.TempAccessPage__header}`}>
+                        <h1 className={`${styles.TempAccessPage__title}`}>
+                            {isNew ? t('temp_access_register_title') : t('temp_access_update_title')}
                         </h1>
-                        <p className={`${styles.subtitle}`}>
-                            Por favor completa los siguientes campos para continuar.
+                        <p className={`${styles.TempAccessPage__subtitle}`}>
+                            {t('temp_access_subtitle')}
                         </p>
                     </header>
 
-                    <section className={`${styles.formSection}`}>
+                    <section className={`${styles.TempAccessPage__formSection}`}>
                         <TempAccessFormWrapper
                             initialData={initialData}
                             insurances={insurances}
@@ -82,28 +82,25 @@ const TempAccessPage = () => {
                     </section>
                 </article>
 
-                <aside className={`${styles.downloadCard} animate-fade-in`}>
-                    <div className={`${styles.downloadInfo}`}>
-                        <h4 className={`${styles.downloadTitle}`}>
+                <aside className={`${styles.TempAccessPage__downloadCard} `}>
+                    <div className={`${styles.TempAccessPage__downloadInfo}`}>
+                        <h4 className={`${styles.TempAccessPage__downloadTitle}`}>
                             <Icon name="SMARTPHONE" className="mr-2" />
                             {t('mobile_app')}
                         </h4>
-                        <p className={`${styles.downloadText}`}>
-                            Descarga nuestra aplicación para gestionar tus turnos y recetas más rápido.
+                        <p className={`${styles.TempAccessPage__downloadText}`}>
+                            {t('temp_access_download_text')}
                         </p>
                     </div>
                     <Button
                         variant="secondary"
-                        className={`${styles.downloadButton}`}
+                        className={`${styles.TempAccessPage__downloadButton}`}
                         icon={<Icon name="DOWNLOAD" size="1.1rem" />}
                         onClick={() => window.open('/uploads/secretary-app.apk', '_blank')}
                     >
                         {t('download_apk')}
                     </Button>
                 </aside>
-            </div>
-        </div>
+        </section>
     );
 };
-
-export default TempAccessPage;

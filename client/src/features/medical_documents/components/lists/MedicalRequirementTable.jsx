@@ -1,11 +1,12 @@
 import React from 'react';
-import Pagination from '@/components/atoms/Pagination';
-import TabButton from '@/components/atoms/TabButton';
-import Icon from '@/components/atoms/Icon';
+import { Pagination } from '@/components/atoms/Pagination';
+import { TabButton } from '@/components/atoms/TabButton';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
-import RequirementItem from '@/features/medical_documents/components/sections/RequirementItem';
+import { RequirementItem } from '@/features/medical_documents/components/sections/RequirementItem';
+import managerStyles from '@/features/medical_documents/components/ui/MedicalRequirementManager.module.css';
 
-const MedicalRequirementTable = ({
+export const MedicalRequirementTable = ({
     requests,
     filter,
     setFilter,
@@ -25,9 +26,9 @@ const MedicalRequirementTable = ({
     onPageChange
 }) => {
     return (
-        <div className="medical-requirement-manager__content animate-fade-in">
+        <div className={`${managerStyles.MedicalRequirementManager__content} animate-fade-in`}>
             {!hideFilters && (
-                <div className="medical-requirement-manager__filters">
+                <div className={managerStyles.MedicalRequirementManager__filters}>
                     <TabButton
                         variant="pill"
                         isActive={filter === 'active'}
@@ -46,7 +47,7 @@ const MedicalRequirementTable = ({
             )}
 
             {requests.length === 0 ? (
-                <div className="medical-requirement-manager__empty">
+                <div className={managerStyles.MedicalRequirementManager__empty}>
                     <Icon name="inbox" size="3rem" />
                     <p>{t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}</p>
                     {filter === 'active' && (
@@ -60,18 +61,18 @@ const MedicalRequirementTable = ({
                     )}
                 </div>
             ) : (
-                <div className="medical-requirement-manager__table-container">
-                    <table className="medical-requirement-manager__table">
-                        <thead className="medical-requirement-manager__table-head">
-                            <tr className="medical-requirement-manager__table-row">
-                                <th className="medical-requirement-manager__table-header">{t('type') || 'Tipo'}</th>
-                                <th className="medical-requirement-manager__table-header">{t('date') || 'Fecha'}</th>
-                                <th className="medical-requirement-manager__table-header">{t('patient') || 'Paciente'}</th>
-                                <th className="medical-requirement-manager__table-header">{t('status') || 'Estado'}</th>
-                                <th className="medical-requirement-manager__table-header">{t('actions') || 'Acciones'}</th>
+                <div className={managerStyles.MedicalRequirementManager__tableContainer}>
+                    <table className={managerStyles.MedicalRequirementManager__table}>
+                        <thead>
+                            <tr>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('type') || 'Tipo'}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('date') || 'Fecha'}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('patient') || 'Paciente'}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('status') || 'Estado'}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('actions') || 'Acciones'}</th>
                             </tr>
                         </thead>
-                        <tbody className="medical-requirement-manager__table-body">
+                        <tbody>
                             {requests.map(r => (
                                 <RequirementItem
                                     key={r.id}
@@ -92,7 +93,7 @@ const MedicalRequirementTable = ({
             )}
 
             {totalPages > 1 && (
-                <div className="medical-requirement-manager__pagination">
+                <div>
                     <Pagination
                         currentPage={currentPage}
                         totalPages={totalPages}
@@ -105,4 +106,3 @@ const MedicalRequirementTable = ({
     );
 };
 
-export default MedicalRequirementTable;

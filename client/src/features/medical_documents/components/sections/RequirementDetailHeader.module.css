@@ -1,32 +1,32 @@
 
 /* RequirementDetailHeader Styles (BEM) */
 
-.header {
+.RequirementDetailHeader__header {
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--gray-100);
 }
 
-.patient {
+.RequirementDetailHeader__patient {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     margin-bottom: 0.75rem;
 }
 
-.patientName {
+.RequirementDetailHeader__patientName {
     font-size: 1.25rem;
     font-weight: 800;
     color: var(--slate-900);
 }
 
-.patientDni {
+.RequirementDetailHeader__patientDni {
     font-size: 0.8rem;
     color: var(--slate-400);
     font-weight: 600;
 }
 
-.doctor {
+.RequirementDetailHeader__doctor {
     display: flex;
     align-items: center;
     gap: 0.5rem;

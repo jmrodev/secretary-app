@@ -1,0 +1,167 @@
+/* stylelint-disable plugin/selector-bem-pattern --
+   Shared aggregator module intentionally defines multiple BEM components
+   (ConfigSection, ConfigGrid, TabPanel, ActionBar, SearchBox, UserTable).
+   Under implicitComponents the component name is derived from the filename,
+   so a single multi-component module cannot satisfy the rule. All classes
+   below are authored in PascalCase BEM and reference variables.css tokens. */
+
+
+/* component: ConfigSection */
+.ConfigSection {
+    background: transparent;
+}
+
+.ConfigSection--boxed {
+    margin-top: 3rem;
+    background: var(--dashboard-card-bg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--dashboard-card-border);
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+}
+
+.ConfigSection__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.ConfigSection__icon {
+    font-size: 1.5rem;
+}
+
+.ConfigSection__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.ConfigSection__desc {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.ConfigSection__body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.ConfigSection__divider {
+    border-top: 1px solid var(--dashboard-card-border);
+    margin: 2rem 0;
+}
+
+.ConfigSection__text {
+    margin: 0;
+    color: var(--text-secondary);
+}
+
+.ConfigSection__description {
+    margin: 0;
+    color: var(--text-muted);
+}
+
+/* component: ConfigGrid */
+.ConfigGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (width >= 768px) {
+    .ConfigGrid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.ConfigGrid--2col {
+    grid-template-columns: 1fr 1fr;
+}
+
+.ConfigGrid--gap1 {
+    gap: 1rem;
+}
+
+/* component: AnimateFadeIn */
+.AnimateFadeIn {
+    animation: fade-in 0.3s ease-out forwards;
+}
+
+/* component: TextDanger */
+.TextDanger {
+    color: var(--error);
+}
+
+/* component: TabPanel */
+.TabPanel {
+    display: block;
+}
+
+/* component: ActionBar */
+.ActionBar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.ActionBar__search {
+    flex: 1 1 280px;
+    min-width: 0;
+}
+
+.ActionBar__tools {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* component: SearchBox */
+.SearchBox__wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0 var(--spacing-sm);
+}
+
+.SearchBox__icon {
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+}
+
+.SearchBox__input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    background: transparent;
+    color: var(--text-main);
+    padding: var(--spacing-sm) 0;
+    outline: none;
+    font-family: var(--font-main);
+}
+
+.SearchBox__suggestionIcon {
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+}
+
+.SearchBox__suggestionStatus {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+/* component: UserTable */
+.UserTable__header {
+    background: var(--card-surface-bg);
+}

@@ -1,14 +1,14 @@
 import React from 'react';
-import TransactionModal from '@/features/finances/components/modals/TransactionModal';
-import CashBoxDeliveryModal from '@/features/finances/components/modals/CashBoxDeliveryModal';
-import EditTransactionModal from '@/features/finances/components/modals/EditTransactionModal';
-import PendingClosuresModal from '@/features/finances/components/modals/PendingClosuresModal';
+import { TransactionModal } from '@/features/finances/components/modals/TransactionModal';
+import { CashBoxDeliveryModal } from '@/features/finances/components/modals/CashBoxDeliveryModal';
+import { EditTransactionModal } from '@/features/finances/components/modals/EditTransactionModal';
+import { PendingClosuresModal } from '@/features/finances/components/modals/PendingClosuresModal';
 
 /**
  * FinanceModalOrchestrator.
  * Centralizes all domain modal dialogs for FinancesPage to reduce coupling in the main page component.
  */
-const FinanceModalOrchestrator = ({ controller, MedicationInputComponent }) => {
+export const FinanceModalOrchestrator = ({ controller, MedicationInputComponent }) => {
     const {
         modalOpen,
         selectedDoctorFilter,
@@ -73,4 +73,3 @@ const FinanceModalOrchestrator = ({ controller, MedicationInputComponent }) => {
     );
 };
 
-export default FinanceModalOrchestrator;

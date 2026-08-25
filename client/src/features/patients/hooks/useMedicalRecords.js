@@ -1,7 +1,15 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { getNow, addDays, toInputDate } from '@/utils/core/dateUtils';
+
+const calculateRefillDate = (units, daily, boxes = 1) => {
+    if (!units || !daily || isNaN(daily) || Number(daily) <= 0 || isNaN(units)) return null;
+
+    const totalUnits = Number(units) * Number(boxes || 1);
+    const daysLasting = Math.floor(totalUnits / Number(daily));
+    return toInputDate(addDays(getNow(), daysLasting));
+};
 
 /**
  * useMedicalRecords (Handler).
@@ -35,17 +43,9 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
         queueMicrotask(() => fetchMedications());
     }, [fetchMedications]);
 
-    const calculateRefillDate = (units, daily, boxes = 1) => {
-        if (!units || !daily || isNaN(daily) || Number(daily) <= 0 || isNaN(units)) return null;
-
-        const totalUnits = Number(units) * Number(boxes || 1);
-        const daysLasting = Math.floor(totalUnits / Number(daily));
-        return toInputDate(addDays(getNow(), daysLasting));
-    };
-
     const handleSaveMedications = async () => {
         if (pendingMedications.length === 0) {
-            showMessage(t('no_medications_to_add') || 'No hay medicamentos para agregar', 'warning');
+            showMessage(t('no_medications_to_add'), 'warning');
             return;
         }
 
@@ -58,7 +58,7 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
             ));
 
             showMessage(
-                t('medications_added') || `${pendingMedications.length} medicamento(s) agregado(s)`,
+                t('medications_added'),
                 'success'
             );
 
@@ -66,18 +66,18 @@ export const useMedicalRecords = (patientId, showMessage, t) => {
             setPendingMedications([]);
             fetchMedications();
         } catch {
-            showMessage(t('error_adding_medication') || 'Error al agregar medicamento', 'error');
+            showMessage(t('error_adding_medication'), 'error');
         }
     };
 
     const handleDiscontinue = async (id) => {
-        if (!window.confirm(t('confirm_discontinue_med') || '¿Descontinuar este medicamento?')) return;
+        if (!window.confirm(t('confirm_discontinue_med'))) return;
         try {
             await api.delete(`/medical/patients/medications/${id}`);
-            showMessage(t('medication_discontinued') || 'Medicamento descontinuado', 'success');
+            showMessage(t('medication_discontinued'), 'success');
             fetchMedications();
         } catch {
-            showMessage(t('error_discontinuing_med') || 'Error al descontinuar', 'error');
+            showMessage(t('error_discontinuing_med'), 'error');
         }
     };
 

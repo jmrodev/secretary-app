@@ -1,22 +1,33 @@
 import React from 'react';
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 
 export const MedicalDocumentsToolbar = ({ 
-    activeTab, 
     requestsSubTab, 
-    handleTabChange, 
     handleExportJSON, 
     handlePrintPrescriptions, 
     t 
 }) => {
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Determine active tab based on the current path
+    let activeTab = 'requests'; // Default
+    if (location.pathname.includes('/documents/prescriptions')) activeTab = 'prescriptions';
+    else if (location.pathname.includes('/documents/licenses')) activeTab = 'licenses';
+    else if (location.pathname.includes('/documents/certificates')) activeTab = 'certificates';
+
+    const handleTabChange = (tabId) => {
+        navigate(`/documents/${tabId}`);
+    };
+
     return (
         <FeatureToolbar
             className="medical-documents-page-orchestrator__top-actions"
             tabs={[
                 { id: 'requests', label: t('requests_workflow'), icon: 'description' },
-                { id: 'files', label: t('file_repository'), icon: 'folder_open' },
                 { id: 'prescriptions', label: t('prescriptions'), icon: 'medication' },
                 { id: 'licenses', label: t('medical_licenses'), icon: 'description' },
                 { id: 'certificates', label: t('certificates'), icon: 'verified' }

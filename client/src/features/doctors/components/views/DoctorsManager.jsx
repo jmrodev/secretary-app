@@ -1,14 +1,12 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Loading from '@/components/atoms/Loading';
-import Icon from '@/components/atoms/Icon';
-import DoctorCard from '@/features/doctors/components/cards/DoctorCard';
-import DoctorEditModal from '@/features/doctors/components/modals/DoctorEditModal';
+import { Loading } from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
+import { DoctorCard } from '@/features/doctors/components/cards/DoctorCard';
+import { DoctorEditModal } from '@/features/doctors/components/modals/DoctorEditModal';
 import styles from './DoctorsManager.module.css';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
-
-const DoctorsManager = ({
+export const DoctorsManager = ({
     t,
     currentUser,
     loading,
@@ -24,32 +22,32 @@ const DoctorsManager = ({
     MessageTemplateEditorComponent
 }) => {
     return (
-        <section className={`${styles.root}`}>
-            <div className={`${styles.headerActions}`}>
+        <section className={`${styles.DoctorsManager__root}`}>
+            <div className={`${styles.DoctorsManager__headerActions}`}>
                 <Button
                     variant="primary"
                     size="sm"
                     onClick={() => handlers.onEditDoctor(null)}
                     icon={<Icon name="add" size="1.1rem" />}
                 >
-                    {t('new') || 'Nuevo'}
+                    {t('new')}
                 </Button>
-                <div className={`${styles.counter}`}>
+                <div className={`${styles.DoctorsManager__counter}`}>
                     <Icon name="medical_services" size="1.2rem" />
-                    <span>{filteredDoctors.length} {t('doctors_count') || 'Médicos activos'}</span>
+                    <span>{filteredDoctors.length} {t('doctors_count')}</span>
                 </div>
             </div>
 
             {loading ? (
-                <Loading variant="centered" text={t('loading_doctors') || "Cargando médicos..."} />
+                <Loading variant="centered" text={t('loading_doctors')} />
             ) : (
-                <div className={`${styles.grid} animate-fade-in`}>
+                <div className={`${styles.DoctorsManager__grid} animate-fade-in`}>
                     {filteredDoctors.length === 0 ? (
-                        <div className={`${styles.emptyState}`}>
-                            <div className={`${styles.emptyIcon}`}>
+                        <div className={`${styles.DoctorsManager__emptyState}`}>
+                            <div className={`${styles.DoctorsManager__emptyIcon}`}>
                                 <Icon name="medical_services" size="3rem" />
                             </div>
-                            <p className={`${styles.emptyText}`}>{t('no_doctors_found')}</p>
+                            <p className={`${styles.DoctorsManager__emptyText}`}>{t('no_doctors_found')}</p>
                         </div>
                     ) : filteredDoctors.map(doctor => (
                         <DoctorCard
@@ -90,6 +88,8 @@ const DoctorsManager = ({
                         onConnectGoogle={handlers.onConnectGoogle}
                         onDisconnectGoogle={handlers.onDisconnectGoogle}
                         onVerifyGoogleEvents={handlers.onVerifyGoogleEvents}
+                        onHandoverGoogle={handlers.onHandoverGoogle}
+                        handoverUrl={modalState.handoverUrl}
                         onImportContacts={handlers.onImportContacts}
                         onResetSpreadsheet={handlers.onResetSpreadsheet}
 
@@ -100,5 +100,3 @@ const DoctorsManager = ({
         </section>
     );
 };
-
-export default DoctorsManager;

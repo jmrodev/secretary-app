@@ -1,4 +1,4 @@
-.root {
+.PatientBlocker__root {
     min-height: 100vh;
     background-color: var(--dashboard-card-bg);
     display: flex;
@@ -8,7 +8,7 @@
     text-align: center;
 }
 
-.card {
+.PatientBlocker__card {
     background-color: var(--dashboard-card-bg);
     max-width: 448px;
     padding: 2rem;
@@ -16,29 +16,29 @@
     box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 10%));
 }
 
-.iconContainer {
+.PatientBlocker__iconContainer {
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
 }
 
-.iconSuccess {
+.PatientBlocker__iconSuccess {
     color: var(--success);
 }
 
-.title {
+.PatientBlocker__title {
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 1rem;
     color: var(--text-main);
 }
 
-.message {
+.PatientBlocker__message {
     color: var(--text-muted);
     line-height: 1.6;
     margin-bottom: 1.5rem;
 }
 
-.button {
+.PatientBlocker__button {
     width: 100%;
 }

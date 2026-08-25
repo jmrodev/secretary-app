@@ -1,6 +1,46 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "agent": {
+    "gentle-orchestrator": {
+      "model": "opencode/hy3-free"
+    },
+    "explore": {
+      "model": "opencode/muse-spark-1.2-contributor-free",
+      "description": "Fast agent specialized for exploring codebases — cheap free model"
+    },
+    "general": {
+      "model": "opencode/hy3-free"
+    },
+    "sdd-init": {
+      "model": "opencode/mimo-v2.5-free"
+    },
+    "sdd-explore": {
+      "model": "opencode/muse-spark-1.2-contributor-free"
+    },
+    "sdd-propose": {
+      "model": "opencode/nemotron-3-ultra-free"
+    },
+    "sdd-spec": {
+      "model": "opencode/hy3-free"
+    },
+    "sdd-design": {
+      "model": "opencode/nemotron-3-ultra-free"
+    },
+    "sdd-tasks": {
+      "model": "opencode/muse-spark-1.2-contributor-free"
+    },
+    "sdd-apply": {
+      "model": "opencode/nemotron-3-ultra-free"
+    },
+    "sdd-verify": {
+      "model": "opencode/hy3-free"
+    },
+    "sdd-archive": {
+      "model": "opencode/mimo-v2.5-free"
+    },
+    "sdd-onboard": {
+      "model": "opencode/nemotron-3-ultra-free"
+    },
     "git-manager": {
       "description": "Git branch management, PR creation, sync operations, and cleanup across branches",
       "mode": "subagent",

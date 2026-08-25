@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
 import { useFetch } from '@/hooks/useFetch';
+import { composeFullName } from '@/features/users/utils/composeFullName';
 
 /**
  * useUsers Hook (Feature-based).
@@ -33,20 +34,17 @@ export const useUsers = (options = {}) => {
 
     // Filtered data in-memory (as the backend returns all for admin management)
     const users = useMemo(() => {
-        let filtered = allUsers;
-        if (role) {
-            filtered = filtered.filter(u => u.role === role);
-        }
-        if (excludeRoles.length > 0) {
-            filtered = filtered.filter(u => !excludeRoles.includes(u.role));
-        }
-        return filtered;
+        const excludeSet = new Set(excludeRoles);
+        return allUsers
+            .filter(u => !role || u.role === role)
+            .filter(u => !excludeSet.has(u.role));
     }, [allUsers, role, excludeRoles]);
 
     const createUser = async (formData, onSuccess) => {
         try {
             setIsSubmitting(true);
-            const payload = { ...formData, fullName: formData.full_name };
+            const fullName = composeFullName(formData);
+            const payload = { ...formData, fullName, adminPassword: formData.adminPassword };
             await api.post('/users/admin/users', payload);
             showMessage(t('user_created'), 'success');
             if (onSuccess) onSuccess();
@@ -54,7 +52,7 @@ export const useUsers = (options = {}) => {
             return { success: true };
         } catch (err) {
             console.error(err);
-            const errMsg = err.response?.data || t('failed_create_user');
+            const errMsg = err.response?.data?.error || err.response?.data || t('failed_create_user');
             showMessage(errMsg, 'error');
             return { success: false, error: errMsg };
         } finally {
@@ -65,14 +63,16 @@ export const useUsers = (options = {}) => {
     const updateUser = async (id, formData, onSuccess) => {
         try {
             setIsSubmitting(true);
-            await api.put(`/users/admin/users/${id}`, formData);
+            const fullName = composeFullName(formData);
+            const payload = { ...formData, fullName };
+            await api.put(`/users/admin/users/${id}`, payload);
             showMessage(t('user_updated'), 'success');
             if (onSuccess) onSuccess();
             fetchUsers();
             return { success: true };
         } catch (err) {
             console.error(err);
-            const errMsg = err.response?.data || t('failed_update_user');
+            const errMsg = err.response?.data?.error || err.response?.data || t('failed_update_user');
             showMessage(errMsg, 'error');
             return { success: false, error: errMsg };
         } finally {
@@ -81,29 +81,26 @@ export const useUsers = (options = {}) => {
     };
 
     const deleteUser = async (id, name, options = {}) => {
-        const { securityCode, useDoubleConfirm, onSuccess } = options;
+        const { adminPassword, useDoubleConfirm, onSuccess } = options;
 
         if (useDoubleConfirm) {
             const isConfirmed = await doubleConfirm(
-                `¿Estás seguro de que deseas eliminar a ${name}? esta acción moverá sus datos a la Papelera.`,
-                `¡AVISO! El usuario ${name} será eliminado del listado activo. ¿Deseas continuar?`
+                t('delete_user_confirm_trash', { name }),
+                t('delete_user_confirm_active', { name })
             );
             if (!isConfirmed) return { cancelled: true };
-        } else if (securityCode && securityCode !== '1234') {
-            showMessage("Invalid Security Code", 'error');
-            return { success: false };
         }
 
         try {
             setIsSubmitting(true);
-            await api.delete(`/users/admin/users/${id}`);
+            await api.delete(`/users/admin/users/${id}`, { data: { adminPassword } });
             showMessage(t('user_deleted'), 'success');
             if (onSuccess) onSuccess();
             fetchUsers();
             return { success: true };
         } catch (err) {
             console.error(err);
-            const errMsg = err.response?.data || t('failed_delete_user');
+            const errMsg = err.response?.data?.error || err.response?.data || t('failed_delete_user');
             showMessage(errMsg, 'error');
             return { success: false, error: errMsg };
         } finally {

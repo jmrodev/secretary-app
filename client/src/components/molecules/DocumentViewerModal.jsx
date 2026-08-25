@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Modal from '@/components/molecules/Modal';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './DocumentViewerModal.module.css';
 
@@ -14,40 +14,43 @@ export const DocumentViewerModal = ({
     isOpen,
     onClose,
     file,
-    filesList = [],
+    filesList,
     onSelectFile
 }) => {
+    const filesListData = useMemo(() => filesList ?? [], [filesList]);
     const { t } = useLanguage();
     const [zoom, setZoom] = useState(1);
     const [rotation, setRotation] = useState(0);
 
+    // Reset zoom and rotation whenever a new file is opened. Reset is applied
+    // during render so the viewport is already correct on first paint.
+    const [prevFileKey, setPrevFileKey] = useState('');
+    const currentFileKey = file ? `${file.id ?? ''}:${file.file_url ?? file.url ?? ''}` : '';
+    if (currentFileKey !== prevFileKey) {
+        setPrevFileKey(currentFileKey);
+        setZoom(1);
+        setRotation(0);
+    }
+
     // Calculate current index within filesList
-    const activeIndex = filesList.findIndex(
+    const activeIndex = filesListData.findIndex(
         f => (f.id && file?.id && f.id === file.id) || (f.file_url && file?.file_url && f.file_url === file.file_url)
     );
-    const hasMultipleFiles = filesList.length > 1 && activeIndex !== -1;
+    const hasMultipleFiles = filesListData.length > 1 && activeIndex !== -1;
     const hasPrev = hasMultipleFiles && activeIndex > 0;
-    const hasNext = hasMultipleFiles && activeIndex < filesList.length - 1;
-
-    // Reset zoom and rotation whenever a new file is opened
-    useEffect(() => {
-        if (isOpen) {
-            setZoom(1);
-            setRotation(0);
-        }
-    }, [isOpen, file]);
+    const hasNext = hasMultipleFiles && activeIndex < filesListData.length - 1;
 
     const handlePrevFile = useCallback(() => {
         if (hasPrev && onSelectFile) {
-            onSelectFile(filesList[activeIndex - 1]);
+            onSelectFile(filesListData[activeIndex - 1]);
         }
-    }, [hasPrev, onSelectFile, filesList, activeIndex]);
+    }, [hasPrev, onSelectFile, filesListData, activeIndex]);
 
     const handleNextFile = useCallback(() => {
         if (hasNext && onSelectFile) {
-            onSelectFile(filesList[activeIndex + 1]);
+            onSelectFile(filesListData[activeIndex + 1]);
         }
-    }, [hasNext, onSelectFile, filesList, activeIndex]);
+    }, [hasNext, onSelectFile, filesListData, activeIndex]);
 
     // Keyboard navigation (ArrowLeft & ArrowRight)
     useEffect(() => {
@@ -87,14 +90,14 @@ export const DocumentViewerModal = ({
             onClose={onClose}
             title={`${fileName}`}
             size="xl"
-            className={styles.modalContent}
+            className={styles.DocumentViewerModal__modalContent}
         >
-            <div className={styles.root}>
+            <div className={styles.DocumentViewerModal__root}>
                 {/* Control Toolbar */}
-                <header className={styles.toolbar}>
+                <header className={styles.DocumentViewerModal__toolbar}>
                     {/* List Navigation Group */}
                     {hasMultipleFiles && (
-                        <div className={styles.controlsGroup}>
+                        <div className={styles.DocumentViewerModal__controlsGroup}>
                             <Button
                                 variant="secondary"
                                 size="sm"
@@ -105,8 +108,8 @@ export const DocumentViewerModal = ({
                             >
                                 {t('prev') || 'Anterior'}
                             </Button>
-                            <span className={styles.counterLabel}>
-                                {activeIndex + 1} / {filesList.length}
+                            <span className={styles.DocumentViewerModal__counterLabel}>
+                                {activeIndex + 1} / {filesListData.length}
                             </span>
                             <Button
                                 variant="secondary"
@@ -122,7 +125,7 @@ export const DocumentViewerModal = ({
                     )}
 
                     {/* Image Controls Group */}
-                    <div className={styles.controlsGroup}>
+                    <div className={styles.DocumentViewerModal__controlsGroup}>
                         <Button
                             variant="ghost"
                             size="sm"
@@ -131,7 +134,7 @@ export const DocumentViewerModal = ({
                             icon={<Icon name="zoom_in" size="1.2rem" />}
                             disabled={!isImage}
                         />
-                        <span className={styles.zoomLabel}>{Math.round(zoom * 100)}%</span>
+                        <span className={styles.DocumentViewerModal__zoomLabel}>{Math.round(zoom * 100)}%</span>
                         <Button
                             variant="ghost"
                             size="sm"
@@ -151,7 +154,7 @@ export const DocumentViewerModal = ({
                     </div>
 
                     {/* Rotation Controls Group */}
-                    <div className={styles.controlsGroup}>
+                    <div className={styles.DocumentViewerModal__controlsGroup}>
                         <Button
                             variant="ghost"
                             size="sm"
@@ -171,7 +174,7 @@ export const DocumentViewerModal = ({
                     </div>
 
                     {/* External Actions Group */}
-                    <div className={styles.controlsGroup}>
+                    <div className={styles.DocumentViewerModal__controlsGroup}>
                         <Button
                             to={fileUrl}
                             target="_blank"
@@ -193,14 +196,14 @@ export const DocumentViewerModal = ({
                 </header>
 
                 {/* Viewport Display Area */}
-                <main className={styles.viewport}>
+                <main className={styles.DocumentViewerModal__viewport}>
                     {/* Floating Side Nav Arrows */}
                     {hasPrev && (
                         <button
                             type="button"
-                            className={`${styles.navArrow} ${styles.navArrowLeft}`}
+                            className={`${styles.DocumentViewerModal__navArrow} ${styles.DocumentViewerModal__navArrowLeft}`}
                             onClick={handlePrevFile}
-                            aria-label="Archivo anterior"
+                            aria-label={t('previous_file') || 'Archivo anterior'}
                         >
                             <Icon name="chevron_left" size="2.5rem" />
                         </button>
@@ -209,20 +212,20 @@ export const DocumentViewerModal = ({
                     {hasNext && (
                         <button
                             type="button"
-                            className={`${styles.navArrow} ${styles.navArrowRight}`}
+                            className={`${styles.DocumentViewerModal__navArrow} ${styles.DocumentViewerModal__navArrowRight}`}
                             onClick={handleNextFile}
-                            aria-label="Archivo siguiente"
+                            aria-label={t('next_file') || 'Archivo siguiente'}
                         >
                             <Icon name="chevron_right" size="2.5rem" />
                         </button>
                     )}
 
                     {isImage && (
-                        <div className={styles.imageContainer}>
+                        <div className={styles.DocumentViewerModal__imageContainer}>
                             <img
                                 src={fileUrl}
                                 alt={fileName}
-                                className={styles.previewImage}
+                                className={styles.DocumentViewerModal__previewImage}
                                 style={{
                                     transform: `scale(${zoom}) rotate(${rotation}deg)`,
                                     transition: 'transform 0.2s ease-in-out'
@@ -232,17 +235,18 @@ export const DocumentViewerModal = ({
                     )}
 
                     {isPdf && (
-                        <div className={styles.pdfContainer}>
+                        <div className={styles.DocumentViewerModal__pdfContainer}>
                             <iframe
                                 src={fileUrl}
                                 title={fileName}
-                                className={styles.pdfIframe}
+                                className={styles.DocumentViewerModal__pdfIframe}
+                                sandbox="allow-scripts allow-forms"
                             />
                         </div>
                     )}
 
                     {!isImage && !isPdf && (
-                        <div className={styles.genericFileBox}>
+                        <div className={styles.DocumentViewerModal__genericFileBox}>
                             <Icon name="description" size="4rem" />
                             <h4>{fileName}</h4>
                             <p>{file.description || t('no_description') || 'Sin descripción'}</p>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * ECC-Pattern: Stable useFetch for React 19.
@@ -45,8 +45,6 @@ export const useFetch = (url, options = {}) => {
                 if (!isMounted) return;
                 execute();
             });
-        } else if (!immediate && loading) {
-            setLoading(false);
         }
         return () => { isMounted = false; };
     }, [url, paramsKey, immediate, execute]);

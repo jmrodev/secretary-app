@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import PatientManagerModal from '@/features/patients/components/modals/PatientManagerModal';
+import { PatientManagerModal } from '@/features/patients/components/modals/PatientManagerModal';
 
 /**
  * GlobalPatientRegistrar
  * Listens for global events to open the patient registration modal from anywhere.
  * Specifically used by the WhatsApp messenger to help those who can't register themselves.
  */
-const GlobalPatientRegistrar = () => {
+export const GlobalPatientRegistrar = () => {
     const [modalState, setModalState] = useState({
         isOpen: false,
         initialData: null
@@ -48,4 +48,3 @@ const GlobalPatientRegistrar = () => {
     );
 };
 
-export default GlobalPatientRegistrar;

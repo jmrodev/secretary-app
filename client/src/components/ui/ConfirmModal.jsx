@@ -1,14 +1,16 @@
 import React, { useRef } from 'react';
 import { Button } from '@/components/atoms/Button';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
+import { Input } from '@/components/atoms/Input';
 import styles from './ConfirmModal.module.css';
 
-const ConfirmModal = ({
+export const ConfirmModal = ({
     isOpen,
     title,
     message,
     type = 'confirm',
     initialValue = '',
+    inputType = 'text',
     onConfirm,
     onCancel,
     labels = {
@@ -16,7 +18,8 @@ const ConfirmModal = ({
         confirm: 'Confirm',
         close: 'Close',
         cancel: 'Cancel',
-        accept: 'Accept'
+        accept: 'Accept',
+        prompt: 'Value'
     }
 }) => {
     const inputRef = useRef(null);
@@ -65,14 +68,18 @@ const ConfirmModal = ({
             footer={footer}
             size="md"
         >
-            <div className={`${styles.text} ${type === 'prompt' ? styles.textPrompt : ''}`}>
+            <div className={`${styles.ConfirmModal__text} ${type === 'prompt' ? styles.ConfirmModal__textPrompt : ''}`}>
                 {message}
             </div>
             {type === 'prompt' && (
                 <form onSubmit={handleConfirm} className="modal-form-bem">
-                    <input
-                        type="text"
-                        className="input-field"
+                    <label htmlFor="confirm-modal-prompt-input" className={styles.ConfirmModal__label}>
+                        {labels.prompt || 'Value'}
+                    </label>
+                    <Input
+                        id="confirm-modal-prompt-input"
+                        type={inputType}
+                        className={styles.ConfirmModal__promptInput}
                         defaultValue={initialValue}
                         ref={inputRef}
                     />
@@ -82,4 +89,3 @@ const ConfirmModal = ({
     );
 };
 
-export default ConfirmModal;

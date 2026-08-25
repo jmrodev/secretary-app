@@ -2,7 +2,7 @@
 
 /* LoginPage Styles (BEM) - Nordic Ultra-clean */
 
-.root {
+.LoginPage__root {
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -14,20 +14,20 @@
     font-family: var(--font-nunito);
 }
 
-.hero {
-    background-color: #f4f5f6; /* Serene flat soft gray */
+.LoginPage__hero {
+    background-color: var(--background-bg);
     background-size: cover;
     background-position: center;
 }
 
-.overlay {
+.LoginPage__overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at center, rgb(255, 255, 255, 0.4) 0%, rgb(248, 249, 250, 0.95) 100%); /* Clear light gradient */
+    background: radial-gradient(circle at center, transparent 0%, var(--background-bg) 100%);
     z-index: 1;
 }
 
-.backgroundBlobs {
+.LoginPage__backgroundBlobs {
     position: absolute;
     inset: 0;
     overflow: hidden;
@@ -35,7 +35,7 @@
     z-index: 0;
 }
 
-.blob {
+.LoginPage__blob {
     position: absolute;
     width: 600px;
     height: 600px;
@@ -45,14 +45,14 @@
     animation: blob-move 25s infinite alternate;
 }
 
-.blobPrimary {
-    background: var(--primary-color); /* Soft sage green */
+.LoginPage__blobPrimary {
+    background: var(--primary-color);
     top: -150px;
     right: -150px;
 }
 
-.blobSecondary {
-    background: #e2e8f0; /* Soft slate gray */
+.LoginPage__blobSecondary {
+    background: var(--accent-color);
     bottom: -150px;
     left: -150px;
     animation-delay: -5s;
@@ -64,7 +64,7 @@
     100% { transform: translate(30px, -30px) scale(0.95); }
 }
 
-.content {
+.LoginPage__content {
     position: relative;
     z-index: 10;
     width: 100%;

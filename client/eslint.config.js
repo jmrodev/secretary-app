@@ -42,6 +42,10 @@ export default defineConfig([
           selector: "JSXText[value=/\\.{3}/]",
           message: "Use the real ellipsis character (…) instead of three dots (...).",
         },
+        {
+          selector: 'ExportDefaultDeclaration',
+          message: 'Use named exports (export const / export function) instead of export default.',
+        },
       ],
       'react/jsx-uses-vars': 'error',
       'no-unused-vars': ['warn', {
@@ -55,12 +59,21 @@ export default defineConfig([
       'no-empty': 'warn',
       'no-useless-escape': 'warn',
       'react-refresh/only-export-components': ['warn', {
-        allowExportNames: ['useAuth', 'useConfig', 'useLanguage', 'useMessage', 'useModal'],
+        allowExportNames: ['useAuth', 'useConfig', 'useLanguage', 'useMessage', 'useModal', 'usePendingApproval'],
       }],
       'react-hooks/immutability': 'warn',
       'react-hooks/preserve-manual-memoization': 'warn',
       'react-hooks/set-state-in-effect': 'warn',
       'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
+  {
+    // Root config files legitimately use `export default`; exclude them from the
+    // named-exports restriction (kept as the only allowed default exports).
+    // Must come after the main block so its `off` wins over `error` for these files.
+    files: ['vite.config.js', 'eslint.config.js'],
+    rules: {
+      'no-restricted-syntax': 'off',
     },
   },
 ])

@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import styles from './PatientFinancialSidebar.module.css';
@@ -9,7 +9,7 @@ import styles from './PatientFinancialSidebar.module.css';
  * Renders the full patient financial ledger, including appointments, prescription requests,
  * total paid contribution, current debt, and line-by-line transaction breakdown.
  */
-const PatientFinancialSidebar = ({
+export const PatientFinancialSidebar = ({
     details,
     allPrescriptions = [],
     t,
@@ -87,18 +87,18 @@ const PatientFinancialSidebar = ({
     const totalBilled = allLedgerItems.reduce((acc, item) => acc + item.cost, 0);
 
     return (
-        <aside className={`${styles.sidebar}`} style={{ width: '100%' }}>
+        <aside className={`${styles.PatientFinancialSidebar__sidebar}`} style={{ width: '100%' }}>
             {/* Header Financial Summary Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
                 {/* Stat 1: Current Debt */}
-                <div className={`${styles.financialCard}`} style={{ borderLeft: activeDebt > 0 ? '5px solid #ea4335' : '5px solid #34a853' }}>
-                    <header className={`${styles.financialHeader}`}>
-                        <h4 className={`${styles.financialTitle}`}>
+                <div className={`${styles.PatientFinancialSidebar__financialCard}`} style={{ borderLeft: activeDebt > 0 ? '5px solid #ea4335' : '5px solid #34a853' }}>
+                    <header className={`${styles.PatientFinancialSidebar__financialHeader}`}>
+                        <h4 className={`${styles.PatientFinancialSidebar__financialTitle}`}>
                             {t('current_debt_status') || 'DEUDA PENDIENTE ACTUAL'}
                         </h4>
                     </header>
-                    <div className={`${styles.financialContent}`} style={{ padding: '1.25rem' }}>
-                        <span className={`${styles.financialAmount} ${activeDebt > 0 ? styles.financialAmountDebt : styles.financialAmountClear}`}>
+                    <div className={`${styles.PatientFinancialSidebar__financialContent}`} style={{ padding: '1.25rem' }}>
+                        <span className={`${styles.PatientFinancialSidebar__financialAmount} ${activeDebt > 0 ? styles.PatientFinancialSidebar__financialAmountDebt : styles.PatientFinancialSidebar__financialAmountClear}`}>
                             ${activeDebt.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                         <small style={{ color: activeDebt > 0 ? '#ea4335' : '#34a853', fontWeight: 600 }}>
@@ -135,13 +135,13 @@ const PatientFinancialSidebar = ({
                 </div>
 
                 {/* Stat 2: Total Paid Contribution */}
-                <div className={`${styles.financialCard}`} style={{ borderLeft: '5px solid #137333' }}>
-                    <header className={`${styles.financialHeader}`}>
-                        <h4 className={`${styles.financialTitle}`}>
+                <div className={`${styles.PatientFinancialSidebar__financialCard}`} style={{ borderLeft: '5px solid #137333' }}>
+                    <header className={`${styles.PatientFinancialSidebar__financialHeader}`}>
+                        <h4 className={`${styles.PatientFinancialSidebar__financialTitle}`}>
                             {t('total_patient_contribution') || 'APORTE TOTAL AL CONSULTORIO'}
                         </h4>
                     </header>
-                    <div className={`${styles.financialContent}`} style={{ padding: '1.25rem' }}>
+                    <div className={`${styles.PatientFinancialSidebar__financialContent}`} style={{ padding: '1.25rem' }}>
                         <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#137333', lineHeight: 1 }}>
                             ${totalPaidContribution.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
@@ -152,13 +152,13 @@ const PatientFinancialSidebar = ({
                 </div>
 
                 {/* Stat 3: Total Billed */}
-                <div className={`${styles.financialCard}`} style={{ borderLeft: '5px solid #1a73e8' }}>
-                    <header className={`${styles.financialHeader}`}>
-                        <h4 className={`${styles.financialTitle}`}>
+                <div className={`${styles.PatientFinancialSidebar__financialCard}`} style={{ borderLeft: '5px solid #1a73e8' }}>
+                    <header className={`${styles.PatientFinancialSidebar__financialHeader}`}>
+                        <h4 className={`${styles.PatientFinancialSidebar__financialTitle}`}>
                             {t('total_billed') || 'TOTAL FACTURADO HISTÓRICO'}
                         </h4>
                     </header>
-                    <div className={`${styles.financialContent}`} style={{ padding: '1.25rem' }}>
+                    <div className={`${styles.PatientFinancialSidebar__financialContent}`} style={{ padding: '1.25rem' }}>
                         <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#1a73e8', lineHeight: 1 }}>
                             ${totalBilled.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
@@ -258,4 +258,3 @@ const PatientFinancialSidebar = ({
     );
 };
 
-export default PatientFinancialSidebar;

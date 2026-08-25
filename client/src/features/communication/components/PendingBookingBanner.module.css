@@ -1,6 +1,6 @@
 /* PendingBookingBanner Molecule Styles (BEM) — fixed-bottom trigger (RescheduleBanner pattern) */
 
-.root {
+.PendingBookingBanner__root {
     position: fixed;
     bottom: 2rem;
     left: 50%;
@@ -22,19 +22,19 @@
     animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.rootExpanded {
+.PendingBookingBanner__rootExpanded {
     border-color: rgb(16 185 129 / 40%);
 }
 
-.icon {
+.PendingBookingBanner__icon {
     color: var(--primary-color);
 }
 
-.label {
+.PendingBookingBanner__label {
     white-space: nowrap;
 }
 
-.loading {
+.PendingBookingBanner__loading {
     width: 0.75rem;
     height: 0.75rem;
     border: 2px solid rgb(148 163 184 / 40%);
@@ -43,8 +43,8 @@
     animation: spin 0.8s linear infinite;
 }
 
-.chevron {
-    color: var(--text-muted, #94a3b8);
+.PendingBookingBanner__chevron {
+    color: var(--text-muted, var(--text-muted));
 }
 
 @keyframes slide-up {
@@ -57,7 +57,7 @@
 }
 
 @media (width <= 600px) {
-    .root {
+    .PendingBookingBanner__root {
         min-width: 90%;
         bottom: 1rem;
         justify-content: center;

@@ -1,45 +1,45 @@
 /* TransactionModal Component Styles (BEM) */
 
-.root {
+.TransactionModal__root {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 1rem 1.25rem;
 }
 
-.fieldFull {
+.TransactionModal__fieldFull {
     grid-column: span 12;
 }
 
-.fieldHalf {
+.TransactionModal__fieldHalf {
     grid-column: span 6;
 }
 
-.fieldThird {
+.TransactionModal__fieldThird {
     grid-column: span 4;
 }
 
-.fieldQuarter {
+.TransactionModal__fieldQuarter {
     grid-column: span 3;
 }
 
 @media (width <= 768px) {
-    .root {
+    .TransactionModal__root {
         grid-template-columns: 1fr;
     }
 
-    .fieldFull,
-    .fieldHalf,
-    .fieldThird,
-    .fieldQuarter {
+    .TransactionModal__fieldFull,
+    .TransactionModal__fieldHalf,
+    .TransactionModal__fieldThird,
+    .TransactionModal__fieldQuarter {
         grid-column: span 1;
     }
 }
 
-.autocomplete {
+.TransactionModal__autocomplete {
     position: relative;
 }
 
-.summaryHeader {
+.TransactionModal__summaryHeader {
     background-color: rgb(59 130 246 / 10%);
     backdrop-filter: blur(16px);
     border: 1px solid rgb(59 130 246 / 20%);
@@ -51,24 +51,24 @@
     gap: 0.5rem;
 }
 
-.summaryItem {
+.TransactionModal__summaryItem {
     display: flex;
     justify-content: space-between;
     font-size: 0.9rem;
 }
 
-.summaryLabel {
+.TransactionModal__summaryLabel {
     font-weight: 600;
     color: var(--blue-700);
 }
 
-.summaryValue {
+.TransactionModal__summaryValue {
     color: var(--text-main);
     font-weight: 500;
 }
 
 
-.results {
+.TransactionModal__results {
     position: absolute;
     z-index: 100;
     width: 100%;
@@ -76,7 +76,7 @@
     backdrop-filter: blur(16px);
     border: 1px solid rgb(255 255 255 / 20%);
     border-radius: var(--radius);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 20%);
+    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
     max-height: 15rem;
     overflow-y: auto;
     margin-top: 0.25rem;
@@ -84,42 +84,42 @@
     padding: 0;
 }
 
-.item {
+.TransactionModal__item {
     padding: 1rem;
     cursor: pointer;
     font-size: 0.875rem;
     transition: background-color 0.2s;
-    border-bottom: 1px solid var(--gray-50);
+    border-bottom: 1px solid var(--dashboard-card-border);
 }
 
-.item:last-child {
+.TransactionModal__item:last-child {
     border-bottom: none;
 }
 
-.item:hover {
+.TransactionModal__item:hover {
     background-color: var(--blue-50);
 }
 
-.hint {
+.TransactionModal__hint {
     color: var(--text-muted);
     font-size: 0.75rem;
     margin-left: 0.5rem;
     font-weight: 600;
 }
 
-.paymentMethods {
+.TransactionModal__paymentMethods {
     padding: 1rem 1.25rem;
-    background-color: rgb(255 255 255 / 4%);
+    background-color: var(--glass);
     backdrop-filter: blur(16px);
-    border: 1px solid rgb(255 255 255 / 10%);
-    box-shadow: 0 4px 20px 0 rgb(0 0 0 / 15%);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px 0 var(--background-bg);
     border-radius: var(--radius);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.paymentGridHorizontal {
+.TransactionModal__paymentGridHorizontal {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -127,7 +127,7 @@
     flex-wrap: wrap;
 }
 
-.totals {
+.TransactionModal__totals {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -135,13 +135,13 @@
     min-width: 14rem;
 }
 
-.totalsRow {
+.TransactionModal__totalsRow {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.paymentsContainer {
+.TransactionModal__paymentsContainer {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -149,13 +149,13 @@
     min-width: 16rem;
 }
 
-.paymentMethodsHeader {
+.TransactionModal__paymentMethodsHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.paymentMethodsTitle {
+.TransactionModal__paymentMethodsTitle {
     font-size: 0.7rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -164,50 +164,50 @@
     letter-spacing: 0.05em;
 }
 
-.paymentRow {
+.TransactionModal__paymentRow {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.paymentRowAmount {
+.TransactionModal__paymentRowAmount {
     width: 120px;
 }
 
-.paymentRowMethod {
+.TransactionModal__paymentRowMethod {
     width: 160px;
 }
 
-.paymentRowAction {
+.TransactionModal__paymentRowAction {
     flex-shrink: 0;
 }
 
-.summary {
+.TransactionModal__summary {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
     min-width: 12rem;
     padding-left: 1rem;
-    border-left: 1px solid rgb(255 255 255 / 10%);
+    border-left: 1px solid var(--border-color);
 }
 
 @media (width <= 768px) {
-    .paymentGridHorizontal {
+    .TransactionModal__paymentGridHorizontal {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .summary {
+    .TransactionModal__summary {
         border-left: none;
-        border-top: 1px solid rgb(255 255 255 / 10%);
+        border-top: 1px solid var(--border-color);
         padding-left: 0;
         padding-top: 0.75rem;
         align-items: stretch;
     }
 }
 
-.pricingInfo {
+.TransactionModal__pricingInfo {
     font-size: 0.8rem;
     font-style: italic;
     color: var(--blue-600);
@@ -224,7 +224,7 @@
     gap: 0.5rem;
 }
 
-.totals {
+.TransactionModal__totals {
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -232,13 +232,13 @@
     width: 100%;
 }
 
-.totalsMain {
+.TransactionModal__totalsMain {
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border-color);
 }
 
-.summaryRow {
+.TransactionModal__summaryRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -246,42 +246,42 @@
     padding: 0.25rem 0;
 }
 
-.label {
+.TransactionModal__label {
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-muted);
 }
 
-.labelLarge {
+.TransactionModal__labelLarge {
     font-size: 1.2rem;
     color: var(--text-main);
 }
 
-.value {
+.TransactionModal__value {
     font-size: 1rem;
     font-weight: 800;
 }
 
-.valuePaid {
+.TransactionModal__valuePaid {
     color: var(--success);
 }
 
-.valueDebt {
+.TransactionModal__valueDebt {
     color: var(--error);
     background: var(--red-50);
     padding: 0.2rem 0.6rem;
     border-radius: 4px;
 }
 
-.inputWrapper {
+.TransactionModal__inputWrapper {
     width: 140px;
 }
 
-.inputWrapperLarge {
+.TransactionModal__inputWrapperLarge {
     width: 180px;
 }
 
-.inputWrapper .totalInput {
+.TransactionModal__inputWrapper .TransactionModal__totalInput {
     font-weight: 900;
     font-size: 1.15rem;
     color: var(--blue-700);
@@ -289,13 +289,13 @@
     border-bottom: 2px solid var(--blue-600);
 }
 
-.inputWrapperLarge .totalInput {
+.TransactionModal__inputWrapperLarge .TransactionModal__totalInput {
     font-size: 1.75rem;
     border-bottom-width: 3px;
     padding-bottom: 0.25rem;
 }
 
-.status {
+.TransactionModal__status {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -305,13 +305,13 @@
     padding: 0.5rem 0;
 }
 
-.transactionModalFooter {
+.TransactionModal__transactionModalFooter {
     display: flex;
     gap: 1rem;
     justify-content: flex-end;
 }
 
-.warning {
+.TransactionModal__warning {
     color: var(--amber-700);
     background: rgb(245 158 11 / 10%);
     backdrop-filter: blur(16px);
@@ -327,7 +327,7 @@
     margin-top: 0.4rem;
 }
 
-.footerButtons {
+.TransactionModal__footerButtons {
     display: flex;
     gap: 1rem;
     align-items: center;

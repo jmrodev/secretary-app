@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './MedicationCard.module.css';
 
 /**
@@ -8,7 +8,7 @@ import styles from './MedicationCard.module.css';
  * Displays medication information with status indicators and quick-save actions.
  * Part of the treatment tracking and prescription management in medical_documents.
  */
-const MedicationCard = ({
+export const MedicationCard = ({
     name,
     dose,
     frequency,
@@ -19,7 +19,7 @@ const MedicationCard = ({
     canEdit,
     t
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.MedicationCard__root;
     const variantClass = isKnown ? `${baseClass}--known` : `${baseClass}--unknown`;
 
     return (
@@ -61,4 +61,3 @@ const MedicationCard = ({
     );
 };
 
-export default MedicationCard;

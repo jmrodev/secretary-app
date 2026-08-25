@@ -1,84 +1,86 @@
 import React from 'react';
-import { useAuth } from '@/features/auth';
+import { useSearchParams } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 
 // Atomic Design Components
-import MainLayout from '@/components/templates/MainLayout';
-import { UserManagement } from '@/features/users/index';
-import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { UserManagement } from '@/features/users/components/UserManagement';
+import { TabNav } from '@/components/molecules/TabNav';
+import { TabButton } from '@/components/atoms/TabButton';
+
+// Doctor management tab
+import { DoctorsManager } from '@/features/doctors/components/views/DoctorsManager';
+import { useDoctorsPageController } from '@/features/doctors/hooks/useDoctorsPageController';
+import { ScheduleBulkActions } from '@/features/appointments/components/schedule/ScheduleBulkActions';
+import { ScheduleTimeBlock } from '@/features/appointments/components/schedule/ScheduleTimeBlock';
+import { UserForm } from '@/features/users/components/UserForm';
+import { MessageTemplateEditor } from '@/features/config/components/forms/MessageTemplateEditor';
+
 import styles from './AdminUsersPage.module.css';
+import { resolveTab } from './utils/tabs';
 
 /**
  * AdminUsersPage (Orchestrator).
- * Management interface for administrative and medical staff accounts.
+ * Management interface for administrative and medical staff accounts,
+ * split into two tabs: secretaries and doctors.
+ * Guarded at route level: admin or secretary with can_manage_users.
  */
-const AdminUsersPage = () => {
-    const { user: currentUser } = useAuth();
+export const AdminUsersPage = () => {
     const { t } = useLanguage();
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    if (!currentUser || currentUser.role !== 'admin') {
-        return (
-            <MainLayout>
-                <div className={`${styles.accessDenied}`}>
-                    <Icon name="block" size="3rem" className={`${styles.deniedIcon}`} />
-                    <h2 className={`${styles.deniedTitle}`}>Access Denied</h2>
-                    <p className={`${styles.deniedText}`}>No tiene permisos para gestionar usuarios.</p>
-                </div>
-            </MainLayout>
-        );
-    }
+    const activeTab = resolveTab(searchParams.get('subtab'));
+    const doctorsController = useDoctorsPageController();
+
+    const switchTab = (tab) => {
+        const next = new URLSearchParams(searchParams);
+        next.set('subtab', tab);
+        setSearchParams(next, { replace: true });
+    };
+
+    const renderSecretariesTab = () => (
+        <section className={`${styles.AdminUsersPage__tableWrapper}`}>
+            <UserManagement
+                excludeRoles={['patient']}
+            />
+        </section>
+    );
+
+    const renderDoctorsTab = () => (
+        <DoctorsManager
+            {...doctorsController}
+            ScheduleBulkActionsComponent={ScheduleBulkActions}
+            ScheduleTimeBlockComponent={ScheduleTimeBlock}
+            UserFormComponent={UserForm}
+            MessageTemplateEditorComponent={MessageTemplateEditor}
+        />
+    );
 
     return (
-        <MainLayout wide flush title={t('user_management') || 'Gestión de Usuarios'}>
-            <div className={`${styles.adminUsersPageOrchestrator}`}>
-                <div className="layout-content-area animate-fade-in">
-                    <div className="dashboard-nav-bar">
-                        <div className={`${styles.spacer}`}></div>
-                        <div className={`${styles.navActions}`}>
-                        </div>
-                    </div>
-
-                    <div className="dashboard-layout__grid">
-                        <aside className="dashboard-layout__sidebar">
-                            <div className="dashboard-card">
-                                <h3 className="dashboard-card__title">
-                                    <Icon name="build" size="1.2rem" />
-                                    {t('actions') || 'Acciones'}
-                                </h3>
-                                <div className={`${styles.actionsGroup}`}>
-                                    <Button
-                                        variant="primary"
-                                        className={`${styles.btn}`}
-                                        onClick={() => window.dispatchEvent(new CustomEvent('OPEN_USER_MODAL', { detail: 'CREATE' }))}
-                                        icon={<Icon name="add" size="1.1rem" />}
-                                    >
-                                        {t('add_user') || 'Agregar Usuario'}
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        className={`${styles.btn}`}
-                                        onClick={() => window.location.reload()}
-                                        icon={<Icon name="sync" size="1.1rem" />}
-                                    >
-                                        {t('refresh') || 'Actualizar'}
-                                    </Button>
-                                </div>
-                            </div>
-                        </aside>
-
-                        <main className="dashboard-layout__main">
-                            <section className={`${styles.tableWrapper}`}>
-                                <UserManagement
-                                    excludeRoles={['patient']}
-                                />
-                            </section>
-                        </main>
+        <div>
+            <div>
+                <div className="dashboard-nav-bar">
+                    <TabNav>
+                        <TabButton
+                            isActive={activeTab === 'secretaries'}
+                            onClick={() => switchTab('secretaries')}
+                            activeColor="blue"
+                        >
+                            {t('tab_secretaries')}
+                        </TabButton>
+                        <TabButton
+                            isActive={activeTab === 'doctor'}
+                            onClick={() => switchTab('doctor')}
+                            activeColor="blue"
+                        >
+                            {t('tab_doctors')}
+                        </TabButton>
+                    </TabNav>
+                    <div className={`${styles.AdminUsersPage__navActions}`}>
                     </div>
                 </div>
+
+                {activeTab === 'doctor' ? renderDoctorsTab() : renderSecretariesTab()}
             </div>
-        </MainLayout>
+        </div>
     );
 };
-
-export default AdminUsersPage;

@@ -1,24 +1,23 @@
 import React from 'react';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { useReportsController } from '@/features/reports/hooks/useReportsController';
-import ReportsDashboard from '@/features/reports/components/views/ReportsDashboard';
-import styles from './ReportsPage.module.css';
+import { ReportsDashboard } from '@/features/reports/components/views/ReportsDashboard';
 
 /**
  * ReportsPage (Orchestrator).
  * Interface for monthly medical and financial reports.
  */
-const ReportsPage = () => {
+export const ReportsPage = () => {
     const controller = useReportsController();
 
     return (
-        <MainLayout wide title={controller.t('reports')}>
-            <main className={`${styles.reportsPageOrchestrator} animate-fade-in`}>
+        <MainLayout wide flush title={controller.t('reports')}>
+            <section>
                 <ReportsDashboard {...controller} />
-            </main>
+            </section>
         </MainLayout>
     );
 };
 
-export default ReportsPage;
+
 

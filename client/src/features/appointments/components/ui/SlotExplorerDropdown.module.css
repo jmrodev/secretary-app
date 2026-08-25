@@ -1,12 +1,12 @@
-.dropdown {
+.SlotExplorerDropdown__dropdown {
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
-    width: 260px;
-    background: #1e2533;
-    border: 1px solid rgb(255, 255, 255, 0.1);
+    width: 450px; /* Much wider */
+    background: var(--modal-bg);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    box-shadow: 0 20px 50px rgb(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-premium);
     z-index: 10005;
     backdrop-filter: blur(20px);
     display: flex;
@@ -14,139 +14,164 @@
     overflow: hidden;
 }
 
-.header {
-    padding: 0.6rem 0.75rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid rgb(255, 255, 255, 0.05);
-}
-
-.title {
-    font-size: 0.7rem;
-    font-weight: 800;
-    color: var(--primary-color);
-    text-transform: uppercase;
-}
-
-.closeIcon {
-    cursor: pointer;
-    color: rgb(255, 255, 255, 0.2);
-}
-
-.monthBar {
+.SlotExplorerDropdown__monthBar {
     display: flex;
     padding: 2px;
-    background: rgb(0, 0, 0, 0.15);
+    background: var(--background-bg);
 }
 
-.monthItem {
+.SlotExplorerDropdown__monthItem {
     flex: 1;
     text-align: center;
-    padding: 6px 0;
-    font-size: 0.6rem;
+    padding: 14px 0;
+    font-size: 1rem;
     font-weight: 700;
-    color: rgb(255, 255, 255, 0.25);
+    color: var(--text-muted);
+    border: none;
+    background: none;
+    font-family: inherit;
     cursor: pointer;
     border-radius: 4px;
 }
 
-.monthActive {
+.SlotExplorerDropdown__monthActive {
     background: var(--primary-color);
-    color: #0b0c10;
+    color: var(--background-bg);
 }
 
-.list {
-    max-height: 280px; /* Reduced height */
+.SlotExplorerDropdown__bodyWrapper {
+    display: flex;
+    max-height: 50vh;
+    overflow: hidden;
+}
+
+.SlotExplorerDropdown__sidebar {
+    width: 100px;
+    background: var(--modal-bg-dark);
     overflow-y: auto;
-    padding: 0.5rem;
+    border-right: 1px solid var(--border-color);
+    scrollbar-width: none; /* Hide scrollbar for cleaner look */
+}
+
+.SlotExplorerDropdown__sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.SlotExplorerDropdown__sidebarItem {
+    display: block;
+    width: 100%;
+    padding: 12px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    border: none;
+    background: none;
+    font-family: inherit;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-color);
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.SlotExplorerDropdown__sidebarItem:hover {
+    background: var(--background-bg);
+    color: var(--text-main);
+}
+
+.SlotExplorerDropdown__sidebarItemActive {
+    background: var(--primary-color);
+    color: var(--background-bg);
+}
+
+.SlotExplorerDropdown__sidebarItemActive:hover {
+    background: var(--primary-color);
+    color: var(--background-bg);
+}
+
+.SlotExplorerDropdown__list {
+    flex: 1;
+    overflow: hidden auto;
+    padding: 0.75rem 1.5rem; /* slightly less padding so it fits well next to sidebar */
     scrollbar-width: thin;
+    scrollbar-gutter: stable;
+    scroll-behavior: smooth; /* Smooth scroll when clicking sidebar */
 }
 
-.dayHeader {
-    font-size: 0.6rem;
+.SlotExplorerDropdown__dayHeader {
+    font-size: 0.95rem;
     font-weight: 800;
-    color: rgb(255, 255, 255, 0.2);
+    color: var(--text-muted);
     text-transform: uppercase;
-    padding: 6px 4px 2px;
+    padding: 10px 8px 4px;
 }
 
-.slotRow {
+.SlotExplorerDropdown__slotRow {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 10px; /* More compact */
-    background: rgb(255, 255, 255, 0.02);
+    width: 100%;
+    padding: 14px 18px; /* Extremely comfortable padding */
+    background: var(--background-bg);
+    border: none;
     border-radius: 6px;
     margin-bottom: 3px;
+    font-family: inherit;
+    text-align: left;
+    color: inherit;
     cursor: pointer;
     transition: background 0.2s;
 }
 
-.slotRow:hover {
-    background: rgb(255, 255, 255, 0.05);
+.SlotExplorerDropdown__slotRow:hover {
+    background: var(--dashboard-card-bg);
 }
 
-.slotExtra {
-    border-left: 2px solid orange;
+.SlotExplorerDropdown__slotExtra {
+    border-left: 2px solid var(--warning);
 }
 
-.time {
-    font-size: 0.85rem;
+.SlotExplorerDropdown__time {
+    font-size: 1.25rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-main);
 }
 
-.actions {
+.SlotExplorerDropdown__actions {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.waIcon {
-    color: #25d366;
-    font-size: 0.8rem;
-    opacity: 0.5;
+.SlotExplorerDropdown__waIcon {
+    color: var(--success);
+    font-size: 1.2rem;
+    opacity: 0.8;
 }
 
-.selectText {
-    font-size: 0.65rem;
+.SlotExplorerDropdown__selectText {
+    font-size: 0.95rem;
     font-weight: 800;
     color: var(--primary-color);
 }
 
-.footer {
-    padding: 0.5rem 0.75rem;
-    background: rgb(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid rgb(255, 255, 255, 0.05);
-}
-
-.navBtn {
-    cursor: pointer;
-    color: rgb(255, 255, 255, 0.4);
-    display: flex;
-    align-items: center;
-}
-
-.navBtn:hover:not(.navBtnDisabled) {
-    color: #fff;
-}
-
-.navBtnDisabled {
-    opacity: 0.1;
-    cursor: not-allowed;
-}
-
-.pageInfo {
-    font-size: 0.65rem;
+.SlotExplorerDropdown__loadMoreBtn {
+    text-align: center;
+    padding: 12px;
+    margin-top: 10px;
+    background: var(--background-bg);
+    border-radius: 6px;
+    font-size: 0.85rem;
     font-weight: 700;
-    color: rgb(255, 255, 255, 0.15);
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-.empty {
+.SlotExplorerDropdown__loadMoreBtn:hover {
+    background: var(--dashboard-card-bg);
+}
+
+.SlotExplorerDropdown__empty {
     padding: 2rem 0;
     text-align: center;
     color: var(--text-muted);

@@ -1,142 +1,142 @@
 /* MedicalReportTable Shared Component BEM Styles */
 
-.medicalReport {
+.MedicalReportTable__medicalReport {
     display: flex;
     flex-direction: column;
     gap: 2rem;
     width: 100%;
 }
 
-.medicalReport__empty {
+.MedicalReportTable__empty {
     padding: 4rem 2rem;
     text-align: center;
-    background: var(--card-bg, #fff);
+    background: var(--dashboard-card-bg);
     border-radius: var(--radius-lg, 12px);
-    color: var(--text-muted, #64748b);
-    border: 1px dashed var(--border-color, #cbd5e1);
+    color: var(--text-muted);
+    border: 1px dashed var(--border-color);
     font-weight: 500;
 }
 
-.medicalReport__summary {
-    background-color: var(--report-summary-bg, #f8fafc);
+.MedicalReportTable__summary {
+    background-color: var(--dashboard-card-bg);
     border-radius: var(--radius-lg, 12px);
     padding: 1.5rem;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color);
 }
 
-.medicalReport__summaryTitle {
+.MedicalReportTable__summaryTitle {
     font-size: 1.125rem;
     font-weight: 800;
-    color: var(--text-main, #0f172a);
+    color: var(--text-main);
     margin: 0 0 1rem;
     text-transform: uppercase;
     letter-spacing: 0.025em;
 }
 
-.medicalReport__tableContainer {
+.MedicalReportTable__tableContainer {
     width: 100%;
     overflow-x: auto;
 }
 
-.medicalReport__table {
+.MedicalReportTable__table {
     width: 100%;
     border-collapse: collapse;
-    background-color: var(--card-bg, #fff);
+    background-color: var(--dashboard-card-bg);
     border-radius: var(--radius-md, 8px);
     overflow: hidden;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border-color);
 }
 
-.medicalReport__table th {
+.MedicalReportTable__table th {
     text-align: left;
     padding: 0.875rem 1.25rem;
-    background-color: #0f172a;
-    color: #fff;
+    background-color: var(--gray-900);
+    color: var(--text-main);
     font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    border-bottom: 2px solid #334155;
+    border-bottom: 2px solid var(--dashboard-card-bg);
 }
 
-.medicalReport__row {
-    border-bottom: 1px solid #f1f5f9;
+.MedicalReportTable__row {
+    border-bottom: 1px solid var(--gray-100);
     transition: background-color 0.15s ease-in-out;
 }
 
-.medicalReport__row:hover {
-    background-color: #f1f5f9 !important;
+.MedicalReportTable__row:hover {
+    background-color: var(--gray-100) !important;
 }
 
-.medicalReport__row:hover td {
-    color: #0f172a !important;
+.MedicalReportTable__row:hover td {
+    color: var(--gray-900) !important;
 }
 
-.medicalReport__row td {
+.MedicalReportTable__row td {
     padding: 0.875rem 1.25rem;
     font-size: 0.875rem;
-    color: var(--text-main, #1e293b);
+    color: var(--text-main, var(--background-bg));
 }
 
-.medicalReport__cellRight {
+.MedicalReportTable__cellRight {
     text-align: right;
 }
 
-.medicalReport__cellBold {
+.MedicalReportTable__cellBold {
     font-weight: 700;
 }
 
-.medicalReport__footerSubtotal td {
-    background-color: #f8fafc;
+.MedicalReportTable__footerSubtotal td {
+    background-color: var(--text-main);
     font-weight: 700;
 }
 
-.medicalReport__footer td {
-    background-color: #f1f5f9;
+.MedicalReportTable__footer td {
+    background-color: var(--gray-100);
     font-weight: 800;
-    border-top: 2px solid #cbd5e1;
+    border-top: 2px solid var(--text-secondary);
 }
 
-.medicalReport__group {
-    border: 1px solid var(--border-color, #e2e8f0);
+.MedicalReportTable__group {
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-lg, 12px);
     overflow: hidden;
 }
 
-.medicalReport__dateHeader {
-    background-color: #1e1b4b;
-    color: #fff;
+.MedicalReportTable__dateHeader {
+    background-color: var(--background-bg);
+    color: var(--text-main);
     padding: 0.875rem 1.25rem;
     font-size: 0.95rem;
     font-weight: 800;
     margin: 0;
 }
 
-.medicalReport__patientInfo {
+.MedicalReportTable__patientInfo {
     display: flex;
     flex-direction: column;
 }
 
-.medicalReport__patientName {
+.MedicalReportTable__patientName {
     font-weight: 700;
 }
 
-.medicalReport__patientDni {
+.MedicalReportTable__patientDni {
     font-size: 0.7rem;
-    color: var(--text-muted, #64748b);
+    color: var(--text-muted);
 }
 
-.medicalReport__methodBadge {
+.MedicalReportTable__methodBadge {
     font-size: 0.65rem;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
-    background-color: var(--gray-100, #f1f5f9);
-    color: var(--text-muted, #475569);
+    background-color: var(--gray-100, var(--gray-100));
+    color: var(--text-muted);
     font-weight: 700;
     text-transform: uppercase;
 }
 
-.medicalReport__badge {
+.MedicalReportTable__badge {
     padding: 0.25rem 0.75rem;
     border-radius: 9999px;
     font-size: 0.65rem;
@@ -146,22 +146,22 @@
     letter-spacing: 0.03em;
 }
 
-.medicalReport__badge--paid {
-    background-color: #dcfce7;
-    color: #15803d;
+.MedicalReportTable__badge--paid {
+    background-color: var(--green-100);
+    color: var(--green-700);
 }
 
-.medicalReport__badge--debt {
-    background-color: #fee2e2;
-    color: #b91c1c;
+.MedicalReportTable__badge--debt {
+    background-color: var(--red-100);
+    color: var(--red-700);
 }
 
-.medicalReport__badge--partial {
-    background-color: #fef3c7;
-    color: #b45309;
+.MedicalReportTable__badge--partial {
+    background-color: var(--amber-100);
+    color: var(--amber-700);
 }
 
-.medicalReport__badge--bonified {
-    background-color: #dbeafe;
-    color: #1d4ed8;
+.MedicalReportTable__badge--bonified {
+    background-color: var(--blue-100);
+    color: var(--blue-700);
 }

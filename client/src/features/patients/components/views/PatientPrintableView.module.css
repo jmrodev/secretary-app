@@ -1,7 +1,7 @@
 /* PatientPrintableView Styles - Feature Specific */
 
 /* SCREEN PREVIEW VIEW (FULLSCREEN OVERLAY) */
-.fullscreen {
+.PatientPrintableView__fullscreen {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,11 +11,11 @@
     z-index: 9999;
     overflow-y: auto;
     padding: 1rem 3rem;
-    color: #1e293b;
+    color: var(--background-bg);
 }
 
 /* HEADER WITH CONTROLS (Screen only) */
-.header {
+.PatientPrintableView__header {
     position: sticky;
     top: 0;
     left: 0;
@@ -33,7 +33,7 @@
 }
 
 /* FILTERS CONTAINERS & INPUTS */
-.printableFiltersContainer {
+.PatientPrintableView__printableFiltersContainer {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -46,23 +46,23 @@
     justify-content: center;
 }
 
-.printableFilters {
+.PatientPrintableView__printableFilters {
     display: flex;
     gap: 0.75rem;
     align-items: center;
 }
 
-.title {
+.PatientPrintableView__title {
     font-weight: 700;
     font-size: 0.8rem;
-    color: #1e293b;
+    color: var(--background-bg);
     text-transform: uppercase;
     letter-spacing: 0.025em;
     border-right: 1px solid #e2e8f0;
     padding-right: 0.5rem;
 }
 
-.printableCheckbox {
+.PatientPrintableView__printableCheckbox {
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -75,80 +75,80 @@
     transition: all 0.2s;
 }
 
-.printableCheckbox:hover {
+.PatientPrintableView__printableCheckbox:hover {
     background: #f1f5f9;
-    color: #1e293b;
+    color: var(--background-bg);
 }
 
-.printableCheckbox input {
+.PatientPrintableView__printableCheckbox input {
     cursor: pointer;
     width: 0.9rem;
     height: 0.9rem;
     accent-color: var(--primary-color, #3182ce);
 }
 
-.printableInput {
-    border: 1px solid #cbd5e1;
+.PatientPrintableView__printableInput {
+    border: 1px solid var(--text-secondary);
     border-radius: 0.25rem;
     padding: 0.15rem 0.25rem;
     font-size: 0.75rem;
     background: white;
-    color: #1e293b;
+    color: var(--background-bg);
     outline: none;
     transition: border-color 0.2s;
     font-family: inherit;
     height: 1.5rem;
 }
 
-.printableInput:focus {
+.PatientPrintableView__printableInput:focus {
     border-color: var(--primary-color, #3182ce);
     box-shadow: 0 0 0 2px rgb(49 130 206 / 10%);
 }
 
 /* DOCUMENT CONTENT STYLES */
-.printableTitle {
+.PatientPrintableView__printableTitle {
     font-size: 1.35rem;
     font-weight: 800;
-    color: #1e293b;
+    color: var(--background-bg);
     text-align: center;
     margin-bottom: 1rem;
 }
 
-.printableDivider {
+.PatientPrintableView__printableDivider {
     border: none;
     border-top: 2px solid #e2e8f0;
     margin: 1rem 0;
 }
 
-.printableSubtitle {
+.PatientPrintableView__printableSubtitle {
     margin-top: 1.75rem;
     margin-bottom: 0.75rem;
     font-weight: 800;
-    color: #1e293b;
+    color: var(--background-bg);
     font-size: 1.1rem;
     padding-bottom: 0.4rem;
     border-bottom: 2px solid #f1f5f9;
 }
 
-.printableList {
+.PatientPrintableView__printableList {
     padding-left: 1.5rem;
     list-style-type: disc;
     margin-bottom: 1.5rem;
 }
 
-.printableList li {
+.PatientPrintableView__printableList li {
     margin-bottom: 0.5rem;
     line-height: 1.5;
     font-size: 0.95rem;
-    color: #1e293b;
+    color: var(--background-bg);
 }
 
-.printableItemHeader {
-    background: #f8fafc;
+.PatientPrintableView__printableItemHeader {
+    background: var(--text-main);
     padding: 0.45rem 1rem;
     border-radius: 0.5rem;
     font-size: 0.95rem;
-    color: #334155;
+    color: var(--dashboard-card-bg);
     font-weight: 600;
     border: 1px solid #f1f5f9;
     display: flex;
@@ -157,38 +157,38 @@
     margin-bottom: 0.4rem;
 }
 
-.printableItemContent {
+.PatientPrintableView__printableItemContent {
     margin-top: 0.5rem;
     margin-bottom: 1rem;
     padding-left: 1.25rem;
 }
 
-.printableSublist {
+.PatientPrintableView__printableSublist {
     list-style-type: disc;
     padding-left: 1.25rem;
     margin: 0;
 }
 
-.printableSublist li {
+.PatientPrintableView__printableSublist li {
     font-size: 0.9rem;
     color: #475569;
     margin-bottom: 0.25rem;
 }
 
-.printableText {
+.PatientPrintableView__printableText {
     font-size: 0.95rem;
-    color: #1e293b;
+    color: var(--background-bg);
     margin-bottom: 1rem;
 }
 
 /* --- PRINT RULES (What is output to paper) --- */
 @media print {
     /* Hide specific selectors */
-    .noPrint {
+    .PatientPrintableView__noPrint {
         display: none;
     }
 
-    .fullscreen {
+    .PatientPrintableView__fullscreen {
          position: static;
          width: auto;
          height: auto;
@@ -197,12 +197,12 @@
          color: black;
     }
 
-    .header {
+    .PatientPrintableView__header {
          display: none;
     }
 
     /* Long lists flow on multiple pages safely */
-    li, .printableListItemGrouped {
+    li, .PatientPrintableView__printableListItemGrouped {
          break-inside: avoid;
     }
 }

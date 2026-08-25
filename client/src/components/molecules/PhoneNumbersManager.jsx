@@ -1,6 +1,7 @@
 import React from 'react';
-import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
+import { Select } from '@/components/atoms/Select';
+import { PhoneInput } from '@/components/molecules/PhoneInput';
 import styles from './PhoneNumbersManager.module.css';
 
 /**
@@ -13,9 +14,17 @@ import styles from './PhoneNumbersManager.module.css';
  * @param {Object} texts - Translations { cellPhone, label, call, markAsPrimary, deleteBtn, addAnotherPhone }
  */
 const EMPTY_OBJECT = {};
+const generateId = () => crypto.randomUUID();
 
-const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) => {
-    const generateId = () => crypto.randomUUID();
+const labelOptions = [
+    { value: 'Celular', label: 'Celular' },
+    { value: 'Fijo', label: 'Fijo' },
+    { value: 'Laboral', label: 'Laboral' },
+    { value: 'Familiar', label: 'Familiar' },
+    { value: 'Otro', label: 'Otro' }
+];
+
+export const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) => {
 
     // Default fallbacks in case texts are not provided
     const tx = {
@@ -41,123 +50,71 @@ const PhoneNumbersManager = ({ phoneNumbers, onChange, texts = EMPTY_OBJECT }) =
         onChange(phoneNumbers.filter((_, i) => i !== index));
     };
 
-    const formatForWhatsmeow = (rawPhone) => {
-        if (!rawPhone) return '';
-        let digits = rawPhone.toString().replace(/\D/g, '');
-        if (!digits) return '';
-
-        if (digits.startsWith('549')) {
-            digits = '54' + digits.slice(3);
-        } else if (digits.length === 10) {
-            digits = '54' + digits;
-        } else if (digits.startsWith('0') && digits.length === 11) {
-            digits = '54' + digits.slice(1);
-        }
-        return digits;
-    };
-
     const handleUpdate = (index, field, value) => {
-        let currentList = (phoneNumbers && phoneNumbers.length > 0) 
-            ? phoneNumbers.map(p => ({ ...p, id: p.id || generateId() })) 
+        let currentList = (phoneNumbers && phoneNumbers.length > 0)
+            ? phoneNumbers.map(p => ({ ...p, id: p.id || generateId() }))
             : [{ id: generateId(), phone_number: '54', label: tx.cellPhone, is_primary: true }];
-            
+
         let sanitizedValue = value;
         if (field === 'phone_number') {
-            sanitizedValue = value.replace(/\D/g, '');
+            sanitizedValue = value.replace(/[^\d+]/g, '');
         }
 
         currentList[index] = { ...currentList[index], [field]: sanitizedValue };
-        
+
         if (field === 'is_primary' && value === true) {
             currentList.forEach((p, i) => { if (i !== index) p.is_primary = false; });
         }
         onChange(currentList);
     };
 
-    const handleBlurPhone = (index) => {
-        if (!phoneNumbers || !phoneNumbers[index]) return;
-        const formatted = formatForWhatsmeow(phoneNumbers[index].phone_number);
-        if (formatted) {
-            handleUpdate(index, 'phone_number', formatted);
-        }
-    };
-
     return (
-        <section className={`${styles.root}`}>
-            <div className={`${styles.list}`}>
+        <div className={`${styles.PhoneNumbersManager__root}`}>
                 {displayPhoneNumbers.map((pn, index) => (
-                    <div key={pn.id || `phone-${index}`} className={`${styles.row} ${pn.is_primary ? styles.rowPrimary : ''}`}>
-                        <div className={`${styles.labelWrapper}`}>
-                            <input
-                                className={`${styles.inputLabel}`}
-                                value={pn.label}
-                                onChange={(e) => handleUpdate(index, 'label', e.target.value)}
-                                placeholder={tx.label}
-                            />
-                        </div>
-
-                        <div className={`${styles.numberWrapper}`}>
-                            <input
-                                className={`${styles.inputNumber}`}
-                                value={pn.phone_number}
-                                onChange={(e) => handleUpdate(index, 'phone_number', e.target.value)}
-                                onBlur={() => handleBlurPhone(index)}
-                                placeholder="542494521825..."
-                                required
-                            />
-                            
-                            {pn.phone_number && pn.phone_number.length > 5 && (
-                                <div className={`${styles.actions}`}>
-                                    <Button
-                                        to={`tel:${pn.phone_number.replace(/[^0-9+]/g, '')}`}
-                                        variant="link"
-                                        size="compact"
-                                        title={tx.call}
-                                        className={`${styles.action} ${styles.actionCall}`}
-                                        icon={<Icon name="call" size="1rem" />}
-                                    />
-                                    <Button
-                                        to={`https://wa.me/${pn.phone_number.replace(/[^0-9]/g, '')}`}
-                                        target="_blank"
-                                        variant="link"
-                                        size="compact"
-                                        title="WhatsApp"
-                                        className={`${styles.action} ${styles.actionWhatsapp}`}
-                                        icon={<Icon name="chat" size="1rem" />}
-                                    />
-                                </div>
-                            )}
-                        </div>
-
-                        <div className={`${styles.controls}`}>
-                            <button
-                                type="button"
-                                className={`${styles.star} ${pn.is_primary ? styles.starActive : ''}`}
-                                onClick={() => handleUpdate(index, 'is_primary', true)}
-                                title={tx.markAsPrimary}
-                            >
-                                <Icon name={pn.is_primary ? 'star' : 'star_outline'} size="1rem" />
-                            </button>
-
-                            <button
-                                type="button"
-                                className={`${styles.delete}`}
-                                onClick={() => handleRemove(index)}
-                                title={tx.deleteBtn}
-                            >
-                                <Icon name="close" size="1rem" />
-                            </button>
-                        </div>
+                    <div key={pn.id || `phone-${pn.phone_number}`} className={`${styles.PhoneNumbersManager__row} ${pn.is_primary ? styles.PhoneNumbersManager__rowPrimary : ''}`}>
+                    <div className={`${styles.PhoneNumbersManager__labelWrapper}`}>
+                        <Select
+                            value={pn.label}
+                            onChange={(e) => handleUpdate(index, 'label', e.target.value)}
+                            options={labelOptions}
+                        />
                     </div>
-                ))}
-            </div>
 
-            <button type="button" className={`${styles.add}`} onClick={handleAdd}>
+                    <div className={`${styles.PhoneNumbersManager__numberWrapper}`}>
+                        <PhoneInput
+                            value={pn.phone_number}
+                            onChange={(newValue) => handleUpdate(index, 'phone_number', newValue)}
+                            required
+                        />
+                    </div>
+
+                    <div className={`${styles.PhoneNumbersManager__controls}`}>
+                        <button
+                            type="button"
+                            className={`${styles.PhoneNumbersManager__star} ${pn.is_primary ? styles.PhoneNumbersManager__starActive : ''}`}
+                            onClick={() => handleUpdate(index, 'is_primary', true)}
+                            title={tx.markAsPrimary}
+                        >
+                            <Icon name={pn.is_primary ? 'star' : 'star_outline'} size="1rem" />
+                        </button>
+
+                        <button
+                            type="button"
+                            className={`${styles.PhoneNumbersManager__delete}`}
+                            onClick={() => handleRemove(index)}
+                            title={tx.deleteBtn}
+                        >
+                            <Icon name="close" size="1rem" />
+                        </button>
+                    </div>
+                </div>
+            ))}
+
+            <button type="button" className={`${styles.PhoneNumbersManager__add}`} onClick={handleAdd}>
                 <Icon name="add" size="0.9rem" />
                 <span>{tx.addAnotherPhone}</span>
             </button>
-        </section>
+        </div>
     );
 };
 
-export default PhoneNumbersManager;

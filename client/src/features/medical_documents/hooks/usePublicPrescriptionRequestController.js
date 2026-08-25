@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 const initialState = {
     loading: true,
@@ -48,16 +48,22 @@ export const usePublicPrescriptionRequestController = () => {
     const { loading, error, success, patientInfo, selectedMeds, notes, searchTerm, searchResults, searching } = realState;
 
     useEffect(() => {
+        let isMounted = true;
         const fetchData = async () => {
             realDispatch({ type: 'START_FETCH' });
             try {
                 const res = await api.get(`/medical/public/prescription-request/${token}`);
-                realDispatch({ type: 'FETCH_SUCCESS', payload: res.data });
+                if (isMounted) {
+                    realDispatch({ type: 'FETCH_SUCCESS', payload: res.data });
+                }
             } catch (err) {
-                realDispatch({ type: 'FETCH_ERROR', payload: err.response?.data?.error || "El enlace es inválido o ha expirado." });
+                if (isMounted) {
+                    realDispatch({ type: 'FETCH_ERROR', payload: err.response?.data?.error || "El enlace es inválido o ha expirado." });
+                }
             }
         };
         fetchData();
+        return () => { isMounted = false; };
     }, [token]);
 
     useEffect(() => {
@@ -66,18 +72,22 @@ export const usePublicPrescriptionRequestController = () => {
             return;
         }
 
+        let isActive = true;
         const delayDebounceFn = setTimeout(async () => {
+            if (!isActive) return;
             realDispatch({ type: 'START_SEARCH' });
             try {
                 const res = await api.get(`/medical/public/vademecum/search?q=${searchTerm}`);
+                if (!isActive) return;
                 realDispatch({ type: 'SET_SEARCH_RESULTS', payload: res.data });
             } catch (err) {
                 console.error("Search failed", err);
+                if (!isActive) return;
                 realDispatch({ type: 'SET_SEARCH_RESULTS', payload: [] });
             }
         }, 500);
 
-        return () => clearTimeout(delayDebounceFn);
+        return () => { clearTimeout(delayDebounceFn); isActive = false; };
     }, [searchTerm]);
 
     const handleToggleMedSelection = (medName) => realDispatch({ type: 'TOGGLE_MED', payload: medName });

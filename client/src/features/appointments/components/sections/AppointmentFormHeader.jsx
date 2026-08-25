@@ -1,6 +1,6 @@
 import React from 'react';
-import Badge from '@/components/atoms/Badge';
-import Icon from '@/components/atoms/Icon';
+import { Badge } from '@/components/atoms/Badge';
+import { Icon } from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/format';
 import styles from './AppointmentHeader.module.css';
 
@@ -8,7 +8,7 @@ import styles from './AppointmentHeader.module.css';
  * AppointmentFormHeader Molecule.
  * Displays title and date/time for the creation/edition form, matching Detail modal style.
  */
-const AppointmentFormHeader = ({ isEdit, date, t }) => {
+export const AppointmentFormHeader = ({ isEdit, date, t }) => {
     return (
         <header className={styles.root}>
             <section className={styles.patientInfo}>
@@ -30,4 +30,3 @@ const AppointmentFormHeader = ({ isEdit, date, t }) => {
     );
 };
 
-export default AppointmentFormHeader;

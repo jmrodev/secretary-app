@@ -1,11 +1,11 @@
 import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useModal } from '@/context/ModalContext';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { formatDate, formatTime } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * Renders a WhatsApp message template with appointment context variables.
@@ -102,7 +102,10 @@ export const useWhatsAppUniversal = (doctors) => {
             try {
                 const res = await api.get('/whatsapp/status');
                 bridgeConnected = res.data?.status === 'connected';
-            } catch { /* ignore — treat as offline */ }
+            } catch (err) {
+                // Treat as offline, but record the failure instead of swallowing it silently
+                console.warn('[useWhatsAppUniversal] WhatsApp status check failed; treating bridge as offline:', err);
+            }
 
             if (bridgeConnected) {
                 window.dispatchEvent(new CustomEvent('whatsapp:open-chat', {

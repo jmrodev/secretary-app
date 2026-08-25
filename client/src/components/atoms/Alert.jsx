@@ -4,14 +4,14 @@ import styles from './Alert.module.css';
 /**
  * Alert Atom follows Atomic Design & BEM.
  */
-const Alert = ({
+export const Alert = ({
     variant = 'info',
     title,
     message,
     children,
     className = ''
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.Alert__root;
     const variantClass = `${baseClass}--${variant}`;
 
     return (
@@ -22,5 +22,3 @@ const Alert = ({
         </div>
     );
 };
-
-export default Alert;

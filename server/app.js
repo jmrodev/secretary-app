@@ -3,9 +3,7 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const db = require('./db');
 const systemSettingsRepository = require('./repositories/system/systemSettingsRepository');
-
-// BigInt JSON serialization fix
-BigInt.prototype.toJSON = function () { return Number(this); };
+const { safeJsonReplacer } = require('./utils/system/safeJson');
 
 const authRoutes = require('./routes/user/authRoutes');
 const institutionRoutes = require('./routes/core/institutionRoutes');
@@ -25,12 +23,12 @@ const globalLimiter = rateLimit({
 
 // Register Event Listeners
 require('./listeners/appointmentListeners');
-require('./listeners/financeListener');
 
 const { initScheduler } = require('./utils/system/scheduler');
 
 const app = express();
 app.set('trust proxy', 1);
+app.set('json replacer', safeJsonReplacer);
 
 // Apply Security Middlewares
 app.use(globalLimiter);
@@ -51,6 +49,8 @@ app.get('/api/health', (req, res) => {
 });
 
 // Add bypass header for Cloudflare Tunnel and Auto-detect Staff IP
+// Self-learning: Detect if staff is accessing via a LAN IP and update staff_base_url
+let lastDetectedStaffIp = null;
 app.use(async (req, res, next) => {
     res.setHeader('Bypass-Tunnel-Reminder', 'true');
 
@@ -66,15 +66,16 @@ app.use(async (req, res, next) => {
                 const staffUrl = `http://${host}`;
 
                 // Only update if different to avoid constant DB writes
-                if (global.lastDetectedStaffIp !== staffUrl) {
-                    global.lastDetectedStaffIp = staffUrl;
+                if (lastDetectedStaffIp !== staffUrl) {
+                    lastDetectedStaffIp = staffUrl;
                     await systemSettingsRepository.upsert('staff_base_url', staffUrl);
                     console.log(`🤖 Auto-detected Staff LAN IP: ${staffUrl}`);
                 }
             }
         }
-    } catch (_) {
-        // Silently fail to not block the request
+    } catch (err) {
+        // Log and continue — IP detection must never block the request
+        console.error('Staff IP detection failed:', err);
     }
 
     next();
@@ -162,6 +163,9 @@ const gracefulShutdown = async (signal) => {
         db.pool.end().then(() => {
             console.log('💾 Database connections closed.');
             process.exit(0);
+        }).catch((err) => {
+            console.error('Failed to close database connections:', err);
+            process.exit(1);
         });
     });
 

@@ -1,47 +1,40 @@
-.root {
-    --card-padding: 1.5rem;
-    
-    background-color: var(--dashboard-card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    padding: var(--card-padding);
-    box-shadow: var(--shadow-sm);
+.PatientInsuranceFields__root {
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
     grid-column: span 12;
 }
 
-.header {
+.PatientInsuranceFields__header {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     color: var(--primary-color);
 }
 
-.title {
+.PatientInsuranceFields__title {
     font-size: 1rem;
     font-weight: 700;
     margin: 0;
     letter-spacing: -0.02em;
 }
 
-.bento {
+.PatientInsuranceFields__bento {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     gap: 1rem;
 }
 
-.group {
+.PatientInsuranceFields__group {
     display: flex;
     flex-direction: column;
     gap: 0.125rem;
 }
 
-.groupSpan7 { grid-column: span 7; }
-.groupSpan5 { grid-column: span 5; }
+.PatientInsuranceFields__groupSpan7 { grid-column: span 7; }
+.PatientInsuranceFields__groupSpan5 { grid-column: span 5; }
 
-.label {
+.PatientInsuranceFields__label {
     font-size: 0.625rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -49,38 +42,34 @@
     letter-spacing: 0.05em;
 }
 
-.select {
+.PatientInsuranceFields__select {
     width: 100%;
     padding: 0.625rem 0.75rem;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-color);
-    background-color: var(--dashboard-card-bg);
     color: var(--text-main);
     font-size: 0.875rem;
     transition: all 0.2s ease;
 }
 
-.select:focus {
+.PatientInsuranceFields__select:focus {
     border-color: var(--primary-color);
-    background-color: var(--dashboard-card-bg);
-    box-shadow: var(--shadow-sm);
+    
+    
 }
 
-.statusCard {
+.PatientInsuranceFields__statusCard {
     margin-top: 0.5rem;
     padding: 1rem;
     background-color: rgb(128, 128, 128, 0.08);
-    border-radius: var(--radius-sm);
     border-left: 0.25rem solid var(--primary-color);
 }
 
-.statusInfo {
+.PatientInsuranceFields__statusInfo {
     display: flex;
     gap: 0.75rem;
     color: var(--primary-color);
 }
 
-.statusLabel {
+.PatientInsuranceFields__statusLabel {
     display: block;
     font-size: 0.75rem;
     font-weight: 700;
@@ -88,14 +77,14 @@
     margin-bottom: 0.125rem;
 }
 
-.statusDetail {
+.PatientInsuranceFields__statusDetail {
     font-size: 0.8125rem;
     margin: 0;
     color: var(--gray-700);
 }
 
 @media (width <= 48rem) {
-    .group {
+    .PatientInsuranceFields__group {
         grid-column: span 12 !important;
     }
 }

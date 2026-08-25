@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const { mockGet, mockPost } = vi.hoisted(() => ({ mockGet: vi.fn(), mockPost: vi.fn() }));
 
 vi.mock('@/api/axios', () => ({
-    default: { get: mockGet, post: mockPost }
+    api: { get: mockGet, post: mockPost }
 }));
 
 import { listPending, acceptPending, suggestAlternative, rejectPending } from './pendingBookingApi';

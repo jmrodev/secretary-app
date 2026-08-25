@@ -1,93 +1,103 @@
 /* DoctorGoogleSettings Component Styles */
 
-.root {
+.DoctorGoogleSettings__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.connectBtn {
+.DoctorGoogleSettings__connectBtn,
+.DoctorGoogleSettings__disconnectBtn {
     width: 100%;
 }
 
-.disconnectBtn {
-    width: 100%;
-}
-
-.statusCard {
-    background: var(--gray-50);
+.DoctorGoogleSettings__statusCard {
+    background: var(--card-surface-bg);
     padding: 1.5rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--gray-100);
+    border-radius: var(--radius-md, 0.5rem);
+    border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.info {
+.DoctorGoogleSettings__info {
     display: flex;
     flex-direction: column;
 }
 
-.title {
+.DoctorGoogleSettings__title {
     font-size: 1.125rem;
     font-weight: 800;
     color: var(--text-main);
     margin: 0 0 0.25rem;
 }
 
-.subtitle {
+.DoctorGoogleSettings__subtitle {
     font-size: 0.875rem;
     color: var(--text-muted);
     margin: 0;
 }
 
-.actions {
+.DoctorGoogleSettings__actions {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
 }
 
-.helpText {
-    font-size: 0.7rem;
+.DoctorGoogleSettings__helpText {
+    font-size: 0.75rem;
     color: var(--text-muted);
     text-align: center;
     font-style: italic;
 }
 
-.tools {
+.DoctorGoogleSettings__tools {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
 }
 
-.divider {
+@media (width <= 768px) {
+    .DoctorGoogleSettings__tools {
+        grid-template-columns: 1fr;
+    }
+}
+
+.DoctorGoogleSettings__divider {
     height: 1px;
     background: var(--border-color);
     margin: 0.5rem 0;
-    opacity: 0.5;
+    grid-column: 1 / -1;
 }
 
-.resetBox {
-    background: var(--amber-50);
-    padding: 1rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--amber-100);
+.DoctorGoogleSettings__resetBox {
+    background: var(--card-surface-bg);
+    padding: 1.25rem;
+    border-radius: var(--radius-md, 0.5rem);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--warning);
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-.resetNotice {
-    font-size: 0.7rem;
-    text-align: center;
-    color: var(--amber-700);
-    margin-bottom: 0.75rem;
-    font-weight: 600;
+.DoctorGoogleSettings__resetNotice {
+    font-size: 0.85rem;
+    text-align: left;
+    color: var(--text-main);
+    margin: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    line-height: 1.4;
 }
 
-.resetBtn {
+.DoctorGoogleSettings__resetNotice :global(.material-symbols-outlined) {
+    color: var(--warning);
+}
+
+.DoctorGoogleSettings__resetBtn {
     width: 100%;
-    color: var(--amber-700);
-}
-
-.resetBtn:hover {
-    background: var(--amber-100);
 }

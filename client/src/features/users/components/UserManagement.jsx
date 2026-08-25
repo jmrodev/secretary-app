@@ -4,18 +4,19 @@ import { useLanguage } from '@/hooks/useLanguage';
 
 // Atoms & Molecules
 import { Button } from '@/components/atoms/Button';
-import Card from '@/components/atoms/Card';
-import Icon from '@/components/atoms/Icon';
-import Modal from '@/components/molecules/Modal';
+import { Card } from '@/components/atoms/Card';
+import { Icon } from '@/components/atoms/Icon';
+import { Modal } from '@/components/molecules/Modal';
 
-// Feature Components
-import UserTable from '@/features/users/components/UserTable';
-import UserForm from '@/features/users/components/UserForm';
+import { UserTable } from '@/features/users/components/UserTable';
+import { UserForm } from '@/features/users/components/UserForm';
+import { SecretaryPermissionsModal } from '@/features/users/components/SecretaryPermissionsModal';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './UserManagement.module.css';
 
 const EMPTY_EXCLUDE = [];
 
-const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
+export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
     const { t } = useLanguage();
     const {
         users,
@@ -29,6 +30,7 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
     } = useUsers({ role, excludeRoles });
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [selectedSecretaryForPerms, setSelectedSecretaryForPerms] = useState(null);
     const [modalState, setModalState] = useState({
         isOpen: false,
         type: null,
@@ -42,7 +44,7 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
     const openModal = (type, u = null) => {
         let initialData = {};
         if (type === 'CREATE') {
-            initialData = { username: '', password: '', role: role || 'doctor', full_name: '', dni: '', phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }], specialty: '' };
+            initialData = { username: '', password: '', role: role || 'doctor', full_name: '', dni: '', phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }], specialty: '', adminPassword: '' };
         } else if (type === 'EDIT') {
             initialData = {
                 username: u.username,
@@ -53,7 +55,7 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
                 specialty: u.specialty || ''
             };
         } else if (type === 'DELETE') {
-            initialData = { username: u.username, securityCode: '' };
+            initialData = { username: u.username, adminPassword: '' };
         } else if (type === 'RESET') {
             initialData = { username: u.username, dni: u.dni, password: u.dni || '' };
         }
@@ -73,7 +75,7 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
 
         if (type === 'CREATE') await createUser(formData, refresh);
         else if (type === 'EDIT') await updateUser(user.id, formData, refresh);
-        else if (type === 'DELETE') await deleteUser(user.id, user.full_name, { securityCode: formData.securityCode, onSuccess: refresh });
+        else if (type === 'DELETE') await deleteUser(user.id, user.full_name, { adminPassword: formData.adminPassword, onSuccess: refresh });
         else if (type === 'RESET_DNI' || type === 'RESET_MANUAL') await resetPassword(user.id, formData.password, close);
     };
 
@@ -84,40 +86,58 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
     );
 
     return (
-        <div className={`${styles.userManagementOrganism}`}>
-            <section className="action-bar">
-                <div className="action-bar__search">
-                    <div className="search-box__wrapper">
-                        <span className="search-box__icon"><Icon name="search" /></span>
+        <div className={`${styles.UserManagement__userManagementOrganism}`}>
+            <section className={sharedStyles.ActionBar}>
+                <div className={sharedStyles.ActionBar__search}>
+                    <div className={sharedStyles.SearchBox__wrapper}>
+                        <span className={sharedStyles.SearchBox__icon}><Icon name="search" /></span>
                         <input
                             type="text"
                             placeholder={t('search_users_placeholder')}
-                            className="search-box__input"
+                            className={sharedStyles.SearchBox__input}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
                 </div>
-                <div className="action-bar__tools">
-                    <Button variant="ghost" onClick={loadData} icon={<Icon name="sync" />} />
-                    <Button variant="primary" onClick={() => openModal('CREATE')}>
-                        <Icon name="auto_awesome" size="1rem" /> {t('new') || 'Nuevo'}
+                <div className={sharedStyles.ActionBar__tools}>
+                    <Button 
+                        variant="primary" 
+                        onClick={() => openModal('CREATE')}
+                        icon={<Icon name="add" size="1.1rem" />}
+                    >
+                        {t('add_user')}
+                    </Button>
+                    <Button 
+                        variant="outline" 
+                        onClick={loadData}
+                        icon={<Icon name="sync" size="1.1rem" />}
+                    >
+                        {t('refresh')}
                     </Button>
                 </div>
             </section>
 
-            <Card className={`${styles.tableContainer}`}>
+            <Card className={`${styles.UserManagement__tableContainer}`}>
                 {loading ? (
-                    <div className={`${styles.loader}`}>{t('loading_users')}</div>
+                    <div className={`${styles.UserManagement__loader}`}>{t('loading_users')}</div>
                 ) : (
                     <UserTable
                         users={filteredUsers}
                         onEdit={(u) => openModal('EDIT', u)}
                         onReset={(u) => openModal('RESET', u)}
                         onDelete={(u) => openModal('DELETE', u)}
+                        onOpenPermissions={(u) => setSelectedSecretaryForPerms(u)}
                     />
                 )}
             </Card>
+
+            <SecretaryPermissionsModal
+                isOpen={Boolean(selectedSecretaryForPerms)}
+                onClose={() => setSelectedSecretaryForPerms(null)}
+                secretary={selectedSecretaryForPerms}
+                onSaveSuccess={loadData}
+            />
 
             <Modal
                 isOpen={modalState.isOpen}
@@ -143,11 +163,12 @@ const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
                 <UserForm
                     type={modalState.type}
                     formData={modalState.formData}
-                    setFormData={(data) => setModalState(prev => ({ ...prev, formData: data }))}
+                    setFormData={(data) => setModalState(prev => ({ 
+                        ...prev, 
+                        formData: typeof data === 'function' ? data(prev.formData) : data 
+                    }))}
                 />
             </Modal>
         </div>
     );
 };
-
-export default UserManagement;

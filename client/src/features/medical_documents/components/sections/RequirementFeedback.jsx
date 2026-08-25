@@ -5,7 +5,7 @@ import React from 'react';
  * Displays notes/responses from both doctors and administrative staff for a medical request.
  * Part of the documentary review workflow in medical_documents.
  */
-const RequirementFeedback = ({ doctorNote, secretaryNote, t }) => {
+export const RequirementFeedback = ({ doctorNote, secretaryNote, t }) => {
     if (!doctorNote && !secretaryNote) return null;
 
     return (
@@ -26,4 +26,3 @@ const RequirementFeedback = ({ doctorNote, secretaryNote, t }) => {
     );
 };
 
-export default RequirementFeedback;

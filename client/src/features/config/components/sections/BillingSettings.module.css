@@ -1,54 +1,183 @@
 /* BillingSettings Component Styles (BEM) */
 
-.root {
+.BillingSettings__root {
     /* Root styles */
 }
 
 /* AFIP Status Display */
-.status {
-    padding: 1rem;
+.BillingSettings__status {
+    padding: var(--spacing-md);
     border-radius: var(--radius-sm);
-    background-color: var(--white);
+    background-color: var(--card-surface-bg);
     border: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
     font-size: 0.875rem;
     font-weight: 500;
 }
 
-.statusSuccess {
-    border-left: 4px solid var(--green-500);
-    color: var(--green-700);
+.BillingSettings__statusSuccess {
+    border-left: 4px solid var(--success);
+    color: var(--text-main);
 }
 
-.statusError {
+.BillingSettings__statusError {
     border-left: 4px solid var(--error);
-    color: var(--red-700);
+    color: var(--text-main);
 }
 
-.statusHeader {
+.BillingSettings__statusHeader {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
     font-weight: 700;
 }
 
-/* CSR Generation Result */
-.csrBox {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px dashed var(--border-color);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.BillingSettings__group {
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md);
+    margin-top: var(--spacing-md);
 }
 
-#root .csrTextarea {
+.BillingSettings__group--bgWhite {
+    background: var(--card-surface-bg);
+}
+
+.BillingSettings__groupHeader {
+    margin-bottom: var(--spacing-sm);
+}
+
+.BillingSettings__groupTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.BillingSettings__groupItems {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.BillingSettings__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.BillingSettings__actions--right {
+    justify-content: flex-end;
+}
+
+.BillingSettings__actions--mt1 {
+    margin-top: var(--spacing-md);
+}
+
+.BillingSettings__link {
+    color: var(--accent-color);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.BillingSettings__hint {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.BillingSettings__hint--mb05 {
+    margin-bottom: var(--spacing-xs);
+}
+
+.BillingSettings__hint--mb15 {
+    margin-bottom: var(--spacing-lg);
+}
+
+.BillingSettings__inputMonospace {
     font-family: var(--font-mono, monospace);
-    font-size: 0.75rem;
-    background-color: var(--slate-50);
-    border-color: var(--slate-200);
+    font-size: 0.8rem;
     line-height: 1.4;
-    resize: none;
+}
+
+/* Doctor Fiscal Status Table */
+.BillingSettings__tableWrapper {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: var(--spacing-md);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--dashboard-card-bg);
+}
+
+.BillingSettings__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: left;
+}
+
+.BillingSettings__th {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--card-surface-bg);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.BillingSettings__th--right {
+    text-align: right;
+}
+
+.BillingSettings__tr {
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.15s ease;
+}
+
+.BillingSettings__tr:hover {
+    background-color: var(--card-hover-bg);
+}
+
+.BillingSettings__tr:last-child {
+    border-bottom: none;
+}
+
+.BillingSettings__td {
+    padding: var(--spacing-md);
+    vertical-align: middle;
+    color: var(--text-main);
+}
+
+.BillingSettings__td--right {
+    text-align: right;
+}
+
+.BillingSettings__doctorCell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.BillingSettings__doctorName {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.BillingSettings__doctorSpecialty {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.BillingSettings__emptyState {
+    padding: var(--spacing-xl);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.875rem;
 }

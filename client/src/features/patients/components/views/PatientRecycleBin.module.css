@@ -1,11 +1,11 @@
 /* PatientRecycleBin Component Styles - Feature Specific */
 
-.root {
+.PatientRecycleBin__root {
     width: 100%;
     margin-top: 1rem;
 }
 
-.emptyState {
+.PatientRecycleBin__emptyState {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -18,13 +18,13 @@
     color: var(--text-muted);
 }
 
-.emptyIcon {
+.PatientRecycleBin__emptyIcon {
     font-size: 3rem;
     margin-bottom: 1rem;
     opacity: 0.5;
 }
 
-.container {
+.PatientRecycleBin__container {
     background: var(--dashboard-card-bg);
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-color);
@@ -32,12 +32,12 @@
     overflow: hidden;
 }
 
-.table {
+.PatientRecycleBin__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.table th {
+.PatientRecycleBin__table th {
     background: var(--dashboard-card-bg);
     padding: 1rem;
     text-align: left;
@@ -48,21 +48,21 @@
     border-bottom: 2px solid var(--border-color);
 }
 
-.table td {
+.PatientRecycleBin__table td {
     padding: 1rem;
     border-bottom: 1px solid var(--border-color);
 }
 
-.row:hover {
-    background-color: rgb(128, 128, 128, 0.08);
+.PatientRecycleBin__row:hover {
+    background-color: var(--row-hover-bg);
 }
 
-.patientName {
+.PatientRecycleBin__patientName {
     font-weight: 700;
     color: var(--text-main);
 }
 
-.patientDni {
+.PatientRecycleBin__patientDni {
     font-family: monospace;
     color: var(--text-secondary);
     background: var(--gray-50);
@@ -72,7 +72,7 @@
     display: inline-block;
 }
 
-.contactInfo {
+.PatientRecycleBin__contactInfo {
     font-size: 0.85rem;
     color: var(--text-secondary);
     display: flex;
@@ -80,72 +80,72 @@
     gap: 0.25rem;
 }
 
-.contactItem {
+.PatientRecycleBin__contactItem {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.dateWrapper {
+.PatientRecycleBin__dateWrapper {
     display: flex;
     flex-direction: column;
 }
 
-.time {
+.PatientRecycleBin__time {
     font-size: 0.75rem;
     color: var(--text-muted);
 }
 
-.date {
+.PatientRecycleBin__date {
     font-size: 0.85rem;
     color: var(--text-secondary);
 }
 
-.actions {
+.PatientRecycleBin__actions {
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
 }
 
-.loading {
+.PatientRecycleBin__loading {
     display: flex;
     justify-content: center;
     padding: 3rem;
 }
 
-.emptyTitle {
+.PatientRecycleBin__emptyTitle {
     color: var(--text-muted);
     font-weight: 500;
 }
 
-.emptyText {
+.PatientRecycleBin__emptyText {
     font-size: 0.875rem;
     color: var(--gray-400);
     margin-top: 0.5rem;
 }
 
-.patientWrapper {
+.PatientRecycleBin__patientWrapper {
     display: flex;
     flex-direction: column;
 }
 
-.contactMissing {
+.PatientRecycleBin__contactMissing {
     font-style: italic;
     color: var(--slate-400);
 }
 
-.actionBtnRestore {
+.PatientRecycleBin__actionBtnRestore {
     color: var(--green-600);
     border-color: var(--green-200);
     font-weight: 700;
 }
 
-.actionBtnRestore:hover {
+.PatientRecycleBin__actionBtnRestore:hover {
     background-color: var(--green-50);
     border-color: var(--green-300);
 }
 
-.footerHint {
+.PatientRecycleBin__footerHint {
     margin-top: 1rem;
     text-align: center;
     font-size: 0.75rem;

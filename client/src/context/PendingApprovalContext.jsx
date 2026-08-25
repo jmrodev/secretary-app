@@ -1,5 +1,5 @@
 import { createContext, use, useCallback, useEffect, useMemo, useState } from 'react';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import {
     listPending,
     acceptPending as acceptPendingRequest,
@@ -8,6 +8,7 @@ import {
 } from '@/api/pendingBookingApi';
 
 /** Polling interval for the pending-approval queue (design: every 10s). */
+// eslint-disable-next-line react-refresh/only-export-components -- constant imported by MainLayout for the polling interval
 export const POLL_INTERVAL_MS = 10000;
 
 const PendingApprovalContext = createContext(null);
@@ -31,8 +32,12 @@ export const PendingApprovalProvider = ({ children }) => {
             const items = await listPending();
             setPendingItems(items);
         } catch (error) {
-            // Silently swallow expected auth/404 errors during initial render/polling when unauthenticated or feature inactive
-            if (error.response?.status !== 404 && error.response?.status !== 403) {
+            // 404/403 are expected during initial render/polling when unauthenticated or the
+            // feature is inactive, but we still record them to avoid silently swallowing errors.
+            const status = error.response?.status;
+            if (status === 404 || status === 403) {
+                console.warn('[PendingApprovalContext] Pending bookings unavailable (expected during unauth/inactive):', status);
+            } else {
                 console.error('[PendingApprovalContext] Error fetching pending bookings:', error);
             }
         } finally {
@@ -42,6 +47,10 @@ export const PendingApprovalProvider = ({ children }) => {
 
     useEffect(() => {
         if (!user || user.role === 'patient') return undefined;
+        // The initial fetch must run synchronously: PendingApprovalContext.test
+        // asserts the poll starts on mount, and the loading flag mirrors the
+        // async external polling system (deferring it would drop the spinner).
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- sync initial poll drives a global queue spinner
         refresh();
         const interval = setInterval(refresh, POLL_INTERVAL_MS);
         return () => clearInterval(interval);

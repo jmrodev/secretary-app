@@ -1,19 +1,26 @@
 /* AppointmentPatientSection Molecule Styles (BEM) - Dark Mode Standard */
 
-.root {
+.AppointmentPatientSection__root {
     display: flex;
     flex-direction: column;
     gap: 1rem;
     grid-column: 1 / -1;
 }
 
-.searchGroup {
+.AppointmentPatientSection__fieldsRow {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.AppointmentPatientSection__searchGroup {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
 
-.groupLabel {
+.AppointmentPatientSection__groupLabel {
     font-size: 0.75rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -22,7 +29,7 @@
 }
 
 /* Missing Data Alert */
-.missingAlert {
+.AppointmentPatientSection__missingAlert {
     display: flex; 
     justify-content: space-between; 
     align-items: center;
@@ -35,7 +42,7 @@
     animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 
-.missingText { 
+.AppointmentPatientSection__missingText { 
     color: var(--danger); 
     font-weight: 600;
     display: flex;
@@ -43,7 +50,7 @@
     gap: 0.5rem;
 }
 
-.missingAction { 
+.AppointmentPatientSection__missingAction { 
     background: none; 
     border: none; 
     font-weight: 800; 
@@ -54,51 +61,7 @@
     font-size: 0.85rem;
 }
 
-/* Quick Info Panel */
-.quickInfo {
-    margin-top: 0.5rem; 
-    padding: 1.25rem; 
-    background-color: rgb(0 182 122 / 5%);
-    border: 1px solid rgb(0 182 122 / 15%); 
-    border-radius: var(--radius-md); 
-    display: flex; 
-    align-items: center;
-}
 
-.field { 
-    flex: 1; 
-    display: flex; 
-    flex-direction: column; 
-    gap: 0.35rem;
-}
-
-.label { 
-    font-size: 0.65rem; 
-    font-weight: 900; 
-    color: var(--success); 
-    text-transform: uppercase; 
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
-}
-
-.input { 
-    font-weight: 700; 
-    font-size: 1.1rem;
-    color: var(--text-main); 
-    border: none; 
-    background: transparent; 
-    border-bottom: 2px solid rgb(0 182 122 / 20%);
-    padding: 0.25rem 0;
-    outline: none;
-    transition: border-color 0.2s ease;
-    width: 100%;
-}
-
-.input:focus {
-    border-bottom-color: var(--success);
-}
 
 @keyframes shake {
   10%, 90% { transform: translate3d(-1px, 0, 0); }

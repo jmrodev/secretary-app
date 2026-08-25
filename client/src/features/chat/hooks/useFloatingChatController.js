@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useFetch } from '@/hooks/useFetch';
 import { getNow } from '@/utils/core/dateUtils';
 
@@ -24,10 +24,13 @@ export const useFloatingChatController = (user, showMessage) => {
 
     const scrollRef = useRef(null);
     const typingTimeoutRef = useRef(null);
-    const notificationSound = useRef(new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3'));
+    const notificationSoundRef = useRef(null);
+    if (notificationSoundRef.current === null) {
+        notificationSoundRef.current = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
+    }
 
     const playNotification = useCallback((convo) => {
-        notificationSound.current.play().catch(() => { });
+        notificationSoundRef.current?.play().catch(() => { });
         if ("Notification" in window && Notification.permission === "granted") {
             new Notification(`Mensaje de ${convo.other_display_name}`, {
                 body: convo.message,
@@ -134,7 +137,7 @@ export const useFloatingChatController = (user, showMessage) => {
     useEffect(() => {
         if (!activeConvoId) return;
         
-        onPollThread();
+        queueMicrotask(() => onPollThread());
         const threadInterval = setInterval(onPollThread, 5000);
         return () => clearInterval(threadInterval);
     }, [activeConvoId]);

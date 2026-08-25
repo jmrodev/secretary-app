@@ -1,11 +1,11 @@
 
-.root {
+.MedicalHistoryTable__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.title {
+.MedicalHistoryTable__title {
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -14,12 +14,12 @@
     font-weight: 800;
 }
 
-.container {
+.MedicalHistoryTable__container {
     /* --- Local Component Tokens --- */
     --history-bg: var(--dashboard-card-bg);
     --history-border: var(--border-color);
     --history-header-bg: var(--dashboard-card-bg);
-    --history-row-hover: rgb(128, 128, 128, 0.08);
+    --history-row-hover: var(--row-hover-bg);
 
     /* ------------------------------ */
 
@@ -29,12 +29,12 @@
     border: 1px solid var(--history-border);
 }
 
-.table {
+.MedicalHistoryTable__table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.th {
+.MedicalHistoryTable__th {
     padding: 0.75rem 1rem;
     text-align: left;
     background-color: var(--history-header-bg);
@@ -46,68 +46,68 @@
     letter-spacing: 0.05em;
 }
 
-.thDate {
+.MedicalHistoryTable__thDate {
     padding-left: 1.5rem;
 }
 
-.thDetail {
+.MedicalHistoryTable__thDetail {
     width: 35%;
 }
 
-.thActions {
+.MedicalHistoryTable__thActions {
     text-align: right;
     padding-right: 1.5rem;
 }
 
-.row {
+.MedicalHistoryTable__row {
     transition: background 0.2s ease;
 }
 
-.row:hover {
+.MedicalHistoryTable__row:hover {
     background-color: var(--history-row-hover);
 }
 
-.td {
+.MedicalHistoryTable__td {
     padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
 }
 
-.td:first-child {
+.MedicalHistoryTable__td:first-child {
     padding-left: 1.5rem;
 }
 
-.td:last-child {
+.MedicalHistoryTable__td:last-child {
     padding-right: 1.5rem;
 }
 
-.dateCell {
+.MedicalHistoryTable__dateCell {
     display: flex;
     flex-direction: column;
 }
 
-.date {
+.MedicalHistoryTable__date {
     font-weight: 700;
     color: var(--text-main);
 }
 
-.timeAgo {
+.MedicalHistoryTable__timeAgo {
     font-size: 0.75rem;
     color: var(--text-muted);
 }
 
-.patientCell {
+.MedicalHistoryTable__patientCell {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.patientName {
+.MedicalHistoryTable__patientName {
     font-weight: 700;
     color: var(--text-main);
 }
 
-.originTag {
+.MedicalHistoryTable__originTag {
     font-size: 0.65rem;
     font-weight: 800;
     color: var(--text-muted);
@@ -119,17 +119,17 @@
     width: fit-content;
 }
 
-.originTagClickable {
+.MedicalHistoryTable__originTagClickable {
     cursor: pointer;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.originTagClickable:hover {
+.MedicalHistoryTable__originTagClickable:hover {
     opacity: 0.8;
     transform: scale(1.02);
 }
 
-.detail {
+.MedicalHistoryTable__detail {
     font-size: 0.875rem;
     color: var(--text-secondary);
     font-style: italic;
@@ -140,20 +140,20 @@
     overflow: hidden;
 }
 
-.doctorName {
+.MedicalHistoryTable__doctorName {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--accent-color);
 }
 
-.actions {
+.MedicalHistoryTable__actions {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 0.6rem;
 }
 
-.actionBtn {
+.MedicalHistoryTable__actionBtn {
     border: none !important;
     border-radius: 6px !important;
     padding: 0.35rem 0.5rem !important;
@@ -161,39 +161,39 @@
     transition: all 0.15s ease-in-out !important;
 }
 
-.actionBtn:hover {
+.MedicalHistoryTable__actionBtn:hover {
     transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
 }
 
-.actionBtnView {
+.MedicalHistoryTable__actionBtnView {
     background-color: #6366f1 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
-.actionBtnView:hover {
-    background-color: #4f46e5 !important;
+.MedicalHistoryTable__actionBtnView:hover {
+    background-color: var(--indigo-600) !important;
 }
 
-.actionBtnEdit {
-    background-color: #334155 !important;
-    color: #fff !important;
+.MedicalHistoryTable__actionBtnEdit {
+    background-color: var(--dashboard-card-bg) !important;
+    color: var(--text-main) !important;
 }
 
-.actionBtnEdit:hover {
-    background-color: #1e293b !important;
+.MedicalHistoryTable__actionBtnEdit:hover {
+    background-color: var(--background-bg) !important;
 }
 
-.actionBtnDelete {
+.MedicalHistoryTable__actionBtnDelete {
     background-color: #b91c1c !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
-.actionBtnDelete:hover {
-    background-color: #991b1b !important;
+.MedicalHistoryTable__actionBtnDelete:hover {
+    background-color: var(--red-800) !important;
 }
 
-.empty {
+.MedicalHistoryTable__empty {
     padding: 3rem;
     text-align: center;
     color: var(--text-muted);

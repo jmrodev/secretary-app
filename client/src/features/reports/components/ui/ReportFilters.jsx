@@ -1,12 +1,12 @@
 import React from 'react';
 import { Button } from '@/components/atoms/Button';
-import Select from '@/components/atoms/Select';
-import Input from '@/components/atoms/Input';
-import Icon from '@/components/atoms/Icon';
+import { Select } from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
+import { Icon } from '@/components/atoms/Icon';
 import { getMonthsOptions } from '@/utils/core/dateUtils';
 import styles from './ReportFilters.module.css';
 
-const ReportFilters = ({
+export const ReportFilters = ({
     month,
     year,
     onMonthChange,
@@ -26,9 +26,9 @@ const ReportFilters = ({
     }));
 
     return (
-        <div className={styles.reportFilters}>
-            <div className={styles.reportFilters__controls}>
-                <div className={styles.reportFilters__field}>
+        <div className={styles.ReportFilters}>
+            <div className={styles.ReportFilters__controls}>
+                <div className={styles.ReportFilters__field}>
                     <Button
                         variant="ghost"
                         size="sm-compact"
@@ -40,7 +40,7 @@ const ReportFilters = ({
                         value={month}
                         onChange={(e) => onMonthChange(Number(e.target.value))}
                         options={monthOptions}
-                        className={styles.reportFilters__selectMonth}
+                        className={styles.ReportFilters__selectMonth}
                     />
                     <Button
                         variant="ghost"
@@ -51,7 +51,7 @@ const ReportFilters = ({
                     </Button>
                 </div>
 
-                <div className={styles.reportFilters__field}>
+                <div className={styles.ReportFilters__field}>
                     <Button
                         variant="ghost"
                         size="sm-compact"
@@ -65,7 +65,7 @@ const ReportFilters = ({
                         onChange={(e) => onYearChange(Number(e.target.value))}
                         min="2020"
                         max="2035"
-                        className={styles.reportFilters__inputYear}
+                        className={styles.ReportFilters__inputYear}
                     />
                     <Button
                         variant="ghost"
@@ -77,7 +77,7 @@ const ReportFilters = ({
                 </div>
             </div>
 
-            <div className={styles.reportFilters__actions}>
+            <div className={styles.ReportFilters__actions}>
                 <Button
                     onClick={onGenerate}
                     disabled={isSubmitting}
@@ -88,7 +88,7 @@ const ReportFilters = ({
                 </Button>
 
                 {hasData && (
-                    <div className={styles.reportFilters__exportGroup}>
+                    <div className={styles.ReportFilters__exportGroup}>
                         <Button
                             variant="secondary"
                             size="sm"
@@ -110,4 +110,4 @@ const ReportFilters = ({
     );
 };
 
-export default ReportFilters;
+

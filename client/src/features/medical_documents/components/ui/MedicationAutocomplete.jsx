@@ -2,22 +2,59 @@ import React, { useRef, useEffect } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMedicationAutocomplete } from '@/features/medical_documents/hooks/useMedicationAutocomplete';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import Input from '@/components/atoms/Input';
-import Loading from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { Loading } from '@/components/atoms/Loading';
 import styles from './MedicationAutocomplete.module.css';
+
+/**
+ * Highlights matching substrings in suggestion text.
+ * Takes styles as parameter to avoid recreating on every render.
+ */
+const highlightMatch = (text, query, styles) => {
+    if (!query || typeof text !== 'string') return text;
+    const parts = query.split(/\s+/).filter(q => q.length > 0);
+    if (parts.length === 0) return text;
+
+    const regex = new RegExp(`(${parts.join('|')})`, 'gi');
+    const chunks = text.split(regex);
+
+    // Stable key without array index: hash of chunk content + running counter
+    let chunkCounter = 0;
+    const makeChunkKey = (chunk) => {
+        let h = 5381;
+        for (let k = 0; k < chunk.length; k++) {
+            h = ((h << 5) + h) ^ chunk.charCodeAt(k);
+        }
+        return `chunk-${chunkCounter++}-${h >>> 0}`;
+    };
+
+    return (
+        <>
+            {chunks.map((chunk) => {
+                const chunkKey = makeChunkKey(chunk);
+                return regex.test(chunk) ? (
+                    <span key={chunkKey} className={styles.MedicationAutocomplete__highlight}>{chunk}</span>
+                ) : (
+                    <React.Fragment key={chunkKey}>{chunk}</React.Fragment>
+                );
+            })}
+        </>
+    );
+};
 
 /**
  * MedicationAutocomplete Feature Molecule.
  * Search bar with live suggestions from the medical vademecum.
  * Part of the prescription and medical request management workflow.
  */
-const MedicationAutocomplete = ({
+export const MedicationAutocomplete = ({
     value,
     onChange,
     placeholder,
     className = '',
-    onSelectMedication
+    onSelectMedication,
+    id
 }) => {
     const { t } = useLanguage();
     const wrapperRef = useRef(null);
@@ -37,8 +74,6 @@ const MedicationAutocomplete = ({
         setCursor
     } = useMedicationAutocomplete(value, onChange, onSelectMedication);
 
-    const baseClass = styles.root;
-
     // Handle clicks outside to close suggestions
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -50,37 +85,12 @@ const MedicationAutocomplete = ({
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [setShowSuggestions]);
 
-    /**
-     * Helper to highlight matching text in suggestions
-     */
-    const highlightMatch = (text, query) => {
-        if (!query || typeof text !== 'string') return text;
-        const parts = query.split(/\s+/).filter(q => q.length > 0);
-        if (parts.length === 0) return text;
-
-        const regex = new RegExp(`(${parts.join('|')})`, 'gi');
-        const chunks = text.split(regex);
-
-        return (
-            <>
-                {chunks.map((chunk, i) => {
-                    // Use a more stable key by combining index and content
-                    const chunkKey = `chunk-${i}-${chunk.length}`;
-                    return regex.test(chunk) ? (
-                        <span key={chunkKey} className={`${baseClass}__highlight`}>{chunk}</span>
-                    ) : (
-                        <React.Fragment key={chunkKey}>{chunk}</React.Fragment>
-                    );
-                })}
-            </>
-        );
-    };
-
     return (
-        <div className={`${styles.animateFadeIn} ${styles.root} ${className}`} ref={wrapperRef}>
-            <div className={styles.inputWrapper}>
+        <div className={`${styles.MedicationAutocomplete__animateFadeIn} ${styles.MedicationAutocomplete__root} ${className}`} ref={wrapperRef}>
+            <div className={styles.MedicationAutocomplete__inputWrapper}>
                 <Input
-                    className={styles.input}
+                    id={id}
+                    className={styles.MedicationAutocomplete__input}
                     value={searchTerm}
                     onChange={(e) => handleSearch(e.target.value)}
                     onFocus={() => searchTerm.length >= 2 && setShowSuggestions(true)}
@@ -90,7 +100,7 @@ const MedicationAutocomplete = ({
                     size="sm"
                     style={{ minHeight: '30px' }}
                 />
-                <div className={styles.actions}>
+                <div className={styles.MedicationAutocomplete__actions}>
                     {loading ? (
                         <Loading size="sm" variant="inline" />
                     ) : searchTerm ? (
@@ -112,11 +122,11 @@ const MedicationAutocomplete = ({
             </div>
 
             {showSuggestions && suggestions.length > 0 && (
-                <ul ref={listRef} className={`${styles.animateFadeIn} ${baseClass}__list`} role="listbox">
+                <ul ref={listRef} className={`${styles.MedicationAutocomplete__animateFadeIn} ${styles.MedicationAutocomplete__list}`} role="listbox">
                     {suggestions.map((med, idx) => (
                         <li
-                            key={med.id || `med-suggestion-${idx}`}
-                            className={`${baseClass}__item ${cursor === idx ? `${baseClass}__item--active` : ''}`}
+                            key={med.id}
+                            className={`${styles.MedicationAutocomplete__item} ${cursor === idx ? styles.MedicationAutocomplete__itemActive : ''}`}
                             onClick={() => handleSelect(med)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
@@ -129,28 +139,28 @@ const MedicationAutocomplete = ({
                             aria-selected={cursor === idx}
                             tabIndex={0}
                         >
-                            <div className={`${baseClass}__item-title`}>
-                                {highlightMatch(med.name, searchTerm)}
+                            <div className={styles.MedicationAutocomplete__itemTitle}>
+                                {highlightMatch(med.name, searchTerm, styles)}
                             </div>
-                            <div className={`${baseClass}__item-subtitle`}>
+                            <div className={styles.MedicationAutocomplete__itemSubtitle}>
                                 {med.presentation && (
                                     <span style={{ color: 'rgb(255 255 255 / 70%)', fontStyle: 'italic', marginRight: '0.25rem' }}>
                                         {med.presentation}
                                     </span>
                                 )}
-                                <span>{highlightMatch(med.drug, searchTerm)}</span>
+                                <span>{highlightMatch(med.drug, searchTerm, styles)}</span>
                                 {med.lab && (
                                     <>
-                                        <span className={`${baseClass}__separator`}>•</span>
-                                        <span className={`${baseClass}__lab`}>{highlightMatch(med.lab, searchTerm)}</span>
+                                        <span className={styles.separator}>•</span>
+                                        <span className={styles.lab}>{highlightMatch(med.lab, searchTerm, styles)}</span>
                                     </>
                                 )}
                             </div>
                         </li>
                     ))}
-                    <li className={`${baseClass}__footer`}>
-                        <span className={`${baseClass}__footer-brand`}>{t('iosfa_vademecum')}</span>
-                        <span className={`${baseClass}__footer-count`}>
+                    <li className={styles.MedicationAutocomplete__footer}>
+                        <span className={styles.MedicationAutocomplete__footerBrand}>{t('iosfa_vademecum')}</span>
+                        <span className={styles.footerCount}>
                             {suggestions.length} {t('results')}
                         </span>
                     </li>
@@ -160,4 +170,3 @@ const MedicationAutocomplete = ({
     );
 };
 
-export default MedicationAutocomplete;

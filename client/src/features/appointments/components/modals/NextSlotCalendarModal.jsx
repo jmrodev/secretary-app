@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef } from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
-import Loading from '@/components/atoms/Loading';
+import { Loading } from '@/components/atoms/Loading';
+import { Checkbox } from '@/components/atoms/Checkbox';
 import { formatDate, toInputDate, getNow } from '@/utils/core/dateUtils';
 import styles from './NextSlotCalendarModal.module.css';
 
@@ -22,7 +23,7 @@ import { SlotSection } from '../sections/NextSlotSection';
 import { DayListItem } from '../sections/NextSlotDayItem';
 
 /* ─── Main Component ──────────────────────────────────────────────────────── */
-const NextSlotCalendarModal = ({
+export const NextSlotCalendarModal = ({
     isOpen, onClose, loading, nextSlotData, includeOutOfHours, onToggleOutOfHours,
     onSelect, onWhatsApp, onLoadMore, hasMore
 }) => {
@@ -33,12 +34,16 @@ const NextSlotCalendarModal = ({
     const onLoadMoreRef = useRef(onLoadMore);
     const todayIso = toInputDate(getNow());
 
-    useEffect(() => {
+    // Reset to the days step whenever the modal is closed. Reset is applied
+    // during render so reopening always starts on the days list.
+    const [prevOpenState, setPrevOpenState] = React.useState(false);
+    if (prevOpenState !== isOpen) {
+        setPrevOpenState(isOpen);
         if (!isOpen) {
             setStep('days');
             setSelectedDate(null);
         }
-    }, [isOpen]);
+    }
 
     useEffect(() => { onLoadMoreRef.current = onLoadMore; }, [onLoadMore]);
 
@@ -105,47 +110,45 @@ const NextSlotCalendarModal = ({
             isOpen={isOpen}
             onClose={onClose}
             title={(
-                <div className={`${styles.titleGroup}`}>
+                <div className={`${styles.NextSlotCalendarModal__titleGroup}`}>
                     <Icon name="search" size="1.2rem" />
                     {t('search_free_slots')}
                 </div>
             )}
             size="md"
-            className={`${styles.calendarSlotModalContainer}`}
+            className={`${styles.NextSlotCalendarModal__calendarSlotModalContainer}`}
         >
-            <div className={`${styles.calendarSlotModal}`}>
+            <div className={`${styles.NextSlotCalendarModal__calendarSlotModal}`}>
 
                 {/* ── Controls bar ── */}
-                <div className={`${styles.calendarSlotControls}`}>
-                    <label className={`${styles.checkbox}`}>
-                        <input
-                            type="checkbox"
-                            className={`${styles.input}`}
-                            checked={includeOutOfHours}
-                            onChange={(e) => onToggleOutOfHours(e.target.checked)}
-                        />
-                        <span className={`${styles.label}`}>
-                            <Icon name="lock_open" size="1rem" />
-                            {t('include_overtime')}
-                        </span>
-                    </label>
+                <div className={`${styles.NextSlotCalendarModal__calendarSlotControls}`}>
+                    <Checkbox
+                        checked={includeOutOfHours}
+                        onChange={(e) => onToggleOutOfHours(e.target.checked)}
+                        label={(
+                            <>
+                                <Icon name="lock_open" size="1rem" />
+                                {t('include_overtime')}
+                            </>
+                        )}
+                    />
                 </div>
 
                 {/* ── Content ── */}
-                <div className={`${styles.content}`}>
+                <div className={`${styles.NextSlotCalendarModal__content}`}>
                     {loading && !nextSlotData ? (
                         <Loading text={t('exploring_schedule')} />
                     ) : !dayRows.length ? (
-                        <div className={`${styles.calendarEmpty}`}>
-                            <Icon name="event_busy" size="2.5rem" className={`${styles.icon}`} />
-                            <p className={`${styles.text}`}>
+                        <div className={`${styles.NextSlotCalendarModal__calendarEmpty}`}>
+                            <Icon name="event_busy" size="2.5rem" className={`${styles.NextSlotCalendarModal__icon}`} />
+                            <p className={`${styles.NextSlotCalendarModal__text}`}>
                                 {includeOutOfHours ? t('no_slots_available') : t('no_slots_try_overtime')}
                             </p>
                         </div>
                     ) : step === 'days' ? (
 
                         /* ── Step 1: Day list ── */
-                        <div className={`${styles.dayList}`}>
+                        <div className={`${styles.NextSlotCalendarModal__dayList}`}>
                             {dayRows.map(row => (
                                 <DayListItem
                                     key={row.date}
@@ -160,7 +163,7 @@ const NextSlotCalendarModal = ({
                                 />
                             ))}
                             {/* Sentinel for infinite scroll */}
-                            <div ref={listBottomRef} className={`${styles.sentinel}`}>
+                            <div ref={listBottomRef} className={`${styles.NextSlotCalendarModal__sentinel}`}>
                                 {loading && <Loading text={t('loading')} />}
                             </div>
                         </div>
@@ -168,11 +171,11 @@ const NextSlotCalendarModal = ({
                     ) : (
 
                         /* ── Step 2: Slots for selected day ── */
-                        <div className={`${styles.root}`}>
-                            <div className={`${styles.header}`}>
-                                <h3 className={`${styles.title}`}>
+                        <div className={`${styles.NextSlotCalendarModal__root}`}>
+                            <div className={`${styles.NextSlotCalendarModal__header}`}>
+                                <h3 className={`${styles.NextSlotCalendarModal__title}`}>
                                     {selectedDayRow?.dayName || ''}
-                                    {selectedDateLabel ? <span className={`${styles.titleDate}`}> — {selectedDateLabel}</span> : ''}
+                                    {selectedDateLabel ? <span className={`${styles.NextSlotCalendarModal__titleDate}`}> — {selectedDateLabel}</span> : ''}
                                 </h3>
                                 <Button
                                     onClick={handleBack}
@@ -183,7 +186,7 @@ const NextSlotCalendarModal = ({
                                     {t('back')}
                                 </Button>
                             </div>
-                            <div className={`${styles.body}`}>
+                            <div className={`${styles.NextSlotCalendarModal__body}`}>
                                 <SlotSection
                                     title={<><Icon name="lock_open" /> {t('before_hours_extra')}</>}
                                     slots={beforeSlots}
@@ -222,7 +225,7 @@ const NextSlotCalendarModal = ({
                 </div>
 
                 {/* ── Footer ── */}
-                <div className={`${styles.footer}`}>
+                <div className={`${styles.NextSlotCalendarModal__footer}`}>
                     {step === 'slots' && (
                         <Button variant="ghost" size="sm" onClick={handleBack} icon={<Icon name="arrow_back" />}>
                             {t('back')}
@@ -237,4 +240,3 @@ const NextSlotCalendarModal = ({
     );
 };
 
-export default NextSlotCalendarModal;

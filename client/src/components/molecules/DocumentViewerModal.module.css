@@ -1,16 +1,16 @@
-.modalContent {
+.DocumentViewerModal__modalContent {
     max-width: 90vw;
 }
 
-.root {
+.DocumentViewerModal__root {
     display: flex;
     flex-direction: column;
     height: 75vh;
     overflow: hidden;
-    background: var(--bg-card, #fff);
+    background: var(--bg-card, var(--text-main));
 }
 
-.toolbar {
+.DocumentViewerModal__toolbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -21,13 +21,13 @@
     flex-wrap: wrap;
 }
 
-.controlsGroup {
+.DocumentViewerModal__controlsGroup {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.zoomLabel, .counterLabel {
+.DocumentViewerModal__zoomLabel, .DocumentViewerModal__counterLabel {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--gray-700, #495057);
@@ -35,13 +35,13 @@
     text-align: center;
 }
 
-.counterLabel {
+.DocumentViewerModal__counterLabel {
     background: var(--gray-200, #e9ecef);
     padding: 0.25rem 0.6rem;
     border-radius: 12px;
 }
 
-.viewport {
+.DocumentViewerModal__viewport {
     flex: 1;
     display: flex;
     align-items: center;
@@ -52,13 +52,13 @@
     padding: 1.5rem;
 }
 
-.navArrow {
+.DocumentViewerModal__navArrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
     background: rgb(0, 0, 0, 0.4);
-    color: #fff;
+    color: var(--text-main);
     border: none;
     border-radius: 50%;
     width: 3.5rem;
@@ -70,20 +70,20 @@
     transition: background 0.2s ease, transform 0.2s ease;
 }
 
-.navArrow:hover {
+.DocumentViewerModal__navArrow:hover {
     background: rgb(0, 0, 0, 0.8);
     transform: translateY(-50%) scale(1.1);
 }
 
-.navArrowLeft {
+.DocumentViewerModal__navArrowLeft {
     left: 1.5rem;
 }
 
-.navArrowRight {
+.DocumentViewerModal__navArrowRight {
     right: 1.5rem;
 }
 
-.imageContainer {
+.DocumentViewerModal__imageContainer {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -92,7 +92,7 @@
     overflow: auto;
 }
 
-.previewImage {
+.DocumentViewerModal__previewImage {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
@@ -101,24 +101,24 @@
     transform-origin: center center;
 }
 
-.pdfContainer {
+.DocumentViewerModal__pdfContainer {
     width: 100%;
     height: 100%;
 }
 
-.pdfIframe {
+.DocumentViewerModal__pdfIframe {
     width: 100%;
     height: 100%;
     border: none;
     border-radius: 4px;
 }
 
-.genericFileBox {
+.DocumentViewerModal__genericFileBox {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    color: #fff;
+    color: var(--text-main);
     text-align: center;
 }

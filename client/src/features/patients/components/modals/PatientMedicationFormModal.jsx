@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import api from '@/api/axios';
+import { Icon } from '@/components/atoms/Icon';
+import { api } from '@/api/axios';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PatientMedicationFormModal.module.css';
 
@@ -36,8 +36,14 @@ export const PatientMedicationFormModal = ({
     const [saving, setSaving] = useState(false);
     const dropdownRef = useRef(null);
 
-    useEffect(() => {
-        if (isOpen) {
+    // Populate or reset the form whenever the modal opens with a given
+    // medication. Applied during render so the fields are correct on first
+    // paint; re-runs when the modal re-opens or the target changes while open.
+    const formSyncKey = isOpen ? (initialData?.id ?? 'new') : null;
+    const [prevFormSyncKey, setPrevFormSyncKey] = useState(null);
+    if (prevFormSyncKey !== formSyncKey) {
+        setPrevFormSyncKey(formSyncKey);
+        if (formSyncKey !== null) {
             if (initialData) {
                 setMedName(initialData.medication_name || initialData.name || '');
                 setDose(initialData.dose || '');
@@ -62,7 +68,7 @@ export const PatientMedicationFormModal = ({
             setVademecumResults([]);
             setShowDropdown(false);
         }
-    }, [isOpen, initialData]);
+    }
 
     // Close dropdown on outside click
     useEffect(() => {
@@ -148,37 +154,40 @@ export const PatientMedicationFormModal = ({
             title={initialData ? (t('edit_medication') || 'Editar Medicación') : (t('add_medication') || 'Agregar Medicación Habitual')}
             size="md"
         >
-            <form onSubmit={handleSubmit} className={styles.root}>
+            <form onSubmit={handleSubmit} className={styles.PatientMedicationFormModal__root}>
                 {/* Vademecum Autocomplete */}
-                <div className={styles.fieldGroup} ref={dropdownRef}>
-                    <label className={styles.label}>
+                <div className={styles.PatientMedicationFormModal__fieldGroup} ref={dropdownRef}>
+                    <label htmlFor="med-name" className={styles.PatientMedicationFormModal__label}>
                         {t('medication_name') || 'Nombre del Medicamento / Vademécum'} *
                     </label>
-                    <div className={styles.inputWrapper}>
+                    <div className={styles.PatientMedicationFormModal__inputWrapper}>
                         <input
+                            id="med-name"
                             type="text"
-                            className={styles.input}
+                            className={styles.PatientMedicationFormModal__input}
                             value={medName}
                             onChange={(e) => handleSearchVademecum(e.target.value)}
                             placeholder={t('search_medication_placeholder') || 'Buscar en Vademécum (ej: Atenix, Clonagin...)'}
                             required
                             autoComplete="off"
                         />
-                        {isSearching && <span className={styles.searchingSpinner} />}
+                        {isSearching && <span className={styles.PatientMedicationFormModal__searchingSpinner} />}
                     </div>
 
                     {showDropdown && (
-                        <ul className={styles.dropdown}>
+                        <ul className={styles.PatientMedicationFormModal__dropdown}>
                             {vademecumResults.map((item) => (
-                                <li
-                                    key={item.id}
-                                    className={styles.dropdownItem}
-                                    onClick={() => handleSelectVademecumItem(item)}
-                                >
-                                    <div className={styles.itemTitle}>{item.name}</div>
-                                    <div className={styles.itemMeta}>
-                                        {item.presentation} {item.drug ? `(${item.drug})` : ''} [{item.lab}]
-                                    </div>
+                                <li key={item.id}>
+                                    <button
+                                        type="button"
+                                        className={styles.PatientMedicationFormModal__dropdownItem}
+                                        onClick={() => handleSelectVademecumItem(item)}
+                                    >
+                                        <span className={styles.PatientMedicationFormModal__itemTitle}>{item.name}</span>
+                                        <span className={styles.PatientMedicationFormModal__itemMeta}>
+                                            {item.presentation} {item.drug ? `(${item.drug})` : ''} [{item.lab}]
+                                        </span>
+                                    </button>
                                 </li>
                             ))}
                         </ul>
@@ -186,44 +195,47 @@ export const PatientMedicationFormModal = ({
                 </div>
 
                 {/* Dose & Frequency Grid */}
-                <div className={styles.gridTwoCols}>
-                    <div className={styles.fieldGroup}>
-                        <label className={styles.label}>{t('dosage') || 'Dosis (ej: 50 mg, 1 comp.)'}</label>
+                <div className={styles.PatientMedicationFormModal__gridTwoCols}>
+                    <div className={styles.PatientMedicationFormModal__fieldGroup}>
+                        <label htmlFor="med-dose" className={styles.PatientMedicationFormModal__label}>{t('dosage') || 'Dosis (ej: 50 mg, 1 comp.)'}</label>
                         <input
+                            id="med-dose"
                             type="text"
-                            className={styles.input}
+                            className={styles.PatientMedicationFormModal__input}
                             value={dose}
                             onChange={(e) => setDose(e.target.value)}
-                            placeholder="ej: 50 mg"
+                            placeholder={t('dose_example_placeholder') || "ej: 50 mg"}
                         />
                     </div>
-                    <div className={styles.fieldGroup}>
-                        <label className={styles.label}>{t('frequency') || 'Frecuencia (ej: Cada 12 hs)'}</label>
+                    <div className={styles.PatientMedicationFormModal__fieldGroup}>
+                        <label htmlFor="med-frequency" className={styles.PatientMedicationFormModal__label}>{t('frequency') || 'Frecuencia (ej: Cada 12 hs)'}</label>
                         <input
+                            id="med-frequency"
                             type="text"
-                            className={styles.input}
+                            className={styles.PatientMedicationFormModal__input}
                             value={frequency}
                             onChange={(e) => setFrequency(e.target.value)}
-                            placeholder="ej: Cada 24 hs por la mañana"
+                            placeholder={t('freq_example_placeholder') || "ej: Cada 24 hs por la mañana"}
                         />
                     </div>
                 </div>
 
                 {/* Boxes count & Chronic Checkbox */}
-                <div className={styles.gridTwoCols}>
-                    <div className={styles.fieldGroup}>
-                        <label className={styles.label}>{t('boxes_count') || 'Cantidad de Cajas'}</label>
+                <div className={styles.PatientMedicationFormModal__gridTwoCols}>
+                    <div className={styles.PatientMedicationFormModal__fieldGroup}>
+                        <label htmlFor="med-boxes" className={styles.PatientMedicationFormModal__label}>{t('boxes_count') || 'Cantidad de Cajas'}</label>
                         <input
+                            id="med-boxes"
                             type="number"
                             min="1"
                             max="10"
-                            className={styles.input}
+                            className={styles.PatientMedicationFormModal__input}
                             value={boxesCount}
                             onChange={(e) => setBoxesCount(e.target.value)}
                         />
                     </div>
-                    <div className={styles.fieldGroupCheck}>
-                        <label className={styles.checkLabel}>
+                    <div className={styles.PatientMedicationFormModal__fieldGroupCheck}>
+                        <label className={styles.PatientMedicationFormModal__checkLabel}>
                             <input
                                 type="checkbox"
                                 checked={isChronic}
@@ -235,19 +247,20 @@ export const PatientMedicationFormModal = ({
                 </div>
 
                 {/* Notes */}
-                <div className={styles.fieldGroup}>
-                    <label className={styles.label}>{t('notes') || 'Indicaciones / Observaciones'}</label>
+                <div className={styles.PatientMedicationFormModal__fieldGroup}>
+                    <label htmlFor="med-notes" className={styles.PatientMedicationFormModal__label}>{t('notes') || 'Indicaciones / Observaciones'}</label>
                     <textarea
-                        className={styles.textarea}
+                        id="med-notes"
+                        className={styles.PatientMedicationFormModal__textarea}
                         rows="2"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        placeholder="ej: Tomar con alimentos, mantener refrigeration..."
+                        placeholder={t('notes_example_placeholder') || "ej: Tomar con alimentos, mantener refrigeración..."}
                     />
                 </div>
 
                 {/* Actions */}
-                <div className={styles.actions}>
+                <div className={styles.PatientMedicationFormModal__actions}>
                     <Button type="button" variant="secondary" onClick={onClose} disabled={saving}>
                         {t('cancel') || 'Cancelar'}
                     </Button>

@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 import { useFetch } from '@/hooks/useFetch';
 import { useDoctors } from '@/context/DoctorContextDefinition';
 
@@ -42,10 +42,10 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
         if (e) e.preventDefault();
         if (isSubmitting) return;
 
-        if (!selectedPatient) return showMessage(t('select_patient') || 'Seleccione un paciente', 'error');
+        if (!selectedPatient) return showMessage(t('select_patient'), 'error');
         
         // Use derived selectedDoctor
-        if (user?.role !== 'doctor' && !selectedDoctor) return showMessage(t('select_doctor') || 'Seleccione un doctor', 'error');
+        if (user?.role !== 'doctor' && !selectedDoctor) return showMessage(t('select_doctor'), 'error');
 
         let finalItems = [...initialItems];
         if (reqType === 'prescription' && tempMed.trim()) {
@@ -71,7 +71,7 @@ export const useMedicalRequest = (initialType, initialSendToDoctor, user, showMe
                 if (i.dose) str += ` ${i.dose}`;
                 if (i.frequency) str += ` (${i.frequency})`;
                 if (i.quantity && i.quantity !== '0') {
-                    const label = parseInt(i.quantity) === 1 ? (t('box') || 'caja') : (t('boxes_plural') || 'cajas');
+                    const label = parseInt(i.quantity) === 1 ? (t('box')) : (t('boxes_plural'));
                     str += ` - ${i.quantity} ${label}`;
                 }
                 return str.trim();

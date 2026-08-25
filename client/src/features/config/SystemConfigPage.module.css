@@ -1,6 +1,6 @@
 /* SystemConfigPage Styles (BEM) */
 
-.root {
+.SystemConfigPage__root {
     /* --- Local Component Tokens --- */
     --config-bg: var(--dashboard-card-bg);
     --config-border: var(--border-color);
@@ -12,12 +12,16 @@
     flex-direction: column;
     flex: 1;
     min-height: 0;
-    gap: 1.5rem;
-    padding: 1.5rem;
+    gap: var(--spacing-lg, 1.5rem);
+    padding: var(--spacing-lg, 1.5rem);
     background-color: var(--background-bg);
+    max-width: 960px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.systemConfigTabs {
+.SystemConfigPage__systemConfigTabs {
     display: flex;
     gap: 0.25rem;
     overflow-x: auto;
@@ -34,11 +38,11 @@
     z-index: 10;
 }
 
-.systemConfigTabs::-webkit-scrollbar {
+.SystemConfigPage__systemConfigTabs::-webkit-scrollbar {
     display: none;
 }
 
-.systemConfigTabs .tabButton {
+.SystemConfigPage__systemConfigTabs .SystemConfigPage__tabButton {
     padding: 0.75rem 1.25rem;
     border-radius: var(--radius-md, 8px);
     font-weight: 600;
@@ -50,25 +54,25 @@
     border: 1px solid transparent;
 }
 
-.systemConfigTabs .tabButtonActive {
+.SystemConfigPage__systemConfigTabs .SystemConfigPage__tabButtonActive {
     background-color: var(--accent-color);
     color: white !important;
     box-shadow: 0 4px 12px rgb(var(--accent-rgb, 14, 165, 233), 0.3);
 }
 
-.systemConfigTabs .tabButton:not(.tabButtonActive):hover {
+.SystemConfigPage__systemConfigTabs .SystemConfigPage__tabButton:not(.SystemConfigPage__tabButtonActive):hover {
     background-color: var(--gray-100);
     color: var(--accent-color);
 }
 
-.systemConfigContainer {
+.SystemConfigPage__systemConfigContainer {
     flex: 1;
     display: flex;
     flex-direction: column;
     min-height: 0;
 }
 
-.systemConfigMain {
+.SystemConfigPage__systemConfigMain {
     background: var(--dashboard-card-bg);
     border-radius: var(--radius-lg, 12px);
     border: 1px solid var(--border-color);
@@ -78,7 +82,7 @@
     overflow-y: auto;
 }
 
-.appCard {
+.SystemConfigPage__appCard {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -90,92 +94,92 @@
     padding: 1.5rem;
 }
 
-.appTitle {
+.SystemConfigPage__appTitle {
     font-weight: 700;
     color: var(--config-header-color);
     margin-bottom: 0.25rem;
 }
 
-.appDescription {
+.SystemConfigPage__appDescription {
     font-size: 0.875rem;
     color: var(--gray-500);
     margin: 0;
 }
 
 
-.sectionHeader {
+.SystemConfigPage__sectionHeader {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1.5rem;
 }
 
-.sectionIcon {
+.SystemConfigPage__sectionIcon {
     color: var(--accent-color);
 }
 
-.sectionTitle {
+.SystemConfigPage__sectionTitle {
     font-size: 1.15rem;
     font-weight: 700;
     color: var(--text-main);
     margin: 0;
 }
 
-.actions {
+.SystemConfigPage__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
 }
 
-.placeholder {
+.SystemConfigPage__placeholder {
     padding: 5rem 0;
     text-align: center;
 }
 
-.placeholderText {
+.SystemConfigPage__placeholderText {
     color: var(--text-muted);
     font-style: italic;
 }
 
-.labelWithIcon {
+.SystemConfigPage__labelWithIcon {
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 /* Billing and Status Spacing/Colors */
-.configStatus {
+.SystemConfigPage__configStatus {
     font-size: 0.875rem;
     font-weight: 500;
 }
 
-.configStatusSuccess {
+.SystemConfigPage__configStatusSuccess {
     color: var(--green-600);
 }
 
-.configStatusError {
+.SystemConfigPage__configStatusError {
     color: var(--red-600);
 }
 
-.configActionsMt1 {
+.SystemConfigPage__configActionsMt1 {
     margin-top: 1rem;
 }
 
-.hintMb15 {
+.SystemConfigPage__hintMb15 {
     margin-bottom: 1.5rem;
 }
 
-.configLink {
+.SystemConfigPage__configLink {
     color: var(--blue-600);
     text-decoration: none;
     font-weight: 600;
 }
 
-.configLink:hover {
+.SystemConfigPage__configLink:hover {
     text-decoration: underline;
 }
 
-.configGroupBgWhite {
+.SystemConfigPage__configGroupBgWhite {
     background: var(--dashboard-card-bg);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
@@ -183,65 +187,65 @@
     padding: 1.5rem;
 }
 
-.hintMb05 {
+.SystemConfigPage__hintMb05 {
     margin-bottom: 0.5rem;
 }
 
-.inputMonospace {
+.SystemConfigPage__inputMonospace {
     font-family: Monaco, Consolas, 'Courier New', monospace;
     font-size: 0.8rem;
     line-height: 1.4;
 }
 
-.configActionsRight {
+.SystemConfigPage__configActionsRight {
     justify-content: flex-end;
 }
 
 /* Integration-specific Layouts */
-.headerFlexSpaced {
+.SystemConfigPage__headerFlexSpaced {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 2rem;
 }
 
-.statusInfo {
+.SystemConfigPage__statusInfo {
     flex: 1;
 }
 
-.syncControls {
+.SystemConfigPage__syncControls {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 0.5rem;
 }
 
-.hintMb075 {
+.SystemConfigPage__hintMb075 {
     margin-bottom: 0.75rem;
 }
 
-.hintTextRight {
+.SystemConfigPage__hintTextRight {
     text-align: right;
     margin: 0;
 }
 
-.configActionsMt05 {
+.SystemConfigPage__configActionsMt05 {
     margin-top: 0.5rem;
 }
 
-.configGridGap1 {
+.SystemConfigPage__configGridGap1 {
     gap: 1rem;
 }
 
-.configFlexAlignCenter {
+.SystemConfigPage__configFlexAlignCenter {
     align-items: center;
 }
 
-.configFlexMt1 {
+.SystemConfigPage__configFlexMt1 {
     margin-top: 1rem;
 }
 
-.configGuide {
+.SystemConfigPage__configGuide {
     background: var(--dashboard-card-bg);
     padding: 1.5rem;
     border-radius: var(--radius-sm);
@@ -249,13 +253,13 @@
     box-shadow: var(--shadow-sm);
 }
 
-.title {
+.SystemConfigPage__title {
     margin-bottom: 0.75rem;
     color: var(--config-header-color);
     font-weight: 700;
 }
 
-.list {
+.SystemConfigPage__list {
     padding-left: 1.25rem;
     font-size: 0.875rem;
     color: var(--gray-600);
@@ -263,7 +267,7 @@
     margin: 0;
 }
 
-.configUrlDisplay {
+.SystemConfigPage__configUrlDisplay {
     padding: 0.75rem 1rem;
     background-color: var(--gray-100);
     border-radius: var(--radius-xs);

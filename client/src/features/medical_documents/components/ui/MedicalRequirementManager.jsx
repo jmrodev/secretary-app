@@ -3,14 +3,14 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useRequirementManagerController } from '@/features/medical_documents/hooks/useRequirementManagerController';
 
 // Components
-import TabButton from '@/components/atoms/TabButton';
-import Icon from '@/components/atoms/Icon';
-import Loading from '@/components/atoms/Loading';
-import MedicalRequirementTable from '@/features/medical_documents/components/lists/MedicalRequirementTable';
-import MedicalRequirementRecycleBin from '@/features/medical_documents/components/lists/MedicalRequirementRecycleBin';
-import MedicalRequirementDetailModal from '@/features/medical_documents/components/modals/MedicalRequirementDetailModal';
-import MedicalRequirementActionModal from '@/features/medical_documents/components/modals/MedicalRequirementActionModal';
-import MedicalRequestModal from '@/features/medical_documents/components/modals/MedicalRequestModal';
+import { TabButton } from '@/components/atoms/TabButton';
+import { Icon } from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
+import { MedicalRequirementTable } from '@/features/medical_documents/components/lists/MedicalRequirementTable';
+import { MedicalRequirementRecycleBin } from '@/features/medical_documents/components/lists/MedicalRequirementRecycleBin';
+import { MedicalRequirementDetailModal } from '@/features/medical_documents/components/modals/MedicalRequirementDetailModal';
+import { MedicalRequirementActionModal } from '@/features/medical_documents/components/modals/MedicalRequirementActionModal';
+import { MedicalRequestModal } from '@/features/medical_documents/components/modals/MedicalRequestModal';
 
 import styles from './MedicalRequirementManager.module.css';
 
@@ -18,7 +18,7 @@ import styles from './MedicalRequirementManager.module.css';
  * MedicalRequirementManager Organism (Feature-based).
  * ECC-Pattern: Standard Orchestrator without early returns to protect Hooks.
  */
-const MedicalRequirementManager = ({ 
+export const MedicalRequirementManager = ({ 
     user, 
     variant = 'full', 
     setPaymentModal 
@@ -55,22 +55,22 @@ const MedicalRequirementManager = ({
     const showLoader = loading && !fetched;
 
     return (
-        <section className={styles.root}>
+        <section className={styles.MedicalRequirementManager__root}>
             {!hideTabs && (
-                <nav className="${styles.root}__tabs">
+                <nav className={styles.MedicalRequirementManager__tabs}>
                     <TabButton isActive={activeTab === 'list'} onClick={() => setActiveTab('list')} variant="pill" icon={<Icon name="view_list" />}>
                         {t('request_status')}
                     </TabButton>
-                    <div className="${styles.root}__tab-wrapper">
+                    <div className={styles.MedicalRequirementManager__tabWrapper}>
                         <TabButton isActive={activeTab === 'recycle'} onClick={() => setActiveTab('recycle')} variant="pill" icon={<Icon name="delete" />}>
                             {t('recycle_bin')}
                         </TabButton>
-                        {recycleRequests.length > 0 && <span className="${styles.root}__badge">{recycleRequests.length}</span>}
+                        {recycleRequests.length > 0 && <span className={styles.MedicalRequirementManager__badge}>{recycleRequests.length}</span>}
                     </div>
                 </nav>
             )}
 
-            <article className="${styles.root}__content animate-fade-in">
+            <article className={`${styles.MedicalRequirementManager__content} animate-fade-in`}>
                 {showLoader ? <Loading variant="centered" /> : (
                     activeTab === 'list' ? (
                         <MedicalRequirementTable
@@ -101,4 +101,3 @@ const MedicalRequirementManager = ({
     );
 };
 
-export default MedicalRequirementManager;

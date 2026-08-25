@@ -1,7 +1,8 @@
 import React from 'react';
-import TabNav from '@/components/molecules/TabNav';
-import TabButton from '@/components/atoms/TabButton';
-import Icon from '@/components/atoms/Icon';
+import { TabNav } from '@/components/molecules/TabNav';
+import { TabButton } from '@/components/atoms/TabButton';
+import { Icon } from '@/components/atoms/Icon';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './FeatureToolbar.module.css';
 
 const EMPTY_ARRAY = [];
@@ -11,7 +12,7 @@ const EMPTY_ARRAY = [];
  * A generic, reusable horizontal bar for feature orchestration.
  * Centralizes navigation tabs and contextual actions.
  */
-const FeatureToolbar = ({
+export const FeatureToolbar = ({
     tabs = EMPTY_ARRAY,
     activeTab,
     onTabChange,
@@ -20,33 +21,33 @@ const FeatureToolbar = ({
     className = ''
 }) => {
     return (
-        <div className={`${styles.root} ${className} animate-fade-in no-print`}>
-            <div className={`${styles.content}`}>
+        <div className={`${styles.FeatureToolbar__root} ${className} ${sharedStyles.AnimateFadeIn} no-print`}>
+            <div className={`${styles.FeatureToolbar__content}`}>
                 {tabs.length > 0 && (
-                    <TabNav className="feature-toolbar__tabs tab-nav--no-margin">
+                    <TabNav className={styles.FeatureToolbar__tabs}>
                         {tabs.map(tab => (
                             <TabButton
                                 key={tab.id}
                                 isActive={activeTab === tab.id}
                                 onClick={() => onTabChange(tab.id)}
-                                className="feature-toolbar__tab-button"
+                                className={styles.FeatureToolbar__tabButton}
                                 icon={tab.icon && <Icon name={tab.icon} size="1.1rem" />}
                             >
                                 {tab.label}
-                                {tab.badge && <span className="feature-toolbar__badge">{tab.badge}</span>}
+                                {tab.badge && <span className={styles.FeatureToolbar__badge}>{tab.badge}</span>}
                             </TabButton>
                         ))}
                     </TabNav>
                 )}
 
                 {search && (
-                    <div className={styles.search}>
+                    <div className={styles.FeatureToolbar__search}>
                         {search}
                     </div>
                 )}
 
                 {actions && (
-                    <div className={`${styles.actions}`}>
+                    <div className={`${styles.FeatureToolbar__actions}`}>
                         {actions}
                     </div>
                 )}
@@ -55,4 +56,3 @@ const FeatureToolbar = ({
     );
 };
 
-export default FeatureToolbar;

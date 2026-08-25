@@ -210,7 +210,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             const pName = selectedPatient ? selectedPatient.full_name : '';
 
             if (pName) {
-                const labels = getServiceTypes(t).reduce((acc, curr) => ({ ...acc, [curr.value]: curr.label }), {});
+                const labels = Object.fromEntries(getServiceTypes(t).map(({ value, label }) => [value, label]));
                 const typeLabel = labels[newType] || newType;
                 newDesc = `${typeLabel}: ${pName}`;
             }

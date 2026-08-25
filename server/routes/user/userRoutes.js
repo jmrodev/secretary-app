@@ -9,8 +9,10 @@ const userStatsController = require('../../controllers/user/userStatsController'
 const restoreController = require('../../controllers/system/restoreController');
 
 const { verifyToken } = require('../../middleware/authMiddleware');
-const { authorize } = require('../../middleware/authorize');
-const { ACCESS_LEVELS } = require('../../constants/roles');
+const { authorize, authorizeCanManageUsers } = require('../../middleware/authorize');
+const { ACCESS_LEVELS, ROLES } = require('../../constants/roles');
+const validate = require('../../middleware/validationMiddleware');
+const schemas = require('../../validators/userSchemas');
 
 router.get('/profile', verifyToken, profileController.getProfile);
 router.put('/profile', verifyToken, profileController.updateProfile);
@@ -25,18 +27,24 @@ router.put('/patients/:id/toggle-new', verifyToken, authorize(ACCESS_LEVELS.MANA
 
 // List routes
 router.get('/doctors', verifyToken, doctorManagementController.getAllDoctors);
-router.put('/doctors/:id', verifyToken, doctorManagementController.updateDoctor);
+router.put('/doctors/:id', verifyToken, authorizeCanManageUsers, doctorManagementController.updateDoctor);
 router.get('/patients', verifyToken, patientManagementController.getAllPatients);
 router.get('/reminders', verifyToken, reminderController.getReminders);
-router.post('/reminders/complete', verifyToken, reminderController.completeReminder);
+router.post('/reminders/complete', verifyToken, validate(schemas.completeReminder), reminderController.completeReminder);
 router.get('/stats', verifyToken, userStatsController.getStats);
 router.get('/patients/stats/new', verifyToken, patientManagementController.getNewPatientStats);
 
 // Admin routes
-router.get('/admin/users', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userAccountController.getUsersForAdmin);
-router.post('/admin/reset-password/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userAccountController.adminResetPassword);
-router.post('/admin/users', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userAccountController.createUser);
-router.put('/admin/users/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userAccountController.updateUser);
-router.delete('/admin/users/:id', verifyToken, authorize(ACCESS_LEVELS.MANAGE_USERS), userAccountController.deleteUser);
+router.get('/admin/users', verifyToken, authorizeCanManageUsers, userAccountController.getUsersForAdmin);
+router.post('/admin/reset-password/:id', verifyToken, authorizeCanManageUsers, validate(schemas.resetPassword), userAccountController.adminResetPassword);
+router.post('/admin/users', verifyToken, authorizeCanManageUsers, validate(schemas.createUser), userAccountController.createUser);
+router.put('/admin/users/:id', verifyToken, authorizeCanManageUsers, validate(schemas.updateUser), userAccountController.updateUser);
+router.delete('/admin/users/:id', verifyToken, authorizeCanManageUsers, validate(schemas.deleteUser), userAccountController.deleteUser);
+
+// Secretary management permission grants (GET: admin or granted secretary; POST: admin or granted secretary)
+router.get('/admin/users/permissions', verifyToken, authorizeCanManageUsers, userAccountController.getSecretaryPermissions);
+router.post('/admin/users/permissions', verifyToken, authorizeCanManageUsers, validate(schemas.updateSecretaryPermissions), userAccountController.updateSecretaryPermissions);
+router.get('/admin/users/:id/permissions', verifyToken, authorizeCanManageUsers, userAccountController.getSecretaryPermissionsById);
+router.put('/admin/users/:id/permissions', verifyToken, authorizeCanManageUsers, userAccountController.updateSecretaryPermissionsById);
 
 module.exports = router;

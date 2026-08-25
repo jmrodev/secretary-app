@@ -1,4 +1,4 @@
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * pendingBookingApi — API module for the supervised WhatsApp auto-booking queue.

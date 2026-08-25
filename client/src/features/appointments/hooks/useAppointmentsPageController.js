@@ -139,10 +139,11 @@ export const useAppointmentsPageController = () => {
     const fetchAppointments = useCallback(async () => {
         await Promise.all([
             agendaAppointmentsHook.refetch(),
+            calendarStatsHook.refetch(),
             searchTerm ? fetchSearch() : Promise.resolve()
         ]);
         window.dispatchEvent(new CustomEvent('appointments-updated'));
-    }, [agendaAppointmentsHook, fetchSearch, searchTerm]);
+    }, [agendaAppointmentsHook, calendarStatsHook, fetchSearch, searchTerm]);
 
     const hookHandlers = useAppointmentsHandlers({
         user, t, showMessage, confirm, prompt, navigate, selectedDate, setSelectedDate,

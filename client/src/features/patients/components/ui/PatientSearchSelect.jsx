@@ -5,25 +5,25 @@ import { Button } from '@/components/atoms/Button';
 import { useLanguage } from '@/hooks/useLanguage';
 import styles from './PatientSearchSelect.module.css';
 
-const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus: _autoFocus = false, selectedData }) => {
+const loadOptions = async (inputValue) => {
+    try {
+        const patients = await patientService.search(inputValue || '');
+
+        return (patients || []).map(p => ({
+            value: p.id,
+            label: `${p.full_name} - DNI: ${p.dni || 'N/A'}${p.street_name ? ` - ${p.street_name}` : ''}`,
+            patient: p
+        }));
+    } catch (err) {
+        console.error('[PatientSearchSelect] Error loading options:', err);
+        return [];
+    }
+};
+
+export const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, autoFocus: _autoFocus = false, selectedData }) => {
     const { t } = useLanguage();
     const finalPlaceholder = placeholder || t('search_placeholder');
     const [internalSelected, setInternalSelected] = useState(null);
-
-    const loadOptions = async (inputValue) => {
-        try {
-            const patients = await patientService.search(inputValue || '');
-            
-            return (patients || []).map(p => ({
-                value: p.id,
-                label: `${p.full_name} - DNI: ${p.dni || 'N/A'}${p.street_name ? ` - ${p.street_name}` : ''}`,
-                patient: p
-            }));
-        } catch (err) {
-            console.error('[PatientSearchSelect] Error loading options:', err);
-            return [];
-        }
-    };
 
     const handleSelectPatient = (selectedOption) => {
         setInternalSelected(selectedOption);
@@ -50,13 +50,13 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
         <AsyncSelect
             value={selectedOption}
             classNames={{
-                control: ({ isFocused }) => `${styles.control} ${isFocused ? styles.controlFocused : ''}`,
-                input: () => styles.input,
-                menu: () => styles.menu,
-                option: ({ isFocused, isSelected }) => `${styles.option} ${isFocused ? styles.optionFocused : ''} ${isSelected ? styles.optionSelected : ''}`,
-                placeholder: () => styles.placeholder,
-                singleValue: () => styles.singleValue,
-                valueContainer: () => styles.valueContainer
+                control: ({ isFocused }) => `${styles.PatientSearchSelect__control} ${isFocused ? styles.PatientSearchSelect__controlFocused : ''}`,
+                input: () => styles.PatientSearchSelect__input,
+                menu: () => styles.PatientSearchSelect__menu,
+                option: ({ isFocused, isSelected }) => `${styles.PatientSearchSelect__option} ${isFocused ? styles.PatientSearchSelect__optionFocused : ''} ${isSelected ? styles.PatientSearchSelect__optionSelected : ''}`,
+                placeholder: () => styles.PatientSearchSelect__placeholder,
+                singleValue: () => styles.PatientSearchSelect__singleValue,
+                valueContainer: () => styles.PatientSearchSelect__valueContainer
             }}
             defaultOptions={true}
             loadOptions={loadOptions}
@@ -64,7 +64,7 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             placeholder={finalPlaceholder}
             isClearable={true}
             noOptionsMessage={({ inputValue }) => (
-                <div className={`${styles.formSelectNoResults}`}>
+                <div className={`${styles.PatientSearchSelect__formSelectNoResults}`}>
                     <p>
                         {t('no_results_for')} "{inputValue}"
                     </p>
@@ -90,11 +90,9 @@ const PatientSearchSelect = ({ value, onChange, placeholder, onCreatePatient, au
             unstyled
             menuPortalTarget={document.body}
             styles={{
-                menuPortal: (base) => ({ ...base, zIndex: 9999 })
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                menu: (base) => ({ ...base, width: 'max-content', minWidth: '100%' })
             }}
         />
     );
 };
-
-
-export default PatientSearchSelect;

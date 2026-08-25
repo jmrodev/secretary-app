@@ -22,12 +22,12 @@ vi.mock('@/api/pendingBookingApi', () => ({
     rejectPending: mockRejectPending
 }));
 
-vi.mock('@/features/auth', () => ({
+vi.mock('@/features/auth/AuthContext', () => ({
     useAuth: mockUseAuth
 }));
 
 vi.mock('@/api/axios', () => ({
-    default: { get: mockAxiosGet, post: vi.fn() }
+    api: { get: mockAxiosGet, post: vi.fn() }
 }));
 
 import { PendingBookingBanner } from './PendingBookingBanner';

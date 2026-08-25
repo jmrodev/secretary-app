@@ -4,9 +4,6 @@ const { ConflictError } = require('../../utils/core/errors');
 jest.mock('../../services/communication/whatsappService', () => ({
     sendMessageDirect: jest.fn().mockResolvedValue({ ok: true })
 }));
-jest.mock('../../services/communication/whatsappAiService', () => ({
-    getAiSuggestion: jest.fn()
-}));
 jest.mock('../../repositories/communication/pendingBookingRepository');
 jest.mock('../../services/appointments/bookingService');
 jest.mock('../../repositories/user/patientRepository');
@@ -20,7 +17,6 @@ jest.mock('../../db', () => ({
 
 const whatsappController = require('../communication/whatsappController');
 const whatsappService = require('../../services/communication/whatsappService');
-const whatsappAiService = require('../../services/communication/whatsappAiService');
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
 const bookingService = require('../../services/appointments/bookingService');
 const patientRepository = require('../../repositories/user/patientRepository');
@@ -66,10 +62,23 @@ describe('WhatsAppController - pending bookings', () => {
     });
 
     describe('acceptPending', () => {
+        it('should return 500 when accept template is missing or empty', async () => {
+            pendingBookingRepository.findById.mockResolvedValue({ ...basePending });
+            patientRepository.findById.mockResolvedValue({ phone: '+5491112345678' });
+            pendingBookingRepository.acceptById.mockResolvedValue(1);
+            systemSettingsRepository.findByKey.mockResolvedValue(null);
+
+            await whatsappController.acceptPending(req, res);
+
+            expect(res.statusCode).toBe(500);
+            expect(res._getJSONData()).toEqual({ error: 'Template missing or empty' });
+        });
+
         it('should create the appointment, mark accepted and notify the patient', async () => {
             pendingBookingRepository.findById.mockResolvedValue({ ...basePending });
             patientRepository.findById.mockResolvedValue({ phone: '+5491112345678' });
             pendingBookingRepository.acceptById.mockResolvedValue(1);
+            systemSettingsRepository.findByKey.mockResolvedValue({ setting_value: 'Hola {patient_name}, tu solicitud para el {date} a las {time} con {doctor_name} ha sido aceptada.' });
 
             await whatsappController.acceptPending(req, res);
 
@@ -82,7 +91,7 @@ describe('WhatsAppController - pending bookings', () => {
             expect(pendingBookingRepository.acceptById).toHaveBeenCalledWith(4, 11);
             expect(whatsappService.sendMessageDirect).toHaveBeenCalledWith(
                 '+5491112345678',
-                expect.stringContaining('confirmado'),
+                'Hola Juan Perez, tu solicitud para el 2026-08-03 a las 09:00 con Dr. House ha sido aceptada.',
                 5
             );
             expect(res.statusCode).toBe(200);
@@ -132,6 +141,7 @@ describe('WhatsAppController - pending bookings', () => {
             pendingBookingRepository.findById.mockResolvedValue({ ...basePending });
             patientRepository.findById.mockResolvedValue({ phone: '+5491112345678' });
             pendingBookingRepository.acceptById.mockResolvedValue(1);
+            systemSettingsRepository.findByKey.mockResolvedValue({ setting_value: 'Template' });
             bookingService.createAppointment.mockRejectedValue(new ConflictError('Ya existe un turno confirmado en este horario.'));
 
             await whatsappController.acceptPending(req, res);
@@ -148,17 +158,29 @@ describe('WhatsAppController - pending bookings', () => {
     });
 
     describe('suggestAlternative', () => {
+        it('should return 500 when alternative template is missing or empty', async () => {
+            req.body = { alternative_slot_iso: '2026-08-05T10:00:00', note: 'Prefiere turnos a la mañana' };
+            pendingBookingRepository.findById.mockResolvedValue({ ...basePending });
+            systemSettingsRepository.findByKey.mockResolvedValue(null);
+
+            await whatsappController.suggestAlternative(req, res);
+
+            expect(res.statusCode).toBe(500);
+            expect(res._getJSONData()).toEqual({ error: 'Template missing or empty' });
+        });
+
         it('should mark alternative_sent, ask the patient via WhatsApp and confirm to the secretary', async () => {
             req.body = { alternative_slot_iso: '2026-08-05T10:00:00', note: 'Prefiere turnos a la mañana' };
             pendingBookingRepository.findById.mockResolvedValue({ ...basePending });
             pendingBookingRepository.suggestAlternative.mockResolvedValue(1);
+            systemSettingsRepository.findByKey.mockResolvedValue({ setting_value: 'Hola {patient_name}, no tenemos disponibilidad el {date} a las {time}. ¿Te gustaría reprogramar?' });
 
             await whatsappController.suggestAlternative(req, res);
 
             expect(pendingBookingRepository.suggestAlternative).toHaveBeenCalledWith(4, '2026-08-05T10:00:00', 'Prefiere turnos a la mañana');
             expect(whatsappService.sendMessageDirect).toHaveBeenCalledWith(
                 '+5491112345678',
-                expect.stringContaining('alternativ'),
+                'Hola Juan Perez, no tenemos disponibilidad el 2026-08-05 a las 10:00. ¿Te gustaría reprogramar?',
                 5
             );
             expect(res.statusCode).toBe(200);
@@ -176,6 +198,7 @@ describe('WhatsAppController - pending bookings', () => {
             req.body = { alternative_slot_iso: '2026-08-05T10:00:00' };
             pendingBookingRepository.findById.mockResolvedValue({ ...basePending });
             pendingBookingRepository.suggestAlternative.mockResolvedValue(0);
+            systemSettingsRepository.findByKey.mockResolvedValue({ setting_value: 'Template' });
 
             await whatsappController.suggestAlternative(req, res);
 
@@ -206,44 +229,4 @@ describe('WhatsAppController - pending bookings', () => {
         });
     });
 
-    describe('getAiSuggestion', () => {
-        beforeEach(() => {
-            req.body = { patientId: 1, phone: '5491112345678' };
-            req.doctorId = 3;
-            req.user = { user_id: 11, role: 'secretary' };
-            whatsappAiService.getAiSuggestion.mockResolvedValue('Sugerencia de respuesta');
-        });
-
-        it('should read the AI setting keys and pass the rows map as the 5th service argument', async () => {
-            systemSettingsRepository.findManyByKeys.mockResolvedValue([
-                { setting_key: 'ai_provider', setting_value: 'groq' },
-                { setting_key: 'ai_groq_model', setting_value: 'llama-3.3-70b-versatile' }
-            ]);
-
-            await whatsappController.getAiSuggestion(req, res);
-
-            expect(systemSettingsRepository.findManyByKeys).toHaveBeenCalledWith([
-                'ai_provider',
-                'ai_ollama_model',
-                'ai_groq_model',
-                'gemini_global_model'
-            ]);
-            expect(whatsappAiService.getAiSuggestion).toHaveBeenCalledWith(1, '5491112345678', 3, 11, {
-                ai_provider: 'groq',
-                ai_groq_model: 'llama-3.3-70b-versatile'
-            });
-            expect(res.statusCode).toBe(200);
-            expect(res._getJSONData()).toEqual({ success: true, suggestion: 'Sugerencia de respuesta' });
-        });
-
-        it('should call the service with an empty settings object when reading settings fails', async () => {
-            systemSettingsRepository.findManyByKeys.mockRejectedValue(new Error('db down'));
-
-            await whatsappController.getAiSuggestion(req, res);
-
-            expect(whatsappAiService.getAiSuggestion).toHaveBeenCalledWith(1, '5491112345678', 3, 11, {});
-            expect(res.statusCode).toBe(200);
-            expect(res._getJSONData()).toEqual({ success: true, suggestion: 'Sugerencia de respuesta' });
-        });
-    });
 });

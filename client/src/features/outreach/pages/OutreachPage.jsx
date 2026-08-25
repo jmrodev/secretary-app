@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { useOutreach } from '@/features/outreach/hooks/useOutreach';
 import { SegmentSelector } from '@/features/outreach/components/SegmentSelector';
 import { MessageComposer } from '@/features/outreach/components/MessageComposer';
@@ -87,14 +87,14 @@ export const OutreachPage = () => {
     };
 
     return (
-        <MainLayout>
-            <main className={styles['outreach']}>
-                <h1 className={styles['outreach__title']}>
+        <MainLayout wide flush title={t('outreach_title')}>
+            <section className={styles['OutreachPage__outreach']}>
+                <h1 className={styles['OutreachPage__outreach__title']}>
                     {t('outreach_title')}
                 </h1>
 
                 {/* Step Indicator */}
-                <nav className={styles['outreach__steps']} aria-label="Progress">
+                <nav className={styles['OutreachPage__outreach__steps']} aria-label={t('progress') || "Progress"}>
                     {STEP_KEYS.map((key, i) => {
                         const stepNum = i + 1;
                         const isActive = currentStep === stepNum;
@@ -104,18 +104,18 @@ export const OutreachPage = () => {
                                 key={key}
                                 type="button"
                                 className={[
-                                    styles['outreach__step'],
-                                    isActive ? styles['outreach__step--active'] : '',
-                                    isCompleted ? styles['outreach__step--completed'] : ''
+                                    styles['OutreachPage__outreach__step'],
+                                    isActive ? styles['OutreachPage__outreach__step--active'] : '',
+                                    isCompleted ? styles['OutreachPage__outreach__step--completed'] : ''
                                 ].filter(Boolean).join(' ')}
                                 onClick={() => goToStep(stepNum)}
                                 disabled={stepNum > currentStep}
                                 aria-current={isActive ? 'step' : undefined}
                             >
-                                <span className={styles['outreach__step-number']}>
+                                <span className={styles['OutreachPage__outreach__step-number']}>
                                     {isCompleted ? '✓' : stepNum}
                                 </span>
-                                <span className={styles['outreach__step-label']}>
+                                <span className={styles['OutreachPage__outreach__step-label']}>
                                     {t(key)}
                                 </span>
                             </button>
@@ -124,7 +124,7 @@ export const OutreachPage = () => {
                 </nav>
 
                 {/* Step Content */}
-                <div className={styles['outreach__content']}>
+                <div className={styles['OutreachPage__outreach__content']}>
                     {currentStep === 1 && (
                         <SegmentSelector
                             segmentType={segmentType}
@@ -184,14 +184,14 @@ export const OutreachPage = () => {
 
                 {/* Send Progress Bar */}
                 {sendProgress !== null && sendProgress < 100 && (
-                    <div className={styles['outreach__progress']} role="progressbar" aria-valuenow={sendProgress}>
+                    <div className={styles['OutreachPage__outreach__progress']} role="progressbar" aria-valuenow={sendProgress}>
                         <div
-                            className={styles['outreach__progress-bar']}
+                            className={styles['OutreachPage__outreach__progress-bar']}
                             style={{ width: `${sendProgress}%` }}
                         />
                     </div>
                 )}
-            </main>
+            </section>
         </MainLayout>
     );
 };

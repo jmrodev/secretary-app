@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import styles from './SearchBar.module.css';
 
@@ -15,7 +15,7 @@ const DEFAULT_LABELS = {
  * SearchBar UI Component
  * Pure component for displaying a search bar with optional suggestions.
  */
-const SearchBar = ({ 
+export const SearchBar = ({ 
     value, 
     onChange, 
     placeholder, 
@@ -56,15 +56,15 @@ const SearchBar = ({
     };
 
     return (
-        <div className={`${styles.root} ${className}`} ref={wrapperRef}>
-            <div className={`${styles.wrapper}`}>
-                <span className={`${styles.icon}`}>
+        <div className={`${styles.SearchBar__root} ${className}`} ref={wrapperRef}>
+            <div className={`${styles.SearchBar__wrapper}`}>
+                <span className={`${styles.SearchBar__icon}`}>
                     <Icon name="search" />
                 </span>
                 <input
                     type="text"
                     placeholder={placeholder || labels.placeholder}
-                    className={`${styles.input}`}
+                    className={`${styles.SearchBar__input}`}
                     value={value}
                     onChange={onChange}
                     onFocus={onFocus}
@@ -72,7 +72,7 @@ const SearchBar = ({
                     autoComplete="off"
                 />
                 {value && (
-                    <div className={`${styles.actions}`}>
+                    <div className={`${styles.SearchBar__actions}`}>
                         <Button 
                             variant="ghost" 
                             size="sm-compact"
@@ -85,11 +85,11 @@ const SearchBar = ({
             </div>
 
             {showSuggestions && suggestions.length > 0 && !value && (
-                <div className={`${styles.suggestions}`}>
-                    <header className={`${styles.suggestionsHeader}`}>
+                <div className={`${styles.SearchBar__suggestions}`}>
+                    <header className={`${styles.SearchBar__suggestionsHeader}`}>
                         <Icon name="history" /> {labels.recentActivity}
                     </header>
-                    <ul className={`${styles.suggestionsList}`} role="listbox">
+                    <ul className={`${styles.SearchBar__suggestionsList}`} role="listbox">
                         {suggestions.map((item) => {
                             const itemKey = `${item.type}-${item.id}`;
                             const handleKeyDown = (e) => {
@@ -102,28 +102,28 @@ const SearchBar = ({
                             return (
                                 <li 
                                     key={itemKey} 
-                                    className={`${styles.suggestionItem}`}
+                                    className={`${styles.SearchBar__suggestionItem}`}
                                     onClick={() => handleSelectSuggestion(item)}
                                     onKeyDown={handleKeyDown}
                                     role="option"
                                     aria-selected="false"
                                     tabIndex={0}
                                 >
-                                    <div className="search-box__suggestion-icon">
+                                    <div className={styles.SearchBar__suggestionIcon}>
                                         <Icon name={item.type === 'patient' ? 'person' : 'calendar_today'} />
                                     </div>
-                                    <div className={`${styles.suggestionInfo}`}>
-                                        <span className={`${styles.suggestionName}`}>
+                                    <div className={`${styles.SearchBar__suggestionInfo}`}>
+                                        <span className={`${styles.SearchBar__suggestionName}`}>
                                             {item.label}
                                         </span>
-                                        <span className={`${styles.suggestionDni}`}>
+                                        <span className={`${styles.SearchBar__suggestionDni}`}>
                                             {item.sublabel}
                                         </span>
                                     </div>
                                     
                                     {item.debt_status && (
                                         <div 
-                                            className={`${styles.suggestionStatus} search-box__suggestion-status--${item.debt_status}`}
+                                            className={`${styles.SearchBar__suggestionStatus} ${styles[`SearchBar__suggestionStatus${item.debt_status.charAt(0).toUpperCase() + item.debt_status.slice(1).toLowerCase()}`] || ''}`}
                                             title={`${labels.debtStatusPrefix} ${item.debt_status}`}
                                             role="status"
                                             aria-label={`${labels.debtStatusPrefix} ${item.debt_status}`}
@@ -139,4 +139,3 @@ const SearchBar = ({
     );
 };
 
-export default SearchBar;

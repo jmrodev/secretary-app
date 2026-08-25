@@ -23,6 +23,11 @@ export const finances = {
     physical_cash: "Efectivo Físico",
     balancing_notes: "Notas del Arqueo",
     confirm_balancing: "Confirmar Arqueo",
+    balancing_title: "Arqueo de Caja - {date}",
+    confirm_and_close: "Confirmar y Cerrar",
+    physical_cash_placeholder: "Ingrese el monto real...",
+    balancing_notes_placeholder: "Ej: Faltante por vuelto, error de registro...",
+    optional_label: "(Opcional)",
     
     // Outstanding Debts Summary
     outstanding_debts: "Resumen de Deudas",
@@ -35,5 +40,9 @@ export const finances = {
     // Reports Table Headers
     weekly_total: "Total Semanal",
     cumulative_monthly_total: "Total Mensual Acumulado",
+
+    // Transaction Table
+    select_all: "Seleccionar todos",
+    select_transaction: "Seleccionar transacción",
 };
 

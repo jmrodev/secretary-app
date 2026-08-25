@@ -1,6 +1,6 @@
 /* Icon Atom Styles (BEM) */
 
-.root {
+.Icon__root {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -22,11 +22,11 @@
     -webkit-font-smoothing: antialiased;
 }
 
-.clickable {
+.Icon__clickable {
     cursor: pointer;
 }
 
-.clickable:hover {
+.Icon__clickable:hover {
     opacity: 0.7;
     transform: scale(1.1);
 }

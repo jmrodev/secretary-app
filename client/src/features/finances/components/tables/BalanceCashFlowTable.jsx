@@ -9,7 +9,7 @@ const EMPTY_ARRAY = [];
  * Detailed daily breakdown of income split by payment method (cash vs others).
  * Part of the analytical reporting within the finances domain.
  */
-const BalanceCashFlowTable = ({ appointments = EMPTY_ARRAY, t }) => {
+export const BalanceCashFlowTable = ({ appointments = EMPTY_ARRAY, t }) => {
     // Filter days up to today
     const filteredDays = React.useMemo(() => {
         const today = getToday();
@@ -25,20 +25,20 @@ const BalanceCashFlowTable = ({ appointments = EMPTY_ARRAY, t }) => {
     const totalOthers = totalIncome - totalCash;
 
     return (
-        <section className={`${styles.root} animate-fade-in`}>
+        <section className={`${styles.BalanceCashFlowTable__root} animate-fade-in`}>
             <header>
-                <h3 className={`${styles.title}`}>{t('cash_reconciliation')}</h3>
-                <p className={`${styles.subtitle}`}>{t('daily_income_detail')}</p>
+                <h3 className={`${styles.BalanceCashFlowTable__title}`}>{t('cash_reconciliation')}</h3>
+                <p className={`${styles.BalanceCashFlowTable__subtitle}`}>{t('daily_income_detail')}</p>
             </header>
 
-            <div className={`${styles.tableWrapper}`}>
-                <table className={`${styles.table}`}>
+            <div className={`${styles.BalanceCashFlowTable__tableWrapper}`}>
+                <table className={`${styles.BalanceCashFlowTable__table}`}>
                     <thead>
                         <tr>
                             <th>{t('date_label')}</th>
-                            <th className={`${styles.cellRight}`}>{t('cash')}</th>
-                            <th className={`${styles.cellRight}`}>{t('other_methods')}</th>
-                            <th className={`${styles.cellRight}`}>{t('daily_total')}</th>
+                            <th className={`${styles.BalanceCashFlowTable__cellRight}`}>{t('cash')}</th>
+                            <th className={`${styles.BalanceCashFlowTable__cellRight}`}>{t('other_methods')}</th>
+                            <th className={`${styles.BalanceCashFlowTable__cellRight}`}>{t('daily_total')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,9 +50,9 @@ const BalanceCashFlowTable = ({ appointments = EMPTY_ARRAY, t }) => {
                             return (
                                 <tr key={day.date}>
                                     <td>{day.date}</td>
-                                    <td className={`${styles.cellRight}`}>$ {cash.toLocaleString()}</td>
-                                    <td className={`${styles.cellRight}`}>$ {others.toLocaleString()}</td>
-                                    <td className={`${styles.cellRight} ${styles.cellBold}`}>
+                                    <td className={`${styles.BalanceCashFlowTable__cellRight}`}>$ {cash.toLocaleString()}</td>
+                                    <td className={`${styles.BalanceCashFlowTable__cellRight}`}>$ {others.toLocaleString()}</td>
+                                    <td className={`${styles.BalanceCashFlowTable__cellRight} ${styles.BalanceCashFlowTable__cellBold}`}>
                                         $ {total.toLocaleString()}
                                     </td>
                                 </tr>
@@ -62,9 +62,9 @@ const BalanceCashFlowTable = ({ appointments = EMPTY_ARRAY, t }) => {
                     <tfoot>
                         <tr>
                             <td>{t('total').toUpperCase()}:</td>
-                            <td className={`${styles.cellRight}`}>$ {totalCash.toLocaleString()}</td>
-                            <td className={`${styles.cellRight}`}>$ {totalOthers.toLocaleString()}</td>
-                            <td className={`${styles.cellRight} ${styles.cellBold}`}>$ {totalIncome.toLocaleString()}</td>
+                            <td className={`${styles.BalanceCashFlowTable__cellRight}`}>$ {totalCash.toLocaleString()}</td>
+                            <td className={`${styles.BalanceCashFlowTable__cellRight}`}>$ {totalOthers.toLocaleString()}</td>
+                            <td className={`${styles.BalanceCashFlowTable__cellRight} ${styles.BalanceCashFlowTable__cellBold}`}>$ {totalIncome.toLocaleString()}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -73,4 +73,3 @@ const BalanceCashFlowTable = ({ appointments = EMPTY_ARRAY, t }) => {
     );
 };
 
-export default BalanceCashFlowTable;

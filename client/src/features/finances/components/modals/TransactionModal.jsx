@@ -1,22 +1,20 @@
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useConfig } from '@/context/ConfigContext';
 import { useTransactionForm } from '@/features/finances/hooks/useTransactionForm';
 import { formatCurrency } from '@/utils/core/format';
 import {
-    getTransactionTypes,
-    getStatusOptions,
     getServiceTypes
 } from '@/constants/transactionOptions';
 
 // Atomic Components
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import AutoTextarea from '@/components/atoms/AutoTextarea';
-import FormGroup from '@/components/molecules/FormGroup';
+import { Icon } from '@/components/atoms/Icon';
+import { AutoTextarea } from '@/components/atoms/AutoTextarea';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import styles from './TransactionModal.module.css';
 
 import { TransactionSummaryHeader } from '../sections/TransactionSummaryHeader';
@@ -26,7 +24,7 @@ import { TransactionPaymentsSection } from '../sections/TransactionPaymentsSecti
  * TransactionModal Molecule.
  * Orchestrates the creation and editing of financial records.
  */
-const TransactionModal = ({
+export const TransactionModal = ({
     isOpen,
     onClose,
     onSuccess,
@@ -41,15 +39,13 @@ const TransactionModal = ({
     const {
         formData, loading, patients, doctors, pricingInfo, totalPrice, patientSearch, showPatientList,
         setPatientSearch, setShowPatientList, updateField, updateServiceType, updateDoctor, selectPatient,
-        handlePaymentChange, addPaymentMethod, removePaymentMethod, saveTransaction, medications,
-        selectedPatient, addMedication, removeMedication, setTotalPrice
+        handlePaymentChange, addPaymentMethod, removePaymentMethod, saveTransaction,
+        setTotalPrice
     } = useTransactionForm(isOpen, initialData, requestId, onSuccess, onClose);
 
     const currentPaidTotal = formData.payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
     const debtAmount = Math.max(0, totalPrice - currentPaidTotal);
 
-    const transactionTypes = getTransactionTypes(t);
-    const statusOptions = getStatusOptions(t);
     const serviceTypes = getServiceTypes(t);
 
     const doctorOptions = React.useMemo(() => [
@@ -78,7 +74,7 @@ const TransactionModal = ({
             title={t('record_payment')}
             size="lg"
             footer={
-                <div className={styles.footerButtons}>
+                <div className={styles.TransactionModal__footerButtons}>
                     <Button variant="secondary" onClick={onClose} icon={<Icon name="close" size="1.1rem" />}>
                         {t('cancel')}
                     </Button>
@@ -88,8 +84,8 @@ const TransactionModal = ({
                 </div>
             }
         >
-            <div className={`${styles.root}`}>
-                <div className={styles.fieldFull}>
+            <div className={`${styles.TransactionModal__root}`}>
+                <div className={styles.TransactionModal__fieldFull}>
                     <TransactionSummaryHeader 
                         requestId={requestId} 
                         patientSearch={patientSearch} 
@@ -100,9 +96,9 @@ const TransactionModal = ({
                 </div>
 
                 {!requestId && formData.type === 'income_patient' && (
-                    <div className={styles.fieldThird}>
+                    <div className={styles.TransactionModal__fieldThird}>
                         <FormGroup label={t('patient')}>
-                            <div className={`${styles.autocomplete}`}>
+                            <div className={`${styles.TransactionModal__autocomplete}`}>
                                 <Input
                                     value={patientSearch}
                                     onChange={e => { setPatientSearch(e.target.value); setShowPatientList(true); updateField('related_user_id', ''); }}
@@ -111,15 +107,15 @@ const TransactionModal = ({
                                     icon={<Icon name="search" size="1.1rem" />} className="transaction-modal__input"
                                 />
                                 {showPatientList && patientSearch && !formData.related_user_id && (
-                                    <ul className={`${styles.results}`} role="listbox">
+                                    <ul className={`${styles.TransactionModal__results}`} role="listbox">
                                         {filteredPatients.map(p => (
                                             <li
                                                 key={p.id} onClick={() => selectPatient(p)}
                                                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectPatient(p); } }}
-                                                className={`${styles.item}`} role="option" aria-selected={false} tabIndex={0}
+                                                className={`${styles.TransactionModal__item}`} role="option" aria-selected={false} tabIndex={0}
                                             >
                                                 <span className="transaction-modal__item-name">{p.full_name}</span>
-                                                <span className={`${styles.hint}`}>{p.dni}</span>
+                                                <span className={`${styles.TransactionModal__hint}`}>{p.dni}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -130,7 +126,7 @@ const TransactionModal = ({
                 )}
 
                 {formData.type === 'income_rental' && (
-                    <div className={styles.fieldThird}>
+                    <div className={styles.TransactionModal__fieldThird}>
                         <FormGroup label={t('doctor_payer')}>
                             <Select
                                 value={formData.related_user_id}
@@ -143,7 +139,7 @@ const TransactionModal = ({
                 )}
 
                 {!requestId && (
-                    <div className={styles.fieldThird}>
+                    <div className={styles.TransactionModal__fieldThird}>
                         <FormGroup label={t('beneficiary_doctor_cash_box')}>
                             <Select
                                 value={formData.doctor_id}
@@ -156,7 +152,7 @@ const TransactionModal = ({
                 )}
 
                 {!requestId && formData.type === 'income_patient' && (
-                    <div className={styles.fieldThird}>
+                    <div className={styles.TransactionModal__fieldThird}>
                         <FormGroup label={t('service_type')}>
                             <Select
                                 value={formData.service_type}
@@ -172,7 +168,7 @@ const TransactionModal = ({
 
 
 
-                <div className={styles.fieldFull}>
+                <div className={styles.TransactionModal__fieldFull}>
                     <TransactionPaymentsSection 
                         pricingInfo={pricingInfo} totalPrice={totalPrice} setTotalPrice={setTotalPrice}
                         payments={formData.payments} handlePaymentChange={handlePaymentChange}
@@ -182,7 +178,7 @@ const TransactionModal = ({
                     />
                 </div>
 
-                <div className={styles.fieldFull}>
+                <div className={styles.TransactionModal__fieldFull}>
                     <FormGroup label={t('description')}>
                         <AutoTextarea
                             value={formData.description}
@@ -193,7 +189,7 @@ const TransactionModal = ({
                     </FormGroup>
                 </div>
 
-                <div className={styles.fieldHalf}>
+                <div className={styles.TransactionModal__fieldHalf}>
                     <FormGroup label={t('proof_payment_optional')}>
                         <Input
                             type="file"
@@ -207,4 +203,3 @@ const TransactionModal = ({
     );
 };
 
-export default TransactionModal;

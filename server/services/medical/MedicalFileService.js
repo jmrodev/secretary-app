@@ -52,8 +52,11 @@ class MedicalFileService {
 
         if (role !== 'admin') {
             if (role === 'secretary') {
-                const setting = await systemSettingsRepository.findByKey('enable_secretary_crud_files');
-                if (!setting || setting.setting_value !== 'true') throw new Error("Unauthorized");
+                const hasPerm = Boolean(req.user.permissions?.can_crud_files ?? req.user.can_crud_files);
+                if (!hasPerm) {
+                    const setting = await systemSettingsRepository.findByKey('enable_secretary_crud_files');
+                    if (!setting || setting.setting_value !== 'true') throw new Error("Unauthorized");
+                }
             } else {
                 throw new Error("Unauthorized");
             }

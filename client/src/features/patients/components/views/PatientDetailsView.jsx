@@ -1,17 +1,18 @@
+/* eslint-disable max-lines -- Large patient detail view; splitting into sub-components tracked as follow-up. */
 import React, { useState } from 'react';
 import { usePatientDetailsController } from '@/features/patients/hooks/usePatientDetailsController';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 // Local Feature & Molecule Components
-import PatientInfoBlock from '@/features/patients/components/views/PatientInfoBlock';
-import PatientHistoryTable from '@/features/patients/components/views/PatientHistoryTable';
-import PatientFinancialSidebar from '@/features/patients/components/views/PatientFinancialSidebar';
-import PatientPrintableView from '@/features/patients/components/views/PatientPrintableView';
-import WhatsappChatHistory from '@/features/patients/components/views/WhatsappChatHistory';
-import Modal from '@/components/molecules/Modal';
+import { PatientInfoBlock } from '@/features/patients/components/views/PatientInfoBlock';
+import { PatientHistoryTable } from '@/features/patients/components/views/PatientHistoryTable';
+import { PatientFinancialSidebar } from '@/features/patients/components/views/PatientFinancialSidebar';
+import { PatientPrintableView } from '@/features/patients/components/views/PatientPrintableView';
+import { WhatsappChatHistory } from '@/features/patients/components/views/WhatsappChatHistory';
+import { Modal } from '@/components/molecules/Modal';
 import { DocumentViewerModal } from '@/components/molecules/DocumentViewerModal';
 import { PatientMedicationFormModal } from '@/features/patients/components/modals/PatientMedicationFormModal';
 
@@ -21,7 +22,7 @@ import styles from './PatientDetailsView.module.css';
  * PatientDetailsView (Executor/Sub-Orchestrator).
  * Renders the full patient profile including history, financial status, medications, and document history.
  */
-const PatientDetailsView = ({
+export const PatientDetailsView = ({
     details,
     t,
     user,
@@ -110,8 +111,8 @@ const PatientDetailsView = ({
                     t={t}
                 />
             ) : (
-                <section className={`${styles.root} animate-fade-in no-print-section`}>
-                <header className={`${styles.header}`}>
+                <section className={`${styles.PatientDetailsView__root} no-print-section`}>
+                <header className={`${styles.PatientDetailsView__header}`}>
                     <Button variant="secondary" onClick={onBack}>
                         &larr; {t('back_to_list')}
                     </Button>
@@ -121,7 +122,7 @@ const PatientDetailsView = ({
                             variant="ghost" 
                             onClick={() => setIsCleanView(true)} 
                             icon={<Icon name="print" size="1rem" />}
-                            className={`${styles.noPrint}`}
+                            className={`${styles.PatientDetailsView__noPrint}`}
                         >
                             {t('print') || 'Imprimir'}
                         </Button>
@@ -147,46 +148,52 @@ const PatientDetailsView = ({
 
                 </header>
 
-                <h1 className={`${styles.title}`}>{details.full_name}</h1>
+                <h1 className={`${styles.PatientDetailsView__title}`}>{details.full_name}</h1>
 
-                <div className={`${styles.tabsNav}`}>
+                <div className={`${styles.PatientDetailsView__tabsNav}`}>
                     <button 
-                        className={`${styles.tabLink} ${activeTab === 'general' ? styles.tabLinkActive : ''}`}
+                        type="button"
+                        className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'general' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('general')}
                     >
                         <Icon name="person" size="1.1rem" />
                         {t('general_info') || 'General'}
                     </button>
                     <button 
-                        className={`${styles.tabLink} ${activeTab === 'history' ? styles.tabLinkActive : ''}`}
+                        type="button"
+                        className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'history' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('history')}
                     >
                         <Icon name="calendar_month" size="1.1rem" />
                         {t('medical_history') || 'Historia'}
                     </button>
                     <button 
-                        className={`${styles.tabLink} ${activeTab === 'finances' ? styles.tabLinkActive : ''}`}
+                        type="button"
+                        className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'finances' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('finances')}
                     >
                         <Icon name="payments" size="1.1rem" />
                         {t('finances') || 'Finanzas'}
                     </button>
                     <button 
-                        className={`${styles.tabLink} ${activeTab === 'medications' ? styles.tabLinkActive : ''}`}
+                        type="button"
+                        className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'medications' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('medications')}
                     >
                         <Icon name="description" size="1.1rem" />
                         {t('prescriptions') || 'Recetas'}
                     </button>
                     <button 
-                        className={`${styles.tabLink} ${activeTab === 'documents' ? styles.tabLinkActive : ''}`}
+                        type="button"
+                        className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'documents' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('documents')}
                     >
                         <Icon name="folder_open" size="1.1rem" />
                         {t('documents') || 'Documentos'}
                     </button>
                     <button 
-                        className={`${styles.tabLink} ${activeTab === 'chat' ? styles.tabLinkActive : ''}`}
+                        type="button"
+                        className={`${styles.PatientDetailsView__tabLink} ${activeTab === 'chat' ? styles.PatientDetailsView__tabLinkActive : ''}`}
                         onClick={() => setActiveTab('chat')}
                     >
                         <Icon name="chat" size="1.1rem" />
@@ -194,9 +201,9 @@ const PatientDetailsView = ({
                     </button>
                 </div>
 
-                <div className={`${styles.grid}`}>
+                <div className={`${styles.PatientDetailsView__grid}`}>
                     {/* Main Content Area */}
-                    <main className={`${styles.main}`}>
+                    <main className={`${styles.PatientDetailsView__main}`}>
                         {activeTab === 'general' && (
                             <>
                                 <PatientInfoBlock
@@ -233,9 +240,9 @@ const PatientDetailsView = ({
                         {activeTab === 'medications' && (
                             <div className="patient-details__meds-tab">
                                 {/* Current Medication Section */}
-                                <section className={`${styles.block} ${styles.blockMedications}`} style={{ marginBottom: '1.5rem' }}>
-                                    <header className={`${styles.blockHeader}`}>
-                                        <h3 className={`${styles.blockTitle}`}>
+                                <section className={`${styles.PatientDetailsView__block} ${styles.PatientDetailsView__blockMedications}`} style={{ marginBottom: '1.5rem' }}>
+                                    <header className={`${styles.PatientDetailsView__blockHeader}`}>
+                                        <h3 className={`${styles.PatientDetailsView__blockTitle}`}>
                                             <Icon name="medication" size="1.2rem" />
                                             {t('current_medication') || 'Medicación habitual / Crónica'}
                                         </h3>
@@ -251,12 +258,12 @@ const PatientDetailsView = ({
                                             {t('add_medication') || 'Agregar Medicación'}
                                         </Button>
                                     </header>
-                                    <div className={`${styles.blockContent} ${styles.blockContentPadded}`}>
+                                    <div className={`${styles.PatientDetailsView__blockContent} ${styles.PatientDetailsView__blockContentPadded}`}>
                                         {chronicMeds.length > 0 ? (
                                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
                                                 {chronicMeds.map((m, i) => (
                                                     <div 
-                                                        key={m.id || `med-${i}`} 
+                                                        key={m.id || `med-${m.name}-${m.dose || ''}`} 
                                                         style={{ 
                                                             padding: '1rem', 
                                                             background: 'var(--gray-100, #f8f9fa)', 
@@ -343,9 +350,9 @@ const PatientDetailsView = ({
                                 </section>
 
                                 {/* Prescriptions Repository Table */}
-                                <section className={`${styles.block} ${styles.blockMedications}`}>
-                                    <header className={`${styles.blockHeader}`}>
-                                        <h3 className={`${styles.blockTitle}`}>
+                                <section className={`${styles.PatientDetailsView__block} ${styles.PatientDetailsView__blockMedications}`}>
+                                    <header className={`${styles.PatientDetailsView__blockHeader}`}>
+                                        <h3 className={`${styles.PatientDetailsView__blockTitle}`}>
                                             <Icon name="folder_open" size="1.2rem" />
                                             {t('recent_prescriptions') || 'Historial de Recetas e Indicaciones'}
                                         </h3>
@@ -353,9 +360,9 @@ const PatientDetailsView = ({
                                             {t('new_prescription') || 'Nueva Receta'}
                                         </Button>
                                     </header>
-                                    <div className={`${styles.blockContent} ${styles.blockContentPadded}`}>
+                                    <div className={`${styles.PatientDetailsView__blockContent} ${styles.PatientDetailsView__blockContentPadded}`}>
                                         {allPrescriptions.length > 0 ? (
-                                            <table className={`${styles.infoTable}`} style={{ width: '100%' }}>
+                                            <table className={`${styles.PatientDetailsView__infoTable}`} style={{ width: '100%' }}>
                                                 <thead>
                                                     <tr style={{ borderBottom: '2px solid var(--gray-200)', textAlign: 'left' }}>
                                                         <th style={{ padding: '0.75rem' }}>{t('appointment_date') || 'Fecha'}</th>
@@ -367,12 +374,11 @@ const PatientDetailsView = ({
                                                 </thead>
                                                 <tbody>
                                                     {allPrescriptions.map((r, i) => {
-                                                        const token = r.token || r.id;
                                                         const isOfficial = !!r.token || r.type === 'official';
                                                         const actualFileUrl = r.file_url || r.pdf_url;
                                                         const medText = r.request_note || r.medications || r.doctor_note || '—';
                                                         return (
-                                                            <tr key={r.id || `req-${i}`} style={{ borderBottom: '1px solid var(--gray-100)' }}>
+                                                            <tr key={r.id || `req-${r.doctor_name || r.created_at || ''}`} style={{ borderBottom: '1px solid var(--gray-100)' }}>
                                                                 <td style={{ padding: '0.75rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
                                                                     {formatDate(r.created_at || r.appointment_date)}
                                                                 </td>
@@ -446,14 +452,14 @@ const PatientDetailsView = ({
                         {activeTab === 'documents' && (
                             <div className="patient-details__docs-tab">
                                 {/* Upload Box */}
-                                <section className={`${styles.block}`} style={{ marginBottom: '1.5rem' }}>
-                                    <header className={`${styles.blockHeader}`}>
-                                        <h3 className={`${styles.blockTitle}`}>
+                                <section className={`${styles.PatientDetailsView__block}`} style={{ marginBottom: '1.5rem' }}>
+                                    <header className={`${styles.PatientDetailsView__blockHeader}`}>
+                                        <h3 className={`${styles.PatientDetailsView__blockTitle}`}>
                                             <Icon name="cloud_upload" size="1.2rem" />
                                             {t('upload_file_for_patient') || 'Adjuntar Documento al Paciente'}
                                         </h3>
                                     </header>
-                                    <div className={`${styles.blockContent} ${styles.blockContentPadded}`}>
+                                    <div className={`${styles.PatientDetailsView__blockContent} ${styles.PatientDetailsView__blockContentPadded}`}>
                                         {uploadMsg && (
                                             <div className={`message-banner message-banner--${uploadMsg.type}`} style={{ marginBottom: '1rem', padding: '0.75rem', borderRadius: '8px', background: uploadMsg.type === 'success' ? '#e6f4ea' : '#fce8e6', color: uploadMsg.type === 'success' ? '#137333' : '#c5221f' }}>
                                                 {uploadMsg.text}
@@ -466,6 +472,7 @@ const PatientDetailsView = ({
                                                     onChange={e => setNewFile(e.target.files[0])}
                                                     required 
                                                     style={{ flex: 1 }}
+                                                    aria-label={t('upload_file_for_patient') || 'Adjuntar Documento al Paciente'}
                                                 />
                                                 <input 
                                                     type="text" 
@@ -483,18 +490,18 @@ const PatientDetailsView = ({
                                 </section>
 
                                 {/* Files Repository List */}
-                                <section className={`${styles.block}`}>
-                                    <header className={`${styles.blockHeader}`}>
-                                        <h3 className={`${styles.blockTitle}`}>
+                                <section className={`${styles.PatientDetailsView__block}`}>
+                                    <header className={`${styles.PatientDetailsView__blockHeader}`}>
+                                        <h3 className={`${styles.PatientDetailsView__blockTitle}`}>
                                             <Icon name="folder" size="1.2rem" />
                                             {t('patient_files') || 'Documentos y Estudios Adjuntos'}
                                         </h3>
                                     </header>
-                                    <div className={`${styles.blockContent} ${styles.blockContentPadded}`}>
+                                    <div className={`${styles.PatientDetailsView__blockContent} ${styles.PatientDetailsView__blockContentPadded}`}>
                                         {loadingFiles ? (
                                             <p className="patient-details__text-empty">{t('loading')}</p>
                                         ) : patientFiles.length > 0 ? (
-                                            <table className={`${styles.infoTable}`} style={{ width: '100%' }}>
+                                            <table className={`${styles.PatientDetailsView__infoTable}`} style={{ width: '100%' }}>
                                                 <thead>
                                                     <tr style={{ borderBottom: '2px solid var(--gray-200)', textAlign: 'left' }}>
                                                         <th style={{ padding: '0.75rem' }}>{t('file_name') || 'Archivo'}</th>
@@ -581,7 +588,7 @@ const PatientDetailsView = ({
                                         .split('\n')
                                         .filter(line => line.trim())
                                         .map((line, idx) => (
-                                            <div key={idx} style={{ padding: '0.4rem 0', borderBottom: idx < (selectedRxDetail.request_note || selectedRxDetail.medications || '').split('\n').length - 1 ? '1px dashed var(--gray-300)' : 'none', fontWeight: 600, color: 'var(--gray-800)' }}>
+                                            <div key={line.trim()} style={{ padding: '0.4rem 0', borderBottom: idx < (selectedRxDetail.request_note || selectedRxDetail.medications || '').split('\n').length - 1 ? '1px dashed var(--gray-300)' : 'none', fontWeight: 600, color: 'var(--gray-800)' }}>
                                                 • {line.trim()}
                                             </div>
                                         ))
@@ -628,4 +635,3 @@ const PatientDetailsView = ({
     );
 };
 
-export default PatientDetailsView;

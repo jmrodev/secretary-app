@@ -1,16 +1,16 @@
 
-.root {
+.MedicalRequestList__root {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-.container {
+.MedicalRequestList__container {
     /* --- Local Component Tokens --- */
     --requests-bg: var(--dashboard-card-bg);
     --requests-border: var(--border-color);
     --requests-header-bg: var(--dashboard-card-bg);
-    --requests-row-hover: rgb(128, 128, 128, 0.08);
+    --requests-row-hover: var(--row-hover-bg);
     --type-rx-bg: var(--blue-100);
     --type-rx-text: var(--blue-700);
     --type-lic-bg: var(--amber-100);
@@ -26,11 +26,11 @@
     border: 1px solid var(--requests-border);
 }
 
-.table {
+.MedicalRequestList__table {
     width: 100%;
 }
 
-.th {
+.MedicalRequestList__th {
     padding: 0.75rem 1rem;
     text-align: left;
     background: var(--requests-header-bg);
@@ -42,53 +42,53 @@
     letter-spacing: 0.05em;
 }
 
-.thType {
+.MedicalRequestList__thType {
     padding-left: 1.5rem;
 }
 
-.thStatus,
-.thPayment {
+.MedicalRequestList__thStatus,
+.MedicalRequestList__thPayment {
     text-align: center;
 }
 
-.thActions {
+.MedicalRequestList__thActions {
     text-align: right;
     padding-right: 1.5rem;
 }
 
-.row {
+.MedicalRequestList__row {
     transition: background 0.2s ease;
 }
 
-.row:hover {
+.MedicalRequestList__row:hover {
     background-color: var(--requests-row-hover);
 }
 
-.rowCompleted {
+.MedicalRequestList__rowCompleted {
     opacity: 0.85;
 }
 
-.td {
+.MedicalRequestList__td {
     padding: 0.5rem 1rem;
     border-bottom: 1px solid var(--border-color);
     vertical-align: middle;
 }
 
-.td:first-child {
+.MedicalRequestList__td:first-child {
     padding-left: 1.5rem;
 }
 
-.td:last-child {
+.MedicalRequestList__td:last-child {
     padding-right: 1.5rem;
 }
 
-.typeCell {
+.MedicalRequestList__typeCell {
     display: flex;
     flex-direction: column;
     gap: 0.375rem;
 }
 
-.typeTag {
+.MedicalRequestList__typeTag {
     font-size: 0.7rem;
     font-weight: 800;
     padding: 0.25rem 0.6rem;
@@ -97,31 +97,31 @@
     width: fit-content;
 }
 
-.typeTagPrescription {
+.MedicalRequestList__typeTagPrescription {
     background-color: var(--type-rx-bg);
     color: var(--type-rx-text);
 }
 
-.typeTagLicense {
+.MedicalRequestList__typeTagLicense {
     background-color: var(--type-lic-bg);
     color: var(--type-lic-text);
 }
 
-.typeTagCertificate {
+.MedicalRequestList__typeTagCertificate {
     background-color: var(--type-cert-bg);
     color: var(--type-cert-text);
 }
 
-.typeTagClickable {
+.MedicalRequestList__typeTagClickable {
     cursor: pointer;
     transition: transform 0.2s;
 }
 
-.typeTagClickable:hover {
+.MedicalRequestList__typeTagClickable:hover {
     transform: scale(1.05);
 }
 
-.sourceTag {
+.MedicalRequestList__sourceTag {
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -130,56 +130,56 @@
     color: var(--text-muted);
 }
 
-.date {
+.MedicalRequestList__date {
     font-size: 0.85rem;
     color: var(--text-main);
     font-weight: 500;
 }
 
-.patientName {
+.MedicalRequestList__patientName {
     font-weight: 700;
     color: var(--text-main);
     font-size: 0.9rem;
 }
 
-.doctorName {
+.MedicalRequestList__doctorName {
     font-size: 0.85rem;
     color: var(--text-secondary);
 }
 
-.statusCell {
+.MedicalRequestList__statusCell {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
 }
 
-.statusTag {
+.MedicalRequestList__statusTag {
     font-size: 0.7rem;
     font-weight: 700;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
 }
 
-.statusTagPending {
+.MedicalRequestList__statusTagPending {
     background-color: var(--amber-50);
     color: var(--amber-700);
     border: 1px solid var(--amber-100);
 }
 
-.statusTagCompleted {
+.MedicalRequestList__statusTagCompleted {
     background-color: var(--green-50);
     color: var(--green-700);
     border: 1px solid var(--green-100);
 }
 
-.statusTagRejected {
+.MedicalRequestList__statusTagRejected {
     background-color: var(--red-50);
     color: var(--red-700);
     border: 1px solid var(--red-100);
 }
 
-.reply {
+.MedicalRequestList__reply {
     font-size: 0.65rem;
     color: var(--text-muted);
     font-style: italic;
@@ -189,14 +189,14 @@
     text-overflow: ellipsis;
 }
 
-.paymentInfo {
+.MedicalRequestList__paymentInfo {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.375rem;
 }
 
-.paymentBadge {
+.MedicalRequestList__paymentBadge {
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -207,34 +207,34 @@
     width: fit-content;
 }
 
-.paymentBadgePaid {
-    background: #ecfdf5;
-    color: #059669;
+.MedicalRequestList__paymentBadgePaid {
+    background: var(--green-50);
+    color: var(--green-700);
 }
 
-.paymentBadgeDebt {
-    background: #fff1f2;
-    color: #e11d48;
+.MedicalRequestList__paymentBadgeDebt {
+    background: var(--red-50);
+    color: var(--red-700);
 }
 
-.paymentBadgeBonified {
-    background: #eff6ff;
-    color: #2563eb;
+.MedicalRequestList__paymentBadgeBonified {
+    background: var(--blue-50);
+    color: var(--blue-700);
 }
 
-.paymentBadgePending {
-    background: #f9fafb;
-    color: #6b7280;
+.MedicalRequestList__paymentBadgePending {
+    background: var(--gray-100);
+    color: var(--gray-500);
 }
 
-.paymentDot {
+.MedicalRequestList__paymentDot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: currentcolor;
 }
 
-.paymentMethod {
+.MedicalRequestList__paymentMethod {
     display: flex;
     align-items: center;
     gap: 0.25rem;
@@ -243,14 +243,14 @@
     text-transform: capitalize;
 }
 
-.actions {
+.MedicalRequestList__actions {
     display: flex;
     justify-content: flex-end;
     align-items: center;
     gap: 0.6rem;
 }
 
-.actionBtn {
+.MedicalRequestList__actionBtn {
     border: none !important;
     border-radius: 6px !important;
     padding: 0.35rem 0.5rem !important;
@@ -258,75 +258,75 @@
     transition: all 0.15s ease-in-out !important;
 }
 
-.actionBtn:hover {
+.MedicalRequestList__actionBtn:hover {
     transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px rgb(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
 }
 
-.actionBtnPay {
-    background-color: #15803d !important;
-    color: #fff !important;
+.MedicalRequestList__actionBtnPay {
+    background-color: var(--green-700) !important;
+    color: var(--text-main) !important;
 }
 
-.actionBtnPay:hover {
-    background-color: #166534 !important;
+.MedicalRequestList__actionBtnPay:hover {
+    background-color: var(--green-800) !important;
 }
 
-.actionBtnBonify {
+.MedicalRequestList__actionBtnBonify {
     background-color: #0284c7 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
-.actionBtnBonify:hover {
-    background-color: #0369a1 !important;
+.MedicalRequestList__actionBtnBonify:hover {
+    background-color: var(--sky-700) !important;
 }
 
-.actionBtnDone {
+.MedicalRequestList__actionBtnDone {
     background-color: #16a34a !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
-.actionBtnDone:hover {
-    background-color: #15803d !important;
+.MedicalRequestList__actionBtnDone:hover {
+    background-color: var(--green-700) !important;
 }
 
-.actionBtnReject {
+.MedicalRequestList__actionBtnReject {
     background-color: #dc2626 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
-.actionBtnReject:hover {
-    background-color: #b91c1c !important;
+.MedicalRequestList__actionBtnReject:hover {
+    background-color: var(--red-700) !important;
 }
 
-.actionBtnView {
+.MedicalRequestList__actionBtnView {
     background-color: #6366f1 !important;
-    color: #fff !important;
+    color: var(--text-main) !important;
 }
 
-.actionBtnView:hover {
-    background-color: #4f46e5 !important;
+.MedicalRequestList__actionBtnView:hover {
+    background-color: var(--indigo-600) !important;
 }
 
-.actionBtnEdit {
-    background-color: #334155 !important;
-    color: #fff !important;
+.MedicalRequestList__actionBtnEdit {
+    background-color: var(--dashboard-card-bg) !important;
+    color: var(--text-main) !important;
 }
 
-.actionBtnEdit:hover {
-    background-color: #1e293b !important;
+.MedicalRequestList__actionBtnEdit:hover {
+    background-color: var(--background-bg) !important;
 }
 
-.actionBtnDelete {
-    background-color: #b91c1c !important;
-    color: #fff !important;
+.MedicalRequestList__actionBtnDelete {
+    background-color: var(--red-700) !important;
+    color: var(--text-main) !important;
 }
 
-.actionBtnDelete:hover {
-    background-color: #991b1b !important;
+.MedicalRequestList__actionBtnDelete:hover {
+    background-color: var(--red-800) !important;
 }
 
-.empty {
+.MedicalRequestList__empty {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -338,6 +338,6 @@
     font-weight: 500;
 }
 
-.emptyIcon {
+.MedicalRequestList__emptyIcon {
     opacity: 0.2;
 }

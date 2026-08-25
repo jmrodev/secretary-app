@@ -1,7 +1,8 @@
 import React from 'react';
-import AutoTextarea from '@/components/atoms/AutoTextarea';
+import { AutoTextarea } from '@/components/atoms/AutoTextarea';
 import { Button } from '@/components/atoms/Button';
-import ConfigField from '@/features/config/components/ui/ConfigField';
+import { ConfigField } from '@/features/config/components/ui/ConfigField';
+import sharedStyles from '@/styles/shared.module.css';
 import styles from './MessageTemplateEditor.module.css';
 
 /**
@@ -29,7 +30,7 @@ const getFriendlyVarLabel = (variable, t) => {
 
 const EMPTY_ARRAY = [];
 
-const MessageTemplateEditor = ({
+export const MessageTemplateEditor = ({
     id,
     label,
     value,
@@ -45,26 +46,26 @@ const MessageTemplateEditor = ({
     t
 }) => {
     return (
-        <div className={`${styles.root} animate-fade-in`}>
-            <label className={`${styles.label}`} htmlFor={id}>{label}</label>
+        <div className={`${styles.MessageTemplateEditor__root} ${sharedStyles.AnimateFadeIn}`}>
+            <label className={`${styles.MessageTemplateEditor__label}`} htmlFor={id}>{label}</label>
 
             <AutoTextarea
                 id={id}
-                className={`${styles.textarea}`}
+                className={`${styles.MessageTemplateEditor__textarea}`}
                 placeholder={placeholder}
                 value={value || ''}
                 onChange={(e) => updateSetting(settingKey, e.target.value)}
                 disabled={disabled}
             />
 
-            <div className={`${styles.variables}`}>
-                <p className={`${styles.variablesLabel}`}>{t('available_variables')}</p>
-                <div className={`${styles.buttons}`}>
+            <div className={`${styles.MessageTemplateEditor__variables}`}>
+                <p className={`${styles.MessageTemplateEditor__variablesLabel}`}>{t('available_variables')}</p>
+                <div className={`${styles.MessageTemplateEditor__buttons}`}>
                     {variables.map(v => (
                         <Button
                             key={v}
                             type="button"
-                            className={`${styles.variableBtn}`}
+                            className={`${styles.MessageTemplateEditor__variableBtn}`}
                             onClick={() => insertVariable(id, v, settingKey)}
                             title={t('insert_variable_title').replace('{variable}', v)}
                             disabled={disabled}
@@ -77,11 +78,11 @@ const MessageTemplateEditor = ({
             </div>
 
             {(metaTemplateName !== undefined) && (
-                <div className={`${styles.metaGrid}`}>
+                <div className={`${styles.MessageTemplateEditor__metaGrid}`}>
                     <ConfigField
                         label={t('meta_template_name')}
                         type="text"
-                        placeholder="ej: reminder_template"
+                        placeholder={t('meta_template_name_placeholder') || "ej: reminder_template"}
                         value={metaTemplateName || ''}
                         onChange={(e) => updateSetting(
                             settingKey === 'appointment_reminder_template'
@@ -110,10 +111,9 @@ const MessageTemplateEditor = ({
             )}
 
             {description && (
-                <span className={`${styles.hint}`}>{description}</span>
+                <span className={`${styles.MessageTemplateEditor__hint}`}>{description}</span>
             )}
         </div>
     );
 };
 
-export default MessageTemplateEditor;

@@ -1,9 +1,9 @@
 import React from 'react';
 import { getPaymentMethods } from '@/constants/transactionOptions';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
-import CurrencyInput from '@/components/atoms/CurrencyInput';
-import Select from '@/components/atoms/Select';
+import { Icon } from '@/components/atoms/Icon';
+import { CurrencyInput } from '@/components/atoms/CurrencyInput';
+import { Select } from '@/components/atoms/Select';
 import styles from '../modals/TransactionModal.module.css';
 
 export const TransactionPaymentsSection = ({ 
@@ -38,7 +38,7 @@ export const TransactionPaymentsSection = ({
                 {/* Block 2: Payment methods and amounts */}
                 <div className={`${styles.paymentsContainer}`}>
                     <div className={`${styles.paymentMethodsHeader}`}>
-                        <label className={`${styles.paymentMethodsTitle}`}>{t('payment_methods')}</label>
+                        <span className={`${styles.paymentMethodsTitle}`}>{t('payment_methods')}</span>
                         <Button 
                             variant="ghost" 
                             size="sm-compact" 
@@ -50,7 +50,7 @@ export const TransactionPaymentsSection = ({
                     </div>
 
                     {payments.map((payment, index) => (
-                        <div key={payment._tmpId || index} className={`${styles.paymentRow}`}>
+                        <div key={payment._tmpId || `pay-${payment.amount}-${payment.method}`} className={`${styles.paymentRow}`}>
                             <div className={`${styles.paymentRowAmount}`}>
                                 <CurrencyInput
                                     placeholder={t('amount_label')} value={payment.amount}

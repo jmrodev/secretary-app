@@ -5,7 +5,7 @@ export const usePatientMedications = (patientId, setPatientMeds, setHistoryMeds)
         if (!patientId) return;
 
         import('@/api/axios').then(module => {
-            const api = module.default;
+            const { api } = module;
 
             // Fetch habitual meds
             api.get(`/medical/patients/${patientId}/medications`)

@@ -1,5 +1,5 @@
 import React from 'react';
-import MedicationTag from '@/components/atoms/MedicationTag';
+import { MedicationTag } from '@/components/atoms/MedicationTag';
 import styles from './MedicationList.module.css';
 
 /**
@@ -9,7 +9,7 @@ import styles from './MedicationList.module.css';
  */
 const EMPTY_ARRAY = [];
 
-const MedicationList = ({
+export const MedicationList = ({
     medications = EMPTY_ARRAY,
     onRemove,
     className = ''
@@ -19,11 +19,11 @@ const MedicationList = ({
     }
 
     return (
-        <div className={`${styles.root} ${className} animate-fade-in`}>
-            <div className={`${styles.items}`}>
+        <div className={`${styles.MedicationList__root} ${className} animate-fade-in`}>
+            <div className={`${styles.MedicationList__items}`}>
                 {medications.map((med, index) => (
                     <MedicationTag
-                        key={med.id || med.medication_id || `med-${index}`}
+                        key={med.id || med.medication_id || `med-${med.name || med.full_label || med.medication_name || String(med)}`}
                         label={med.name || med.full_label || med.medication_name || med}
                         onRemove={() => onRemove(index)}
                     />
@@ -33,4 +33,3 @@ const MedicationList = ({
     );
 };
 
-export default MedicationList;

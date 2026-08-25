@@ -1,7 +1,7 @@
-.root {
+.Badge__root {
     /* --- Local Component Tokens --- */
-    --badge-bg: var(--gray-800);
-    --badge-color: var(--gray-300);
+    --badge-bg: var(--card-surface-bg);
+    --badge-color: var(--text-muted);
 
     /* ------------------------------ */
 
@@ -20,72 +20,72 @@
     text-transform: uppercase;
 }
 
-.interactive {
+.Badge__root--interactive {
     cursor: pointer;
     transition: opacity 0.2s ease;
 }
 
-.interactive:hover {
+.Badge__root--interactive:hover {
     opacity: 0.8;
 }
 
-.sm {
+.Badge__root--sm {
     padding: 0.125rem 0.625rem;
     font-size: 0.6875rem;
 }
 
 /* Variants - Soft Theme Adaptive */
-.blue {
+.Badge__root--blue {
     --badge-bg: rgb(2, 132, 199, 0.12);
     --badge-color: #0284c7;
 
     border: 1px solid rgb(2, 132, 199, 0.25);
 }
 
-.green,
-.success,
-.completed {
+.Badge__root--green,
+.Badge__root--success,
+.Badge__root--completed {
     --badge-bg: rgb(34, 197, 94, 0.12);
     --badge-color: #16a34a;
 
     border: 1px solid rgb(34, 197, 94, 0.25);
 }
 
-.red,
-.danger,
-.rejected {
+.Badge__root--red,
+.Badge__root--danger,
+.Badge__root--rejected {
     --badge-bg: rgb(239, 68, 68, 0.12);
     --badge-color: #dc2626;
 
     border: 1px solid rgb(239, 68, 68, 0.25);
 }
 
-.amber,
-.warning,
-.pending {
+.Badge__root--amber,
+.Badge__root--warning,
+.Badge__root--pending {
     --badge-bg: rgb(245, 158, 11, 0.12);
     --badge-color: #d97706;
 
     border: 1px solid rgb(245, 158, 11, 0.25);
 }
 
-.purple,
-.consult {
+.Badge__root--purple,
+.Badge__root--consult {
     --badge-bg: rgb(168, 85, 247, 0.12);
     --badge-color: #9333ea;
 
     border: 1px solid rgb(168, 85, 247, 0.25);
 }
 
-.accent {
+.Badge__root--accent {
     --badge-bg: var(--primary-color);
-    --badge-color: #fff;
+    --badge-color: var(--text-main);
 
     box-shadow: var(--shadow-sm);
 }
 
 /* Notification Badge (Counter) */
-.notification {
+.Badge__notification {
     position: absolute;
     display: flex;
     align-items: center;
@@ -103,22 +103,22 @@
 }
 
 /* Notification Badge Positions */
-.notification.topRight {
+.Badge__notification--topRight {
     top: -0.25rem;
     right: -0.25rem;
 }
 
-.notification.topLeft {
+.Badge__notification--topLeft {
     top: -0.25rem;
     left: -0.25rem;
 }
 
-.notification.bottomRight {
+.Badge__notification--bottomRight {
     bottom: -0.25rem;
     right: -0.25rem;
 }
 
-.notification.bottomLeft {
+.Badge__notification--bottomLeft {
     bottom: -0.25rem;
     left: -0.25rem;
 }

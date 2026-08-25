@@ -1,36 +1,36 @@
 /* AuditLogManager Styles (BEM) */
 
-.auditLogManager {
+.AuditLogManager {
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-.header {
+.AuditLogManager__header {
     margin-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-color, #e2e8f0);
     padding-bottom: 1rem;
 }
 
-.headerTop {
+.AuditLogManager__headerTop {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.title {
+.AuditLogManager__title {
     font-size: 1.5rem;
     font-weight: 800;
-    color: var(--slate-800, #1e293b);
+    color: var(--slate-800, var(--background-bg));
     margin: 0;
 }
 
-.subtitle {
+.AuditLogManager__subtitle {
     color: var(--slate-500, #64748b);
     margin: 0.25rem 0 0;
 }
 
-.countBadge {
+.AuditLogManager__countBadge {
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--slate-600, #475569);
@@ -40,76 +40,76 @@
     border: 1px solid var(--border-color, #e2e8f0);
 }
 
-.content {
+.AuditLogManager__content {
     flex: 1;
     overflow: hidden;
 }
 
-.scrollable {
+.AuditLogManager__scrollable {
     height: 100%;
     overflow-y: auto;
 }
 
 /* Detail Modal Styles */
-.root {
+.AuditLogManager__root {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
 
-.summaryGrid {
+.AuditLogManager__summaryGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    background-color: var(--slate-50, #f8fafc);
+    background-color: var(--slate-50, var(--text-main));
     padding: 1rem;
     border-radius: var(--radius-lg, 12px);
     border: 1px solid var(--slate-100, #f1f5f9);
 }
 
-.fieldLabel {
+.AuditLogManager__fieldLabel {
     font-size: 0.75rem;
-    color: var(--slate-400, #94a3b8);
+    color: var(--slate-400, var(--text-muted));
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 0.25rem;
     font-weight: 700;
 }
 
-.fieldValue {
-    color: var(--slate-800, #1e293b);
+.AuditLogManager__fieldValue {
+    color: var(--slate-800, var(--background-bg));
     font-weight: 700;
 }
 
-.fieldValueSecondary {
+.AuditLogManager__fieldValueSecondary {
     font-weight: 500;
 }
 
-.fieldValueTime {
+.AuditLogManager__fieldValueTime {
     font-size: 0.875rem;
     color: var(--slate-600, #475569);
 }
 
-.fieldValueMono {
+.AuditLogManager__fieldValueMono {
     font-family: var(--font-mono, monospace);
     font-size: 0.875rem;
     color: var(--slate-600, #475569);
 }
 
-.detailsSection {
+.AuditLogManager__detailsSection {
     border-top: 1px solid var(--border-color, #e2e8f0);
     padding-top: 1rem;
 }
 
-.detailsTitle {
+.AuditLogManager__detailsTitle {
     font-size: 0.875rem;
     font-weight: 700;
-    color: var(--slate-700, #334155);
+    color: var(--slate-700, var(--dashboard-card-bg));
     margin-bottom: 0.75rem;
 }
 
-.detailsBox {
-    background-color: var(--white, #fff);
+.AuditLogManager__detailsBox {
+    background-color: var(--white, var(--text-main));
     padding: 1rem;
     border-radius: var(--radius-md, 8px);
     border: 1px solid var(--slate-200, #e2e8f0);
@@ -118,33 +118,33 @@
     box-shadow: inset 0 2px 4px 0 rgb(0 0 0 / 5%);
 }
 
-.jsonContent {
+.AuditLogManager__jsonContent {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
 }
 
-.jsonItem {
+.AuditLogManager__jsonItem {
     font-size: 0.875rem;
 }
 
-.jsonKey {
+.AuditLogManager__jsonKey {
     font-weight: 600;
-    color: var(--slate-700, #334155);
+    color: var(--slate-700, var(--dashboard-card-bg));
 }
 
-.jsonValue {
+.AuditLogManager__jsonValue {
     color: var(--slate-600, #475569);
     word-break: break-all;
 }
 
-.textValue {
+.AuditLogManager__textValue {
     font-size: 0.875rem;
     color: var(--slate-600, #475569);
     word-break: break-all;
 }
 
-.textMuted {
-    color: var(--slate-400, #94a3b8);
+.AuditLogManager__textMuted {
+    color: var(--slate-400, var(--text-muted));
     font-style: italic;
 }

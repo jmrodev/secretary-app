@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Select from '@/components/atoms/Select';
-import Icon from '@/components/atoms/Icon';
-import FormGroup from '@/components/molecules/FormGroup';
+import { Input } from '@/components/atoms/Input';
+import { Select } from '@/components/atoms/Select';
+import { Icon } from '@/components/atoms/Icon';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import { getNow, toInputDate } from '@/utils/core/dateUtils';
 import styles from './HistoricalWithdrawalModal.module.css';
 
@@ -13,7 +13,7 @@ import styles from './HistoricalWithdrawalModal.module.css';
  * Allows administrative staff to record manual cash withdrawals from previous dates.
  * Refactored to follow BEM and Atomic Design standards.
  */
-const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) => {
+export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) => {
     const [state, dispatch] = React.useReducer((s, a) => ({ ...s, ...a }), {
         amount: '',
         date: '',
@@ -54,7 +54,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
             onClose={onClose}
             title={t('manual_withdrawal') || "Registro de Retiro Manual / Pasado"}
             footer={
-                <div className={`${styles.footer}`}>
+                <div className={`${styles.HistoricalWithdrawalModal__footer}`}>
                     <Button variant="secondary" onClick={onClose}>
                         {t('cancel')}
                     </Button>
@@ -64,7 +64,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                 </div>
             }
         >
-            <div className={`${styles.root}`}>
+            <div className={`${styles.HistoricalWithdrawalModal__root}`}>
                 <FormGroup label={t('doctor') || 'Doctor'}>
                     <Select
                         value={doctorId}
@@ -87,7 +87,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                     />
                 </FormGroup>
 
-                <div className={`${styles.grid}`}>
+                <div className={`${styles.HistoricalWithdrawalModal__grid}`}>
                     <FormGroup label={t('date') || 'Fecha'}>
                         <Input
                             type="date"
@@ -112,7 +112,7 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
                     <Input
                         value={description}
                         onChange={(e) => dispatch({ description: e.target.value })}
-                        placeholder="Ej: Cierre del día martes"
+                        placeholder={t('historical_withdrawal_desc_placeholder') || 'Ej: Cierre del día martes'}
                         className="historical-withdrawal-modal__input"
                     />
                 </FormGroup>
@@ -121,4 +121,3 @@ const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm, t }) =
     );
 };
 
-export default HistoricalWithdrawalModal;

@@ -3,7 +3,7 @@ import { formatDate } from '@/utils/core/dateUtils';
 import { formatCurrency } from '@/utils/core/format';
 import styles from './MedicalReportTable.module.css';
 
-const CertificateReportTable = ({ data, t }) => {
+export const CertificateReportTable = ({ data, t }) => {
     const list = Array.isArray(data?.certificates) ? data.certificates : [];
 
     if (!list || list.length === 0) {
@@ -145,4 +145,4 @@ const CertificateReportTable = ({ data, t }) => {
     );
 };
 
-export default CertificateReportTable;
+

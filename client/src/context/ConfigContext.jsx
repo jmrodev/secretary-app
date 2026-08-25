@@ -1,9 +1,9 @@
 import { createContext, use } from 'react';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/AuthContext';
 import { useConfigLogic } from '@/context/useConfigLogic';
 
 const defaultContextValue = {
-    settings: { enable_office_rentals: 'true' },
+    settings: { enable_office_rentals: 'false' },
     loading: true,
     updateSetting: () => {},
     refreshSettings: () => {},

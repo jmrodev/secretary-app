@@ -1,7 +1,7 @@
 import React from 'react';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
 import { Button } from '@/components/atoms/Button';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import styles from './MedicationEditor.module.css';
 
 /**
@@ -9,7 +9,7 @@ import styles from './MedicationEditor.module.css';
  * Interactive form to add and edit medications in a list (e.g. for a prescription).
  * Part of the prescription drafting workflow in medical_documents.
  */
-const MedicationEditor = ({
+export const MedicationEditor = ({
     meds,
     onMedChange,
     onRemoveMed,
@@ -18,13 +18,13 @@ const MedicationEditor = ({
     onAddMed,
     t
 }) => {
-    const baseClass = styles.root;
+    const baseClass = styles.MedicationEditor__root;
 
     return (
         <div className={`${baseClass} animate-fade-in`}>
             <div className={`${baseClass}__list`}>
                 {meds.map((med, idx) => (
-                    <div key={med.id || `med-${idx}`} className={`${baseClass}__row`}>
+                    <div key={med.id || `med-${med.name}-${med.dose || ''}`} className={`${baseClass}__row`}>
                         <div className={`${baseClass}__inputs`}>
                             <Input
                                 size="sm"
@@ -108,4 +108,3 @@ const MedicationEditor = ({
     );
 };
 
-export default MedicationEditor;

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Modal from '@/components/molecules/Modal';
-import TabButton from '@/components/atoms/TabButton';
+import { Modal } from '@/components/molecules/Modal';
+import { TabButton } from '@/components/atoms/TabButton';
 import { useLanguage } from '@/hooks/useLanguage';
 import { usePatientHistoryController } from '@/features/patients/hooks/usePatientHistoryController';
-import Icon from '@/components/atoms/Icon';
+import { Icon } from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
 import styles from './PatientHistoryModal.module.css';
 
@@ -14,12 +14,12 @@ import styles from './PatientHistoryModal.module.css';
 const DateTimeDisplay = ({ date }) => formatDate(date, { time: true });
 const SimpleDateDisplay = ({ date }) => formatDate(date);
 
-const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
+const PatientHistoryModalBase = ({ isOpen, onClose, patientId, patientName }) => {
     const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState('appointments');
     const { history, loading } = usePatientHistoryController(patientId, isOpen);
 
-    const baseClass = styles.root;
+    const baseClass = styles.PatientHistoryModal__root;
 
     return (
         <Modal
@@ -197,8 +197,8 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
                                                         <span><SimpleDateDisplay date={f.created_at} /></span>
                                                     </div>
                                                     {f.description && <div className={`${baseClass}__record-text`}>{f.description}</div>}
-                                                    <div style={{ marginTop: '0.5rem' }}>
-                                                        <a href={f.file_url} target="_blank" rel="noreferrer" style={{ fontSize: '0.85rem', color: 'var(--primary-color)', textDecoration: 'underline' }}>
+                                                    <div className={`${styles.PatientHistoryModal__fileLinkWrap}`}>
+                                                        <a href={f.file_url} target="_blank" rel="noreferrer" className={`${styles.PatientHistoryModal__fileLink}`}>
                                                             {t('view') || 'Ver / Descargar'} &rarr;
                                                         </a>
                                                     </div>
@@ -216,4 +216,4 @@ const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     );
 };
 
-export default React.memo(PatientHistoryModal);
+export const PatientHistoryModal = React.memo(PatientHistoryModalBase);

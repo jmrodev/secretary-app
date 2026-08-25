@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import api from '@/api/axios';
+import { api } from '@/api/axios';
 
 /**
  * Hook that contains specific logic for appointment lifecycle actions (reschedule, cancel, delete, status).
@@ -24,81 +24,90 @@ export const useAppointmentActions = ({
                 fetchAppointments();
             }
             return result;
-        } catch {
+        } catch (err) {
+            console.error('Reschedule failed:', err);
             showMessage(t('reschedule_error'), 'error');
             return { success: false };
         }
     }, [rescheduleAppointment, showMessage, t, fetchAppointments]);
 
     const handleCancel = useCallback(async (appt) => {
-        const reason = await prompt(t('cancellation_reason_prompt') || "Por favor, ingrese el motivo de la cancelación:");
+        const reason = await prompt(t('cancellation_reason_prompt'));
         if (!reason || reason.trim() === '') {
-            if (reason !== null) showMessage(t('reason_required') || "El motivo de la cancelación es obligatorio.", 'warning');
+            if (reason !== null) showMessage(t('reason_required'), 'warning');
             return;
         }
-        if (!await confirm(t('confirm_cancel') || "¿Está seguro de que desea cancelar este turno?")) return;
+        if (!await confirm(t('confirm_cancel'))) return;
         try {
             await updateStatus(appt.id, 'cancelled', reason);
-            showMessage(t('cancel_success') || "Turno cancelado exitosamente.", 'success');
+            showMessage(t('cancel_success'), 'success');
             fetchAppointments();
-        } catch {
-            showMessage(t('cancel_error') || "Error al intentar cancelar el turno.", 'error');
+        } catch (err) {
+            console.error('Cancel failed:', err);
+            showMessage(t('cancel_error'), 'error');
         }
     }, [confirm, prompt, updateStatus, showMessage, t, fetchAppointments]);
 
     const handleDelete = useCallback(async (appt, adminPassword = null) => {
-        if (!adminPassword && !await confirm(t('confirm_delete_appointment') || t('confirm_delete') || "¿Está seguro de que desea eliminar este turno permanentemente?")) return;
+        if (!adminPassword && !await confirm(t('confirm_delete_appointment') || t('confirm_delete'))) return;
         try {
             const result = await deleteAppointment(appt.id, { adminPassword });
             if (result?.success) {
-                showMessage(t('appointment_delete_success') || "Turno eliminado exitosamente.", 'success');
+                showMessage(t('appointment_delete_success'), 'success');
                 fetchAppointments();
             }
             return result;
         } catch (error) {
+            console.error('Failed to delete appointment:', error);
             if (error.response?.data?.type === 'AUTH_REQUIRED') return { type: 'AUTH_REQUIRED' };
-            showMessage(t('appointment_delete_error') || "Error al intentar eliminar el turno.", 'error');
+            showMessage(t('appointment_delete_error'), 'error');
         }
     }, [confirm, deleteAppointment, showMessage, t, fetchAppointments]);
 
     const handleStatusUpdate = useCallback(async (apptId, newStatus) => {
         let reason = null;
         if (newStatus === 'cancelled') {
-            reason = await prompt(t('cancellation_reason_prompt') || "Por favor, ingrese el motivo de la cancelación:");
+            reason = await prompt(t('cancellation_reason_prompt'));
             if (reason === null) return;
         }
         try {
             await updateStatus(apptId, newStatus, reason);
-            showMessage(t('status_update_success') || "Estado del turno actualizado exitosamente.", 'success');
+            showMessage(t('status_update_success'), 'success');
             fetchAppointments();
-        } catch {
-            showMessage(t('status_update_error') || "Error al intentar actualizar el estado del turno.", 'error');
+        } catch (err) {
+            console.error('Status update failed:', err);
+            showMessage(t('status_update_error'), 'error');
         }
     }, [updateStatus, showMessage, t, fetchAppointments, prompt]);
 
     const handleTypeUpdate = useCallback(async (apptId, newType) => {
         try {
             await updateAppointment(apptId, { type: newType });
-            showMessage(t('type_update_success') || "Tipo de turno actualizado exitosamente.", 'success');
-        } catch {
-            showMessage(t('type_update_error') || "Error al intentar actualizar el tipo de turno.", 'error');
+            showMessage(t('type_update_success'), 'success');
+        } catch (err) {
+            console.error('Type update failed:', err);
+            showMessage(t('type_update_error'), 'error');
         }
     }, [updateAppointment, showMessage, t]);
 
     const handleBonify = useCallback(async (appt) => {
-        if (!await confirm(t('confirm_bonify') || "¿Seguro que desea marcar como bonificado? Esto cancelará deudas pendientes.")) return;
+        if (!await confirm(t('confirm_bonify'))) return;
         try {
             await updateAppointment(appt.id, { bonified: true });
-            showMessage(t('bonify_success') || "Turno bonificado exitosamente.", 'success');
+            showMessage(t('bonify_success'), 'success');
             fetchAppointments();
             try {
                 const updated = await api.get(`/appointments/${appt.id}`);
                 if (updated?.data?.data && setActionModal) {
                     setActionModal(prev => (prev.open ? { ...prev, appt: updated.data.data } : prev));
                 }
-            } catch (_) {}
-        } catch {
-            showMessage(t('bonify_error') || "Error al intentar bonificar el turno.", 'error');
+            } catch (refreshErr) {
+                // Best-effort refresh of the modal's appointment; ignore failures.
+                console.error('Failed to refresh appointment modal after bonify:', refreshErr);
+            }
+        } catch (err) {
+            console.error('Bonify failed:', err);
+            showMessage(t('bonify_error'), 'error');
         }
     }, [confirm, updateAppointment, showMessage, t, fetchAppointments, setActionModal]);
 

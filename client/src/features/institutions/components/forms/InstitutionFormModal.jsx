@@ -1,8 +1,8 @@
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
-import InstitutionForm from '@/features/institutions/components/forms/InstitutionForm';
+import { Modal } from '@/components/molecules/Modal';
+import { InstitutionForm } from '@/features/institutions/components/forms/InstitutionForm';
 
-const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, isEditing, t }) => {
+export const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, isEditing, t }) => {
     return (
         <Modal
             isOpen={isOpen}
@@ -20,4 +20,4 @@ const InstitutionFormModal = ({ isOpen, onClose, onSubmit, formData, onChange, i
     );
 };
 
-export default InstitutionFormModal;
+

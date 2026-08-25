@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import Badge from './Badge';
+import { Badge } from './Badge';
 
 describe('Badge Atom', () => {
     it('renders text badge content', () => {

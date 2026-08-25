@@ -4,30 +4,30 @@ import { usePatientsPageController } from '@/features/patients/hooks/usePatients
 import { usePermissions } from '@/hooks/usePermissions';
 
 // Atoms (Shared)
-import MainLayout from '@/components/templates/MainLayout';
+import { MainLayout } from '@/components/templates/MainLayout';
 import { Button } from '@/components/atoms/Button';
-import Loading from '@/components/atoms/Loading';
-import Icon from '@/components/atoms/Icon';
+import { Loading } from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
 
 // Molecules (Shared/Global)
-import QRCodeModal from '@/features/patients/components/modals/QRCodeModal';
-import Pagination from '@/components/atoms/Pagination';
+import { QRCodeModal } from '@/features/patients/components/modals/QRCodeModal';
+import { Pagination } from '@/components/atoms/Pagination';
 
-import FeatureToolbar from '@/components/organisms/FeatureToolbar';
-import SearchBar from '@/components/ui/SearchBar';
+import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
+import { SearchBar } from '@/components/ui/SearchBar';
 
 // Feature Components
-import PatientList from './components/views/PatientList';
-import PatientRecycleBin from './components/views/PatientRecycleBin';
-import PatientDetailsView from './components/views/PatientDetailsView';
-import PatientManagerModal from './components/modals/PatientManagerModal';
-import DebtPaymentModal from './components/modals/DebtPaymentModal';
+import { PatientList } from './components/views/PatientList';
+import { PatientRecycleBin } from './components/views/PatientRecycleBin';
+import { PatientDetailsView } from './components/views/PatientDetailsView';
+import { PatientManagerModal } from './components/modals/PatientManagerModal';
+import { DebtPaymentModal } from './components/modals/DebtPaymentModal';
 
 /**
  * PatientsPage (Orchestrator).
  * Coordinates patient listing, search, details, and recycle bin.
  */
-const PatientsPage = () => {
+export const PatientsPage = () => {
     const { isStaff, user: authUser } = usePermissions();
     const controller = usePatientsPageController();
     const {
@@ -84,7 +84,7 @@ const PatientsPage = () => {
 
     return (
         <MainLayout wide flush hideSearch title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
-            <div className="patients-page-orchestrator layout-content-area animate-fade-in">
+            <div>
                 {(selectedPatientId && patientDetails) ? (
                     // --- DETAILS VIEW ---
                     <PatientDetailsView
@@ -104,7 +104,7 @@ const PatientsPage = () => {
                     // --- LIST VIEW ---
                     <div className="patients-page__list-view">
                         <FeatureToolbar
-                            className="patients-page-orchestrator__toolbar"
+                            className="__toolbar"
                             tabs={[
                                 { id: 'list', label: t('active_list'), icon: 'groups' },
                                 { 
@@ -152,7 +152,7 @@ const PatientsPage = () => {
                             }
                         />
 
-                        <main className="patients-page-orchestrator__main">
+                        <section >
                             {activeTab === 'list' ? (
                                 <div className="patients-page__table-wrapper">
                                     <div className="patients-page__pagination-top" style={{ marginBottom: '0.75rem' }}>
@@ -195,7 +195,7 @@ const PatientsPage = () => {
                                     onRestore={handleRestorePatient}
                                 />
                             )}
-                        </main>
+                        </section>
                     </div>
                 )}
             </div>
@@ -233,4 +233,3 @@ const PatientsPage = () => {
     );
 };
 
-export default PatientsPage;

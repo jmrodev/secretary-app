@@ -1,24 +1,27 @@
 import React from 'react';
 import { useAppointmentsPageController } from './hooks/useAppointmentsPageController';
-import MainLayout from '@/components/templates/MainLayout';
-import Loading from '@/components/atoms/Loading';
-import Icon from '@/components/atoms/Icon';
+import { MainLayout } from '@/components/templates/MainLayout';
+import { Loading } from '@/components/atoms/Loading';
+import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 
 // Feature Components
-import CalendarSection from './components/calendar/CalendarSection';
-import ScheduleSection from './components/schedule/ScheduleSection';
-import RescheduleBanner from './components/ui/RescheduleBanner';
-import PatientHistoryView from './components/views/PatientHistoryView';
+import { CalendarSection } from './components/calendar/CalendarSection';
+import { ScheduleSection } from './components/schedule/ScheduleSection';
+import { RescheduleBanner } from './components/ui/RescheduleBanner';
+import { PatientHistoryView } from './components/views/PatientHistoryView';
 import { AppointmentsModals } from './components/sections/AppointmentsModals';
-import SlotExplorerDropdown from './components/ui/SlotExplorerDropdown';
+import { SlotExplorerDropdown } from './components/ui/SlotExplorerDropdown';
 
 // Shared/Domain Modals (Injectable slots)
-import { PrescriptionModal, MedicationInput } from '@/features/medical_documents';
-import { PatientHistoryModal, PatientManagerModal, PatientSearchSelect } from '@/features/patients';
-import WhatsAppModal from '@/features/chat/components/ui/WhatsAppModal';
-import AdminAuthModal from '@/features/auth/components/modals/AdminAuthModal';
-import { TransactionModal } from '@/features/finances';
+import { PrescriptionModal } from '@/features/medical_documents/components/modals/PrescriptionModal';
+import { MedicationInput } from '@/features/medical_documents/components/forms/MedicationInput';
+import { PatientHistoryModal } from '@/features/patients/components/modals/PatientHistoryModal';
+import { PatientManagerModal } from '@/features/patients/components/modals/PatientManagerModal';
+import { PatientSearchSelect } from '@/features/patients/components/ui/PatientSearchSelect';
+import { WhatsAppModal } from '@/features/chat/components/ui/WhatsAppModal';
+import { AdminAuthModal } from '@/features/auth/components/modals/AdminAuthModal';
+import { TransactionModal } from '@/features/finances/components/modals/TransactionModal';
 
 import styles from './AppointmentsPage.module.css';
 
@@ -26,7 +29,7 @@ import styles from './AppointmentsPage.module.css';
  * AppointmentsPage (ECC-Pattern Orchestrator).
  * Main page for managing the clinic's agenda and appointments.
  */
-const AppointmentsPage = () => {
+export const AppointmentsPage = () => {
     const controller = useAppointmentsPageController();
     const {
         t, user, loading, agendaLoading, showOutOfHours,
@@ -54,7 +57,7 @@ const AppointmentsPage = () => {
             wide flush 
             title={t('appointments_title')} 
             actionSlot={
-                <div style={{ position: 'relative' }}>
+                <div className={`${styles.AppointmentsPage__actionSlot}`}>
                     <Button 
                         variant="accent" 
                         size="sm" 
@@ -65,7 +68,7 @@ const AppointmentsPage = () => {
                         icon={<Icon name={showNextSlotModal ? "close" : "bolt"} size="1rem" />}
                         active={showNextSlotModal}
                     >
-                        {showNextSlotModal ? t('close') : (t('find_next_free') || 'Próximo Libre')}
+                        {t('find_next_free') || 'Próximo Libre'}
                     </Button>
                     
                     {/* ECC: Integrated Slot Explorer (No Modal) */}
@@ -91,12 +94,12 @@ const AppointmentsPage = () => {
                 </div>
             }
         >
-            <div className={`${styles.root} layout-content-area animate-fade-in`}>
+            <div className={`${styles.AppointmentsPage__root}  `}>
                 <RescheduleBanner rescheduleAppt={rescheduleAppt} onExit={exitRescheduleMode} t={t} />
 
-                <main className={`${styles.main}`}>
+                <section className={`${styles.AppointmentsPage__main}`}>
                     {searchPatientId || searchTerm ? (
-                        <section className={`${styles.panelSearch} animate-fade-in`}>
+                        <section className={`${styles.AppointmentsPage__panelSearch} `}>
                             <PatientHistoryView
                                 patientAppointments={searchPatientId ? patientAppointments : appointments} 
                                 loading={searchLoading}
@@ -107,8 +110,8 @@ const AppointmentsPage = () => {
                             />
                         </section>
                     ) : (
-                        <div className={`${styles.mainGrid}`}>
-                            <section className={`${styles.panelCalendar}`}>
+                        <div className={`${styles.AppointmentsPage__mainGrid}`}>
+                            <section className={`${styles.AppointmentsPage__panelCalendar}`}>
                                 <CalendarSection
                                     selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
                                     appointments={filteredAppointments} calendarStats={calendarStats} holidays={holidays}
@@ -120,7 +123,7 @@ const AppointmentsPage = () => {
                                 />
                             </section>
 
-                            <section className={`${styles.panelAgenda}`}>
+                            <section className={`${styles.AppointmentsPage__panelAgenda}`}>
                                 <ScheduleSection
                                     selectedDate={selectedDate} onDateSelect={handlers.handleDateSelect}
                                     selectedDoctor={currentDoctor} viewDoctorId={viewDoctorId} appointments={appointments}
@@ -132,7 +135,7 @@ const AppointmentsPage = () => {
                             </section>
                         </div>
                     )}
-                </main>
+                </section>
             </div>
 
             {/* --- Modals --- */}
@@ -212,4 +215,3 @@ const AppointmentsPage = () => {
     );
 };
 
-export default AppointmentsPage;

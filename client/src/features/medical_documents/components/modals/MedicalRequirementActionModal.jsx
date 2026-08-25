@@ -1,9 +1,10 @@
 import React from 'react';
-import Modal from '@/components/molecules/Modal';
+import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
+import { Input } from '@/components/atoms/Input';
+import styles from './MedicalRequirementActionModal.module.css';
 
-const MedicalRequirementActionModal = ({
+export const MedicalRequirementActionModal = ({
     actionModal,
     onClose,
     t,
@@ -32,11 +33,11 @@ const MedicalRequirementActionModal = ({
                 </>
             }
         >
-            <div className="medical-requirement-manager__form-group">
-                <label className="medical-requirement-manager__form-label">
+            <div className={styles.MedicalRequirementActionModal__formGroup}>
+                <label className={styles.MedicalRequirementActionModal__formLabel}>
                     {actionModal.type === 'consult' ? t('your_question') :
                         (actionModal.type === 'reply' ? t('your_answer') : t('doctor_note'))}
-                    {['rejected', 'consult', 'reply'].includes(actionModal.type) && <span className="text-danger">*</span>}
+                    {['rejected', 'consult', 'reply'].includes(actionModal.type) && <span className={styles.MedicalRequirementActionModal__requiredStar}>*</span>}
                 </label>
                 <Input
                     type="textarea"
@@ -49,4 +50,3 @@ const MedicalRequirementActionModal = ({
     );
 };
 
-export default MedicalRequirementActionModal;

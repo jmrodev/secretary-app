@@ -1,14 +1,14 @@
 
 /* PatientFinancialSidebar Styles (BEM) */
 
-.sidebar {
+.PatientFinancialSidebar__sidebar {
     display: flex;
     flex-direction: column;
     gap: 2rem;
 }
 
 /* Financial Card (Theme Adaptive) */
-.financialCard {
+.PatientFinancialSidebar__financialCard {
     background: var(--dashboard-card-bg);
     color: var(--text-main);
     text-align: center;
@@ -18,12 +18,12 @@
     overflow: hidden;
 }
 
-.financialHeader {
+.PatientFinancialSidebar__financialHeader {
     padding: 1.25rem;
     border-bottom: 1px solid var(--border-color);
 }
 
-.financialTitle {
+.PatientFinancialSidebar__financialTitle {
     font-size: 0.8rem;
     font-weight: 700;
     color: var(--text-muted);
@@ -34,34 +34,34 @@
     width: 100%;
 }
 
-.financialContent {
+.PatientFinancialSidebar__financialContent {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
 }
 
-.financialContentPaddedXl {
+.PatientFinancialSidebar__financialContentPaddedXl {
     padding: 2rem;
 }
 
-.financialAmount {
+.PatientFinancialSidebar__financialAmount {
     font-size: 3rem;
     font-weight: 900;
     letter-spacing: -0.05em;
     line-height: 1;
 }
 
-.financialAmountDebt {
+.PatientFinancialSidebar__financialAmountDebt {
     color: var(--red-400);
     text-shadow: 0 0 20px rgb(248 113 113 / 20%);
 }
 
-.financialAmountClear {
+.PatientFinancialSidebar__financialAmountClear {
     color: var(--green-400);
 }
 
-.payDebtBtn {
+.PatientFinancialSidebar__payDebtBtn {
     width: 100%;
     background-color: var(--red-500);
     border: none;
@@ -71,47 +71,47 @@
     transition: all 0.2s ease;
 }
 
-.payDebtBtn:hover {
+.PatientFinancialSidebar__payDebtBtn:hover {
     background-color: var(--red-600);
     transform: translateY(-2px);
     box-shadow: 0 10px 15px -3px rgb(0 0 0 / 40%);
 }
 
-.remindDebtBtn {
+.PatientFinancialSidebar__remindDebtBtn {
     width: 100%;
     font-weight: 700;
 }
 
 /* Tools Block (Reusable details-block structure) */
-.detailsBlockSidebar .header {
+.PatientFinancialSidebar__detailsBlockSidebar .PatientFinancialSidebar__header {
     padding: 1rem;
     border-bottom-width: 1px;
     background: transparent;
 }
 
-.detailsBlockSidebar .title {
+.PatientFinancialSidebar__detailsBlockSidebar .PatientFinancialSidebar__title {
     font-size: 0.75rem;
 }
 
-.detailsBlockTools .header {
+.PatientFinancialSidebar__detailsBlockTools .PatientFinancialSidebar__header {
     border-bottom-color: var(--green-500);
 }
 
-.toolsList {
+.PatientFinancialSidebar__toolsList {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
     padding: 1.5rem;
 }
 
-.toolBtn {
+.PatientFinancialSidebar__toolBtn {
     justify-content: flex-start;
     gap: 1rem;
     font-weight: 700;
     padding: 0.85rem 1.25rem;
 }
 
-.deleteBtn {
+.PatientFinancialSidebar__deleteBtn {
     margin-top: 1rem;
     color: var(--red-500);
     justify-content: flex-start;
@@ -121,7 +121,7 @@
     transition: all 0.2s ease;
 }
 
-.deleteBtn:hover {
+.PatientFinancialSidebar__deleteBtn:hover {
     opacity: 1;
     background-color: var(--red-50);
 }
