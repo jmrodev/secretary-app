@@ -8,6 +8,9 @@ jest.mock('../../repositories/appointments/appointmentRepository');
 jest.mock('../../repositories/communication/whatsappRepository');
 jest.mock('axios');
 
+const whatsappRetryQueue = require('./whatsappRetryQueue');
+const axios = require('axios');
+
 describe('whatsappService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -126,6 +129,66 @@ describe('whatsappService', () => {
                     message: 'Hola Carlos Ruiz, tu deuda es de $1500'
                 })
             );
+        });
+    });
+
+    describe('sendMessageDirect retry queue', () => {
+        beforeEach(() => {
+            process.env.WHATSAPP_QUEUE_BACKOFF_MS = '1';
+            process.env.WHATSAPP_QUEUE_MAX_ATTEMPTS = '3';
+            whatsappRetryQueue.clear();
+        });
+
+        it('enqueues and returns queued when bridge returns 401', async () => {
+            axios.post.mockRejectedValue({ response: { status: 401 } });
+
+            const result = await whatsappService.sendMessageDirect('1234567890', 'hi', 1);
+
+            expect(result.queued).toBe(true);
+            expect(whatsappRepository.createMessage).not.toHaveBeenCalledWith(1, 'outbound', 'hi', null, 'sent');
+        });
+
+        it('enqueues and returns queued when bridge returns 503', async () => {
+            axios.post.mockRejectedValue({ response: { status: 503 } });
+
+            const result = await whatsappService.sendMessageDirect('1234567890', 'hi', 1);
+
+            expect(result.queued).toBe(true);
+        });
+
+        it('throws and persists failed for non-retriable errors', async () => {
+            axios.post.mockRejectedValue({ response: { status: 500 } });
+
+            await expect(whatsappService.sendMessageDirect('1234567890', 'hi', 1))
+                .rejects.toThrow();
+            expect(whatsappRepository.createMessage).toHaveBeenCalledWith(1, 'outbound', 'hi', null, 'failed');
+        });
+
+        it('returns data and persists sent on 200', async () => {
+            axios.post.mockResolvedValue({ status: 200, data: { ok: true } });
+
+            const result = await whatsappService.sendMessageDirect('1234567890', 'hi', 1);
+
+            expect(result).toEqual({ ok: true });
+            expect(whatsappRepository.createMessage).toHaveBeenCalledWith(1, 'outbound', 'hi', null, 'sent');
+        });
+    });
+
+    describe('getBridgeHealth', () => {
+        it('reports authenticated when bridge reachable', async () => {
+            axios.get.mockResolvedValue({ data: { authenticated: true } });
+
+            const health = await whatsappService.getBridgeHealth();
+
+            expect(health).toEqual({ success: true, authenticated: true });
+        });
+
+        it('reports not authenticated when bridge unreachable', async () => {
+            axios.get.mockRejectedValue(new Error('conn refused'));
+
+            const health = await whatsappService.getBridgeHealth();
+
+            expect(health).toEqual({ success: false, authenticated: false });
         });
     });
 });

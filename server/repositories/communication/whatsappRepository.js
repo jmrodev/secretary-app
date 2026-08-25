@@ -43,15 +43,18 @@ class WhatsappRepository {
     }
 
     async getHistoryByPatient(patientId, phone = null, conn = this.pool) {
-        let cleanDigits = phone ? phone.toString().replace(/\D/g, '').slice(-8) : null;
-        
-        if (patientId) {
-            // Traer telefono del paciente para asegurar fusion completa
+        const initialDigits = phone ? phone.toString().replace(/\D/g, '').slice(-8) : null;
+        const patientDigits = patientId ? await (async () => {
             const patientRows = await conn.query('SELECT phone FROM patients WHERE id = ?', [patientId]);
             if (patientRows.length > 0 && patientRows[0].phone) {
                 const pDigits = patientRows[0].phone.toString().replace(/\D/g, '').slice(-8);
-                if (pDigits) cleanDigits = pDigits;
+                return pDigits || null;
             }
+            return null;
+        })() : null;
+        const cleanDigits = patientDigits || initialDigits;
+        
+        if (patientId) {
 
             if (cleanDigits) {
                 const query = `
@@ -86,7 +89,8 @@ class WhatsappRepository {
     }
 
     async getRecentConversations(doctorId = null, conn = this.pool) {
-        let query = `
+        const params = [];
+        const baseQuery = `
             SELECT 
                 wm.id,
                 wm.patient_id,
@@ -116,27 +120,30 @@ class WhatsappRepository {
             ) latest ON (
                 COALESCE(wm.patient_id, RIGHT(REPLACE(REPLACE(wm.sender_phone, '+', ''), ' ', ''), 8)) = latest.identifier
             ) AND wm.created_at = latest.max_date
-            LEFT JOIN patients p ON wm.patient_id = p.id
-            WHERE (wm.sender_phone IS NULL OR (
+            LEFT JOIN patients p ON wm.patient_id = p.id`;
+
+        const doctorJoin = doctorId ? ' LEFT JOIN patient_doctors pd ON p.id = pd.patient_id' : '';
+        const whereClause = doctorId
+            ? ` WHERE (wm.sender_phone IS NULL OR (
                 wm.sender_phone NOT LIKE '%status%' AND
                 wm.sender_phone NOT LIKE '%broadcast%' AND
                 wm.sender_phone NOT LIKE '%newsletter%' AND
                 wm.sender_phone NOT LIKE '%@g.us%' AND
                 wm.sender_phone NOT LIKE '120363%' AND
                 LENGTH(wm.sender_phone) <= 15
-            ))
-        `;
+            )) AND (pd.doctor_id = ? OR wm.patient_id IS NULL)`
+            : ` WHERE (wm.sender_phone IS NULL OR (
+                wm.sender_phone NOT LIKE '%status%' AND
+                wm.sender_phone NOT LIKE '%broadcast%' AND
+                wm.sender_phone NOT LIKE '%newsletter%' AND
+                wm.sender_phone NOT LIKE '%@g.us%' AND
+                wm.sender_phone NOT LIKE '120363%' AND
+                LENGTH(wm.sender_phone) <= 15
+            ))`;
 
-        const params = [];
-        if (doctorId) {
-            query += `
-                LEFT JOIN patient_doctors pd ON p.id = pd.patient_id
-                WHERE (pd.doctor_id = ? OR wm.patient_id IS NULL)
-            `;
-            params.push(doctorId);
-        }
+        if (doctorId) params.push(doctorId);
 
-        query += ` GROUP BY COALESCE(wm.patient_id, RIGHT(REPLACE(REPLACE(wm.sender_phone, '+', ''), ' ', ''), 8)) ORDER BY wm.created_at DESC`;
+        const query = `${baseQuery}${doctorJoin}${whereClause} GROUP BY COALESCE(wm.patient_id, RIGHT(REPLACE(REPLACE(wm.sender_phone, '+', ''), ' ', ''), 8)) ORDER BY wm.created_at DESC`;
         
         return await conn.query(query, params);
     }
@@ -160,7 +167,7 @@ class WhatsappRepository {
     }
 
     async deleteConversation(patientId, phone, conn = this.pool) {
-        let cleanDigits = phone ? phone.toString().replace(/\D/g, '').slice(-8) : null;
+        const cleanDigits = phone ? phone.toString().replace(/\D/g, '').slice(-8) : null;
         if (patientId) {
             await conn.query('DELETE FROM whatsapp_messages WHERE patient_id = ?', [patientId]);
         }
@@ -171,6 +178,23 @@ class WhatsappRepository {
             `, [`%${cleanDigits}%`]);
         }
         return true;
+    }
+
+    async getPatientsForBroadcast(filter = 'last_12_months', conn = this.pool) {
+        if (filter === 'all') {
+            return await conn.query(
+                `SELECT id, full_name, phone FROM patients
+                 WHERE phone IS NOT NULL AND phone != '' AND LENGTH(phone) >= 8`
+            );
+        }
+        return await conn.query(
+            `SELECT DISTINCT p.id, p.full_name, p.phone
+             FROM patients p
+             INNER JOIN appointments a ON a.patient_id = p.id
+             WHERE a.appointment_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+               AND p.phone IS NOT NULL AND p.phone != ''
+               AND LENGTH(p.phone) >= 8`
+        );
     }
 }
 

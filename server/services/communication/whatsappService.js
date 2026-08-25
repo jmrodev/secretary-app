@@ -2,6 +2,7 @@ const axios = require('axios');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
 const whatsappRepository = require('../../repositories/communication/whatsappRepository');
+const whatsappRetryQueue = require('./whatsappRetryQueue');
 const { formatDateDisplay, formatTimeDisplay } = require('../../utils/core/dateUtils');
 
 const getMetaCredentials = async () => {
@@ -56,11 +57,11 @@ const sendTemplateMessage = async (to, templateName, languageCode = 'es', compon
 
 const normalizePhoneForWhatsapp = (phone) => {
     if (!phone) return phone;
-    let cleaned = phone.toString().replace(/\D/g, '');
-    if (cleaned.startsWith('549')) {
-        cleaned = '54' + cleaned.slice(3);
+    const cleanedDigits = phone.toString().replace(/\D/g, '');
+    if (cleanedDigits.startsWith('549')) {
+        return '54' + cleanedDigits.slice(3);
     }
-    return cleaned;
+    return cleanedDigits;
 };
 
 /**
@@ -71,14 +72,14 @@ const normalizePhoneForWhatsapp = (phone) => {
 const sendMessageDirect = async (to, message, patientId = null) => {
     const formattedRecipient = normalizePhoneForWhatsapp(to);
     const bridgeUrl = process.env.WHATSAPP_BRIDGE_URL || 'http://127.0.0.1:8090/api/send';
-    
+
     try {
         console.log(`[WhatsApp Bridge] Sending to: ${formattedRecipient} (original: ${to}), URL: ${bridgeUrl}`);
         const response = await axios.post(bridgeUrl, {
             recipient: formattedRecipient,
             message: message
         });
-        
+
         if (patientId) {
             await whatsappRepository.createMessage(patientId, 'outbound', message, null, 'sent');
         } else {
@@ -88,8 +89,21 @@ const sendMessageDirect = async (to, message, patientId = null) => {
         console.log(`[WhatsApp Bridge] Response:`, response.data);
         return response.data;
     } catch (error) {
+        const status = error.response?.status;
+        const retriable = status === 401 || status === 503;
+
+        // Bridge is unauthenticated/unavailable: queue for retry instead of failing.
+        if (retriable) {
+            whatsappRetryQueue.enqueue({ to, message, patientId });
+            whatsappRetryQueue.flush().catch((flushErr) => {
+                console.error('[WhatsApp RetryQueue] Background flush error:', flushErr);
+            });
+            const detailMsg = error.response?.data || error.message || 'WhatsApp Bridge unavailable';
+            return { queued: true, error: detailMsg };
+        }
+
         console.error('Local WhatsApp Bridge Error:', error.response?.data || error.message);
-        
+
         // Save failed message to history for UI feedback
         try {
             if (patientId) {
@@ -103,6 +117,21 @@ const sendMessageDirect = async (to, message, patientId = null) => {
 
         const detailMsg = error.response?.data || error.message || 'WhatsApp Bridge error';
         throw new Error(`No se pudo enviar el mensaje por WhatsApp: ${detailMsg}`);
+    }
+};
+
+/**
+ * Get bridge liveness/health from Go service (/api/health).
+ * Always resolves; a reachable bridge reports its auth state.
+ */
+const getBridgeHealth = async () => {
+    try {
+        const bridgeBase = (process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status').replace('/api/status', '');
+        const response = await axios.get(`${bridgeBase}/api/health`, { timeout: 2000 });
+        return { success: true, authenticated: Boolean(response.data?.authenticated) };
+    } catch (error) {
+        console.error('[WhatsApp Service] getBridgeHealth failed:', error.response?.data || error.message);
+        return { success: false, authenticated: false };
     }
 };
 
@@ -132,7 +161,7 @@ const sendAutomatedReminders = async () => {
 
         for (const appt of appointments) {
             try {
-                let template = settings.whatsapp_template_reminder;
+                const template = settings.whatsapp_template_reminder;
 
                 if (!template?.trim()) {
                     throw new Error('Template missing or empty');
@@ -183,7 +212,8 @@ const getBridgeStatus = async () => {
         const bridgeUrl = process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status';
         const response = await axios.get(bridgeUrl, { timeout: 2000 });
         return response.data;
-    } catch (_) {
+    } catch (error) {
+        console.error('[WhatsApp Service] getBridgeStatus failed:', error.response?.data || error.message);
         return { status: 'offline', qr_code: '' };
     }
 };
@@ -216,7 +246,7 @@ const sendConfirmationMessage = async (appt) => {
         const settings = {};
         settingsRows.forEach(r => settings[r.setting_key] = r.setting_value);
 
-        let template = settings.whatsapp_template_confirmation;
+        const template = settings.whatsapp_template_confirmation;
 
         if (!template?.trim()) {
             throw new Error('Template missing or empty');
@@ -301,6 +331,7 @@ module.exports = {
     sendAutomatedReminders,
     sendDebtReminder,
     getBridgeStatus,
+    getBridgeHealth,
     logoutBridge,
     refreshBridge
 };

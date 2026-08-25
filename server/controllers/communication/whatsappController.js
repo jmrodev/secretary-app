@@ -5,7 +5,6 @@ const patientRepository = require('../../repositories/user/patientRepository');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 const bookingService = require('../../services/appointments/bookingService');
 const { ConflictError } = require('../../utils/core/errors');
-const defaultPool = require('../../db').pool;
 
 /**
  * ECC-Pattern: WhatsAppController
@@ -19,7 +18,7 @@ const sendMessage = async (req, res) => {
     try {
         const result = await whatsappService.sendTemplateMessage(to, templateName, languageCode, components);
         res.json({ success: true, data: result });
-    } catch (error) { res.status(500).json({ error: error.message }); }
+    } catch (error) { console.error('[WhatsApp sendMessage Error]:', error); res.status(500).json({ error: error.message }); }
 };
 
 const testConnection = async (req, res) => {
@@ -28,7 +27,7 @@ const testConnection = async (req, res) => {
     try {
         const result = await whatsappService.sendTestMessage(to);
         res.json({ success: true, message: 'Test message sent', data: result });
-    } catch (error) { res.status(500).json({ error: error.message }); }
+    } catch (error) { console.error('[WhatsApp testConnection Error]:', error); res.status(500).json({ error: error.message }); }
 };
 
 const broadcastMessage = async (req, res) => {
@@ -40,7 +39,7 @@ const broadcastMessage = async (req, res) => {
         try {
             const response = await whatsappService.sendTemplateMessage(contact.phone, templateName, languageCode, components);
             return { success: true, phone: contact.phone, messageId: response.messages?.[0]?.id };
-        } catch (error) { return { success: false, phone: contact.phone, error: error.message }; }
+        } catch (error) { console.error(`[Broadcast] Failed for ${contact.phone}:`, error.message); return { success: false, phone: contact.phone, error: error.message }; }
     });
 
     const settled = await Promise.all(promises);
@@ -53,15 +52,25 @@ const sendDirectMessage = async (req, res) => {
     if (!to || !message) return res.status(400).json({ error: 'Missing to or message' });
     try {
         const result = await whatsappService.sendMessageDirect(to, message, patientId);
+        if (result && result.queued) {
+            return res.status(202).json({ success: true, queued: true });
+        }
         res.json({ success: true, data: result });
-    } catch (error) { res.status(500).json({ error: error.message }); }
+    } catch (error) { console.error('[WhatsApp sendDirectMessage Error]:', error); res.status(500).json({ error: error.message }); }
 };
 
 const receiveWebhook = async (req, res) => {
     try {
+        // Bridge webhook is intentionally public for the local Go service (localhost-only).
+        // If WHATSAPP_BRIDGE_SECRET is configured, enforce it via X-Bridge-Secret header.
+        const bridgeSecret = process.env.WHATSAPP_BRIDGE_SECRET;
+        if (bridgeSecret && req.headers['x-bridge-secret'] !== bridgeSecret) {
+            console.warn('[WhatsApp Webhook] Unauthorized bridge request - missing or invalid X-Bridge-Secret');
+            return res.status(401).json({ error: 'Unauthorized bridge' });
+        }
         const { sender, message, isFromMe } = req.body;
         const phone = sender.split('@')[0];
-        let patientId = await whatsappRepository.findPatientByPhone(phone);
+        const patientId = await whatsappRepository.findPatientByPhone(phone);
         const direction = isFromMe ? 'outbound' : 'inbound';
 
         await whatsappRepository.createMessage(patientId, direction, message, null, 'delivered', patientId ? null : phone);
@@ -78,7 +87,7 @@ const getPatientHistory = async (req, res) => {
         const { patientId, phone } = req.body;
         const history = await whatsappRepository.getHistoryByPatient(patientId, phone);
         res.json({ success: true, data: history });
-    } catch (error) { res.status(500).json({ error: error.message }); }
+    } catch (error) { console.error('[WhatsApp getPatientHistory Error]:', error); res.status(500).json({ error: error.message }); }
 };
 
 
@@ -87,39 +96,32 @@ const getRecentConversations = async (req, res) => {
     try {
         const conversations = await whatsappRepository.getRecentConversations(req.query.doctor_id);
         res.json({ success: true, data: conversations });
-    } catch (error) { res.status(500).json({ error: error.message }); }
+    } catch (error) { console.error('[WhatsApp getRecentConversations Error]:', error); res.status(500).json({ error: error.message }); }
 };
 
 const getBridgeStatus = async (req, res) => {
     try {
         const status = await whatsappService.getBridgeStatus();
         res.json({ success: true, ...status });
-    } catch (error) { res.status(500).json({ error: error.message }); }
+    } catch (error) { console.error('[WhatsApp getBridgeStatus Error]:', error); res.status(500).json({ error: error.message }); }
+};
+
+const getBridgeHealth = async (req, res) => {
+    try {
+        const health = await whatsappService.getBridgeHealth();
+        res.json(health);
+    } catch (error) { console.error('[WhatsApp getBridgeHealth Error]:', error); res.status(500).json({ error: error.message }); }
 };
 
 const logoutBridge = async (req, res) => {
     try {
         await whatsappService.logoutBridge();
         res.json({ success: true, message: 'Logged out. Scan QR to reconnect.' });
-    } catch (error) { res.status(500).json({ error: error.message }); }
+    } catch (error) { console.error('[WhatsApp logoutBridge Error]:', error); res.status(500).json({ error: error.message }); }
 };
 
 const _getPatientsForBroadcast = async (filter) => {
-    if (filter === 'all') {
-        return await defaultPool.query(
-            `SELECT id, full_name, phone FROM patients
-             WHERE phone IS NOT NULL AND phone != '' AND LENGTH(phone) >= 8`
-        );
-    }
-    // Default: last_12_months
-    return await defaultPool.query(
-        `SELECT DISTINCT p.id, p.full_name, p.phone
-         FROM patients p
-         INNER JOIN appointments a ON a.patient_id = p.id
-         WHERE a.appointment_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
-           AND p.phone IS NOT NULL AND p.phone != ''
-           AND LENGTH(p.phone) >= 8`
-    );
+    return whatsappRepository.getPatientsForBroadcast(filter);
 };
 
 const broadcastPreview = async (req, res) => {
@@ -206,7 +208,7 @@ const acceptPending = async (req, res) => {
         const id = Number(req.params.id);
         const secretaryId = req.user?.user_id;
 
-        let pending = await pendingBookingRepository.findById(id);
+        const pending = await pendingBookingRepository.findById(id);
         if (!pending) {
             return res.status(404).json({ success: false, error: 'Pending booking not found' });
         }
@@ -239,13 +241,13 @@ const acceptPending = async (req, res) => {
         // Optimistic lock: only one secretary can win the transition pending → accepted
         const affected = await pendingBookingRepository.acceptById(id, secretaryId);
         if (affected === 0) {
-            pending = await pendingBookingRepository.findById(id);
+            const refreshedPending = await pendingBookingRepository.findById(id);
             return res.status(409).json({
                 success: false,
                 status: 'taken',
-                accepted_by: pending?.accepted_by_name || null,
-                message: pending?.accepted_by_name
-                    ? `Already accepted by ${pending.accepted_by_name}`
+                accepted_by: refreshedPending?.accepted_by_name || null,
+                message: refreshedPending?.accepted_by_name
+                    ? `Already accepted by ${refreshedPending.accepted_by_name}`
                     : 'Already accepted'
             });
         }
@@ -359,6 +361,6 @@ const rejectPending = async (req, res) => {
 
 module.exports = {
     sendMessage, broadcastMessage, broadcastDirect, broadcastPreview, testConnection, sendDirectMessage,
-    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, logoutBridge, refreshBridge, deleteConversation,
+    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getBridgeHealth, logoutBridge, refreshBridge, deleteConversation,
     listPending, acceptPending, suggestAlternative, rejectPending
 };
