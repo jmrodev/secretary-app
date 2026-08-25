@@ -80,7 +80,13 @@ func eventHandler(evt interface{}) {
 			if webhookUrl == "" {
 				webhookUrl = "http://server:5000/api/whatsapp/webhook"
 			}
-			resp, err := http.Post(webhookUrl, "application/json", bytes.NewBuffer(jsonData))
+			webhookReq, _ := http.NewRequest("POST", webhookUrl, bytes.NewBuffer(jsonData))
+			webhookReq.Header.Set("Content-Type", "application/json")
+			if secret := os.Getenv("WHATSAPP_BRIDGE_SECRET"); secret != "" {
+				webhookReq.Header.Set("X-Bridge-Secret", secret)
+			}
+			webhookClient := &http.Client{Timeout: 5 * time.Second}
+			resp, err := webhookClient.Do(webhookReq)
 			if err == nil {
 				resp.Body.Close()
 			}
