@@ -143,23 +143,22 @@ export const GlobalWhatsappMessenger = ({ t }) => {
         }
     }, [fetchStatus, t]);
 
-    // Use React 19 useEffectEvent for stable, up-to-date callback references
-    const onPollStatus = React.useEffectEvent(() => {
+    const onPollStatus = useCallback(() => {
         fetchStatus();
-    });
+    }, [fetchStatus]);
 
-    const onPollConversations = React.useEffectEvent(() => {
+    const onPollConversations = useCallback(() => {
         if (bridgeStatus.status === 'connected' && !activeChat) {
             fetchConversations(true);
         }
-    });
+    }, [bridgeStatus.status, activeChat, fetchConversations]);
 
     useEffect(() => {
         if (!isOpen) return;
 
         // Initial fetch
         onPollStatus();
-        
+
         const statusInterval = setInterval(onPollStatus, 5000);
         const conversationsInterval = setInterval(onPollConversations, 5000);
 
@@ -167,7 +166,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
             clearInterval(statusInterval);
             clearInterval(conversationsInterval);
         };
-    }, [isOpen]); // Only depends on isOpen now!
+    }, [isOpen, onPollStatus, onPollConversations]);
 
     // Listen for external requests to open a specific patient chat
     useEffect(() => {
