@@ -7,6 +7,7 @@ import React from 'react';
 const registry = new Map();
 
 export const registerConfigSection = (id, metadata, Component) => {
+    if (registry.has(id)) return;
     registry.set(id, { metadata, Component });
 };
 

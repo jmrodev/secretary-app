@@ -197,6 +197,24 @@
     line-height: 1.4;
 }
 
+/* ConfigTabFallback (review-config-doctors) */
+.SystemConfigPage__configTabFallbackMessage {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin: 0 0 0.75rem;
+}
+
+.SystemConfigPage__configTabFallbackLink {
+    display: inline-block;
+    color: var(--accent-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.SystemConfigPage__configTabFallbackLink:hover {
+    text-decoration: underline;
+}
+
 .SystemConfigPage__configActionsRight {
     justify-content: flex-end;
 }

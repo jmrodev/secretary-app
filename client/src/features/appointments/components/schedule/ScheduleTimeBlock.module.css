@@ -17,7 +17,7 @@
 
 .ScheduleTimeBlock__container:hover {
     border-color: var(--primary-color);
-    background-color: rgb(128, 128, 128, 0.08);
+    background-color: var(--schedule-block-hover-bg);
 }
 
 .ScheduleTimeBlock__inputs {
@@ -46,7 +46,7 @@
     min-width: 120px;
 }
 
-.ScheduleTimeBlock__typeSelectVirtual {
+.ScheduleTimeBlock__typeSelect--virtual {
     color: var(--primary-color);
 }
 
@@ -92,8 +92,8 @@
 }
 
 .ScheduleTimeBlock__remove:hover {
-    color: var(--danger) !important;
-    background-color: rgb(249 55 93 / 10%) !important;
+    color: var(--danger);
+    background-color: var(--schedule-remove-hover-bg);
 }
 
 @keyframes fade-in-up {
@@ -101,18 +101,32 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-@media (width <= 640px) {
+.ScheduleTimeBlock__container {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.ScheduleTimeBlock__divider {
+    display: none;
+}
+
+.ScheduleTimeBlock__options {
+    margin-left: 0;
+    justify-content: space-between;
+}
+
+@media (width >= 641px) {
     .ScheduleTimeBlock__container {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        align-items: center;
     }
-    
+
     .ScheduleTimeBlock__divider {
-        display: none;
+        display: block;
     }
-    
+
     .ScheduleTimeBlock__options {
-        margin-left: 0;
-        justify-content: space-between;
+        margin-left: auto;
+        justify-content: flex-start;
     }
 }

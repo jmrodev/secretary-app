@@ -14,14 +14,38 @@ import styles from './SystemConfigPage.module.css';
 import shared from '@/styles/shared.module.css';
 
 /**
+ * ConfigTabFallback (review-config-doctors).
+ * Rendered when the requested config tab is not registered, instead of a
+ * blank page. Offers a link back to the first available section.
+ */
+export const ConfigTabFallback = ({ activeTab, controller }) => {
+    const { t } = controller;
+    const first = getConfigSections()[0];
+    return (
+        <section className={`${shared.ConfigSection}`}>
+            <div className={shared.ConfigSection__body}>
+                <p className={styles.SystemConfigPage__configTabFallbackMessage}>
+                    {t('config_tab_not_found', { tab: activeTab })}
+                </p>
+                {first && (
+                    <a href={`/config?tab=${first.id}`} className={styles.SystemConfigPage__configTabFallbackLink}>
+                        {t('config_tab_redirect', { tab: first.metadata.title })}
+                    </a>
+                )}
+            </div>
+        </section>
+    );
+};
+
+/**
  * SettingsContent (Slot Renderer).
  * Renders the active configuration section based on the registry.
  */
-const SettingsContent = ({ activeTab, controller }) => {
+export const SettingsContent = ({ activeTab, controller }) => {
     const { t } = controller;
     const section = useMemo(() => getConfigSection(activeTab), [activeTab]);
 
-    if (!section) return null;
+    if (!section) return <ConfigTabFallback activeTab={activeTab} controller={controller} />;
 
     const { metadata, Component } = section;
 
@@ -74,11 +98,11 @@ export const SystemConfigPage = () => {
         })), [visibleSections]);
 
     return (
-        <MainLayout wide flush title={t('config') || 'Configuración del Sistema'}>
+        <MainLayout wide flush title={t('config')}>
             <div className={`${styles.SystemConfigPage__root}  `}>
                 <FeatureToolbar
                     tabs={tabs.length > 0 ? tabs : [
-                        { id: 'modules', label: t('modules') || 'Módulos', icon: 'view_module' }
+                        { id: 'modules', label: t('modules'), icon: 'view_module' }
                     ]}
                     activeTab={activeTab}
                     onTabChange={handlers.setActiveTab}

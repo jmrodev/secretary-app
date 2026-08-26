@@ -13,8 +13,8 @@ export const ScheduleTimeBlock = ({
     block, onFocus, onBlur, onChange, onRemove, t
 }) => {
     const typeOptions = [
-        { value: 'consultation', label: t('in_person') || 'Presencial' },
-        { value: 'virtual', label: t('virtual_type') || 'Videollamada' }
+        { value: 'consultation', label: t('schedule_type_in_person') },
+        { value: 'virtual', label: t('schedule_type_virtual') }
     ];
 
     return (
@@ -28,7 +28,7 @@ export const ScheduleTimeBlock = ({
                     onBlur={onBlur}
                     onChange={(e) => onChange(block.originalIndex, 'start_time', e.target.value)}
                 />
-                <span className={`${styles.ScheduleTimeBlock__connector}`}>{t('to_label') || 'a'}</span>
+                    <span className={`${styles.ScheduleTimeBlock__connector}`}>{t('to_label')}</span>
                 <Input
                     type="time"
                     size="sm"
@@ -44,7 +44,7 @@ export const ScheduleTimeBlock = ({
             <div className={styles.ScheduleTimeBlock__typeContainer}>
                 <Select
                     size="sm"
-                    className={block.default_type === 'virtual' ? styles.ScheduleTimeBlock__typeSelectVirtual : ''}
+                    className={block.default_type === 'virtual' ? styles['ScheduleTimeBlock__typeSelect--virtual'] : ''}
                     value={block.default_type || 'consultation'}
                     onChange={(e) => onChange(block.originalIndex, 'default_type', e.target.value)}
                     options={typeOptions}
@@ -61,7 +61,7 @@ export const ScheduleTimeBlock = ({
                     />
                     <span className={`${styles.ScheduleTimeBlock__alignmentText}`}>
                         <Icon name="schedule" size="1rem" />
-                        Coord. :00
+                        {t('force_hour_alignment_label')}
                     </span>
                 </label>
 
@@ -70,7 +70,7 @@ export const ScheduleTimeBlock = ({
                     size="sm-compact"
                     onClick={onRemove}
                     className={`${styles.ScheduleTimeBlock__remove}`}
-                    title={t('remove_time_slot') || "Eliminar franja"}
+                    title={t('remove_time_slot')}
                     icon={<Icon name="delete" />}
                 />
             </div>

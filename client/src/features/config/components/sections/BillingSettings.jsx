@@ -52,10 +52,10 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
         try {
             const res = await api.get('/billing/status');
             setStatus(res.data);
-            showMessage(t('afip_validated') || 'Conexión con AFIP validada', 'success');
+            showMessage(t('afip_validated'), 'success');
         } catch (err) {
             setStatus({ error: err.response?.data?.error || t('afip_status_error') });
-            showMessage(t('afip_connection_failed') || 'Fallo al conectar con AFIP', 'error');
+            showMessage(t('afip_connection_failed'), 'error');
         } finally {
             setChecking(false);
         }
@@ -73,7 +73,8 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
             connected: false,
             loadingGoogle: false,
             loadingSchedule: false,
-            schedule: []
+            schedule: [],
+            setSchedule: () => {}
         });
     };
 
@@ -92,7 +93,7 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
         const { data } = modalState;
         try {
             await api.put(`/users/doctors/${data.id}`, data);
-            showMessage(t('doctor_updated') || 'Médico actualizado exitosamente', 'success');
+            showMessage(t('doctor_updated'), 'success');
             setModalState(prev => ({ ...prev, isOpen: false }));
             window.dispatchEvent(new CustomEvent('doctors-updated'));
             fetchDoctors();
@@ -105,7 +106,7 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
     const handleEnvironmentChange = useCallback((e) => {
         const value = e.target.value;
         updateSetting('afip_environment', value);
-        showMessage(t('environment_updated_success') || 'Entorno de facturación actualizado correctamente', 'success');
+            showMessage(t('environment_updated_success'), 'success');
     }, [updateSetting, showMessage, t]);
 
     return (
@@ -179,29 +180,29 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                 <div className={sharedStyles.ConfigSection__header}>
                     <span className={sharedStyles.ConfigSection__icon}><Icon name="badge" /></span>
                     <div className={sharedStyles.ConfigSection__text}>
-                        <h4 className={sharedStyles.ConfigSection__title}>{t('doctor_fiscal_status_title') || 'Estado Fiscal por Profesional'}</h4>
-                        <p className={styles.BillingSettings__hint}>{t('doctor_fiscal_status_desc') || 'Resumen del estado de credenciales fiscales y certificados AFIP de cada médico de la clínica.'}</p>
+                        <h4 className={sharedStyles.ConfigSection__title}>{t('doctor_fiscal_status_title')}</h4>
+                        <p className={styles.BillingSettings__hint}>{t('doctor_fiscal_status_desc')}</p>
                     </div>
                 </div>
 
                 <div className={sharedStyles.ConfigSection__body}>
                     {doctorsLoading ? (
-                        <Loading variant="centered" text={t('loading_doctors') || 'Cargando profesionales...'} />
+                            <Loading variant="centered" text={t('loading_doctors')} />
                     ) : doctors.length === 0 ? (
                         <div className={styles.BillingSettings__emptyState}>
-                            <p>{t('no_doctors_registered') || 'No hay profesionales registrados.'}</p>
+                            <p>{t('no_doctors_registered')}</p>
                         </div>
                     ) : (
                         <div className={styles.BillingSettings__tableWrapper}>
                             <table className={styles.BillingSettings__table}>
                                 <thead>
                                     <tr>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_doctor') || 'Profesional'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cuit') || 'CUIT'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_pto_vta') || 'Pto. Venta'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cert') || 'Certificado / Clave'}</th>
-                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_status') || 'Estado AFIP'}</th>
-                                        <th className={`${styles.BillingSettings__th} ${styles['BillingSettings__th--right']}`}>{t('doctor_fiscal_th_actions') || 'Acciones'}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_doctor')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cuit')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_pto_vta')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_cert')}</th>
+                                        <th className={styles.BillingSettings__th}>{t('doctor_fiscal_th_status')}</th>
+                                        <th className={`${styles.BillingSettings__th} ${styles['BillingSettings__th--right']}`}>{t('doctor_fiscal_th_actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -223,28 +224,28 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                                                     {hasCuit ? (
                                                         <Badge variant="blue">{doc.afip_cuit}</Badge>
                                                     ) : (
-                                                        <Badge variant="warning">{t('fiscal_cuit_missing') || 'Sin CUIT'}</Badge>
+                                                        <Badge variant="warning">{t('fiscal_cuit_missing')}</Badge>
                                                     )}
                                                 </td>
                                                 <td className={styles.BillingSettings__td}>
                                                     {hasPtoVta ? (
                                                         <Badge variant="default">#{doc.afip_pto_vta}</Badge>
                                                     ) : (
-                                                        <Badge variant="warning">{t('fiscal_pto_vta_missing') || 'Sin Pto Vta'}</Badge>
+                                                        <Badge variant="warning">{t('fiscal_pto_vta_missing')}</Badge>
                                                     )}
                                                 </td>
                                                 <td className={styles.BillingSettings__td}>
                                                     {hasCert ? (
-                                                        <Badge variant="success">{t('fiscal_cert_configured') || 'Configurado'}</Badge>
+                                                        <Badge variant="success">{t('fiscal_cert_configured')}</Badge>
                                                     ) : (
-                                                        <Badge variant="danger">{t('fiscal_cert_missing') || 'Falta Certificado'}</Badge>
+                                                        <Badge variant="danger">{t('fiscal_cert_missing')}</Badge>
                                                     )}
                                                 </td>
                                                 <td className={styles.BillingSettings__td}>
                                                     {isReady ? (
-                                                        <Badge variant="success">{t('fiscal_status_ready') || 'Listo'}</Badge>
+                                                        <Badge variant="success">{t('fiscal_status_ready')}</Badge>
                                                     ) : (
-                                                        <Badge variant="warning">{t('fiscal_status_incomplete') || 'Incompleto'}</Badge>
+                                                        <Badge variant="warning">{t('fiscal_status_incomplete')}</Badge>
                                                     )}
                                                 </td>
                                                 <td className={`${styles.BillingSettings__td} ${styles['BillingSettings__td--right']}`}>
@@ -253,9 +254,9 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                                                         size="sm"
                                                         onClick={() => handleEditDoctorFiscal(doc)}
                                                         icon={<Icon name="edit" size="1rem" />}
-                                                        title={t('edit_fiscal_config') || 'Editar Configuración Fiscal'}
+                                                        title={t('edit_fiscal_config')}
                                                     >
-                                                        {t('view_action') || 'Ver'}
+                                                        {t('view_action')}
                                                     </Button>
                                                 </td>
                                             </tr>

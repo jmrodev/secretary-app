@@ -190,6 +190,22 @@
     /* Card Surfaces */
     --card-surface-bg: #0f172a;   /* interior de cards (body) */
     --card-hover-bg: #1e293b;     /* hover de cards */
+
+    /* Schedule Tab Semantic Tokens (css-schedule-tab-remediation) */
+    --schedule-container-bg: var(--dashboard-card-bg);
+    --schedule-container-border: var(--dashboard-card-border);
+    --schedule-day-inactive-bg: var(--card-surface-bg);
+    --schedule-day-active-bg: rgb(var(--primary-rgb) / 0.16);
+    --schedule-day-border: var(--dashboard-card-border);
+    --schedule-day-active-border: var(--primary-color);
+    --schedule-block-bg: var(--dashboard-card-bg);
+    --schedule-block-border: var(--dashboard-card-border);
+    --schedule-block-hover-bg: var(--row-hover-bg);
+    --schedule-block-hover-border: var(--primary-color);
+    --schedule-input-bg: var(--dashboard-card-bg);
+    --schedule-input-border: var(--border-color);
+    --schedule-divider-color: var(--border-color);
+    --schedule-remove-hover-bg: rgb(var(--[a-zA-Z-]*rgb) / 0.1);
 }
 
 /* Light Theme - Tonos Claros (Tiza / High Contrast Clinical Palette) */
@@ -227,6 +243,22 @@
     --glass: rgb(15 23 42 / 5%);
     --glass-dark: rgb(15 23 42 / 8%);
     --glass-border: rgb(15 23 42 / 10%);
+
+    /* Schedule Tab Semantic Tokens (css-schedule-tab-remediation) */
+    --schedule-container-bg: var(--dashboard-card-bg);
+    --schedule-container-border: var(--dashboard-card-border);
+    --schedule-day-inactive-bg: var(--card-surface-bg);
+    --schedule-day-active-bg: rgb(var(--primary-rgb) / 0.12);
+    --schedule-day-border: var(--dashboard-card-border);
+    --schedule-day-active-border: var(--primary-color);
+    --schedule-block-bg: var(--dashboard-card-bg);
+    --schedule-block-border: var(--dashboard-card-border);
+    --schedule-block-hover-bg: var(--row-hover-bg);
+    --schedule-block-hover-border: var(--primary-color);
+    --schedule-input-bg: var(--dashboard-card-bg);
+    --schedule-input-border: var(--border-color);
+    --schedule-divider-color: var(--border-color);
+    --schedule-remove-hover-bg: rgb(var(--[a-zA-Z-]*rgb) / 0.1);
 }
 
 /* Dim Theme - Oscuro Suave (Intermedio) */
@@ -258,4 +290,20 @@
     --info-hover: #0ea5e9;
     --row-hover-bg: rgb(255, 255, 255, 0.06);
     --row-hover-bg-selected: rgb(255, 255, 255, 0.1);
+
+    /* Schedule Tab Semantic Tokens (css-schedule-tab-remediation) */
+    --schedule-container-bg: var(--dashboard-card-bg);
+    --schedule-container-border: var(--dashboard-card-border);
+    --schedule-day-inactive-bg: var(--card-surface-bg);
+    --schedule-day-active-bg: rgb(var(--primary-rgb) / 0.16);
+    --schedule-day-border: var(--dashboard-card-border);
+    --schedule-day-active-border: var(--primary-color);
+    --schedule-block-bg: var(--dashboard-card-bg);
+    --schedule-block-border: var(--dashboard-card-border);
+    --schedule-block-hover-bg: var(--row-hover-bg);
+    --schedule-block-hover-border: var(--primary-color);
+    --schedule-input-bg: var(--dashboard-card-bg);
+    --schedule-input-border: var(--border-color);
+    --schedule-divider-color: var(--border-color);
+    --schedule-remove-hover-bg: rgb(var(--[a-zA-Z-]*rgb) / 0.1);
 }

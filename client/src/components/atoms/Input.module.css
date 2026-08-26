@@ -63,3 +63,27 @@
     font-size: 0.8125rem;
     border-radius: 0.5rem;
 }
+
+/* Theme-aware native control rendering (review-config-doctors)
+   Aligns <input type="time"> pickers and other native widgets with the
+   active theme. Scoped by [data-theme] so it follows the app's strategy.
+   The attribute/element selectors below are intentionally outside the BEM
+   block pattern (they target theme roots / native pseudo-elements), so the
+   bem-pattern rule is disabled for this block only. */
+/* stylelint-disable plugin/selector-bem-pattern */
+[data-theme="dark"] .Input__root,
+[data-theme="dim"] .Input__root {
+    color-scheme: dark;
+}
+
+[data-theme="light"] .Input__root {
+    color-scheme: light;
+}
+
+/* Invert the native calendar/clock indicator so it's visible on dark surfaces.
+   Note: Safari ignores ::-webkit-calendar-picker-indicator — manual gap per design. */
+[data-theme="dark"] input[type="time"]::-webkit-calendar-picker-indicator,
+[data-theme="dim"] input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.7);
+}
+/* stylelint-enable plugin/selector-bem-pattern */
