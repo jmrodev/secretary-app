@@ -37,4 +37,6 @@ export const appointments = {
     appointments_subtitle: "Organize your daily schedule with calendar and day-by-day focus.",
     find_next_free: "Find Next Free Slot",
     search_free_slots: "Search Free Slots",
+    payment_registered: "Payment registered",
+    bonified_appointment: "Bonified appointment",
 };

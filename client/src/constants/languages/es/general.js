@@ -743,5 +743,11 @@ export const general = {
     afip_status_app: "Servidor de Aplicación (App)",
     afip_status_db: "Servidor de BD (Db)",
     afip_status_auth: "Servidor de Autenticación (Auth)",
-    unknown: "Desconocido"
+    unknown: "Desconocido",
+    debt_reminders: "Recordatorios de Deuda",
+    debt_template: "Plantilla de Deuda",
+    pending_appointments_mgmt: "Gestión de Turnos Pendientes",
+    accept_appointment: "Aceptar Turno",
+    suggest_alternative: "Sugerir Alternativa",
+    config_short: "Config",
 };

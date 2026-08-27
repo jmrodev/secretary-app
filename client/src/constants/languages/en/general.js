@@ -744,5 +744,11 @@ export const general = {
     afip_status_app: "Application Server (App)",
     afip_status_db: "Database Server (Db)",
     afip_status_auth: "Authentication Server (Auth)",
-    unknown: "Unknown"
+    unknown: "Unknown",
+    debt_reminders: "Debt Reminders",
+    debt_template: "Debt Template",
+    pending_appointments_mgmt: "Pending Appointments Management",
+    accept_appointment: "Accept Appointment",
+    suggest_alternative: "Suggest Alternative",
+    config_short: "Config",
 };
