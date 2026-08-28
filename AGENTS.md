@@ -16,6 +16,7 @@ Este documento contiene las reglas de oro y estándares obligatorios para todo e
 ## 2. Frontend (React 19 & CSS)
 - **Componentes de React**:
   - Usá siempre componentes funcionales y hooks modernos. Están estrictamente prohibidos los componentes basados en clases.
+  - **Excepción — Error Boundaries**: Los Error Boundaries de React **DEBEN** ser componentes de clase (`class ErrorBoundary extends React.Component`) porque React requiere `componentDidCatch`/`static getDerivedStateFromError`, que no existen en componentes funcionales sin librerías externas. `client/src/components/molecules/ErrorBoundary.jsx` es la única excepción permitida.
   - El estado compartido debe manejarse mediante **Context API** (`/src/context`) o Hooks personalizados (`/src/hooks`).
 - **Imports/Exports**:
   - Preferí **exports nombrados** (`export const Component = ...`) sobre exports por defecto (`export default`).
