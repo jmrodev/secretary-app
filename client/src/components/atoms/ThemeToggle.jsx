@@ -47,9 +47,9 @@ export const ThemeToggle = ({ className = '' }) => {
     };
     
     const getLabel = () => {
-        if (theme === 'light') return t('chalk_mode') || 'Modo Tiza';
-        if (theme === 'dim') return t('soft_mode') || 'Modo Suave';
-        return t('dark_mode') || 'Modo Oscuro';
+        if (theme === 'light') return t('chalk_mode');
+        if (theme === 'dim') return t('soft_mode');
+        return t('dark_mode');
     };
 
     return (
@@ -57,8 +57,8 @@ export const ThemeToggle = ({ className = '' }) => {
             variant="ghost"
             size="sm"
             onClick={toggleTheme}
-            aria-label={t('change_theme_mode') || 'Cambiar modo de tema'}
-            title={`${t('current_theme') || 'Tema actual'}: ${getLabel()}`}
+            aria-label={t('change_theme_mode')}
+            title={`${t('current_theme')}: ${getLabel()}`}
             className={`${styles.ThemeToggle__toggle} ${className}`}
             icon={<Icon name={getIcon()} size="1.1rem" />}
         >

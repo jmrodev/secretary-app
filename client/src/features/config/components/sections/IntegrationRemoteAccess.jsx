@@ -131,13 +131,13 @@ export const IntegrationRemoteAccess = ({ settings, updateSetting, onRefreshTunn
                         <div className={shared.ConfigSection__divider}></div>
 
                         <div className={styles.IntegrationRemoteAccess__guide}>
-                            <h4 className={styles.IntegrationRemoteAccess__guideTitle}><Icon name="menu_book" className="mr-1" />{t('duckdns_guide_title') || 'Guía de Configuración DuckDNS'}</h4>
+                            <h4 className={styles.IntegrationRemoteAccess__guideTitle}><Icon name="menu_book" className="mr-1" />{t('duckdns_guide_title')}</h4>
                             <ol className={styles.IntegrationRemoteAccess__guideList}>
-                                <li>{t('duckdns_guide_step1') || 'Registre un subdominio gratuito en'} <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className={styles.IntegrationRemoteAccess__link}>duckdns.org</a>.</li>
-                                <li>{t('duckdns_guide_step2_p1') || 'Copie el'} <b>Token</b> {t('duckdns_guide_step2_p2') || 'y el'} <b>{t('subdomain') || 'Subdominio'}</b> {t('duckdns_guide_step2_p3') || 'en los campos de arriba.'}</li>
-                                <li>{t('duckdns_guide_step3_p1') || 'Lo más importante: Debe configurar el'} <b>Port Forwarding</b> {t('duckdns_guide_step3_p2') || 'en su Router.'}</li>
-                                <li>{t('duckdns_guide_step4_p1') || 'Reenvíe el puerto externo'} <b>80</b> {t('duckdns_guide_step4_p2') || '(o el que prefiera) a la IP local del servidor en el puerto'} <b>5173</b> (Dev) {t('or') || 'o'} <b>3001</b> (Prod).</li>
-                                <li>{t('duckdns_guide_step5') || 'Asegúrese de que el servidor tenga una IP local fija (estática).'}</li>
+                                <li>{t('duckdns_guide_step1')} <a href="https://www.duckdns.org" target="_blank" rel="noreferrer" className={styles.IntegrationRemoteAccess__link}>duckdns.org</a>.</li>
+                                <li>{t('duckdns_guide_step2_p1')} <b>Token</b> {t('duckdns_guide_step2_p2')} <b>{t('subdomain')}</b> {t('duckdns_guide_step2_p3')}</li>
+                                <li>{t('duckdns_guide_step3_p1')} <b>Port Forwarding</b> {t('duckdns_guide_step3_p2')}</li>
+                                <li>{t('duckdns_guide_step4_p1')} <b>80</b> {t('duckdns_guide_step4_p2')} <b>5173</b> (Dev) {t('or')} <b>3001</b> (Prod).</li>
+                                <li>{t('duckdns_guide_step5')}</li>
                             </ol>
                         </div>
                     </div>

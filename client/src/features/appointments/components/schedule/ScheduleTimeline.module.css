@@ -18,8 +18,8 @@
 
 .ScheduleTimeline__currentTimeLine {
     position: absolute;
-    left: -10px;
-    right: -10px;
+    left: 0;
+    right: 0;
     height: 2px;
     z-index: 50;
     pointer-events: none;
@@ -195,4 +195,12 @@
 
 .ScheduleTimeline__slotPast .ScheduleTimeline__googleBlocked {
     opacity: 0.45;
+}
+
+.ScheduleTimeline__slotWrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
 }

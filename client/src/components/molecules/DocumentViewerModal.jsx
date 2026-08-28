@@ -71,7 +71,7 @@ export const DocumentViewerModal = ({
     if (!isOpen || !file) return null;
 
     const fileUrl = file.file_url || file.url || '';
-    const fileName = file.file_name || file.name || t('medical_documents') || 'Documento';
+    const fileName = file.file_name || file.name || t('medical_documents');
     const isImage = file.file_type?.includes('image') || /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(fileUrl);
     const isPdf = file.file_type?.includes('pdf') || /\.pdf$/i.test(fileUrl);
 
@@ -103,10 +103,10 @@ export const DocumentViewerModal = ({
                                 size="sm"
                                 onClick={handlePrevFile}
                                 disabled={!hasPrev}
-                                title={t('previous') || 'Anterior (←)'}
+                                title={t('previous')}
                                 icon={<Icon name="chevron_left" size="1.2rem" />}
                             >
-                                {t('prev') || 'Anterior'}
+                                {t('prev')}
                             </Button>
                             <span className={styles.DocumentViewerModal__counterLabel}>
                                 {activeIndex + 1} / {filesListData.length}
@@ -116,10 +116,10 @@ export const DocumentViewerModal = ({
                                 size="sm"
                                 onClick={handleNextFile}
                                 disabled={!hasNext}
-                                title={t('next') || 'Siguiente (→)'}
+                                title={t('next')}
                                 iconRight={<Icon name="chevron_right" size="1.2rem" />}
                             >
-                                {t('next') || 'Siguiente'}
+                                {t('next')}
                             </Button>
                         </div>
                     )}
@@ -130,7 +130,7 @@ export const DocumentViewerModal = ({
                             variant="ghost"
                             size="sm"
                             onClick={handleZoomIn}
-                            title={t('zoom_in') || 'Acercar (+)'}
+                            title={t('zoom_in')}
                             icon={<Icon name="zoom_in" size="1.2rem" />}
                             disabled={!isImage}
                         />
@@ -139,7 +139,7 @@ export const DocumentViewerModal = ({
                             variant="ghost"
                             size="sm"
                             onClick={handleZoomOut}
-                            title={t('zoom_out') || 'Alejar (-)'}
+                            title={t('zoom_out')}
                             icon={<Icon name="zoom_out" size="1.2rem" />}
                             disabled={!isImage}
                         />
@@ -147,7 +147,7 @@ export const DocumentViewerModal = ({
                             variant="ghost"
                             size="sm"
                             onClick={handleReset}
-                            title={t('reset_view') || 'Restablecer'}
+                            title={t('reset_view')}
                             icon={<Icon name="restart_alt" size="1.2rem" />}
                             disabled={!isImage}
                         />
@@ -159,7 +159,7 @@ export const DocumentViewerModal = ({
                             variant="ghost"
                             size="sm"
                             onClick={handleRotateLeft}
-                            title={t('rotate_left') || 'Girar a la izquierda'}
+                            title={t('rotate_left')}
                             icon={<Icon name="rotate_left" size="1.2rem" />}
                             disabled={!isImage}
                         />
@@ -167,7 +167,7 @@ export const DocumentViewerModal = ({
                             variant="ghost"
                             size="sm"
                             onClick={handleRotateRight}
-                            title={t('rotate_right') || 'Girar a la derecha'}
+                            title={t('rotate_right')}
                             icon={<Icon name="rotate_right" size="1.2rem" />}
                             disabled={!isImage}
                         />
@@ -180,7 +180,7 @@ export const DocumentViewerModal = ({
                             target="_blank"
                             variant="ghost"
                             size="sm"
-                            title={t('open_in_new_tab') || 'Abrir en pestaña nueva'}
+                            title={t('open_in_new_tab')}
                             icon={<Icon name="open_in_new" size="1.2rem" />}
                         />
                         <Button
@@ -190,7 +190,7 @@ export const DocumentViewerModal = ({
                             size="sm"
                             icon={<Icon name="download" size="1.2rem" />}
                         >
-                            {t('download') || 'Descargar'}
+                            {t('download')}
                         </Button>
                     </div>
                 </header>
@@ -203,7 +203,7 @@ export const DocumentViewerModal = ({
                             type="button"
                             className={`${styles.DocumentViewerModal__navArrow} ${styles.DocumentViewerModal__navArrowLeft}`}
                             onClick={handlePrevFile}
-                            aria-label={t('previous_file') || 'Archivo anterior'}
+                            aria-label={t('previous_file')}
                         >
                             <Icon name="chevron_left" size="2.5rem" />
                         </button>
@@ -214,7 +214,7 @@ export const DocumentViewerModal = ({
                             type="button"
                             className={`${styles.DocumentViewerModal__navArrow} ${styles.DocumentViewerModal__navArrowRight}`}
                             onClick={handleNextFile}
-                            aria-label={t('next_file') || 'Archivo siguiente'}
+                            aria-label={t('next_file')}
                         >
                             <Icon name="chevron_right" size="2.5rem" />
                         </button>
@@ -249,9 +249,9 @@ export const DocumentViewerModal = ({
                         <div className={styles.DocumentViewerModal__genericFileBox}>
                             <Icon name="description" size="4rem" />
                             <h4>{fileName}</h4>
-                            <p>{file.description || t('no_description') || 'Sin descripción'}</p>
+                            <p>{file.description || t('no_description')}</p>
                             <Button to={fileUrl} target="_blank" variant="primary" size="md" icon={<Icon name="download" size="1.2rem" />}>
-                                {t('download_file') || 'Descargar Archivo'}
+                                {t('download_file')}
                             </Button>
                         </div>
                     )}

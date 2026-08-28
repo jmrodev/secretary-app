@@ -20,13 +20,13 @@ export const AppointmentPatientSection = ({
         <div className={styles.AppointmentPatientSection__root}>
             <div className={styles.AppointmentPatientSection__fieldsRow}>
                 <div className={styles.AppointmentPatientSection__searchGroup}>
-                    <label htmlFor="patient-search-input" className={styles.AppointmentPatientSection__groupLabel}>{t('patients') || 'Paciente'}</label>
+                    <label htmlFor="patient-search-input" className={styles.AppointmentPatientSection__groupLabel}>{t('patients')}</label>
                     {PatientSearchSelect ? (
                         <div style={{ maxWidth: '35ch', width: '100%' }}>
                             <PatientSearchSelect
                                 value={selectedPatient}
                                 selectedData={selectedPatientData}
-                                placeholder={t('search_patient_placeholder') || "Buscar Paciente..."}
+                                placeholder={t('search_patient_placeholder')}
                                 onCreatePatient={async (name) => {
                                     handlePatientChange(null, { full_name: capitalizeWords(name) });
                                     onOpenEditPatient();
@@ -35,14 +35,14 @@ export const AppointmentPatientSection = ({
                             />
                         </div>
                     ) : (
-                        <div className="error-placeholder">{t('patient_search_component_missing') || "Error: PatientSearchSelectComponent missing"}</div>
+                        <div className="error-placeholder">{t('patient_search_component_missing')}</div>
                     )}
                 </div>
 
                 <div className={styles.AppointmentPatientSection__searchGroup} style={{ width: '18ch', flexShrink: 0 }}>
                     <span className={styles.AppointmentPatientSection__groupLabel}>
                         <Icon name="phone" size="0.8rem" style={{ marginRight: '0.35rem' }} />
-                        {t('phone') || 'Teléfono'}
+                        {t('phone')}
                     </span>
                     <PhoneInput
                         value={selectedPatientData?.phone || ''}
@@ -56,10 +56,10 @@ export const AppointmentPatientSection = ({
                 <div className={styles.AppointmentPatientSection__missingAlert}>
                     <span className={styles.AppointmentPatientSection__missingText}>
                         <Icon name="warning" size="0.9rem" />
-                        <strong>{t('missing_data_prefix') || 'Falta'}:</strong> {missingData.join(', ')}
+                        <strong>{t('missing_data_prefix')}:</strong> {missingData.join(', ')}
                     </span>
                     <button type="button" className={styles.AppointmentPatientSection__missingAction} onClick={onOpenEditPatient}>
-                        {t('complete') || 'Completar'}
+                        {t('complete')}
                     </button>
                 </div>
             )}

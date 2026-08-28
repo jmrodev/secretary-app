@@ -52,7 +52,7 @@ export const NextSlotModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={t('search_free_slots') || "Explorador de Turnos Libres"}
+            title={t('search_free_slots')}
             size="md"
             footer={
                 <div className={styles.NextSlotModal__footer}>
@@ -62,7 +62,7 @@ export const NextSlotModal = ({
                         disabled={slotsPage === 0 || loading}
                         icon={<Icon name="chevron_left" />}
                     >
-                        {t('prev') || 'Ant.'}
+                        {t('prev')}
                     </Button>
                     
                     <div className={styles.NextSlotModal__pageInfo}>
@@ -75,7 +75,7 @@ export const NextSlotModal = ({
                         disabled={loading || (slotsPage >= slotPages.length - 1 && !hasNextGroup)}
                         iconRight={<Icon name="chevron_right" />}
                     >
-                        {t('next') || 'Prox.'}
+                        {t('next')}
                     </Button>
                 </div>
             }
@@ -100,7 +100,7 @@ export const NextSlotModal = ({
                     <Checkbox
                         checked={includeOutOfHours}
                         onChange={e => onToggleOutOfHours(e.target.checked)}
-                        label={t('include_overtime') || 'Incluir fuera de horario'}
+                        label={t('include_overtime')}
                     />
                 </div>
 

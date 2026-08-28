@@ -37,7 +37,7 @@ export const InsurancesPage = () => {
     } = handlers;
 
     return (
-        <MainLayout wide flush title={t('insurances') || 'Obras Sociales'}>
+        <MainLayout wide flush title={t('insurances')}>
             <div className={`${styles.InsurancesPage__root}  `}>
                 <FeatureToolbar
                     className="__toolbar"
@@ -48,14 +48,14 @@ export const InsurancesPage = () => {
                             onClick={handleOpenCreate}
                             icon={<Icon name="add" size="1.1rem" />}
                         >
-                            {t('new_insurance') || 'Nueva Obra Social'}
+                            {t('new_insurance')}
                         </Button>
                     }
                 />
 
                 <section className={`${styles.InsurancesPage__main}`}>
                     {loading && filteredInsurances.length === 0 ? (
-                        <Loading variant="centered" text={t('loading') || "Cargando..."} />
+                        <Loading variant="centered" text={t('loading')} />
                     ) : (
                         <Card noPadding>
                             <div className={`${styles.InsurancesPage__content} `}>

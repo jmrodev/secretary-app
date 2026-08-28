@@ -16,7 +16,7 @@ export const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
                         {doctor.full_name}
                     </h3>
                     <p className={`${styles.DoctorCard__specialty}`}>
-                        {doctor.specialty || t('general_physician') || 'Médico General'}
+                        {doctor.specialty || t('general_physician')}
                     </p>
                 </div>
             </header>
@@ -34,14 +34,14 @@ export const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
                         </a>
                     ) : (
                         <span className={`${styles.DoctorCard__phoneEmpty}`}>
-                            {t('no_phone') || 'Sin teléfono'}
+                            {t('no_phone')}
                         </span>
                     )}
                 </div>
                 <div className={`${styles.DoctorCard__detailItem}`}>
                     <Icon name="location_on" size="1rem" className={`${styles.DoctorCard__detailIcon}`} />
                     <span className={`${styles.DoctorCard__officeLabel}`}>
-                        {t('office') || 'Consultorio'}: <span className={`${styles.DoctorCard__officeValue}`}>{doctor.office_number || 'N/A'}</span>
+                        {t('office')}: <span className={`${styles.DoctorCard__officeValue}`}>{doctor.office_number || 'N/A'}</span>
                     </span>
                 </div>
                 {doctor.dni && (
@@ -55,25 +55,25 @@ export const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
             <div className={`${styles.DoctorCard__prices}`}>
                 <div className={`${styles.DoctorCard__priceBox}`}>
                     <div className={`${styles.DoctorCard__priceLabel}`}>
-                        {t('consult_abbrev') || 'CONSULTA'}
+                        {t('consult_abbrev')}
                     </div>
                     <div className={`${styles.DoctorCard__priceValue}`}>{formatCurrency(doctor.consultation_price)}</div>
                 </div>
                 <div className={`${styles.DoctorCard__priceBox}`}>
                     <div className={`${styles.DoctorCard__priceLabel}`}>
-                        {t('rx_abbrev') || 'RECETA'}
+                        {t('rx_abbrev')}
                     </div>
                     <div className={`${styles.DoctorCard__priceValue}`}>{formatCurrency(doctor.prescription_price)}</div>
                 </div>
                 <div className={`${styles.DoctorCard__priceBox}`}>
                     <div className={`${styles.DoctorCard__priceLabel}`}>
-                        {t('virtual_abbrev') || 'VIRTUAL'}
+                        {t('virtual_abbrev')}
                     </div>
                     <div className={`${styles.DoctorCard__priceValue}`}>{formatCurrency(doctor.virtual_consultation_price)}</div>
                 </div>
                 <div className={`${styles.DoctorCard__priceBox}`}>
                     <div className={`${styles.DoctorCard__priceLabel}`}>
-                        {t('license_abbrev') || 'CM/CERT'}
+                        {t('license_abbrev')}
                     </div>
                     <div className={`${styles.DoctorCard__priceValue}`}>{formatCurrency(doctor.medical_license_price || doctor.certificate_price)}</div>
                 </div>
@@ -88,7 +88,7 @@ export const DoctorCard = ({ doctor, currentUser, onEdit, t }) => {
                         onClick={() => onEdit(doctor)}
                         icon={<Icon name="settings" size="1rem" />}
                     >
-                        {t('configure_doctor') || 'Configurar Médico'}
+                        {t('configure_doctor')}
                     </Button>
                 </footer>
             )}

@@ -32,7 +32,7 @@ export const useLoginController = () => {
             }
         } catch (err) {
             console.error("[LoginController] Error during login:", err);
-            setError(t('error_occurred') || 'Ocurrió un error inesperado.');
+            setError(t('error_occurred'));
         } finally {
             setLoading(false);
         }

@@ -79,28 +79,28 @@ export const useInsurancesController = () => {
         try {
             if (editingId) {
                 await api.put(`/insurances/${editingId}`, formData);
-                showMessage(t('update_success') || "Insurance updated", "success");
+                showMessage(t('update_success'), "success");
             } else {
                 await api.post('/insurances', formData);
-                showMessage(t('save_success') || "Insurance created", "success");
+                showMessage(t('save_success'), "success");
             }
             setModalOpen(false);
             fetchInsurances();
         } catch (err) {
             console.error(err);
-            showMessage(t('error_saving') || "Operation failed", "error");
+            showMessage(t('error_saving'), "error");
         }
     }, [editingId, formData, fetchInsurances, showMessage, t]);
 
     const handleDelete = useCallback(async (id) => {
-        if (!await confirm(t('delete_confirm_msg') || "Are you sure?")) return;
+        if (!await confirm(t('delete_confirm_msg'))) return;
         try {
             await api.delete(`/insurances/${id}`);
-            showMessage(t('delete_success') || "Insurance deleted", "success");
+            showMessage(t('delete_success'), "success");
             fetchInsurances();
         } catch (err) {
             console.error(err);
-            showMessage(err.response?.data || t('error_deleting') || "Delete failed", "error");
+            showMessage(err.response?.data || t('error_deleting'), "error");
         }
     }, [confirm, fetchInsurances, showMessage, t]);
 

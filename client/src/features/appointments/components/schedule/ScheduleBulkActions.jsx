@@ -14,7 +14,7 @@ export const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkE
         <div className={`${styles.ScheduleBulkActions__root}`}>
             <h4 className={`${styles.ScheduleBulkActions__title}`}>
                 <Icon name="calendar_month" size="1.2rem" className={`${styles.ScheduleBulkActions__titleIcon}`} />
-                {t('apply_to_multiple_days') || 'Aplicar a múltiples días (Sobrescribe horarios)'}
+                {t('apply_to_multiple_days')}
             </h4>
             <div className={`${styles.ScheduleBulkActions__actions}`}>
                 <div className={`${styles.ScheduleBulkActions__timeInputs}`}>
@@ -22,14 +22,14 @@ export const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkE
                         type="time"
                         value={bulkStart}
                         onChange={(e) => setBulkStart(e.target.value)}
-                        aria-label={t('start_time') || 'Hora de inicio'}
+                        aria-label={t('start_time')}
                     />
-                    <span className={`${styles.ScheduleBulkActions__separator}`}>{t('to_label') || 'a'}</span>
+                    <span className={`${styles.ScheduleBulkActions__separator}`}>{t('to_label')}</span>
                     <Input
                         type="time"
                         value={bulkEnd}
                         onChange={(e) => setBulkEnd(e.target.value)}
-                        aria-label={t('end_time') || 'Hora de fin'}
+                        aria-label={t('end_time')}
                     />
                 </div>
                 <div className={`${styles.ScheduleBulkActions__buttons}`}>
@@ -38,14 +38,14 @@ export const ScheduleBulkActions = ({ bulkStart, setBulkStart, bulkEnd, setBulkE
                         size="sm"
                         onClick={() => onApplyBulk([1, 2, 3, 4, 5])}
                     >
-                        <span className={`${styles.ScheduleBulkActions__btnLabel}`}>{t('mon_to_fri') || 'Lunes a Viernes'}</span>
+                        <span className={`${styles.ScheduleBulkActions__btnLabel}`}>{t('mon_to_fri')}</span>
                     </Button>
                     <Button
                         variant="secondary"
                         size="sm"
                         onClick={() => onApplyBulk([1, 2, 3, 4, 5, 6])}
                     >
-                        <span className={`${styles.ScheduleBulkActions__btnLabel}`}>{t('mon_to_sat') || 'Lunes a Sábado'}</span>
+                        <span className={`${styles.ScheduleBulkActions__btnLabel}`}>{t('mon_to_sat')}</span>
                     </Button>
                 </div>
             </div>
