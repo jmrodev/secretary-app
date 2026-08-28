@@ -24,10 +24,10 @@ export const EditLicenseModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={`${t('license_for') || 'Licencia para'} ${license.patient_name}`}
+            title={`${t('license_for')} ${license.patient_name}`}
             footer={
                 editData._readOnly ? (
-                    <Button variant="secondary" onClick={onClose}>{t('close') || 'Cerrar'}</Button>
+                    <Button variant="secondary" onClick={onClose}>{t('close')}</Button>
                 ) : (
                     <>
                         <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
@@ -37,7 +37,7 @@ export const EditLicenseModal = ({
             }
         >
             <div className="config-flex--column config-flex--gap-4">
-                <FormGroup label={t('request_note') || 'Descripción de la licencia'} htmlFor="edit-license-request-note">
+                <FormGroup label={t('request_note')} htmlFor="edit-license-request-note">
                     <Input
                         type="textarea"
                         id="edit-license-request-note"
@@ -47,7 +47,7 @@ export const EditLicenseModal = ({
                         onChange={e => onEditDataChange('request_note', e.target.value)}
                     />
                 </FormGroup>
-                <FormGroup label={t('doctor_note') || 'Nota del médico'} htmlFor="edit-license-doctor-note">
+                <FormGroup label={t('doctor_note')} htmlFor="edit-license-doctor-note">
                     <Input
                         type="textarea"
                         id="edit-license-doctor-note"

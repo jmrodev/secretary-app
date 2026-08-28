@@ -125,3 +125,233 @@
     opacity: 1;
     background-color: var(--red-50);
 }
+
+.PatientFinancialSidebar__sidebarFull {
+    width: 100%;
+}
+
+.PatientFinancialSidebar__summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.PatientFinancialSidebar__cardBorderRed {
+    border-left: 5px solid #ea4335;
+}
+
+.PatientFinancialSidebar__cardBorderGreen {
+    border-left: 5px solid #34a853;
+}
+
+.PatientFinancialSidebar__cardBorderGreenDark {
+    border-left: 5px solid #137333;
+}
+
+.PatientFinancialSidebar__cardBorderBlue {
+    border-left: 5px solid #1a73e8;
+}
+
+.PatientFinancialSidebar__financialContentPadded {
+    padding: 1.25rem;
+}
+
+.PatientFinancialSidebar__smallDebt {
+    color: #ea4335;
+    font-weight: 600;
+}
+
+.PatientFinancialSidebar__smallClear {
+    color: #34a853;
+    font-weight: 600;
+}
+
+.PatientFinancialSidebar__debtActions {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.PatientFinancialSidebar__btnFlex1 {
+    flex: 1;
+}
+
+.PatientFinancialSidebar__financialAmountBig {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #137333;
+    line-height: 1;
+}
+
+.PatientFinancialSidebar__financialAmountBlue {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #1a73e8;
+    line-height: 1;
+}
+
+.PatientFinancialSidebar__smallMuted {
+    color: var(--gray-600);
+    font-weight: 600;
+}
+
+.PatientFinancialSidebar__ledgerCard {
+    background: #ffffff;
+    border: 1px solid var(--gray-200);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.PatientFinancialSidebar__ledgerHeader {
+    padding: 1rem 1.25rem;
+    background: var(--gray-100);
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.PatientFinancialSidebar__ledgerTitle {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-800);
+}
+
+.PatientFinancialSidebar__iconPrimary {
+    color: var(--primary-color, #1a73e8);
+}
+
+.PatientFinancialSidebar__ledgerRecords {
+    font-size: 0.85rem;
+    color: var(--gray-600);
+    font-weight: 600;
+}
+
+.PatientFinancialSidebar__ledgerScroll {
+    overflow-x: auto;
+}
+
+.PatientFinancialSidebar__ledgerTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.PatientFinancialSidebar__ledgerTheadRow {
+    background: #f8f9fa;
+    border-bottom: 2px solid var(--gray-200);
+    color: var(--gray-700);
+    text-align: left;
+}
+
+.PatientFinancialSidebar__ledgerTh {
+    padding: 0.75rem 1rem;
+}
+
+.PatientFinancialSidebar__ledgerThRight {
+    padding: 0.75rem 1rem;
+    text-align: right;
+}
+
+.PatientFinancialSidebar__ledgerThCenter {
+    padding: 0.75rem 1rem;
+    text-align: center;
+}
+
+.PatientFinancialSidebar__ledgerRow {
+    border-bottom: 1px solid var(--gray-100);
+}
+
+.PatientFinancialSidebar__ledgerTd {
+    padding: 0.75rem 1rem;
+}
+
+.PatientFinancialSidebar__ledgerTdRight {
+    padding: 0.75rem 1rem;
+    text-align: right;
+}
+
+.PatientFinancialSidebar__ledgerTdCenter {
+    padding: 0.75rem 1rem;
+    text-align: center;
+}
+
+.PatientFinancialSidebar__ledgerTdRightStrong {
+    padding: 0.75rem 1rem;
+    text-align: right;
+    font-weight: 700;
+}
+
+.PatientFinancialSidebar__tdNowrap {
+    white-space: nowrap;
+}
+
+.PatientFinancialSidebar__tdDate {
+    font-weight: 600;
+}
+
+.PatientFinancialSidebar__tdTime {
+    color: var(--gray-500);
+}
+
+.PatientFinancialSidebar__tdConcept {
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.PatientFinancialSidebar__tdConceptSub {
+    color: var(--gray-600);
+    text-transform: capitalize;
+}
+
+.PatientFinancialSidebar__tdDoctor {
+    color: var(--gray-700);
+}
+
+.PatientFinancialSidebar__tdAmount {
+    font-weight: 700;
+    color: var(--gray-900);
+}
+
+.PatientFinancialSidebar__tdPaidPositive {
+    color: #137333;
+}
+
+.PatientFinancialSidebar__tdPaidZero {
+    color: var(--gray-500);
+}
+
+.PatientFinancialSidebar__ledgerStatus {
+    padding: 0.25rem 0.65rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.PatientFinancialSidebar__statusPaid {
+    background: #e6f4ea;
+    color: #137333;
+}
+
+.PatientFinancialSidebar__statusPending {
+    background: #fce8e6;
+    color: #c5221f;
+}
+
+.PatientFinancialSidebar__statusBonified {
+    background: #e8f0fe;
+    color: #1a73e8;
+}
+
+.PatientFinancialSidebar__ledgerEmpty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--gray-600);
+}

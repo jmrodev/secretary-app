@@ -186,6 +186,17 @@ export const general = {
     debit: "Tarjeta de Débito",
     modal_close: "Cerrar modal",
 
+    // i18n cleanup / GGA remediation additions (client-i18n-fallback-cleanup)
+    cheque: "Cheque",
+    contacts_section: "Contactos",
+    institution_prefix: "Institución",
+    inst_payment_selected: "Se pagarán las {count} transacciones seleccionadas por {amount}.",
+    confirm_delete_conversation_history: "¿Seguro que deseas eliminar esta conversación del historial?",
+    conversation_deleted_success: "Conversación eliminada con éxito.",
+    conversation_delete_error: "No se pudo eliminar la conversación.",
+    rx_link_whatsapp_message: "Hola {name}, te adjuntamos el enlace a tu receta médica: {link}",
+    financial_reminder_whatsapp: "Hola {full_name}, te escribimos de Cima Salud para informarte que figura un saldo pendiente de {amount} en tu cuenta. ¿Podrías confirmarnos cuándo podrías regularizarlo? ¡Gracias!",
+
     // Synced translations
     april: "Abril",
     august: "Agosto",

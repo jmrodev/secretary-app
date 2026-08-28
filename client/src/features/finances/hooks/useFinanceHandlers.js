@@ -6,7 +6,7 @@ import { api } from '@/api/axios';
  * Orchestrates all financial actions (payments, closures, balancing).
  */
 export const useFinanceHandlers = ({
-    user, t, showMessage, confirm, alert,
+    user, t, showMessage, confirm,
     transactions, pendingClosures, duplicateClosures,
     closeBoxModal, closeAmount, editingTx,
     setLoading, fetchData, setEditingTx, setModalOpen,
@@ -15,13 +15,13 @@ export const useFinanceHandlers = ({
 }) => {
 
     const handleDeleteTransaction = useCallback(async (id) => {
-        if (!await confirm(t('confirm_delete_transaction') || "¿Eliminar esta operación?")) return;
+        if (!await confirm(t('confirm_delete_transaction'))) return;
         try {
             await api.delete(`/finances/transactions/${id}`);
-            showMessage(t('transaction_symbol_deleted') || "Operación eliminada", 'success');
+            showMessage(t('transaction_symbol_deleted'), 'success');
             fetchData();
-        } catch { alert(t('failed_delete_transaction')); }
-    }, [confirm, t, showMessage, fetchData, alert]);
+        } catch (err) { console.error('[useFinanceHandlers] Delete transaction failed:', err); showMessage(t('failed_delete_transaction'), 'error'); }
+    }, [confirm, t, showMessage, fetchData]);
 
     /**
      * ECC: High-Performance Auto-Balancing (Arqueo)
@@ -42,7 +42,7 @@ export const useFinanceHandlers = ({
             const res = await api.post('/finances/cash-box/balancing', payload);
             const { difference } = res.data.data;
 
-            let msg = t('box_closed_success_msg') || 'Caja cerrada exitosamente';
+            let msg = t('box_closed_success_msg');
             if (difference !== 0) {
                 msg += `. Diferencia: $${difference.toLocaleString()}`;
             }
@@ -51,14 +51,14 @@ export const useFinanceHandlers = ({
             fetchData();
         } catch (err) {
             console.error("[ECC-Finance] Balancing error:", err);
-            showMessage(t('error_processing_closure') || "Error al procesar el arqueo", 'error');
+            showMessage(t('error_processing_closure'), 'error');
         } finally {
             setLoading(false);
         }
     }, [setLoading, showMessage, fetchData, t]);
 
     const handleGenerateInvoice = useCallback(async (transactionId) => {
-        if (!await confirm(t('confirm_generate_invoice') || "¿Generar factura electrónica?")) return;
+        if (!await confirm(t('confirm_generate_invoice'))) return;
         try {
             const res = await api.post('/billing/invoice', { transactionId, cbteTipo: 11 });
             const msg = t('invoice_generated_success')?.replace('{number}', res.data.invoice.number) || `Factura: ${res.data.invoice.number}`;
@@ -66,7 +66,7 @@ export const useFinanceHandlers = ({
             fetchData();
         } catch (err) {
             console.error(err);
-            showMessage(err.response?.data?.error || t('error_generating_invoice') || "Error al generar factura", 'error');
+            showMessage(err.response?.data?.error || t('error_generating_invoice'), 'error');
         }
     }, [confirm, showMessage, fetchData, t]);
 
@@ -80,17 +80,17 @@ export const useFinanceHandlers = ({
             return acc;
         }, []);
 
-        if (toDeleteIds.length === 0) return showMessage(t('no_withdrawals_found') || "No hay entregas.", "info");
-        if (!await confirm(t('confirm_reset_day') || "¿Eliminar las entregas de este día?")) return;
+        if (toDeleteIds.length === 0) return showMessage(t('no_withdrawals_found'), "info");
+        if (!await confirm(t('confirm_reset_day'))) return;
 
         setLoading(true);
         try {
             await Promise.all(toDeleteIds.map(id => api.delete(`/finances/transactions/${id}`)));
-            showMessage(t('reset_day_success_msg') || "Día reseteado", 'success');
+            showMessage(t('reset_day_success_msg'), 'success');
             fetchData();
         } catch (err) {
             console.error(err);
-            showMessage(t('error_reset_day') || "Error al resetear", 'error');
+            showMessage(t('error_reset_day'), 'error');
         } finally { setLoading(false); }
     }, [transactions, showMessage, confirm, setLoading, fetchData, t]);
 

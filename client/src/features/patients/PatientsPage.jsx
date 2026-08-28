@@ -22,6 +22,7 @@ import { PatientRecycleBin } from './components/views/PatientRecycleBin';
 import { PatientDetailsView } from './components/views/PatientDetailsView';
 import { PatientManagerModal } from './components/modals/PatientManagerModal';
 import { DebtPaymentModal } from './components/modals/DebtPaymentModal';
+import styles from './PatientsPage.module.css';
 
 /**
  * PatientsPage (Orchestrator).
@@ -134,7 +135,7 @@ export const PatientsPage = () => {
                                             setSearchTerm('');
                                             executeSearch('');
                                         }}
-                                        placeholder={t('search_patients_placeholder') || 'Buscar pacientes (Presioná Enter)...'}
+                                        placeholder={t('search_patients_placeholder')}
                                     />
                                 )
                             }
@@ -155,7 +156,7 @@ export const PatientsPage = () => {
                         <section >
                             {activeTab === 'list' ? (
                                 <div className="patients-page__table-wrapper">
-                                    <div className="patients-page__pagination-top" style={{ marginBottom: '0.75rem' }}>
+                                    <div className={`patients-page__pagination-top ${styles.paginationTop}`}>
                                         <Pagination
                                             currentPage={currentPage}
                                             totalPages={totalPages}

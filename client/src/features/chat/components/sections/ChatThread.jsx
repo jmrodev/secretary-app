@@ -50,14 +50,14 @@ export const ChatThread = ({
                 )}
                 {isOtherTyping && (
                     <div className="floating-chat__bubble floating-chat__bubble--received typing-indicator">
-                        <em>{t('typing') || 'Escribiendo…'}</em>
+                        <em>{t('typing')}</em>
                     </div>
                 )}
             </div>
             <form className="floating-chat__input-area" onSubmit={handleSendMessage}>
                 <div className="floating-chat__input-wrapper">
                     <Input
-                        placeholder={t('reply_here_placeholder') || "Responde aquí…"}
+                        placeholder={t('reply_here_placeholder')}
                         value={messageText}
                         onChange={handleTyping}
                         disabled={sending}

@@ -25,14 +25,14 @@ export const RequirementMedicationList = ({
                 <div className="medication-list">
                     <h4 className="requirements-detail__section-title">
                         <Icon name="medication" size="1.2rem" color="var(--accent-color)" />
-                        {t('requested_medication') || 'Medicación Solicitada'}
+                        {t('requested_medication')}
                     </h4>
 
                     {unknownMeds.length > 0 && (
                         <section className="requirements-detail__group">
                             <h5 className="requirements-detail__group-title requirements-detail__group-title--unknown">
                                 <Icon name="warning" size="1rem" color="var(--error)" />
-                                {t('new_meds_warning') || 'Nuevos / No Habituales'}
+                                {t('new_meds_warning')}
                             </h5>
                             <div className="requirements-detail__grid">
                                 {unknownMeds.map((m) => (
@@ -54,7 +54,7 @@ export const RequirementMedicationList = ({
                         <section className="requirements-detail__group">
                             <h5 className="requirements-detail__group-title requirements-detail__group-title--known">
                                 <Icon name="verified" size="1rem" color="var(--success)" />
-                                {t('habitual_meds') || 'Habituales (Validado)'}
+                                {t('habitual_meds')}
                             </h5>
                             <div className="requirements-detail__grid">
                                 {knownMeds.map((m) => (
