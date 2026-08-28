@@ -3,7 +3,7 @@ import React from 'react';
 import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
-import inputStyles from '@/components/atoms/Input.module.css';
+import { Select } from '@/components/atoms/Select';
 import { MedicationAutocomplete } from '@/features/medical_documents/components/ui/MedicationAutocomplete';
 import styles from './PrescriptionItemsList.module.css';
 
@@ -23,6 +23,34 @@ export const PrescriptionItemsList = ({
     handleAddItem, handleSelectMedication,
     canAdd, daysSupply: _daysSupply, refillDateStr: _refillDateStr, freqPresets
 }) => {
+    const frequencyOptions = freqPresets
+        ? freqPresets.map((p, idx) => {
+              const safeKey = p.label
+                  .replace('½', 'half')
+                  .replace('¼', 'quarter')
+                  .replace('¾', 'three_quarters')
+                  .replace('/', '_per_')
+                  .replace(' ', '_')
+                  .toLowerCase();
+              const translationKey = `freq_${safeKey}`;
+              const labelText =
+                  t(translationKey) === translationKey
+                      ? p.text.charAt(0).toUpperCase() + p.text.slice(1)
+                      : t(translationKey);
+              return { value: idx, label: labelText };
+          })
+        : [];
+
+    const unitsPerBoxOptions = [
+        { value: '', label: '-' },
+        ...[10, 14, 20, 28, 30, 40, 50, 60, 100].map((v) => ({ value: v, label: String(v) }))
+    ];
+
+    const boxesOptions = [
+        { value: '', label: '-' },
+        ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((v) => ({ value: v, label: String(v) }))
+    ];
+
     return (
         <div className={styles.PrescriptionItemsList__container}>
             <div className={`${styles.PrescriptionItemsList__tableWrapper} ${styles.PrescriptionItemsList__tableWrapperVisible}`}>
@@ -59,47 +87,36 @@ export const PrescriptionItemsList = ({
                                     />
                                 </td>
                                 <td className={styles.PrescriptionItemsList__formCell}>
-                                    <select
-                                        className={`${inputStyles.Input__root} ${inputStyles.Input__sm} ${styles.PrescriptionItemsList__controlSm}`}
+                                    <Select
+                                        options={frequencyOptions}
                                         value={tempFreqPreset !== null ? tempFreqPreset : ''}
                                         onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
-                                        aria-label={t('frequency')}
-                                    >
-                                        <option value="" disabled className={styles.PrescriptionItemsList__optionBlack}>{t('frequency')}…</option>
-                                        {freqPresets && freqPresets.map((p, idx) => {
-                                            const safeKey = p.label.replace('½', 'half').replace('¼', 'quarter').replace('¾', 'three_quarters').replace('/', '_per_').replace(' ', '_').toLowerCase();
-                                            const translationKey = `freq_${safeKey}`;
-                                            const labelText = t(translationKey) === translationKey ? (p.text.charAt(0).toUpperCase() + p.text.slice(1)) : t(translationKey);
-                                            return <option key={`option-${p.label}`} value={idx} className={styles.PrescriptionItemsList__optionBlack}>{labelText}</option>;
-                                        })}
-                                    </select>
+                                        placeholder={`${t('frequency')}…`}
+                                        size="sm"
+                                        className={styles.PrescriptionItemsList__controlSm}
+                                        ariaLabel={t('frequency')}
+                                    />
                                 </td>
                                 <td className={styles.PrescriptionItemsList__formCell}>
-                                    <select
-                                        className={`${inputStyles.Input__root} ${inputStyles.Input__sm} ${styles.PrescriptionItemsList__controlSm} ${styles.PrescriptionItemsList__formSelectUnits}`}
+                                    <Select
+                                        options={unitsPerBoxOptions}
                                         value={tempUnitsPerBox}
                                         onChange={e => handleQuantityChange('units_per_box', e.target.value)}
-                                        aria-label={t('units_per_box')}
-                                    >
-                                            <option value="" className={styles.PrescriptionItemsList__optionBlack}>-</option>
-                                            {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
-                                                <option key={v} value={v} className={styles.PrescriptionItemsList__optionBlack}>{v}</option>
-                                            ))}
-                                    </select>
+                                        size="sm"
+                                        className={`${styles.PrescriptionItemsList__controlSm} ${styles.PrescriptionItemsList__formSelectUnits}`}
+                                        ariaLabel={t('units_per_box')}
+                                    />
                                 </td>
                                 <td className={styles.PrescriptionItemsList__formCell}>
                                     <div className={`${styles.PrescriptionItemsList__qtyInputs} ${styles.PrescriptionItemsList__qtyInputsRow}`}>
-                                        <select
-                                            className={`${inputStyles.Input__root} ${inputStyles.Input__sm} ${styles.PrescriptionItemsList__controlSm} ${styles.PrescriptionItemsList__formSelectBoxes}`}
+                                        <Select
+                                            options={boxesOptions}
                                             value={tempBoxes}
                                             onChange={e => handleQuantityChange('boxes', e.target.value)}
-                                            title={t('boxes_quantity')}
-                                        >
-                                            <option value="" className={styles.PrescriptionItemsList__optionBlack}>-</option>
-                                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(v => (
-                                                <option key={v} value={v} className={styles.PrescriptionItemsList__optionBlack}>{v}</option>
-                                            ))}
-                                        </select>
+                                            size="sm"
+                                            className={`${styles.PrescriptionItemsList__controlSm} ${styles.PrescriptionItemsList__formSelectBoxes}`}
+                                            ariaLabel={t('boxes_quantity')}
+                                        />
                                     </div>
                                 </td>
                                 <td className={`${styles.PrescriptionItemsList__formCell} ${styles.PrescriptionItemsList__cellCenter}`}>

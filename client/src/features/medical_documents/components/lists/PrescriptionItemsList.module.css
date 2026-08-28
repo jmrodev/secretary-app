@@ -165,10 +165,6 @@
     text-align: center;
 }
 
-.PrescriptionItemsList__optionBlack {
-    color: black;
-}
-
 .PrescriptionItemsList__qtyInputsRow {
     display: flex;
     gap: 0.35rem;
