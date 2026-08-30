@@ -147,7 +147,7 @@ importers:
         version: 9.0.3
       knex:
         specifier: ^3.3.0
-        version: 3.3.0(mariadb@3.5.2)(mysql2@3.23.4(@types/node@26.2.0))
+        version: 3.3.0(mariadb@3.5.2)(mysql2@3.24.2(@types/node@26.2.0))
       mariadb:
         specifier: 3.5.2
         version: 3.5.2
@@ -158,8 +158,8 @@ importers:
         specifier: ^2.2.0
         version: 2.2.0
       mysql2:
-        specifier: ^3.23.2
-        version: 3.23.4(@types/node@26.2.0)
+        specifier: ^3.24.2
+        version: 3.24.2(@types/node@26.2.0)
       node-cron:
         specifier: ^4.2.1
         version: 4.6.0
@@ -4032,8 +4032,8 @@ packages:
     resolution: {integrity: sha512-6rdyFg2kLrMh9Jee7/BMPuV9lEAd7lLW2YUpF9/YxR7njyoUwwQ0ZPh3TaIY50Sw6vlyD2HW3wGOkTS4P79xrQ==}
     engines: {node: '>= 10.16.0'}
 
-  mysql2@3.23.4:
-    resolution: {integrity: sha512-J1Rgl8Oy5iw3mOBjKeTMQ3cJNjMYtJYavQVXShsMtSj9rKV8Q1+QaGKNJqDVQFcNINqYYp6Vxd90r69cCoBxBA==}
+  mysql2@3.24.2:
+    resolution: {integrity: sha512-l9kXeKGwd6VCbSjmpO/bLWb+YCYpbvE4whte8ec6InXebvCNyEEydyRCnRU+TSHNqRLJ8B+Tk1uWb+vMCJgJzA==}
     engines: {node: '>= 8.0'}
     peerDependencies:
       '@types/node': '>= 8'
@@ -8993,7 +8993,7 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knex@3.3.0(mariadb@3.5.2)(mysql2@3.23.4(@types/node@26.2.0)):
+  knex@3.3.0(mariadb@3.5.2)(mysql2@3.24.2(@types/node@26.2.0)):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -9011,7 +9011,7 @@ snapshots:
       tildify: 2.0.0
     optionalDependencies:
       mariadb: 3.5.2
-      mysql2: 3.23.4(@types/node@26.2.0)
+      mysql2: 3.24.2(@types/node@26.2.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -9247,7 +9247,7 @@ snapshots:
       concat-stream: 2.0.0
       type-is: 1.6.18
 
-  mysql2@3.23.4(@types/node@26.2.0):
+  mysql2@3.24.2(@types/node@26.2.0):
     dependencies:
       '@types/node': 26.2.0
       aws-ssl-profiles: 1.1.2
