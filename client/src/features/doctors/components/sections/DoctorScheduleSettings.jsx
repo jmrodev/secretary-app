@@ -28,7 +28,7 @@ export const DoctorScheduleSettings = ({
     loading
 }) => {
     const { t } = useLanguage();
-    const [focusedIndex, setFocusedIndex] = useState(null);
+    const [focusedKey, setFocusedKey] = useState(null);
 
     // Initialize schedule with unique keys if missing
     useEffect(() => {
@@ -37,51 +37,55 @@ export const DoctorScheduleSettings = ({
             if (needsKeys) {
                 const withKeys = schedule.map((s, idx) => ({
                     ...s,
-                    _key: s._key || s.id || `new-${Date.now()}-${idx}`
+                    _key: s._key || (s.id ? `sched-${s.id}` : `sched-init-${idx}-${Date.now()}`)
                 }));
-                if (JSON.stringify(withKeys) !== JSON.stringify(schedule)) {
-                    setSchedule(withKeys);
-                }
+                setSchedule(withKeys);
             }
         }
     }, [schedule, setSchedule]);
 
     const handleAddBlock = (dayId) => {
         setSchedule(prev => [
-            ...prev,
+            ...(Array.isArray(prev) ? prev : []),
             {
-                _key: `new-${Date.now()}`,
+                _key: `block-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
                 day_of_week: dayId,
                 start_time: '14:00',
                 end_time: '18:00',
                 is_break: 0,
-                default_type: 'consultation'
+                default_type: 'consultation',
+                force_hour_alignment: 0
             }
         ]);
     };
 
-    const handleRemoveBlock = (indexToRemove) => {
-        setSchedule(prev => prev.filter((_, idx) => idx !== indexToRemove));
+    const handleRemoveBlock = (keyToRemove) => {
+        setSchedule(prev => (Array.isArray(prev) ? prev : []).filter(s => s._key !== keyToRemove));
     };
 
-    const handleBlockChange = (index, field, value) => {
-        setSchedule(prev => prev.map((s, idx) => idx === index ? { ...s, [field]: value } : s));
+    const handleBlockChange = (key, field, value) => {
+        setSchedule(prev => (Array.isArray(prev) ? prev : []).map(s => (s._key === key ? { ...s, [field]: value } : s)));
     };
 
     const toggleDay = (dayId) => {
         setSchedule(prev => {
-            const hasDay = prev.some(s => s.day_of_week === dayId);
+            const list = Array.isArray(prev) ? prev : [];
+            const hasDay = list.some(s => Number(s.day_of_week) === Number(dayId));
             if (hasDay) {
-                return prev.filter(s => s.day_of_week !== dayId);
-            } else {
-                return [...prev, {
-                    day_of_week: dayId,
+                return list.filter(s => Number(s.day_of_week) !== Number(dayId));
+            }
+            return [
+                ...list,
+                {
+                    _key: `block-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+                    day_of_week: Number(dayId),
                     start_time: '08:00',
                     end_time: '20:00',
                     is_break: 0,
-                    default_type: 'consultation'
-                }];
-            }
+                    default_type: 'consultation',
+                    force_hour_alignment: 0
+                }
+            ];
         });
     };
 
@@ -89,16 +93,19 @@ export const DoctorScheduleSettings = ({
     const [bulkEnd, setBulkEnd] = useState('20:00');
 
     const applyBulk = (daysToApply) => {
-        const daysToApplySet = new Set(daysToApply);
+        const daysToApplySet = new Set(daysToApply.map(Number));
         setSchedule(prev => {
-            let newSched = prev.filter(s => !daysToApplySet.has(s.day_of_week));
+            const list = Array.isArray(prev) ? prev : [];
+            const newSched = list.filter(s => !daysToApplySet.has(Number(s.day_of_week)));
             daysToApply.forEach(dayId => {
                 newSched.push({
-                    day_of_week: dayId,
+                    _key: `block-${Date.now()}-${dayId}-${Math.random().toString(36).slice(2, 7)}`,
+                    day_of_week: Number(dayId),
                     start_time: bulkStart,
                     end_time: bulkEnd,
                     is_break: 0,
-                    default_type: 'consultation'
+                    default_type: 'consultation',
+                    force_hour_alignment: 0
                 });
             });
             return newSched;
@@ -125,14 +132,14 @@ export const DoctorScheduleSettings = ({
 
             <div className={`${styles.DoctorScheduleSettings__days}`}>
                 {DAYS.map(day => {
-                    const dayBlocks = (Array.isArray(schedule) ? schedule : []).reduce((acc, s, idx) => {
-                        if (s.day_of_week === day.id) {
-                            acc.push({ ...s, originalIndex: idx });
-                        }
-                        return acc;
-                    }, []);
+                    const dayBlocks = (Array.isArray(schedule) ? schedule : [])
+                        .filter(s => Number(s.day_of_week) === Number(day.id))
+                        .map((s, idx) => ({
+                            ...s,
+                            _key: s._key || (s.id ? `sched-${s.id}` : `sched-dyn-${day.id}-${idx}`)
+                        }));
 
-                    if (focusedIndex === null) {
+                    if (focusedKey === null) {
                         dayBlocks.sort((a, b) => {
                             const timeA = String(a.start_time || '00:00');
                             const timeB = String(b.start_time || '00:00');
@@ -163,12 +170,12 @@ export const DoctorScheduleSettings = ({
                                         <div className={`${styles.DoctorScheduleSettings__scheduleBlocks}`}>
                                             {dayBlocks.map((block) => (
                                                 <ScheduleTimeBlock
-                                                    key={block._key || block.originalIndex}
+                                                    key={block._key}
                                                     block={block}
-                                                    onFocus={() => setFocusedIndex(block.originalIndex)}
-                                                    onBlur={() => setFocusedIndex(null)}
+                                                    onFocus={() => setFocusedKey(block._key)}
+                                                    onBlur={() => setFocusedKey(null)}
                                                     onChange={handleBlockChange}
-                                                    onRemove={() => handleRemoveBlock(block.originalIndex)}
+                                                    onRemove={() => handleRemoveBlock(block._key)}
                                                     t={t}
                                                 />
                                             ))}
@@ -178,9 +185,8 @@ export const DoctorScheduleSettings = ({
                                                 size="sm"
                                                 onClick={() => handleAddBlock(day.id)}
                                                 className={`${styles.DoctorScheduleSettings__addBtn}`}
-                                                icon="+"
                                             >
-                                                {t('add_extra_block')}
+                                                + {t('add_time_slot')}
                                             </Button>
                                         </div>
                                     )}
@@ -193,5 +199,3 @@ export const DoctorScheduleSettings = ({
         </section>
     );
 };
-
-
