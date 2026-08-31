@@ -1,73 +1,71 @@
-/* ScheduleTimeBlock Molecule Styles (BEM) - Dark Mode Standard */
+/* ScheduleTimeBlock Molecule Styles (BEM) */
 
 .ScheduleTimeBlock__container {
     display: flex;
-    flex-flow: column wrap;
-    align-items: stretch;
-    gap: 1.5rem;
-    padding: 1.25rem 1.5rem;
-    background-color: var(--dashboard-card-bg);
-    border: 1px solid var(--dashboard-card-border);
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow-sm);
-    margin-bottom: 1rem;
-    animation: fade-in-up 0.3s ease-out;
-    transition: all 0.2s ease;
+    animation: fade-in-up 0.2s ease-out;
+    transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .ScheduleTimeBlock__container:hover {
     border-color: var(--primary-color);
-    background-color: var(--schedule-block-hover-bg);
 }
 
 .ScheduleTimeBlock__inputs {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-xs);
 }
 
 .ScheduleTimeBlock__connector {
-    font-size: 0.65rem;
-    font-weight: 900;
+    font-size: 0.75rem;
+    font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    padding: 0 var(--spacing-xs);
 }
 
 .ScheduleTimeBlock__divider {
     width: 1px;
     height: 1.5rem;
-    background: var(--dashboard-card-border);
-    margin: 0 0.5rem;
+    background: var(--border-color);
 }
 
 .ScheduleTimeBlock__typeContainer {
-    flex: 1;
-    min-width: 120px;
+    min-width: 130px;
 }
 
-.ScheduleTimeBlock__typeSelect--virtual {
-    color: var(--primary-color);
+.ScheduleTimeBlock__typeSelectVirtual {
+    color: var(--accent-color);
+    font-weight: 700;
 }
 
 .ScheduleTimeBlock__options {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-md);
     margin-left: auto;
 }
 
 .ScheduleTimeBlock__alignment {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-xs);
     cursor: pointer;
     user-select: none;
 }
 
 .ScheduleTimeBlock__checkbox {
-    width: 1.1rem;
-    height: 1.1rem;
+    width: 1.125rem;
+    height: 1.125rem;
     accent-color: var(--primary-color);
     cursor: pointer;
 }
@@ -78,7 +76,7 @@
     color: var(--text-muted);
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.25rem;
     transition: color 0.2s ease;
     text-transform: uppercase;
 }
@@ -88,16 +86,17 @@
 }
 
 .ScheduleTimeBlock__remove {
-    transition: all 0.2s ease;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
 }
 
 .ScheduleTimeBlock__remove:hover {
-    color: var(--danger);
-    background-color: var(--schedule-remove-hover-bg);
+    color: var(--error);
+    background-color: var(--card-hover-bg);
 }
 
 @keyframes fade-in-up {
-    from { opacity: 0; transform: translateY(5px); }
+    from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
@@ -114,5 +113,6 @@
     .ScheduleTimeBlock__options {
         margin-left: 0;
         justify-content: space-between;
+        width: 100%;
     }
 }
