@@ -5,6 +5,7 @@ Este documento contiene las reglas de oro y estándares obligatorios para todo e
 ---
 
 ## 1. Reglas Generales del Repositorio
+- **Alcance de Revisión (Diff-only)**: Las revisiones automáticas (GGA / AI Agent) deben validar **exclusivamente las líneas modificadas en el diff del cambio**. Está prohibido bloquear un commit por deuda técnica preexistente en código no tocado por la tarea.
 - **Manejo Seguro de Secretos**: Nunca hardcodees tokens, claves API, contraseñas o URLs de bases de datos. Usá variables de entorno (`process.env` en Node.js o `import.meta.env` en React) y listalas en `.env.example`.
 - **Inmutabilidad**: Preferí siempre `const` sobre `let`. Nunca mutés variables u objetos globalmente de forma directa; utilizá copias limpias.
 - **Manejo de Errores Obligatorio**: Nunca ignores errores. Los bloques `catch` vacíos o tragar errores en silencio están prohibidos. Todo error debe registrarse (`console.error` o logs específicos) o propagarse adecuadamente.
@@ -15,7 +16,7 @@ Este documento contiene las reglas de oro y estándares obligatorios para todo e
 
 ## 2. Frontend (React 19 & CSS)
 - **Componentes de React**:
-  - Usá siempre componentes funcionales y hooks modernos. Están estrictamente prohibidos los componentes basados en clases.
+  - Usá siempre componentes funcionales y hooks modernos. Están estrictamente prohibidos los componentes basados en clases, **con la única excepción de `ErrorBoundary` (obligatorio por diseño de la API de React)**.
   - El estado compartido debe manejarse mediante **Context API** (`/src/context`) o Hooks personalizados (`/src/hooks`).
 - **Imports/Exports**:
   - Preferí **exports nombrados** (`export const Component = ...`) sobre exports por defecto (`export default`).
