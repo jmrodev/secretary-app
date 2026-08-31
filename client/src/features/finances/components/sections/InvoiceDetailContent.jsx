@@ -56,7 +56,7 @@ export const InvoiceDetailContent = ({ tx, formatDate }) => {
 
                 <p className={`${styles.InvoiceDetailContent__row}`}>
                     <strong>{t('payment_method')}:</strong> 
-                    <span className={styles.methodCapitalized}>{tx.method || t('cash')}</span>
+                    <span className={styles.InvoiceDetailContent__methodCapitalized}>{tx.method || t('cash')}</span>
                 </p>
                 <p className={`${styles.InvoiceDetailContent__row}`}>
                     <strong>{t('payment_status')}:</strong> 
@@ -72,7 +72,7 @@ export const InvoiceDetailContent = ({ tx, formatDate }) => {
                 {tx.proof_file && (
                     <p className={`${styles.InvoiceDetailContent__row}`}>
                         <strong>{t('proof_file_attached')}:</strong> 
-                        <a href={tx.proof_file} target="_blank" rel="noreferrer" className={styles.proofLink}>
+                        <a href={tx.proof_file} target="_blank" rel="noreferrer" className={styles.InvoiceDetailContent__proofLink}>
                             {t('view_file')}
                         </a>
                     </p>
