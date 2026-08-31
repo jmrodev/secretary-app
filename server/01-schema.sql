@@ -2426,6 +2426,23 @@ BEGIN
         END WHILE;
     END IF;
 
+    -- 3. Dynamic injection of any booked appointment whose timestamp does not coincide with standard slots (e.g. 14:15, 15:45)
+    INSERT INTO temp_slots (slot_date, slot_time, slot_status, is_out_of_hours)
+    SELECT DISTINCT 
+        DATE(a.appointment_date),
+        TIME(a.appointment_date),
+        'taken',
+        CASE WHEN a.is_out_of_hours = 1 THEN 1 ELSE 0 END
+    FROM appointments a
+    WHERE a.doctor_id = p_doctor_id
+      AND DATE(a.appointment_date) = v_date
+      AND a.status NOT IN ('cancelled', 'suspended')
+      AND NOT EXISTS (
+          SELECT 1 FROM temp_slots ts 
+          WHERE ts.slot_date = DATE(a.appointment_date) 
+            AND ts.slot_time = TIME(a.appointment_date)
+      );
+
     SELECT 
         a.id,
         a.appointment_date,
@@ -2595,6 +2612,8 @@ BEGIN
         SET v_days_counter = v_days_counter + 1;
     END WHILE;
 
+    -- Interval collision overlap: A slot [S_start, S_end) is FREE iff there is NO active appointment [A_start, A_end)
+    -- where S_start < A_end AND S_end > A_start
     SELECT 
         ts.slot_date as date,
         TIME_FORMAT(ts.slot_time, '%H:%i') as time,
@@ -2602,13 +2621,15 @@ BEGIN
         ts.is_break,
         ts.is_out_of_hours
     FROM temp_all_slots ts
-    LEFT JOIN appointments a 
-        ON a.doctor_id = p_doctor_id 
-        AND DATE(a.appointment_date) = ts.slot_date 
-        AND TIME(a.appointment_date) = ts.slot_time
-        AND a.status NOT IN ('cancelled', 'suspended')
-    WHERE a.id IS NULL
-      AND ts.slot_status != 'break'
+    WHERE ts.slot_status != 'break'
+      AND NOT EXISTS (
+          SELECT 1 FROM appointments a
+          WHERE a.doctor_id = p_doctor_id
+            AND DATE(a.appointment_date) = ts.slot_date
+            AND a.status NOT IN ('cancelled', 'suspended')
+            AND ts.slot_time < ADDTIME(TIME(a.appointment_date), SEC_TO_TIME(v_duration * 60))
+            AND ADDTIME(ts.slot_time, SEC_TO_TIME(v_duration * 60)) > TIME(a.appointment_date)
+      )
     ORDER BY ts.slot_date, ts.slot_time;
 END
 ;;
