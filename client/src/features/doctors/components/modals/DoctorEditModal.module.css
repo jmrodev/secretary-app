@@ -61,60 +61,58 @@
 .DoctorEditModal__scheduleConfig {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: var(--spacing-lg);
 }
 
 .DoctorEditModal__durationGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    background: var(--border-color);
-    backdrop-filter: blur(16px);
-    padding: 1.5rem;
-    border-radius: var(--radius);
+    gap: var(--spacing-md);
+    background: var(--card-surface-bg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 5%);
+    box-shadow: var(--shadow-sm);
 }
 
 .DoctorEditModal__overturnSection {
-    background: rgb(239 246 255 / 20%);
-    backdrop-filter: blur(16px);
-    padding: 1.5rem;
-    border-radius: var(--radius);
-    border: 1px solid rgb(255 255 255 / 15%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 5%);
+    background: var(--card-surface-bg);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
 }
 
 .DoctorEditModal__overturnTitle {
     font-size: 0.875rem;
     font-weight: 800;
-    color: var(--blue-800);
-    margin-bottom: 1.25rem;
+    color: var(--text-main);
+    margin-bottom: var(--spacing-md);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-xs);
     text-transform: uppercase;
-    letter-spacing: 0.025em;
+    letter-spacing: 0.05em;
 }
 
 .DoctorEditModal__overturnGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+    gap: var(--spacing-md);
 }
 
 .DoctorEditModal__overturnFooter {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--blue-100);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-color);
 }
 
 .DoctorEditModal__overturnHelp {
-    font-size: 0.7rem;
-    color: var(--blue-600);
-    margin-top: 0.5rem;
-    margin-left: 3rem;
-    font-style: italic;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-xs);
+    margin-left: 2.75rem;
+    line-height: 1.4;
 }
 
 .DoctorEditModal__fiscalDesc {
