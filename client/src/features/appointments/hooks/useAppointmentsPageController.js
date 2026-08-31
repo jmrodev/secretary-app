@@ -98,19 +98,19 @@ export const useAppointmentsPageController = () => {
 
     const handleWhatsAppConfirmation = useCallback(async (appt) => {
         let phone = appt.patient_phone;
-        if (!phone) { showMessage('No hay teléfono disponible para este paciente.', 'error'); return; }
+        if (!phone) { showMessage(t('no_phone_number_available'), 'error'); return; }
         let normalizedPhone = phone.replace(/\D/g, '');
         if (!normalizedPhone.startsWith('54') && normalizedPhone.length >= 10) normalizedPhone = '549' + normalizedPhone;
 
         const confirmed = await confirm(
-            `¿Enviar confirmación de WhatsApp a ${appt.patient_name || 'el paciente'}?`
+            t('whatsapp_confirm_send_confirmation', { patient: appt.patient_name || t('the_patient') })
         );
         if (!confirmed) return;
 
         const doctor = doctors.find(d => Number(d.id) === Number(appt.doctor_id));
         const message = buildWhatsAppMessage({ appt, doctor, settings, user, type: 'confirmation' });
         booking.setWhatsappModal({ open: true, phone: normalizedPhone, message });
-    }, [doctors, settings, user, confirm, showMessage, booking]);
+    }, [doctors, settings, user, confirm, showMessage, booking, t]);
 
     // --- 5. Derived State & Callbacks ---
     const institutions = useMemo(() => institutionsHook.data?.data?.institutions || [], [institutionsHook.data]);
