@@ -1,19 +1,19 @@
 /* DoctorScheduleSettings Styles (BEM) */
 
 .DoctorScheduleSettings__scheduleSettings {
-    /* --- Local Component Tokens --- */
-    --schedule-container-bg: var(--white);
-    --schedule-container-border: var(--gray-300);
-    --schedule-day-inactive-bg: var(--gray-50);
-    --schedule-day-active-bg: var(--white);
-    --schedule-day-border: var(--gray-200);
-    --schedule-day-active-border: var(--blue-500);
+    /* --- Local Component Tokens mapped to Design Tokens --- */
+    --schedule-container-bg: var(--card-surface-bg);
+    --schedule-container-border: var(--border-color);
+    --schedule-day-inactive-bg: var(--card-hover-bg);
+    --schedule-day-active-bg: var(--dashboard-card-bg);
+    --schedule-day-border: var(--border-color);
+    --schedule-day-active-border: var(--primary-color);
 
     /* ------------------------------ */
 
     background-color: var(--schedule-container-bg);
-    padding: 1.5rem;
-    border-radius: var(--radius);
+    padding: var(--spacing-lg);
+    border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
     border: 1px solid var(--schedule-container-border);
 }
@@ -22,17 +22,17 @@
     font-size: 1.125rem;
     font-weight: 800;
     color: var(--text-main);
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--spacing-xs);
 }
 
 .DoctorScheduleSettings__desc {
     font-size: 0.875rem;
     color: var(--text-muted);
-    margin-bottom: 1.5rem;
+    margin-bottom: var(--spacing-lg);
 }
 
 .DoctorScheduleSettings__loading {
-    padding: 3rem;
+    padding: var(--spacing-xl);
     text-align: center;
     color: var(--text-muted);
 }
@@ -40,36 +40,29 @@
 .DoctorScheduleSettings__days {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--spacing-md);
 }
 
 /* Bulk Actions area */
 .DoctorScheduleSettings__scheduleBulk {
-    margin-bottom: 2rem;
-    padding: 1.25rem;
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md);
     background-color: var(--schedule-day-inactive-bg);
-    border-radius: var(--radius);
+    border-radius: var(--radius-md);
     border: 1px solid var(--schedule-day-border);
-}
-
-.DoctorScheduleSettings__title {
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
 }
 
 .DoctorScheduleSettings__actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1.5rem;
+    gap: var(--spacing-md);
 }
 
 .DoctorScheduleSettings__timeInputs {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
 }
 
 .DoctorScheduleSettings__timeInput {
@@ -86,40 +79,41 @@
 
 .DoctorScheduleSettings__buttons {
     display: flex;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
 }
 
 /* Day Block */
 .DoctorScheduleSettings__scheduleDay {
-    padding: 1.25rem;
-    border-radius: var(--radius);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
     border: 1px solid var(--schedule-day-border);
     transition: all 0.2s ease;
     background-color: var(--schedule-day-inactive-bg);
-    opacity: 0.75;
+    opacity: 0.85;
 }
 
 .DoctorScheduleSettings__scheduleDayActive {
     background-color: var(--schedule-day-active-bg);
     border-color: var(--schedule-day-active-border);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
     opacity: 1;
 }
 
 .DoctorScheduleSettings__header {
     display: flex;
     align-items: flex-start;
-    gap: 1.25rem;
+    gap: var(--spacing-md);
 }
 
 .DoctorScheduleSettings__toggle {
-    padding-top: 0.25rem;
+    padding-top: var(--spacing-xs);
 }
 
 .DoctorScheduleSettings__checkbox {
     width: 1.25rem;
     height: 1.25rem;
     cursor: pointer;
+    accent-color: var(--primary-color);
 }
 
 .DoctorScheduleSettings__content {
@@ -130,7 +124,7 @@
     display: block;
     font-size: 1.125rem;
     font-weight: 800;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-sm);
     cursor: pointer;
     color: var(--text-muted);
 }
@@ -143,98 +137,11 @@
 .DoctorScheduleSettings__scheduleBlocks {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
 }
 
 .DoctorScheduleSettings__addBtn {
     align-self: flex-start;
     font-size: 0.875rem;
     color: var(--accent-color);
-}
-
-.DoctorScheduleSettings__root {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1rem;
-    background-color: var(--gray-50);
-    padding: 0.75rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--border-color);
-}
-
-.DoctorScheduleSettings__inputs {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.DoctorScheduleSettings__connector {
-    color: var(--text-muted);
-    font-size: 0.875rem;
-}
-
-.DoctorScheduleSettings__divider {
-    height: 1.5rem;
-    width: 1px;
-    background-color: var(--border-color);
-}
-
-@media (width <= 640px) {
-    .DoctorScheduleSettings__divider {
-        display: none;
-    }
-}
-
-.DoctorScheduleSettings__typeSelect {
-    padding: 0.4rem 0.75rem;
-    font-size: 0.875rem;
-    border-radius: var(--radius);
-    border: 1px solid var(--border-color);
-    background-color: white;
-    cursor: pointer;
-}
-
-.DoctorScheduleSettings__typeSelectVirtual {
-    color: var(--accent-color);
-    font-weight: 700;
-    background-color: var(--blue-50);
-    border-color: var(--blue-200);
-}
-
-.DoctorScheduleSettings__options {
-    display: flex;
-    align-items: center;
-}
-
-.DoctorScheduleSettings__alignment {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    cursor: pointer;
-    user-select: none;
-}
-
-.DoctorScheduleSettings__checkbox {
-    width: 1rem;
-    height: 1rem;
-    cursor: pointer;
-}
-
-.DoctorScheduleSettings__alignmentText {
-    font-size: 0.625rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    letter-spacing: 0.05em;
-}
-
-.DoctorScheduleSettings__remove {
-    margin-left: auto;
-    color: var(--text-muted);
-}
-
-.DoctorScheduleSettings__remove:hover {
-    color: var(--error);
-    background-color: var(--red-50);
 }

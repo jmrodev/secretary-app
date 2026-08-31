@@ -1,9 +1,9 @@
-@import url('./styles/variables.css');
-@import url('./styles/base.css');
-@import url('./styles/utilities.css');
-@import url('./styles/layout.css');
-@import url('./styles/layout-dashboard.css');
-@import url('./styles/components.css');
+@import './styles/variables.css';
+@import './styles/base.css';
+@import './styles/utilities.css';
+@import './styles/layout.css';
+@import './styles/layout-dashboard.css';
+@import './styles/components.css';
 
 
 /* Global Layout fixes */
