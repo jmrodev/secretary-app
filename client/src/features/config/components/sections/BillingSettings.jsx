@@ -13,6 +13,11 @@ import { buildDoctorInitialData } from '@/features/doctors/hooks/useDoctorsPageC
 import sharedStyles from '@/styles/shared.module.css';
 import styles from './BillingSettings.module.css';
 
+import { ScheduleBulkActions } from '@/features/appointments/components/schedule/ScheduleBulkActions';
+import { ScheduleTimeBlock } from '@/features/appointments/components/schedule/ScheduleTimeBlock';
+import { UserForm } from '@/features/users/components/UserForm';
+import { MessageTemplateEditor } from '@/features/config/components/forms/MessageTemplateEditor';
+
 /**
  * BillingSettings Feature Component.
  * Handles AFIP (Argentine Tax Authority) global environment configuration,
@@ -33,7 +38,7 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
 
     const doctors = React.useMemo(() => docData?.data?.doctors || docData?.doctors || [], [docData]);
 
-    // Modal state for editing a doctor's fiscal configuration
+    // Modal state for editing a doctor's fiscal and schedule configuration
     const [modalState, setModalState] = useState({
         isOpen: false,
         activeTab: 'fiscal',
@@ -43,6 +48,21 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
         loadingSchedule: false,
         schedule: []
     });
+
+    const fetchSchedule = async (doctorId) => {
+        setModalState(prev => ({ ...prev, loadingSchedule: true }));
+        try {
+            const res = await api.get(`/schedules/${doctorId}`);
+            setModalState(prev => ({
+                ...prev,
+                schedule: Array.isArray(res?.data) ? res.data : [],
+                loadingSchedule: false
+            }));
+        } catch (err) {
+            console.error('Failed to load schedule in billing', err);
+            setModalState(prev => ({ ...prev, schedule: [], loadingSchedule: false }));
+        }
+    };
 
     /**
      * Checks current AFIP server accessibility and status
@@ -72,9 +92,12 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
             data: initialData,
             connected: false,
             loadingGoogle: false,
-            loadingSchedule: false,
+            loadingSchedule: true,
             schedule: []
         });
+        if (doc?.id) {
+            fetchSchedule(doc.id);
+        }
     };
 
     const handleCloseModal = () => {
@@ -88,16 +111,26 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
         }));
     };
 
+    const handleScheduleChange = (newSchedule) => {
+        setModalState(prev => ({
+            ...prev,
+            schedule: typeof newSchedule === 'function' ? newSchedule(prev.schedule) : newSchedule
+        }));
+    };
+
     const handleSaveDoctor = async () => {
-        const { data } = modalState;
+        const { data, schedule } = modalState;
         try {
-            await api.put(`/users/doctors/${data.id}`, data);
+            await Promise.all([
+                api.put(`/users/doctors/${data.id}`, data),
+                api.put(`/schedules/${data.id}`, { schedule })
+            ]);
             showMessage(t('doctor_updated'), 'success');
             setModalState(prev => ({ ...prev, isOpen: false }));
             window.dispatchEvent(new CustomEvent('doctors-updated'));
             fetchDoctors();
         } catch (err) {
-            console.error('Failed to update doctor fiscal config', err);
+            console.error('Failed to update doctor fiscal and schedule config', err);
             showMessage(err.response?.data?.message || t('error_update'), 'error');
         }
     };
@@ -268,7 +301,7 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                 </div>
             </div>
 
-            {/* Doctor Edit Modal hooked directly for fiscal editing */}
+            {/* Doctor Edit Modal hooked directly for fiscal & schedule editing */}
             {modalState.isOpen && (
                 <DoctorEditModal
                     isOpen={modalState.isOpen}
@@ -280,6 +313,13 @@ export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
                     settings={settings}
                     onChangeData={handleFormDataChange}
                     onSave={handleSaveDoctor}
+                    schedule={modalState.schedule}
+                    setSchedule={handleScheduleChange}
+                    loadingSchedule={modalState.loadingSchedule}
+                    ScheduleBulkActionsComponent={ScheduleBulkActions}
+                    ScheduleTimeBlockComponent={ScheduleTimeBlock}
+                    UserFormComponent={UserForm}
+                    MessageTemplateEditorComponent={MessageTemplateEditor}
                     t={t}
                 />
             )}
