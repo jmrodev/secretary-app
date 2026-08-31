@@ -90,7 +90,7 @@ export const ScheduleTimeline = ({
                 })();
 
                 return (
-                    <div key={timeKey} className={styles.slotWrapper}>
+                    <div key={timeKey} className={styles.ScheduleTimeline__slotWrapper}>
                         {isCurrentSlot && (
                             <div ref={markerRef} className={styles.ScheduleTimeline__currentTimeLine} style={{ top: `${progressPercent}%` }}>
                                 <div className={styles.ScheduleTimeline__currentTimeLineLabel}>{t('now')}</div>

@@ -10,7 +10,7 @@ const dbReady = (async () => {
   // mariadb v3 ESM: createPool is a named export on the module namespace
   const { createPool } = mariadbModule.default ?? mariadbModule;
   _pool = createPool({
-    host: process.env.DB_HOST || 'localhost',
+    host: '172.39.0.5',  // IP de MaríaDB en la red Docker
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME || 'clinical_management',
