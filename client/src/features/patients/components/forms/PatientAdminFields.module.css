@@ -42,6 +42,21 @@
 .PatientAdminFields__groupSpan4 { grid-column: span 4; }
 .PatientAdminFields__groupSpan3 { grid-column: span 3; }
 
+.PatientAdminFields__fieldWidth12 {
+    width: 12ch;
+    flex-grow: 0;
+}
+
+.PatientAdminFields__fieldWidth16 {
+    width: 16ch;
+    flex-grow: 0;
+}
+
+.PatientAdminFields__fieldWidth18 {
+    width: 18ch;
+    flex-grow: 0;
+}
+
 .PatientAdminFields__label {
     font-size: 0.625rem;
     font-weight: 800;

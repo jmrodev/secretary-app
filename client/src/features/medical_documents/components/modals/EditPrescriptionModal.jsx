@@ -32,7 +32,7 @@ export const EditPrescriptionModal = ({
             title={`${t('prescription_for')} ${prescription.patient_name}`}
             footer={
                 editData._readOnly ? (
-                    <Button variant="secondary" onClick={onClose}>{t('close') || 'Cerrar'}</Button>
+                    <Button variant="secondary" onClick={onClose}>{t('close')}</Button>
                 ) : (
                     <>
                         <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
@@ -84,7 +84,7 @@ export const EditPrescriptionModal = ({
                         id="edit-prescription-bonified"
                         checked={editData.bonified || false}
                         onChange={e => onEditDataChange('bonified', e.target.checked)}
-                        label={t('bonified') || 'Bonificado (Sin Costo)'}
+                        label={t('bonified')}
                     />
                 )}
             </div>

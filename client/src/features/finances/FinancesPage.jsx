@@ -33,7 +33,7 @@ export const FinancesPage = ({ MedicationInputComponent }) => {
     const isAdminOrSecretary = user && (user.role === 'admin' || user.role === 'secretary');
 
     return (
-        <MainLayout wide flush title={t('finances') || 'Finanzas'}>
+        <MainLayout wide flush title={t('finances')}>
             <div>
                 <FeatureToolbar
                     className="__toolbar"
@@ -46,7 +46,7 @@ export const FinancesPage = ({ MedicationInputComponent }) => {
                                     onClick={() => setShowStats(!showStats)}
                                     icon={<Icon name={showStats ? "visibility_off" : "visibility"} size="1.1rem" />}
                                 >
-                                    {showStats ? (t('hide_summary') || 'Ocultar Resumen') : (t('show_summary') || 'Mostrar Resumen')}
+                                    {showStats ? (t('hide_summary')) : (t('show_summary'))}
                                 </Button>
 
                                 <Button
@@ -65,7 +65,7 @@ export const FinancesPage = ({ MedicationInputComponent }) => {
                                     onClick={() => handlers.setPendingClosuresOpen(true)}
                                     icon={<Icon name="calendar_view_week" size="1.1rem" />}
                                 >
-                                    {t('deliver_box') || 'Entregar Caja'}
+                                    {t('deliver_box')}
                                     <Badge 
                                         count={controller.pendingClosures.length} 
                                         position="top-right" 
@@ -79,7 +79,7 @@ export const FinancesPage = ({ MedicationInputComponent }) => {
 
                 <section >
                     {loading && filteredTransactions.length === 0 ? (
-                        <Loading variant="centered" text={t('loading') || 'Cargando...'} />
+                        <Loading variant="centered" text={t('loading')} />
                     ) : (
                         <div className="__content">
                             {isAdminOrSecretary && showStats && stats.length > 0 && (

@@ -14,7 +14,7 @@ export const PrescriptionExtraFields = ({ instructions, setInstructions, bonifie
                     rows={3}
                     value={instructions}
                     onChange={e => setInstructions(capitalizeFirst(e.target.value))}
-                    placeholder={t('instructions_placeholder') || 'ej. Tomar con comida. No superar dosis máxima.'}
+                    placeholder={t('instructions_placeholder')}
                 />
             </FormGroup>
 

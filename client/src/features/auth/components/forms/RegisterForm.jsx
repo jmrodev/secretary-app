@@ -28,7 +28,7 @@ export const RegisterForm = () => {
             <main className={`${styles.RegisterForm__root} ${styles.RegisterForm__register}`}>
                 <header className={`${styles.RegisterForm__header}`}>
                     <h1 className={`${styles.RegisterForm__title}`}>{t('create_account')}</h1>
-                    <p className={`${styles.RegisterForm__subtitle}`}>{t('complete_form_to_join') || 'Completa el formulario para unirte.'}</p>
+                    <p className={`${styles.RegisterForm__subtitle}`}>{t('complete_form_to_join')}</p>
                 </header>
 
                 {error && <div className={`${styles.RegisterForm__error}`}>{error}</div>}
@@ -53,7 +53,7 @@ export const RegisterForm = () => {
                             name="fullName"
                             value={formData.fullName}
                             onChange={updateRegisterData}
-                            placeholder={t('full_name') || "Nombre completo"}
+                            placeholder={t('full_name')}
                             disabled={loading}
                             required
                         />
@@ -75,7 +75,7 @@ export const RegisterForm = () => {
                             name="username"
                             value={formData.username}
                             onChange={updateRegisterData}
-                            placeholder={t('username') || "Usuario"}
+                            placeholder={t('username')}
                             disabled={loading}
                             required
                         />
@@ -101,7 +101,7 @@ export const RegisterForm = () => {
                                     name="specialty"
                                     value={formData.specialty}
                                     onChange={updateRegisterData}
-                                    placeholder={t('medical_specialty_placeholder') || "Especialidad médica"}
+                                    placeholder={t('medical_specialty_placeholder')}
                                     disabled={loading}
                                 />
                             </FormGroup>
@@ -110,7 +110,7 @@ export const RegisterForm = () => {
                                     name="cbu"
                                     value={formData.cbu}
                                     onChange={updateRegisterData}
-                                    placeholder={t('cbu_placeholder_example') || "CBU para transferencias"}
+                                    placeholder={t('cbu_placeholder_example')}
                                     disabled={loading}
                                 />
                             </FormGroup>
@@ -137,7 +137,7 @@ export const RegisterForm = () => {
                         className={`${styles.RegisterForm__buttonSubmit}`}
                         disabled={loading}
                     >
-                        {loading ? 'Preparando todo...' : t('register')}
+                        {loading ? t('preparing_everything') : t('register')}
                     </Button>
                 </form>
 

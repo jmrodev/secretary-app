@@ -102,3 +102,23 @@
     width: 1%;
     white-space: nowrap;
 }
+
+.PrescriptionHabitualMeds__thMedication {
+    width: 32%;
+}
+
+.PrescriptionHabitualMeds__thDose {
+    width: 8%;
+}
+
+.PrescriptionHabitualMeds__thCol15 {
+    width: 15%;
+}
+
+.PrescriptionHabitualMeds__metaCellCenter {
+    text-align: center;
+}
+
+.PrescriptionHabitualMeds__daysSupplyCenter {
+    justify-content: center;
+}

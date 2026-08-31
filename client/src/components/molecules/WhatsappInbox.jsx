@@ -47,8 +47,8 @@ export const WhatsappInbox = ({
                             variant="ghost" 
                             size="sm"
                             onClick={onLogout} 
-                            title={t('whatsapp_logout') || 'Desconectar'}
-                            icon={<Icon name="logout" size="1.1rem" color="#ef4444" />}
+                            title={t('whatsapp_logout')}
+                            icon={<Icon name="logout" size="1.1rem" color="var(--danger)" />}
                         />
                     )}
                     <Button 

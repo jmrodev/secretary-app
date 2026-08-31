@@ -45,7 +45,7 @@ export const MedicalRequestList = ({
                     <thead>
                         <tr>
                             <th className={`${styles.MedicalRequestList__th} ${styles.MedicalRequestList__thType}`}>{t('type')}</th>
-                            <th className={`${styles.MedicalRequestList__th}`}>{t('date') || 'Fecha'}</th>
+                            <th className={`${styles.MedicalRequestList__th}`}>{t('date')}</th>
                             <th className={`${styles.MedicalRequestList__th}`}>{t('patient')}</th>
                             <th className={`${styles.MedicalRequestList__th}`}>{t('doctor')}</th>
                             <th className={`${styles.MedicalRequestList__th} ${styles.MedicalRequestList__thStatus}`}>{t('status')}</th>
@@ -74,7 +74,7 @@ export const MedicalRequestList = ({
                                                         handleEditRequest({ ...r, _origin: 'request', _readOnly: true });
                                                     }
                                                 }}
-                                                title={t('view') || 'Ver'}
+                                                title={t('view')}
                                                 role="button"
                                                 tabIndex={0}
                                             >
@@ -117,8 +117,8 @@ export const MedicalRequestList = ({
                                             <div className={`${styles.MedicalRequestList__paymentBadge} medical-requests__payment-badge--${paymentStatusClass}`}>
                                                 <span className={`${styles.MedicalRequestList__paymentDot}`}></span>
                                                 {r.payment_status === 'paid' ? t('paid') :
-                                                    ((r.payment_status === 'debt' || r.payment_status === 'partial') ? `${t(r.payment_status) || (r.payment_status === 'partial' ? 'Parcial' : 'Deuda')} ${formatCurrency(r.debt_amount)}` :
-                                                        (r.payment_status === 'bonified' ? (t('bonified') || 'Bonificado') : t('pending')))}
+                                                    ((r.payment_status === 'debt' || r.payment_status === 'partial') ? `${t(r.payment_status)} ${formatCurrency(r.debt_amount)}` :
+                                                        (r.payment_status === 'bonified' ? (t('bonified')) : t('pending')))}
                                             </div>
 
                                             {r.payment_method && (
@@ -156,7 +156,7 @@ export const MedicalRequestList = ({
                                                             },
                                                             reqId: r.id
                                                         })}
-                                                        title={t('collect') || "Cobrar"}
+                                                        title={t('collect')}
                                                         icon={<Icon name="payments" size="1rem" />}
                                                     />
                                                     <Button
@@ -164,7 +164,7 @@ export const MedicalRequestList = ({
                                                         size="sm-compact"
                                                         className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnBonify}`}
                                                         onClick={() => onBonify(r.id)}
-                                                        title={t('bonify') || 'Bonificar'}
+                                                        title={t('bonify')}
                                                         icon={<Icon name="card_giftcard" size="1rem" />}
                                                     />
                                                 </>
@@ -197,7 +197,7 @@ export const MedicalRequestList = ({
                                                 size="sm-compact"
                                                 className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnView}`}
                                                 onClick={() => handleEditRequest({ ...r, _origin: 'request', _readOnly: true })}
-                                                title={t('view') || 'Ver'}
+                                                title={t('view')}
                                                 icon={<Icon name="visibility" size="1rem" />}
                                             />
 
@@ -207,7 +207,7 @@ export const MedicalRequestList = ({
                                                     size="sm-compact"
                                                     className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnEdit}`}
                                                     onClick={() => handleEditRequest({ ...r, _origin: 'request' })}
-                                                    title={t('edit') || 'Editar'}
+                                                    title={t('edit')}
                                                     icon={<Icon name="edit" size="1rem" />}
                                                 />
                                             )}
@@ -218,7 +218,7 @@ export const MedicalRequestList = ({
                                                     size="sm-compact"
                                                     className={`${styles.MedicalRequestList__actionBtn} ${styles.MedicalRequestList__actionBtnDelete}`}
                                                     onClick={() => handleDeleteRequest(r.id, r)}
-                                                    title={t('delete') || 'Eliminar'}
+                                                    title={t('delete')}
                                                     icon={<Icon name="delete" size="1rem" />}
                                                 />
                                             )}

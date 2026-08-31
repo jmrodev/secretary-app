@@ -10,7 +10,7 @@ export const MedicalRequirementRecycleBin = ({ recycleRequests, handleRestore, t
         return (
             <div className={managerStyles.empty}>
                 <Icon name="delete_sweep" size="3rem" />
-                <p>{t('recycle_empty') || 'No hay elementos en la papelera.'}</p>
+                <p>{t('recycle_empty')}</p>
             </div>
         );
     }
@@ -20,11 +20,11 @@ export const MedicalRequirementRecycleBin = ({ recycleRequests, handleRestore, t
             <table className={managerStyles.table}>
                 <thead>
                     <tr>
-                        <th className={managerStyles.tableHeader}>{t('element') || 'Elemento'}</th>
-                        <th className={managerStyles.tableHeader}>{t('deleted_by') || 'Eliminado Por'}</th>
-                        <th className={managerStyles.tableHeader}>{t('delete_date') || 'Fecha Eliminación'}</th>
-                        <th className={managerStyles.tableHeader}>{t('expires') || 'Expira'}</th>
-                        <th className={managerStyles.tableHeader}>{t('actions') || 'Acciones'}</th>
+                        <th className={managerStyles.tableHeader}>{t('element')}</th>
+                        <th className={managerStyles.tableHeader}>{t('deleted_by')}</th>
+                        <th className={managerStyles.tableHeader}>{t('delete_date')}</th>
+                        <th className={managerStyles.tableHeader}>{t('expires')}</th>
+                        <th className={managerStyles.tableHeader}>{t('actions')}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,7 +42,7 @@ export const MedicalRequirementRecycleBin = ({ recycleRequests, handleRestore, t
                                         onClick={() => handleRestore(item)}
                                         icon={<Icon name="restore" size="1rem" />}
                                     >
-                                        {t('restore') || 'Restaurar'}
+                                        {t('restore')}
                                     </Button>
                                 </div>
                             </td>

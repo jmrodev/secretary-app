@@ -37,7 +37,7 @@ export const PatientHistoryView = ({ patientAppointments, loading, onClose, t, s
                         {patientName}
                     </h2>
                     <span className={`${styles.PatientHistoryView__count}`}>
-                        {patientAppointments.length} {translate('appointments') || 'turnos'}
+                        {patientAppointments.length} {translate('appointments')}
                     </span>
                 </div>
                 <Button
@@ -54,9 +54,9 @@ export const PatientHistoryView = ({ patientAppointments, loading, onClose, t, s
                     <thead>
                         <tr>
                             <th className={`${styles.PatientHistoryView__th}`}>{translate('date')}</th>
-                            <th className={`${styles.PatientHistoryView__th}`}>{translate('time') || 'Hora'}</th>
+                            <th className={`${styles.PatientHistoryView__th}`}>{translate('time')}</th>
                             <th className={`${styles.PatientHistoryView__th}`}>{translate('doctor')}</th>
-                            <th className={`${styles.PatientHistoryView__th}`}>{translate('reason') || 'Motivo'}</th>
+                            <th className={`${styles.PatientHistoryView__th}`}>{translate('reason')}</th>
                             <th className={`${styles.PatientHistoryView__th} ${styles.PatientHistoryView__thStatus}`}>{translate('status')}</th>
                             <th className={`${styles.PatientHistoryView__th} ${styles.PatientHistoryView__thPayment}`}>{translate('payment')}</th>
                             <th className={`${styles.PatientHistoryView__th} ${styles.PatientHistoryView__thActions}`}>{translate('actions')}</th>
@@ -76,7 +76,7 @@ export const PatientHistoryView = ({ patientAppointments, loading, onClose, t, s
 
                             let paymentClass = 'pending';
                             let paymentLabel = translate('pending');
-                            if (isBonified) { paymentClass = 'bonified'; paymentLabel = translate('bonified') || 'Bonif.'; }
+                            if (isBonified) { paymentClass = 'bonified'; paymentLabel = translate('bonified'); }
                             else if (isFullyPaid) { paymentClass = 'paid'; paymentLabel = `$${paid.toLocaleString()}`; }
                             else if (hasDebt) { paymentClass = 'debt'; paymentLabel = `$${(pending || cost).toLocaleString()}`; }
                             else if (effectiveTotal === 0) { paymentClass = ''; paymentLabel = '-'; }
@@ -106,7 +106,7 @@ export const PatientHistoryView = ({ patientAppointments, loading, onClose, t, s
                                     <td className={`${styles.PatientHistoryView__td} ${styles.PatientHistoryView__tdReason}`}>
                                         <span title={appt.reason}>{appt.reason || '-'}</span>
                                         {appt.type === 'virtual' && (
-                                            <Icon name="videocam" size="0.9rem" className={styles.PatientHistoryView__virtualIcon} title={translate('virtual') || "Virtual"} />
+                                            <Icon name="videocam" size="0.9rem" className={styles.PatientHistoryView__virtualIcon} title={translate('virtual')} />
                                         )}
                                     </td>
                                     <td className={`${styles.PatientHistoryView__td}`}>

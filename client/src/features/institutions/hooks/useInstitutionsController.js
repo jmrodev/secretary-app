@@ -84,7 +84,7 @@ export const useInstitutionsController = () => {
             fetchInstitutions();
         } catch (err) {
             console.error(err);
-            showMessage(t('error_deleting') || 'Error al eliminar', 'error');
+            showMessage(t('error_deleting'), 'error');
         }
     }, [confirm, showMessage, fetchInstitutions, t]);
 

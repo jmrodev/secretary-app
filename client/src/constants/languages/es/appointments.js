@@ -48,4 +48,6 @@ export const appointments = {
     exploring_schedule: "Explorando agenda...",
     time_date: "Hora / Fecha",
     keyboard_nav_help: "Tip: Usa las flechas ← → o RePág/AvPág para navegar entre meses.",
+    payment_registered: "Cobro registrado",
+    bonified_appointment: "Turno bonificado",
 };

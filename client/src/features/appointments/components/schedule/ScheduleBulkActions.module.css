@@ -2,11 +2,10 @@
 
 .ScheduleBulkActions__root {
     padding: 1.5rem;
-    background-color: var(--gray-900);
+    background-color: var(--schedule-container-bg);
     border: 1px solid var(--dashboard-card-border);
     border-radius: var(--radius-md);
     margin-bottom: 2rem;
-    animation: fade-in-up 0.3s ease-out;
     box-shadow: var(--shadow-sm);
 }
 
@@ -28,8 +27,8 @@
 
 .ScheduleBulkActions__actions {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-flow: column wrap;
+    align-items: stretch;
     gap: 2rem;
 }
 
@@ -49,6 +48,7 @@
 
 .ScheduleBulkActions__buttons {
     display: flex;
+    justify-content: space-between;
     gap: 1rem;
 }
 
@@ -59,13 +59,13 @@
     letter-spacing: 0.075em;
 }
 
-@media (width <= 768px) {
+@media (width >= 769px) {
     .ScheduleBulkActions__actions {
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        align-items: center;
     }
     
     .ScheduleBulkActions__buttons {
-        justify-content: space-between;
+        justify-content: flex-start;
     }
 }

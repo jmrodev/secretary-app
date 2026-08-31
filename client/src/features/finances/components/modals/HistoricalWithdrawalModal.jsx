@@ -52,20 +52,20 @@ export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm,
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={t('manual_withdrawal') || "Registro de Retiro Manual / Pasado"}
+            title={t('manual_withdrawal')}
             footer={
                 <div className={`${styles.HistoricalWithdrawalModal__footer}`}>
                     <Button variant="secondary" onClick={onClose}>
                         {t('cancel')}
                     </Button>
                     <Button onClick={handleSubmit} variant="primary" icon={<Icon name="save" size="1.2rem" />}>
-                        {t('save_withdrawal') || "Registrar Retiro"}
+                        {t('save_withdrawal')}
                     </Button>
                 </div>
             }
         >
             <div className={`${styles.HistoricalWithdrawalModal__root}`}>
-                <FormGroup label={t('doctor') || 'Doctor'}>
+                <FormGroup label={t('doctor')}>
                     <Select
                         value={doctorId}
                         onChange={(e) => dispatch({ doctorId: e.target.value })}
@@ -74,7 +74,7 @@ export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm,
                     />
                 </FormGroup>
 
-                <FormGroup label={t('amount') || 'Monto ($)'}>
+                <FormGroup label={t('amount')}>
                     <Input
                         type="number"
                         value={amount}
@@ -88,7 +88,7 @@ export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm,
                 </FormGroup>
 
                 <div className={`${styles.HistoricalWithdrawalModal__grid}`}>
-                    <FormGroup label={t('date') || 'Fecha'}>
+                    <FormGroup label={t('date')}>
                         <Input
                             type="date"
                             value={date}
@@ -97,7 +97,7 @@ export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm,
                             className="historical-withdrawal-modal__input"
                         />
                     </FormGroup>
-                    <FormGroup label={t('time') || 'Hora'}>
+                    <FormGroup label={t('time')}>
                         <Input
                             type="time"
                             value={time}
@@ -108,11 +108,11 @@ export const HistoricalWithdrawalModal = ({ isOpen, onClose, doctors, onConfirm,
                     </FormGroup>
                 </div>
 
-                <FormGroup label={t('description') || 'Descripción'}>
+                <FormGroup label={t('description')}>
                     <Input
                         value={description}
                         onChange={(e) => dispatch({ description: e.target.value })}
-                        placeholder={t('historical_withdrawal_desc_placeholder') || 'Ej: Cierre del día martes'}
+                        placeholder={t('historical_withdrawal_desc_placeholder')}
                         className="historical-withdrawal-modal__input"
                     />
                 </FormGroup>

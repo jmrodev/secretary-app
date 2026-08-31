@@ -54,9 +54,9 @@ export const DoctorSelector = () => {
                     <Icon name="medical_services" size="1rem" color="var(--primary-color)" />
                 </div>
                 <div className={styles.DoctorSelector__labelGroup}>
-                    <span className={styles.DoctorSelector__label}>{t('doctor') || 'Médico'}</span>
+                    <span className={styles.DoctorSelector__label}>{t('doctor')}</span>
                     <span className={styles.DoctorSelector__value}>
-                        {currentDoctor ? currentDoctor.full_name : (t('please_select_doctor') || 'Seleccionar profesional')}
+                        {currentDoctor ? currentDoctor.full_name : (t('please_select_doctor'))}
                     </span>
                 </div>
                 <Icon name={isOpen ? 'expand_less' : 'expand_more'} size="1.2rem" className={styles.DoctorSelector__chevron} />

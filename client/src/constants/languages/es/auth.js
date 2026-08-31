@@ -48,4 +48,8 @@ export const auth = {
     website: "Sitio Web",
     edit_insurance: "Editar Obra Social",
     new_insurance: "Nueva Obra Social",
+    admin_auth_title: "Autorización de Administrador",
+    admin_auth_instruction: "Esta acción está restringida por seguridad. Por favor, ingrese la contraseña maestra de administrador para continuar con el proceso.",
+    confirm_action: "Confirmar Acción",
+    preparing_everything: "Preparando todo...",
 };

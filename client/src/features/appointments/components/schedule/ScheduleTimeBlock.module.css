@@ -2,8 +2,8 @@
 
 .ScheduleTimeBlock__container {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+    flex-flow: column wrap;
+    align-items: stretch;
     gap: 1.5rem;
     padding: 1.25rem 1.5rem;
     background-color: var(--dashboard-card-bg);
@@ -17,7 +17,7 @@
 
 .ScheduleTimeBlock__container:hover {
     border-color: var(--primary-color);
-    background-color: rgb(128, 128, 128, 0.08);
+    background-color: var(--schedule-block-hover-bg);
 }
 
 .ScheduleTimeBlock__inputs {
@@ -46,7 +46,7 @@
     min-width: 120px;
 }
 
-.ScheduleTimeBlock__typeSelectVirtual {
+.ScheduleTimeBlock__typeSelect--virtual {
     color: var(--primary-color);
 }
 
@@ -92,8 +92,8 @@
 }
 
 .ScheduleTimeBlock__remove:hover {
-    color: var(--danger) !important;
-    background-color: rgb(249 55 93 / 10%) !important;
+    color: var(--danger);
+    background-color: var(--schedule-remove-hover-bg);
 }
 
 @keyframes fade-in-up {

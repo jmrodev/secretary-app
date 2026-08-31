@@ -1,0 +1,22 @@
+/* PatientPrintableContent Styles (BEM) */
+
+.PatientPrintableContent__cursorPointer {
+    cursor: pointer;
+}
+
+.PatientPrintableContent__mt1 {
+    margin-top: var(--spacing-xs);
+}
+
+.PatientPrintableContent__mb1 {
+    margin-bottom: var(--spacing-xs);
+}
+
+.PatientPrintableContent__flex1 {
+    flex: 1;
+}
+
+.PatientPrintableContent__headerCompact {
+    font-size: 0.8125rem;
+    font-weight: 600;
+}

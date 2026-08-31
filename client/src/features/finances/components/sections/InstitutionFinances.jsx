@@ -84,7 +84,7 @@ export const InstitutionFinances = ({ institutions, selectedInstId, viewMode, se
                 <div className={`${styles.InstitutionFinances__emptyState}`}>
                     <span className={`${styles.InstitutionFinances__emptyIcon}`}><Icon name="local_hospital" size="2rem" /></span>
                     <p className={`${styles.InstitutionFinances__emptyText}`}>
-                        {t('select_institution_desc') || 'Seleccioná una institución del panel izquierdo'}
+                        {t('select_institution_desc')}
                     </p>
                 </div>
             </div>

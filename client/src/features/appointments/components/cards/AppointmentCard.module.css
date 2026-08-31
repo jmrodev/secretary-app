@@ -215,3 +215,9 @@
 @keyframes skeleton-shimmer {
     100% { transform: translateX(100%); }
 }
+
+.AppointmentCard__restAmount {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    margin-right: 0.2rem;
+}

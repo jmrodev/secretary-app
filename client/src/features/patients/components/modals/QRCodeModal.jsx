@@ -4,7 +4,7 @@ import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useModal } from '@/context/ModalContext';
+import { useMessage } from '@/context/MessageContext';
 import { useConfig } from '@/context/ConfigContext';
 import { copyToClipboard } from '@/utils/core/clipboardUtils';
 import { formatTime } from '@/utils/core/dateUtils';
@@ -13,7 +13,7 @@ import styles from './QRCodeModal.module.css';
 
 export const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, patientPhone, type }) => {
     const { t } = useLanguage();
-    const { alert } = useModal();
+    const { showMessage } = useMessage();
     const { settings } = useConfig();
 
     const isPrescription = type === 'prescription';
@@ -30,7 +30,7 @@ export const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, pati
 
     const handleCopy = () => {
         copyToClipboard(url).then(() => {
-            alert(t('link_copied') || "¡Enlace copiado!");
+            showMessage(t('link_copied'), 'success');
         }).catch(err => console.error(err));
     };
 
@@ -51,10 +51,10 @@ export const QRCodeModal = ({ isOpen, onClose, url, expiresAt, patientName, pati
                             className={`${styles.QRCodeModal__whatsapp}`}
                         >
                             <Icon name="smartphone" size="1.1rem" />
-                            WhatsApp
+                            {t('whatsapp')}
                         </a>
                     )}
-                    <Button variant="accent" onClick={handleCopy} icon={<Icon name="content_copy" size="1.1rem" />}>{t('copy_link') || 'Copiar Enlace'}</Button>
+                    <Button variant="accent" onClick={handleCopy} icon={<Icon name="content_copy" size="1.1rem" />}>{t('copy_link')}</Button>
                 </div>
             }
         >

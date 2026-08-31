@@ -31,7 +31,7 @@ export const RequestsPage = () => {
                             onClick={() => window.location.reload()}
                             icon={<Icon name="sync" size="1.1rem" />}
                         >
-                            {t('refresh') || 'Actualizar'}
+                            {t('refresh')}
                         </Button>
                     }
                 />

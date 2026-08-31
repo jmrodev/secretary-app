@@ -46,12 +46,12 @@ export const useDashboardWhatsApp = ({ user, settings, showMessage, t }) => {
 
         const sendDirect = async () => {
             try {
-                showMessage(t('sending_whatsapp') || 'Enviando WhatsApp...', 'info');
+                showMessage(t('sending_whatsapp'), 'info');
                 await api.post('/whatsapp/send-direct', {
                     to: normalizedPhone,
                     message: message
                 });
-                showMessage(t('whatsapp_sent') || 'Mensaje enviado!', 'success');
+                showMessage(t('whatsapp_sent'), 'success');
             } catch (err) {
                 console.error("Direct send failed, falling back to manual", err);
                 

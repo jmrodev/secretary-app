@@ -25,16 +25,16 @@ export const PrescriptionItemsList = ({
 }) => {
     return (
         <div className={styles.PrescriptionItemsList__container}>
-            <div className={styles.PrescriptionItemsList__tableWrapper} style={{ overflow: 'visible' }}>
+            <div className={`${styles.PrescriptionItemsList__tableWrapper} ${styles.PrescriptionItemsList__tableWrapperVisible}`}>
                 <table className={styles.PrescriptionItemsList__table}>
                     <thead>
                         <tr>
-                            <th style={{ width: '32%' }}>{t('medication') || 'Medicamento'}</th>
-                            <th style={{ width: '8%' }}>{t('dose') || 'Dosis'}</th>
-                            <th style={{ width: '15%' }}>{t('frequency') || 'Frecuencia'}</th>
-                            <th style={{ width: '15%' }}>{t('units_per_box_short') || 'Cant/Caja'}</th>
-                            <th style={{ width: '15%' }}>{t('boxes') || 'Envases'}</th>
-                            <th style={{ width: '15%' }}>{t('duration') || 'Duración'}</th>
+                            <th className={styles.PrescriptionItemsList__thMed}>{t('medication')}</th>
+                            <th className={styles.PrescriptionItemsList__thDose}>{t('dose')}</th>
+                            <th className={styles.PrescriptionItemsList__thCol15}>{t('frequency')}</th>
+                            <th className={styles.PrescriptionItemsList__thCol15}>{t('units_per_box_short')}</th>
+                            <th className={styles.PrescriptionItemsList__thCol15}>{t('boxes')}</th>
+                            <th className={styles.PrescriptionItemsList__thCol15}>{t('duration')}</th>
                             <th className={styles.PrescriptionItemsList__actionsCol}></th>
                         </tr>
                     </thead>
@@ -46,75 +46,72 @@ export const PrescriptionItemsList = ({
                                     <MedicationAutocomplete
                                         value={tempMed}
                                         onChange={setTempMed}
-                                        placeholder={t('search_medication') || 'Buscar medicamento...'}
+                                        placeholder={t('search_medication')}
                                         onSelectMedication={handleSelectMedication}
                                     />
                                 </td>
                                 <td className={styles.PrescriptionItemsList__formCell}>
                                     <Input
-                                        placeholder={t('dose_placeholder') || 'Dosis'}
+                                        placeholder={t('dose_placeholder')}
                                         value={tempDose}
                                         onChange={e => setTempDose(e.target.value)}
-                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
+                                        className={styles.PrescriptionItemsList__controlSm}
                                     />
                                 </td>
                                 <td className={styles.PrescriptionItemsList__formCell}>
                                     <select
-                                        className={`${inputStyles.Input__root} ${inputStyles.Input__sm}`}
-                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
+                                        className={`${inputStyles.Input__root} ${inputStyles.Input__sm} ${styles.PrescriptionItemsList__controlSm}`}
                                         value={tempFreqPreset !== null ? tempFreqPreset : ''}
                                         onChange={(e) => handleFreqPreset(e.target.value !== '' ? Number(e.target.value) : null)}
-                                        aria-label={t('frequency') || 'Frecuencia'}
+                                        aria-label={t('frequency')}
                                     >
-                                        <option value="" disabled style={{ color: 'black' }}>{t('frequency') || 'Frecuencia'}…</option>
+                                        <option value="" disabled className={styles.PrescriptionItemsList__optionBlack}>{t('frequency')}…</option>
                                         {freqPresets && freqPresets.map((p, idx) => {
                                             const safeKey = p.label.replace('½', 'half').replace('¼', 'quarter').replace('¾', 'three_quarters').replace('/', '_per_').replace(' ', '_').toLowerCase();
                                             const translationKey = `freq_${safeKey}`;
                                             const labelText = t(translationKey) === translationKey ? (p.text.charAt(0).toUpperCase() + p.text.slice(1)) : t(translationKey);
-                                            return <option key={`option-${p.label}`} value={idx} style={{ color: 'black' }}>{labelText}</option>;
+                                            return <option key={`option-${p.label}`} value={idx} className={styles.PrescriptionItemsList__optionBlack}>{labelText}</option>;
                                         })}
                                     </select>
                                 </td>
                                 <td className={styles.PrescriptionItemsList__formCell}>
                                     <select
-                                        className={`${inputStyles.Input__root} ${inputStyles.Input__sm}`}
-                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '100%', textAlign: 'center' }}
+                                        className={`${inputStyles.Input__root} ${inputStyles.Input__sm} ${styles.PrescriptionItemsList__controlSm} ${styles.PrescriptionItemsList__formSelectUnits}`}
                                         value={tempUnitsPerBox}
                                         onChange={e => handleQuantityChange('units_per_box', e.target.value)}
-                                        aria-label={t('units_per_box') || 'Unidades por caja'}
+                                        aria-label={t('units_per_box')}
                                     >
-                                        <option value="" style={{ color: 'black' }}>-</option>
-                                        {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
-                                            <option key={v} value={v} style={{ color: 'black' }}>{v}</option>
-                                        ))}
+                                            <option value="" className={styles.PrescriptionItemsList__optionBlack}>-</option>
+                                            {[10, 14, 20, 28, 30, 40, 50, 60, 100].map(v => (
+                                                <option key={v} value={v} className={styles.PrescriptionItemsList__optionBlack}>{v}</option>
+                                            ))}
                                     </select>
                                 </td>
                                 <td className={styles.PrescriptionItemsList__formCell}>
-                                    <div className={styles.PrescriptionItemsList__qtyInputs} style={{ display: 'flex', gap: '0.35rem', alignItems: 'center', flexWrap: 'nowrap' }}>
+                                    <div className={`${styles.PrescriptionItemsList__qtyInputs} ${styles.PrescriptionItemsList__qtyInputsRow}`}>
                                         <select
-                                            className={`${inputStyles.Input__root} ${inputStyles.Input__sm}`}
-                                            style={{ padding: '0.25rem 0.5rem', minHeight: '30px', width: '55px', textAlign: 'center' }}
+                                            className={`${inputStyles.Input__root} ${inputStyles.Input__sm} ${styles.PrescriptionItemsList__controlSm} ${styles.PrescriptionItemsList__formSelectBoxes}`}
                                             value={tempBoxes}
                                             onChange={e => handleQuantityChange('boxes', e.target.value)}
-                                            title={t('boxes_quantity') || 'Cantidad de envases'}
+                                            title={t('boxes_quantity')}
                                         >
-                                            <option value="" style={{ color: 'black' }}>-</option>
+                                            <option value="" className={styles.PrescriptionItemsList__optionBlack}>-</option>
                                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(v => (
-                                                <option key={v} value={v} style={{ color: 'black' }}>{v}</option>
+                                                <option key={v} value={v} className={styles.PrescriptionItemsList__optionBlack}>{v}</option>
                                             ))}
                                         </select>
                                     </div>
                                 </td>
-                                <td className={styles.PrescriptionItemsList__formCell} style={{ textAlign: 'center' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', justifyContent: 'center', flexWrap: 'nowrap' }}>
+                                <td className={`${styles.PrescriptionItemsList__formCell} ${styles.PrescriptionItemsList__cellCenter}`}>
+                                    <div className={styles.PrescriptionItemsList__daysInputsRow}>
                                         <Input
                                             value={tempDays}
                                             onChange={e => handleQuantityChange('days', e.target.value)}
                                             placeholder="-"
                                             size="sm"
-                                            style={{ width: '55px', textAlign: 'center', padding: '0.25rem' }}
+                                            className={styles.PrescriptionItemsList__inputDays}
                                         />
-                                        <span style={{ fontSize: '0.75rem', color: 'rgb(255 255 255 / 50%)', whiteSpace: 'nowrap' }}>{t('days') || 'días'}</span>
+                                        <span className={styles.PrescriptionItemsList__daysLabel}>{t('days')}</span>
                                     </div>
                                 </td>
                                 <td className={styles.PrescriptionItemsList__actionsCol}>
@@ -125,9 +122,9 @@ export const PrescriptionItemsList = ({
                                         disabled={!canAdd}
                                         size="sm"
                                         icon={<Icon name="ADD" />}
-                                        style={{ padding: '0.25rem 0.5rem', minHeight: '30px' }}
+                                        className={styles.PrescriptionItemsList__controlSm}
                                     >
-                                        {t('add') || 'Añadir'}
+                                        {t('add')}
                                     </Button>
                                 </td>
                             </tr>
@@ -155,14 +152,14 @@ export const PrescriptionItemsList = ({
                                     {item.quantity && item.quantity !== '0' && (
                                         <div className={styles.PrescriptionItemsList__metaItem}>
                                             <Icon name="inventory_2" size="0.9rem" />
-                                            {item.quantity} {parseInt(item.quantity) === 1 ? (t('box') || 'caja') : (t('boxes_plural') || 'cajas')}
+                                            {item.quantity} {parseInt(item.quantity) === 1 ? (t('box')) : (t('boxes_plural'))}
                                         </div>
                                     )}
                                 </td>
-                                <td className={styles.PrescriptionItemsList__metaCell} style={{ textAlign: 'center' }}>
+                                <td className={`${styles.PrescriptionItemsList__metaCell} ${styles.PrescriptionItemsList__cellCenter}`}>
                                     {item.days_supply && (
-                                        <div className={`${styles.PrescriptionItemsList__metaItem} ${styles.PrescriptionItemsList__daysSupply}`} style={{ justifyContent: 'center' }}>
-                                            ~{item.days_supply} {t('days') || 'días'}
+                                        <div className={`${styles.PrescriptionItemsList__metaItem} ${styles.PrescriptionItemsList__daysSupply} ${styles.PrescriptionItemsList__metaItemCenter}`}>
+                                            ~{item.days_supply} {t('days')}
                                         </div>
                                     )}
                                 </td>
