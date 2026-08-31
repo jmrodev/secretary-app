@@ -14,9 +14,10 @@ export const useLanguageLogic = () => {
         localStorage.setItem(LANGUAGE_KEY, language);
     }, [language]);
 
-    const t = useCallback((key, params = null) => {
-        const langData = translations[language] || translations['es'] || {};
-        let text = langData[key] || key;
+    const t = useCallback((key, params = null, fallback = null) => {
+        const langData = translations[language] || {};
+        const defaultData = translations['es'] || {};
+        let text = langData[key] ?? defaultData[key] ?? fallback ?? key;
         
         if (params && typeof params === 'object') {
             // Using a single pass replacement if possible, or simple split/join for speed
