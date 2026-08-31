@@ -22,7 +22,7 @@ export const CertificatesView = () => {
         handleEditDataChange
     } = controller;
 
-    const getNewButtonLabel = () => t('new_certificate') || 'Nuevo Certificado';
+    const getNewButtonLabel = () => t('new_certificate');
 
     return (
         <article className={`medical-documents__certificates-layout`}>

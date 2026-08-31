@@ -13,8 +13,8 @@ export const ScheduleTimeBlock = ({
     block, onFocus, onBlur, onChange, onRemove, t
 }) => {
     const typeOptions = [
-        { value: 'consultation', label: t('in_person') || 'Presencial' },
-        { value: 'virtual', label: t('virtual_type') || 'Videollamada' }
+        { value: 'consultation', label: t('in_person') },
+        { value: 'virtual', label: t('virtual_type') }
     ];
 
     return (
@@ -28,7 +28,7 @@ export const ScheduleTimeBlock = ({
                     onBlur={onBlur}
                     onChange={(e) => onChange(block.originalIndex, 'start_time', e.target.value)}
                 />
-                <span className={`${styles.ScheduleTimeBlock__connector}`}>{t('to_label') || 'a'}</span>
+                <span className={`${styles.ScheduleTimeBlock__connector}`}>{t('to_label')}</span>
                 <Input
                     type="time"
                     size="sm"
@@ -70,7 +70,7 @@ export const ScheduleTimeBlock = ({
                     size="sm-compact"
                     onClick={onRemove}
                     className={`${styles.ScheduleTimeBlock__remove}`}
-                    title={t('remove_time_slot') || "Eliminar franja"}
+                    title={t('remove_time_slot')}
                     icon={<Icon name="delete" />}
                 />
             </div>

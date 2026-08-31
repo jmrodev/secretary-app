@@ -37,7 +37,7 @@ export const RentalsPage = () => {
     } = useRentalsController();
 
     return (
-        <MainLayout wide flush title={t('office_rentals') || 'Alquiler de Consultorios'}>
+        <MainLayout wide flush title={t('office_rentals')}>
             <div>
                 <div>
                     <FeatureToolbar
@@ -46,7 +46,7 @@ export const RentalsPage = () => {
                             <div className="rentals-page__toolbar-actions">
                                 <div className="rentals-page__status-info">
                                     <Icon name="domain" size="1.2rem" />
-                                    <span>{consultorios.length} {t('offices_count') || 'Consultorios disponibles'}</span>
+                                    <span>{consultorios.length} {t('offices_count')}</span>
                                 </div>
                             </div>
                         }
@@ -64,7 +64,7 @@ export const RentalsPage = () => {
                                             <div className={`${styles.RentalsPage__cardHeader}`}>
                                                 <h3 className={`${styles.RentalsPage__cardTitle}`}>
                                                     <Icon name="calendar_month" size="1.2rem" />
-                                                    {t('book_office') || 'Nueva Reserva'}
+                                                    {t('book_office')}
                                                 </h3>
                                             </div>
                                             <form onSubmit={handleRent} className={`${styles.RentalsPage__bookingForm}`}>
@@ -114,7 +114,7 @@ export const RentalsPage = () => {
                                                 </div>
                                                 <div>
                                                     <Button type="submit" variant="primary">
-                                                        {t('book_rental_btn') || 'Confirmar Reserva'}
+                                                        {t('book_rental_btn')}
                                                     </Button>
                                                 </div>
                                             </form>
@@ -125,7 +125,7 @@ export const RentalsPage = () => {
                                             <div className={`${styles.RentalsPage__cardHeader}`}>
                                                 <h3 className={`${styles.RentalsPage__cardTitle}`}>
                                                     <Icon name="meeting_room" size="1.2rem" />
-                                                    {t('available_offices') || 'Espacios Disponibles'}
+                                                    {t('available_offices')}
                                                 </h3>
                                             </div>
                                             <div className={`${styles.RentalsPage__officeList}`}>
@@ -150,12 +150,12 @@ export const RentalsPage = () => {
                                     <section className={`${styles.RentalsPage__main}`}>
                                         <article className={`${styles.RentalsPage__card}`}>
                                             <div className={`${styles.RentalsPage__cardHeader}`}>
-                                                <h3 className={`${styles.RentalsPage__cardTitle}`}>{t('my_rentals') || 'Mis Alquileres'}</h3>
+                                                <h3 className={`${styles.RentalsPage__cardTitle}`}>{t('my_rentals')}</h3>
                                             </div>
                                             <div className={`${styles.RentalsPage__tableContainer}`}>
                                                 {rentals.length === 0 ? (
                                                     <div className={`${styles.RentalsPage__emptyState}`}>
-                                                        <p>{t('no_rentals_registered') || 'No tienes alquileres registrados.'}</p>
+                                                        <p>{t('no_rentals_registered')}</p>
                                                     </div>
                                                 ) : (
                                                     <table className={`${styles.RentalsPage__table}`}>
@@ -165,7 +165,7 @@ export const RentalsPage = () => {
                                                                 <th className={`${styles.RentalsPage__th}`}>{t('date')}</th>
                                                                 <th className={`${styles.RentalsPage__th}`}>{t('time')}</th>
                                                                 <th className={`${styles.RentalsPage__th} ${styles.RentalsPage__thRight}`}>{t('cost')}</th>
-                                                                <th className={`${styles.RentalsPage__th}`}>{t('status') || 'Estado'}</th>
+                                                                <th className={`${styles.RentalsPage__th}`}>{t('status')}</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -177,7 +177,7 @@ export const RentalsPage = () => {
                                                                     <td className={`${styles.RentalsPage__td} ${styles.RentalsPage__tdPrice}`}>{formatCurrency(r.cost)}</td>
                                                                     <td className={`${styles.RentalsPage__td}`}>
                                                                         <Badge variant={r.is_paid ? 'success' : 'danger'}>
-                                                                            {r.is_paid ? (t('paid') || 'Pagado') : (t('pending') || 'Impago')}
+                                                                            {r.is_paid ? (t('paid')) : (t('pending'))}
                                                                         </Badge>
                                                                     </td>
                                                                 </tr>
@@ -196,8 +196,8 @@ export const RentalsPage = () => {
                                         <article className={`${styles.RentalsPage__card}`}>
                                             <div className={`${styles.RentalsPage__staffPlaceholder}`}>
                                                 <Icon name="payments" size="3rem" />
-                                                <h3>{t('rentals_management_panel') || 'Panel de Gestión de Alquileres'}</h3>
-                                                <p>{t('rentals_management_soon') || 'Próximamente podrá ver el resumen de alquileres de todos los médicos.'}</p>
+                                                <h3>{t('rentals_management_panel')}</h3>
+                                                <p>{t('rentals_management_soon')}</p>
                                             </div>
                                         </article>
                                     </section>

@@ -63,7 +63,7 @@ export const MedicalHistoryTable = ({
                                                         onView({ ...item, _readOnly: true });
                                                     }
                                                 }}
-                                                title={t('view') || 'Ver'}
+                                                title={t('view')}
                                                 role="button"
                                                 tabIndex={0}
                                             >

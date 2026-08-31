@@ -18,6 +18,11 @@
     padding: var(--space-sm, 0.75rem) var(--space-md, 1rem);
 }
 
+.WhatsappChatHistory__headerActions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
 .WhatsappChatHistory__headerInfo {
     display: flex;
     align-items: center;

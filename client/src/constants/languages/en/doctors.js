@@ -263,4 +263,6 @@ export const doctors = {
     edit_fiscal_config: "Edit Fiscal Configuration",
     no_doctors_registered: "No doctors registered.",
     environment_updated_success: "Billing environment updated successfully",
+    certificate_upload_success: "Certificate uploaded successfully",
+    certificate_upload_error: "Error uploading certificate",
 };

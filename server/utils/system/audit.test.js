@@ -29,17 +29,17 @@ describe('audit helper - logAction & logCRUD', () => {
         });
     });
 
-    it('logAction should fall back to body username or Anonymous if no req.user exists', async () => {
-        const anonymousReq = {
-            body: { username: 'guest' },
+    it('logAction must NOT trust client body username when unauthenticated (records Anonymous)', async () => {
+        const spoofedReq = {
+            body: { username: 'attacker' },
             ip: '127.0.0.1'
         };
 
-        await auditHelper.logAction(anonymousReq, 'CONTACT_FORM_SUBMIT', 'form details');
+        await auditHelper.logAction(spoofedReq, 'CONTACT_FORM_SUBMIT', 'form details');
 
         expect(auditRepository.create).toHaveBeenCalledWith({
             user_id: null,
-            username: 'guest',
+            username: 'Anonymous',
             action: 'CONTACT_FORM_SUBMIT',
             details: 'form details',
             ip_address: '127.0.0.1'

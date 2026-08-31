@@ -33,9 +33,9 @@ export const PublicRequestPage = () => {
         handleSubmit
     } = handlers;
 
-    if (loading && !patientInfo) return <StatusDisplay type="loading" message={t('loading') || "Cargando..."} />;
-    if (error && !patientInfo) return <StatusDisplay type="error" title={t('error') || "Error"} message={error} />;
-    if (success) return <StatusDisplay type="success" title={t('request_sent') || "¡Solicitud Enviada!"} message={t('request_sent_message') || "Tu médico recibirá la solicitud. Te notificaremos cuando las recetas estén listas."} />;
+    if (loading && !patientInfo) return <StatusDisplay type="loading" message={t('loading')} />;
+    if (error && !patientInfo) return <StatusDisplay type="error" title={t('error')} message={error} />;
+    if (success) return <StatusDisplay type="success" title={t('request_sent')} message={t('request_sent_message')} />;
 
     const selectedMedsSet = new Set(selectedMeds || []);
 
@@ -46,9 +46,9 @@ export const PublicRequestPage = () => {
                     <div className={`${styles.PublicRequestPage__iconWrapper}`}>
                         <Icon name="PRESCRIPTION" size="2rem" />
                     </div>
-                    <h1 className={`${styles.PublicRequestPage__title}`}>{t('prescription_request') || 'Solicitud de Recetas'}</h1>
+                    <h1 className={`${styles.PublicRequestPage__title}`}>{t('prescription_request')}</h1>
                     <p className={`${styles.PublicRequestPage__subtitle}`}>
-                        {t('patient') || 'Paciente'}: <span className={`${styles.PublicRequestPage__patientName}`}>{patientInfo?.patientName}</span>
+                        {t('patient')}: <span className={`${styles.PublicRequestPage__patientName}`}>{patientInfo?.patientName}</span>
                     </p>
                 </header>
 
@@ -64,7 +64,7 @@ export const PublicRequestPage = () => {
                     <section className={`${styles.PublicRequestPage__section}`}>
                         <h2 className={`${styles.PublicRequestPage__sectionTitle}`}>
                             <Icon name="HISTORY" size="1.2rem" className="mr-2" />
-                            {t('recent_medication') || 'Medicación Reciente'}
+                            {t('recent_medication')}
                         </h2>
                         <div className={`${styles.PublicRequestPage__medChipGrid}`}>
                             {patientInfo.recentMeds.map((med) => (
@@ -86,7 +86,7 @@ export const PublicRequestPage = () => {
                     <section className={`${styles.PublicRequestPage__section} `}>
                         <h2 className={`${styles.PublicRequestPage__sectionTitle}`}>
                             <Icon name="CHECK" size="1.2rem" className="mr-2" />
-                            {t('selected') || 'Seleccionados'} ({selectedMeds.length})
+                            {t('selected')} ({selectedMeds.length})
                         </h2>
                         <ul className={`${styles.PublicRequestPage__selectedList} list-none`}>
                             {selectedMeds.map((med) => (
@@ -95,10 +95,10 @@ export const PublicRequestPage = () => {
                                     <Button
                                         onClick={() => handleToggleMedSelection(med)}
                                         className={`${styles.PublicRequestPage__remove}`}
-                                        title={t('remove') || 'Quitar'}
+                                        title={t('remove')}
                                         unstyled
                                         icon={<Icon name="close" />}
-                                        aria-label={t('remove') || 'Quitar'}
+                                        aria-label={t('remove')}
                                     >
                                     </Button>
                                 </li>
@@ -110,16 +110,16 @@ export const PublicRequestPage = () => {
                 <section className={`${styles.PublicRequestPage__section}`}>
                     <h2 className={`${styles.PublicRequestPage__sectionTitle}`}>
                         <Icon name="SEARCH" size="1.2rem" className="mr-2" />
-                        {t('search_other_medication') || 'Buscar otra medicación'}
+                        {t('search_other_medication')}
                     </h2>
                     <div className={`${styles.PublicRequestPage__searchWrapper}`}>
                         <label htmlFor="public-request-search" className={`${styles.PublicRequestPage__label}`}>
-                            {t('search_medication') || 'Buscar medicación'}
+                            {t('search_medication')}
                         </label>
                         <input
                             id="public-request-search"
                             type="text"
-                            placeholder={t('search_medication_placeholder') || 'Ej: Losartan, Atenolol...'}
+                            placeholder={t('search_medication_placeholder')}
                             className={`${styles.PublicRequestPage__searchInput}`}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -146,7 +146,7 @@ export const PublicRequestPage = () => {
                     {searchTerm.length >= 3 && !searching && searchResults.length === 0 && (
                         <div className={`${styles.PublicRequestPage__emptyState}`}>
                             <p className={`${styles.PublicRequestPage__text}`}>
-                                {t('not_found_add_manually') || '¿No encuentras lo que buscas? Puedes agregarlo manualmente:'}
+                                {t('not_found_add_manually')}
                             </p>
                             <Button
                                 variant="secondary"
@@ -154,7 +154,7 @@ export const PublicRequestPage = () => {
                                 onClick={handleAddManualMed}
                                 icon={<Icon name="ADD" size="1rem" />}
                             >
-                                {t('add') || 'Agregar'} "{searchTerm}"
+                                {t('add')} "{searchTerm}"
                             </Button>
                         </div>
                     )}
@@ -163,15 +163,15 @@ export const PublicRequestPage = () => {
                 <section className={`${styles.PublicRequestPage__section}`}>
                     <h2 className={`${styles.PublicRequestPage__sectionTitle}`}>
                         <Icon name="NOTES" size="1.2rem" className="mr-2" />
-                        {t('notes_optional') || 'Notas (Opcional)'}
+                        {t('notes_optional')}
                     </h2>
                     <label htmlFor="public-request-notes" className={`${styles.PublicRequestPage__label}`}>
-                        {t('instructions_notes') || 'Instrucciones o Notas'}
+                        {t('instructions_notes')}
                     </label>
                     <textarea
                         id="public-request-notes"
                         className="public-prescription__notes-field"
-                        placeholder={t('notes_placeholder_request') || 'Ej: Retiro por secretaría el miércoles...'}
+                        placeholder={t('notes_placeholder_request')}
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                     ></textarea>
@@ -186,10 +186,10 @@ export const PublicRequestPage = () => {
                         onClick={handleSubmit}
                         icon={<Icon name="SEND" size="1.2rem" />}
                     >
-                        {loading ? (t('sending') || 'Enviando...') : (t('send_request') || 'Enviar Solicitud')}
+                        {loading ? (t('sending')) : (t('send_request'))}
                     </Button>
                     <p className={`${styles.PublicRequestPage__brand}`}>
-                        {t('secure_medical_system') || 'Sistema Seguro de Gestión Médica • CIMA'}
+                        {t('secure_medical_system')}
                     </p>
                 </div>
             </div>

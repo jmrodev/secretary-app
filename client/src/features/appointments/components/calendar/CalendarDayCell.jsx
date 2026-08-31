@@ -6,9 +6,9 @@ const EMPTY_OBJECT = {};
 
 // Overtime ring colors by appointment count: amber (1), orange (2), vivid red (3+).
 // Distinct steps make the escalation clearly readable.
-const OVERTIME_AMBER = '#f59e0b';
-const OVERTIME_ORANGE = '#f97316';
-const OVERTIME_RED = '#ef4444';
+const OVERTIME_AMBER = 'var(--overtime-amber)';
+const OVERTIME_ORANGE = 'var(--overtime-orange)';
+const OVERTIME_RED = 'var(--overtime-red)';
 
 /**
  * CalendarDayCell (Internal to feature).
@@ -120,7 +120,7 @@ export const CalendarDayCell = ({
           )}
           {isToday && (
             <span className={`${styles.CalendarDayCell__todayMarker}`}>
-              {t('today') || 'Hoy'}
+              {t('today')}
             </span>
           )}
         </div>

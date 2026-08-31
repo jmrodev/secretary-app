@@ -35,7 +35,7 @@ export const ChatList = ({
         <div className="floating-chat__list">
             <div className="floating-chat__search">
                 <Input
-                    placeholder={t('search') || "Buscar..."}
+                    placeholder={t('search')}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     size="sm"
@@ -45,7 +45,7 @@ export const ChatList = ({
 
             {filteredConvos.length === 0 && suggestedRecipients.length === 0 ? (
                 <p className="floating-chat__empty">
-                    No se encontraron resultados
+                    {t('no_results_found')}
                 </p>
             ) : (
                 <>
@@ -60,7 +60,7 @@ export const ChatList = ({
 
                     {suggestedRecipients.length > 0 && (
                         <div className="floating-chat__section-title">
-                            Contactos
+                            {t('contacts_section')}
                         </div>
                     )}
 

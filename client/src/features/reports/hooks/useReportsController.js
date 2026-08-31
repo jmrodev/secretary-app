@@ -35,7 +35,7 @@ export const useReportsController = () => {
         setError(null);
         if ((activeTab === 'appointments' || activeTab === 'balance') && !selectedDoctorId) {
             setReportData(null);
-            setError(t('please_select_doctor') || 'Por favor, seleccione un profesional');
+            setError(t('please_select_doctor'));
             setIsLoading(false);
             return;
         }

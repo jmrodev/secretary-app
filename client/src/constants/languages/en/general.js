@@ -186,6 +186,17 @@ export const general = {
     new_patient_short: "Patient",
     modal_close: "Close modal",
 
+    // i18n cleanup / GGA remediation additions (client-i18n-fallback-cleanup)
+    cheque: "Check",
+    contacts_section: "Contacts",
+    institution_prefix: "Institution",
+    inst_payment_selected: "The {count} selected transactions will be paid for {amount}.",
+    confirm_delete_conversation_history: "Are you sure you want to delete this conversation from history?",
+    conversation_deleted_success: "Conversation deleted successfully.",
+    conversation_delete_error: "Could not delete the conversation.",
+    rx_link_whatsapp_message: "Hi {name}, here is the link to your prescription: {link}",
+    financial_reminder_whatsapp: "Hi {full_name}, we are writing from Cima Salud to let you know you have a pending balance of {amount} on your account. Could you let us know when you could settle it? Thank you!",
+
     // Synced translations
     access_credentials: "Access Credentials",
     account_security_note: "Account Security: Never share your credentials.",
@@ -744,5 +755,11 @@ export const general = {
     afip_status_app: "Application Server (App)",
     afip_status_db: "Database Server (Db)",
     afip_status_auth: "Authentication Server (Auth)",
-    unknown: "Unknown"
+    unknown: "Unknown",
+    debt_reminders: "Debt Reminders",
+    debt_template: "Debt Template",
+    pending_appointments_mgmt: "Pending Appointments Management",
+    accept_appointment: "Accept Appointment",
+    suggest_alternative: "Suggest Alternative",
+    config_short: "Config",
 };

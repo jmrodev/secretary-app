@@ -37,14 +37,14 @@ export const TempAccessPage = () => {
     const { t } = useLanguage();
 
     if (loading) {
-        return <StatusDisplay type="loading" message={t('loading_profile') || "Cargando perfil..."} />;
+        return <StatusDisplay type="loading" message={t('loading_profile')} />;
     }
 
     if (error) {
         return (
             <StatusDisplay
                 type="error"
-                title={t('invalid_link') || "Enlace Inválido"}
+                title={t('invalid_link')}
                 message={error}
             />
         );
@@ -54,8 +54,8 @@ export const TempAccessPage = () => {
         return (
             <StatusDisplay
                 type="success"
-                title={t('data_saved_success_title') || "¡Datos Guardados!"}
-                message={t('temp_access_success_message') || "Gracias por completar tu información. Ya puedes cerrar esta ventana y devolver el dispositivo o esperar a ser llamado."}
+                title={t('data_saved_success_title')}
+                message={t('temp_access_success_message')}
             />
         );
     }

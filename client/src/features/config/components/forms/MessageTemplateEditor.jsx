@@ -82,7 +82,7 @@ export const MessageTemplateEditor = ({
                     <ConfigField
                         label={t('meta_template_name')}
                         type="text"
-                        placeholder={t('meta_template_name_placeholder') || "ej: reminder_template"}
+                        placeholder={t('meta_template_name_placeholder')}
                         value={metaTemplateName || ''}
                         onChange={(e) => updateSetting(
                             settingKey === 'appointment_reminder_template'

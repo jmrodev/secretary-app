@@ -34,14 +34,14 @@ export const MedicalRequirementTable = ({
                         isActive={filter === 'active'}
                         onClick={() => setFilter('active')}
                     >
-                        {t('pending') || 'Pendientes'}
+                        {t('pending')}
                     </TabButton>
                     <TabButton
                         variant="pill"
                         isActive={filter === 'history'}
                         onClick={() => setFilter('history')}
                     >
-                        {t('history') || 'Historial'}
+                        {t('history')}
                     </TabButton>
                 </div>
             )}
@@ -49,14 +49,14 @@ export const MedicalRequirementTable = ({
             {requests.length === 0 ? (
                 <div className={managerStyles.MedicalRequirementManager__empty}>
                     <Icon name="inbox" size="3rem" />
-                    <p>{t('no_requests') || (filter === 'active' ? 'No hay requerimientos pendientes.' : 'No hay historial.')}</p>
+                    <p>{t('no_requests')}</p>
                     {filter === 'active' && (
                         <Button
                             variant="primary"
                             onClick={handleNewTab}
                             icon={<Icon name="add_circle" />}
                         >
-                            {t('create_first_request') || 'Crear primera solicitud'}
+                            {t('create_first_request')}
                         </Button>
                     )}
                 </div>
@@ -65,11 +65,11 @@ export const MedicalRequirementTable = ({
                     <table className={managerStyles.MedicalRequirementManager__table}>
                         <thead>
                             <tr>
-                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('type') || 'Tipo'}</th>
-                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('date') || 'Fecha'}</th>
-                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('patient') || 'Paciente'}</th>
-                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('status') || 'Estado'}</th>
-                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('actions') || 'Acciones'}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('type')}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('date')}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('patient')}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('status')}</th>
+                                <th className={managerStyles.MedicalRequirementManager__tableHeader}>{t('actions')}</th>
                             </tr>
                         </thead>
                         <tbody>

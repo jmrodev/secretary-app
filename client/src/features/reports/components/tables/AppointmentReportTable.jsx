@@ -106,8 +106,8 @@ export const AppointmentReportTable = ({ data, t }) => {
                                 <th className="text-right">{t('cash_cash_only')}</th>
                                 <th className="text-right">{t('other_methods')}</th>
                                 <th className="text-right">{t('daily_total')}</th>
-                                <th className="text-right">{t('weekly_total') || 'Total Semanal'}</th>
-                                <th className="text-right">{t('cumulative_monthly_total') || 'Total Mensual'}</th>
+                                <th className="text-right">{t('weekly_total')}</th>
+                                <th className="text-right">{t('cumulative_monthly_total')}</th>
                             </tr>
                         </thead>
                         <tbody>

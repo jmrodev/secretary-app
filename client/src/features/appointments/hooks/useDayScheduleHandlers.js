@@ -1,5 +1,6 @@
 import { useLanguage } from '@/hooks/useLanguage';
 import { useModal } from '@/context/ModalContext';
+import { useMessage } from '@/context/MessageContext';
 
 /**
  * useDayScheduleHandlers Hook (Internal to appointments feature).
@@ -8,10 +9,14 @@ import { useModal } from '@/context/ModalContext';
 export const useDayScheduleHandlers = ({ date, appointments, doctor, onDateSelect, onSlotClick, showCancelled }) => {
     const { t } = useLanguage();
     const { confirm } = useModal();
+    const { showMessage } = useMessage();
 
     const handlePrint = () => {
         const printWindow = window.open('', '_blank');
-        if (!printWindow) return alert(t('allow_popups'));
+        if (!printWindow) {
+            showMessage(t('allow_popups'), 'warning');
+            return;
+        }
 
         const dayName = date.toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
         const doctorName = doctor ? (doctor.full_name || doctor.username) : '';

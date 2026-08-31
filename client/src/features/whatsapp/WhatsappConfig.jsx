@@ -65,7 +65,7 @@ export const WhatsappConfig = ({ t }) => {
                         className={styles['WhatsappConfig__var-btn']}
                         value={selectedDoctorId}
                         onChange={e => setSelectedDoctorId(e.target.value)}
-                        aria-label={t('wa_config_doctor') || 'Doctor'}
+                        aria-label={t('wa_config_doctor')}
                     >
                         {doctors.map(d => (
                             <option key={d.id} value={d.id}>{d.full_name}</option>

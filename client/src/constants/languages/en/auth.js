@@ -50,4 +50,8 @@ export const auth = {
     edit_insurance: "Edit Insurance",
     new_insurance: "New Insurance",
     view_on_map: "View on map",
+    admin_auth_title: "Admin Authorization",
+    admin_auth_instruction: "This action is restricted for security. Please enter the admin master password to continue.",
+    confirm_action: "Confirm Action",
+    preparing_everything: "Preparing everything...",
 };

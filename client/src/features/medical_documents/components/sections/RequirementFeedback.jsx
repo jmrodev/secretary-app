@@ -12,13 +12,13 @@ export const RequirementFeedback = ({ doctorNote, secretaryNote, t }) => {
         <div className="requirements-detail__feedback animate-fade-in">
             {doctorNote && (
                 <div className="requirements-detail__feedback-item requirements-detail__feedback-item--doctor">
-                    <strong className="requirements-detail__feedback-label">{t('doctor_note') || 'Nota del Doctor'}:</strong>
+                    <strong className="requirements-detail__feedback-label">{t('doctor_note')}:</strong>
                     <p className="requirements-detail__feedback-text">{doctorNote}</p>
                 </div>
             )}
             {secretaryNote && (
                 <div className="requirements-detail__feedback-item requirements-detail__feedback-item--secretary">
-                    <strong className="requirements-detail__feedback-label requirements-detail__feedback-label--secretary">{t('secretary_reply') || 'Respuesta de Secretaría'}:</strong>
+                    <strong className="requirements-detail__feedback-label requirements-detail__feedback-label--secretary">{t('secretary_reply')}:</strong>
                     <p className="requirements-detail__feedback-text">{secretaryNote}</p>
                 </div>
             )}
