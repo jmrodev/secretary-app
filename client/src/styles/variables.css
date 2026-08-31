@@ -205,7 +205,7 @@
     --schedule-input-bg: var(--dashboard-card-bg);
     --schedule-input-border: var(--border-color);
     --schedule-divider-color: var(--border-color);
-    --schedule-remove-hover-bg: rgba(var(--danger-rgb), 0.1);
+    --schedule-remove-hover-bg: rgb(var(--danger-rgb), 0.1);
 }
 
 /* Light Theme - Tonos Claros (Tiza / High Contrast Clinical Palette) */
@@ -258,7 +258,7 @@
     --schedule-input-bg: var(--dashboard-card-bg);
     --schedule-input-border: var(--border-color);
     --schedule-divider-color: var(--border-color);
-    --schedule-remove-hover-bg: rgba(var(--danger-rgb), 0.1);
+    --schedule-remove-hover-bg: rgb(var(--danger-rgb), 0.1);
 }
 
 /* Dim Theme - Oscuro Suave (Intermedio) */
@@ -305,5 +305,5 @@
     --schedule-input-bg: var(--dashboard-card-bg);
     --schedule-input-border: var(--border-color);
     --schedule-divider-color: var(--border-color);
-    --schedule-remove-hover-bg: rgba(var(--danger-rgb), 0.1);
+    --schedule-remove-hover-bg: rgb(var(--danger-rgb), 0.1);
 }

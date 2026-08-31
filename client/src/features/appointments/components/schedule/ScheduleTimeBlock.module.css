@@ -2,8 +2,7 @@
 
 .ScheduleTimeBlock__container {
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+    flex-flow: column wrap;
     align-items: stretch;
     gap: 1.5rem;
     padding: 1.25rem 1.5rem;

@@ -27,8 +27,7 @@
 
 .ScheduleBulkActions__actions {
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
+    flex-flow: column wrap;
     align-items: stretch;
     gap: 2rem;
 }
@@ -60,7 +59,7 @@
     letter-spacing: 0.075em;
 }
 
-@media (min-width: 769px) {
+@media (width >= 769px) {
     .ScheduleBulkActions__actions {
         flex-direction: row;
         align-items: center;
