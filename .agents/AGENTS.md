@@ -5,7 +5,9 @@ Este documento contiene las reglas de oro y estándares obligatorios para todo e
 ---
 
 ## 1. Reglas Generales del Repositorio
-- **Alcance de Revisión (Diff-only)**: Las revisiones automáticas (GGA / AI Agent) deben validar **exclusivamente las líneas modificadas en el diff del cambio**. Está prohibido bloquear un commit por deuda técnica preexistente en código no tocado por la tarea.
+- **Auditoría Integral y Tracking de Deuda (Audit & Issue Tracking)**: Las revisiones automáticas (GGA / AI Agent) auditan los archivos completos para detectar cualquier desviación de estándares. Para no bloquear el flujo de trabajo:
+  - **Bloqueo de Commit/PR**: Aplica **exclusivamente a las violaciones introducidas en el diff del cambio**.
+  - **Deuda Técnica Preexistente**: Las violaciones encontradas en líneas no tocadas por la tarea no bloquean el commit actual; deben reportarse y registrarse como **issues de GitHub dedicados** (etiqueta `tech-debt` / `compliance`) para su saneamiento en PRs independientes.
 - **Manejo Seguro de Secretos**: Nunca hardcodees tokens, claves API, contraseñas o URLs de bases de datos. Usá variables de entorno (`process.env` en Node.js o `import.meta.env` en React) y listalas en `.env.example`.
 - **Inmutabilidad**: Preferí siempre `const` sobre `let`. Nunca mutés variables u objetos globalmente de forma directa; utilizá copias limpias.
 - **Manejo de Errores Obligatorio**: Nunca ignores errores. Los bloques `catch` vacíos o tragar errores en silencio están prohibidos. Todo error debe registrarse (`console.error` o logs específicos) o propagarse adecuadamente.
