@@ -2322,6 +2322,17 @@ BEGIN
     DECLARE v_date DATE;
     DECLARE v_day_of_week INT;
     DECLARE v_is_holiday TINYINT DEFAULT 0;
+    DECLARE v_sched_done INT DEFAULT 0;
+    DECLARE v_sched_start TIME;
+    DECLARE v_sched_end TIME;
+    DECLARE v_sched_is_break TINYINT;
+
+    DECLARE sched_cursor CURSOR FOR
+        SELECT start_time, end_time, is_break
+        FROM doctor_schedules
+        WHERE doctor_id = p_doctor_id AND day_of_week = v_day_of_week
+        ORDER BY start_time;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_sched_done = 1;
 
     CREATE TEMPORARY TABLE IF NOT EXISTS temp_slots (
         slot_date DATE,
@@ -2349,58 +2360,88 @@ BEGIN
     FROM doctors 
     WHERE id = p_doctor_id;
 
-    SET v_current_time = v_overturn_start;
+    IF v_is_holiday = 1 THEN
+        SET v_current_time = v_overturn_start;
+        WHILE v_current_time < v_overturn_end DO
+            SET v_slot_dur = v_duration;
+            IF v_force_alignment = 1 AND (TIME_TO_SEC(v_current_time) % 3600) != 0 THEN
+                SET v_slot_dur = 60 - ((TIME_TO_SEC(v_current_time) % 3600) / 60);
+            END IF;
+            IF TIME_TO_SEC(v_current_time) + (v_slot_dur * 60) > TIME_TO_SEC(v_overturn_end) THEN
+                SET v_current_time = v_overturn_end;
+            ELSE
+                INSERT INTO temp_slots (slot_date, slot_time, slot_status, is_out_of_hours)
+                VALUES (v_date, v_current_time, 'closed_holiday', 0);
+                SET v_current_time = ADDTIME(v_current_time, SEC_TO_TIME(v_slot_dur * 60));
+            END IF;
+        END WHILE;
+    ELSE
+        -- 1. Generate in-hours and break slots anchored directly to doctor_schedules
+        OPEN sched_cursor;
+        read_sched_loop: LOOP
+            FETCH sched_cursor INTO v_sched_start, v_sched_end, v_sched_is_break;
+            IF v_sched_done = 1 THEN
+                LEAVE read_sched_loop;
+            END IF;
 
-    WHILE v_current_time < v_overturn_end DO
-        SET v_slot_dur = v_duration;
-        
-        IF v_force_alignment = 1 AND (TIME_TO_SEC(v_current_time) % 3600) != 0 THEN
-            SET v_slot_dur = 60 - ((TIME_TO_SEC(v_current_time) % 3600) / 60);
-        END IF;
-
-        IF TIME_TO_SEC(v_current_time) + (v_slot_dur * 60) > TIME_TO_SEC(v_overturn_end) THEN
-            SET v_current_time = v_overturn_end;
-        ELSE
-            BEGIN
-                DECLARE v_is_official TINYINT DEFAULT 0;
-                DECLARE v_is_break TINYINT DEFAULT 0;
-                DECLARE v_status VARCHAR(50);
-
-                IF v_is_holiday = 1 THEN
-                    SET v_status = 'closed_holiday';
-                ELSE
-                    SELECT COUNT(*) INTO v_is_official
-                    FROM doctor_schedules
-                    WHERE doctor_id = p_doctor_id
-                      AND day_of_week = v_day_of_week
-                      AND is_break = 0
-                      AND v_current_time >= start_time
-                      AND v_current_time < end_time;
-
-                    SELECT COUNT(*) INTO v_is_break
-                    FROM doctor_schedules
-                    WHERE doctor_id = p_doctor_id
-                      AND day_of_week = v_day_of_week
-                      AND is_break = 1
-                      AND v_current_time >= start_time
-                      AND v_current_time < end_time;
-
-                    IF v_is_break > 0 THEN
-                        SET v_status = 'break';
-                    ELSEIF v_is_official > 0 THEN
-                        SET v_status = 'free';
-                    ELSE
-                        SET v_status = 'out_of_hours';
-                    END IF;
+            SET v_current_time = v_sched_start;
+            WHILE v_current_time < v_sched_end DO
+                SET v_slot_dur = v_duration;
+                IF v_force_alignment = 1 AND (TIME_TO_SEC(v_current_time) % 3600) != 0 THEN
+                    SET v_slot_dur = 60 - ((TIME_TO_SEC(v_current_time) % 3600) / 60);
                 END IF;
 
-                INSERT INTO temp_slots (slot_date, slot_time, slot_status, is_out_of_hours)
-                VALUES (v_date, v_current_time, v_status, CASE WHEN v_status = 'out_of_hours' THEN 1 ELSE 0 END);
-            END;
+                IF TIME_TO_SEC(v_current_time) + (v_slot_dur * 60) > TIME_TO_SEC(v_sched_end) THEN
+                    SET v_current_time = v_sched_end;
+                ELSE
+                    INSERT INTO temp_slots (slot_date, slot_time, slot_status, is_out_of_hours)
+                    VALUES (v_date, v_current_time, CASE WHEN v_sched_is_break = 1 THEN 'break' ELSE 'free' END, 0);
+                    SET v_current_time = ADDTIME(v_current_time, SEC_TO_TIME(v_slot_dur * 60));
+                END IF;
+            END WHILE;
+        END LOOP;
+        CLOSE sched_cursor;
 
-            SET v_current_time = ADDTIME(v_current_time, SEC_TO_TIME(v_slot_dur * 60));
-        END IF;
-    END WHILE;
+        -- 2. Fill out_of_hours slots around configured schedule from overturn_start to overturn_end
+        SET v_current_time = v_overturn_start;
+        WHILE v_current_time < v_overturn_end DO
+            SET v_slot_dur = v_duration;
+            IF v_force_alignment = 1 AND (TIME_TO_SEC(v_current_time) % 3600) != 0 THEN
+                SET v_slot_dur = 60 - ((TIME_TO_SEC(v_current_time) % 3600) / 60);
+            END IF;
+
+            IF TIME_TO_SEC(v_current_time) + (v_slot_dur * 60) > TIME_TO_SEC(v_overturn_end) THEN
+                SET v_current_time = v_overturn_end;
+            ELSE
+                BEGIN
+                    DECLARE v_slot_exists INT DEFAULT 0;
+                    SELECT COUNT(*) INTO v_slot_exists FROM temp_slots WHERE slot_date = v_date AND slot_time = v_current_time;
+                    IF v_slot_exists = 0 THEN
+                        INSERT INTO temp_slots (slot_date, slot_time, slot_status, is_out_of_hours)
+                        VALUES (v_date, v_current_time, 'out_of_hours', 1);
+                    END IF;
+                END;
+                SET v_current_time = ADDTIME(v_current_time, SEC_TO_TIME(v_slot_dur * 60));
+            END IF;
+        END WHILE;
+    END IF;
+
+    -- 3. Dynamic injection of any booked appointment whose timestamp does not coincide with standard slots (e.g. 14:15, 15:45)
+    INSERT INTO temp_slots (slot_date, slot_time, slot_status, is_out_of_hours)
+    SELECT DISTINCT 
+        DATE(a.appointment_date),
+        TIME(a.appointment_date),
+        'taken',
+        CASE WHEN a.is_out_of_hours = 1 THEN 1 ELSE 0 END
+    FROM appointments a
+    WHERE a.doctor_id = p_doctor_id
+      AND DATE(a.appointment_date) = v_date
+      AND a.status NOT IN ('cancelled', 'suspended')
+      AND NOT EXISTS (
+          SELECT 1 FROM temp_slots ts 
+          WHERE ts.slot_date = DATE(a.appointment_date) 
+            AND ts.slot_time = TIME(a.appointment_date)
+      );
 
     SELECT 
         a.id,
@@ -2474,8 +2515,18 @@ BEGIN
     DECLARE v_slot_dur INT;
     DECLARE v_day_of_week INT;
     DECLARE v_is_holiday TINYINT;
+    DECLARE v_sched_done INT DEFAULT 0;
+    DECLARE v_sched_start TIME;
+    DECLARE v_sched_end TIME;
+    DECLARE v_sched_is_break TINYINT;
 
-    
+    DECLARE sched_cursor CURSOR FOR
+        SELECT start_time, end_time, is_break
+        FROM doctor_schedules
+        WHERE doctor_id = p_doctor_id AND day_of_week = v_day_of_week
+        ORDER BY start_time;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_sched_done = 1;
+
     CREATE TEMPORARY TABLE IF NOT EXISTS temp_all_slots (
         slot_date DATE,
         slot_time TIME,
@@ -2485,7 +2536,6 @@ BEGIN
     );
     TRUNCATE temp_all_slots;
 
-    
     SELECT 
         COALESCE(appointment_duration, 60), 
         COALESCE(overturn_start_time, '08:00:00'), 
@@ -2499,75 +2549,71 @@ BEGIN
     FROM doctors 
     WHERE id = p_doctor_id;
 
-    
     WHILE v_days_counter < p_days_to_check DO
         SET v_current_date = DATE_ADD(STR_TO_DATE(p_start_date_str, '%Y-%m-%d'), INTERVAL v_days_counter DAY);
         SET v_day_of_week = DAYOFWEEK(v_current_date) - 1;
 
-        
         SELECT COUNT(*) INTO v_is_holiday FROM active_holidays WHERE date = v_current_date;
 
         IF v_is_holiday = 0 THEN
-            SET v_current_time = v_overturn_start;
-
-            
-            WHILE v_current_time < v_overturn_end DO
-                SET v_slot_dur = v_duration;
-                
-                IF v_force_alignment = 1 AND (TIME_TO_SEC(v_current_time) % 3600) != 0 THEN
-                    SET v_slot_dur = 60 - ((TIME_TO_SEC(v_current_time) % 3600) / 60);
+            -- 1. Generate official in-hours & break slots anchored to doctor_schedules
+            SET v_sched_done = 0;
+            OPEN sched_cursor;
+            read_sched_loop_free: LOOP
+                FETCH sched_cursor INTO v_sched_start, v_sched_end, v_sched_is_break;
+                IF v_sched_done = 1 THEN
+                    LEAVE read_sched_loop_free;
                 END IF;
 
-                IF TIME_TO_SEC(v_current_time) + (v_slot_dur * 60) > TIME_TO_SEC(v_overturn_end) THEN
-                    SET v_current_time = v_overturn_end;
-                ELSE
-                    BEGIN
-                        DECLARE v_is_official TINYINT DEFAULT 0;
-                        DECLARE v_is_break TINYINT DEFAULT 0;
-                        DECLARE v_status VARCHAR(50);
+                SET v_current_time = v_sched_start;
+                WHILE v_current_time < v_sched_end DO
+                    SET v_slot_dur = v_duration;
+                    IF v_force_alignment = 1 AND (TIME_TO_SEC(v_current_time) % 3600) != 0 THEN
+                        SET v_slot_dur = 60 - ((TIME_TO_SEC(v_current_time) % 3600) / 60);
+                    END IF;
 
-                        
-                        SELECT COUNT(*) INTO v_is_official
-                        FROM doctor_schedules
-                        WHERE doctor_id = p_doctor_id
-                          AND day_of_week = v_day_of_week
-                          AND is_break = 0
-                          AND v_current_time >= start_time
-                          AND v_current_time < end_time;
+                    IF TIME_TO_SEC(v_current_time) + (v_slot_dur * 60) > TIME_TO_SEC(v_sched_end) THEN
+                        SET v_current_time = v_sched_end;
+                    ELSE
+                        INSERT INTO temp_all_slots (slot_date, slot_time, slot_status, is_break, is_out_of_hours)
+                        VALUES (v_current_date, v_current_time, CASE WHEN v_sched_is_break = 1 THEN 'break' ELSE 'free' END, CASE WHEN v_sched_is_break = 1 THEN 1 ELSE 0 END, 0);
+                        SET v_current_time = ADDTIME(v_current_time, SEC_TO_TIME(v_slot_dur * 60));
+                    END IF;
+                END WHILE;
+            END LOOP;
+            CLOSE sched_cursor;
 
-                        
-                        SELECT COUNT(*) INTO v_is_break
-                        FROM doctor_schedules
-                        WHERE doctor_id = p_doctor_id
-                          AND day_of_week = v_day_of_week
-                          AND is_break = 1
-                          AND v_current_time >= start_time
-                          AND v_current_time < end_time;
+            -- 2. If out of hours requested, fill gaps
+            IF p_include_out_of_hours = 1 THEN
+                SET v_current_time = v_overturn_start;
+                WHILE v_current_time < v_overturn_end DO
+                    SET v_slot_dur = v_duration;
+                    IF v_force_alignment = 1 AND (TIME_TO_SEC(v_current_time) % 3600) != 0 THEN
+                        SET v_slot_dur = 60 - ((TIME_TO_SEC(v_current_time) % 3600) / 60);
+                    END IF;
 
-                        IF v_is_break > 0 THEN
-                            SET v_status = 'break';
-                        ELSEIF v_is_official > 0 THEN
-                            SET v_status = 'free';
-                        ELSE
-                            SET v_status = 'out_of_hours';
-                        END IF;
-
-                        
-                        IF v_status = 'free' OR v_status = 'break' OR (p_include_out_of_hours = 1 AND v_status = 'out_of_hours') THEN
-                            INSERT INTO temp_all_slots (slot_date, slot_time, slot_status, is_break, is_out_of_hours)
-                            VALUES (v_current_date, v_current_time, v_status, CASE WHEN v_status = 'break' THEN 1 ELSE 0 END, CASE WHEN v_status = 'out_of_hours' THEN 1 ELSE 0 END);
-                        END IF;
-                    END;
-
-                    SET v_current_time = ADDTIME(v_current_time, SEC_TO_TIME(v_slot_dur * 60));
-                END IF;
-            END WHILE;
+                    IF TIME_TO_SEC(v_current_time) + (v_slot_dur * 60) > TIME_TO_SEC(v_overturn_end) THEN
+                        SET v_current_time = v_overturn_end;
+                    ELSE
+                        BEGIN
+                            DECLARE v_slot_exists INT DEFAULT 0;
+                            SELECT COUNT(*) INTO v_slot_exists FROM temp_all_slots WHERE slot_date = v_current_date AND slot_time = v_current_time;
+                            IF v_slot_exists = 0 THEN
+                                INSERT INTO temp_all_slots (slot_date, slot_time, slot_status, is_break, is_out_of_hours)
+                                VALUES (v_current_date, v_current_time, 'out_of_hours', 0, 1);
+                            END IF;
+                        END;
+                        SET v_current_time = ADDTIME(v_current_time, SEC_TO_TIME(v_slot_dur * 60));
+                    END IF;
+                END WHILE;
+            END IF;
         END IF;
 
         SET v_days_counter = v_days_counter + 1;
     END WHILE;
 
-    
+    -- Interval collision overlap: A slot [S_start, S_end) is FREE iff there is NO active appointment [A_start, A_end)
+    -- where S_start < A_end AND S_end > A_start
     SELECT 
         ts.slot_date as date,
         TIME_FORMAT(ts.slot_time, '%H:%i') as time,
@@ -2575,13 +2621,15 @@ BEGIN
         ts.is_break,
         ts.is_out_of_hours
     FROM temp_all_slots ts
-    LEFT JOIN appointments a 
-        ON a.doctor_id = p_doctor_id 
-        AND DATE(a.appointment_date) = ts.slot_date 
-        AND TIME(a.appointment_date) = ts.slot_time
-        AND a.status NOT IN ('cancelled', 'suspended')
-    WHERE a.id IS NULL
-      AND ts.slot_status != 'break'
+    WHERE ts.slot_status != 'break'
+      AND NOT EXISTS (
+          SELECT 1 FROM appointments a
+          WHERE a.doctor_id = p_doctor_id
+            AND DATE(a.appointment_date) = ts.slot_date
+            AND a.status NOT IN ('cancelled', 'suspended')
+            AND ts.slot_time < ADDTIME(TIME(a.appointment_date), SEC_TO_TIME(v_duration * 60))
+            AND ADDTIME(ts.slot_time, SEC_TO_TIME(v_duration * 60)) > TIME(a.appointment_date)
+      )
     ORDER BY ts.slot_date, ts.slot_time;
 END
 ;;
