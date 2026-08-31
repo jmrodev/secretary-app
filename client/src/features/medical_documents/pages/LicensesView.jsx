@@ -22,7 +22,7 @@ export const LicensesView = () => {
         handleEditDataChange
     } = controller;
 
-    const getNewButtonLabel = () => t('new_license') || 'Nueva Licencia';
+    const getNewButtonLabel = () => t('new_license');
 
     return (
         <article className={`medical-documents__licenses-layout`}>

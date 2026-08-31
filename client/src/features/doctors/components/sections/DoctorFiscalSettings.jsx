@@ -112,7 +112,7 @@ export const DoctorFiscalSettings = ({
                             value={generatedCsr}
                             className={`${styles.DoctorFiscalSettings__textarea}`}
                             onClick={e => e.target.select()}
-                            aria-label={t('your_csr') || 'Your Certificate Request (CSR)'}
+                            aria-label={t('your_csr')}
                         />
                         <div className={`${styles.DoctorFiscalSettings__csrFooter}`}>
                             <span className={`${styles.DoctorFiscalSettings__hint}`}>{t('copy_to_wsass')}</span>

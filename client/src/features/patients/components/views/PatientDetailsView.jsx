@@ -5,6 +5,7 @@ import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { formatDate } from '@/utils/core/dateUtils';
 import { api } from '@/api/axios';
+import { useMessage } from '@/context/MessageContext';
 
 // Local Feature & Molecule Components
 import { PatientInfoBlock } from '@/features/patients/components/views/PatientInfoBlock';
@@ -38,6 +39,7 @@ export const PatientDetailsView = ({
     const [activeTab, setActiveTab] = useState('general'); // 'general' | 'history' | 'finances' | 'medications' | 'documents' | 'chat'
     const [isCleanView, setIsCleanView] = useState(false);
     const { chronicMeds, recentRequests, officialPrescriptions = [], patientFiles = [], loadingFiles, refetchMedications, refetchFiles } = usePatientDetailsController(details.id);
+    const { showMessage } = useMessage();
     const allPrescriptions = [...officialPrescriptions, ...recentRequests];
 
     // File Viewer, Prescription Detail, Medication Form & Upload Local State
@@ -65,14 +67,18 @@ export const PatientDetailsView = ({
 
     const handleCopyRxLink = async (r) => {
         const link = await getOrGenerateRxLink(r);
-        navigator.clipboard.writeText(link);
-        alert(t('link_copied') || '¡Enlace de receta copiado al portapapeles!');
+        try {
+            await navigator.clipboard.writeText(link);
+            showMessage(t('link_copied'), 'success');
+        } catch (err) {
+            console.error('Clipboard copy failed:', err);
+        }
     };
 
     const handleSendRxWhatsapp = async (r) => {
         if (!details.phone) return;
         const link = await getOrGenerateRxLink(r);
-        const text = encodeURIComponent(`Hola ${details.full_name}, te adjuntamos el enlace a tu receta médica: ${link}`);
+        const text = encodeURIComponent(t('rx_link_whatsapp_message', { name: details.full_name, link }));
         window.open(`https://wa.me/${details.phone.replace(/\D/g, '')}?text=${text}`, '_blank');
     };
 
@@ -88,13 +94,13 @@ export const PatientDetailsView = ({
             formData.append('description', newFileDesc);
 
             await api.post('/medical/files', formData);
-            setUploadMsg({ type: 'success', text: t('file_uploaded') || 'Archivo subido correctamente' });
+            setUploadMsg({ type: 'success', text: t('file_uploaded') });
             setNewFile(null);
             setNewFileDesc('');
             refetchFiles();
         } catch (err) {
             console.error('[PatientDetailsView] Upload error:', err);
-            setUploadMsg({ type: 'error', text: t('upload_failed') || 'Error al subir el archivo' });
+            setUploadMsg({ type: 'error', text: t('upload_failed') });
         } finally {
             setUploadingFile(false);
         }
@@ -124,7 +130,7 @@ export const PatientDetailsView = ({
                             icon={<Icon name="print" size="1rem" />}
                             className={`${styles.PatientDetailsView__noPrint}`}
                         >
-                            {t('print') || 'Imprimir'}
+                            {t('print')}
                         </Button>
                         {user?.role === 'secretary' && (
                             <Button
@@ -157,7 +163,7 @@ export const PatientDetailsView = ({
                         onClick={() => setActiveTab('general')}
                     >
                         <Icon name="person" size="1.1rem" />
-                        {t('general_info') || 'General'}
+                        {t('general_info')}
                     </button>
                     <button 
                         type="button"
@@ -165,7 +171,7 @@ export const PatientDetailsView = ({
                         onClick={() => setActiveTab('history')}
                     >
                         <Icon name="calendar_month" size="1.1rem" />
-                        {t('medical_history') || 'Historia'}
+                        {t('medical_history')}
                     </button>
                     <button 
                         type="button"
@@ -173,7 +179,7 @@ export const PatientDetailsView = ({
                         onClick={() => setActiveTab('finances')}
                     >
                         <Icon name="payments" size="1.1rem" />
-                        {t('finances') || 'Finanzas'}
+                        {t('finances')}
                     </button>
                     <button 
                         type="button"
@@ -181,7 +187,7 @@ export const PatientDetailsView = ({
                         onClick={() => setActiveTab('medications')}
                     >
                         <Icon name="description" size="1.1rem" />
-                        {t('prescriptions') || 'Recetas'}
+                        {t('prescriptions')}
                     </button>
                     <button 
                         type="button"
@@ -189,7 +195,7 @@ export const PatientDetailsView = ({
                         onClick={() => setActiveTab('documents')}
                     >
                         <Icon name="folder_open" size="1.1rem" />
-                        {t('documents') || 'Documentos'}
+                        {t('documents')}
                     </button>
                     <button 
                         type="button"
@@ -197,7 +203,7 @@ export const PatientDetailsView = ({
                         onClick={() => setActiveTab('chat')}
                     >
                         <Icon name="chat" size="1.1rem" />
-                        {t('whatsapp_history') || 'Chat'}
+                        {t('whatsapp_history')}
                     </button>
                 </div>
 
@@ -240,11 +246,11 @@ export const PatientDetailsView = ({
                         {activeTab === 'medications' && (
                             <div className="patient-details__meds-tab">
                                 {/* Current Medication Section */}
-                                <section className={`${styles.PatientDetailsView__block} ${styles.PatientDetailsView__blockMedications}`} style={{ marginBottom: '1.5rem' }}>
+                                <section className={`${styles.PatientDetailsView__block} ${styles.PatientDetailsView__blockMedications} ${styles.PatientDetailsView__blockWithMargin}`}>
                                     <header className={`${styles.PatientDetailsView__blockHeader}`}>
                                         <h3 className={`${styles.PatientDetailsView__blockTitle}`}>
                                             <Icon name="medication" size="1.2rem" />
-                                            {t('current_medication') || 'Medicación habitual / Crónica'}
+                                            {t('current_medication')}
                                         </h3>
                                         <Button 
                                             size="sm" 
@@ -255,46 +261,36 @@ export const PatientDetailsView = ({
                                                 setIsMedModalOpen(true);
                                             }}
                                         >
-                                            {t('add_medication') || 'Agregar Medicación'}
+                                            {t('add_medication')}
                                         </Button>
                                     </header>
                                     <div className={`${styles.PatientDetailsView__blockContent} ${styles.PatientDetailsView__blockContentPadded}`}>
                                         {chronicMeds.length > 0 ? (
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+                                            <div className={styles.PatientDetailsView__medsGrid}>
                                                 {chronicMeds.map((m, i) => (
                                                     <div 
                                                         key={m.id || `med-${m.name}-${m.dose || ''}`} 
-                                                        style={{ 
-                                                            padding: '1rem', 
-                                                            background: 'var(--gray-100, #f8f9fa)', 
-                                                            borderRadius: '10px', 
-                                                            border: '1px solid var(--gray-200, #e9ecef)',
-                                                            display: 'flex',
-                                                            flexDirection: 'column',
-                                                            justify: 'space-between',
-                                                            gap: '0.75rem',
-                                                            boxShadow: '0 2px 6px rgba(0,0,0,0.04)'
-                                                        }}
+                                                        className={styles.PatientDetailsView__medCard}
                                                     >
-                                                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '0.5rem' }}>
-                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                                                                <Icon name="medication" size="1.4rem" style={{ color: 'var(--primary-color, #1a73e8)' }} />
+                                                        <div className={styles.PatientDetailsView__medCardTop}>
+                                                            <div className={styles.PatientDetailsView__medCardHeader}>
+                                                                <span className={styles.PatientDetailsView__iconPrimary}><Icon name="medication" size="1.4rem" /></span>
                                                                 <div>
-                                                                    <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--gray-900)' }}>
+                                                                    <div className={styles.PatientDetailsView__medName}>
                                                                         {m.medication_name || m.name || '—'}
                                                                     </div>
                                                                     {m.monodroga && (
-                                                                        <small style={{ color: 'var(--gray-600)', display: 'block', fontSize: '0.8rem' }}>
+                                                                        <small className={styles.PatientDetailsView__medMono}>
                                                                             {m.monodroga} {m.presentation ? `(${m.presentation})` : ''}
                                                                         </small>
                                                                     )}
                                                                 </div>
                                                             </div>
-                                                            <div style={{ display: 'flex', gap: '0.25rem' }}>
+                                                            <div className={styles.PatientDetailsView__medCardActions}>
                                                                 <Button 
                                                                     variant="ghost" 
                                                                     size="sm-compact" 
-                                                                    title={t('edit') || 'Editar'}
+                                                                    title={t('edit')}
                                                                     icon={<Icon name="edit" size="0.9rem" />} 
                                                                     onClick={() => {
                                                                         setEditingMedication(m);
@@ -304,26 +300,26 @@ export const PatientDetailsView = ({
                                                             </div>
                                                         </div>
 
-                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', fontSize: '0.825rem' }}>
+                                                        <div className={styles.PatientDetailsView__medTags}>
                                                             {m.dose && (
-                                                                <span style={{ background: '#e8f0fe', color: '#1a73e8', padding: '0.2rem 0.5rem', borderRadius: '6px', fontWeight: 600 }}>
+                                                                <span className={styles.PatientDetailsView__tagDose}>
                                                                     💊 {m.dose}
                                                                 </span>
                                                             )}
                                                             {m.frequency && (
-                                                                <span style={{ background: '#e6f4ea', color: '#137333', padding: '0.2rem 0.5rem', borderRadius: '6px', fontWeight: 600 }}>
+                                                                <span className={styles.PatientDetailsView__tagFreq}>
                                                                     ⏱️ {m.frequency}
                                                                 </span>
                                                             )}
                                                             {m.boxes_count > 0 && (
-                                                                <span style={{ background: '#fef7e0', color: '#b06000', padding: '0.2rem 0.5rem', borderRadius: '6px', fontWeight: 600 }}>
-                                                                    📦 {m.boxes_count} {m.boxes_count === 1 ? 'caja' : 'cajas'}
+                                                                <span className={styles.PatientDetailsView__tagBoxes}>
+                                                                    📦 {m.boxes_count} {m.boxes_count === 1 ? t('box') : t('boxes_plural')}
                                                                 </span>
                                                             )}
                                                         </div>
 
                                                         {m.notes && (
-                                                            <div style={{ fontSize: '0.825rem', color: 'var(--gray-600)', fontStyle: 'italic', background: '#ffffff', padding: '0.5rem', borderRadius: '6px', border: '1px solid var(--gray-200)' }}>
+                                                            <div className={styles.PatientDetailsView__medNotes}>
                                                                 📝 {m.notes}
                                                             </div>
                                                         )}
@@ -331,8 +327,8 @@ export const PatientDetailsView = ({
                                                 ))}
                                             </div>
                                         ) : (
-                                            <div style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--gray-600)' }}>
-                                                <p style={{ margin: '0 0 1rem 0' }}>{t('no_current_medications') || 'Sin medicación habitual cargada para este paciente'}</p>
+                                            <div className={styles.PatientDetailsView__emptyState}>
+                                                <p className={styles.PatientDetailsView__emptyText}>{t('no_current_medications')}</p>
                                                 <Button 
                                                     size="sm" 
                                                     variant="secondary" 
@@ -342,7 +338,7 @@ export const PatientDetailsView = ({
                                                         setIsMedModalOpen(true);
                                                     }}
                                                 >
-                                                    {t('add_first_medication') || 'Cargar Primera Medicación'}
+                                                    {t('add_first_medication')}
                                                 </Button>
                                             </div>
                                         )}
@@ -354,22 +350,22 @@ export const PatientDetailsView = ({
                                     <header className={`${styles.PatientDetailsView__blockHeader}`}>
                                         <h3 className={`${styles.PatientDetailsView__blockTitle}`}>
                                             <Icon name="folder_open" size="1.2rem" />
-                                            {t('recent_prescriptions') || 'Historial de Recetas e Indicaciones'}
+                                            {t('recent_prescriptions')}
                                         </h3>
                                         <Button size="sm" variant="primary" icon={<Icon name="add" size="1rem" />} onClick={() => onGeneratePrescriptionLink(details.id)}>
-                                            {t('new_prescription') || 'Nueva Receta'}
+                                            {t('new_prescription')}
                                         </Button>
                                     </header>
                                     <div className={`${styles.PatientDetailsView__blockContent} ${styles.PatientDetailsView__blockContentPadded}`}>
                                         {allPrescriptions.length > 0 ? (
-                                            <table className={`${styles.PatientDetailsView__infoTable}`} style={{ width: '100%' }}>
+                                            <table className={`${styles.PatientDetailsView__infoTable}`}>
                                                 <thead>
-                                                    <tr style={{ borderBottom: '2px solid var(--gray-200)', textAlign: 'left' }}>
-                                                        <th style={{ padding: '0.75rem' }}>{t('appointment_date') || 'Fecha'}</th>
-                                                        <th style={{ padding: '0.75rem' }}>{t('appointment_doctor') || 'Doctor'}</th>
-                                                        <th style={{ padding: '0.75rem' }}>{t('medications') || 'Medicación'}</th>
-                                                        <th style={{ padding: '0.75rem' }}>{t('status') || 'Tipo'}</th>
-                                                        <th style={{ padding: '0.75rem', textAlign: 'right' }}>{t('actions') || 'Acciones'}</th>
+                                                    <tr className={styles.PatientDetailsView__rxTheadRow}>
+                                                        <th className={styles.PatientDetailsView__rxTh}>{t('appointment_date')}</th>
+                                                        <th className={styles.PatientDetailsView__rxTh}>{t('appointment_doctor')}</th>
+                                                        <th className={styles.PatientDetailsView__rxTh}>{t('medications')}</th>
+                                                        <th className={styles.PatientDetailsView__rxTh}>{t('status')}</th>
+                                                        <th className={styles.PatientDetailsView__rxThRight}>{t('actions')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -378,33 +374,26 @@ export const PatientDetailsView = ({
                                                         const actualFileUrl = r.file_url || r.pdf_url;
                                                         const medText = r.request_note || r.medications || r.doctor_note || '—';
                                                         return (
-                                                            <tr key={r.id || `req-${r.doctor_name || r.created_at || ''}`} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                                                                <td style={{ padding: '0.75rem', fontWeight: 600, whiteSpace: 'nowrap' }}>
+                                                            <tr key={r.id || `req-${r.doctor_name || r.created_at || ''}`} className={styles.PatientDetailsView__rxRow}>
+                                                                <td className={styles.PatientDetailsView__rxTdStrong}>
                                                                     {formatDate(r.created_at || r.appointment_date)}
                                                                 </td>
-                                                                <td style={{ padding: '0.75rem', whiteSpace: 'nowrap' }}>{r.doctor_name || '—'}</td>
-                                                                <td style={{ padding: '0.75rem', maxWidth: '350px' }}>
-                                                                    <div style={{ fontWeight: 600, whiteSpace: 'pre-line', lineHeight: '1.4' }}>{medText}</div>
-                                                                    {r.diagnosis && <small style={{ color: 'var(--gray-600)' }}>Dx: {r.diagnosis}</small>}
+                                                                <td className={styles.PatientDetailsView__rxTdNowrap}>{r.doctor_name || '—'}</td>
+                                                                <td className={styles.PatientDetailsView__rxTd}>
+                                                                    <div className={styles.PatientDetailsView__rxMedText}>{medText}</div>
+                                                                    {r.diagnosis && <small className={styles.PatientDetailsView__rxDx}>{t('diagnosis')}: {r.diagnosis}</small>}
                                                                 </td>
-                                                                <td style={{ padding: '0.75rem' }}>
-                                                                    <span style={{ 
-                                                                        padding: '0.25rem 0.6rem', 
-                                                                        borderRadius: '12px', 
-                                                                        fontSize: '0.75rem', 
-                                                                        fontWeight: 600,
-                                                                        background: isOfficial ? '#e6f4ea' : '#e8f0fe',
-                                                                        color: isOfficial ? '#137333' : '#1a73e8'
-                                                                    }}>
-                                                                        {isOfficial ? (t('official') || 'Oficial') : (t('request') || 'Solicitud')}
+                                                                <td className={styles.PatientDetailsView__rxTdPlain}>
+                                                                    <span className={`${styles.PatientDetailsView__rxStatus} ${isOfficial ? styles.PatientDetailsView__rxStatusOfficial : styles.PatientDetailsView__rxStatusRequest}`}>
+                                                                        {isOfficial ? (t('official')) : (t('request'))}
                                                                     </span>
                                                                 </td>
-                                                                <td style={{ padding: '0.75rem', textAlign: 'right' }}>
-                                                                    <div style={{ display: 'inline-flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                                                <td className={styles.PatientDetailsView__rxTdRight}>
+                                                                    <div className={styles.PatientDetailsView__rxActions}>
                                                                         <Button
                                                                             variant="ghost"
                                                                             size="sm"
-                                                                            title={t('copy_link') || 'Copiar Enlace de Receta'}
+                                                                            title={t('copy_link')}
                                                                             icon={<Icon name="content_copy" size="1rem" />}
                                                                             onClick={() => handleCopyRxLink(r)}
                                                                         />
@@ -412,7 +401,7 @@ export const PatientDetailsView = ({
                                                                             <Button
                                                                                 variant="ghost"
                                                                                 size="sm"
-                                                                                title={t('send_whatsapp') || 'Enviar por WhatsApp'}
+                                                                                title={t('send_whatsapp')}
                                                                                 icon={<Icon name="chat" size="1rem" />}
                                                                                 onClick={() => handleSendRxWhatsapp(r)}
                                                                             />
@@ -434,7 +423,7 @@ export const PatientDetailsView = ({
                                                                                 }
                                                                             }}
                                                                         >
-                                                                            {t('view') || 'Ver'}
+                                                                            {t('view')}
                                                                         </Button>
                                                                     </div>
                                                                 </td>
@@ -443,7 +432,7 @@ export const PatientDetailsView = ({
                                                     })}
                                                 </tbody>
                                             </table>
-                                        ) : <p className="patient-details__text-empty">{t('no_history') || 'Sin historial de recetas'}</p>}
+                                        ) : <p className="patient-details__text-empty">{t('no_history')}</p>}
                                     </div>
                                 </section>
                             </div>
@@ -452,16 +441,16 @@ export const PatientDetailsView = ({
                         {activeTab === 'documents' && (
                             <div className="patient-details__docs-tab">
                                 {/* Upload Box */}
-                                <section className={`${styles.PatientDetailsView__block}`} style={{ marginBottom: '1.5rem' }}>
+                                <section className={`${styles.PatientDetailsView__block} ${styles.PatientDetailsView__blockWithMargin}`}>
                                     <header className={`${styles.PatientDetailsView__blockHeader}`}>
                                         <h3 className={`${styles.PatientDetailsView__blockTitle}`}>
                                             <Icon name="cloud_upload" size="1.2rem" />
-                                            {t('upload_file_for_patient') || 'Adjuntar Documento al Paciente'}
+                                            {t('upload_file_for_patient')}
                                         </h3>
                                     </header>
                                     <div className={`${styles.PatientDetailsView__blockContent} ${styles.PatientDetailsView__blockContentPadded}`}>
                                         {uploadMsg && (
-                                            <div className={`message-banner message-banner--${uploadMsg.type}`} style={{ marginBottom: '1rem', padding: '0.75rem', borderRadius: '8px', background: uploadMsg.type === 'success' ? '#e6f4ea' : '#fce8e6', color: uploadMsg.type === 'success' ? '#137333' : '#c5221f' }}>
+                                            <div className={`message-banner message-banner--${uploadMsg.type} ${styles.PatientDetailsView__uploadMsg} ${uploadMsg.type === 'success' ? styles.PatientDetailsView__uploadMsgSuccess : styles.PatientDetailsView__uploadMsgError}`}>
                                                 {uploadMsg.text}
                                             </div>
                                         )}
@@ -471,18 +460,18 @@ export const PatientDetailsView = ({
                                                     type="file" 
                                                     onChange={e => setNewFile(e.target.files[0])}
                                                     required 
-                                                    style={{ flex: 1 }}
-                                                    aria-label={t('upload_file_for_patient') || 'Adjuntar Documento al Paciente'}
+                                                    className={styles.PatientDetailsView__fileInput}
+                                                    aria-label={t('upload_file_for_patient')}
                                                 />
                                                 <input 
                                                     type="text" 
-                                                    placeholder={t('description') || 'Descripción (ej: Estudio de Sangre, Ecografía...)'} 
+                                                    placeholder={t('description')} 
                                                     value={newFileDesc}
                                                     onChange={e => setNewFileDesc(e.target.value)}
-                                                    style={{ flex: 2, padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid var(--gray-300)' }}
+                                                    className={styles.PatientDetailsView__textInput}
                                                 />
                                                 <Button type="submit" size="sm" variant="primary" disabled={uploadingFile || !newFile} icon={<Icon name="upload" size="1rem" />}>
-                                                    {uploadingFile ? t('loading') : (t('upload') || 'Subir')}
+                                                    {uploadingFile ? t('loading') : (t('upload'))}
                                                 </Button>
                                             </div>
                                         </form>
@@ -494,43 +483,43 @@ export const PatientDetailsView = ({
                                     <header className={`${styles.PatientDetailsView__blockHeader}`}>
                                         <h3 className={`${styles.PatientDetailsView__blockTitle}`}>
                                             <Icon name="folder" size="1.2rem" />
-                                            {t('patient_files') || 'Documentos y Estudios Adjuntos'}
+                                            {t('patient_files')}
                                         </h3>
                                     </header>
                                     <div className={`${styles.PatientDetailsView__blockContent} ${styles.PatientDetailsView__blockContentPadded}`}>
                                         {loadingFiles ? (
                                             <p className="patient-details__text-empty">{t('loading')}</p>
                                         ) : patientFiles.length > 0 ? (
-                                            <table className={`${styles.PatientDetailsView__infoTable}`} style={{ width: '100%' }}>
+                                            <table className={`${styles.PatientDetailsView__infoTable}`}>
                                                 <thead>
-                                                    <tr style={{ borderBottom: '2px solid var(--gray-200)', textAlign: 'left' }}>
-                                                        <th style={{ padding: '0.75rem' }}>{t('file_name') || 'Archivo'}</th>
-                                                        <th style={{ padding: '0.75rem' }}>{t('description') || 'Descripción'}</th>
-                                                        <th style={{ padding: '0.75rem' }}>{t('upload_date') || 'Fecha'}</th>
-                                                        <th style={{ padding: '0.75rem' }}>{t('uploaded_by') || 'Cargado por'}</th>
-                                                        <th style={{ padding: '0.75rem', textAlign: 'right' }}>{t('actions') || 'Acción'}</th>
+                                                    <tr className={styles.PatientDetailsView__rxTheadRow}>
+                                                        <th className={styles.PatientDetailsView__rxTh}>{t('file_name')}</th>
+                                                        <th className={styles.PatientDetailsView__rxTh}>{t('description')}</th>
+                                                        <th className={styles.PatientDetailsView__rxTh}>{t('upload_date')}</th>
+                                                        <th className={styles.PatientDetailsView__rxTh}>{t('uploaded_by')}</th>
+                                                        <th className={styles.PatientDetailsView__rxThRight}>{t('actions')}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {patientFiles.map(f => (
-                                                        <tr key={f.id} style={{ borderBottom: '1px solid var(--gray-100)' }}>
-                                                            <td style={{ padding: '0.75rem', fontWeight: 600 }}>
-                                                                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                        <tr key={f.id} className={styles.PatientDetailsView__rxRow}>
+                                                            <td className={styles.PatientDetailsView__fileTdStrong}>
+                                                                <span className={styles.PatientDetailsView__fileCell}>
                                                                     <Icon name={f.file_type?.includes('pdf') ? 'picture_as_pdf' : 'description'} size="1.1rem" />
                                                                     {f.file_name}
                                                                 </span>
                                                             </td>
-                                                            <td style={{ padding: '0.75rem', color: 'var(--gray-600)' }}>{f.description || '—'}</td>
-                                                            <td style={{ padding: '0.75rem' }}>{formatDate(f.created_at)}</td>
-                                                            <td style={{ padding: '0.75rem' }}>{f.uploader_name || '—'}</td>
-                                                            <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                                                            <td className={styles.PatientDetailsView__fileTdMuted}>{f.description || '—'}</td>
+                                                            <td className={styles.PatientDetailsView__rxTdPlain}>{formatDate(f.created_at)}</td>
+                                                            <td className={styles.PatientDetailsView__rxTdPlain}>{f.uploader_name || '—'}</td>
+                                                            <td className={styles.PatientDetailsView__rxTdRight}>
                                                                 <Button 
                                                                     variant="ghost" 
                                                                     size="sm" 
                                                                     onClick={() => setSelectedViewerFile(f)}
                                                                     icon={<Icon name="visibility" size="1rem" />}
                                                                 >
-                                                                    {t('view') || 'Ver'}
+                                                                    {t('view')}
                                                                 </Button>
                                                             </td>
                                                         </tr>
@@ -538,7 +527,7 @@ export const PatientDetailsView = ({
                                                 </tbody>
                                             </table>
                                         ) : (
-                                            <p className="patient-details__text-empty">{t('no_documents_uploaded') || 'No hay documentos adjuntos para este paciente'}</p>
+                                            <p className="patient-details__text-empty">{t('no_documents_uploaded')}</p>
                                         )}
                                     </div>
                                 </section>
@@ -566,29 +555,29 @@ export const PatientDetailsView = ({
                     <Modal
                         isOpen={!!selectedRxDetail}
                         onClose={() => setSelectedRxDetail(null)}
-                        title={`${t('prescription_details') || 'Detalle de la Receta Médica'}`}
+                        title={`${t('prescription_details')}`}
                         size="lg"
                     >
-                        <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1.25rem', maxHeight: '70vh', overflowY: 'auto' }}>
-                            <div style={{ padding: '1rem 1.25rem', background: 'var(--gray-100)', borderRadius: '10px', borderLeft: '5px solid var(--primary-color, #1a73e8)' }}>
-                                <h3 style={{ margin: '0 0 0.5rem 0', color: 'var(--gray-900)' }}>👤 {details.full_name} <span style={{ fontSize: '0.9rem', fontWeight: 400, color: 'var(--gray-600)' }}>(DNI: {details.dni || '—'})</span></h3>
-                                <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', fontSize: '0.95rem', color: 'var(--gray-700)', marginTop: '0.5rem' }}>
-                                    <div>📅 <strong>{t('appointment_date') || 'Fecha'}:</strong> {formatDate(selectedRxDetail.created_at || selectedRxDetail.appointment_date)}</div>
-                                    <div>🩺 <strong>{t('appointment_doctor') || 'Doctor'}:</strong> {selectedRxDetail.doctor_name || '—'}</div>
-                                    <div>🏷️ <strong>{t('status') || 'Estado'}:</strong> {selectedRxDetail.status || 'Completada'}</div>
+                        <div className={styles.PatientDetailsView__rxDetailBody}>
+                            <div className={styles.PatientDetailsView__rxDetailHeader}>
+                                <h3 className={styles.PatientDetailsView__rxDetailName}>👤 {details.full_name} <span className={styles.PatientDetailsView__rxDetailDni}>({t('dni')}: {details.dni || '—'})</span></h3>
+                                <div className={styles.PatientDetailsView__rxDetailMeta}>
+                                    <div>📅 <strong>{t('appointment_date')}:</strong> {formatDate(selectedRxDetail.created_at || selectedRxDetail.appointment_date)}</div>
+                                    <div>🩺 <strong>{t('appointment_doctor')}:</strong> {selectedRxDetail.doctor_name || '—'}</div>
+                                    <div>🏷️ <strong>{t('status')}:</strong> {selectedRxDetail.status || 'Completada'}</div>
                                 </div>
                             </div>
 
                             <div>
-                                <h4 style={{ margin: '0 0 0.75rem 0', color: 'var(--gray-800)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    💊 {t('medications') || 'Medicamentos Prescritos'}:
+                                <h4 className={styles.PatientDetailsView__rxDetailSubtitle}>
+                                    💊 {t('medications')}:
                                 </h4>
-                                <div style={{ padding: '1rem', background: '#f8f9fa', borderRadius: '8px', border: '1px solid var(--gray-200)' }}>
+                                <div className={styles.PatientDetailsView__rxDetailMeds}>
                                     {(selectedRxDetail.request_note || selectedRxDetail.medications || selectedRxDetail.doctor_note || '—')
                                         .split('\n')
                                         .filter(line => line.trim())
                                         .map((line, idx) => (
-                                            <div key={line.trim()} style={{ padding: '0.4rem 0', borderBottom: idx < (selectedRxDetail.request_note || selectedRxDetail.medications || '').split('\n').length - 1 ? '1px dashed var(--gray-300)' : 'none', fontWeight: 600, color: 'var(--gray-800)' }}>
+                                            <div key={line.trim()} className={`${styles.PatientDetailsView__rxDetailMedLine} ${idx < (selectedRxDetail.request_note || selectedRxDetail.medications || '').split('\n').length - 1 ? styles.PatientDetailsView__rxLineDashed : styles.PatientDetailsView__rxLineNone}`}>
                                                 • {line.trim()}
                                             </div>
                                         ))
@@ -598,20 +587,20 @@ export const PatientDetailsView = ({
 
                             {selectedRxDetail.diagnosis && (
                                 <div>
-                                    <h4 style={{ margin: '0 0 0.5rem 0', color: 'var(--gray-800)' }}>📝 {t('diagnosis') || 'Diagnóstico / Indicaciones'}:</h4>
-                                    <div style={{ padding: '0.85rem 1rem', background: '#f8f9fa', borderRadius: '8px', border: '1px solid var(--gray-200)', color: 'var(--gray-700)' }}>
+                                    <h4 className={styles.PatientDetailsView__rxDetailDiagTitle}>📝 {t('diagnosis')}:</h4>
+                                    <div className={styles.PatientDetailsView__rxDetailDiag}>
                                         {selectedRxDetail.diagnosis}
                                     </div>
                                 </div>
                             )}
 
-                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem', borderTop: '1px solid var(--gray-200)', paddingTop: '1rem' }}>
+                            <div className={styles.PatientDetailsView__rxDetailFooter}>
                                 <Button variant="secondary" onClick={() => handleCopyRxLink(selectedRxDetail)} icon={<Icon name="content_copy" size="1rem" />}>
-                                    {t('copy_link') || 'Copiar Enlace'}
+                                    {t('copy_link')}
                                 </Button>
                                 {details.phone && (
                                     <Button variant="primary" onClick={() => handleSendRxWhatsapp(selectedRxDetail)} icon={<Icon name="chat" size="1rem" />}>
-                                        {t('send_whatsapp') || 'Enviar por WhatsApp'}
+                                        {t('send_whatsapp')}
                                     </Button>
                                 )}
                             </div>

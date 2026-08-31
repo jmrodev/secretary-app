@@ -133,7 +133,7 @@ export const FloatingChat = () => {
                     onClick={toggleChat}
                 >
                     <Icon name="chat" size="1.1rem" />
-                    <span>{t('messages') || 'Mensajes'}</span>
+                    <span>{t('messages')}</span>
                     {unreadCount > 0 && <span className={`${baseClass}__badge`}>{unreadCount}</span>}
                 </button>
             )}

@@ -88,20 +88,20 @@ export const AppointmentAdminPanel = ({
                             {!isGoogle && !isBonified && appt.payment_status !== 'paid' && (
                                 <section className={`${styles.AppointmentAdminPanel__group} ${styles.AppointmentAdminPanel__groupHighlight}`}>
                                     <h4 className={styles.AppointmentAdminPanel__groupTitle}>
-                                        {isPendingPayment ? (t('pending_payment') || 'Pago Pendiente') : (t('record_payment') || 'Registrar Pago')}
+                                        {isPendingPayment ? (t('pending_payment')) : (t('record_payment'))}
                                     </h4>
                                     <div className={styles.AppointmentAdminPanel__grid}>
                                         <Button
                                             variant="success" className={styles.AppointmentAdminPanel__action} onClick={() => { onPay(appt); onClose(); }}
                                             icon={<Icon name="payments" size="1.1rem" />}
                                         >
-                                            {isPendingPayment ? (t('pay') || 'Pagar') : (t('record_payment') || 'Registrar Pago')}
+                                            {isPendingPayment ? (t('pay')) : (t('record_payment'))}
                                         </Button>
                                         <Button
                                             variant="purple" className={styles.AppointmentAdminPanel__action} onClick={() => onBonify(appt)}
                                             icon={<Icon name="card_giftcard" size="1.1rem" />}
                                         >
-                                            {t('bonify') || 'Bonificar'}
+                                            {t('bonify')}
                                         </Button>
                                     </div>
                                 </section>
@@ -200,7 +200,7 @@ export const AppointmentAdminPanel = ({
                                     onClick={() => onWhatsApp(appt, 'chat')}
                                     icon={<Icon name="chat" size="1.1rem" />}
                                 >
-                                    {t('whatsapp_chat') || 'WhatsApp'}
+                                    {t('whatsapp_chat')}
                                 </Button>
                                 {appt.status !== 'completed' && (
                                     <>
@@ -208,17 +208,17 @@ export const AppointmentAdminPanel = ({
                                             variant="accent" className={styles.AppointmentAdminPanel__action}
                                             onClick={() => onWhatsApp(appt, 'reminder')}
                                             icon={<Icon name="notifications" size="1.1rem" />}
-                                            title={t('send_reminder_whatsapp_title') || "Enviar mensaje de recordatorio al paciente por WhatsApp"}
+                                            title={t('send_reminder_whatsapp_title')}
                                         >
-                                            {t('reminder') || 'Recordatorio'}
+                                            {t('reminder')}
                                         </Button>
                                         <Button
                                             variant="success" className={styles.AppointmentAdminPanel__action}
                                             onClick={() => onWhatsAppConfirmation(appt)}
                                             icon={<Icon name="auto_awesome" size="1.1rem" />}
-                                            title={t('preview_confirmation_whatsapp_title') || "Abrir vista previa del mensaje de confirmación de asistencia"}
+                                            title={t('preview_confirmation_whatsapp_title')}
                                         >
-                                            {t('send_whatsapp_confirmation') || 'Confirmación'}
+                                            {t('send_whatsapp_confirmation')}
                                         </Button>
                                     </>
                                 )}
@@ -227,9 +227,9 @@ export const AppointmentAdminPanel = ({
                                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.75rem', display: 'flex', alignItems: 'flex-start', gap: '0.35rem' }}>
                                     <Icon name="info" size="1rem" style={{ marginTop: '0.1rem', flexShrink: 0 }} />
                                     <span>
-                                        <strong>{t('whatsapp') || 'WhatsApp'}</strong> {t('whatsapp_admin_panel_hint_1') || 'abre el chat interno (o WhatsApp Web si el bridge está desconectado).'}
-                                        {' '}<strong>{t('reminder') || 'Recordatorio'}</strong> {t('whatsapp_admin_panel_hint_2') || 'envía el template de recordatorio automáticamente.'}
-                                        {' '}<strong>{t('confirmation') || 'Confirmación'}</strong> {t('whatsapp_admin_panel_hint_3') || 'abre una vista previa del mensaje para que puedas editarlo antes de enviarlo.'}
+                                        <strong>{t('whatsapp')}</strong> {t('whatsapp_admin_panel_hint_1')}
+                                        {' '}<strong>{t('reminder')}</strong> {t('whatsapp_admin_panel_hint_2')}
+                                        {' '}<strong>{t('confirmation')}</strong> {t('whatsapp_admin_panel_hint_3')}
                                     </span>
                                 </p>
                             )}

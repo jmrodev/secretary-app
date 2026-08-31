@@ -18,13 +18,10 @@ exports.logCRUD = async (req, action, entityType, entityId, oldData, newData) =>
 exports.logAction = async (req, action, details) => {
     try {
         const user_id = req.user ? req.user.user_id : null;
-        let username = req.user ? req.user.username : (req.body.username || 'Anonymous');
+        const username = req.user ? req.user.username : 'Anonymous';
         const ip_address = req?.ip || req?.socket?.remoteAddress || req?.connection?.remoteAddress || '127.0.0.1';
 
-        let detailsStr = details;
-        if (typeof details === 'object') {
-            detailsStr = JSON.stringify(details);
-        }
+        const detailsStr = typeof details === 'object' ? JSON.stringify(details) : details;
 
         await auditRepository.create({
             user_id,

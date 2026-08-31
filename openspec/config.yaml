@@ -1,12 +1,11 @@
 schema: spec-driven
 
 context: |
-  Tech stack: React 19, Express v5, Go 1.25.0, SQLite, MariaDB/MySQL, pnpm monorepo
-  Architecture: Atomic Design, MVC + Repository
-  Testing: Jest (server unit/integration), Go testing (bridge)
-  Style: BEM (CSS Modules), ESLint, Stylelint, Oxlint
-  Tools: graphify (codebase mapping & callflow visualization)
-
+  Tech stack: React 19, Vite 8, Express v5, Go 1.25.0, SQLite, MariaDB/MySQL, pnpm monorepo
+  Architecture: Atomic Design (client), MVC + Repository (server), Go whatsapp bridge
+  Testing: Vitest + Testing Library (client), Jest + node-mocks-http (server), go test (bridge)
+  Style: BEM (CSS Modules), ESLint, Stylelint, Oxlint, react-doctor
+  Tools: graphify (codebase mapping & callflow visualization), CodeGraph (index present)
 
 rules:
   proposal:
@@ -21,11 +20,12 @@ rules:
     - Group by phase, use hierarchical numbering
     - Keep tasks completable in one session
   apply:
-    - Follow existing code patterns
+    guidelines:
+      - Follow existing code patterns
     tdd: true
-    test_command: "pnpm --filter server test"
+    test_command: "pnpm --filter server test && pnpm --filter client test"
   verify:
-    test_command: "pnpm --filter server test"
+    test_command: "pnpm --filter server test && pnpm --filter client test"
     build_command: "pnpm build"
     coverage_threshold: 80
   archive:
@@ -33,27 +33,36 @@ rules:
 
 testing:
   strict_tdd: true
-  detected_at: "2026-07-29"
-  runner:
-    command: "pnpm --filter server test"
-    framework: "Jest"
+  detected_at: "2026-08-30"
+  runners:
+    client:
+      command: "pnpm --filter client test"
+      framework: "Vitest"
+    server:
+      command: "pnpm --filter server test"
+      framework: "Jest"
   layers:
     unit:
       available: true
-      tool: "Jest (server)"
+      tool: "Vitest (client), Jest (server)"
     integration:
       available: true
-      tool: "Jest (server with node-mocks-http)"
+      tool: "Testing Library (client), node-mocks-http (server)"
     e2e:
       available: false
       tool: "—"
   coverage:
     available: true
-    command: "pnpm --filter server test -- --coverage"
+    commands:
+      client: "pnpm --filter client test -- --coverage"
+      server: "pnpm --filter server test -- --coverage"
   quality_tools:
     linter:
       available: true
-      command: "pnpm lint"
+      commands:
+        - "pnpm lint (root — delegates to client + server)"
+        - "oxlint (client fast lint)"
+        - "stylelint (client CSS)"
     type_checker:
       available: false
       command: "—"

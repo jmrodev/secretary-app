@@ -133,3 +133,73 @@
     margin-top: 0.25rem;
     font-weight: 600;
 }
+
+.PrescriptionItemsList__tableWrapperVisible {
+    overflow: visible;
+}
+
+.PrescriptionItemsList__thMed {
+    width: 32%;
+}
+
+.PrescriptionItemsList__thDose {
+    width: 8%;
+}
+
+.PrescriptionItemsList__thCol15 {
+    width: 15%;
+}
+
+.PrescriptionItemsList__controlSm {
+    padding: 0.25rem 0.5rem;
+    min-height: 30px;
+}
+
+.PrescriptionItemsList__formSelectUnits {
+    width: 100%;
+    text-align: center;
+}
+
+.PrescriptionItemsList__formSelectBoxes {
+    width: 55px;
+    text-align: center;
+}
+
+.PrescriptionItemsList__optionBlack {
+    color: black;
+}
+
+.PrescriptionItemsList__qtyInputsRow {
+    display: flex;
+    gap: 0.35rem;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.PrescriptionItemsList__cellCenter {
+    text-align: center;
+}
+
+.PrescriptionItemsList__daysInputsRow {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+
+.PrescriptionItemsList__inputDays {
+    width: 55px;
+    text-align: center;
+    padding: 0.25rem;
+}
+
+.PrescriptionItemsList__daysLabel {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.PrescriptionItemsList__metaItemCenter {
+    justify-content: center;
+}

@@ -17,7 +17,7 @@ export const SimpleRequestForm = ({ reqType, reqNote, setReqNote, t, baseClass }
                     rows={3}
                     value={reqNote}
                     onChange={e => setReqNote(e.target.value)}
-                    placeholder={reqType === 'license' ? (t('diagnosis_placeholder') || 'e.g. Gripe fuerte, reposo 48hs') : (t('motive_placeholder') || 'e.g. Certificado de aptitud física')}
+                    placeholder={reqType === 'license' ? (t('diagnosis_placeholder')) : (t('motive_placeholder'))}
                     required
                 />
             </FormGroup>

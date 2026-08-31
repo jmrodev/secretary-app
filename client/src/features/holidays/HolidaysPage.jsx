@@ -23,37 +23,37 @@ export const HolidaysPage = () => {
     };
 
     return (
-        <MainLayout wide flush title={t('holidays') || 'Feriados y Días No Laborables'}>
+        <MainLayout wide flush title={t('holidays')}>
             <div className={styles.HolidaysPage__root}>
 
                 <div className={styles.HolidaysPage__content}>
                     <div className={styles.HolidaysPage__card}>
-                        <h3 className={styles.HolidaysPage__cardTitle}>{t('add_holiday') || 'Agregar Feriado'}</h3>
+                        <h3 className={styles.HolidaysPage__cardTitle}>{t('add_holiday')}</h3>
                         <form onSubmit={handleAdd} className={styles.HolidaysPage__form}>
                             <Input 
                                 type="date" 
-                                label={t('date') || "Fecha"} 
+                                label={t('date')} 
                                 value={date} 
                                 onChange={(e) => setDate(e.target.value)} 
                                 required 
                             />
                             <Input 
                                 type="text" 
-                                label={t('description_optional') || "Descripción (Opcional)"} 
-                                placeholder={t('holiday_example_placeholder') || "Ej: Año Nuevo, Feriado Nacional..."}
+                                label={t('description_optional')} 
+                                placeholder={t('holiday_example_placeholder')}
                                 value={description} 
                                 onChange={(e) => setDescription(e.target.value)} 
                             />
                             <Button type="submit" variant="primary" icon={<Icon name="add" />}>
-                                {t('add') || 'Agregar'}
+                                {t('add')}
                             </Button>
                         </form>
                     </div>
 
                     <div className={styles.HolidaysPage__card}>
-                        <h3 className={styles.HolidaysPage__cardTitle}>{t('registered_holidays') || 'Feriados Registrados'}</h3>
+                        <h3 className={styles.HolidaysPage__cardTitle}>{t('registered_holidays')}</h3>
                         {loading ? (
-                            <div style={{ textAlign: 'center', padding: '2rem' }}>{t('loading') || 'Cargando…'}</div>
+                            <div style={{ textAlign: 'center', padding: '2rem' }}>{t('loading')}</div>
                         ) : (
                             <HolidayList holidays={holidays} onDelete={deleteHoliday} />
                         )}

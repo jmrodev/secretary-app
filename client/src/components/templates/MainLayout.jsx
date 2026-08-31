@@ -53,7 +53,7 @@ export const MainLayout = ({
                             ) : null
                         }
                         labels={{
-                            searchPlaceholder: t('search_placeholder') || 'Search...'
+                            searchPlaceholder: t('search_placeholder')
                         }}
                     />
                 )}

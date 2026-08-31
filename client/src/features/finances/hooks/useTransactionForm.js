@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useModal } from '@/context/ModalContext';
+import { useMessage } from '@/context/MessageContext';
 import { financeService } from '@/features/finances/services/financeService';
 import { userService } from '@/features/users/services/userService';
 import { getServiceTypes } from '@/constants/transactionOptions';
@@ -47,7 +47,7 @@ export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0
 
 export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, onClose) => {
     const { t } = useLanguage();
-    const { alert } = useModal();
+    const { showMessage } = useMessage();
 
     // --- State ---
     const [formData, setFormData] = useState(() => ({
@@ -265,7 +265,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
     const saveTransaction = async () => {
         if (!formData.doctor_id) {
-            alert(t('please_select_doctor') || 'Por favor, seleccione un profesional');
+            showMessage(t('please_select_doctor'), 'warning');
             return;
         }
         setLoading(true);
@@ -308,7 +308,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         } catch (err) {
             const serverMsg = err.response?.data?.error || err.message;
             console.error("Error creating transaction:", serverMsg, err);
-            alert((t('failed_record_transaction') || 'Error al guardar') + (serverMsg ? `: ${serverMsg}` : ''));
+            showMessage(t('failed_record_transaction') + (serverMsg ? `: ${serverMsg}` : ''), 'error');
         } finally {
             setLoading(false);
         }

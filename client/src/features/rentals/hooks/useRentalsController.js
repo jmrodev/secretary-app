@@ -54,7 +54,7 @@ export const useRentalsController = () => {
                 cost: 50.00 // Fixed cost for demo
             });
 
-            showMessage(t('rental_booked') || 'Alquiler reservado con éxito', 'success');
+            showMessage(t('rental_booked'), 'success');
             
             // Refresh data
             fetchRentals();
@@ -67,7 +67,7 @@ export const useRentalsController = () => {
             setEndTime('');
         } catch (err) {
             console.error(err);
-            showMessage(t('failed_book_rental') || 'Error al reservar el alquiler', 'error');
+            showMessage(t('failed_book_rental'), 'error');
         }
     };
 

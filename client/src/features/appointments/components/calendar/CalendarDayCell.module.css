@@ -261,3 +261,9 @@ body:not(.CalendarDayCell__theme-light) .CalendarDayCell__past {
     var(--success) 100%
   );
 }
+
+.CalendarDayCell__root {
+  --overtime-amber: #f59e0b;
+  --overtime-orange: #f97316;
+  --overtime-red: #ef4444;
+}
