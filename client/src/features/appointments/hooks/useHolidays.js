@@ -1,12 +1,14 @@
 import { useFetch } from '@/hooks/useFetch';
 import { api } from '@/api/axios';
 import { useMessage } from '@/context/MessageContext';
+import { useLanguage } from '@/hooks/useLanguage';
 
 /**
  * ECC-Pattern: Optimized Holidays Hook
  */
 export const useHolidays = () => {
     const { showMessage } = useMessage();
+    const { t } = useLanguage();
 
     const { 
         data: response, 
@@ -22,12 +24,12 @@ export const useHolidays = () => {
     const addHoliday = async (date, description) => {
         try {
             await api.post('/holidays', { date, description });
-            showMessage('Feriado agregado con éxito', 'success');
+            showMessage(t('holiday_added_success'), 'success');
             fetchHolidays();
             return { success: true };
         } catch (err) {
             console.error(err);
-            const errMsg = err.response?.data?.error || 'Error al agregar feriado';
+            const errMsg = err.response?.data?.error || t('holiday_add_error');
             showMessage(errMsg, 'error');
             return { success: false, error: errMsg };
         }
@@ -36,12 +38,12 @@ export const useHolidays = () => {
     const deleteHoliday = async (id) => {
         try {
             await api.delete(`/holidays/${id}`);
-            showMessage('Feriado eliminado', 'success');
+            showMessage(t('holiday_deleted_success'), 'success');
             fetchHolidays();
             return { success: true };
         } catch (err) {
             console.error(err);
-            showMessage('Error al eliminar feriado', 'error');
+            showMessage(t('holiday_delete_error'), 'error');
             return { success: false };
         }
     };
