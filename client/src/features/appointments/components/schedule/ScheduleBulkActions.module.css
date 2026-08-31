@@ -1,11 +1,11 @@
-/* ScheduleBulkActions Component Styles (BEM) - Dark Mode Standard */
+/* ScheduleBulkActions Component Styles (BEM) */
 
 .ScheduleBulkActions__root {
-    padding: 1.5rem;
-    background-color: var(--schedule-container-bg);
-    border: 1px solid var(--dashboard-card-border);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-lg);
     box-shadow: var(--shadow-sm);
 }
 
@@ -13,10 +13,10 @@
     font-size: 0.9rem;
     font-weight: 800;
     color: var(--text-main);
-    margin-bottom: 1.25rem;
+    margin-bottom: var(--spacing-md);
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -27,45 +27,48 @@
 
 .ScheduleBulkActions__actions {
     display: flex;
-    flex-flow: column wrap;
-    align-items: stretch;
-    gap: 2rem;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-lg);
 }
 
 .ScheduleBulkActions__timeInputs {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
 }
 
 .ScheduleBulkActions__separator {
     font-weight: 700;
     color: var(--text-muted);
-    text-transform: lowercase;
-    font-style: italic;
     font-size: 0.85rem;
+    padding: 0 var(--spacing-xs);
 }
 
 .ScheduleBulkActions__buttons {
     display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+    align-items: center;
+    gap: var(--spacing-sm);
 }
 
 .ScheduleBulkActions__btnLabel {
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.075em;
+    letter-spacing: 0.05em;
 }
 
-@media (width >= 769px) {
+@media (width <= 640px) {
     .ScheduleBulkActions__actions {
-        flex-direction: row;
-        align-items: center;
+        flex-direction: column;
+        align-items: stretch;
     }
     
     .ScheduleBulkActions__buttons {
-        justify-content: flex-start;
+        justify-content: stretch;
+    }
+
+    .ScheduleBulkActions__buttons button {
+        flex: 1;
     }
 }

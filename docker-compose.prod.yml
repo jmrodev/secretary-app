@@ -17,8 +17,6 @@ services:
     volumes:
       - ./data/database/prod:/var/lib/mysql
       - ./server/01-schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
-    ports:
-      - "${DB_EXTERNAL_PORT_PROD:-3310}:3306"
     networks:
       - internal-network
     healthcheck:
