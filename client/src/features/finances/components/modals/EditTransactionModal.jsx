@@ -39,7 +39,7 @@ export const EditTransactionModal = ({
         { value: 'cash', label: t('cash') },
         { value: 'transfer', label: t('transfer') },
         { value: 'card', label: t('card') },
-        { value: 'on_account', label: t('on_account') || 'Cuenta Corriente' }
+        { value: 'on_account', label: t('on_account') }
     ];
 
     const statusOptions = [
@@ -51,7 +51,7 @@ export const EditTransactionModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={t('edit_transaction') || "Editar Transacción"}
+            title={t('edit_transaction')}
             footer={
                 <div className={`${styles.EditTransactionModal__footer}`}>
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
@@ -98,7 +98,7 @@ export const EditTransactionModal = ({
                 </FormGroup>
 
                 {((settings.allow_admin_edit_finance_date === 'true') || (user && user.role === 'admin')) && (
-                    <FormGroup label={t('transaction_date') || 'Fecha de Transacción'}>
+                    <FormGroup label={t('transaction_date')}>
                         <Input
                             type="datetime-local"
                             value={formattedDate}
@@ -107,11 +107,11 @@ export const EditTransactionModal = ({
                         />
                         <div className={`${styles.EditTransactionModal__warning}`}>
                             <Icon name="WARNING" size="1rem" className={`${styles.EditTransactionModal__warningIcon}`} />
-                            <span>{t('date_browser_warning') || 'El formato depende de su navegador. Verifique el mes al seleccionar.'}</span>
+                            <span>{t('date_browser_warning')}</span>
                         </div>
                         <div className={`${styles.EditTransactionModal__warning}`}>
                             <Icon name="WARNING" size="1rem" className={`${styles.EditTransactionModal__warningIcon}`} />
-                            <span>{t('date_order_warning') || 'Cuidado: Cambiar la fecha puede afectar el orden cronológico.'}</span>
+                            <span>{t('date_order_warning')}</span>
                         </div>
                     </FormGroup>
                 )}

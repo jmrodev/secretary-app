@@ -23,10 +23,10 @@ export const ModulesSettings = ({ user, settings, updateSetting }) => {
                         </div>
                         <div className={styles.ModulesSettings__text}>
                             <h4 className={styles.ModulesSettings__title}>
-                                {t('office_rentals_module') || 'Alquiler de Consultorios'}
+                                {t('office_rentals_module')}
                             </h4>
                             <p className={styles.ModulesSettings__description}>
-                                {t('office_rentals_module_desc') || 'Permite a los profesionales reservar consultorios físicos y gestionar tarifas de alquiler.'}
+                                {t('office_rentals_module_desc')}
                             </p>
                         </div>
                     </div>

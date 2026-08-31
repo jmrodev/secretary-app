@@ -46,7 +46,7 @@ export const AppointmentFormFields = ({
             {/* 2. Professional & Schedule */}
             <div className={styles.panel}>
                 <div className={styles.field}>
-                    <label htmlFor="appointment-doctor" className={styles.label}>{t('doctor') || 'Doctor'}</label>
+                    <label htmlFor="appointment-doctor" className={styles.label}>{t('doctor')}</label>
                     {user?.role === 'doctor' ? (
                         <div className={styles.readOnlyField}>
                             {doctors.find(d => String(d.id) === String(selectedDoctor))?.full_name || 'Usted'}
@@ -57,19 +57,19 @@ export const AppointmentFormFields = ({
                             value={selectedDoctor || ''}
                             onChange={handleDoctorChange}
                             options={doctors.map(d => ({ value: d.id, label: d.full_name }))}
-                            placeholder={t('select_doctor') || "Seleccionar Doctor"}
+                            placeholder={t('select_doctor')}
                             required
                         />
                     )}
                 </div>
 
                 <div className={styles.field}>
-                    <label htmlFor="appointment-date" className={styles.label}>{t('date_time') || 'Fecha y Hora'}</label>
+                    <label htmlFor="appointment-date" className={styles.label}>{t('date_time')}</label>
                     <Input id="appointment-date" type="datetime-local" value={date} onChange={handleDateChange} required />
                     {isOutOfHours && (
                         <div className={`${styles.extraBadge} ${styles.extraBadgePulse}`}>
                             <Icon name="warning" size="1rem" />
-                            {t('out_of_hours_appointment') || 'Turno Fuera de Horario'}
+                            {t('out_of_hours_appointment')}
                         </div>
                     )}
                 </div>
@@ -78,12 +78,12 @@ export const AppointmentFormFields = ({
             {/* 3. Details & Type */}
             <div className={styles.panel}>
                 <div className={styles.field}>
-                    <span className={styles.label}>{t('appointment_type') || 'Tipo de Turno'}</span>
+                    <span className={styles.label}>{t('appointment_type')}</span>
                     <AppointmentTypeSelector type={type} onChange={handleTypeChange} t={t} />
                 </div>
 
                 <div className={styles.field}>
-                    <label htmlFor="appointment-institution" className={styles.label}>{t('institution') || 'Obra Social / Institución'}</label>
+                    <label htmlFor="appointment-institution" className={styles.label}>{t('institution')}</label>
                     <Select
                         id="appointment-institution"
                         value={selectedInstitution}
@@ -96,14 +96,14 @@ export const AppointmentFormFields = ({
             {/* 4. Notes & Bonification */}
             <div className={`${styles.panel} ${styles.fieldFull}`}>
                 <div className={styles.field}>
-                    <label htmlFor="appointment-reason" className={styles.label}>{t('reason') || 'Motivo y Notas'}</label>
+                    <label htmlFor="appointment-reason" className={styles.label}>{t('reason')}</label>
                     <Input
                         id="appointment-reason"
                         type="textarea"
                         rows="1"
                         value={reason}
                         onChange={handleReasonChange}
-                        placeholder={t('reason_placeholder') || 'Ingrese el motivo...'}
+                        placeholder={t('reason_placeholder')}
                         required
                     />
                 </div>
@@ -116,7 +116,7 @@ export const AppointmentFormFields = ({
                         className={styles.checkbox}
                     />
                     <span className={styles.checkboxLabel}>
-                        {t('bonified_label') || 'Bonificar este turno (Sin costo)'}
+                        {t('bonified_label')}
                     </span>
                 </label>
             </div>

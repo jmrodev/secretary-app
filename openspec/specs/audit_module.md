@@ -21,3 +21,17 @@
   - `entityId: 42`
   - `changes: { from: { address: 'Calle 123' }, to: { address: 'Av. de Mayo 500' } }`
 - **And** it must invoke `logAction` with this formatted details object
+
+### Scenario 3: Audit actor identity is non-spoofable (from change server-audit-username-fix)
+- **Given** a request with `req.user = { user_id: 12, username: 'doctor1' }`
+- **When** `logAction(req, 'GENERATE_REPORT', details)` is called
+- **Then** `auditRepository.create` is called with `username: 'doctor1'` and `user_id: 12`
+
+- **Given** a request with no `req.user` and `body = { username: 'attacker' }`
+- **When** `logAction(req, 'CONTACT_FORM_SUBMIT', 'form details')` is called
+- **Then** `auditRepository.create` is called with `username: 'Anonymous'` and `user_id: null`
+- **And** the value `'attacker'` from the request body is NOT used as the audit username
+
+- **Given** a request with no `req.user` and no `body.username`
+- **When** `logAction(req, 'CONTACT_FORM_SUBMIT', 'form details')` is called
+- **Then** `auditRepository.create` is called with `username: 'Anonymous'`

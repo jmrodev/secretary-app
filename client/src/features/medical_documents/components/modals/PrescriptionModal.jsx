@@ -40,7 +40,7 @@ export const PrescriptionModal = ({ isOpen, onClose, patientName, patientId, onS
             isOpen={isOpen}
             onClose={onClose}
             size="xl"
-            title={`${t('prescription_for') || 'Receta para'} ${patientName}`}
+            title={`${t('prescription_for')} ${patientName}`}
             footer={
                 <div className="prescription-modal__footer-actions">
                     <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>

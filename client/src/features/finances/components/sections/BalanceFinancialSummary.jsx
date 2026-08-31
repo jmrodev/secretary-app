@@ -23,28 +23,28 @@ export const BalanceFinancialSummary = ({ summary }) => {
     return (
         <Card className={`${styles.BalanceFinancialSummary__root}`}>
             <div className={`${styles.BalanceFinancialSummary__item}`}>
-                <span>{t('total_appointments') || 'Total Turnos'}:</span>
+                <span>{t('total_appointments')}:</span>
                 <span className={`${styles.BalanceFinancialSummary__amount} ${styles.BalanceFinancialSummary__amountPositive}`}>
                     $ {totalAppts.toLocaleString()}
                 </span>
             </div>
 
             <div className={`${styles.BalanceFinancialSummary__item}`}>
-                <span>{t('total_prescriptions') || 'Total Recetas'}:</span>
+                <span>{t('total_prescriptions')}:</span>
                 <span className={`${styles.BalanceFinancialSummary__amount} ${styles.BalanceFinancialSummary__amountPositive}`}>
                     $ {totalPres.toLocaleString()}
                 </span>
             </div>
 
             <div className={`${styles.BalanceFinancialSummary__item}`}>
-                <span>{t('total_licenses') || 'Total Licencias'}:</span>
+                <span>{t('total_licenses')}:</span>
                 <span className={`${styles.BalanceFinancialSummary__amount} ${styles.BalanceFinancialSummary__amountPositive}`}>
                     $ {totalLicenses.toLocaleString()}
                 </span>
             </div>
 
             <div className={`${styles.BalanceFinancialSummary__item}`}>
-                <span>{t('total_certificates') || 'Total Certificados'}:</span>
+                <span>{t('total_certificates')}:</span>
                 <span className={`${styles.BalanceFinancialSummary__amount} ${styles.BalanceFinancialSummary__amountPositive}`}>
                     $ {totalCertificates.toLocaleString()}
                 </span>
@@ -52,7 +52,7 @@ export const BalanceFinancialSummary = ({ summary }) => {
 
             {otherOrPastIncome > 0 && (
                 <div className={`${styles.BalanceFinancialSummary__item}`}>
-                    <span>{t('other_income_debt_collection') || 'Otros Ingresos / Cobro Deudas'}:</span>
+                    <span>{t('other_income_debt_collection')}:</span>
                     <span className={`${styles.BalanceFinancialSummary__amount} ${styles.BalanceFinancialSummary__amountPositive}`}>
                         $ {otherOrPastIncome.toLocaleString()}
                     </span>

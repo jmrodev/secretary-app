@@ -51,7 +51,7 @@ export const MedicationInputSection = ({
                         value={tempMed}
                         onChange={setTempMed}
                         onSelectMedication={onVademecumSelect}
-                        placeholder={t('medication_placeholder') || "Nombre del medicamento..."}
+                        placeholder={t('medication_placeholder')}
                     />
                 </div>
 
@@ -59,12 +59,12 @@ export const MedicationInputSection = ({
                     <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
                         <label htmlFor="med-input-dose" className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                             {t('dose')}
-                            <Tooltip text={t('dose_help') || "Concentración (ej: 500mg, 10mg/ml)"} />
+                            <Tooltip text={t('dose_help')} />
                         </label>
                         <Input
                             id="med-input-dose"
                             size="sm"
-                            placeholder={t('dose_placeholder') || "Dosis (ej: 500mg)"}
+                            placeholder={t('dose_placeholder')}
                             value={tempDose}
                             onChange={e => setTempDose(e.target.value)}
                         />
@@ -73,7 +73,7 @@ export const MedicationInputSection = ({
                     <div className={`${baseClass ? `${baseClass}__field-wrapper` : ''} ${compClass}__field-wrapper`}>
                         <span className={`${baseClass ? `${baseClass}__field-label` : ''} ${compClass}__field-label`}>
                             {t('frequency')}
-                            <Tooltip text={t('freq_help') || "Selecciona o escribe la frecuencia"} />
+                            <Tooltip text={t('freq_help')} />
                         </span>
                         <div className={`${baseClass ? `${baseClass}__freq-presets` : ''} ${compClass}__freq-presets`}>
                             {freqPresets.map((p, idx) => (

@@ -36,18 +36,18 @@ export const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
             title={
                 <div className={`${styles.AdminAuthModal__title}`}>
                     <Icon name="lock" size="1.2rem" />
-                    Autorización de Administrador
+                    {t('admin_auth_title')}
                 </div>
             }
         >
             <form onSubmit={handleSubmit} className={`${styles.AdminAuthModal__body}`}>
                 <p className={`${styles.AdminAuthModal__instruction}`}>
                     <Icon name="warning" size="1.1rem" color="var(--warning)" className="inline-icon" />
-                    Esta acción está restringida por seguridad. Por favor, ingrese la contraseña maestra de administrador para continuar con el proceso.
+                    {t('admin_auth_instruction')}
                 </p>
                 <div className={`${styles.AdminAuthModal__inputGroup}`}>
                     <label htmlFor="admin-master-password" className={`${styles.AdminAuthModal__label}`}>
-                        {t('master_password') || 'Contraseña maestra'}
+                        {t('master_password')}
                     </label>
                     <Input
                         id="admin-master-password"
@@ -65,14 +65,14 @@ export const AdminAuthModal = ({ isOpen, onClose, onConfirm }) => {
                         variant="ghost"
                         onClick={onClose}
                     >
-                        Cancelar
+                        {t('cancel')}
                     </Button>
                     <Button
                         type="submit" 
                         variant="primary"
                         disabled={!password}
                     >
-                        Confirmar Acción
+                        {t('confirm_action')}
                     </Button>
                 </div>
             </form>

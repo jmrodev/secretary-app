@@ -74,11 +74,11 @@ export const SystemConfigPage = () => {
         })), [visibleSections]);
 
     return (
-        <MainLayout wide flush title={t('config') || 'Configuración del Sistema'}>
+        <MainLayout wide flush title={t('config')}>
             <div className={`${styles.SystemConfigPage__root}  `}>
                 <FeatureToolbar
                     tabs={tabs.length > 0 ? tabs : [
-                        { id: 'modules', label: t('modules') || 'Módulos', icon: 'view_module' }
+                        { id: 'modules', label: t('modules'), icon: 'view_module' }
                     ]}
                     activeTab={activeTab}
                     onTabChange={handlers.setActiveTab}

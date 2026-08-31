@@ -18,7 +18,7 @@ export const PatientInsuranceFields = ({ formData, updatePatientData, insurances
 
             <div className={`${styles.PatientInsuranceFields__bento}`}>
                 <div className={`${styles.PatientInsuranceFields__group} ${styles.PatientInsuranceFields__groupSpan7}`}>
-                    <label htmlFor="patient-insurance" className={`${styles.PatientInsuranceFields__label}`}>{t('os_prepaga') || 'OS / Prepaga'}</label>
+                    <label htmlFor="patient-insurance" className={`${styles.PatientInsuranceFields__label}`}>{t('os_prepaga')}</label>
                     <Select
                         id="patient-insurance"
                         name="insurance_id"
@@ -42,7 +42,7 @@ export const PatientInsuranceFields = ({ formData, updatePatientData, insurances
                         className="patient-insurance-fields__field"
                         value={formData.affiliate_number || ''}
                         onChange={updatePatientData}
-                        placeholder={t('affiliate_number_placeholder') || "Ej: 123456789/00"}
+                        placeholder={t('affiliate_number_placeholder')}
                     />
                 </div>
             </div>

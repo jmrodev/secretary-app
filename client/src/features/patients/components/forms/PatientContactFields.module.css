@@ -36,6 +36,10 @@
 .PatientContactFields__groupSpan6 { grid-column: span 6; }
 .PatientContactFields__groupSpan5 { grid-column: span 5; }
 
+.PatientContactFields__fieldMaxWidth40 {
+    max-width: 40ch;
+}
+
 .PatientContactFields__label {
     font-size: 0.625rem;
     font-weight: 800;

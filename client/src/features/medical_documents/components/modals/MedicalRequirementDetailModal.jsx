@@ -49,7 +49,7 @@ export const MedicalRequirementDetailModal = ({
         <Modal
             isOpen={!!selectedRequest}
             onClose={onClose}
-            title={t('request_detail') || "Detalle de Solicitud"}
+            title={t('request_detail')}
         >
             <div className={`${styles.MedicalRequirementDetailModal__root}`}>
                 <RequirementDetailHeader selectedRequest={selectedRequest} />
@@ -60,7 +60,7 @@ export const MedicalRequirementDetailModal = ({
                     </Badge>
                     {canEdit && !isEditing && (
                         <Button size="sm-compact" variant="secondary" onClick={handleOpenEdit} icon={<Icon name="edit" size="0.9rem" />}>
-                            {t('edit_list') || 'Editar Lista'}
+                            {t('edit_list')}
                         </Button>
                     )}
                 </div>
@@ -70,7 +70,7 @@ export const MedicalRequirementDetailModal = ({
                         <div className={`${styles.MedicalRequirementDetailModal__requirementsEdit}`}>
                             <h4 className={`${styles.MedicalRequirementDetailModal__sectionTitle}`}>
                                 <Icon name="edit_note" />
-                                {t('editing_medication') || 'Editando Medicación'}
+                                {t('editing_medication')}
                             </h4>
                             <MedicationEditor
                                 meds={editMeds}
@@ -82,7 +82,7 @@ export const MedicalRequirementDetailModal = ({
                                 t={t}
                             />
                             <div className={`${styles.MedicalRequirementDetailModal__notes}`}>
-                                <FormGroup label={t('request_note') || 'Nota del Paciente'}>
+                                <FormGroup label={t('request_note')}>
                                     <Input
                                         type="textarea"
                                         value={editNotes}
@@ -91,13 +91,13 @@ export const MedicalRequirementDetailModal = ({
                                     />
                                 </FormGroup>
 
-                                <FormGroup label={t('doctor_reply') || 'Respuesta del Doctor'}>
+                                <FormGroup label={t('doctor_reply')}>
                                     <Input
                                         type="textarea"
                                         value={editDoctorNote}
                                         onChange={(e) => setEditDoctorNote(e.target.value)}
                                         rows={2}
-                                        placeholder={t('doctor_note_placeholder') || "Añada una indicación o respuesta..."}
+                                        placeholder={t('doctor_note_placeholder')}
                                     />
                                 </FormGroup>
                             </div>

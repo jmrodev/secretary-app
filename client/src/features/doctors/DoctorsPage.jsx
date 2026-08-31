@@ -13,7 +13,7 @@ export const DoctorsPage = () => {
     const { t } = useLanguage();
 
     return (
-        <MainLayout wide flush title={t('doctors_management') || "Gestión de Profesionales"}>
+        <MainLayout wide flush title={t('doctors_management')}>
             <div>
                 <DoctorsManager {...controller} />
             </div>

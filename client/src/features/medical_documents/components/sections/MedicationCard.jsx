@@ -34,26 +34,26 @@ export const MedicationCard = ({
                             size="sm-compact"
                             variant="secondary"
                             onClick={() => onSave(name)}
-                            title={t('save_to_patient_file') || "Guardar en ficha"}
+                            title={t('save_to_patient_file')}
                             icon={<Icon name="save" size="0.9rem" />}
                         >
-                            {t('save') || 'Guardar'}
+                            {t('save')}
                         </Button>
                     )
                 )}
             </div>
             <div className={`${baseClass}__details`}>
-                {dose && <span className={`${baseClass}__badge`}>D: {dose}</span>}
-                {frequency && <span className={`${baseClass}__badge`}>F: {frequency}</span>}
+                {dose && <span className={`${baseClass}__badge`}>{t('dose')}: {dose}</span>}
+                {frequency && <span className={`${baseClass}__badge`}>{t('frequency')}: {frequency}</span>}
                 {quantity && (
                     <span className={`${baseClass}__badge ${isKnown ? 'badge--success' : 'badge--warning'}`}>
-                        {t('qty_short') || 'Cant'}: {quantity}
+                        {t('qty_short')}: {quantity}
                     </span>
                 )}
                 {duration && (
                     <span className={`${baseClass}__duration`}>
                         <Icon name="timer" size="0.9rem" />
-                        ~{duration} {t('days') || 'días'}
+                        ~{duration} {t('days')}
                     </span>
                 )}
             </div>

@@ -26,8 +26,8 @@ export const InstitutionPaymentModal = ({
     const paymentMethods = [
         { value: 'transfer', label: t('transfer') },
         { value: 'cash', label: t('cash') },
-        { value: 'check', label: 'Cheque' },
-        { value: 'other', label: t('other') || 'Otro' }
+        { value: 'check', label: t('cheque') },
+        { value: 'other', label: t('other') }
     ];
 
     return (
@@ -41,7 +41,7 @@ export const InstitutionPaymentModal = ({
                     variant={hasTransactions ? 'success' : 'info'}
                     message={
                         hasTransactions
-                            ? `Se pagarán las ${paymentData.transaction_ids.length} transacciones seleccionadas por $${Number(paymentData.amount).toLocaleString()}.`
+                            ? t('inst_payment_selected', { count: paymentData.transaction_ids.length, amount: '$' + Number(paymentData.amount).toLocaleString() })
                             : t('payment_info_msg')
                     }
                 />

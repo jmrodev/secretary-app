@@ -42,7 +42,7 @@ export const AppointmentActionModal = ({
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title={t('appointment_details') || 'Detalles del Turno'}
+            title={t('appointment_details')}
             size="lg"
         >
             <div className={`${styles.AppointmentActionModal__content}`}>

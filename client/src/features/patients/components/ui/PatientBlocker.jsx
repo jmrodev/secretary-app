@@ -20,18 +20,18 @@ export const PatientBlocker = () => {
                 <div className={`${styles.PatientBlocker__iconContainer}`}>
                     <Icon name="check_circle" size="4rem" className={`${styles.PatientBlocker__iconSuccess}`} />
                 </div>
-                <h2 className={`${styles.PatientBlocker__title}`}>{t('registration_completed') || 'Registro Completado'}</h2>
+                <h2 className={`${styles.PatientBlocker__title}`}>{t('registration_completed')}</h2>
                 <p className={`${styles.PatientBlocker__message}`}>
-                    {t('patient_blocker_message_p1') || 'Tu información ha sido recibida correctamente.'}
+                    {t('patient_blocker_message_p1')}
                     <br /><br />
-                    {t('patient_blocker_message_p2') || 'Esta sección es de uso administrativo. Si necesitas realizar otra gestión, por favor utiliza el enlace enviado a tu dispositivo o escanea el QR en el consultorio.'}
+                    {t('patient_blocker_message_p2')}
                 </p>
                 <Button
                     variant="secondary"
                     className={`${styles.PatientBlocker__button}`}
                     onClick={handleLogout}
                 >
-                    {t('logout') || 'Cerrar Sesión'}
+                    {t('logout')}
                 </Button>
             </div>
         </div>

@@ -19,7 +19,7 @@ export const AppointmentTypeSelector = ({ type, onChange, t }) => {
                 unstyled
             >
                 <Icon name="person" size="1.2rem" className={`${styles.AppointmentTypeSelector__icon}`} />
-                <span>{t('in_person') || 'Presencial'}</span>
+                <span>{t('in_person')}</span>
             </Button>
             <Button
                 type="button"
@@ -28,7 +28,7 @@ export const AppointmentTypeSelector = ({ type, onChange, t }) => {
                 unstyled
             >
                 <Icon name="videocam" size="1.2rem" className={`${styles.AppointmentTypeSelector__icon}`} />
-                <span>{t('virtual_type') || 'Virtual'}</span>
+                <span>{t('virtual_type')}</span>
             </Button>
         </div>
     );

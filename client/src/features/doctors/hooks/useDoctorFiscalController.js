@@ -1,12 +1,16 @@
 
 import { useState } from 'react';
 import { api } from '@/api/axios';
+import { useLanguage } from '@/hooks/useLanguage';
+import { useMessage } from '@/context/MessageContext';
 
 /**
  * Controller Hook for Fiscal Settings Logic
  * Handles the interaction with the backend for AFIP CSR generation.
  */
 export const useDoctorFiscalController = (doctorId) => {
+    const { t } = useLanguage();
+    const { showMessage } = useMessage();
     const [generatedCsr, setGeneratedCsr] = useState(null);
     const [generatingCsr, setGeneratingCsr] = useState(false);
     const [showCsrInfo, setShowCsrInfo] = useState(false);
@@ -66,11 +70,11 @@ export const useDoctorFiscalController = (doctorId) => {
             await api.post('/billing/upload-cert', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            alert("Certificado subido correctamente");
+            showMessage(t('certificate_upload_success'), 'success');
         } catch (err) {
             const msg = err.response?.data?.error || err.message;
             setError(msg);
-            alert("Error subiendo certificado: " + msg);
+            showMessage(`${t('certificate_upload_error')}: ${msg}`, 'error');
         } finally {
             setUploading(false);
         }
