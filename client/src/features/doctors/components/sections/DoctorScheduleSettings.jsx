@@ -17,6 +17,8 @@ const DAYS = [
     { id: 0, name: 'Domingo' }
 ];
 
+const NOOP = () => {};
+
 /**
  * DoctorScheduleSettings Organism.
  * Provides a specialized interface for configuring a doctor's weekly work schedule.
@@ -24,11 +26,13 @@ const DAYS = [
 export const DoctorScheduleSettings = ({
     doctorId: _doctorId,
     schedule = EMPTY_SCHEDULE,
-    setSchedule,
+    setSchedule = NOOP,
     loading
 }) => {
     const { t } = useLanguage();
     const [focusedKey, setFocusedKey] = useState(null);
+
+    const safeSetSchedule = typeof setSchedule === 'function' ? setSchedule : NOOP;
 
     // Initialize schedule with unique keys if missing
     useEffect(() => {
@@ -39,13 +43,13 @@ export const DoctorScheduleSettings = ({
                     ...s,
                     _key: s._key || (s.id ? `sched-${s.id}` : `sched-init-${idx}-${Date.now()}`)
                 }));
-                setSchedule(withKeys);
+                safeSetSchedule(withKeys);
             }
         }
-    }, [schedule, setSchedule]);
+    }, [schedule, safeSetSchedule]);
 
     const handleAddBlock = (dayId) => {
-        setSchedule(prev => [
+        safeSetSchedule(prev => [
             ...(Array.isArray(prev) ? prev : []),
             {
                 _key: `block-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -60,15 +64,15 @@ export const DoctorScheduleSettings = ({
     };
 
     const handleRemoveBlock = (keyToRemove) => {
-        setSchedule(prev => (Array.isArray(prev) ? prev : []).filter(s => s._key !== keyToRemove));
+        safeSetSchedule(prev => (Array.isArray(prev) ? prev : []).filter(s => s._key !== keyToRemove));
     };
 
     const handleBlockChange = (key, field, value) => {
-        setSchedule(prev => (Array.isArray(prev) ? prev : []).map(s => (s._key === key ? { ...s, [field]: value } : s)));
+        safeSetSchedule(prev => (Array.isArray(prev) ? prev : []).map(s => (s._key === key ? { ...s, [field]: value } : s)));
     };
 
     const toggleDay = (dayId) => {
-        setSchedule(prev => {
+        safeSetSchedule(prev => {
             const list = Array.isArray(prev) ? prev : [];
             const hasDay = list.some(s => Number(s.day_of_week) === Number(dayId));
             if (hasDay) {
@@ -94,7 +98,7 @@ export const DoctorScheduleSettings = ({
 
     const applyBulk = (daysToApply) => {
         const daysToApplySet = new Set(daysToApply.map(Number));
-        setSchedule(prev => {
+        safeSetSchedule(prev => {
             const list = Array.isArray(prev) ? prev : [];
             const newSched = list.filter(s => !daysToApplySet.has(Number(s.day_of_week)));
             daysToApply.forEach(dayId => {
