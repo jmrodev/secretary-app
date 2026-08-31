@@ -40,6 +40,7 @@
     "custom-property-pattern": null,
     "font-family-no-missing-generic-family-keyword": null,
     "import-notation": null,
+    "at-rule-prelude-no-invalid": null,
     "no-duplicate-selectors": null,
     "selector-pseudo-class-no-unknown": null
   }
