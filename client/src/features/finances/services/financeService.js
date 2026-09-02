@@ -13,5 +13,10 @@ export const financeService = {
     createTransaction: async (data) => {
         const response = await api.post('/finances/transactions', data);
         return response.data;
+    },
+
+    getPatientCredit: async (patientId) => {
+        const response = await api.get(`/finances/patient-credit/${patientId}`);
+        return response.data?.data || response.data;
     }
 };

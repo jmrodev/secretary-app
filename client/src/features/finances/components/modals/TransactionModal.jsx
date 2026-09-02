@@ -40,7 +40,7 @@ export const TransactionModal = ({
         formData, loading, patients, doctors, pricingInfo, totalPrice, patientSearch, showPatientList,
         setPatientSearch, setShowPatientList, updateField, updateServiceType, updateDoctor, selectPatient,
         handlePaymentChange, addPaymentMethod, removePaymentMethod, saveTransaction,
-        setTotalPrice
+        setTotalPrice, patientCredit, applyPatientCredit
     } = useTransactionForm(isOpen, initialData, requestId, onSuccess, onClose);
 
     const currentPaidTotal = formData.payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
@@ -167,6 +167,27 @@ export const TransactionModal = ({
 
 
 
+
+                {patientCredit > 0 && (
+                    <div className={styles.TransactionModal__fieldFull}>
+                        <div className={styles.TransactionModal__creditBanner}>
+                            <div className={styles.TransactionModal__creditInfo}>
+                                <Icon name="stars" size="1.2rem" className={styles.TransactionModal__creditIcon} />
+                                <span>
+                                    El paciente posee <strong>{formatCurrency(patientCredit)}</strong> de saldo a favor por cancelaciones previas.
+                                </span>
+                            </div>
+                            <Button 
+                                variant="primary" 
+                                size="sm-compact" 
+                                onClick={applyPatientCredit}
+                                icon={<Icon name="check_circle" size="1rem" />}
+                            >
+                                Aplicar crédito
+                            </Button>
+                        </div>
+                    </div>
+                )}
 
                 <div className={styles.TransactionModal__fieldFull}>
                     <TransactionPaymentsSection 
