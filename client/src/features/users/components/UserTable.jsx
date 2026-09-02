@@ -106,7 +106,7 @@ export const UserTable = ({ users, onEdit, onReset, onDelete, onOpenPermissions 
                                 <div className={`${styles.UserTable__actions}`}>
                                     {u.role === 'secretary' && onOpenPermissions && (
                                         <Button
-                                            variant="outline-purple"
+                                            variant="action-permissions"
                                             size="sm-compact"
                                             onClick={() => onOpenPermissions(u)}
                                             title={t('edit_permissions')}
@@ -114,14 +114,14 @@ export const UserTable = ({ users, onEdit, onReset, onDelete, onOpenPermissions 
                                         />
                                     )}
                                     <Button
-                                        variant="outline-warning"
+                                        variant="action-edit"
                                         size="sm-compact"
                                         onClick={() => onEdit(u)}
                                         title={t('edit')}
                                         icon={<Icon name="edit" size="1rem" />}
                                     />
                                     <Button
-                                        variant="outline-info"
+                                        variant="action-sync"
                                         size="sm-compact"
                                         onClick={() => onReset(u)}
                                         title={t('reset_pwd')}
@@ -129,7 +129,7 @@ export const UserTable = ({ users, onEdit, onReset, onDelete, onOpenPermissions 
                                     />
                                     {u.role !== 'admin' && (
                                         <Button
-                                            variant="outline-danger"
+                                            variant="action-delete"
                                             size="sm-compact"
                                             onClick={() => onDelete(u)}
                                             title={t('delete')}

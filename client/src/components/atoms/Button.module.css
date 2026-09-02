@@ -121,6 +121,113 @@
     --btn-hover-bg: var(--sky-600);
 }
 
+/* Solid Action Button Variants (Documentos Médicos Design System) */
+.Button__actionView,
+.Button__actionInfo {
+    --btn-bg: #6366f1;
+    --btn-border: #6366f1;
+    --btn-text: #fff;
+    --btn-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+    --btn-hover-bg: #4f46e5;
+    --btn-hover-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    --btn-hover-y: -2px;
+}
+
+.Button__actionPay,
+.Button__actionSuccess {
+    --btn-bg: #15803d;
+    --btn-border: #15803d;
+    --btn-text: #fff;
+    --btn-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+    --btn-hover-bg: #166534;
+    --btn-hover-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    --btn-hover-y: -2px;
+}
+
+.Button__actionDone,
+.Button__actionWhatsapp {
+    --btn-bg: #16a34a;
+    --btn-border: #16a34a;
+    --btn-text: #fff;
+    --btn-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+    --btn-hover-bg: #15803d;
+    --btn-hover-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    --btn-hover-y: -2px;
+}
+
+.Button__actionInvoice {
+    --btn-bg: #1d4ed8;
+    --btn-border: #1d4ed8;
+    --btn-text: #fff;
+    --btn-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+    --btn-hover-bg: #1e40af;
+    --btn-hover-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    --btn-hover-y: -2px;
+}
+
+.Button__actionSync {
+    --btn-bg: #0e7490;
+    --btn-border: #0e7490;
+    --btn-text: #fff;
+    --btn-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+    --btn-hover-bg: #155e75;
+    --btn-hover-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    --btn-hover-y: -2px;
+}
+
+.Button__actionEdit {
+    --btn-bg: var(--dashboard-card-bg, #1e293b);
+    --btn-border: var(--dashboard-card-border, #334155);
+    --btn-text: var(--text-main, #f8fafc);
+    --btn-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+    --btn-hover-bg: var(--dashboard-card-border, #334155);
+    --btn-hover-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    --btn-hover-y: -2px;
+}
+
+.Button__actionConsult,
+.Button__actionWarning {
+    --btn-bg: #d97706;
+    --btn-border: #d97706;
+    --btn-text: #fff;
+    --btn-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+    --btn-hover-bg: #b45309;
+    --btn-hover-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    --btn-hover-y: -2px;
+}
+
+.Button__actionReject {
+    --btn-bg: #dc2626;
+    --btn-border: #dc2626;
+    --btn-text: #fff;
+    --btn-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+    --btn-hover-bg: #b91c1c;
+    --btn-hover-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    --btn-hover-y: -2px;
+}
+
+.Button__actionDelete,
+.Button__actionDanger {
+    --btn-bg: #b91c1c;
+    --btn-border: #b91c1c;
+    --btn-text: #fff;
+    --btn-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+    --btn-hover-bg: #991b1b;
+    --btn-hover-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    --btn-hover-y: -2px;
+}
+
+.Button__actionPermissions,
+.Button__actionPurple {
+    --btn-bg: #8b5cf6;
+    --btn-border: #8b5cf6;
+    --btn-text: #fff;
+    --btn-shadow: 0 2px 4px rgb(0 0 0 / 12%);
+    --btn-hover-bg: #7c3aed;
+    --btn-hover-shadow: 0 4px 8px rgb(0 0 0 / 25%);
+    --btn-hover-y: -2px;
+}
+
 .Button__darkDanger {
     --btn-bg: #991b1b;
     --btn-text: var(--white);

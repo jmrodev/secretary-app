@@ -54,7 +54,7 @@ export const RequirementItem = ({
             <td className={`${styles.RequirementItem__cell}`}>
                 <div className={`${styles.RequirementItem__actions}`}>
                     <Button
-                        variant="ghost"
+                        variant="action-view"
                         size="sm-compact"
                         onClick={() => onSelect(request)}
                         title={t('view')}
@@ -62,7 +62,7 @@ export const RequirementItem = ({
                     />
                     {canDelete && (
                         <Button
-                            variant="outline-danger"
+                            variant="action-delete"
                             size="sm-compact"
                             onClick={() => onDelete(id)}
                             title={t('delete')}
@@ -71,7 +71,7 @@ export const RequirementItem = ({
                     )}
                     {setPaymentModal && payment_status && payment_status !== 'paid' && payment_status !== 'bonified' && isAdminOrSecretary && (
                         <Button
-                            variant="ghost"
+                            variant="action-pay"
                             size="sm-compact"
                             onClick={() => setPaymentModal({
                                 open: true,
@@ -94,7 +94,7 @@ export const RequirementItem = ({
                     )}
                     {isAdminOrSecretary && status === 'consult' && (
                         <Button
-                            variant="ghost"
+                            variant="action-sync"
                             size="sm-compact"
                             onClick={() => onAction('reply', id)}
                             title={t('reply')}
@@ -104,21 +104,21 @@ export const RequirementItem = ({
                     {(status === 'pending' || status === 'consult') && (
                         <>
                             <Button
-                                variant="outline-success"
+                                variant="action-done"
                                 size="sm-compact"
                                 onClick={() => onAction('completed', id)}
                                 title={t('mark_as_done')}
                                 icon={<Icon name="check_circle" size="1rem" />}
                             />
                             <Button
-                                variant="outline-warning"
+                                variant="action-consult"
                                 size="sm-compact"
                                 onClick={() => onAction('consult', id)}
                                 title={t('consult_secretary')}
                                 icon={<Icon name="help" size="1rem" />}
                             />
                             <Button
-                                variant="outline-danger"
+                                variant="action-reject"
                                 size="sm-compact"
                                 onClick={() => onAction('rejected', id)}
                                 title={t('reject')}

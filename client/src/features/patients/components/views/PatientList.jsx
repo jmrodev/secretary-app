@@ -99,7 +99,7 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                             <Button
                                 to={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
                                 target="_blank"
-                                variant="outline-success"
+                                variant="action-whatsapp"
                                 size="sm-compact"
                                 onClick={(e) => e.stopPropagation()}
                                 title={t('whatsapp')}
@@ -178,7 +178,7 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
             </td>
             <td className={`${styles.PatientList__actions}`}>
                 <Button
-                    variant="outline-info"
+                    variant="action-view"
                     size="sm-compact"
                     icon={<Icon name="visibility" size="1rem" />}
                     onClick={(e) => { e.stopPropagation(); onViewDetails(p.id); }}

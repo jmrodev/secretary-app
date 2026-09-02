@@ -68,14 +68,14 @@ export const InstitutionsPage = () => {
                                         {selectedInstId && (
                                             <div className="institutions-page__selected-actions">
                                                 <Button
-                                                    variant="ghost"
+                                                    variant="action-edit"
                                                     size="sm-compact"
                                                     onClick={() => handleOpenFormModal(institutions.find(i => String(i.id) === selectedInstId))}
                                                     title={t('edit')}
                                                     icon={<Icon name="edit" size="1rem" />}
                                                 />
                                                 <Button
-                                                    variant="outline-danger"
+                                                    variant="action-delete"
                                                     size="sm-compact"
                                                     onClick={() => handleDelete(Number(selectedInstId))}
                                                     title={t('delete')}

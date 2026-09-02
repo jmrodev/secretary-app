@@ -83,7 +83,7 @@ export const MedicalHistoryTable = ({
                                 <td className={`${styles.MedicalHistoryTable__td}`}>
                                     <div className={`${styles.MedicalHistoryTable__actions}`}>
                                         <Button
-                                            variant="ghost"
+                                            variant="action-view"
                                             size="sm-compact"
                                             onClick={() => onView({ ...item, _readOnly: true })}
                                             title={t('view')}
@@ -91,7 +91,7 @@ export const MedicalHistoryTable = ({
                                         />
                                         {showDelete && (
                                             <Button
-                                                variant="ghost"
+                                                variant="action-edit"
                                                 size="sm-compact"
                                                 onClick={() => onView(item)}
                                                 title={t('edit')}
@@ -100,7 +100,7 @@ export const MedicalHistoryTable = ({
                                         )}
                                         {showDelete && (
                                             <Button
-                                                variant="outline-danger"
+                                                variant="action-delete"
                                                 size="sm-compact"
                                                 onClick={() => onDelete(item.id, item)}
                                                 title={t('delete')}
