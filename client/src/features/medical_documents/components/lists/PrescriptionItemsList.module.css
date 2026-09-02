@@ -155,20 +155,6 @@
     min-height: 30px;
 }
 
-.PrescriptionItemsList__formSelectUnits {
-    width: 100%;
-    text-align: center;
-}
-
-.PrescriptionItemsList__formSelectBoxes {
-    width: 55px;
-    text-align: center;
-}
-
-.PrescriptionItemsList__optionBlack {
-    color: black;
-}
-
 .PrescriptionItemsList__qtyInputsRow {
     display: flex;
     gap: 0.35rem;
