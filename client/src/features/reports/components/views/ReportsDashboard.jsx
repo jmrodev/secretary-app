@@ -33,6 +33,8 @@ export const ReportsDashboard = ({
             <PageHeader 
                 title={t('reports_page_title')}
                 subtitle={t('reports_page_subtitle')}
+                hideSearch
+                hideClock
             />
 
             <FeatureToolbar
