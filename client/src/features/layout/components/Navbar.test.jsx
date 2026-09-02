@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Navbar } from './Navbar';
 
@@ -25,7 +25,7 @@ describe('Navbar - Role Boundaries', () => {
             logout: vi.fn(),
             t: (key) => key,
             settings: {},
-            location: { pathname: '/dashboard' },
+            location: { pathname: '/config' },
             doctors: [],
             language: 'es',
             toggleLanguage: vi.fn(),
@@ -39,16 +39,18 @@ describe('Navbar - Role Boundaries', () => {
 
         renderNavbar();
 
-        // Admin links visible
-        expect(screen.getByRole('link', { name: 'audit_logs' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'system_config' })).toBeInTheDocument();
+        // System category visible
+        const systemCategory = screen.getByRole('button', { name: /category_system/i });
+        expect(systemCategory).toBeInTheDocument();
+        fireEvent.click(systemCategory);
 
-        // Clinical / Patient links hidden
-        expect(screen.queryByRole('link', { name: 'dashboard' })).toBeNull();
-        expect(screen.queryByRole('link', { name: 'institutions' })).toBeNull();
-        expect(screen.queryByRole('link', { name: 'holidays' })).toBeNull();
-        expect(screen.queryByRole('link', { name: 'appointments' })).toBeNull();
-        expect(screen.queryByRole('link', { name: 'finances' })).toBeNull();
+        // Admin links visible
+        expect(screen.getByRole('link', { name: /audit_logs/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /system_config/i })).toBeInTheDocument();
+
+        // Clinical and Admin categories are completely hidden for admin
+        expect(screen.queryByRole('button', { name: /category_clinical/i })).toBeNull();
+        expect(screen.queryByRole('button', { name: /category_admin/i })).toBeNull();
     });
 
     it('renders clinical navigation for secretary', () => {
@@ -71,15 +73,30 @@ describe('Navbar - Role Boundaries', () => {
 
         renderNavbar();
 
-        // Secretary links visible
-        expect(screen.getByRole('link', { name: 'dashboard' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'appointments' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'patients' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'institutions' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'holidays' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'finances' })).toBeInTheDocument();
+        // Open Clinical Category
+        const clinicalCategory = screen.getByRole('button', { name: /category_clinical/i });
+        expect(clinicalCategory).toBeInTheDocument();
+        fireEvent.click(clinicalCategory);
 
-        // Admin-only links hidden
-        expect(screen.queryByRole('link', { name: 'audit_logs' })).toBeNull();
+        // Secretary links visible
+        expect(screen.getByRole('link', { name: /dashboard/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /appointments/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /patients/i })).toBeInTheDocument();
+
+        // Open Admin Category
+        const adminCategory = screen.getByRole('button', { name: /category_admin/i });
+        expect(adminCategory).toBeInTheDocument();
+        fireEvent.click(adminCategory);
+
+        expect(screen.getByRole('link', { name: /institutions/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /holidays/i })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /finances/i })).toBeInTheDocument();
+
+        // Open System Category
+        const systemCategory = screen.getByRole('button', { name: /category_system/i });
+        fireEvent.click(systemCategory);
+
+        // Admin-only links hidden for secretary
+        expect(screen.queryByRole('link', { name: /audit_logs/i })).toBeNull();
     });
 });

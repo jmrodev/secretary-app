@@ -1,5 +1,11 @@
 export const general = {
     app_name: "MediCare",
+    category_clinical: "Clinical",
+    category_admin: "Administration",
+    category_system: "System",
+    theme_mode: "Theme",
+    theme_dark: "Dark Mode",
+    theme_light: "Light Mode",
     i18n: "Language",
     language: "Language",
     logged_in_as: "Logged in as",
