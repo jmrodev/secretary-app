@@ -105,14 +105,14 @@ export const InsuranceList = React.memo(({ insurances, onEdit, onDelete, hasFilt
 
                         <footer className={`${styles.InsuranceList__footer}`}>
                             <Button
-                                variant="ghost"
+                                variant="action-edit"
                                 size="sm-compact"
                                 onClick={() => onEdit(ins)}
                                 title={t('edit')}
                                 icon={<Icon name="edit" size="1rem" />}
                             />
                             <Button
-                                variant="outline-danger"
+                                variant="action-delete"
                                 size="sm-compact"
                                 onClick={() => onDelete(ins.id)}
                                 title={t('delete')}

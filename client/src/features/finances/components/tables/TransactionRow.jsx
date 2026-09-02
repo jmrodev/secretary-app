@@ -101,7 +101,7 @@ export const TransactionRow = ({
                     <div className={styles.TransactionsTable__actions}>
                         <Button 
                             size="sm-compact" 
-                            variant="outline-info" 
+                            variant="action-view" 
                             onClick={() => showDetail(<InvoiceDetailContent tx={tx} formatDate={formatDateUnambiguous} />)}
                             title={t('view_details')} 
                             icon={<Icon name="visibility" size="1rem" />} 
@@ -109,7 +109,7 @@ export const TransactionRow = ({
                         {tx.type === 'income_patient' && tx.status === 'paid' && !tx.invoice_number && (
                             <Button 
                                 size="sm-compact" 
-                                variant="outline-purple" 
+                                variant="action-invoice" 
                                 onClick={() => onGenerateInvoice(tx.id)} 
                                 title={t('generate_invoice')} 
                                 icon={<Icon name="receipt" size="1rem" />} 
@@ -118,7 +118,7 @@ export const TransactionRow = ({
                         {tx.status === 'pending' && (
                             <Button 
                                 size="sm-compact" 
-                                variant="outline-success" 
+                                variant="action-pay" 
                                 onClick={() => onEdit({ ...tx, status: 'paid' })} 
                                 title={t('pay')} 
                                 icon={<Icon name="payments" size="1rem" />} 
@@ -126,7 +126,7 @@ export const TransactionRow = ({
                         )}
                         <Button 
                             size="sm-compact" 
-                            variant="outline-warning" 
+                            variant="action-edit" 
                             onClick={() => onEdit(tx)} 
                             title={t('edit')} 
                             icon={<Icon name="edit" size="1rem" />} 
@@ -134,7 +134,7 @@ export const TransactionRow = ({
                         {tx.status === 'paid' && (
                             <Button 
                                 size="sm-compact" 
-                                variant="outline-info" 
+                                variant="action-sync" 
                                 onClick={() => onSync(tx.id)} 
                                 title={t('sync_google')} 
                                 icon={<Icon name="sync" size="1rem" />} 
@@ -142,7 +142,7 @@ export const TransactionRow = ({
                         )}
                         <Button 
                             size="sm-compact" 
-                            variant="outline-danger" 
+                            variant="action-delete" 
                             onClick={() => onDelete(tx.id)} 
                             title={t('delete')} 
                             icon={<Icon name="delete" size="1rem" />} 
