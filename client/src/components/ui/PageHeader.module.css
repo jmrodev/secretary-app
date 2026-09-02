@@ -103,6 +103,19 @@
     font-weight: 400;
 }
 
+.PageHeader__clearSearchBtn {
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    color: var(--text-muted);
+    margin-left: 0.25rem;
+    flex-shrink: 0;
+}
+
+.PageHeader__clearSearchBtn:hover {
+    color: var(--text-main);
+}
+
 .PageHeader__inlineSelectors {
     display: flex;
     align-items: center;

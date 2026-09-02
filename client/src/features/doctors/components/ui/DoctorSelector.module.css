@@ -1,19 +1,20 @@
 .DoctorSelector__wrapper {
     position: relative;
     user-select: none;
-    min-width: 200px;
+    min-width: 170px;
     z-index: 1000;
 }
 
 .DoctorSelector__trigger {
     display: flex;
     align-items: center;
-    gap: 0.85rem;
+    gap: 0.5rem;
     width: 100%;
-    padding: 0.5rem 1rem;
+    height: 36px;
+    padding: 0 0.65rem;
     background: var(--dashboard-card-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-sm, 6px);
     font-family: inherit;
     text-align: left;
     cursor: pointer;
@@ -31,34 +32,36 @@
 }
 
 .DoctorSelector__iconContainer {
-    width: 32px;
-    height: 32px;
+    width: 22px;
+    height: 22px;
     background: rgb(13 148 136 / 10%);
-    border-radius: var(--radius-sm);
+    border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .DoctorSelector__labelGroup {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     flex: 1;
+    min-width: 0;
+    line-height: 1.1;
 }
 
 .DoctorSelector__label {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     font-weight: 700;
     color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    line-height: 1;
-    margin-bottom: 2px;
+    letter-spacing: 0.04em;
 }
 
 .DoctorSelector__value {
-    font-size: 0.875rem;
-    font-weight: 750;
+    font-size: 0.8rem;
+    font-weight: 700;
     color: var(--text-main);
     white-space: nowrap;
     overflow: hidden;
@@ -67,6 +70,22 @@
 
 .DoctorSelector__chevron {
     color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.DoctorSelector__readonly {
+    height: 36px;
+    padding: 0 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm, 6px);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-main);
+    user-select: none;
 }
 
 /* --- Styled Cortina (Dropdown) --- */
