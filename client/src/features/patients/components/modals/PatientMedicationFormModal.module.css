@@ -19,57 +19,10 @@
     align-items: center;
 }
 
-.PatientMedicationFormModal__label {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--gray-700, #495057);
-}
-
-.PatientMedicationFormModal__inputWrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.PatientMedicationFormModal__input {
-    width: 100%;
-    padding: 0.65rem 0.85rem;
-    border: 1px solid var(--gray-300, #ced4da);
-    border-radius: 8px;
-    font-size: 0.95rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.PatientMedicationFormModal__input:focus {
-    outline: none;
-    border-color: var(--primary-color, #1a73e8);
-    box-shadow: 0 0 0 3px rgb(26, 115, 232, 0.15);
-}
-
-.PatientMedicationFormModal__textarea {
-    width: 100%;
-    padding: 0.65rem 0.85rem;
-    border: 1px solid var(--gray-300, #ced4da);
-    border-radius: 8px;
-    font-size: 0.95rem;
-    resize: vertical;
-}
-
 .PatientMedicationFormModal__fieldGroupCheck {
     display: flex;
     align-items: center;
     padding-top: 1.25rem;
-}
-
-.PatientMedicationFormModal__checkLabel {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    user-select: none;
-    color: var(--gray-800, #212529);
 }
 
 .PatientMedicationFormModal__dropdown {
