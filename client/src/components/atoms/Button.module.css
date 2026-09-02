@@ -159,12 +159,34 @@
     --btn-hover-text: var(--amber-300, #fcd34d);
 }
 
+.Button__outlineInfo,
+.Button__outlinePrimary {
+    --btn-bg: rgb(14 165 233 / 8%);
+    --btn-border: rgb(14 165 233 / 30%);
+    --btn-text: var(--sky-400, #38bdf8);
+    --btn-shadow: none;
+    --btn-hover-bg: rgb(14 165 233 / 18%);
+    --btn-hover-border: var(--sky-500, #0ea5e9);
+    --btn-hover-text: #7dd3fc;
+}
+
+.Button__outlinePurple {
+    --btn-bg: rgb(168 85 247 / 8%);
+    --btn-border: rgb(168 85 247 / 30%);
+    --btn-text: var(--purple-400, #c084fc);
+    --btn-shadow: none;
+    --btn-hover-bg: rgb(168 85 247 / 18%);
+    --btn-hover-border: var(--purple-500, #a855f7);
+    --btn-hover-text: #e9d5ff;
+}
+
 .Button__ghost {
     --btn-bg: transparent;
-    --btn-border: transparent;
+    --btn-border: rgb(255 255 255 / 10%);
     --btn-shadow: none;
     --btn-text: var(--text-muted);
     --btn-hover-bg: var(--bg-hover, rgb(255 255 255 / 8%));
+    --btn-hover-border: var(--border-color);
     --btn-hover-text: var(--text-main);
     --btn-hover-y: 0;
     --btn-hover-shadow: none;
