@@ -40,9 +40,6 @@ services:
     build: ./server
     restart: always
     container_name: secretary-app-server-1
-    dns:
-      - 8.8.8.8
-      - 1.1.1.1
     command: pnpm run dev
     logging: *default-logging
     networks:
