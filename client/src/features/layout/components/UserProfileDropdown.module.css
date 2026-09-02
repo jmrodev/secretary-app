@@ -1,0 +1,214 @@
+/* UserProfileDropdown Styles (BEM) */
+
+.UserProfileDropdown__root {
+    position: relative;
+    display: inline-block;
+}
+
+.UserProfileDropdown__trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--radius-md, 0.5rem);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: var(--font-manrope);
+}
+
+.UserProfileDropdown__trigger:hover,
+.UserProfileDropdown__triggerOpen {
+    background: var(--bg-hover, rgb(255 255 255 / 6%));
+    border-color: var(--border-color);
+}
+
+.UserProfileDropdown__avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark, #0284c7));
+    color: var(--white, #fff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 15%);
+    flex-shrink: 0;
+}
+
+.UserProfileDropdown__userInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.15;
+    text-align: left;
+}
+
+.UserProfileDropdown__userName {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-main);
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.UserProfileDropdown__userRole {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: capitalize;
+}
+
+.UserProfileDropdown__chevron {
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.UserProfileDropdown__chevronRotated {
+    transform: rotate(180deg);
+}
+
+@keyframes fade-in-scale {
+    from {
+        opacity: 0;
+        transform: translateY(-4px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* --- Dropdown Menu Panel --- */
+.UserProfileDropdown__panel {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    right: 0;
+    width: 16.5rem;
+    background: var(--dashboard-card-bg, #18181b);
+    border: 1px solid var(--border-color, rgb(255 255 255 / 10%));
+    border-radius: var(--radius-md, 0.6rem);
+    box-shadow: 0 10px 25px -5px rgb(0 0 0 / 30%), 0 8px 10px -6px rgb(0 0 0 / 20%);
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+    padding: 0.5rem 0;
+    animation: fade-in-scale 0.15s ease-out;
+}
+
+.UserProfileDropdown__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.9rem 0.75rem;
+    border-bottom: 1px solid var(--border-color, rgb(255 255 255 / 8%));
+    margin-bottom: 0.35rem;
+}
+
+.UserProfileDropdown__headerAvatar {
+    width: 2.35rem;
+    height: 2.35rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark, #0284c7));
+    color: var(--white, #fff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.UserProfileDropdown__headerDetails {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.UserProfileDropdown__headerName {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.UserProfileDropdown__headerRoleBadge {
+    display: inline-block;
+    align-self: flex-start;
+    margin-top: 0.2rem;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    border-radius: var(--radius-sm, 0.25rem);
+    background: var(--bg-hover, rgb(255 255 255 / 8%));
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.UserProfileDropdown__section {
+    padding: 0.25rem 0.5rem;
+}
+
+.UserProfileDropdown__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm, 0.35rem);
+    border: none;
+    background: transparent;
+    color: var(--text-main);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s ease;
+    font-family: var(--font-manrope);
+}
+
+.UserProfileDropdown__item:hover {
+    background: var(--bg-hover, rgb(255 255 255 / 6%));
+    color: var(--primary-color);
+}
+
+.UserProfileDropdown__itemLeft {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.UserProfileDropdown__badgeValue {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: var(--bg-hover, rgb(255 255 255 / 8%));
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-sm, 0.25rem);
+}
+
+.UserProfileDropdown__divider {
+    height: 1px;
+    background: var(--border-color, rgb(255 255 255 / 8%));
+    margin: 0.35rem 0;
+}
+
+.UserProfileDropdown__logoutItem {
+    color: var(--danger, #ef4444);
+}
+
+.UserProfileDropdown__logoutItem:hover {
+    background: rgb(239 68 68 / 10%);
+    color: var(--danger, #ef4444);
+}

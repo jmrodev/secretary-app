@@ -78,11 +78,11 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 80%;
-    max-width: 1600px;
+    width: 100%;
+    max-width: 1800px;
     margin: 0 auto;
     min-width: 0;
-    padding: 0.4rem 1.5rem;
+    padding: 0.5rem 1.5rem;
     gap: 0.5rem;
 }
 
