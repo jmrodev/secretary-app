@@ -72,19 +72,19 @@ export const PatientsPage = () => {
 
     // Only show global loading if we haven't fetched any patients yet (initial load)
     if (loading && !controller.fetched) return (
-        <MainLayout wide flush hideSearch>
+        <MainLayout hideSearch>
             <Loading variant="centered" text={t('loading')} />
         </MainLayout>
     );
 
     if (detailsLoading) return (
-        <MainLayout wide flush hideSearch>
+        <MainLayout hideSearch>
             <Loading variant="centered" />
         </MainLayout>
     );
 
     return (
-        <MainLayout wide flush hideSearch title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
+        <MainLayout hideSearch title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
             <div>
                 {(selectedPatientId && patientDetails) ? (
                     // --- DETAILS VIEW ---

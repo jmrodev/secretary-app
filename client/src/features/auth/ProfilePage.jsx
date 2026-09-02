@@ -11,7 +11,7 @@ export const ProfilePage = () => {
     const profileProps = useProfileController();
 
     return (
-        <MainLayout wide flush title={profileProps.t('profile')}>
+        <MainLayout preset="contained" title={profileProps.t('profile')}>
             <section>
                 <ProfileEditor {...profileProps} />
             </section>

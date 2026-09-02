@@ -37,7 +37,7 @@ export const InstitutionsPage = () => {
     const [viewMode, setViewMode] = React.useState('transactions');
 
     return (
-        <MainLayout wide flush title={t('institutions')}>
+        <MainLayout title={t('institutions')}>
             <div>
                 <div>
                     {loading && institutions.length === 0 ? (

@@ -37,7 +37,7 @@ export const InsurancesPage = () => {
     } = handlers;
 
     return (
-        <MainLayout wide flush title={t('insurances')}>
+        <MainLayout title={t('insurances')}>
             <div className={`${styles.InsurancesPage__root}  `}>
                 <FeatureToolbar
                     className="__toolbar"

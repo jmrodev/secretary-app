@@ -35,7 +35,7 @@ export const DashboardPage = () => {
     const shouldShowErrorState = Boolean(error) && !controller.fetched;
 
     return (
-        <MainLayout wide flush title={t('dashboard')}>
+        <MainLayout title={t('dashboard')}>
             <div>
                 <section >
                     {shouldShowErrorState ? (
