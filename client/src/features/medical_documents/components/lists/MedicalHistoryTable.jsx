@@ -85,7 +85,6 @@ export const MedicalHistoryTable = ({
                                         <Button
                                             variant="ghost"
                                             size="sm-compact"
-                                            className={`${styles.MedicalHistoryTable__actionBtn} ${styles.MedicalHistoryTable__actionBtnView}`}
                                             onClick={() => onView({ ...item, _readOnly: true })}
                                             title={t('view')}
                                             icon={<Icon name="visibility" size="1rem" />}
@@ -94,7 +93,6 @@ export const MedicalHistoryTable = ({
                                             <Button
                                                 variant="ghost"
                                                 size="sm-compact"
-                                                className={`${styles.MedicalHistoryTable__actionBtn} ${styles.MedicalHistoryTable__actionBtnEdit}`}
                                                 onClick={() => onView(item)}
                                                 title={t('edit')}
                                                 icon={<Icon name="edit" size="1rem" />}
@@ -102,9 +100,8 @@ export const MedicalHistoryTable = ({
                                         )}
                                         {showDelete && (
                                             <Button
-                                                variant="ghost"
+                                                variant="outline-danger"
                                                 size="sm-compact"
-                                                className={`${styles.MedicalHistoryTable__actionBtn} ${styles.MedicalHistoryTable__actionBtnDelete}`}
                                                 onClick={() => onDelete(item.id, item)}
                                                 title={t('delete')}
                                                 icon={<Icon name="delete" size="1rem" />}

@@ -110,13 +110,31 @@ export const UserTable = ({ users, onEdit, onReset, onDelete, onOpenPermissions 
                                             size="sm-compact"
                                             onClick={() => onOpenPermissions(u)}
                                             title={t('edit_permissions')}
-                                            icon={<Icon name="tune" />}
+                                            icon={<Icon name="tune" size="1rem" />}
                                         />
                                     )}
-                                    <Button variant="ghost" size="sm-compact" onClick={() => onEdit(u)} title={t('edit')} icon={<Icon name="edit" />} />
-                                    <Button variant="ghost" size="sm-compact" onClick={() => onReset(u)} title={t('reset_pwd')} icon={<Icon name="key" />} />
+                                    <Button
+                                        variant="ghost"
+                                        size="sm-compact"
+                                        onClick={() => onEdit(u)}
+                                        title={t('edit')}
+                                        icon={<Icon name="edit" size="1rem" />}
+                                    />
+                                    <Button
+                                        variant="ghost"
+                                        size="sm-compact"
+                                        onClick={() => onReset(u)}
+                                        title={t('reset_pwd')}
+                                        icon={<Icon name="key" size="1rem" />}
+                                    />
                                     {u.role !== 'admin' && (
-                                        <Button variant="ghost" size="sm-compact" className={`${styles.actionBtnDelete} ${sharedStyles.TextDanger}`} onClick={() => onDelete(u)} title={t('delete')} icon={<Icon name="delete" />} />
+                                        <Button
+                                            variant="outline-danger"
+                                            size="sm-compact"
+                                            onClick={() => onDelete(u)}
+                                            title={t('delete')}
+                                            icon={<Icon name="delete" size="1rem" />}
+                                        />
                                     )}
                                 </div>
                             </td>
