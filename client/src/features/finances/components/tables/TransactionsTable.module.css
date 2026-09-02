@@ -1,22 +1,12 @@
-/* TransactionsTable Feature Styles (BEM) */
-
-.TransactionsTable__container {
-    /* --- Local Component Tokens --- */
-    --ledger-bg: var(--white, var(--text-main));
-    --ledger-border: rgb(0, 0, 0, 0.08);
-    --ledger-row-hover: var(--row-hover-bg-selected);
-    --ledger-group-bg: rgb(239, 246, 255, 0.5);
-    --ledger-header-bg: rgb(248, 250, 252, 0.95);
-
-    /* ------------------------------ */
-
+.TransactionsTable__root {
     padding: 0;
+    margin: 0;
     overflow: hidden;
-    margin-top: 1rem;
     border-radius: var(--radius-sm, 6px);
     border: 1px solid var(--border-color);
     background: var(--dashboard-card-bg);
-    box-shadow: var(--shadow-sm);
+    box-shadow: none;
+    width: 100%;
 }
 
 .TransactionsTable__wrapper {
@@ -33,22 +23,22 @@
 
 .TransactionsTable__table th {
     background-color: var(--card-surface-bg);
-    padding: 0.875rem 0.75rem;
+    padding: 0.65rem 0.75rem;
     text-align: left;
     font-weight: 800;
     color: var(--text-main);
-    border-bottom: 2px solid var(--dashboard-card-bg);
+    border-bottom: 1px solid var(--border-color);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
     position: sticky;
     top: 0;
     z-index: 10;
 }
 
 .TransactionsTable__table td {
-    padding: 0.875rem 0.75rem;
-    border-bottom: 1px solid rgb(0, 0, 0, 0.05);
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid rgb(128 128 128 / 10%);
     vertical-align: middle;
 }
 
