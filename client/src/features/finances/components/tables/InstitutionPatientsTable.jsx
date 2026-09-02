@@ -14,7 +14,7 @@ export const InstitutionPatientsTable = ({
         <section className={`${styles.InstitutionPatientsTable__root} animate-fade-in`}>
             <header className={`${styles.InstitutionPatientsTable__header}`}>
                 <h3 className={`${styles.InstitutionPatientsTable__title}`}>
-                    <Icon name="PATIENTS" size="1.2rem" /> {t('patient_list_padron')}
+                    <Icon name="people" size="1.2rem" /> {t('patient_list_padron')}
                     <span className={`${styles.InstitutionPatientsTable__badge}`}>{patients.length}</span>
                 </h3>
             </header>

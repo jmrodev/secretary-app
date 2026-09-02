@@ -67,10 +67,10 @@ export const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                         <div className={`${styles.PatientHistoryTable__payAction}`}>
                                                             <Button
                                                                 size="sm-compact"
-                                                                variant="ghost"
-                                                                className={`${styles.PatientHistoryTable__payBtnMini}`}
+                                                                variant="outline-success"
                                                                 onClick={() => onPayDebt(null, details.id, pendingVal)}
-                                                                icon={<Icon name="payments" size="0.8rem" />}
+                                                                title={t('pay')}
+                                                                icon={<Icon name="payments" size="0.9rem" />}
                                                             >
                                                                 {t('pay')}
                                                             </Button>

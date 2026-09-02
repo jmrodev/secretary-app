@@ -43,13 +43,12 @@ const InstitutionRow = ({ inst, t }) => {
             <td className={`${styles.PatientList__actions}`}>
                 <Button
                     size="sm-compact"
-                    variant="link"
+                    variant="ghost"
                     to={`/institutions`}
                     onClick={(e) => e.stopPropagation()}
+                    title={t('go')}
                     icon={<Icon name="arrow_forward" size="1rem" />}
-                >
-                    {t('go')}
-                </Button>
+                />
             </td>
         </tr>
     );
@@ -100,11 +99,11 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                             <Button
                                 to={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
                                 target="_blank"
-                                variant="whatsapp"
+                                variant="ghost"
                                 size="sm-compact"
                                 onClick={(e) => e.stopPropagation()}
                                 title={t('whatsapp')}
-                                icon={<Icon name="send" size="1.1rem" />}
+                                icon={<Icon name="chat" size="1rem" />}
                             />
                             <Button
                                 to={`tel:${p.phone.replace(/[^0-9+]/g, '')}`}
@@ -179,14 +178,12 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
             </td>
             <td className={`${styles.PatientList__actions}`}>
                 <Button
-                    variant="info"
+                    variant="ghost"
                     size="sm-compact"
-                    className={`${styles.PatientList__viewBtn}`}
-                    icon={<Icon name="badge" />}
+                    icon={<Icon name="visibility" size="1rem" />}
                     onClick={(e) => { e.stopPropagation(); onViewDetails(p.id); }}
-                >
-                    {t('view_details')}
-                </Button>
+                    title={t('view_details')}
+                />
             </td>
         </tr>
     );

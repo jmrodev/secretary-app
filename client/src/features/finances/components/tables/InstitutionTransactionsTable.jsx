@@ -29,7 +29,7 @@ export const InstitutionTransactionsTable = ({
         <section className={`${styles.InstitutionTransactionsTable__root}`}>
             <header className={`${styles.InstitutionTransactionsTable__header}`}>
                 <h3 className={`${styles.InstitutionTransactionsTable__title}`}>
-                    <Icon name="REQUESTS" size="1.2rem" /> {t('transaction_log')}
+                    <Icon name="description" size="1.2rem" /> {t('transaction_log')}
                     <span className={`${styles.InstitutionTransactionsTable__badge}`}>{transactions.length}</span>
                 </h3>
                 <div className={`${styles.InstitutionTransactionsTable__actions}`}>
@@ -53,7 +53,7 @@ export const InstitutionTransactionsTable = ({
                         variant="primary"
                         size="sm-compact"
                         onClick={onPayClick}
-                        icon={<Icon name="FINANCES" size="1rem" />}
+                        icon={<Icon name="payments" size="1rem" />}
                         disabled={selectedTrs.size === 0}
                     >
                         {t('pay')}
