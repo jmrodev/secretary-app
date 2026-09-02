@@ -2,6 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
+import { Input } from '@/components/atoms/Input';
+import { AutoTextarea } from '@/components/atoms/AutoTextarea';
+import { Checkbox } from '@/components/atoms/Checkbox';
+import { FormGroup } from '@/components/molecules/FormGroup';
 import { api } from '@/api/axios';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useMessage } from '@/context/MessageContext';
@@ -159,22 +163,19 @@ export const PatientMedicationFormModal = ({
             <form onSubmit={handleSubmit} className={styles.PatientMedicationFormModal__root}>
                 {/* Vademecum Autocomplete */}
                 <div className={styles.PatientMedicationFormModal__fieldGroup} ref={dropdownRef}>
-                    <label htmlFor="med-name" className={styles.PatientMedicationFormModal__label}>
-                        {t('medication_name')} *
-                    </label>
-                    <div className={styles.PatientMedicationFormModal__inputWrapper}>
-                        <input
-                            id="med-name"
-                            type="text"
-                            className={styles.PatientMedicationFormModal__input}
-                            value={medName}
-                            onChange={(e) => handleSearchVademecum(e.target.value)}
-                            placeholder={t('search_medication_placeholder')}
-                            required
-                            autoComplete="off"
-                        />
-                        {isSearching && <span className={styles.PatientMedicationFormModal__searchingSpinner} />}
-                    </div>
+                    <FormGroup label={t('medication_name')} required htmlFor="med-name">
+                        <div className={styles.PatientMedicationFormModal__inputWrapper}>
+                            <Input
+                                id="med-name"
+                                value={medName}
+                                onChange={(e) => handleSearchVademecum(e.target.value)}
+                                placeholder={t('search_medication_placeholder')}
+                                required
+                                autoComplete="off"
+                            />
+                            {isSearching && <span className={styles.PatientMedicationFormModal__searchingSpinner} />}
+                        </div>
+                    </FormGroup>
 
                     {showDropdown && (
                         <ul className={styles.PatientMedicationFormModal__dropdown}>
@@ -198,68 +199,57 @@ export const PatientMedicationFormModal = ({
 
                 {/* Dose & Frequency Grid */}
                 <div className={styles.PatientMedicationFormModal__gridTwoCols}>
-                    <div className={styles.PatientMedicationFormModal__fieldGroup}>
-                        <label htmlFor="med-dose" className={styles.PatientMedicationFormModal__label}>{t('dosage')}</label>
-                        <input
+                    <FormGroup label={t('dosage')} htmlFor="med-dose">
+                        <Input
                             id="med-dose"
-                            type="text"
-                            className={styles.PatientMedicationFormModal__input}
                             value={dose}
                             onChange={(e) => setDose(e.target.value)}
                             placeholder={t('dose_example_placeholder')}
                         />
-                    </div>
-                    <div className={styles.PatientMedicationFormModal__fieldGroup}>
-                        <label htmlFor="med-frequency" className={styles.PatientMedicationFormModal__label}>{t('frequency')}</label>
-                        <input
+                    </FormGroup>
+                    <FormGroup label={t('frequency')} htmlFor="med-frequency">
+                        <Input
                             id="med-frequency"
-                            type="text"
-                            className={styles.PatientMedicationFormModal__input}
                             value={frequency}
                             onChange={(e) => setFrequency(e.target.value)}
                             placeholder={t('freq_example_placeholder')}
                         />
-                    </div>
+                    </FormGroup>
                 </div>
 
                 {/* Boxes count & Chronic Checkbox */}
                 <div className={styles.PatientMedicationFormModal__gridTwoCols}>
-                    <div className={styles.PatientMedicationFormModal__fieldGroup}>
-                        <label htmlFor="med-boxes" className={styles.PatientMedicationFormModal__label}>{t('boxes_count')}</label>
-                        <input
+                    <FormGroup label={t('boxes_count')} htmlFor="med-boxes">
+                        <Input
                             id="med-boxes"
                             type="number"
                             min="1"
                             max="10"
-                            className={styles.PatientMedicationFormModal__input}
                             value={boxesCount}
                             onChange={(e) => setBoxesCount(e.target.value)}
                         />
-                    </div>
+                    </FormGroup>
                     <div className={styles.PatientMedicationFormModal__fieldGroupCheck}>
-                        <label className={styles.PatientMedicationFormModal__checkLabel}>
-                            <input
-                                type="checkbox"
+                        <FormGroup>
+                            <Checkbox
+                                label={t('is_chronic')}
                                 checked={isChronic}
                                 onChange={(e) => setIsChronic(e.target.checked)}
                             />
-                            <span>{t('is_chronic')}</span>
-                        </label>
+                        </FormGroup>
                     </div>
                 </div>
 
                 {/* Notes */}
-                <div className={styles.PatientMedicationFormModal__fieldGroup}>
-                    <label htmlFor="med-notes" className={styles.PatientMedicationFormModal__label}>{t('notes')}</label>
-                    <textarea
+                <FormGroup label={t('notes')} htmlFor="med-notes">
+                    <AutoTextarea
                         id="med-notes"
-                        className={styles.PatientMedicationFormModal__textarea}
-                        rows="2"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                         placeholder={t('notes_example_placeholder')}
+                        rows={2}
                     />
-                </div>
+                </FormGroup>
 
                 {/* Actions */}
                 <div className={styles.PatientMedicationFormModal__actions}>
