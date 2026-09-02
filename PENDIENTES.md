@@ -1,8 +1,8 @@
 # Pendientes de Desarrollo
 
-- [ ] **Unificar botones de WhatsApp en modal de turnos:**
+- [x] **Unificar botones de WhatsApp en modal de turnos:**
   - Archivo: `client/src/features/appointments/components/sections/AppointmentAdminPanel.jsx` (líneas 205-225).
-  - Evaluar dejar un solo botón de notificar/recordatorio.
+  - Unificado en botón "Notificar turno" con vista previa editable.
 
-- [ ] **Push de cambios a GitHub:**
-  - Crear PR para la sincronización de versiones de React en `client/package.json` (`react` / `react-dom` v19.2.8).
+- [x] **Push de cambios a GitHub:**
+  - Sincronización de versiones de React en `client/package.json` (`react` / `react-dom` v19.2.8).

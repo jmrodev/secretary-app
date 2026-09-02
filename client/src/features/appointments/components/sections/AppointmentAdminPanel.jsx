@@ -203,33 +203,22 @@ export const AppointmentAdminPanel = ({
                                     {t('whatsapp_chat')}
                                 </Button>
                                 {appt.status !== 'completed' && (
-                                    <>
-                                        <Button
-                                            variant="accent" className={styles.AppointmentAdminPanel__action}
-                                            onClick={() => onWhatsApp(appt, 'reminder')}
-                                            icon={<Icon name="notifications" size="1.1rem" />}
-                                            title={t('send_reminder_whatsapp_title')}
-                                        >
-                                            {t('reminder')}
-                                        </Button>
-                                        <Button
-                                            variant="success" className={styles.AppointmentAdminPanel__action}
-                                            onClick={() => onWhatsAppConfirmation(appt)}
-                                            icon={<Icon name="auto_awesome" size="1.1rem" />}
-                                            title={t('preview_confirmation_whatsapp_title')}
-                                        >
-                                            {t('send_whatsapp_confirmation')}
-                                        </Button>
-                                    </>
+                                    <Button
+                                        variant="accent" className={styles.AppointmentAdminPanel__action}
+                                        onClick={() => onWhatsAppConfirmation(appt)}
+                                        icon={<Icon name="notifications" size="1.1rem" />}
+                                        title={t('notify_appointment_whatsapp_title')}
+                                    >
+                                        {t('notify_whatsapp')}
+                                    </Button>
                                 )}
                             </div>
                             {appt.status !== 'completed' && (
                                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.75rem', display: 'flex', alignItems: 'flex-start', gap: '0.35rem' }}>
                                     <Icon name="info" size="1rem" style={{ marginTop: '0.1rem', flexShrink: 0 }} />
                                     <span>
-                                        <strong>{t('whatsapp')}</strong> {t('whatsapp_admin_panel_hint_1')}
-                                        {' '}<strong>{t('reminder')}</strong> {t('whatsapp_admin_panel_hint_2')}
-                                        {' '}<strong>{t('confirmation')}</strong> {t('whatsapp_admin_panel_hint_3')}
+                                        <strong>{t('whatsapp_chat')}</strong> {t('whatsapp_admin_panel_hint_1')}
+                                        {' '}<strong>{t('notify_whatsapp')}</strong> {t('whatsapp_admin_panel_hint_2')}
                                     </span>
                                 </p>
                             )}
