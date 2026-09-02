@@ -16,14 +16,16 @@ export const MainLayout = ({
     wide = false, 
     flush = false,
     title,
-    variant = 'premium',
-    backgroundUrl,
+    subtitle = null,
+    variant: _variant,
+    backgroundUrl: _backgroundUrl,
     hideDoctorSelector = false,
     doctorSelectorActions = null,
     actionSlot,
+    statsSlot = null,
     hideClock = false,
     hideSearch = false,
-    hideTitle = (variant === 'premium'),
+    hideTitle = false,
     noAnimation = false
 }) => {
     const { searchTerm, setSearchTerm } = useSearch();
@@ -36,9 +38,9 @@ export const MainLayout = ({
                 {title && (
                     <PageHeader 
                         title={title}
-                        variant={variant}
-                        backgroundUrl={backgroundUrl}
+                        subtitle={subtitle}
                         actionSlot={actionSlot}
+                        statsSlot={statsSlot}
                         hideTitle={hideTitle}
                         hideClock={hideClock}
                         hideSearch={hideSearch}
