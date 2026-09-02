@@ -1,41 +1,40 @@
-/* PatientList Feature Component - Premium Bento Box Style */
+/* PatientList Feature Component */
 
 .PatientList__root {
     width: 100%;
     background: var(--dashboard-card-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
+    border-radius: var(--radius-sm, 6px);
+    box-shadow: none;
+    overflow: auto hidden;
 }
 
 .PatientList__table {
     width: 100%;
-    min-width: 1000px;
     border-collapse: collapse;
     border-spacing: 0;
     table-layout: auto;
 }
 
 .PatientList__table th {
-    padding: 0.85rem 1rem;
+    padding: 0.65rem 0.85rem;
     text-align: left;
-    background: rgb(128, 128, 128, 0.04);
-    font-size: 0.7rem;
+    background: var(--card-surface-bg);
+    font-size: 0.72rem;
     font-weight: 800;
-    color: var(--text-muted);
+    color: var(--text-main);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     border-bottom: 1px solid var(--border-color);
 }
 
-.PatientList__table th:first-child { padding-left: 1.5rem; }
-.PatientList__table th:last-child { padding-right: 1.5rem; }
+.PatientList__table th:first-child { padding-left: 1rem; }
+.PatientList__table th:last-child { padding-right: 1rem; }
 
 .PatientList__row {
     background-color: transparent;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background-color 0.15s ease;
 }
 
 .PatientList__row:hover {
@@ -43,11 +42,11 @@
 }
 
 .PatientList__table td {
-    padding: 1rem;
-    font-size: 0.938rem;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.875rem;
     vertical-align: middle;
     color: var(--text-secondary);
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid rgb(128 128 128 / 10%);
 }
 
 .PatientList__table tr:last-child td {
@@ -55,17 +54,17 @@
 }
 
 .PatientList__table td:first-child {
-    padding-left: 1.5rem;
+    padding-left: 1rem;
 }
 
 .PatientList__table td:last-child {
-    padding-right: 1.5rem;
+    padding-right: 1rem;
 }
 
 .PatientList__patientCol {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.25rem;
     align-items: flex-start;
 }
 
@@ -76,11 +75,23 @@
 }
 
 .PatientList__name {
-    font-size: 1rem;
-    font-weight: 800;
-    color: var(--text-main);
-    text-transform: capitalize;
+    display: flex;
+    align-items: baseline;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+    line-height: 1.25;
     white-space: nowrap;
+}
+
+.PatientList__lastName {
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--text-main);
+}
+
+.PatientList__firstName {
+    font-weight: 500;
+    color: var(--text-main);
 }
 
 .PatientList__rowInstitution {

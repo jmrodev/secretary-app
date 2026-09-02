@@ -153,10 +153,21 @@ export const PatientsPage = () => {
                             }
                         />
 
-                        <section >
+                        <section>
                             {activeTab === 'list' ? (
                                 <div className="patients-page__table-wrapper">
-                                    <div className={`patients-page__pagination-top ${styles.paginationTop}`}>
+                                    <PatientList
+                                        patients={patients}
+                                        institutions={institutions}
+                                        t={t}
+                                        onViewDetails={handleViewDetails}
+                                        onOpenDebt={handleOpenDebtModal}
+                                        onToggleRating={handleCycleRating}
+                                        calculateFinancialRating={calculateFinancialRating}
+                                        calculateAttendanceRating={calculateAttendanceRating}
+                                    />
+
+                                    {totalPages > 1 && (
                                         <Pagination
                                             currentPage={currentPage}
                                             totalPages={totalPages}
@@ -165,29 +176,7 @@ export const PatientsPage = () => {
                                             onPageChange={handlePageChange}
                                             t={t}
                                         />
-                                    </div>
-
-                                    <section className="dashboard-card dashboard-card--no-padding dashboard-card--scroll-horizontal">
-                                        <PatientList
-                                            patients={patients}
-                                            institutions={institutions}
-                                            t={t}
-                                            onViewDetails={handleViewDetails}
-                                            onOpenDebt={handleOpenDebtModal}
-                                            onToggleRating={handleCycleRating}
-                                            calculateFinancialRating={calculateFinancialRating}
-                                            calculateAttendanceRating={calculateAttendanceRating}
-                                        />
-
-                                        <Pagination
-                                            currentPage={currentPage}
-                                            totalPages={totalPages}
-                                            totalCount={totalCount}
-                                            itemsShowing={patients.length}
-                                            onPageChange={handlePageChange}
-                                            t={t}
-                                        />
-                                    </section>
+                                    )}
                                 </div>
                             ) : (
                                 <PatientRecycleBin

@@ -67,12 +67,19 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
             className={`${styles.PatientList__row}`}
         >
             <td>
-                <div className={`${styles.PatientList__patientCol}`}>
-                    <strong className={`${styles.PatientList__name}`}>
-                        {p.full_name || `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'N/A'}
-                    </strong>
+                <div className={styles.PatientList__patientCol}>
+                    <div className={styles.PatientList__name}>
+                        {p.last_name ? (
+                            <>
+                                <strong className={styles.PatientList__lastName}>{p.last_name.toUpperCase()}</strong>
+                                <span className={styles.PatientList__firstName}>{p.first_name || ''}</span>
+                            </>
+                        ) : (
+                            <strong className={styles.PatientList__lastName}>{p.full_name || 'N/A'}</strong>
+                        )}
+                    </div>
                     {((Boolean(p.is_new_patient) || Number(p.is_new_patient) === 1) || Number(p.attended_appointments) > 0) && (
-                        <div className={`${styles.PatientList__badgeRow}`}>
+                        <div className={styles.PatientList__badgeRow}>
                             {(Boolean(p.is_new_patient) || Number(p.is_new_patient) === 1) && (
                                 <Badge variant="blue" size="sm">{t('new_patient_badge')}</Badge>
                             )}
