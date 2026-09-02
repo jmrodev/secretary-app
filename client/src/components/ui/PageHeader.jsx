@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon } from '@/components/atoms/Icon';
 import { Input } from '@/components/atoms/Input';
+import { Button } from '@/components/atoms/Button';
 import { LiveClock } from '@/components/atoms/LiveClock';
 import sharedStyles from '@/styles/shared.module.css';
 import styles from './PageHeader.module.css';
@@ -49,6 +50,16 @@ export const PageHeader = ({
                                     value={searchTerm}
                                     onChange={(e) => onSearchChange(e?.target ? e.target.value : e)}
                                 />
+                                {searchTerm && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm-compact"
+                                        className={styles.PageHeader__clearSearchBtn}
+                                        onClick={() => onSearchChange('')}
+                                        title="Limpiar"
+                                        icon={<Icon name="close" size="0.85rem" />}
+                                    />
+                                )}
                             </div>
                         )}
                         {doctorSelectorSlot && (
