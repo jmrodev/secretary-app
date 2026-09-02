@@ -106,7 +106,7 @@ export const UserTable = ({ users, onEdit, onReset, onDelete, onOpenPermissions 
                                 <div className={`${styles.UserTable__actions}`}>
                                     {u.role === 'secretary' && onOpenPermissions && (
                                         <Button
-                                            variant="ghost"
+                                            variant="outline-purple"
                                             size="sm-compact"
                                             onClick={() => onOpenPermissions(u)}
                                             title={t('edit_permissions')}
@@ -114,14 +114,14 @@ export const UserTable = ({ users, onEdit, onReset, onDelete, onOpenPermissions 
                                         />
                                     )}
                                     <Button
-                                        variant="ghost"
+                                        variant="outline-warning"
                                         size="sm-compact"
                                         onClick={() => onEdit(u)}
                                         title={t('edit')}
                                         icon={<Icon name="edit" size="1rem" />}
                                     />
                                     <Button
-                                        variant="ghost"
+                                        variant="outline-info"
                                         size="sm-compact"
                                         onClick={() => onReset(u)}
                                         title={t('reset_pwd')}
