@@ -101,7 +101,7 @@ export const TransactionRow = ({
                     <div className={styles.TransactionsTable__actions}>
                         <Button 
                             size="sm-compact" 
-                            variant="ghost" 
+                            variant="outline-info" 
                             onClick={() => showDetail(<InvoiceDetailContent tx={tx} formatDate={formatDateUnambiguous} />)}
                             title={t('view_details')} 
                             icon={<Icon name="visibility" size="1rem" />} 
@@ -109,7 +109,7 @@ export const TransactionRow = ({
                         {tx.type === 'income_patient' && tx.status === 'paid' && !tx.invoice_number && (
                             <Button 
                                 size="sm-compact" 
-                                variant="ghost" 
+                                variant="outline-purple" 
                                 onClick={() => onGenerateInvoice(tx.id)} 
                                 title={t('generate_invoice')} 
                                 icon={<Icon name="receipt" size="1rem" />} 
@@ -126,7 +126,7 @@ export const TransactionRow = ({
                         )}
                         <Button 
                             size="sm-compact" 
-                            variant="ghost" 
+                            variant="outline-warning" 
                             onClick={() => onEdit(tx)} 
                             title={t('edit')} 
                             icon={<Icon name="edit" size="1rem" />} 
@@ -134,7 +134,7 @@ export const TransactionRow = ({
                         {tx.status === 'paid' && (
                             <Button 
                                 size="sm-compact" 
-                                variant="ghost" 
+                                variant="outline-info" 
                                 onClick={() => onSync(tx.id)} 
                                 title={t('sync_google')} 
                                 icon={<Icon name="sync" size="1rem" />} 
