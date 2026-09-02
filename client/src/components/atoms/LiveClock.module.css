@@ -1,19 +1,41 @@
 .LiveClock__root {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.55rem;
     font-family: var(--font-manrope, var(--font-main));
     color: var(--text-main);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     background: var(--dashboard-card-bg);
-    padding: 0 0.75rem;
+    padding: 0 0.85rem;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm, 6px);
     height: 36px;
     white-space: nowrap;
     cursor: default;
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
     user-select: none;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 5%);
+}
+
+.LiveClock__prominent {
+    border-color: rgb(13 148 136 / 35%);
+    background: var(--dashboard-card-bg);
+}
+
+.LiveClock__liveDot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #22c55e;
+    box-shadow: 0 0 6px rgb(34 197 94 / 80%);
+    display: inline-block;
+    flex-shrink: 0;
+    animation: live-dot-pulse 2s infinite ease-in-out;
+}
+
+@keyframes live-dot-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.45; transform: scale(0.85); }
 }
 
 .LiveClock__icon {
@@ -24,23 +46,21 @@
 .LiveClock__date {
     text-transform: capitalize;
     color: var(--text-muted);
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.82rem;
 }
 
 .LiveClock__separator {
     color: var(--border-color);
     font-weight: 300;
+    opacity: 0.7;
 }
 
 .LiveClock__time {
-    font-weight: 700;
+    font-weight: 800;
+    font-size: 1rem;
     font-variant-numeric: tabular-nums;
-    letter-spacing: 0.03em;
-    color: var(--text-main);
-}
-
-/* Modifier: Premium Frame */
-.LiveClock__premium .LiveClock__time {
+    letter-spacing: 0.04em;
     color: var(--primary-color);
 }
 
@@ -49,5 +69,10 @@
         font-size: 0.75rem;
         height: 32px;
         padding: 0 0.5rem;
+        gap: 0.35rem;
+    }
+
+    .LiveClock__time {
+        font-size: 0.85rem;
     }
 }

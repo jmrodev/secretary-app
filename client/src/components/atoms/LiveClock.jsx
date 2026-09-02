@@ -8,7 +8,7 @@ import styles from './LiveClock.module.css';
  * LiveClock - Atom component to display real-time date and time.
  * Fully internationalized and formatted with tabular numbers.
  */
-export const LiveClock = ({ className = '', hideDate = false, premium = false }) => {
+export const LiveClock = ({ className = '', hideDate = false, premium: _premium = false }) => {
     const time = useLiveClock();
     const { language } = useLanguage();
     const locale = language === 'en' ? 'en-US' : 'es-AR';
@@ -28,15 +28,16 @@ export const LiveClock = ({ className = '', hideDate = false, premium = false })
 
     const rootClass = [
         styles.LiveClock__root,
-        premium ? styles.LiveClock__premium : '',
+        styles.LiveClock__prominent,
         className
     ].filter(Boolean).join(' ');
 
     return (
         <div className={rootClass} suppressHydrationWarning>
-            <Icon name="schedule" size="0.95rem" className={styles.LiveClock__icon} />
+            <span className={styles.LiveClock__liveDot} aria-hidden="true" />
+            <Icon name="schedule" size="1.05rem" className={styles.LiveClock__icon} />
             {!hideDate && <span className={styles.LiveClock__date}>{dateLabel}</span>}
-            {!hideDate && <span className={styles.LiveClock__separator}>·</span>}
+            {!hideDate && <span className={styles.LiveClock__separator}>|</span>}
             <span className={styles.LiveClock__time}>{timeLabel}</span>
         </div>
     );
