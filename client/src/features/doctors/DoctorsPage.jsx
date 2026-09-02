@@ -17,7 +17,7 @@ export const DoctorsPage = () => {
     const { t } = useLanguage();
 
     return (
-        <MainLayout wide flush title={t('doctors_management')}>
+        <MainLayout title={t('doctors_management')}>
             <div>
                 <DoctorsManager
                     {...controller}

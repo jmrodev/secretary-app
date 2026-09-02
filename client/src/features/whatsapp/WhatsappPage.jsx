@@ -11,7 +11,7 @@ export const WhatsappPage = () => {
     const [activeTab, setActiveTab] = useState('config');
 
     return (
-        <MainLayout wide flush title={t('whatsapp_messenger')}>
+        <MainLayout title={t('whatsapp_messenger')}>
             <div className={styles.WhatsappPage__page}>
                 <div className={styles.WhatsappPage__tabBar}>
                     <button

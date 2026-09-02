@@ -33,7 +33,7 @@ export const FinancesPage = ({ MedicationInputComponent }) => {
     const isAdminOrSecretary = user && (user.role === 'admin' || user.role === 'secretary');
 
     return (
-        <MainLayout wide flush title={t('finances')}>
+        <MainLayout title={t('finances')}>
             <div>
                 <FeatureToolbar
                     className="__toolbar"

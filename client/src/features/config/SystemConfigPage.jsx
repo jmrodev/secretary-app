@@ -74,8 +74,8 @@ export const SystemConfigPage = () => {
         })), [visibleSections]);
 
     return (
-        <MainLayout wide flush title={t('config')}>
-            <div className={`${styles.SystemConfigPage__root}  `}>
+        <MainLayout title={t('config')}>
+            <div className={styles.SystemConfigPage__root}>
                 <FeatureToolbar
                     tabs={tabs.length > 0 ? tabs : [
                         { id: 'modules', label: t('modules'), icon: 'view_module' }

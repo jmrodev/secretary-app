@@ -37,7 +37,7 @@ export const ChatPage = () => {
     const showInlineQR = !isBridgeConnected && bridgeStatus.status !== 'offline';
 
     return (
-        <MainLayout wide flush title={t('whatsapp_history')}>
+        <MainLayout title={t('whatsapp_history')}>
             <section className={`${selectedConvo ? styles['ChatPage__chatPageOrchestratorConvoSelected'] : ''} `}>
                 {/* Bridge status indicator */}
                 <div className={styles.ChatPage__bridgeStatus} data-testid="bridge-status">
