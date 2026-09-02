@@ -91,23 +91,21 @@ export const FinancesPage = ({ MedicationInputComponent }) => {
                                 />
                             )}
 
-                            <article className="dashboard-card no-padding">
-                                <TransactionsTable
-                                    transactions={filteredTransactions}
-                                    totalCount={controller.totalCount}
-                                    currentPage={controller.currentPage}
-                                    totalPages={controller.totalPages}
-                                    onPageChange={handlers.onPageChange}
-                                    user={user}
-                                    settings={settings}
-                                    t={t}
-                                    onEdit={handlers.onEditTransaction}
-                                    onDelete={handlers.onDeleteTransaction}
-                                    onGenerateInvoice={handlers.onGenerateInvoice}
-                                    onSync={handlers.onSyncTransaction}
-                                    alert={controller.alert}
-                                />
-                            </article>
+                            <TransactionsTable
+                                transactions={filteredTransactions}
+                                totalCount={controller.totalCount}
+                                currentPage={controller.currentPage}
+                                totalPages={controller.totalPages}
+                                onPageChange={handlers.onPageChange}
+                                user={user}
+                                settings={settings}
+                                t={t}
+                                onEdit={handlers.onEditTransaction}
+                                onDelete={handlers.onDeleteTransaction}
+                                onGenerateInvoice={handlers.onGenerateInvoice}
+                                onSync={handlers.onSyncTransaction}
+                                alert={controller.alert}
+                            />
                         </div>
                     )}
                 </section>

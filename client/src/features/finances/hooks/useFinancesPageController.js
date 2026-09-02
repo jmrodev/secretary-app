@@ -37,7 +37,7 @@ function financesReducer(state, action) {
 /**
  * ECC-Pattern: Optimized FinancesPageController
  */
-export const useFinancesPageController = () => {
+export const useFinancesPageController = ({ itemsPerPage = 14 } = {}) => {
     const { user } = useAuth();
     const { t } = useLanguage();
     const { showMessage } = useMessage();
@@ -50,7 +50,6 @@ export const useFinancesPageController = () => {
         pendingClosuresOpen, editingTx, closeBoxModal, closeAmount 
     } = state;
 
-    const itemsPerPage = 50;
     const { viewDoctorId: selectedDoctorFilter, setViewDoctorId: setSelectedDoctorFilter, doctors, doctorsLoading } = useDoctors();
     const { searchTerm: searchQuery, setSearchTerm: setSearchQuery } = useSearch();
 
