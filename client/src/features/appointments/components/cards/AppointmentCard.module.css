@@ -1,9 +1,9 @@
 .AppointmentCard__root {
     display: grid;
-    grid-template-columns: 4rem minmax(150px, 1.4fr) minmax(130px, 1fr) minmax(90px, 0.8fr) 105px;
+    grid-template-columns: 4rem minmax(150px, 1.4fr) minmax(130px, 1fr) minmax(95px, 0.8fr) 115px;
     align-items: center;
     width: 100%;
-    min-height: 3.25rem;
+    min-height: 3.5rem;
     padding: 0.75rem 1rem;
     background: transparent;
     border: none;
@@ -12,9 +12,13 @@
     position: relative;
     user-select: none;
     color: var(--text-main);
-    transition: all 0.15s ease;
-    gap: 0.75rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    gap: 0.85rem;
     overflow: hidden;
+}
+
+.AppointmentCard__root:hover {
+    background: rgb(128, 128, 128, 0.05);
 }
 
 
