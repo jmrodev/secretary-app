@@ -46,5 +46,13 @@ export const finances = {
     // Transaction Table
     select_all: "Select all",
     select_transaction: "Select transaction",
+
+    // Cash Delivery Dropdown & Today Balancing
+    cash_delivery_options: "Cash Delivery Options",
+    view_pending_closures: "View Pending Closures",
+    today_cash_balancing: "Today's Cash Balancing",
+    select_doctor_for_balancing: "Select doctor for balancing:",
+    match_system_amount: "Match system amount",
+    quick_fill: "Fill with Theoretical Balance",
 };
 

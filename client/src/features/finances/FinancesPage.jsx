@@ -13,6 +13,8 @@ import { Icon } from '@/components/atoms/Icon';
 import { Badge } from '@/components/atoms/Badge';
 import { TransactionsTable } from '@/features/finances/components/tables/TransactionsTable';
 
+import styles from './FinancesPage.module.css';
+
 /**
  * FinancesPage (Orchestrator).
  * Coordinates financial stats, transactions, and cash box management.
@@ -20,6 +22,8 @@ import { TransactionsTable } from '@/features/finances/components/tables/Transac
 export const FinancesPage = ({ MedicationInputComponent }) => {
     const controller = useFinancesPageController();
     const [showStats, setShowStats] = React.useState(false);
+    const [deliveryMenuOpen, setDeliveryMenuOpen] = React.useState(false);
+    const menuRef = React.useRef(null);
     const {
         stats,
         loading,
@@ -29,6 +33,20 @@ export const FinancesPage = ({ MedicationInputComponent }) => {
         t,
         handlers
     } = controller;
+
+    React.useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setDeliveryMenuOpen(false);
+            }
+        };
+        if (deliveryMenuOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [deliveryMenuOpen]);
 
     const isAdminOrSecretary = user && (user.role === 'admin' || user.role === 'secretary');
 
@@ -58,20 +76,60 @@ export const FinancesPage = ({ MedicationInputComponent }) => {
                                     {t('new_transaction')}
                                 </Button>
 
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    className="finances-page__action-btn--badge"
-                                    onClick={() => handlers.setPendingClosuresOpen(true)}
-                                    icon={<Icon name="calendar_view_week" size="1.1rem" />}
-                                >
-                                    {t('deliver_box')}
-                                    <Badge 
-                                        count={controller.pendingClosures.length} 
-                                        position="top-right" 
-                                        variant="danger" 
-                                    />
-                                </Button>
+                                <div className={styles.FinancesPage__dropdownContainer} ref={menuRef}>
+                                    <Button
+                                        variant="secondary"
+                                        size="sm"
+                                        className="finances-page__action-btn--badge"
+                                        onClick={() => setDeliveryMenuOpen(!deliveryMenuOpen)}
+                                        icon={<Icon name="calendar_view_week" size="1.1rem" />}
+                                    >
+                                        {t('deliver_box')}
+                                        <Badge 
+                                            count={controller.pendingClosures.length} 
+                                            position="top-right" 
+                                            variant="danger" 
+                                        />
+                                    </Button>
+
+                                    {deliveryMenuOpen && (
+                                        <div className={`${styles.FinancesPage__dropdownMenu} animate-fade-in`}>
+                                            <button
+                                                type="button"
+                                                className={styles.FinancesPage__dropdownItem}
+                                                onClick={() => {
+                                                    setDeliveryMenuOpen(false);
+                                                    handlers.setPendingClosuresOpen(true);
+                                                }}
+                                            >
+                                                <span className={styles.FinancesPage__dropdownItemContent}>
+                                                    <Icon name="history" size="1rem" />
+                                                    {t('view_pending_closures') || 'Ver Cierres Pendientes'}
+                                                </span>
+                                                {controller.pendingClosures.length > 0 && (
+                                                    <Badge 
+                                                        count={controller.pendingClosures.length} 
+                                                        variant="danger" 
+                                                    />
+                                                )}
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                className={styles.FinancesPage__dropdownItem}
+                                                onClick={() => {
+                                                    setDeliveryMenuOpen(false);
+                                                    handlers.onOpenTodayBalancing();
+                                                }}
+                                            >
+                                                <span className={styles.FinancesPage__dropdownItemContent}>
+                                                    <Icon name="account_balance_wallet" size="1.1rem" />
+                                                    {t('today_cash_balancing') || 'Arqueo de Hoy'}
+                                                </span>
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )
                     }

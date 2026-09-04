@@ -8,10 +8,10 @@ import { api } from '@/api/axios';
 export const useFinanceHandlers = ({
     user, t, showMessage, confirm,
     transactions, pendingClosures, duplicateClosures,
-    closeBoxModal, closeAmount, editingTx,
+    editingTx,
     setLoading, fetchData, setEditingTx, setModalOpen,
-    setPendingClosuresOpen,
-    setCloseBoxModal, setCloseAmount, setSelectedDoctorFilter
+    setPendingClosuresOpen, setBalancingModal,
+    setSelectedDoctorFilter
 }) => {
 
     const handleDeleteTransaction = useCallback(async (id) => {
@@ -94,9 +94,41 @@ export const useFinanceHandlers = ({
         } finally { setLoading(false); }
     }, [transactions, showMessage, confirm, setLoading, fetchData, t]);
 
+    const handleUpdateTransaction = useCallback(async (updatedTx) => {
+        if (!updatedTx?.id) return;
+        setLoading(true);
+        try {
+            const payload = {
+                amount: Number(updatedTx.amount) || 0,
+                description: updatedTx.description || '',
+                method: updatedTx.method || 'cash',
+                status: updatedTx.status || 'paid'
+            };
+
+            if (updatedTx.transaction_date) {
+                // If it contains 'T', replace with space or format to SQL DATETIME
+                payload.transaction_date = updatedTx.transaction_date.replace('T', ' ');
+                if (payload.transaction_date.length === 16) {
+                    payload.transaction_date += ':00';
+                }
+            }
+
+            await api.put(`/finances/transactions/${updatedTx.id}`, payload);
+            showMessage(t('transaction_updated') || 'Transacción actualizada correctamente', 'success');
+            setEditingTx(null);
+            fetchData();
+        } catch (err) {
+            console.error('[useFinanceHandlers] Update transaction failed:', err);
+            showMessage(err.response?.data?.error || t('failed_update_transaction') || 'Error al actualizar la transacción', 'error');
+        } finally {
+            setLoading(false);
+        }
+    }, [showMessage, t, setEditingTx, fetchData, setLoading]);
+
     return {
         onRefresh: fetchData,
         onDeleteTransaction: handleDeleteTransaction,
+        onUpdateTransaction: handleUpdateTransaction,
         handleAutoClosure,
         handleResetDay,
         onSelectDoctor: setSelectedDoctorFilter,
@@ -105,6 +137,7 @@ export const useFinanceHandlers = ({
         onCloseNewTransaction: () => setModalOpen(false),
         onGenerateInvoice: handleGenerateInvoice,
         setEditingTx,
-        setPendingClosuresOpen
+        setPendingClosuresOpen,
+        setBalancingModal
     };
 };

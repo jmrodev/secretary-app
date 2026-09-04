@@ -1,35 +1,257 @@
-/* EditTransactionModal Component Styles (BEM) */
+/* EditTransactionModal Component Styles (BEM & Design Tokens) */
 
 .EditTransactionModal__root {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--spacing-md, 16px);
 }
 
 .EditTransactionModal__footer {
     display: flex;
-    gap: 1rem;
+    gap: var(--spacing-sm, 8px);
     justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+}
+
+/* --- Read Mode (Structured Detail View) --- */
+.EditTransactionModal__detailView {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md, 16px);
+}
+
+.EditTransactionModal__headerBadges {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm, 8px);
+    flex-wrap: wrap;
+}
+
+/* Amount Highlight Card */
+.EditTransactionModal__amountCard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg, 24px) var(--spacing-md, 16px);
+    border-radius: var(--radius-md, 6px);
+    border: 1px solid var(--border-color);
+    background-color: var(--card-surface-bg);
+    text-align: center;
+    gap: var(--spacing-xs, 4px);
+    box-shadow: var(--shadow-sm);
+}
+
+.EditTransactionModal__amountCardIncome {
+    border-color: rgb(var(--success-rgb) / 30%);
+    background: linear-gradient(180deg, rgb(var(--success-rgb) / 8%) 0%, var(--card-surface-bg) 100%);
+}
+
+.EditTransactionModal__amountCardIncome .EditTransactionModal__amountValue {
+    color: var(--success);
+}
+
+.EditTransactionModal__amountCardExpense {
+    border-color: rgb(var(--danger-rgb) / 30%);
+    background: linear-gradient(180deg, rgb(var(--danger-rgb) / 8%) 0%, var(--card-surface-bg) 100%);
+}
+
+.EditTransactionModal__amountCardExpense .EditTransactionModal__amountValue {
+    color: var(--danger);
+}
+
+.EditTransactionModal__amountCardWithdrawal {
+    border-color: rgb(var(--warning-rgb) / 30%);
+    background: linear-gradient(180deg, rgb(var(--warning-rgb) / 8%) 0%, var(--card-surface-bg) 100%);
+}
+
+.EditTransactionModal__amountCardWithdrawal .EditTransactionModal__amountValue {
+    color: var(--warning);
+}
+
+.EditTransactionModal__amountLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.EditTransactionModal__amountValue {
+    font-family: var(--font-manrope, inherit);
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+/* Metadata Grid */
+.EditTransactionModal__metaGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md, 16px);
+    background-color: var(--dashboard-card-bg);
+    padding: var(--spacing-md, 16px);
+    border-radius: var(--radius-md, 6px);
+    border: 1px solid var(--border-color);
+}
+
+@media (width <= 540px) {
+    .EditTransactionModal__metaGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.EditTransactionModal__metaItem {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs, 4px);
+}
+
+.EditTransactionModal__metaLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.EditTransactionModal__metaValue {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-main);
+    overflow-wrap: break-word;
+}
+
+/* Description Card */
+.EditTransactionModal__descriptionCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs, 4px);
+    background-color: var(--dashboard-card-bg);
+    padding: var(--spacing-md, 16px);
+    border-radius: var(--radius-md, 6px);
+    border: 1px solid var(--border-color);
+}
+
+.EditTransactionModal__descriptionText {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* Proof Attachment */
+.EditTransactionModal__proofCard {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm, 8px);
+    padding: var(--spacing-md, 16px);
+    border-radius: var(--radius-md, 6px);
+    background-color: var(--card-surface-bg);
+    border: 1px dashed var(--accent-color);
+}
+
+.EditTransactionModal__proofIcon {
+    color: var(--accent-color);
+    flex-shrink: 0;
+}
+
+.EditTransactionModal__proofInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.EditTransactionModal__proofLabel {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.EditTransactionModal__proofLink {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    text-decoration: underline;
+    transition: opacity 0.2s ease;
+}
+
+.EditTransactionModal__proofLink:hover {
+    opacity: 0.8;
+}
+
+/* AFIP Card */
+.EditTransactionModal__afipCard {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm, 8px);
+    padding: var(--spacing-md, 16px);
+    border-radius: var(--radius-md, 6px);
+    background: rgb(var(--accent-rgb) / 5%);
+    border: 1px solid rgb(var(--accent-rgb) / 20%);
+}
+
+.EditTransactionModal__afipHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs, 4px);
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.EditTransactionModal__afipGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md, 16px);
+}
+
+.EditTransactionModal__afipNumber {
+    font-family: monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+/* --- Edit Mode Form --- */
+.EditTransactionModal__editForm {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md, 16px);
+}
+
+.EditTransactionModal__formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md, 16px);
+}
+
+@media (width <= 540px) {
+    .EditTransactionModal__formRow {
+        grid-template-columns: 1fr;
+    }
 }
 
 .EditTransactionModal__warning {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    background: rgb(245 158 11 / 10%);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgb(245 158 11 / 20%);
-    box-shadow: 0 8px 32px 0 rgb(0 0 0 / 10%);
-    color: var(--amber-700);
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
+    gap: var(--spacing-sm, 8px);
+    background: rgb(var(--warning-rgb) / 10%);
+    border: 1px solid rgb(var(--warning-rgb) / 25%);
+    color: var(--warning);
+    padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+    border-radius: var(--radius-sm, 4px);
+    font-size: 0.78rem;
     font-weight: 600;
-    margin-top: 0.5rem;
+    margin-top: var(--spacing-xs, 4px);
     line-height: 1.4;
 }
 
 .EditTransactionModal__warningIcon {
-    color: var(--amber-600);
     flex-shrink: 0;
 }
+

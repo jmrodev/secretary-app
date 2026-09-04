@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Badge } from '@/components/atoms/Badge';
-import { InvoiceDetailContent } from '@/features/finances/components/sections/InvoiceDetailContent';
 import styles from './TransactionsTable.module.css';
 
 /**
@@ -59,12 +58,14 @@ export const TransactionRow = ({
                         className="transactions-table__type-tag"
                         size="sm"
                     >
-                        {tx.appointment_id
-                            ? (t('appointment'))
-                            : tx.request_type
-                                ? (t(tx.request_type) || tx.request_type)
-                                : (t(tx.type) || tx.type.replace('_', ' '))
-                        }
+                        {(() => {
+                            if (tx.is_withdrawal || tx.type === 'withdrawal') return t('withdrawal') || 'Retiro';
+                            if (tx.request_type) return t(tx.request_type) || tx.request_type;
+                            if (tx.service_type) return t(tx.service_type) || tx.service_type;
+                            if (tx.type === 'income_rental') return t('rental') || 'Alquiler';
+                            if (tx.appointment_id) return t('appointment') || 'Turno';
+                            return t(tx.type) || tx.type.replace('_', ' ');
+                        })()}
                     </Badge>
                     <span className="transactions-table__description">
                         {(() => {
@@ -102,7 +103,7 @@ export const TransactionRow = ({
                         <Button 
                             size="sm-compact" 
                             variant="action-view" 
-                            onClick={() => showDetail(<InvoiceDetailContent tx={tx} formatDate={formatDateUnambiguous} />)}
+                            onClick={() => onEdit({ ...tx, _isDirectEdit: false })}
                             title={t('view_details')} 
                             icon={<Icon name="visibility" size="1rem" />} 
                         />
@@ -119,15 +120,22 @@ export const TransactionRow = ({
                             <Button 
                                 size="sm-compact" 
                                 variant="action-pay" 
-                                onClick={() => onEdit({ ...tx, status: 'paid' })} 
+                                onClick={() => onEdit({ ...tx, status: 'paid', _isDirectEdit: true })} 
                                 title={t('pay')} 
                                 icon={<Icon name="payments" size="1rem" />} 
                             />
                         )}
                         <Button 
                             size="sm-compact" 
+                            variant="action-view" 
+                            onClick={() => onEdit({ ...tx, _isDirectEdit: false })} 
+                            title={t('view')} 
+                            icon={<Icon name="visibility" size="1rem" />} 
+                        />
+                        <Button 
+                            size="sm-compact" 
                             variant="action-edit" 
-                            onClick={() => onEdit(tx)} 
+                            onClick={() => onEdit({ ...tx, _isDirectEdit: true })} 
                             title={t('edit')} 
                             icon={<Icon name="edit" size="1rem" />} 
                         />

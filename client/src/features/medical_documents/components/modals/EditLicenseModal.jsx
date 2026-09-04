@@ -37,26 +37,47 @@ export const EditLicenseModal = ({
             }
         >
             <div className="config-flex--column config-flex--gap-4">
-                <FormGroup label={t('request_note')} htmlFor="edit-license-request-note">
-                    <Input
-                        type="textarea"
-                        id="edit-license-request-note"
-                        rows={4}
-                        readOnly={editData._readOnly}
-                        value={editData.request_note || ''}
-                        onChange={e => onEditDataChange('request_note', e.target.value)}
-                    />
-                </FormGroup>
-                <FormGroup label={t('doctor_note')} htmlFor="edit-license-doctor-note">
-                    <Input
-                        type="textarea"
-                        id="edit-license-doctor-note"
-                        rows={3}
-                        readOnly={editData._readOnly}
-                        value={editData.doctor_note || ''}
-                        onChange={e => onEditDataChange('doctor_note', e.target.value)}
-                    />
-                </FormGroup>
+                {editData._readOnly ? (
+                    <>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--dashboard-card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: 'var(--spacing-md)' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                {t('request_note')}
+                            </span>
+                            <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-main)', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                                {editData.request_note || t('no_description')}
+                            </p>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--dashboard-card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: 'var(--spacing-md)' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                {t('doctor_note')}
+                            </span>
+                            <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-main)', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                                {editData.doctor_note || (t('no_doctor_reply') || 'Sin respuesta del profesional aún')}
+                            </p>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <FormGroup label={t('request_note')} htmlFor="edit-license-request-note">
+                            <Input
+                                type="textarea"
+                                id="edit-license-request-note"
+                                rows={4}
+                                value={editData.request_note || ''}
+                                onChange={e => onEditDataChange('request_note', e.target.value)}
+                            />
+                        </FormGroup>
+                        <FormGroup label={t('doctor_note')} htmlFor="edit-license-doctor-note">
+                            <Input
+                                type="textarea"
+                                id="edit-license-doctor-note"
+                                rows={3}
+                                value={editData.doctor_note || ''}
+                                onChange={e => onEditDataChange('doctor_note', e.target.value)}
+                            />
+                        </FormGroup>
+                    </>
+                )}
             </div>
         </Modal>
     );

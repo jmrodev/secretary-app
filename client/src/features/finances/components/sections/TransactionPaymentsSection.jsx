@@ -13,14 +13,12 @@ export const TransactionPaymentsSection = ({
 }) => {
     const paymentMethods = getPaymentMethods(t);
     return (
-        <div className={`${styles.paymentMethods}`}>
-
-
-            <div className={`${styles.paymentGridHorizontal}`}>
+        <div className={styles.TransactionModal__paymentMethods}>
+            <div className={styles.TransactionModal__paymentGridHorizontal}>
                 {/* Block 1: Total to charge */}
-                <div className={`${styles.totalsRow}`}>
-                    <span className={`${styles.labelLarge}`}>{t('total_to_charge')}:</span>
-                    <div className={`${styles.inputWrapperLarge}`}>
+                <div className={styles.TransactionModal__totalsRow}>
+                    <span className={styles.TransactionModal__labelLarge}>{t('total_to_charge')}:</span>
+                    <div className={styles.TransactionModal__inputWrapperLarge}>
                         <CurrencyInput
                             value={totalPrice}
                             onChange={(e) => {
@@ -30,15 +28,15 @@ export const TransactionPaymentsSection = ({
                                     handlePaymentChange(0, 'amount', val);
                                 }
                             }}
-                            className={`${styles.totalInput}`}
+                            className={styles.TransactionModal__totalInput}
                         />
                     </div>
                 </div>
 
                 {/* Block 2: Payment methods and amounts */}
-                <div className={`${styles.paymentsContainer}`}>
-                    <div className={`${styles.paymentMethodsHeader}`}>
-                        <span className={`${styles.paymentMethodsTitle}`}>{t('payment_methods')}</span>
+                <div className={styles.TransactionModal__paymentsContainer}>
+                    <div className={styles.TransactionModal__paymentMethodsHeader}>
+                        <span className={styles.TransactionModal__paymentMethodsTitle}>{t('payment_methods')}</span>
                         <Button 
                             variant="ghost" 
                             size="sm-compact" 
@@ -50,20 +48,20 @@ export const TransactionPaymentsSection = ({
                     </div>
 
                     {payments.map((payment, index) => (
-                        <div key={payment._tmpId || `pay-${payment.amount}-${payment.method}`} className={`${styles.paymentRow}`}>
-                            <div className={`${styles.paymentRowAmount}`}>
+                        <div key={payment._tmpId || payment.id || `payment-row-${payment.method}-${index}`} className={styles.TransactionModal__paymentRow}>
+                            <div className={styles.TransactionModal__paymentRowAmount}>
                                 <CurrencyInput
                                     placeholder={t('amount_label')} value={payment.amount}
                                     onChange={e => handlePaymentChange(index, 'amount', e.target.value)}
                                 />
                             </div>
-                            <div className={`${styles.paymentRowMethod}`}>
+                            <div className={styles.TransactionModal__paymentRowMethod}>
                                 <Select
                                     value={payment.method} onChange={e => handlePaymentChange(index, 'method', e.target.value)}
                                     options={paymentMethods}
                                 />
                             </div>
-                            <div className={`${styles.paymentRowAction}`}>
+                            <div className={styles.TransactionModal__paymentRowAction}>
                                 {payments.length > 1 && (
                                     <Button
                                         variant="ghost" size="sm-compact" onClick={() => removePaymentMethod(index)}
@@ -76,20 +74,20 @@ export const TransactionPaymentsSection = ({
                 </div>
 
                 {/* Block 3: Payment status summary */}
-                <div className={`${styles.summary}`}>
+                <div className={styles.TransactionModal__summary}>
                     {totalPrice > 0 && (
-                        <div className={`${styles.totals}`}>
-                            <div className={`${styles.summaryRow}`}>
-                                <span className={`${styles.label}`}>{t('paid')}:</span>
-                                <span className={`${styles.value} ${styles.valuePaid}`}>{formatCurrency(currentPaidTotal)}</span>
+                        <div className={styles.TransactionModal__totals}>
+                            <div className={styles.TransactionModal__summaryRow}>
+                                <span className={styles.TransactionModal__label}>{t('paid')}:</span>
+                                <span className={`${styles.TransactionModal__value} ${styles.TransactionModal__valuePaid}`}>{formatCurrency(currentPaidTotal)}</span>
                             </div>
                             {debtAmount > 0 ? (
-                                <div className={`${styles.summaryRow}`}>
-                                    <span className={`${styles.label}`}>{t('debt')}:</span>
-                                    <span className={`${styles.value} ${styles.valueDebt}`}>{formatCurrency(debtAmount)}</span>
+                                <div className={styles.TransactionModal__summaryRow}>
+                                    <span className={styles.TransactionModal__label}>{t('debt')}:</span>
+                                    <span className={`${styles.TransactionModal__value} ${styles.TransactionModal__valueDebt}`}>{formatCurrency(debtAmount)}</span>
                                 </div>
                             ) : (
-                                <div className={`${styles.status}`}>
+                                <div className={styles.TransactionModal__status}>
                                     <Icon name="check" size="1.2rem" />
                                     {t('completed_payment')}
                                 </div>

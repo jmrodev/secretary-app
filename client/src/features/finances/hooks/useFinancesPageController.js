@@ -16,8 +16,7 @@ const initialState = {
     modalOpen: false,
     pendingClosuresOpen: false,
     editingTx: null,
-    closeBoxModal: { open: false, doctorId: '', doctorName: '', balance: 0 },
-    closeAmount: ''
+    balancingModal: null
 };
 
 function financesReducer(state, action) {
@@ -28,8 +27,7 @@ function financesReducer(state, action) {
         case 'SET_MODAL_OPEN': return { ...state, modalOpen: action.payload };
         case 'SET_CLOSURES_OPEN': return { ...state, pendingClosuresOpen: action.payload };
         case 'SET_EDITING_TX': return { ...state, editingTx: action.payload };
-        case 'SET_CLOSE_BOX': return { ...state, closeBoxModal: { ...state.closeBoxModal, ...action.payload } };
-        case 'SET_CLOSE_AMOUNT': return { ...state, closeAmount: action.payload };
+        case 'SET_BALANCING_MODAL': return { ...state, balancingModal: action.payload };
         default: return state;
     }
 }
@@ -47,7 +45,7 @@ export const useFinancesPageController = ({ itemsPerPage = 14 } = {}) => {
     const [state, dispatch] = useReducer(financesReducer, initialState);
     const { 
         currentPage, debouncedSearch, isActionLoading, modalOpen, 
-        pendingClosuresOpen, editingTx, closeBoxModal, closeAmount 
+        pendingClosuresOpen, editingTx, balancingModal
     } = state;
 
     const { viewDoctorId: selectedDoctorFilter, setViewDoctorId: setSelectedDoctorFilter, doctors, doctorsLoading } = useDoctors();
@@ -97,7 +95,6 @@ export const useFinancesPageController = ({ itemsPerPage = 14 } = {}) => {
     const loading = txLoading || doctorsLoading || isActionLoading;
     const fetched = txResponse !== undefined && !txLoading;
 
-
     const fetchData = useCallback(() => {
         fetchTransactions();
         fetchStats();
@@ -107,14 +104,13 @@ export const useFinancesPageController = ({ itemsPerPage = 14 } = {}) => {
     const baseHandlers = useFinanceHandlers({
         user, t, showMessage, confirm, alert,
         transactions, pendingClosures, duplicateClosures: [],
-        closeBoxModal, closeAmount, editingTx,
+        editingTx,
         setLoading: (val) => dispatch({ type: 'SET_LOADING', payload: val }),
         fetchData, 
         setEditingTx: (val) => dispatch({ type: 'SET_EDITING_TX', payload: val }), 
         setModalOpen: (val) => dispatch({ type: 'SET_MODAL_OPEN', payload: val }),
         setPendingClosuresOpen: (val) => dispatch({ type: 'SET_CLOSURES_OPEN', payload: val }),
-        setCloseBoxModal: (val) => dispatch({ type: 'SET_CLOSE_BOX', payload: val }), 
-        setCloseAmount: (val) => dispatch({ type: 'SET_CLOSE_AMOUNT', payload: val }), 
+        setBalancingModal: (val) => dispatch({ type: 'SET_BALANCING_MODAL', payload: val }),
         setSelectedDoctorFilter
     });
 
@@ -133,6 +129,23 @@ export const useFinancesPageController = ({ itemsPerPage = 14 } = {}) => {
         return stats.find(s => s.type === 'total_net')?.today || 0;
     };
 
+    const onOpenTodayBalancing = useCallback(() => {
+        const todayDate = new Date().toISOString().split('T')[0];
+        const currentDoctor = doctors.find(d => String(d.id) === String(selectedDoctorFilter));
+        const cashBalanceToday = Number(stats.find(s => s.type === 'cash_balance')?.today || 0);
+
+        dispatch({
+            type: 'SET_BALANCING_MODAL',
+            payload: {
+                date: todayDate,
+                doctor_id: selectedDoctorFilter !== 'all' ? selectedDoctorFilter : null,
+                doctor_name: currentDoctor ? currentDoctor.full_name : t('general'),
+                balance: cashBalanceToday,
+                isToday: true
+            }
+        });
+    }, [doctors, selectedDoctorFilter, stats, t]);
+
     return {
         transactions,
         totalCount,
@@ -146,8 +159,7 @@ export const useFinancesPageController = ({ itemsPerPage = 14 } = {}) => {
         selectedDoctorFilter,
         modalOpen,
         pendingClosuresOpen,
-        closeBoxModal,
-        closeAmount,
+        balancingModal,
         editingTx,
         pendingClosures,
         duplicateClosures: [],
@@ -158,6 +170,7 @@ export const useFinancesPageController = ({ itemsPerPage = 14 } = {}) => {
         handlers: {
             ...baseHandlers,
             onSelectDoctor,
+            onOpenTodayBalancing,
             setSearchQuery,
             onPageChange: (page) => dispatch({ type: 'SET_PAGE', payload: page }),
             calculateBalanceByMethod,
