@@ -48,4 +48,22 @@ describe('MainLayout', () => {
         expect(screen.getByText('Navbar')).toBeInTheDocument();
         expect(screen.getByText('child content')).toBeInTheDocument();
     });
+
+    it('applies preset contained modifier when specified', () => {
+        mockUseAuth.mockReturnValue({ user: { role: 'secretary', user_id: 1 } });
+        const { container } = render(
+            <MessageProvider>
+                <LanguageProvider>
+                    <SearchProvider>
+                        <MainLayout preset="contained">
+                            <p>contained content</p>
+                        </MainLayout>
+                    </SearchProvider>
+                </LanguageProvider>
+            </MessageProvider>
+        );
+
+        const pageShell = container.querySelector('p')?.parentElement;
+        expect(pageShell?.className).toContain('MainLayout__pageShell--contained');
+    });
 });

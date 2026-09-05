@@ -64,7 +64,7 @@ export const RequestsView = () => {
                 onClose={() => setIsEditing(false)}
                 request={selectedRequest}
                 editData={requestEditData}
-                onEditDataChange={handlers.setRequestEditData}
+                onEditDataChange={handlers.handleRequestEditDataChange}
                 onUpdate={handlers.handleUpdateRequest}
                 t={t}
             />

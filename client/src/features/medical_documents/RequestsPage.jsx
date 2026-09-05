@@ -20,7 +20,7 @@ export const RequestsPage = () => {
     const { t } = useLanguage();
 
     return (
-        <MainLayout wide flush>
+        <MainLayout>
             <div>
                 <FeatureToolbar
                     className="__top-actions"

@@ -23,7 +23,7 @@ export const HolidaysPage = () => {
     };
 
     return (
-        <MainLayout wide flush title={t('holidays')}>
+        <MainLayout title={t('holidays')}>
             <div className={styles.HolidaysPage__root}>
 
                 <div className={styles.HolidaysPage__content}>

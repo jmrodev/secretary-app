@@ -1,9 +1,9 @@
 .AppointmentCard__root {
     display: grid;
-    grid-template-columns: 4rem minmax(150px, 1.4fr) minmax(130px, 1fr) minmax(90px, 0.8fr) 105px;
+    grid-template-columns: 4rem minmax(150px, 1.4fr) minmax(130px, 1fr) minmax(95px, 0.8fr) 115px;
     align-items: center;
     width: 100%;
-    min-height: 3.25rem;
+    min-height: 3.5rem;
     padding: 0.75rem 1rem;
     background: transparent;
     border: none;
@@ -12,9 +12,13 @@
     position: relative;
     user-select: none;
     color: var(--text-main);
-    transition: all 0.15s ease;
-    gap: 0.75rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+    gap: 0.85rem;
     overflow: hidden;
+}
+
+.AppointmentCard__root:hover {
+    background: rgb(128, 128, 128, 0.05);
 }
 
 
@@ -136,30 +140,73 @@
 }
 
 .AppointmentCard__statusChip {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius-sm);
-    background: rgb(128, 128, 128, 0.12);
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--radius-sm, 6px);
+    background: rgb(128 128 128 / 12%);
     color: var(--text-main);
     border: 1px solid var(--border-color);
     width: 100%;
-    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.AppointmentCard__statusChipCompleted { background: rgb(34, 197, 94, 0.12); color: #16a34a; border-color: rgb(34, 197, 94, 0.3); }
-.AppointmentCard__statusChipCancelled { background: rgb(239, 68, 68, 0.12); color: #dc2626; border-color: rgb(239, 68, 68, 0.3); }
-.AppointmentCard__statusChipPending   { background: rgb(59, 130, 246, 0.12); color: #2563eb; border-color: rgb(59, 130, 246, 0.3); }
-.AppointmentCard__statusChipConfirmed { background: rgb(6, 182, 212, 0.12); color: #0891b2; border-color: rgb(6, 182, 212, 0.3); }
-.AppointmentCard__statusChipArrived   { background: rgb(14, 165, 233, 0.12); color: #0284c7; border-color: rgb(14, 165, 233, 0.3); }
-.AppointmentCard__statusChipAbsent    { background: rgb(245, 158, 11, 0.12); color: #d97706; border-color: rgb(245, 158, 11, 0.3); }
-.AppointmentCard__statusChipSuspended { background: rgb(220, 38, 38, 0.12); color: #b91c1c; border-color: rgb(220, 38, 38, 0.3); }
-.AppointmentCard__statusChipRescheduled { background: rgb(217, 119, 6, 0.12); color: #b45309; border-color: rgb(217, 119, 6, 0.3); }
+.AppointmentCard__statusIcon {
+    flex-shrink: 0;
+}
+
+.AppointmentCard__statusChipCompleted,
+.AppointmentCard__statusChipAttended { 
+    background: #16a34a !important; 
+    color: #fff !important; 
+    border-color: #15803d !important; 
+}
+
+.AppointmentCard__statusChipConfirmed { 
+    background: #0891b2 !important; 
+    color: #fff !important; 
+    border-color: #0e7490 !important; 
+}
+
+.AppointmentCard__statusChipPending { 
+    background: #2563eb !important; 
+    color: #fff !important; 
+    border-color: #1d4ed8 !important; 
+}
+
+.AppointmentCard__statusChipCancelled,
+.AppointmentCard__statusChipSuspended { 
+    background: #dc2626 !important; 
+    color: #fff !important; 
+    border-color: #b91c1c !important; 
+}
+
+.AppointmentCard__statusChipAbsent,
+.AppointmentCard__statusChipRescheduled { 
+    background: #d97706 !important; 
+    color: #fff !important; 
+    border-color: #b45309 !important; 
+}
+
+.AppointmentCard__statusChipArrived { 
+    background: #0284c7 !important; 
+    color: #fff !important; 
+    border-color: #0369a1 !important; 
+}
+
+.AppointmentCard__statusChipVirtual { 
+    background: #8b5cf6 !important; 
+    color: #fff !important; 
+    border-color: #7c3aed !important; 
+}
 
 /* --- Payment Amount Indicators --- */
 .AppointmentCard__paymentInfo {

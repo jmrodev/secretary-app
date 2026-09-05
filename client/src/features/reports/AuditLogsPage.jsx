@@ -14,12 +14,10 @@ export const AuditLogsPage = () => {
     const { t } = useLanguage();
     
     return (
-        <MainLayout wide flush title={t('audit_logs')}>
+        <MainLayout title={t('audit_logs')}>
             <section>
                 <AuditLogManager {...controller} />
             </section>
         </MainLayout>
     );
 };
-
-

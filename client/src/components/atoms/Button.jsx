@@ -7,6 +7,24 @@ import styles from './Button.module.css';
  * Button Atom component (ECC Refactored).
  * Follows Atomic Design and ensures prop integrity.
  */
+const getVariantClass = (v) => {
+    if (!v) return null;
+    const camel = v.replace(/-([a-z])/g, (_, l) => l.toUpperCase());
+    return styles[`Button__${camel}`] || styles[`Button__${v}`] || styles[v] || styles[camel];
+};
+
+const getSizeClass = (s) => {
+    if (!s || s === 'md') return null;
+    const camel = s.replace(/-([a-z])/g, (_, l) => l.toUpperCase());
+    return styles[`Button__${camel}`] || styles[`Button__${s}`] || styles[s] || styles[camel];
+};
+
+const getIconOnlySizeClass = (s) => {
+    if (!s || s === 'md') return null;
+    const camel = s.replace(/-([a-z])/g, (_, l) => l.toUpperCase());
+    return styles[`Button__iconOnly--${camel}`] || styles[`Button__iconOnly--${s}`];
+};
+
 export const Button = React.memo(({
     children,
     onClick,
@@ -34,11 +52,12 @@ export const Button = React.memo(({
     
     const combinedClassName = unstyled ? className : [
         styles.Button__root,
-        variant && styles[variant],
-        size && size !== 'md' && styles[size],
+        getVariantClass(variant),
+        getSizeClass(size),
         active && styles.Button__active,
         isIconOnly && styles.Button__iconOnly,
-        round && styles.Button__round, // Support for round prop
+        isIconOnly && getIconOnlySizeClass(size),
+        round && styles.Button__round,
         loading && styles.Button__loading,
         className
     ].filter(Boolean).join(' ');

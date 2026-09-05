@@ -194,9 +194,27 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
             </div>
 
             <div className={`${styles.AppointmentCard__status}`}>
-                <span className={`${styles.AppointmentCard__statusChip} ${styles['statusChip' + appt.status.charAt(0).toUpperCase() + appt.status.slice(1)]}`}>
-                    {t(appt.status) || appt.status}
-                </span>
+                {(() => {
+                    const statusKey = (appt.status || '').toLowerCase();
+                    let statusIconName = null;
+                    if (statusKey === 'completed' || statusKey === 'attended') statusIconName = 'check_circle';
+                    else if (statusKey === 'confirmed') statusIconName = 'verified';
+                    else if (statusKey === 'pending') statusIconName = 'schedule';
+                    else if (statusKey === 'cancelled' || statusKey === 'suspended') statusIconName = 'cancel';
+                    else if (statusKey === 'absent') statusIconName = 'person_off';
+                    else if (statusKey === 'rescheduled') statusIconName = 'history';
+                    else if (statusKey === 'arrived') statusIconName = 'how_to_reg';
+                    else if (statusKey === 'virtual') statusIconName = 'videocam';
+
+                    const chipClass = styles['AppointmentCard__statusChip' + (appt.status.charAt(0).toUpperCase() + appt.status.slice(1))] || styles.AppointmentCard__statusChip;
+
+                    return (
+                        <span className={`${styles.AppointmentCard__statusChip} ${chipClass}`}>
+                            {statusIconName && <Icon name={statusIconName} size="0.85rem" className={styles.AppointmentCard__statusIcon} />}
+                            <span>{t(appt.status) || appt.status}</span>
+                        </span>
+                    );
+                })()}
             </div>
         </div>
     );

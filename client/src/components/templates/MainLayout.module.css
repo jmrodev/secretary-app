@@ -34,12 +34,13 @@
     min-height: 0;
 }
 
-/* ---------------------------------------- */
+.MainLayout__root {
+    width: 100%;
+}
 
+/* Presets */
 .MainLayout__pageShell {
-    padding: var(--spacing-md) var(--spacing-xl);
-    width: 80%;
-    max-width: 1600px;
+    width: 100%;
     margin: 0 auto;
     flex: 1;
     display: flex;
@@ -47,25 +48,19 @@
     min-height: 0;
 }
 
-.MainLayout__root {
-    --content-padding: var(--spacing-md) var(--spacing-xl);
+.MainLayout__pageShell--full {
+    max-width: 1800px;
+    padding: 0.5rem 1.5rem;
 }
 
-.MainLayout__root--dashboardWide .MainLayout__pageShell {
-    padding: var(--spacing-md) var(--spacing-xl);
-    width: 80%;
-    max-width: 1600px;
+.MainLayout__pageShell--contained {
+    max-width: 960px;
+    padding: 1rem 1.5rem;
 }
 
-.MainLayout__root--flush .MainLayout__pageShell {
-    padding: var(--spacing-md) var(--spacing-xl);
-    width: 80%;
-    max-width: 1600px;
-}
-
-@media screen and (width <= 1024px) {
-    .MainLayout__pageShell {
-        padding: var(--spacing-lg);
-        width: 100%;
+@media screen and (width <= 768px) {
+    .MainLayout__pageShell--full,
+    .MainLayout__pageShell--contained {
+        padding: 0.5rem 1rem;
     }
 }

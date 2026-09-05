@@ -13,32 +13,38 @@ import styles from './MainLayout.module.css';
  */
 export const MainLayout = ({ 
     children, 
-    wide = false, 
-    flush = false,
+    preset = 'full', // 'full' (1800px) | 'contained' (960px)
+    wide: _wide,
+    flush: _flush,
     title,
-    variant = 'premium',
-    backgroundUrl,
+    subtitle = null,
+    variant: _variant,
+    backgroundUrl: _backgroundUrl,
     hideDoctorSelector = false,
     doctorSelectorActions = null,
     actionSlot,
+    statsSlot = null,
     hideClock = false,
     hideSearch = false,
-    hideTitle = (variant === 'premium'),
+    hideTitle = false,
     noAnimation = false
 }) => {
     const { searchTerm, setSearchTerm } = useSearch();
     const { t } = useLanguage();
 
+    const presetClass = styles[`MainLayout__pageShell--${preset}`] || styles['MainLayout__pageShell--full'];
+    const shellClassName = `${styles.MainLayout__pageShell} ${presetClass} ${!noAnimation ? sharedStyles.AnimateFadeIn : ''}`.trim();
+
     return (
         <div className={`${styles.MainLayout__appLayout}`}>
             <Navbar />
-            <main className={`${styles.MainLayout__root} ${wide ? styles['MainLayout__root--dashboardWide'] : ''} ${flush ? styles['MainLayout__root--flush'] : ''}`}>
+            <main className={`${styles.MainLayout__root}`}>
                 {title && (
                     <PageHeader 
                         title={title}
-                        variant={variant}
-                        backgroundUrl={backgroundUrl}
+                        subtitle={subtitle}
                         actionSlot={actionSlot}
+                        statsSlot={statsSlot}
                         hideTitle={hideTitle}
                         hideClock={hideClock}
                         hideSearch={hideSearch}
@@ -57,7 +63,7 @@ export const MainLayout = ({
                         }}
                     />
                 )}
-                <div className={`${styles.MainLayout__pageShell} ${!noAnimation ? sharedStyles.AnimateFadeIn : ''}`}>
+                <div className={shellClassName}>
                     {children}
                 </div>
             </main>

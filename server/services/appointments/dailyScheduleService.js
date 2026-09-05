@@ -9,7 +9,6 @@ class DailyScheduleService {
         const duration = doc?.appointment_duration || 60;
         const overturnStart = doc?.overturn_start_time || '08:00:00';
         const overturnEnd = doc?.overturn_end_time || '21:00:00';
-        const forceAlignment = doc?.force_hour_alignment === 1;
 
         const schedules = await doctorRepository.getDoctorSchedules(doctorId);
 
@@ -19,131 +18,156 @@ class DailyScheduleService {
         const dayOfWeek = dateObj.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
 
         // Filter schedules for this specific day of the week
-        const dayBlocks = schedules.filter(s => s.day_of_week === dayOfWeek);
-        const officialBlocks = dayBlocks.filter(s => !s.is_break);
-        const breakBlocks = dayBlocks.filter(s => s.is_break);
+        const dayBlocks = (schedules || []).filter(s => s.day_of_week === dayOfWeek);
+        const officialBlocks = dayBlocks.filter(s => !s.is_break).sort((a, b) => a.start_time.localeCompare(b.start_time));
+        const breakBlocks = dayBlocks.filter(s => s.is_break).sort((a, b) => a.start_time.localeCompare(b.start_time));
 
         // 3. Query Holiday status and Appointments
         const isHoliday = (await holidayRepository.getHolidaysInRange(dateStr, dateStr)).length > 0;
         const appointments = await appointmentRepository.findDetailedByDoctorAndDate(doctorId, dateStr);
 
-        // 4. Generate Slots
-        const slotsMap = new Map();
-        const [osh, osm] = overturnStart.split(':').map(Number);
-        const [oeh, oem] = overturnEnd.split(':').map(Number);
-        let cursorMins = osh * 60 + osm;
-        const endMins = oeh * 60 + oem;
+        // Time helpers
+        const timeToMins = (t) => {
+            const [h, m] = t.split(':').map(Number);
+            return h * 60 + m;
+        };
 
-        while (cursorMins < endMins) {
-            let slotDur = duration;
+        const minsToTime = (m) => {
+            const h = Math.floor(m / 60);
+            const min = m % 60;
+            return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}:00`;
+        };
 
-            if (forceAlignment && (cursorMins % 60) !== 0) {
-                slotDur = 60 - (cursorMins % 60);
-            } else {
-                // Dynamic alignment: check if there's any official work schedule starting in between
-                let nextAlignMins = null;
-                officialBlocks.forEach(s => {
-                    const [sh, sm] = s.start_time.split(':').map(Number);
-                    const sMins = sh * 60 + sm;
-                    if (sMins > cursorMins && sMins < cursorMins + slotDur) {
-                        if (nextAlignMins === null || sMins < nextAlignMins) {
-                            nextAlignMins = sMins;
-                        }
-                    }
+        const dayStartMins = timeToMins(overturnStart);
+        const dayEndMins = timeToMins(overturnEnd);
+
+        // 4. Generate structured canonical slots for the entire day [dayStartMins, dayEndMins)
+        const canonicalSlots = [];
+        let cursorMins = dayStartMins;
+
+        const definedBlocks = [
+            ...officialBlocks.map(b => ({ ...b, type: 'official' })),
+            ...breakBlocks.map(b => ({ ...b, type: 'break' }))
+        ].sort((a, b) => timeToMins(a.start_time) - timeToMins(b.start_time));
+
+        for (const block of definedBlocks) {
+            const blockStartMins = timeToMins(block.start_time);
+            const blockEndMins = timeToMins(block.end_time);
+
+            // If there's an out-of-hours gap before this block, fill it
+            while (cursorMins < blockStartMins) {
+                const nextSlotEnd = Math.min(cursorMins + duration, blockStartMins);
+                canonicalSlots.push({
+                    startMins: cursorMins,
+                    endMins: nextSlotEnd,
+                    slot_time: minsToTime(cursorMins),
+                    slot_status: isHoliday ? 'closed_holiday' : 'out_of_hours',
+                    is_out_of_hours: 1
                 });
-                if (nextAlignMins !== null) {
-                    slotDur = nextAlignMins - cursorMins;
-                }
+                cursorMins = nextSlotEnd;
             }
 
-            if (cursorMins + slotDur > endMins) {
-                break;
+            // Generate slots for this block
+            const isBreak = block.type === 'break';
+            while (cursorMins < blockEndMins) {
+                const nextSlotEnd = Math.min(cursorMins + duration, blockEndMins);
+                canonicalSlots.push({
+                    startMins: cursorMins,
+                    endMins: nextSlotEnd,
+                    slot_time: minsToTime(cursorMins),
+                    slot_status: isHoliday ? 'closed_holiday' : (isBreak ? 'break' : 'free'),
+                    is_out_of_hours: 0
+                });
+                cursorMins = nextSlotEnd;
             }
-
-            const h = Math.floor(cursorMins / 60);
-            const m = cursorMins % 60;
-            const timeStr = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
-
-            let status = 'out_of_hours';
-            if (isHoliday) {
-                status = 'closed_holiday';
-            } else {
-                const isOfficial = officialBlocks.some(s => timeStr >= s.start_time && timeStr < s.end_time);
-                const isBreak = breakBlocks.some(s => s.is_break && timeStr >= s.start_time && timeStr < s.end_time);
-                if (isBreak) {
-                    status = 'break';
-                } else if (isOfficial) {
-                    status = 'free';
-                }
-            }
-
-            slotsMap.set(timeStr, {
-                slot_date: dateStr,
-                slot_time: timeStr,
-                slot_status: status,
-                is_out_of_hours: status === 'out_of_hours' ? 1 : 0
-            });
-
-            cursorMins += slotDur;
         }
 
-        // 5. Inject off-schedule or arbitrary-time appointments
+        // Fill any remaining out-of-hours after all defined blocks until dayEndMins
+        while (cursorMins < dayEndMins) {
+            const nextSlotEnd = Math.min(cursorMins + duration, dayEndMins);
+            canonicalSlots.push({
+                startMins: cursorMins,
+                endMins: nextSlotEnd,
+                slot_time: minsToTime(cursorMins),
+                slot_status: isHoliday ? 'closed_holiday' : 'out_of_hours',
+                is_out_of_hours: 1
+            });
+            cursorMins = nextSlotEnd;
+        }
+
+        // If no blocks defined at all, fill entire day as out_of_hours
+        if (definedBlocks.length === 0 && canonicalSlots.length === 0) {
+            while (cursorMins < dayEndMins) {
+                const nextSlotEnd = Math.min(cursorMins + duration, dayEndMins);
+                canonicalSlots.push({
+                    startMins: cursorMins,
+                    endMins: nextSlotEnd,
+                    slot_time: minsToTime(cursorMins),
+                    slot_status: isHoliday ? 'closed_holiday' : 'out_of_hours',
+                    is_out_of_hours: 1
+                });
+                cursorMins = nextSlotEnd;
+            }
+        }
+
+        // 5. Map each appointment to its containing canonical slot
+        const slotAppointmentsMap = new Map();
+        const unassignedAppointments = [];
+
         appointments.forEach(appt => {
             const apptDateObj = new Date(appt.appointment_date);
-            const timeStr = apptDateObj.toLocaleTimeString('en-GB', {
+            const apptTimeStr = apptDateObj.toLocaleTimeString('en-GB', {
                 timeZone: 'America/Argentina/Buenos_Aires',
                 hour12: false,
                 hour: '2-digit',
                 minute: '2-digit'
             }) + ':00';
+            const apptMins = timeToMins(apptTimeStr);
 
-            if (!slotsMap.has(timeStr)) {
-                let status = 'out_of_hours';
-                if (isHoliday) {
-                    status = 'closed_holiday';
-                } else {
-                    const isOfficial = officialBlocks.some(s => timeStr >= s.start_time && timeStr < s.end_time);
-                    const isBreak = breakBlocks.some(s => s.is_break && timeStr >= s.start_time && timeStr < s.end_time);
-                    if (isBreak) {
-                        status = 'break';
-                    } else if (isOfficial) {
-                        status = 'free';
-                    }
+            // Find matching containing slot
+            const matchedSlot = canonicalSlots.find(s => apptMins >= s.startMins && apptMins < s.endMins);
+            if (matchedSlot) {
+                if (!slotAppointmentsMap.has(matchedSlot.slot_time)) {
+                    slotAppointmentsMap.set(matchedSlot.slot_time, []);
                 }
-
-                slotsMap.set(timeStr, {
-                    slot_date: dateStr,
-                    slot_time: timeStr,
-                    slot_status: status,
-                    is_out_of_hours: status === 'out_of_hours' ? 1 : 0
-                });
+                slotAppointmentsMap.get(matchedSlot.slot_time).push({ ...appt, exact_time: apptTimeStr });
+            } else {
+                unassignedAppointments.push({ ...appt, exact_time: apptTimeStr, apptMins });
             }
         });
 
-        // 6. In-memory Left Join & Map to final output contract
+        // Unassigned appointments outside day bounds
+        unassignedAppointments.forEach(appt => {
+            const timeStr = appt.exact_time;
+            if (!canonicalSlots.some(s => s.slot_time === timeStr)) {
+                canonicalSlots.push({
+                    startMins: appt.apptMins,
+                    endMins: appt.apptMins + duration,
+                    slot_time: timeStr,
+                    slot_status: isHoliday ? 'closed_holiday' : 'out_of_hours',
+                    is_out_of_hours: 1
+                });
+            }
+            if (!slotAppointmentsMap.has(timeStr)) {
+                slotAppointmentsMap.set(timeStr, []);
+            }
+            slotAppointmentsMap.get(timeStr).push(appt);
+        });
+
+        // Sort canonicalSlots chronologically
+        canonicalSlots.sort((a, b) => a.startMins - b.startMins);
+
+        // 6. Map to final output contract
         const resultRows = [];
-        const sortedTimeStrings = Array.from(slotsMap.keys()).sort();
-
-        sortedTimeStrings.forEach(timeStr => {
-            const slot = slotsMap.get(timeStr);
-            const matchingAppts = appointments.filter(appt => {
-                const apptDateObj = new Date(appt.appointment_date);
-                const apptTimeStr = apptDateObj.toLocaleTimeString('en-GB', {
-                    timeZone: 'America/Argentina/Buenos_Aires',
-                    hour12: false,
-                    hour: '2-digit',
-                    minute: '2-digit'
-                }) + ':00';
-                return apptTimeStr === timeStr;
-            });
-
+        canonicalSlots.forEach(slot => {
+            const matchingAppts = slotAppointmentsMap.get(slot.slot_time) || [];
             if (matchingAppts.length > 0) {
                 matchingAppts.forEach(appt => {
                     resultRows.push({
                         id: appt.id,
                         appointment_date: appt.appointment_date,
                         doctor_id: Number(doctorId),
-                        doctor_name: appt.doctor_name,
+                        doctor_name: appt.doctor_name || doc?.full_name || '',
                         patient_id: appt.patient_id,
                         patient_name: appt.patient_name || null,
                         patient_phone: appt.patient_phone || '-',
@@ -162,7 +186,7 @@ class DailyScheduleService {
                         arrived_at: appt.arrived_at,
                         completed_at: appt.completed_at,
                         paid_at: appt.paid_at,
-                        slot_date: slot.slot_date,
+                        slot_date: dateStr,
                         slot_time: slot.slot_time,
                         slot_status: 'taken'
                     });
@@ -191,7 +215,7 @@ class DailyScheduleService {
                     arrived_at: null,
                     completed_at: null,
                     paid_at: null,
-                    slot_date: slot.slot_date,
+                    slot_date: dateStr,
                     slot_time: slot.slot_time,
                     slot_status: slot.slot_status
                 });
