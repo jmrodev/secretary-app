@@ -122,7 +122,7 @@ class FinanceController {
             this.sendResponse(res, true, { message: 'Transaction updated successfully' });
         } catch (err) {
             console.error("[ECC-Finance] updateTransaction error:", err);
-            this.sendResponse(res, false, null, "Server Error", 500);
+            this.sendResponse(res, false, null, err.message || "Server Error", 500);
         }
     };
 

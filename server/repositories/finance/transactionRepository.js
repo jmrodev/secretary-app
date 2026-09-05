@@ -77,7 +77,14 @@ class TransactionRepository {
         if (!updates || Object.keys(updates).length === 0) return 0;
         const validUpdates = {};
         for (const key of Object.keys(updates)) {
-            if (ALLOWED_UPDATES.includes(key)) validUpdates[key] = updates[key];
+            if (ALLOWED_UPDATES.includes(key)) {
+                if (key === 'transaction_date' && updates[key]) {
+                    const { formatLocalSQL } = require('../../utils/core/dateUtils');
+                    validUpdates[key] = formatLocalSQL(updates[key]);
+                } else {
+                    validUpdates[key] = updates[key];
+                }
+            }
         }
         if (Object.keys(validUpdates).length === 0) return 0;
         const connection = conn || await this.pool.getConnection();
@@ -173,7 +180,7 @@ class TransactionRepository {
         const offset = parseInt(filters.offset) || 0;
         try {
             let query = `SELECT t.*, u.username as related_user_name, d.full_name as doctor_name, p.full_name as patient_full_name, p.dni as patient_dni,
-                                i.cbte_nro as invoice_number, r.type as request_type, a.bonified, r.payment_status
+                                i.cbte_nro as invoice_number, r.type as request_type, a.type as service_type, a.bonified, r.payment_status
                          FROM transactions t 
                          LEFT JOIN users u ON t.related_user_id = u.id
                          LEFT JOIN doctors d ON t.doctor_id = d.id
