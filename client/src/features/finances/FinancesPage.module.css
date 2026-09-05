@@ -21,3 +21,52 @@
     box-shadow: 0 4px 16px 0 rgb(0 0 0 / 10%);
     padding: 1.25rem;
 }
+
+.FinancesPage__dropdownContainer {
+    position: relative;
+    display: inline-block;
+}
+
+.FinancesPage__dropdownMenu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    min-width: 220px;
+    z-index: 50;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding: var(--spacing-xs, 4px) 0;
+}
+
+.FinancesPage__dropdownItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm, 8px);
+    padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    color: var(--text-main);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.FinancesPage__dropdownItem:hover {
+    background-color: var(--card-hover-bg);
+    color: var(--primary-color);
+}
+
+.FinancesPage__dropdownItemContent {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm, 8px);
+}
+

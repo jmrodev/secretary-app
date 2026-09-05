@@ -11,13 +11,8 @@ export const ReportsPage = () => {
     const controller = useReportsController();
 
     return (
-        <MainLayout wide flush title={controller.t('reports')}>
-            <section>
-                <ReportsDashboard {...controller} />
-            </section>
+        <MainLayout title={controller.t('reports')}>
+            <ReportsDashboard {...controller} />
         </MainLayout>
     );
 };
-
-
-

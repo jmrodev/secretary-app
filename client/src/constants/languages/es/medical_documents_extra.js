@@ -14,4 +14,6 @@ export const medical_documents_extra = {
     new_prescription: "Nueva Receta",
     new_license: "Nueva Licencia",
     new_certificate: "Nuevo Certificado",
+    request_detail: "Detalle de Solicitud",
+    no_doctor_reply: "Sin respuesta del profesional aún",
 };

@@ -139,6 +139,55 @@ class MedicalRequestService {
         }
     }
 
+    async updateRequest(req, id, updateData) {
+        const conn = await pool.getConnection();
+        try {
+            const reqInfo = await medicalRequestRepository.findById(id, conn);
+            if (!reqInfo) throw new Error("Request not found");
+
+            await conn.beginTransaction();
+
+            const updates = {};
+            if (updateData.request_note !== undefined) updates.request_note = updateData.request_note;
+            if (updateData.doctor_note !== undefined) updates.doctor_note = updateData.doctor_note;
+            if (updateData.secretary_note !== undefined) updates.secretary_note = updateData.secretary_note;
+            if (updateData.payment_status !== undefined) updates.payment_status = updateData.payment_status;
+
+            if (updateData.payment_status === 'bonified') {
+                await financeService.markAsBonified(id, 'request', conn);
+            }
+
+            await medicalRequestRepository.update(id, updates, conn);
+            await conn.commit();
+            logAction(req, 'UPDATE_MEDICAL_REQUEST', `Request ID: ${id}`);
+        } catch (error) {
+            await conn.rollback();
+            throw error;
+        } finally {
+            conn.release();
+        }
+    }
+
+    async updateRequestPaymentStatus(id, status) {
+        const conn = await pool.getConnection();
+        try {
+            const reqInfo = await medicalRequestRepository.findById(id, conn);
+            if (!reqInfo) throw new Error("Request not found");
+
+            await conn.beginTransaction();
+            if (status === 'bonified') {
+                await financeService.markAsBonified(id, 'request', conn);
+            }
+            await medicalRequestRepository.update(id, { payment_status: status }, conn);
+            await conn.commit();
+        } catch (error) {
+            await conn.rollback();
+            throw error;
+        } finally {
+            conn.release();
+        }
+    }
+
     async deleteRequest(req, id) {
         const conn = await pool.getConnection();
         try {

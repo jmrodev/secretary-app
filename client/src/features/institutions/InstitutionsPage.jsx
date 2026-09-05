@@ -37,7 +37,7 @@ export const InstitutionsPage = () => {
     const [viewMode, setViewMode] = React.useState('transactions');
 
     return (
-        <MainLayout wide flush title={t('institutions')}>
+        <MainLayout title={t('institutions')}>
             <div>
                 <div>
                     {loading && institutions.length === 0 ? (
@@ -68,16 +68,18 @@ export const InstitutionsPage = () => {
                                         {selectedInstId && (
                                             <div className="institutions-page__selected-actions">
                                                 <Button
-                                                    variant="secondary"
-                                                    size="sm"
+                                                    variant="action-edit"
+                                                    size="sm-compact"
                                                     onClick={() => handleOpenFormModal(institutions.find(i => String(i.id) === selectedInstId))}
-                                                    icon={<Icon name="edit" size="1.1rem" />}
+                                                    title={t('edit')}
+                                                    icon={<Icon name="edit" size="1rem" />}
                                                 />
                                                 <Button
-                                                    variant="secondary"
-                                                    size="sm"
+                                                    variant="action-delete"
+                                                    size="sm-compact"
                                                     onClick={() => handleDelete(Number(selectedInstId))}
-                                                    icon={<Icon name="delete" size="1.1rem" />}
+                                                    title={t('delete')}
+                                                    icon={<Icon name="delete" size="1rem" />}
                                                 />
                                             </div>
                                         )}

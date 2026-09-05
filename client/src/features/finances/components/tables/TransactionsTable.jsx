@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { Card } from '@/components/atoms/Card';
 import { formatTime, parseDate } from '@/utils/core/dateUtils';
 import { Pagination } from '@/components/atoms/Pagination';
 
@@ -122,15 +121,15 @@ export const TransactionsTable = ({
     const canManagerFinance = user && (user.role === 'admin' || settings.enable_secretary_finance_crud === 'true');
 
     return (
-        <Card className={`${styles.TransactionsTable__container}`} noPadding as="article">
-            <div className={`${styles.TransactionsTable__wrapper}`}>
+        <article className={styles.TransactionsTable__root}>
+            <div className={styles.TransactionsTable__wrapper}>
                 <table className={`${styles.TransactionsTable__table} table-base`}>
                     <thead>
                         <tr>
-                            <th className={`${styles.TransactionsTable__cellFirst}`}>{t('date_label')}</th>
+                            <th className={styles.TransactionsTable__cellFirst}>{t('date_label')}</th>
                             <th className="transactions-table__header-cell--description">{t('description')}</th>
                             <th>{t('beneficiary')}</th>
-                            <th className={`${styles.TransactionsTable__cellRight}`}>{t('amount')}</th>
+                            <th className={styles.TransactionsTable__cellRight}>{t('amount')}</th>
                             {canManagerFinance && (
                                 <th className={`${styles.TransactionsTable__cellRight} ${styles.TransactionsTable__cellLast}`}>{t('actions')}</th>
                             )}
@@ -172,8 +171,8 @@ export const TransactionsTable = ({
                                         />
                                     ))}
                                     {group.length > 1 && (
-                                        <tr className={`${styles.TransactionsTable__groupFooter}`}>
-                                            <td colSpan={canManagerFinance ? 8 : 7} className={`${styles.TransactionsTable__groupTotal}`}>
+                                        <tr className={styles.TransactionsTable__groupFooter}>
+                                            <td colSpan={canManagerFinance ? 8 : 7} className={styles.TransactionsTable__groupTotal}>
                                                 {t('group_total')}: ${group.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0).toLocaleString()}
                                             </td>
                                         </tr>
@@ -193,7 +192,7 @@ export const TransactionsTable = ({
                     t={t}
                 />
             )}
-        </Card>
+        </article>
     );
 };
 

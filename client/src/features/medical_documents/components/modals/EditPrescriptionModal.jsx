@@ -42,50 +42,77 @@ export const EditPrescriptionModal = ({
             }
         >
             <div className="config-flex--column config-flex--gap-4">
-                <FormGroup label={t('medications')} htmlFor="edit-prescription-medications">
-                    {editData.items && editData.items.length > 0 && (
-                        <div className="prescription-modal mb-4">
-                            <PrescriptionItemsList
-                                items={editData.items}
-                                handleRemoveItem={() => { }} // Remove handled in full form
-                                t={t}
-                                readOnly={true}
-                            />
+                {editData._readOnly ? (
+                    <>
+                        {editData.items && editData.items.length > 0 && (
+                            <div className="prescription-modal mb-4">
+                                <PrescriptionItemsList
+                                    items={editData.items}
+                                    handleRemoveItem={() => { }}
+                                    t={t}
+                                    readOnly={true}
+                                />
+                            </div>
+                        )}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--dashboard-card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: 'var(--spacing-md)' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                {t('medications')}
+                            </span>
+                            <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-main)', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                                {editData.medications || t('none')}
+                            </p>
                         </div>
-                    )}
-                    {!editData._readOnly && (
-                        <MedicationAutocomplete
-                            value=""
-                            onChange={() => { }}
-                            onSelectMedication={onSelectMedication}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'var(--dashboard-card-bg)', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', padding: 'var(--spacing-md)' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                {t('instructions')}
+                            </span>
+                            <p style={{ margin: 0, fontSize: '0.95rem', color: 'var(--text-main)', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                                {editData.instructions || t('none')}
+                            </p>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <FormGroup label={t('medications')} htmlFor="edit-prescription-medications">
+                            {editData.items && editData.items.length > 0 && (
+                                <div className="prescription-modal mb-4">
+                                    <PrescriptionItemsList
+                                        items={editData.items}
+                                        handleRemoveItem={() => { }}
+                                        t={t}
+                                        readOnly={true}
+                                    />
+                                </div>
+                            )}
+                            <MedicationAutocomplete
+                                value=""
+                                onChange={() => { }}
+                                onSelectMedication={onSelectMedication}
+                            />
+                            <Input
+                                type="textarea"
+                                id="edit-prescription-medications"
+                                rows={4}
+                                value={editData.medications}
+                                onChange={e => onEditDataChange('medications', e.target.value)}
+                            />
+                        </FormGroup>
+                        <FormGroup label={t('instructions')} htmlFor="edit-prescription-instructions">
+                            <Input
+                                type="textarea"
+                                id="edit-prescription-instructions"
+                                rows={3}
+                                value={editData.instructions}
+                                onChange={e => onEditDataChange('instructions', e.target.value)}
+                            />
+                        </FormGroup>
+                        <Checkbox
+                            id="edit-prescription-bonified"
+                            checked={editData.bonified || false}
+                            onChange={e => onEditDataChange('bonified', e.target.checked)}
+                            label={t('bonified')}
                         />
-                    )}
-                    <Input
-                        type="textarea"
-                        id="edit-prescription-medications"
-                        rows={4}
-                        readOnly={editData._readOnly}
-                        value={editData.medications}
-                        onChange={e => onEditDataChange('medications', e.target.value)}
-                    />
-                </FormGroup>
-                <FormGroup label={t('instructions')} htmlFor="edit-prescription-instructions">
-                    <Input
-                        type="textarea"
-                        id="edit-prescription-instructions"
-                        rows={3}
-                        readOnly={editData._readOnly}
-                        value={editData.instructions}
-                        onChange={e => onEditDataChange('instructions', e.target.value)}
-                    />
-                </FormGroup>
-                {!editData._readOnly && (
-                    <Checkbox
-                        id="edit-prescription-bonified"
-                        checked={editData.bonified || false}
-                        onChange={e => onEditDataChange('bonified', e.target.checked)}
-                        label={t('bonified')}
-                    />
+                    </>
                 )}
             </div>
         </Modal>

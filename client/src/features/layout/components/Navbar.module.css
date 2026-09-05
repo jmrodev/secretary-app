@@ -19,21 +19,19 @@
 
 .Navbar__container {
     width: 100%;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-        "left right"
-        "nav nav";
+    display: flex;
+    flex-direction: row;
     align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
     max-width: 1800px;
     margin: 0 auto;
 }
 
 .Navbar__left {
-    grid-area: left;
     display: flex;
     align-items: center;
-    min-width: 200px;
+    flex-shrink: 0;
 }
 
 .Navbar__logo {
@@ -44,87 +42,73 @@
 }
 
 .Navbar__logoIcon {
-    width: 36px;
-    height: 36px;
-    background: rgb(13, 148, 136, 0.12);
-    border-radius: 10px;
+    width: 34px;
+    height: 34px;
+    background: rgb(14 165 233 / 12%);
+    border-radius: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgb(13, 148, 136, 0.25);
+    border: 1px solid rgb(14 165 233 / 25%);
+    transition: transform 0.2s ease;
+}
+
+.Navbar__logo:hover .Navbar__logoIcon {
+    transform: scale(1.05);
 }
 
 .Navbar__logoText {
     font-family: var(--font-manrope);
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 800;
     color: var(--text-main);
     letter-spacing: -0.02em;
 }
 
 .Navbar__nav {
-    grid-area: nav;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 1.25rem;
-    padding: 0.5rem 2rem 0.75rem;
-    border-top: 1px solid var(--navbar-border);
-    margin-top: 0.5rem;
-}
-
-.Navbar__link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1.25rem;
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.95rem;
-    border-radius: 12px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    white-space: nowrap;
-}
-
-.Navbar__link:hover {
-    color: var(--text-main);
-    background: rgb(128, 128, 128, 0.08);
-    transform: translateY(-1px);
-}
-
-.Navbar__linkActive {
-    color: var(--primary-color) !important;
-    font-weight: 750;
-    background: rgb(0 206 209 / 8%);
+    gap: 0.75rem;
 }
 
 .Navbar__right {
-    grid-area: right;
     display: flex;
     align-items: center;
-    gap: 1.5rem;
-    min-width: 300px;
+    gap: 1rem;
     justify-content: flex-end;
-}
-
-.Navbar__actions {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    padding-right: 1.5rem;
-    border-right: 1px solid var(--border-color);
+    flex-shrink: 0;
 }
 
 .Navbar__actionIcon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
     color: var(--text-muted);
     cursor: pointer;
-    transition: color 0.2s;
+    transition: all 0.2s ease;
+    background: transparent;
 }
 
 .Navbar__actionIcon:hover {
     color: var(--text-main);
+    background: var(--bg-hover, rgb(255 255 255 / 6%));
+}
+
+.Navbar__badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background: var(--danger, #ef4444);
+    border-radius: 50%;
+    border: 2px solid var(--dashboard-card-bg);
 }
 
 .Navbar__userButton {

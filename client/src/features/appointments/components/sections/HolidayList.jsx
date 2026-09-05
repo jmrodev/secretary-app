@@ -34,8 +34,11 @@ export const HolidayList = ({ holidays, onDelete }) => {
                         <div className={`${styles.HolidayList__description}`}>{h.description}</div>
                     </div>
                     <Button
-                        variant="ghost" size="sm-compact" className={`${styles.HolidayList__deleteBtn}`}
-                        onClick={() => onDelete(h.id)} icon={<Icon name="DELETE" size="1rem" />}
+                        variant="action-delete"
+                        size="sm-compact"
+                        onClick={() => onDelete(h.id)}
+                        title="Eliminar"
+                        icon={<Icon name="delete" size="1rem" />}
                     />
                 </div>
             ))}

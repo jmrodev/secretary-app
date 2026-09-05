@@ -37,7 +37,7 @@ export const RentalsPage = () => {
     } = useRentalsController();
 
     return (
-        <MainLayout wide flush title={t('office_rentals')}>
+        <MainLayout title={t('office_rentals')}>
             <div>
                 <div>
                     <FeatureToolbar

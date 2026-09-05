@@ -369,6 +369,25 @@ class FinanceService {
         return newStatus;
     }
 
+    async getPatientAvailableCredit(patientId, conn = pool) {
+        if (!patientId) return { available_credit: 0, credits: [] };
+        let relatedUserId = await patientRepository.findUserIdById(patientId, conn);
+        const [rows] = await conn.query(
+            `SELECT id, amount, description, transaction_date 
+             FROM transactions 
+             WHERE (patient_id = ? OR (related_user_id IS NOT NULL AND related_user_id = ?))
+               AND status = 'paid'
+               AND (description LIKE '%Saldo a favor%' OR description LIKE '%Crédito%')
+               AND appointment_id IS NULL
+               AND is_withdrawal = 0
+             ORDER BY transaction_date DESC`,
+            [patientId, relatedUserId || -1]
+        );
+        const credits = Array.isArray(rows) ? rows : (rows ? [rows] : []);
+        const total = credits.reduce((sum, r) => sum + (parseFloat(r.amount) || 0), 0);
+        return { available_credit: total, credits };
+    }
+
     async markAsBonified(id, type, conn = pool) {
         await transactionRepository.callSpMarkAsBonified(id, type, conn);
         if (type === 'appointment') {

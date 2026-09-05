@@ -44,5 +44,13 @@ export const finances = {
     // Transaction Table
     select_all: "Seleccionar todos",
     select_transaction: "Seleccionar transacción",
+
+    // Cash Delivery Dropdown & Today Balancing
+    cash_delivery_options: "Opciones de Entrega de Caja",
+    view_pending_closures: "Ver Cierres Pendientes",
+    today_cash_balancing: "Arqueo de Hoy",
+    select_doctor_for_balancing: "Seleccionar profesional para arquear:",
+    match_system_amount: "Coincide con sistema",
+    quick_fill: "Llenar con Saldo Teórico",
 };
 

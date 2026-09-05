@@ -24,7 +24,7 @@ export const MedicalDocumentsPage = () => {
     const { t } = useLanguage();
 
     return (
-        <MainLayout wide flush title={t('medical_documents')}>
+        <MainLayout title={t('medical_documents')}>
             <div>
                 <MedicalDocumentsToolbar 
                     requestsSubTab="list"

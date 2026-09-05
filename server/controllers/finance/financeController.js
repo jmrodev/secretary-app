@@ -28,6 +28,18 @@ class FinanceController {
         }
     };
 
+    getPatientCredit = async (req, res) => {
+        try {
+            const { patientId } = req.params;
+            if (!patientId) return this.sendResponse(res, false, null, "Patient ID required", 400);
+            const result = await financeService.getPatientAvailableCredit(patientId);
+            this.sendResponse(res, true, result);
+        } catch (err) {
+            console.error("[ECC-Finance] getPatientCredit error:", err);
+            this.sendResponse(res, false, null, "Server Error", 500);
+        }
+    };
+
     createTransaction = async (req, res) => {
         try {
             const data = { ...req.body };
@@ -110,7 +122,7 @@ class FinanceController {
             this.sendResponse(res, true, { message: 'Transaction updated successfully' });
         } catch (err) {
             console.error("[ECC-Finance] updateTransaction error:", err);
-            this.sendResponse(res, false, null, "Server Error", 500);
+            this.sendResponse(res, false, null, err.message || "Server Error", 500);
         }
     };
 

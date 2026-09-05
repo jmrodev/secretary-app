@@ -72,19 +72,19 @@ export const PatientsPage = () => {
 
     // Only show global loading if we haven't fetched any patients yet (initial load)
     if (loading && !controller.fetched) return (
-        <MainLayout wide flush hideSearch>
+        <MainLayout hideSearch>
             <Loading variant="centered" text={t('loading')} />
         </MainLayout>
     );
 
     if (detailsLoading) return (
-        <MainLayout wide flush hideSearch>
+        <MainLayout hideSearch>
             <Loading variant="centered" />
         </MainLayout>
     );
 
     return (
-        <MainLayout wide flush hideSearch title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
+        <MainLayout hideSearch title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
             <div>
                 {(selectedPatientId && patientDetails) ? (
                     // --- DETAILS VIEW ---
@@ -153,10 +153,21 @@ export const PatientsPage = () => {
                             }
                         />
 
-                        <section >
+                        <section>
                             {activeTab === 'list' ? (
                                 <div className="patients-page__table-wrapper">
-                                    <div className={`patients-page__pagination-top ${styles.paginationTop}`}>
+                                    <PatientList
+                                        patients={patients}
+                                        institutions={institutions}
+                                        t={t}
+                                        onViewDetails={handleViewDetails}
+                                        onOpenDebt={handleOpenDebtModal}
+                                        onToggleRating={handleCycleRating}
+                                        calculateFinancialRating={calculateFinancialRating}
+                                        calculateAttendanceRating={calculateAttendanceRating}
+                                    />
+
+                                    {totalPages > 1 && (
                                         <Pagination
                                             currentPage={currentPage}
                                             totalPages={totalPages}
@@ -165,29 +176,7 @@ export const PatientsPage = () => {
                                             onPageChange={handlePageChange}
                                             t={t}
                                         />
-                                    </div>
-
-                                    <section className="dashboard-card dashboard-card--no-padding dashboard-card--scroll-horizontal">
-                                        <PatientList
-                                            patients={patients}
-                                            institutions={institutions}
-                                            t={t}
-                                            onViewDetails={handleViewDetails}
-                                            onOpenDebt={handleOpenDebtModal}
-                                            onToggleRating={handleCycleRating}
-                                            calculateFinancialRating={calculateFinancialRating}
-                                            calculateAttendanceRating={calculateAttendanceRating}
-                                        />
-
-                                        <Pagination
-                                            currentPage={currentPage}
-                                            totalPages={totalPages}
-                                            totalCount={totalCount}
-                                            itemsShowing={patients.length}
-                                            onPageChange={handlePageChange}
-                                            t={t}
-                                        />
-                                    </section>
+                                    )}
                                 </div>
                             ) : (
                                 <PatientRecycleBin

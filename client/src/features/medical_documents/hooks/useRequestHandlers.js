@@ -88,7 +88,12 @@ export const useRequestHandlers = ({
 
     const handleEditItem = useCallback((r) => {
         setSelectedRequest(r);
-        setRequestEditData({ request_note: r.request_note || '', doctor_note: r.doctor_note || '' });
+        setRequestEditData({
+            request_note: r.request_note || '',
+            doctor_note: r.doctor_note || '',
+            items: r.items || [],
+            _readOnly: Boolean(r._readOnly)
+        });
         setIsEditing(true);
     }, [setSelectedRequest, setRequestEditData, setIsEditing]);
 

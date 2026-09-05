@@ -43,13 +43,12 @@ const InstitutionRow = ({ inst, t }) => {
             <td className={`${styles.PatientList__actions}`}>
                 <Button
                     size="sm-compact"
-                    variant="link"
+                    variant="ghost"
                     to={`/institutions`}
                     onClick={(e) => e.stopPropagation()}
+                    title={t('go')}
                     icon={<Icon name="arrow_forward" size="1rem" />}
-                >
-                    {t('go')}
-                </Button>
+                />
             </td>
         </tr>
     );
@@ -68,12 +67,19 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
             className={`${styles.PatientList__row}`}
         >
             <td>
-                <div className={`${styles.PatientList__patientCol}`}>
-                    <strong className={`${styles.PatientList__name}`}>
-                        {p.full_name || `${p.first_name || ''} ${p.last_name || ''}`.trim() || 'N/A'}
-                    </strong>
+                <div className={styles.PatientList__patientCol}>
+                    <div className={styles.PatientList__name}>
+                        {p.last_name ? (
+                            <>
+                                <strong className={styles.PatientList__lastName}>{p.last_name.toUpperCase()}</strong>
+                                <span className={styles.PatientList__firstName}>{p.first_name || ''}</span>
+                            </>
+                        ) : (
+                            <strong className={styles.PatientList__lastName}>{p.full_name || 'N/A'}</strong>
+                        )}
+                    </div>
                     {((Boolean(p.is_new_patient) || Number(p.is_new_patient) === 1) || Number(p.attended_appointments) > 0) && (
-                        <div className={`${styles.PatientList__badgeRow}`}>
+                        <div className={styles.PatientList__badgeRow}>
                             {(Boolean(p.is_new_patient) || Number(p.is_new_patient) === 1) && (
                                 <Badge variant="blue" size="sm">{t('new_patient_badge')}</Badge>
                             )}
@@ -100,11 +106,11 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
                             <Button
                                 to={`https://wa.me/${p.phone.replace(/[^0-9]/g, '')}`}
                                 target="_blank"
-                                variant="whatsapp"
+                                variant="action-whatsapp"
                                 size="sm-compact"
                                 onClick={(e) => e.stopPropagation()}
                                 title={t('whatsapp')}
-                                icon={<Icon name="send" size="1.1rem" />}
+                                icon={<Icon name="chat" size="1rem" />}
                             />
                             <Button
                                 to={`tel:${p.phone.replace(/[^0-9+]/g, '')}`}
@@ -179,14 +185,12 @@ const PatientRow = ({ p, onViewDetails, onOpenDebt, onToggleRating, t }) => {
             </td>
             <td className={`${styles.PatientList__actions}`}>
                 <Button
-                    variant="info"
+                    variant="action-view"
                     size="sm-compact"
-                    className={`${styles.PatientList__viewBtn}`}
-                    icon={<Icon name="badge" />}
+                    icon={<Icon name="visibility" size="1rem" />}
                     onClick={(e) => { e.stopPropagation(); onViewDetails(p.id); }}
-                >
-                    {t('view_details')}
-                </Button>
+                    title={t('view_details')}
+                />
             </td>
         </tr>
     );

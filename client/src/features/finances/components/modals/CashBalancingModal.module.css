@@ -2,48 +2,90 @@
 
 .CashBalancingModal__footer {
     display: flex;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm, 8px);
     justify-content: flex-end;
+    align-items: center;
     width: 100%;
 }
 
 .CashBalancingModal__body {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
-    padding: var(--spacing-md);
+    gap: var(--spacing-md, 16px);
 }
 
 .CashBalancingModal__statsGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-md);
+    gap: var(--spacing-md, 16px);
+}
+
+@media (width <= 500px) {
+    .CashBalancingModal__statsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.CashBalancingModal__select {
+    width: 100%;
+    padding: var(--spacing-sm, 8px) var(--spacing-md, 16px);
+    border-radius: var(--radius-sm, 4px);
+    border: 1px solid var(--border-color);
+    background-color: var(--card-surface-bg);
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-family: var(--font-main);
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.CashBalancingModal__select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgb(var(--primary-rgb, 13 148 136) / 20%);
+}
+
+.CashBalancingModal__inputWithAction {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs, 4px);
 }
 
 .CashBalancingModal__amountInput {
     font-size: 1.5rem;
-    height: 3.75rem;
+    height: 3.5rem;
     font-weight: 700;
 }
 
 .CashBalancingModal__statItem {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-xs);
-    padding: var(--spacing-md);
+    gap: var(--spacing-xs, 4px);
+    padding: var(--spacing-md, 16px);
     background-color: var(--card-surface-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    border-radius: var(--radius-md, 6px);
+    box-shadow: var(--shadow-sm);
+}
+
+.CashBalancingModal__statItemNegative {
+    border-color: rgb(var(--danger-rgb) / 30%);
+    background: linear-gradient(180deg, rgb(var(--danger-rgb) / 8%) 0%, var(--card-surface-bg) 100%);
+}
+
+.CashBalancingModal__statItemPositive {
+    border-color: rgb(var(--success-rgb) / 30%);
+    background: linear-gradient(180deg, rgb(var(--success-rgb) / 8%) 0%, var(--card-surface-bg) 100%);
 }
 
 .CashBalancingModal__statValue {
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--text-main);
+    font-family: var(--font-manrope, inherit);
 }
 
 .CashBalancingModal__statLabel {
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.05em;

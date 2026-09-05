@@ -1,6 +1,6 @@
 import React from 'react';
 import { TransactionModal } from '@/features/finances/components/modals/TransactionModal';
-import { CashBoxDeliveryModal } from '@/features/finances/components/modals/CashBoxDeliveryModal';
+import { CashBalancingModal } from '@/features/finances/components/modals/CashBalancingModal';
 import { EditTransactionModal } from '@/features/finances/components/modals/EditTransactionModal';
 import { PendingClosuresModal } from '@/features/finances/components/modals/PendingClosuresModal';
 
@@ -12,12 +12,12 @@ export const FinanceModalOrchestrator = ({ controller, MedicationInputComponent 
     const {
         modalOpen,
         selectedDoctorFilter,
-        closeBoxModal,
-        closeAmount,
+        balancingModal,
         editingTx,
         pendingClosuresOpen,
         pendingClosures,
         duplicateClosures = [],
+        doctors = [],
         user,
         settings,
         t,
@@ -34,19 +34,21 @@ export const FinanceModalOrchestrator = ({ controller, MedicationInputComponent 
                 MedicationInputComponent={MedicationInputComponent}
             />
 
-            <CashBoxDeliveryModal
-                isOpen={closeBoxModal?.open}
-                onClose={handlers.onCloseCloseBox}
-                onConfirm={handlers.onCloseBox}
-                doctorName={closeBoxModal?.doctorName}
-                balance={closeBoxModal?.balance}
-                amount={closeAmount}
-                setAmount={handlers.setCloseAmount}
-                t={t}
-            />
+            {balancingModal && (
+                <CashBalancingModal
+                    isOpen={!!balancingModal}
+                    onClose={() => handlers.setBalancingModal(null)}
+                    day={balancingModal}
+                    onConfirm={handlers.handleAutoClosure}
+                    doctors={doctors}
+                    onSelectDoctor={handlers.onSelectDoctor}
+                    t={t}
+                />
+            )}
 
             {editingTx && (
                 <EditTransactionModal
+                    key={`edit-tx-${editingTx.id}-${editingTx._isDirectEdit ? 'edit' : 'view'}`}
                     isOpen={!!editingTx}
                     onClose={() => handlers.setEditingTx(null)}
                     onSave={handlers.onUpdateTransaction}

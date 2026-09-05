@@ -16,6 +16,7 @@ module.exports = (financeController) => {
 
     router.get('/pricing', verifyToken, financeController.getPricing);
     router.post('/pricing', verifyToken, financeController.getPricing);
+    router.get('/patient-credit/:patientId', verifyToken, financeController.getPatientCredit);
     router.post('/transactions', verifyToken, authorizePermission('can_crud_finances'), upload.single('proof'), financeController.createTransaction);
     router.get('/transactions', verifyToken, financeController.getTransactions);
     

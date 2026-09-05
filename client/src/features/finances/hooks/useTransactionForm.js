@@ -114,6 +114,43 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         }
     }, []);
 
+    const [patientCredit, setPatientCredit] = useState(0);
+
+    const fetchPatientCredit = useCallback(async (patId) => {
+        if (!patId) {
+            setPatientCredit(0);
+            return;
+        }
+        try {
+            const res = await financeService.getPatientCredit(patId);
+            setPatientCredit(Number(res?.available_credit || 0));
+        } catch (err) {
+            console.error("Failed to fetch patient credit", err);
+            setPatientCredit(0);
+        }
+    }, []);
+
+    const applyPatientCredit = useCallback(() => {
+        if (patientCredit <= 0) return;
+        const discountAmount = Math.min(patientCredit, totalPrice);
+        if (discountAmount <= 0) return;
+
+        setFormData(prev => {
+            const updatedPayments = prev.payments.map((p, index) => {
+                if (index === 0) {
+                    return { ...p, amount: Math.max(0, totalPrice - discountAmount) };
+                }
+                return p;
+            });
+            return {
+                ...prev,
+                payments: updatedPayments,
+                description: `${prev.description} (Aplicado crédito: $${discountAmount})`
+            };
+        });
+        showMessage(`Crédito de $${discountAmount} aplicado correctamente`, 'success');
+    }, [patientCredit, totalPrice, showMessage]);
+
     const initializeData = useCallback(() => {
         const data = initialData || {};
         let initialServiceType = data.serviceType || data.service_type || 'consultation';
@@ -151,14 +188,15 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         setMedications([]); 
 
         if (data.patientId) {
-            // If we have a patientId but not the object, we'll need to fetch it or just use the name from initialData
             if (data.patientName) {
                 setPatientSearch(`${data.patientName} (${data.patientDni || 'N/A'})`);
                 setSelectedPatient({ id: data.patientId, user_id: data.related_user_id, full_name: data.patientName, dni: data.patientDni });
             }
+            fetchPatientCredit(data.patientId);
         } else {
             setPatientSearch('');
             setSelectedPatient(null);
+            setPatientCredit(0);
         }
 
         if (data.amount !== undefined && data.amount !== null && data.amount !== '' && Number(data.amount) > 0) {
@@ -168,7 +206,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         if (data.doctorId) {
             fetchPricing(data.doctorId, data.patientId || null, initialServiceType, data.amount);
         }
-    }, [initialData, fetchPricing]);
+    }, [initialData, fetchPricing, fetchPatientCredit]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -237,6 +275,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         setSelectedPatient(patient);
         setPatientSearch(`${patient.full_name} (${patient.dni || 'N/A'})`);
         setShowPatientList(false);
+        fetchPatientCredit(patient.id);
         if (formData.doctor_id) fetchPricing(formData.doctor_id, patient.id, formData.service_type);
     };
 
@@ -325,6 +364,8 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         showPatientList,
         selectedPatient,
         medications,
+        patientCredit,
+        applyPatientCredit,
 
         setPatientSearch,
         setShowPatientList,

@@ -1,27 +1,17 @@
-/* TransactionsTable Feature Styles (BEM) */
-
-.TransactionsTable__container {
-    /* --- Local Component Tokens --- */
-    --ledger-bg: var(--white, var(--text-main));
-    --ledger-border: rgb(0, 0, 0, 0.08);
-    --ledger-row-hover: var(--row-hover-bg-selected);
-    --ledger-group-bg: rgb(239, 246, 255, 0.5);
-    --ledger-header-bg: rgb(248, 250, 252, 0.95);
-
-    /* ------------------------------ */
-
+.TransactionsTable__root {
     padding: 0;
+    margin: 0;
     overflow: hidden;
-    margin-top: 1.25rem;
-    border-radius: var(--radius-lg, 12px);
-    border: 1px solid var(--ledger-border);
-    box-shadow: 0 4px 20px -2px rgb(0, 0, 0, 0.04);
+    border-radius: var(--radius-sm, 6px);
+    border: 1px solid var(--border-color);
+    background: var(--dashboard-card-bg);
+    box-shadow: none;
+    width: 100%;
 }
 
 .TransactionsTable__wrapper {
-    overflow: auto;
+    overflow: auto hidden;
     width: 100%;
-    max-height: 720px;
 }
 
 .TransactionsTable__table {
@@ -33,22 +23,22 @@
 
 .TransactionsTable__table th {
     background-color: var(--card-surface-bg);
-    padding: 0.875rem 0.75rem;
+    padding: 0.65rem 0.75rem;
     text-align: left;
     font-weight: 800;
     color: var(--text-main);
-    border-bottom: 2px solid var(--dashboard-card-bg);
+    border-bottom: 1px solid var(--border-color);
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    font-size: 0.72rem;
     position: sticky;
     top: 0;
     z-index: 10;
 }
 
 .TransactionsTable__table td {
-    padding: 0.875rem 0.75rem;
-    border-bottom: 1px solid rgb(0, 0, 0, 0.05);
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid rgb(128 128 128 / 10%);
     vertical-align: middle;
 }
 
@@ -270,22 +260,6 @@
     font-family: monospace;
 }
 
-.TransactionsTable__actionBtnView {
-    background-color: #6366f1 !important;
-    color: var(--text-main) !important;
-    border: none !important;
-    border-radius: 6px !important;
-    padding: 0.35rem 0.6rem !important;
-    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1) !important;
-    transition: all 0.15s ease-in-out !important;
-}
-
-.TransactionsTable__actionBtnView:hover {
-    background-color: var(--indigo-600) !important;
-    transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
-}
-
 .TransactionsTable__proofLink {
     display: inline-flex;
     align-items: center;
@@ -321,65 +295,7 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: 0.6rem;
-}
-
-.TransactionsTable__actionBtn {
-    border: none !important;
-    border-radius: 6px !important;
-    padding: 0.35rem 0.5rem !important;
-    box-shadow: 0 2px 4px rgb(0, 0, 0, 0.1) !important;
-    transition: all 0.15s ease-in-out !important;
-}
-
-.TransactionsTable__actionBtn:hover {
-    transform: translateY(-2px) scale(1.05) !important;
-    box-shadow: 0 4px 8px var(--modal-bg-dark) !important;
-}
-
-.TransactionsTable__actionBtnPay {
-    background-color: #15803d !important;
-    color: var(--text-main) !important;
-}
-
-.TransactionsTable__actionBtnPay:hover {
-    background-color: var(--green-800) !important;
-}
-
-.TransactionsTable__actionBtnInvoice {
-    background-color: #1d4ed8 !important;
-    color: var(--text-main) !important;
-}
-
-.TransactionsTable__actionBtnInvoice:hover {
-    background-color: var(--blue-800) !important;
-}
-
-.TransactionsTable__actionBtnEdit {
-    background-color: var(--dashboard-card-bg) !important;
-    color: var(--text-main) !important;
-}
-
-.TransactionsTable__actionBtnEdit:hover {
-    background-color: var(--background-bg) !important;
-}
-
-.TransactionsTable__actionBtnSync {
-    background-color: #0e7490 !important;
-    color: var(--text-main) !important;
-}
-
-.TransactionsTable__actionBtnSync:hover {
-    background-color: var(--cyan-800) !important;
-}
-
-.TransactionsTable__actionBtnDelete {
-    background-color: #b91c1c !important;
-    color: var(--text-main) !important;
-}
-
-.TransactionsTable__actionBtnDelete:hover {
-    background-color: var(--red-800) !important;
+    gap: 0.4rem;
 }
 
 .TransactionsTable__groupFooter {

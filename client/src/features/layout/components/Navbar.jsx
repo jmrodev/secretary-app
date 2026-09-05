@@ -1,46 +1,76 @@
 import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLayoutController } from '@/features/layout/hooks/useLayoutController';
-import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
-import { LanguageSelector } from '@/components/atoms/LanguageSelector';
-import { ThemeToggle } from '@/components/atoms/ThemeToggle';
-import { NavbarLink } from './NavbarLink';
-import { NavbarDropdown } from './NavbarDropdown';
+import { NavbarCategoryDropdown } from './NavbarCategoryDropdown';
+import { UserProfileDropdown } from './UserProfileDropdown';
 import styles from './Navbar.module.css';
 
 /**
- * ECC-Pattern: Refactored Navbar (Orchestrator).
- * Uses Atomic Design (Atoms/Molecules) and clean separation of navigation logic.
+ * Refactored Categorized Navbar (Level 1 Global Header).
+ * Provides clean categorised navigation: Clinical, Administration, System,
+ * plus notifications and an integrated UserProfileDropdown.
  */
 export const Navbar = () => {
     const {
         user, logout, t, settings,
-        location, doctors,
-        language, toggleLanguage,
+        doctors, language, toggleLanguage,
         isStaff, isAdmin, isSecretary, isPatient, isDoctor
     } = useLayoutController();
 
-    const [openDropdown, setOpenDropdown] = useState(null); // 'admin' | 'spreadsheets' | 'user' | null
+    const location = useLocation();
+    const [openCategory, setOpenCategory] = useState(null); // 'clinical' | 'admin' | 'system' | null
 
-    // ECC: Navigation Configuration (Computed during render)
-    const navLinks = useMemo(() => [
-        { path: '/dashboard', label: t('dashboard'), show: !isAdmin },
-        { path: '/appointments', label: t('appointments'), show: !isAdmin },
-        { path: '/patients', label: t('patients'), show: !isPatient && !isAdmin },
-        { path: '/insurances', label: t('insurances'), show: isSecretary },
-        { path: '/rentals', label: t('office_rentals'), show: settings?.enable_office_rentals === 'true' && !isAdmin },
-        { path: '/documents', label: t('medical_documents'), show: !isAdmin },
-        { path: '/finances', label: t('finances'), show: isSecretary },
-        { path: '/institutions', label: t('institutions'), show: isSecretary },
-        { path: '/holidays', label: t('holidays'), show: isSecretary },
-        { path: '/logs', label: t('audit_logs'), show: isAdmin },
-        { path: '/config?tab=modules', label: t('system_config'), show: isStaff }
-    ].filter(l => l.show), [t, isAdmin, isPatient, isSecretary, isStaff, settings?.enable_office_rentals]);
+    const currentPath = location.pathname;
+
+    // --- 1. Clinical Category ---
+    const clinicalItems = useMemo(() => {
+        const items = [
+            { path: '/dashboard', label: t('dashboard') || 'Dashboard', icon: 'dashboard', show: !isAdmin, isActive: currentPath === '/dashboard' },
+            { path: '/appointments', label: t('appointments') || 'Turnos', icon: 'calendar_today', show: !isAdmin, isActive: currentPath === '/appointments' },
+            { path: '/patients', label: t('patients') || 'Pacientes', icon: 'people', show: !isPatient && !isAdmin, isActive: currentPath === '/patients' },
+            { path: '/documents', label: t('medical_documents') || 'Documentos Médicos', icon: 'description', show: !isAdmin, isActive: currentPath === '/documents' }
+        ];
+
+        // Append doctor spreadsheets if available
+        if (doctors && doctors.length > 0) {
+            doctors.forEach(d => {
+                if (!d.spreadsheet_id || (isDoctor && d.user_id !== (user?.user_id || user?.id))) return;
+                items.push({
+                    path: `https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`,
+                    label: isDoctor ? (t('my_spreadsheet') || 'Mi Planilla') : `${t('spreadsheets') || 'Planilla'} (${d.full_name.split(' ')[0]})`,
+                    icon: 'table_chart',
+                    external: true,
+                    show: true
+                });
+            });
+        }
+        return items;
+    }, [t, isAdmin, isPatient, isDoctor, user, doctors, currentPath]);
+
+    // --- 2. Admin Category ---
+    const adminItems = useMemo(() => [
+        { path: '/finances', label: t('finances') || 'Finanzas / Caja', icon: 'attach_money', show: isSecretary, isActive: currentPath === '/finances' },
+        { path: '/insurances', label: t('insurances') || 'Obras Sociales', icon: 'verified_user', show: isSecretary, isActive: currentPath === '/insurances' },
+        { path: '/institutions', label: t('institutions') || 'Instituciones', icon: 'business', show: isSecretary, isActive: currentPath === '/institutions' },
+        { path: '/rentals', label: t('office_rentals') || 'Alquiler Consultorios', icon: 'meeting_room', show: settings?.enable_office_rentals === 'true' && !isAdmin, isActive: currentPath === '/rentals' },
+        { path: '/holidays', label: t('holidays') || 'Feriados', icon: 'event_busy', show: isSecretary, isActive: currentPath === '/holidays' }
+    ], [t, isSecretary, settings?.enable_office_rentals, isAdmin, currentPath]);
+
+    // --- 3. System Category ---
+    const systemItems = useMemo(() => [
+        { path: '/config?tab=users', label: t('user_management') || 'Gestión de Usuarios', icon: 'manage_accounts', show: isStaff, isActive: currentPath === '/config' && location.search.includes('users') },
+        { path: '/config?tab=modules', label: t('system_config') || 'Configuración del Sistema', icon: 'settings', show: isStaff, isActive: currentPath === '/config' && !location.search.includes('users') },
+        { path: '/logs', label: t('audit_logs') || 'Registros de Auditoría', icon: 'history', show: isAdmin, isActive: currentPath === '/logs' }
+    ], [t, isStaff, isAdmin, currentPath, location.search]);
 
     if (!user) return null;
 
-    const handleToggle = (key) => setOpenDropdown(prev => prev === key ? null : key);
+    const isClinicalActive = clinicalItems.some(i => i.isActive);
+    const isAdminActive = adminItems.some(i => i.isActive);
+    const isSystemActive = systemItems.some(i => i.isActive);
+
+    const handleToggle = (key) => setOpenCategory(prev => prev === key ? null : key);
 
     return (
         <header className={styles.Navbar__root}>
@@ -49,83 +79,57 @@ export const Navbar = () => {
                 <div className={styles.Navbar__left}>
                     <Link to={isAdmin ? "/config?tab=users" : "/dashboard"} className={styles.Navbar__logo}>
                         <div className={styles.Navbar__logoIcon}>
-                            <Icon name="DASHBOARD" size="1.5rem" color="var(--primary-color)" />
+                            <Icon name="local_hospital" size="1.5rem" color="var(--primary-color)" />
                         </div>
                         <span className={styles.Navbar__logoText}>{t('app_name')}</span>
                     </Link>
                 </div>
 
-                {/* --- Center: Main Navigation (Refactored) --- */}
+                {/* --- Center: Categorized Navigation --- */}
                 <nav className={styles.Navbar__nav}>
-                    {navLinks.map(link => (
-                        <NavbarLink 
-                            key={link.path}
-                            to={link.path}
-                            label={link.label}
-                            isActive={location.pathname === link.path || location.pathname === link.path.split('?')[0]}
-                        />
-                    ))}
+                    <NavbarCategoryDropdown
+                        label={t('category_clinical') || 'Clínica'}
+                        icon="medical_services"
+                        items={clinicalItems}
+                        isActive={isClinicalActive}
+                        isOpen={openCategory === 'clinical'}
+                        onToggle={() => handleToggle('clinical')}
+                    />
 
-                    {/* Spreadsheets Dropdown */}
-                    {doctors.length > 0 && (
-                        <NavbarDropdown 
-                            label={t('spreadsheets')}
-                            isOpen={openDropdown === 'spreadsheets'}
-                            onToggle={() => handleToggle('spreadsheets')}
-                        >
-                            {doctors.map(d => {
-                                if (!d.spreadsheet_id || (isDoctor && d.user_id !== (user.user_id || user.id))) return null;
-                                return (
-                                    <a key={d.id} href={`https://docs.google.com/spreadsheets/d/${d.spreadsheet_id}`}
-                                       target="_blank" rel="noopener noreferrer" className={styles.Navbar__link}>
-                                        <Icon name="SPREADSHEETS" />
-                                        {isDoctor ? t('my_spreadsheet') : d.full_name.split(' ')[0]}
-                                    </a>
-                                );
-                            })}
-                        </NavbarDropdown>
-                    )}
+                    <NavbarCategoryDropdown
+                        label={t('category_admin') || 'Administración'}
+                        icon="admin_panel_settings"
+                        items={adminItems}
+                        isActive={isAdminActive}
+                        isOpen={openCategory === 'admin'}
+                        onToggle={() => handleToggle('admin')}
+                    />
+
+                    <NavbarCategoryDropdown
+                        label={t('category_system') || 'Sistema'}
+                        icon="tune"
+                        items={systemItems}
+                        isActive={isSystemActive}
+                        isOpen={openCategory === 'system'}
+                        onToggle={() => handleToggle('system')}
+                    />
                 </nav>
 
-                {/* --- Right: User & Actions --- */}
+                {/* --- Right: Notifications & UserProfileDropdown --- */}
                 <div className={styles.Navbar__right}>
-                    <div className={styles.Navbar__actions}>
-                        <ThemeToggle />
-                        <div className={styles.Navbar__actionIcon}>
-                            <Icon name="NOTIFICATIONS" size="1.2rem" />
-                            <span className={styles.Navbar__badge}></span>
-                        </div>
-                        <LanguageSelector 
-                            currentLanguage={language} 
-                            onToggleLanguage={toggleLanguage} 
-                        />
-                    </div>
-                    
-                    <div className={`${styles.Navbar__dropdown} ${openDropdown === 'user' ? styles.Navbar__dropdownOpen : ''}`}>
-                        <button
-                            type="button"
-                            className={styles.Navbar__userButton}
-                            onClick={() => handleToggle('user')}
-                            aria-expanded={openDropdown === 'user'}
-                            aria-haspopup="menu"
-                        >
-                            <div className={styles.Navbar__avatar}>
-                                {user?.username?.charAt(0)?.toUpperCase() || t('avatar_initial_fallback')}
-                            </div>
-                            <div className={styles.Navbar__info}>
-                                <span className={styles.Navbar__name}>{user?.full_name || user?.username}</span>
-                                <span className={styles.Navbar__role}>{user?.role}</span>
-                            </div>
-                            <Icon name={openDropdown === 'user' ? 'EXPAND_LESS' : 'EXPAND_MORE'} size="1rem" />
-                        </button>
-                        {openDropdown === 'user' && (
-                            <div className={styles.Navbar__dropdownContent} role="menu">
-                                <NavbarLink to="/profile" label={t('profile')} onClick={() => setOpenDropdown(null)} icon={<Icon name="PROFILE" />} />
-                            </div>
-                        )}
+                    <div className={styles.Navbar__actionIcon} title="Notificaciones">
+                        <Icon name="notifications" size="1.25rem" />
+                        <span className={styles.Navbar__badge}></span>
                     </div>
 
-                    <Button variant="ghost" onClick={logout} icon={<Icon name="LOGOUT" size="1.2rem" />} />
+                    <UserProfileDropdown
+                        user={user}
+                        logout={logout}
+                        language={language}
+                        toggleLanguage={toggleLanguage}
+                        t={t}
+                        isStaff={isStaff}
+                    />
                 </div>
             </div>
         </header>

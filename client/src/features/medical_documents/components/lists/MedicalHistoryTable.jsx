@@ -83,18 +83,16 @@ export const MedicalHistoryTable = ({
                                 <td className={`${styles.MedicalHistoryTable__td}`}>
                                     <div className={`${styles.MedicalHistoryTable__actions}`}>
                                         <Button
-                                            variant="ghost"
+                                            variant="action-view"
                                             size="sm-compact"
-                                            className={`${styles.MedicalHistoryTable__actionBtn} ${styles.MedicalHistoryTable__actionBtnView}`}
                                             onClick={() => onView({ ...item, _readOnly: true })}
                                             title={t('view')}
                                             icon={<Icon name="visibility" size="1rem" />}
                                         />
                                         {showDelete && (
                                             <Button
-                                                variant="ghost"
+                                                variant="action-edit"
                                                 size="sm-compact"
-                                                className={`${styles.MedicalHistoryTable__actionBtn} ${styles.MedicalHistoryTable__actionBtnEdit}`}
                                                 onClick={() => onView(item)}
                                                 title={t('edit')}
                                                 icon={<Icon name="edit" size="1rem" />}
@@ -102,9 +100,8 @@ export const MedicalHistoryTable = ({
                                         )}
                                         {showDelete && (
                                             <Button
-                                                variant="ghost"
+                                                variant="action-delete"
                                                 size="sm-compact"
-                                                className={`${styles.MedicalHistoryTable__actionBtn} ${styles.MedicalHistoryTable__actionBtnDelete}`}
                                                 onClick={() => onDelete(item.id, item)}
                                                 title={t('delete')}
                                                 icon={<Icon name="delete" size="1rem" />}
