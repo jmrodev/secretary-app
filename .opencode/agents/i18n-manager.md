@@ -1,7 +1,7 @@
 ---
 description: Manage i18n translation files (en/es), add missing keys, validate consistency across the secretary-app
 mode: subagent
-model: opencode/hy3-free
+model: opencode/nemotron-3-ultra-free
 permission:
   read: allow
   edit: allow
