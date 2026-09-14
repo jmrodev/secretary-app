@@ -23,7 +23,7 @@ export const PatientContactFields = ({ formData, updatePatientData, updatePhoneN
                             id="patient-email"
                             type="email"
                             name="email"
-                            className={`patient-contact-fields__field ${styles.PatientContactFields__fieldMaxWidth40}`}
+                            className={styles.PatientContactFields__fieldMaxWidth40}
                             value={formData.email || ''}
                             onChange={updatePatientData}
                             placeholder={t('patient_email_placeholder')}
@@ -33,7 +33,6 @@ export const PatientContactFields = ({ formData, updatePatientData, updatePhoneN
                                 to={`mailto:${formData.email}`}
                                 variant="secondary"
                                 size="sm"
-                                className="patient-contact-fields__email-btn"
                                 icon={<Icon name="send" size="0.9rem" />}
                             />
                         )}

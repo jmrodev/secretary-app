@@ -48,7 +48,9 @@ export const useAppointmentsPageController = () => {
     const selectedDate = useMemo(() => parseDate(rawSelectedDate) || getNow(), [rawSelectedDate]);
 
     const { 
-        editPatientModalOpen, setEditPatientModalOpen, paymentModal, setPaymentModal,
+        editPatientModalOpen, setEditPatientModalOpen,
+        editPatientStep, setEditPatientStep,
+        paymentModal, setPaymentModal,
         actionModal, setActionModal, historyModal, setHistoryModal,
         prescribeModal, setPrescribeModal, authModalOpen, setAuthModalOpen,
         retryAction, setRetryAction
@@ -168,12 +170,12 @@ export const useAppointmentsPageController = () => {
         exitRescheduleMode, rescheduleAppt,
         setShowOutOfHours,
         setViewDoctorId, setSelectedDate,
-        setEditPatientModalOpen, setPaymentModal, setActionModal, setHistoryModal,
+        setEditPatientModalOpen, setEditPatientStep, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setAuthModalOpen, setSearchPatientId, setSearchTerm
     }), [
         hookHandlers, retryAction, handleWhatsAppUniversal, handleWhatsAppConfirmation, syncDayToGoogle, cancelAppointment, fetchAppointments,
         exitRescheduleMode, rescheduleAppt, setShowOutOfHours, setViewDoctorId, setSelectedDate,
-        setEditPatientModalOpen, setPaymentModal, setActionModal, setHistoryModal,
+        setEditPatientModalOpen, setEditPatientStep, setPaymentModal, setActionModal, setHistoryModal,
         setPrescribeModal, setAuthModalOpen, setSearchPatientId, setSearchTerm
     ]);
 
@@ -181,7 +183,7 @@ export const useAppointmentsPageController = () => {
         viewDoctorId, doctors, institutions, insurances, 
         loading: doctorsLoading, agendaLoading, selectedDate,
         showOutOfHours, t, language, user,
-        editPatientModalOpen, paymentModal,
+        editPatientModalOpen, editPatientStep, paymentModal,
         actionModal, historyModal, prescribeModal,
         authModalOpen, whatsappModal: booking.whatsappModal, setWhatsappModal: booking.setWhatsappModal,
         showNextSlotModal: nextSlot.showModal, setShowNextSlotModal: nextSlot.setShowModal,
