@@ -2519,9 +2519,10 @@ BEGIN
     DECLARE v_sched_start TIME;
     DECLARE v_sched_end TIME;
     DECLARE v_sched_is_break TINYINT;
+    DECLARE v_sched_force_align TINYINT;
 
     DECLARE sched_cursor CURSOR FOR
-        SELECT start_time, end_time, is_break
+        SELECT start_time, end_time, is_break, COALESCE(force_hour_alignment, 0)
         FROM doctor_schedules
         WHERE doctor_id = p_doctor_id AND day_of_week = v_day_of_week
         ORDER BY start_time;
@@ -2530,6 +2531,7 @@ BEGIN
     CREATE TEMPORARY TABLE IF NOT EXISTS temp_all_slots (
         slot_date DATE,
         slot_time TIME,
+        slot_dur INT,
         slot_status VARCHAR(50),
         is_break TINYINT,
         is_out_of_hours TINYINT
@@ -2560,7 +2562,7 @@ BEGIN
             SET v_sched_done = 0;
             OPEN sched_cursor;
             read_sched_loop_free: LOOP
-                FETCH sched_cursor INTO v_sched_start, v_sched_end, v_sched_is_break;
+                FETCH sched_cursor INTO v_sched_start, v_sched_end, v_sched_is_break, v_sched_force_align;
                 IF v_sched_done = 1 THEN
                     LEAVE read_sched_loop_free;
                 END IF;
@@ -2568,15 +2570,15 @@ BEGIN
                 SET v_current_time = v_sched_start;
                 WHILE v_current_time < v_sched_end DO
                     SET v_slot_dur = v_duration;
-                    IF v_force_alignment = 1 AND (TIME_TO_SEC(v_current_time) % 3600) != 0 THEN
+                    IF v_sched_force_align = 1 AND (TIME_TO_SEC(v_current_time) % 3600) != 0 THEN
                         SET v_slot_dur = 60 - ((TIME_TO_SEC(v_current_time) % 3600) / 60);
                     END IF;
 
                     IF TIME_TO_SEC(v_current_time) + (v_slot_dur * 60) > TIME_TO_SEC(v_sched_end) THEN
                         SET v_current_time = v_sched_end;
                     ELSE
-                        INSERT INTO temp_all_slots (slot_date, slot_time, slot_status, is_break, is_out_of_hours)
-                        VALUES (v_current_date, v_current_time, CASE WHEN v_sched_is_break = 1 THEN 'break' ELSE 'free' END, CASE WHEN v_sched_is_break = 1 THEN 1 ELSE 0 END, 0);
+                        INSERT INTO temp_all_slots (slot_date, slot_time, slot_dur, slot_status, is_break, is_out_of_hours)
+                        VALUES (v_current_date, v_current_time, v_slot_dur, CASE WHEN v_sched_is_break = 1 THEN 'break' ELSE 'free' END, CASE WHEN v_sched_is_break = 1 THEN 1 ELSE 0 END, 0);
                         SET v_current_time = ADDTIME(v_current_time, SEC_TO_TIME(v_slot_dur * 60));
                     END IF;
                 END WHILE;
@@ -2599,8 +2601,8 @@ BEGIN
                             DECLARE v_slot_exists INT DEFAULT 0;
                             SELECT COUNT(*) INTO v_slot_exists FROM temp_all_slots WHERE slot_date = v_current_date AND slot_time = v_current_time;
                             IF v_slot_exists = 0 THEN
-                                INSERT INTO temp_all_slots (slot_date, slot_time, slot_status, is_break, is_out_of_hours)
-                                VALUES (v_current_date, v_current_time, 'out_of_hours', 0, 1);
+                                INSERT INTO temp_all_slots (slot_date, slot_time, slot_dur, slot_status, is_break, is_out_of_hours)
+                                VALUES (v_current_date, v_current_time, v_slot_dur, 'out_of_hours', 0, 1);
                             END IF;
                         END;
                         SET v_current_time = ADDTIME(v_current_time, SEC_TO_TIME(v_slot_dur * 60));
@@ -2626,9 +2628,9 @@ BEGIN
           SELECT 1 FROM appointments a
           WHERE a.doctor_id = p_doctor_id
             AND DATE(a.appointment_date) = ts.slot_date
-            AND a.status NOT IN ('cancelled', 'suspended')
-            AND ts.slot_time < ADDTIME(TIME(a.appointment_date), SEC_TO_TIME(v_duration * 60))
-            AND ADDTIME(ts.slot_time, SEC_TO_TIME(v_duration * 60)) > TIME(a.appointment_date)
+            AND a.status NOT IN ('cancelled', 'suspended', 'absent')
+            AND ts.slot_time < ADDTIME(TIME(a.appointment_date), SEC_TO_TIME(COALESCE(a.duration, v_duration) * 60))
+            AND ADDTIME(ts.slot_time, SEC_TO_TIME(COALESCE(ts.slot_dur, v_duration) * 60)) > TIME(a.appointment_date)
       )
     ORDER BY ts.slot_date, ts.slot_time;
 END

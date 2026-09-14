@@ -54,17 +54,24 @@ class DailyScheduleService {
             const blockStartMins = timeToMins(block.start_time);
             const blockEndMins = timeToMins(block.end_time);
 
-            // If there's an out-of-hours gap before this block, fill it
-            while (cursorMins < blockStartMins) {
-                const nextSlotEnd = Math.min(cursorMins + duration, blockStartMins);
-                canonicalSlots.push({
-                    startMins: cursorMins,
-                    endMins: nextSlotEnd,
-                    slot_time: minsToTime(cursorMins),
-                    slot_status: isHoliday ? 'closed_holiday' : 'out_of_hours',
-                    is_out_of_hours: 1
-                });
-                cursorMins = nextSlotEnd;
+            // If there's an out-of-hours gap before this block, fill it anchored backwards from blockStartMins
+            // so pre-shift slots seamlessly align with the shift start time.
+            if (cursorMins < blockStartMins) {
+                const preSlots = [];
+                let preEnd = blockStartMins;
+                while (preEnd > cursorMins) {
+                    const preStart = Math.max(cursorMins, preEnd - duration);
+                    preSlots.unshift({
+                        startMins: preStart,
+                        endMins: preEnd,
+                        slot_time: minsToTime(preStart),
+                        slot_status: isHoliday ? 'closed_holiday' : 'out_of_hours',
+                        is_out_of_hours: 1
+                    });
+                    preEnd = preStart;
+                }
+                canonicalSlots.push(...preSlots);
+                cursorMins = blockStartMins;
             }
 
             // Generate slots for this block
