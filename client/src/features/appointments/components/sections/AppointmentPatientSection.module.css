@@ -74,6 +74,23 @@
     font-size: 0.85rem;
 }
 
+.AppointmentPatientSection__missingItemBtn {
+    background: none;
+    border: none;
+    color: var(--danger);
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    padding: 0;
+    font-size: inherit;
+    transition: opacity 0.2s ease;
+}
+
+.AppointmentPatientSection__missingItemBtn:hover {
+    opacity: 0.8;
+}
+
 .AppointmentPatientSection__errorPlaceholder {
     color: var(--danger);
     font-size: 0.8125rem;

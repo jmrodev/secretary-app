@@ -18,7 +18,6 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                     <Input
                         id="patient-first-name"
                         name="first_name"
-                        className="patient-identity-fields__field"
                         value={formData.first_name || ''}
                         onChange={updatePatientData}
                         required
@@ -34,7 +33,6 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                     <Input
                         id="patient-last-name"
                         name="last_name"
-                        className="patient-identity-fields__field"
                         value={formData.last_name || ''}
                         onChange={updatePatientData}
                         required
@@ -50,7 +48,6 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                     <Input
                         id="patient-dni"
                         name="dni"
-                        className="patient-identity-fields__field"
                         value={formData.dni || ''}
                         onChange={updatePatientData}
                         required
@@ -68,7 +65,6 @@ export const PatientIdentityFields = ({ formData, updatePatientData, t }) => {
                         id="patient-dob"
                         type="date"
                         name="dob"
-                        className="patient-identity-fields__field"
                         value={formData.dob || ''}
                         onChange={updatePatientData}
                         required

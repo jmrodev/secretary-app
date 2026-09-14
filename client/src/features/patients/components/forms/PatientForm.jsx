@@ -21,7 +21,7 @@ const STEPS = [
     { id: 'address', labelKey: 'step_address', icon: 'map' },
     { id: 'contact', labelKey: 'step_contact', icon: 'alternate_email' },
     { id: 'medical', labelKey: 'step_medical', icon: 'medical_services' },
-    { id: 'admin', labelKey: 'Administración', icon: 'settings' }
+    { id: 'admin', labelKey: 'step_admin', icon: 'settings' }
 ];
 
 /**
@@ -33,7 +33,8 @@ export const PatientForm = ({
     controller,
     onCancel,
     isEdit = false,
-    isAdmin = false
+    isAdmin = false,
+    initialStep = null
 }) => {
     const {
         formData,
@@ -53,8 +54,27 @@ export const PatientForm = ({
         savePatient
     } = handlers;
 
-    const [currentStep, setCurrentStep] = React.useState(0);
-    const activeSteps = isAdmin ? STEPS : STEPS.filter(s => s.id !== 'admin');
+    const activeSteps = React.useMemo(() => (
+        isAdmin ? STEPS : STEPS.filter(s => s.id !== 'admin')
+    ), [isAdmin]);
+
+    const getStepIndex = React.useCallback((step) => {
+        if (step === null || step === undefined) return 0;
+        if (typeof step === 'number') return Math.max(0, Math.min(step, activeSteps.length - 1));
+        const found = activeSteps.findIndex(s => s.id === step);
+        return found !== -1 ? found : 0;
+    }, [activeSteps]);
+
+    const [currentStep, setCurrentStep] = React.useState(() => getStepIndex(initialStep));
+
+    const missingSteps = React.useMemo(() => {
+        const missing = new Set();
+        if (!formData?.dni || !formData?.first_name || !formData?.last_name) missing.add('personal');
+        if (!formData?.street_name || !formData?.street_number) missing.add('address');
+        const hasPhone = formData?.phone || (Array.isArray(formData?.phoneNumbers) && formData.phoneNumbers.length > 0);
+        if (!hasPhone) missing.add('contact');
+        return missing;
+    }, [formData]);
 
     const nextStep = (e) => {
         e.preventDefault();
@@ -116,24 +136,27 @@ export const PatientForm = ({
             <header className={`${styles.PatientForm__header}`}>
                 <nav className={`${styles.PatientForm__stepper}`}>
                     {activeSteps.map((step, index) => {
-                        const isClickable = index < currentStep;
+                        const isStepMissing = missingSteps.has(step.id);
                         return (
                             <div 
                                 key={step.id} 
-                                className={`${styles.PatientForm__step} ${index === currentStep ? styles.PatientForm__stepActive : ''} ${isClickable ? styles.PatientForm__stepCompleted : ''}`}
-                                onClick={() => isClickable && setCurrentStep(index)}
+                                className={`${styles.PatientForm__step} ${index === currentStep ? styles.PatientForm__stepActive : ''} ${index < currentStep ? styles.PatientForm__stepCompleted : ''}`}
+                                onClick={() => setCurrentStep(index)}
                                 onKeyDown={(e) => {
-                                    if (isClickable && (e.key === 'Enter' || e.key === ' ')) {
+                                    if (e.key === 'Enter' || e.key === ' ') {
                                         e.preventDefault();
                                         setCurrentStep(index);
                                     }
                                 }}
                                 role="button"
-                                tabIndex={isClickable ? 0 : -1}
+                                tabIndex={0}
                                 aria-current={index === currentStep ? 'step' : undefined}
                             >
                                 <div className={`${styles.PatientForm__stepIcon}`}>
-                                    <Icon name={index < currentStep ? 'check' : step.icon} size="1.2rem" />
+                                    <Icon name={index < currentStep && !isStepMissing ? 'check' : step.icon} size="1.2rem" />
+                                    {isStepMissing && (
+                                        <span className={styles.PatientForm__stepMissingDot} aria-hidden="true" />
+                                    )}
                                 </div>
                                 <span className={`${styles.PatientForm__stepLabel}`}>{t(step.labelKey)}</span>
                             </div>
@@ -187,7 +210,7 @@ export const PatientForm = ({
                             <Button
                                 type="submit"
                                 variant="success"
-                                className="patient-form__submit-btn"
+                                className={styles.PatientForm__submitBtn}
                                 disabled={isSubmitting}
                                 icon={<Icon name="save" />}
                             >

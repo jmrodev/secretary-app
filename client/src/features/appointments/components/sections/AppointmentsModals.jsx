@@ -11,6 +11,7 @@ export const AppointmentsModals = ({
     whatsappModal,
     showNextSlotModal, setShowNextSlotModal,
     editPatientModalOpen, setEditPatientModalOpen,
+    editPatientStep, setEditPatientStep,
     authModalOpen,
     handlers, t,
     prescriptionModalSlot,
@@ -47,7 +48,10 @@ export const AppointmentsModals = ({
             <AppointmentFormModal
                 isOpen={booking.showForm} onClose={() => booking.setShowForm(false)}
                 {...booking} onSubmit={handlers.handleBook} doctors={doctors} institutions={institutions}
-                onOpenEditPatient={() => setEditPatientModalOpen(true)} t={t} handlers={booking.handlers}
+                onOpenEditPatient={(targetStep) => {
+                    if (setEditPatientStep) setEditPatientStep(targetStep);
+                    setEditPatientModalOpen(true);
+                }} t={t} handlers={booking.handlers}
                 PatientSearchSelectComponent={PatientSearchSelectComponent}
             />
         )}
