@@ -57,7 +57,7 @@ export const useAppointments = () => {
             const isoDate = new Date(newDate).toISOString();
             const res = await api.put(`/appointments/${id}`, { appointment_date: isoDate, adminPassword });
             if (onUpdate) onUpdate();
-            return res.data;
+            return { success: true, ...res.data };
         } finally {
             setIsSubmitting(false);
         }

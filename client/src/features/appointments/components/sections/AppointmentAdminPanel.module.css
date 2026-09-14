@@ -141,3 +141,18 @@
         flex-direction: column;
     }
 }
+
+.AppointmentAdminPanel__whatsappHint {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-top: var(--spacing-sm);
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+}
+
+.AppointmentAdminPanel__whatsappHintIcon {
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+

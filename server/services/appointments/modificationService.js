@@ -5,6 +5,7 @@ const debtLifecycleService = require('../finance/debtLifecycleService');
 const helper = require('./appointmentHelper');
 const { pool } = require('../../db');
 const { nowLocalSQL } = require('../../utils/core/dateUtils');
+const { ConflictError } = require('../../utils/core/errors');
 
 /**
  * ModificationService
@@ -125,12 +126,28 @@ class ModificationService {
             if (updates.appointment_date) {
                 const newDate = helper.formatDateForDB(updates.appointment_date);
                 if (newDate !== helper.formatDateForDB(appt.appointment_date)) {
+                    const existingSlots = await appointmentRepository.findBySlot(appt.doctor_id, newDate, conn);
+                    const conflict = (existingSlots || []).find(s => s.id !== appt.id && s.status !== 'cancelled');
+                    if (conflict) {
+                        throw new ConflictError("Ya existe un turno confirmado en este horario.");
+                    }
                     await helper.freeSlot(conn, appt.doctor_id, appt.appointment_date);
                     await helper.occupySlot(conn, appt.doctor_id, newDate);
                     updates.status = 'rescheduled';
                     updates.rescheduled_from_date = appt.appointment_date;
+                    updates.appointment_date = newDate;
+                    if (appt.google_event_id) {
+                        await googleSyncService.syncUpdate(
+                            id,
+                            appt.doctor_id,
+                            appt.google_event_id,
+                            { appointment_date: updates.appointment_date, status: updates.status || appt.status },
+                            userId
+                        );
+                    }
+                } else {
+                    updates.appointment_date = newDate;
                 }
-                updates.appointment_date = newDate;
             }
 
             if (updates.bonified === 1 || updates.bonified === true || updates.bonified === 'true') {
