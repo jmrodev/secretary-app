@@ -42,4 +42,8 @@ export const transaction_modal = {
     paid: "Paid",
     partial: "Partial",
     pending_payment: "Pending",
+    exceeds_total_by: "Exceeds total by",
+    payment_exceeds_total_error: "Total payment amount cannot exceed total to charge",
+    payment_exceeds_total_tooltip: "Payment amount exceeds total to charge",
+    payment_amount_required: "Must enter a valid payment amount",
 };

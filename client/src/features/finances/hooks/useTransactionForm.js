@@ -45,7 +45,12 @@ export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0
     }
 
     if (totalCost > 0 || totalCobrado > 0) {
-        desc += ` | Total: $${totalCost} | Cobrado: $${totalCobrado} | Saldo: $${saldoTurno}`;
+        if (totalCost > 0 && totalCobrado > totalCost) {
+            const excess = totalCobrado - totalCost;
+            desc += ` | Total: $${totalCost} | Ingresado: $${totalCobrado} (Excede por $${excess})`;
+        } else {
+            desc += ` | Total: $${totalCost} | Cobrado: $${totalCobrado} | Saldo: $${saldoTurno}`;
+        }
     }
     return desc;
 };
@@ -392,11 +397,28 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         setMedications(prev => prev.filter((_, i) => i !== index));
     };
 
+    const currentPaidTotal = formData.payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
+    const debtAmount = Math.max(0, totalPrice - currentPaidTotal);
+    const isOverpaid = Boolean(totalPrice > 0 && currentPaidTotal > (totalPrice + 0.01));
+    const excessAmount = isOverpaid ? (currentPaidTotal - totalPrice) : 0;
+
     const saveTransaction = async () => {
         if (!formData.doctor_id) {
             showMessage(t('please_select_doctor'), 'warning');
             return;
         }
+
+        const totalPaid = formData.payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
+        if (totalPaid <= 0) {
+            showMessage(t('payment_amount_required'), 'warning');
+            return;
+        }
+
+        if (totalPrice > 0 && totalPaid > (totalPrice + 0.01)) {
+            showMessage(t('payment_exceeds_total_error'), 'warning');
+            return;
+        }
+
         setLoading(true);
         try {
             const payload = new FormData();
@@ -407,8 +429,6 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
                     payload.append(key, formData[key]);
                 }
             });
-
-            const totalPaid = formData.payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
 
             // Calculate Debt
             if (formData.type === 'income_patient' && totalPrice > 0) {
@@ -452,6 +472,10 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         doctors,
         pricingInfo,
         totalPrice,
+        currentPaidTotal,
+        debtAmount,
+        isOverpaid,
+        excessAmount,
         patientSearch,
         showPatientList,
         selectedPatient,
