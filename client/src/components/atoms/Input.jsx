@@ -26,8 +26,8 @@ export const Input = forwardRef(({
 }, ref) => {
     const baseClass = styles.Input__root;
 
-    const variantClass = variant !== 'default' && styles[variant] ? styles[variant] : '';
-    const sizeClass = size !== 'md' && styles[size] ? styles[size] : '';
+    const variantClass = variant !== 'default' ? (styles[`Input__${variant}`] || styles[variant] || '') : '';
+    const sizeClass = size !== 'md' ? (styles[`Input__${size}`] || styles[size] || '') : '';
     const typeClass = type === 'textarea' && styles.Input__textarea ? styles.Input__textarea : '';
 
     const combinedClassName = `

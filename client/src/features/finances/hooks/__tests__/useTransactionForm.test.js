@@ -65,4 +65,15 @@ describe('generateAppointmentBitacora', () => {
         // Prior paid: 20000, current paid: 25000 => total cobrado: 45000, saldo: 20000
         expect(res).toContain('Total: $65000 | Cobrado: $45000 | Saldo: $20000');
     });
+
+    it('reports excess explicitly when payment amount exceeds totalCost', () => {
+        const appt = {
+            appointment_date: '2026-09-14T07:30:00.000Z',
+            cost: 65000,
+            paid_amount: 0
+        };
+        const res = generateAppointmentBitacora(appt, 'Anahi Montero', 650000);
+        expect(res).toContain('Total: $65000 | Ingresado: $650000 (Excede por $585000)');
+        expect(res).not.toContain('Saldo: $0');
+    });
 });
