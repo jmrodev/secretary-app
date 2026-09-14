@@ -19,31 +19,34 @@ export const AppointmentPatientSection = ({
     return (
         <div className={styles.AppointmentPatientSection__root}>
             <div className={styles.AppointmentPatientSection__fieldsRow}>
-                <div className={styles.AppointmentPatientSection__searchGroup}>
-                    <label htmlFor="patient-search-input" className={styles.AppointmentPatientSection__groupLabel}>{t('patients')}</label>
+                <div className={styles.AppointmentPatientSection__patientField}>
+                    <label htmlFor="patient-search-input" className={styles.AppointmentPatientSection__groupLabel}>
+                        <Icon name="person" size="0.85rem" />
+                        {t('patients')}
+                    </label>
                     {PatientSearchSelect ? (
-                        <div style={{ maxWidth: '35ch', width: '100%' }}>
-                            <PatientSearchSelect
-                                value={selectedPatient}
-                                selectedData={selectedPatientData}
-                                placeholder={t('search_patient_placeholder')}
-                                onCreatePatient={async (name) => {
-                                    handlePatientChange(null, { full_name: capitalizeWords(name) });
-                                    onOpenEditPatient();
-                                }}
-                                onChange={handlePatientChange}
-                            />
-                        </div>
+                        <PatientSearchSelect
+                            value={selectedPatient}
+                            selectedData={selectedPatientData}
+                            placeholder={t('search_patient_placeholder')}
+                            onCreatePatient={async (name) => {
+                                handlePatientChange(null, { full_name: capitalizeWords(name) });
+                                onOpenEditPatient();
+                            }}
+                            onChange={handlePatientChange}
+                        />
                     ) : (
-                        <div className="error-placeholder">{t('patient_search_component_missing')}</div>
+                        <div className={styles.AppointmentPatientSection__errorPlaceholder}>
+                            {t('patient_search_component_missing')}
+                        </div>
                     )}
                 </div>
 
-                <div className={styles.AppointmentPatientSection__searchGroup} style={{ width: '18ch', flexShrink: 0 }}>
-                    <span className={styles.AppointmentPatientSection__groupLabel}>
-                        <Icon name="phone" size="0.8rem" style={{ marginRight: '0.35rem' }} />
+                <div className={styles.AppointmentPatientSection__phoneField}>
+                    <label htmlFor="appointment-phone-input" className={styles.AppointmentPatientSection__groupLabel}>
+                        <Icon name="phone" size="0.85rem" />
                         {t('phone')}
-                    </span>
+                    </label>
                     <PhoneInput
                         value={selectedPatientData?.phone || ''}
                         onChange={newValue => handlePhoneChange(newValue)}

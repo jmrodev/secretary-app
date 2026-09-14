@@ -15,7 +15,9 @@
 .PatientSearchSelect__control {
     background-color: var(--dashboard-card-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius, 0.5rem);
+    min-height: 2.375rem;
+    height: 2.375rem;
     padding: 0;
     transition: all 0.2s ease;
     display: flex;
@@ -71,11 +73,15 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    padding: 0 0.875rem;
+    height: 100%;
 }
 
 .PatientSearchSelect__input {
     color: var(--text-main);
-    font-size: 0.9rem;
+    font-size: 0.875rem;
+    margin: 0;
+    padding: 0;
 }
 
 /* No Results section */

@@ -1,0 +1,82 @@
+.AppointmentFormFields__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md, 1rem);
+}
+
+.AppointmentFormFields__panel {
+    background-color: var(--glass);
+    backdrop-filter: blur(8px);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-md, 0.625rem);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm, 0.75rem);
+    box-shadow: var(--shadow-sm);
+}
+
+.AppointmentFormFields__fieldFull {
+    grid-column: span 2;
+}
+
+.AppointmentFormFields__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+}
+
+.AppointmentFormFields__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 1.25rem;
+}
+
+.AppointmentFormFields__readOnlyField {
+    min-height: 2.375rem;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.875rem;
+    background: var(--background-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius, 0.5rem);
+    font-weight: 600;
+    color: var(--text-main);
+    font-size: 0.875rem;
+}
+
+.AppointmentFormFields__extraBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.5rem;
+    background: rgb(245 158 11 / 10%);
+    color: var(--warning, #f59e0b);
+    border: 1px solid rgb(245 158 11 / 25%);
+    border-radius: var(--radius-sm, 0.25rem);
+    margin-top: 0.25rem;
+    width: fit-content;
+}
+
+.AppointmentFormFields__extraBadgePulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (width <= 768px) {
+    .AppointmentFormFields__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .AppointmentFormFields__fieldFull {
+        grid-column: span 1;
+    }
+}

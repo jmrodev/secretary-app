@@ -1,7 +1,7 @@
 ---
 description: Git branch management, PR creation, sync operations, and cleanup across branches
 mode: subagent
-model: opencode/hy3-free
+model: opencode/nemotron-3-ultra-free
 permission:
   bash: allow
   edit: deny
