@@ -76,7 +76,10 @@ export const useAppointmentUIHandlers = ({
     }, [rescheduleAppt, selectedDate, exitRescheduleMode, confirm, t, setActionModal, holidays, showMessage, user, viewDoctorId, setSelectedDoctor, setDate, setShowForm]);
 
     const handleOpenPayment = useCallback((appt) => {
-        const remainingDebt = Math.max(0, (Number(appt.cost) || 0) - (Number(appt.paid_amount) || 0));
+        const effectiveCost = (Number(appt.cost) > 0)
+            ? Number(appt.cost)
+            : (Number(appt.pending_amount) > 0 ? Number(appt.pending_amount) : 0);
+        const remainingDebt = Math.max(0, effectiveCost - (Number(appt.paid_amount) || 0));
         const formatTime = (isoStr) => isoStr ? new Date(isoStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/I';
         const formatDate = (isoStr) => isoStr ? new Date(isoStr).toLocaleDateString() : '';
 
@@ -88,7 +91,7 @@ export const useAppointmentUIHandlers = ({
             appt.arrived_at ? `• En Sala de Espera: ${formatTime(appt.arrived_at)} hs` : null,
             appt.completed_at ? `• Atendido: ${formatTime(appt.completed_at)} hs` : null,
             `--- TURNO ACTUAL ---`,
-            `• Costo Turno: $${Number(appt.cost || 0).toLocaleString('es-AR')}`,
+            `• Costo Turno: $${effectiveCost.toLocaleString('es-AR')}`,
             `• Saldo Pendiente Turno: $${remainingDebt.toLocaleString('es-AR')}`
         ].filter(Boolean).join('\n');
 
@@ -106,7 +109,7 @@ export const useAppointmentUIHandlers = ({
                 patientUserId: appt.patient_user_id,
                 appointmentType: appt.type,
                 serviceType: appt.type === 'virtual' ? 'virtual_consultation' : 'consultation',
-                appointment: appt
+                appointment: { ...appt, cost: effectiveCost }
             }
         });
     }, [setPaymentModal]);
