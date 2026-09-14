@@ -26,7 +26,7 @@ export const PatientMedicalNotes = ({ formData, updatePatientData, institutions,
             
 
             <div className={`${styles.PatientMedicalNotes__content}`}>
-                <div className={`${styles.PatientMedicalNotes__group} ${styles.groupInstitution}`}>
+                <div className={styles.PatientMedicalNotes__group}>
                     <label htmlFor="patient-paying-institution" className={`${styles.PatientMedicalNotes__label}`}>{t('paying_institution')}</label>
                     <Select
                         id="patient-paying-institution"
