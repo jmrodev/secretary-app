@@ -30,7 +30,7 @@ export const AppointmentsModals = ({
             onReschedule={handlers.handleOpenReschedule} onCancel={handlers.handleCancel} onDelete={handlers.handleDelete}
             onSync={handlers.handleOpenSync} onPay={handlers.handleOpenPayment} onWhatsApp={handlers.handleWhatsAppUniversal}
             onWhatsAppConfirmation={handlers.handleWhatsAppConfirmation}
-            onUpdateType={handlers.handleUpdateType} onHardEdit={handlers.handleHardEdit} onBonify={handlers.handleBonify}
+            onUpdateType={handlers.handleUpdateType} onBonify={handlers.handleBonify}
             onSaveNote={handlers.handleSaveNote} fetchAppointments={handlers.fetchAppointments}
         />
 

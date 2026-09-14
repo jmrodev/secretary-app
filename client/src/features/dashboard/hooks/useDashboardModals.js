@@ -1,9 +1,11 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '@/utils/core/dateUtils';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export const useDashboardModals = () => {
     const navigate = useNavigate();
+    const { t } = useLanguage();
 
     const [actionModal, setActionModal] = useState({ open: false, appt: null });
     const [historyModal, setHistoryModal] = useState({ open: false, patientId: null, patientName: '' });
@@ -24,13 +26,13 @@ export const useDashboardModals = () => {
                 patientDni: appt.patient_dni,
                 patientUserId: appt.patient_user_id,
                 doctorId: appt.doctor_id,
-                description: `Payment for appointment on ${formatDate(appt.appointment_date)}`,
+                description: `${t('payment_appointment_on')} ${formatDate(appt.appointment_date)}`,
                 apptId: appt.id
             },
             apptId: appt.id
         });
         setActionModal(prev => ({ ...prev, open: false }));
-    }, []);
+    }, [t]);
 
     const handleOpenHistory = useCallback((appt) => {
         setHistoryModal({
@@ -61,10 +63,6 @@ export const useDashboardModals = () => {
         navigate('/appointments', { state: { syncAppt: appt } });
     }, [navigate]);
 
-    const handleHardEdit = useCallback((appt) => {
-        navigate('/appointments', { state: { editAppt: appt } });
-    }, [navigate]);
-
     return useMemo(() => ({
         actionModal, setActionModal,
         historyModal, setHistoryModal,
@@ -76,12 +74,11 @@ export const useDashboardModals = () => {
         handleOpenPrescribe,
         handleOpenReschedule,
         handleOpenSync,
-        handleHardEdit,
         handleOpenNewRequest,
         navigate
     }), [
         actionModal, historyModal, prescribeModal, paymentModal, newRequestModal,
         handleOpenPayment, handleOpenHistory, handleOpenPrescribe,
-        handleOpenReschedule, handleOpenSync, handleHardEdit, handleOpenNewRequest, navigate
+        handleOpenReschedule, handleOpenSync, handleOpenNewRequest, navigate
     ]);
 };

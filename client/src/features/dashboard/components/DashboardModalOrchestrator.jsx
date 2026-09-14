@@ -35,7 +35,6 @@ export const DashboardModalOrchestrator = ({ controller }) => {
         handleOpenReschedule,
         handleOpenSync,
         handleUpdateType,
-        handleHardEdit,
         handleSaveNote,
         setActionModal,
         setHistoryModal,
@@ -57,7 +56,6 @@ export const DashboardModalOrchestrator = ({ controller }) => {
                 onPay={handleOpenPayment}
                 onWhatsApp={handleWhatsApp}
                 onUpdateType={handleUpdateType}
-                onHardEdit={handleHardEdit}
                 onHistory={handleOpenHistory}
                 onPrescribe={handleOpenPrescribe}
                 onReschedule={handleOpenReschedule}

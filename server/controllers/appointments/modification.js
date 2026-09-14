@@ -25,7 +25,7 @@ exports.updateAppointment = async (req, res) => {
         const { adminPassword, ...updates } = req.body;
         await modificationService.updateAppointment(req.params.id, updates, req.user.user_id, req.user, adminPassword);
         logAction(req, 'UPDATE_APPOINTMENT', `Updated appointment ID ${req.params.id}`);
-        res.json({ message: "Appointment updated" });
+        res.json({ success: true, message: "Appointment updated" });
     } catch (err) {
         handleError(res, err, 'updateAppointment');
     }
