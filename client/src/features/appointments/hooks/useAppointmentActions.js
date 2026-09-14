@@ -17,16 +17,20 @@ export const useAppointmentActions = ({
     fetchAppointments,
     setActionModal
 }) => {
-    const handleReschedule = useCallback(async (apptId, newDateTime) => {
+    const handleReschedule = useCallback(async (apptId, newDateTime, adminPassword = null) => {
         try {
-            const result = await rescheduleAppointment(apptId, newDateTime);
+            const result = await rescheduleAppointment(apptId, newDateTime, adminPassword);
             if (result?.success) {
+                showMessage(t('rescheduled_success'), 'success');
                 fetchAppointments();
             }
             return result;
         } catch (err) {
             console.error('Reschedule failed:', err);
-            showMessage(t('reschedule_error'), 'error');
+            if (err.response?.data?.type === 'AUTH_REQUIRED' || err.response?.status === 403) {
+                return { type: 'AUTH_REQUIRED' };
+            }
+            showMessage(err.response?.data?.error || t('reschedule_error'), 'error');
             return { success: false };
         }
     }, [rescheduleAppointment, showMessage, t, fetchAppointments]);

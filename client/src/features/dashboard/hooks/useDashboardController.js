@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, useEffectEvent } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -41,7 +41,7 @@ export const useDashboardController = () => {
 
     // React 19 useEffectEvent: stable polling callback that always reads the
     // latest refreshDashboard / remindersHook without effect dependency churn.
-    const onPollDashboard = React.useEffectEvent(() => {
+    const onPollDashboard = useEffectEvent(() => {
         refreshDashboard();
         remindersHook.fetchReminders();
     });
@@ -138,7 +138,6 @@ export const useDashboardController = () => {
         handleOpenPrescribe: modalsHook.handleOpenPrescribe,
         handleOpenReschedule: modalsHook.handleOpenReschedule,
         handleOpenSync: modalsHook.handleOpenSync,
-        handleHardEdit: modalsHook.handleHardEdit,
         handleUpdateType,
         handleSaveNote,
         handleCompleteReminder: remindersHook.handleCompleteReminder,

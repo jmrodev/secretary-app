@@ -2,6 +2,8 @@ const modificationService = require('./modificationService');
 const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
 const helper = require('./appointmentHelper');
 const debtLifecycleService = require('../finance/debtLifecycleService');
+const googleSyncService = require('./googleSyncService');
+const { ConflictError, AuthRequiredError } = require('../../utils/core/errors');
 const { pool } = require('../../db');
 
 jest.mock('../../repositories/appointments/appointmentRepository');
@@ -165,6 +167,119 @@ describe('ModificationService - debt lifecycle wiring', () => {
                 expect.objectContaining({ id: 4 }),
                 'suspended'
             );
+            expect(mockConnection.commit).toHaveBeenCalled();
+        });
+    });
+
+    describe('updateAppointment - rescheduling, slot collision, and Google sync', () => {
+        beforeEach(() => {
+            appointmentRepository.findById.mockResolvedValue({
+                id: 1,
+                doctor_id: 10,
+                appointment_date: '2026-09-15 10:00:00',
+                status: 'confirmed',
+                google_event_id: 'g-1'
+            });
+            helper.formatDateForDB.mockImplementation((d) => String(d));
+            helper.occupySlot.mockResolvedValue(undefined);
+            appointmentRepository.update.mockResolvedValue(1);
+            appointmentRepository.findBySlot.mockResolvedValue([]);
+            googleSyncService.syncUpdate.mockResolvedValue(true);
+        });
+
+        it('should throw ConflictError when target slot is occupied by another active appointment', async () => {
+            appointmentRepository.findBySlot.mockResolvedValue([
+                { id: 2, doctor_id: 10, appointment_date: '2026-09-16 11:00:00', status: 'confirmed' }
+            ]);
+
+            await expect(modificationService.updateAppointment(1, { appointment_date: '2026-09-16 11:00:00' }, 5, 'admin'))
+                .rejects.toThrow(ConflictError);
+
+            expect(appointmentRepository.findBySlot).toHaveBeenCalledWith(10, '2026-09-16 11:00:00', mockConnection);
+            expect(helper.freeSlot).not.toHaveBeenCalled();
+            expect(helper.occupySlot).not.toHaveBeenCalled();
+            expect(appointmentRepository.update).not.toHaveBeenCalled();
+            expect(googleSyncService.syncUpdate).not.toHaveBeenCalled();
+            expect(mockConnection.rollback).toHaveBeenCalled();
+            expect(mockConnection.commit).not.toHaveBeenCalled();
+        });
+
+        it('should succeed when findBySlot only returns the same appointment or cancelled appointments', async () => {
+            appointmentRepository.findBySlot.mockResolvedValue([
+                { id: 1, doctor_id: 10, appointment_date: '2026-09-16 11:00:00', status: 'confirmed' },
+                { id: 3, doctor_id: 10, appointment_date: '2026-09-16 11:00:00', status: 'cancelled' }
+            ]);
+
+            const result = await modificationService.updateAppointment(1, { appointment_date: '2026-09-16 11:00:00' }, 5, 'admin');
+
+            expect(result).toBe(true);
+            expect(helper.freeSlot).toHaveBeenCalledWith(mockConnection, 10, '2026-09-15 10:00:00');
+            expect(helper.occupySlot).toHaveBeenCalledWith(mockConnection, 10, '2026-09-16 11:00:00');
+            expect(appointmentRepository.update).toHaveBeenCalledWith(
+                1,
+                expect.objectContaining({
+                    status: 'rescheduled',
+                    rescheduled_from_date: '2026-09-15 10:00:00',
+                    appointment_date: '2026-09-16 11:00:00'
+                }),
+                mockConnection
+            );
+            expect(mockConnection.commit).toHaveBeenCalled();
+        });
+
+        it('should reject with AuthRequiredError when checkModificationPermissions throws AuthRequiredError', async () => {
+            helper.checkModificationPermissions.mockRejectedValueOnce(
+                new AuthRequiredError("Requiere autorización de Administrador (Turno Pasado).")
+            );
+
+            await expect(modificationService.updateAppointment(1, { appointment_date: '2026-09-16 11:00:00' }, 5, { role: 'secretary' }))
+                .rejects.toThrow(AuthRequiredError);
+
+            expect(mockConnection.rollback).toHaveBeenCalled();
+            expect(mockConnection.commit).not.toHaveBeenCalled();
+        });
+
+        it('should free former slot, occupy new slot, mark rescheduled, and sync with Google when google_event_id is present', async () => {
+            appointmentRepository.findBySlot.mockResolvedValue([]);
+
+            const result = await modificationService.updateAppointment(1, { appointment_date: '2026-09-16 11:00:00' }, 5, 'admin');
+
+            expect(result).toBe(true);
+            expect(helper.freeSlot).toHaveBeenCalledWith(mockConnection, 10, '2026-09-15 10:00:00');
+            expect(helper.occupySlot).toHaveBeenCalledWith(mockConnection, 10, '2026-09-16 11:00:00');
+            expect(appointmentRepository.update).toHaveBeenCalledWith(
+                1,
+                expect.objectContaining({
+                    status: 'rescheduled',
+                    rescheduled_from_date: '2026-09-15 10:00:00',
+                    appointment_date: '2026-09-16 11:00:00'
+                }),
+                mockConnection
+            );
+            expect(googleSyncService.syncUpdate).toHaveBeenCalledWith(
+                1,
+                10,
+                'g-1',
+                { appointment_date: '2026-09-16 11:00:00', status: 'rescheduled' },
+                5
+            );
+            expect(mockConnection.commit).toHaveBeenCalled();
+        });
+
+        it('should bypass googleSyncService.syncUpdate when google_event_id is null or undefined', async () => {
+            appointmentRepository.findById.mockResolvedValue({
+                id: 1,
+                doctor_id: 10,
+                appointment_date: '2026-09-15 10:00:00',
+                status: 'confirmed',
+                google_event_id: null
+            });
+            appointmentRepository.findBySlot.mockResolvedValue([]);
+
+            const result = await modificationService.updateAppointment(1, { appointment_date: '2026-09-16 11:00:00' }, 5, 'admin');
+
+            expect(result).toBe(true);
+            expect(googleSyncService.syncUpdate).not.toHaveBeenCalled();
             expect(mockConnection.commit).toHaveBeenCalled();
         });
     });
