@@ -25,4 +25,8 @@ export const transaction_modal = {
     available_cash: "Saldo Disponible",
     concept: "Concepto",
     payment_methods: "Caja y Gastos",
+    exceeds_total_by: "Supera el total por",
+    payment_exceeds_total_error: "El monto total ingresado no puede superar el total a cobrar",
+    payment_exceeds_total_tooltip: "El monto ingresado supera el total a cobrar",
+    payment_amount_required: "Debe ingresar al menos un monto de pago válido",
 };

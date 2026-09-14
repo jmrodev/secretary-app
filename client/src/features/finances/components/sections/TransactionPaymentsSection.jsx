@@ -9,7 +9,7 @@ import styles from '../modals/TransactionModal.module.css';
 export const TransactionPaymentsSection = ({ 
     pricingInfo, totalPrice, setTotalPrice, payments, 
     handlePaymentChange, addPaymentMethod, removePaymentMethod, 
-    currentPaidTotal, debtAmount, formatCurrency, t 
+    currentPaidTotal, debtAmount, isOverpaid, excessAmount, formatCurrency, t 
 }) => {
     const paymentMethods = getPaymentMethods(t);
     return (
@@ -48,11 +48,12 @@ export const TransactionPaymentsSection = ({
                     </div>
 
                     {payments.map((payment, index) => (
-                        <div key={payment._tmpId || payment.id || `payment-row-${payment.method}-${index}`} className={styles.TransactionModal__paymentRow}>
+                        <div key={payment._tmpId || payment.id || `payment-method-${payment.method}`} className={styles.TransactionModal__paymentRow}>
                             <div className={styles.TransactionModal__paymentRowAmount}>
                                 <CurrencyInput
                                     placeholder={t('amount_label')} value={payment.amount}
                                     onChange={e => handlePaymentChange(index, 'amount', e.target.value)}
+                                    variant={isOverpaid ? 'error' : 'default'}
                                 />
                             </div>
                             <div className={styles.TransactionModal__paymentRowMethod}>
@@ -79,9 +80,16 @@ export const TransactionPaymentsSection = ({
                         <div className={styles.TransactionModal__totals}>
                             <div className={styles.TransactionModal__summaryRow}>
                                 <span className={styles.TransactionModal__label}>{t('paid')}:</span>
-                                <span className={`${styles.TransactionModal__value} ${styles.TransactionModal__valuePaid}`}>{formatCurrency(currentPaidTotal)}</span>
+                                <span className={`${styles.TransactionModal__value} ${isOverpaid ? styles.TransactionModal__valueOverpaid : styles.TransactionModal__valuePaid}`}>
+                                    {formatCurrency(currentPaidTotal)}
+                                </span>
                             </div>
-                            {debtAmount > 0 ? (
+                            {isOverpaid ? (
+                                <div className={styles.TransactionModal__statusOverpaid}>
+                                    <Icon name="warning" size="1.2rem" />
+                                    <span>{t('exceeds_total_by')} {formatCurrency(excessAmount)}</span>
+                                </div>
+                            ) : debtAmount > 0 ? (
                                 <div className={styles.TransactionModal__summaryRow}>
                                     <span className={styles.TransactionModal__label}>{t('debt')}:</span>
                                     <span className={`${styles.TransactionModal__value} ${styles.TransactionModal__valueDebt}`}>{formatCurrency(debtAmount)}</span>
