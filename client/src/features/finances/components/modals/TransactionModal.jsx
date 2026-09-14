@@ -40,11 +40,9 @@ export const TransactionModal = ({
         formData, loading, patients, doctors, pricingInfo, totalPrice, patientSearch, showPatientList,
         setPatientSearch, setShowPatientList, updateField, updateServiceType, updateDoctor, selectPatient,
         handlePaymentChange, addPaymentMethod, removePaymentMethod, saveTransaction,
-        setTotalPrice, patientCredit, applyPatientCredit
+        setTotalPrice, patientCredit, applyPatientCredit,
+        currentPaidTotal, debtAmount, isOverpaid, excessAmount
     } = useTransactionForm(isOpen, initialData, requestId, onSuccess, onClose);
-
-    const currentPaidTotal = formData.payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
-    const debtAmount = Math.max(0, totalPrice - currentPaidTotal);
 
     const serviceTypes = getServiceTypes(t);
 
@@ -78,7 +76,13 @@ export const TransactionModal = ({
                     <Button variant="secondary" onClick={onClose} icon={<Icon name="close" size="1.1rem" />}>
                         {t('cancel')}
                     </Button>
-                    <Button onClick={saveTransaction} disabled={loading} variant="primary" icon={<Icon name="check" size="1.2rem" />}>
+                    <Button 
+                        onClick={saveTransaction} 
+                        disabled={loading || isOverpaid || currentPaidTotal <= 0} 
+                        variant="primary" 
+                        icon={<Icon name="check" size="1.2rem" />}
+                        title={isOverpaid ? t('payment_exceeds_total_tooltip') : ''}
+                    >
                         {loading ? t('processing') : t('confirm_payment')}
                     </Button>
                 </div>
@@ -195,6 +199,7 @@ export const TransactionModal = ({
                         payments={formData.payments} handlePaymentChange={handlePaymentChange}
                         addPaymentMethod={addPaymentMethod} removePaymentMethod={removePaymentMethod}
                         currentPaidTotal={currentPaidTotal} debtAmount={debtAmount}
+                        isOverpaid={isOverpaid} excessAmount={excessAmount}
                         formatCurrency={formatCurrency} t={t}
                     />
                 </div>
