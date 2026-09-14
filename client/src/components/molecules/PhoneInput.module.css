@@ -1,18 +1,22 @@
 .PhoneInput__root {
     display: flex;
-    gap: 0.25rem;
+    gap: var(--spacing-sm, 0.5rem);
     align-items: center;
     width: 100%;
 }
 
 .PhoneInput__select {
     flex-shrink: 0;
-    width: 12ch;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
+    min-width: 6.75rem;
+    width: 7.25rem;
+    min-height: 2.375rem;
+    padding-left: 0.625rem;
+    padding-right: 1.75rem;
+    background-position: right 0.5rem center;
 }
 
 .PhoneInput__input {
     flex: 1;
     min-width: 0;
+    min-height: 2.375rem;
 }

@@ -1,7 +1,7 @@
 ---
 description: Auto-fix ESLint, stylelint, CSS Modules/BEM issues across the secretary-app codebase
 mode: subagent
-model: opencode/hy3-free
+model: opencode/nemotron-3-ultra-free
 permission:
   edit: allow
 ---

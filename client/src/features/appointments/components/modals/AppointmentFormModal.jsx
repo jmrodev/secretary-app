@@ -32,15 +32,24 @@ export const AppointmentFormModal = ({
             title={editModeId ? (t('edit_appointment')) : t('new_appointment')}
             size="lg"
             footer={
-                <Button 
-                    type="submit" 
-                    form="new-appointment-form"
-                    variant="accent" 
-                    className={styles.AppointmentFormModal__submit} 
-                    icon={<Icon name="check" />}
-                >
-                    {editModeId ? (t('save_changes')) : t('confirm_booking')}
-                </Button>
+                <>
+                    <Button 
+                        type="button" 
+                        variant="secondary" 
+                        onClick={onClose}
+                    >
+                        {t('cancel')}
+                    </Button>
+                    <Button 
+                        type="submit" 
+                        form="new-appointment-form"
+                        variant="accent" 
+                        className={styles.AppointmentFormModal__submit} 
+                        icon={<Icon name="check" />}
+                    >
+                        {editModeId ? (t('save_changes')) : t('confirm_booking')}
+                    </Button>
+                </>
             }
         >
             <form onSubmit={onSubmit} id="new-appointment-form" className={styles.AppointmentFormModal__root} autoComplete="off">
