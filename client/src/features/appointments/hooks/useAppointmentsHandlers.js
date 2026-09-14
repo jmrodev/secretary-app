@@ -144,6 +144,7 @@ export const useAppointmentsHandlers = ({
             setRetryAction({ type: 'delete', args: [id, status] });
             setAuthModalOpen(true);
         }
+        return result;
     }, [appointments, filteredAppointments, deleteAppointment, viewDoctorId, selectedDoctor, fetchAppointments, setRetryAction, setAuthModalOpen]);
 
     const handleReschedule = useCallback(async (id, newDate, adminPassword = null) => {
@@ -154,6 +155,29 @@ export const useAppointmentsHandlers = ({
         }
         return result;
     }, [rescheduleAppointment, fetchAppointments, setRetryAction, setAuthModalOpen]);
+
+    const handleAdminAuthConfirm = useCallback(async (retryAction, password) => {
+        if (!retryAction) return;
+        if (retryAction.type === 'reschedule') {
+            const [id, newDate] = retryAction.args || [];
+            const result = await appointmentActions.handleReschedule(id, newDate, password);
+            if (result?.success) {
+                setAuthModalOpen(false);
+                setRetryAction(null);
+                exitRescheduleMode();
+            }
+            return result;
+        }
+        if (retryAction.type === 'delete') {
+            const [id, status] = retryAction.args || [];
+            const result = await handleDelete(id, status, password);
+            if (result?.type !== 'AUTH_REQUIRED') {
+                setAuthModalOpen(false);
+                setRetryAction(null);
+            }
+            return result;
+        }
+    }, [appointmentActions, handleDelete, setAuthModalOpen, setRetryAction, exitRescheduleMode]);
 
     const handleSyncGoogleEvent = (appt) => {
         const apptDate = parseDate(appt.appointment_date);
@@ -250,7 +274,7 @@ export const useAppointmentsHandlers = ({
     return useMemo(() => ({
         handleDateSelect, handleSlotClick, handleUpdateStatus, handleSavePrescription, handleDelete, handleReschedule,
         handleSyncGoogleEvent, handleBook, handleNextFreeSlot: (sd, override) => fetchNextFreeSlots(sd, override), handleWhatsAppSlot, confirmNextSlot,
-        handleAdminAuthConfirm: (retry, pass) => appointmentActions.handleAdminAuthConfirm?.(retry, pass), // Mapping if needed or using direct
+        handleAdminAuthConfirm,
         handleUpdateType, handleSaveNote, toggleForm: () => setShowForm(p => !p),
         handleBonify: appointmentActions.handleBonify,
         createPatient: () => { booking.setSelectedPatientData(null); setEditPatientModalOpen(true); },
@@ -270,7 +294,7 @@ export const useAppointmentsHandlers = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }), [
         handleSlotClick, handleDateSelect, handleUpdateStatus, handleSavePrescription, handleDelete, handleReschedule,
-        appointmentActions, uiHandlers, booking,
+        handleAdminAuthConfirm, appointmentActions, uiHandlers, booking,
         navigate, fetchNextFreeSlots
     ]);
 };
