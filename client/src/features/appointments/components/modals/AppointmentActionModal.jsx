@@ -18,7 +18,7 @@ import styles from './AppointmentActionModal.module.css';
  */
 export const AppointmentActionModal = ({
     isOpen, onClose, appt, onHistory, onPrescribe, onUpdateStatus, onReschedule,
-    onCancel, onDelete, onSync, onPay, onWhatsApp, onWhatsAppConfirmation, onUpdateType, onHardEdit,
+    onCancel, onDelete, onSync, onPay, onWhatsApp, onWhatsAppConfirmation, onUpdateType,
     onBonify, onSaveNote, fetchAppointments: _fetchAppointments
 }) => {
     const { t } = useLanguage();
@@ -73,7 +73,7 @@ export const AppointmentActionModal = ({
                         appt={appt} user={user} isGoogle={isGoogle} canUnrestricted={canUnrestricted}
                         t={t} onPay={onPay} onUpdateStatus={onUpdateStatus} onReschedule={onReschedule}
                         onCancel={onCancel} onDelete={onDelete} onUpdateType={onUpdateType}
-                        onHardEdit={onHardEdit} onBonify={onBonify} onClose={onClose} note={note}
+                        onBonify={onBonify} onClose={onClose} note={note}
                         onWhatsApp={onWhatsApp} onWhatsAppConfirmation={onWhatsAppConfirmation}
                     />
                 )}

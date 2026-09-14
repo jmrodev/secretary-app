@@ -8,11 +8,11 @@ import { useMessage } from '@/context/MessageContext';
 import styles from './AppointmentAdminPanel.module.css';
 
 /**
- * AppointmentAdminPanel Molecule (Internal to feature).
+ * AppointmentAdminPanel Organism (Internal to feature).
  * Orchestrates administrative actions for an appointment using a tabbed interface.
  */
 export const AppointmentAdminPanel = ({
-    appt, user: _user, isGoogle, canUnrestricted, t, onPay, onUpdateStatus, onReschedule, onCancel, onDelete, onClose, onUpdateType, onHardEdit, onBonify, note, onWhatsApp, onWhatsAppConfirmation
+    appt, user: _user, isGoogle, canUnrestricted, t, onPay, onUpdateStatus, onReschedule, onCancel, onDelete, onClose, onUpdateType, onBonify, note, onWhatsApp, onWhatsAppConfirmation
 }) => {
     const [activeTab, setActiveTab] = useState('attendance');
     const { showMessage } = useMessage();
@@ -30,7 +30,12 @@ export const AppointmentAdminPanel = ({
     const canPassToVideo = appt.status !== 'completed' && appt.status !== 'absent' && appt.type !== 'virtual';
 
     const handleCopyPhone = () => {
-        copyToClipboard(appt.patient_phone).then(() => showMessage(t('phone_copied'), "success"));
+        copyToClipboard(appt.patient_phone)
+            .then(() => showMessage(t('phone_copied'), "success"))
+            .catch((err) => {
+                console.error("Failed to copy phone to clipboard:", err);
+                showMessage(t('copy_phone_error') || t('error') || 'Error al copiar', "error");
+            });
     };
 
     if (isGoogle) return null;
@@ -148,12 +153,6 @@ export const AppointmentAdminPanel = ({
                         <section className={styles.AppointmentAdminPanel__group}>
                             <h4 className={styles.AppointmentAdminPanel__groupTitle}>{t('appointment_modification')}</h4>
                             <div className={styles.AppointmentAdminPanel__grid}>
-                                <Button
-                                    variant="info" className={styles.AppointmentAdminPanel__action} onClick={() => { onHardEdit(appt); onClose(); }}
-                                    icon={<Icon name="edit" size="1.1rem" />}
-                                >
-                                    {t('edit')}
-                                </Button>
                                 {canReschedule && (
                                     <Button
                                         variant="primary" className={styles.AppointmentAdminPanel__action} onClick={() => { onReschedule(appt); onClose(); }}
@@ -214,8 +213,8 @@ export const AppointmentAdminPanel = ({
                                 )}
                             </div>
                             {appt.status !== 'completed' && (
-                                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.75rem', display: 'flex', alignItems: 'flex-start', gap: '0.35rem' }}>
-                                    <Icon name="info" size="1rem" style={{ marginTop: '0.1rem', flexShrink: 0 }} />
+                                <p className={styles.AppointmentAdminPanel__whatsappHint}>
+                                    <Icon name="info" size="1rem" className={styles.AppointmentAdminPanel__whatsappHintIcon} />
                                     <span>
                                         <strong>{t('whatsapp_chat')}</strong> {t('whatsapp_admin_panel_hint_1')}
                                         {' '}<strong>{t('notify_whatsapp')}</strong> {t('whatsapp_admin_panel_hint_2')}
