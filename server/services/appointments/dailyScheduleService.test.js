@@ -69,8 +69,8 @@ describe('DailyScheduleService', () => {
         expect(takenSlot.slot_status).toBe('taken');
         expect(takenSlot.patient_name).toBe('Juan Perez');
 
-        // Assert the preceding slot from 08:00 to 08:30 was adjusted (duration math works)
-        const precedingSlot = slots.find(s => s.slot_time === '08:00:00');
+        // Assert the preceding slot anchors backwards to 08:30 seamlessly (07:30 to 08:30)
+        const precedingSlot = slots.find(s => s.slot_time === '07:30:00');
         expect(precedingSlot).toBeDefined();
         expect(precedingSlot.is_out_of_hours).toBe(true);
     });
@@ -224,5 +224,65 @@ describe('DailyScheduleService', () => {
         const slot15 = slots.find(s => s.slot_time === '15:00:00');
         expect(slot15).toBeDefined();
         expect(slot15.slot_status).toBe('free');
+    });
+
+    it('should not produce a phantom 08:00 slot when an overturn at 07:30 leads directly into a 08:30 shift', async () => {
+        const doctorId = 10;
+        const dateStr = '2026-09-14'; // Monday
+
+        doctorRepository.getDoctorConfig.mockResolvedValue({
+            full_name: 'Maria Cecilia Scheerle',
+            appointment_duration: 60,
+            overturn_start_time: '07:00:00',
+            overturn_end_time: '20:00:00',
+            force_hour_alignment: 0
+        });
+
+        doctorRepository.getDoctorSchedules.mockResolvedValue([
+            {
+                doctor_id: doctorId,
+                day_of_week: 1,
+                start_time: '08:30:00',
+                end_time: '13:30:00',
+                is_break: 0
+            }
+        ]);
+
+        appointmentRepository.findDetailedByDoctorAndDate.mockResolvedValue([
+            {
+                id: 2515,
+                appointment_date: '2026-09-14 07:30:00',
+                doctor_name: 'Maria Cecilia Scheerle',
+                patient_id: 8971,
+                patient_name: 'Anahi Montero',
+                status: 'pending'
+            },
+            {
+                id: 2500,
+                appointment_date: '2026-09-14 08:30:00',
+                doctor_name: 'Maria Cecilia Scheerle',
+                patient_id: 2965,
+                patient_name: 'Andrea Perez',
+                status: 'pending'
+            }
+        ]);
+
+        const slots = await dailyScheduleService.getDailySchedule(doctorId, dateStr);
+
+        // Slot 07:30 should be taken by Anahi Montero
+        const slot0730 = slots.find(s => s.slot_time === '07:30:00');
+        expect(slot0730).toBeDefined();
+        expect(slot0730.slot_status).toBe('taken');
+        expect(slot0730.patient_name).toBe('Anahi Montero');
+
+        // Slot 08:30 should be taken by Andrea Perez
+        const slot0830 = slots.find(s => s.slot_time === '08:30:00');
+        expect(slot0830).toBeDefined();
+        expect(slot0830.slot_status).toBe('taken');
+        expect(slot0830.patient_name).toBe('Andrea Perez');
+
+        // There MUST NOT be any fake slot at 08:00
+        const slot0800 = slots.find(s => s.slot_time === '08:00:00');
+        expect(slot0800).toBeUndefined();
     });
 });
