@@ -59,9 +59,33 @@ export const AppointmentPatientSection = ({
                 <div className={styles.AppointmentPatientSection__missingAlert}>
                     <span className={styles.AppointmentPatientSection__missingText}>
                         <Icon name="warning" size="0.9rem" />
-                        <strong>{t('missing_data_prefix')}:</strong> {missingData.join(', ')}
+                        <strong>{t('missing_data_prefix')}:</strong>{' '}
+                        {missingData.map((item, idx) => {
+                            const label = typeof item === 'string' ? item : item.label;
+                            const step = typeof item === 'string' ? undefined : item.step;
+                            return (
+                                <React.Fragment key={typeof item === 'string' ? item : item.key || idx}>
+                                    {idx > 0 && ', '}
+                                    {step ? (
+                                        <button
+                                            type="button"
+                                            className={styles.AppointmentPatientSection__missingItemBtn}
+                                            onClick={() => onOpenEditPatient(step)}
+                                        >
+                                            {label}
+                                        </button>
+                                    ) : (
+                                        <span>{label}</span>
+                                    )}
+                                </React.Fragment>
+                            );
+                        })}
                     </span>
-                    <button type="button" className={styles.AppointmentPatientSection__missingAction} onClick={onOpenEditPatient}>
+                    <button
+                        type="button"
+                        className={styles.AppointmentPatientSection__missingAction}
+                        onClick={() => onOpenEditPatient(typeof missingData[0] === 'object' ? missingData[0]?.step : undefined)}
+                    >
                         {t('complete')}
                     </button>
                 </div>

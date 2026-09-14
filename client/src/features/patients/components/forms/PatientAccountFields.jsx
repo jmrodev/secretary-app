@@ -20,7 +20,6 @@ export const PatientAccountFields = ({ formData, updatePatientData, t }) => {
                         id="patient-username"
                         type="text"
                         name="username"
-                        className="patient-account-fields__field"
                         value={formData.username || ''}
                         onChange={updatePatientData}
                         required
@@ -34,7 +33,6 @@ export const PatientAccountFields = ({ formData, updatePatientData, t }) => {
                         id="patient-password"
                         type="password"
                         name="password"
-                        className="patient-account-fields__field"
                         value={formData.password || ''}
                         onChange={updatePatientData}
                         required

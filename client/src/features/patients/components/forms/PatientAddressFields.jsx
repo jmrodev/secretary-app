@@ -20,7 +20,6 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     <Input
                         id="patient-street"
                         name="street_name"
-                        className="patient-address-fields__field"
                         value={formData.street_name || ''}
                         onChange={updatePatientData}
                         placeholder={t('street_placeholder')}
@@ -31,7 +30,6 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     <Input
                         id="patient-street-number"
                         name="street_number"
-                        className="patient-address-fields__field"
                         value={formData.street_number || ''}
                         onChange={updatePatientData}
                         placeholder="1234"
@@ -43,7 +41,6 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     <Input
                         id="patient-floor"
                         name="floor"
-                        className="patient-address-fields__field"
                         value={formData.floor || ''}
                         onChange={updatePatientData}
                         placeholder="2"
@@ -54,7 +51,6 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     <Input
                         id="patient-apartment"
                         name="apartment"
-                        className="patient-address-fields__field"
                         value={formData.apartment || ''}
                         onChange={updatePatientData}
                         placeholder="B"
@@ -66,7 +62,6 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     <Input
                         id="patient-city"
                         name="city"
-                        className="patient-address-fields__field"
                         value={formData.city || ''}
                         onChange={updatePatientData}
                     />
@@ -76,7 +71,6 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                     <Input
                         id="patient-province"
                         name="province"
-                        className="patient-address-fields__field"
                         value={formData.province || ''}
                         onChange={updatePatientData}
                     />
@@ -99,7 +93,7 @@ export const PatientAddressFields = ({ formData, updatePatientData, t }) => {
                         target="_blank"
                         variant="secondary"
                         size="sm"
-                        className="patient-address-fields__map-btn"
+                        className={styles.PatientAddressFields__mapBtn}
                         icon={<Icon name="open_in_new" size="0.9rem" />}
                         iconPosition="right"
                     >

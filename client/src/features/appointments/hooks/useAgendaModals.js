@@ -6,6 +6,7 @@ import { useState } from 'react';
  */
 export const useAgendaModals = () => {
     const [editPatientModalOpen, setEditPatientModalOpen] = useState(false);
+    const [editPatientStep, setEditPatientStep] = useState(null);
     const [paymentModal, setPaymentModal] = useState({ open: false, initialData: {} });
     const [actionModal, setActionModal] = useState({ open: false, appt: null });
     const [historyModal, setHistoryModal] = useState({ open: false, patientId: null, patientName: '' });
@@ -17,6 +18,7 @@ export const useAgendaModals = () => {
 
     return {
         editPatientModalOpen, setEditPatientModalOpen,
+        editPatientStep, setEditPatientStep,
         paymentModal, setPaymentModal,
         actionModal, setActionModal,
         historyModal, setHistoryModal,

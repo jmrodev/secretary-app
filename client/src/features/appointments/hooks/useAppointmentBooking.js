@@ -57,12 +57,12 @@ export const useAppointmentBooking = (doctors) => {
                 return;
             }
             const missing = [];
-            if (!selectedPatientData.dni) missing.push(t('dni'));
-            if (!selectedPatientData.phone) missing.push(t('phone'));
-            if (!selectedPatientData.email) missing.push(t('email'));
-            if (!selectedPatientData.street_name) missing.push(t('address'));
+            if (!selectedPatientData.dni) missing.push({ key: 'dni', label: t('dni'), step: 'personal' });
+            if (!selectedPatientData.phone) missing.push({ key: 'phone', label: t('phone'), step: 'contact' });
+            if (!selectedPatientData.email) missing.push({ key: 'email', label: t('email'), step: 'contact' });
+            if (!selectedPatientData.street_name) missing.push({ key: 'address', label: t('address'), step: 'address' });
             if (!selectedPatientData.insurance_name && !selectedPatientData.insurance_id) {
-                missing.push(t('insurance'));
+                missing.push({ key: 'insurance', label: t('insurance'), step: 'insurance' });
             }
             setMissingData(missing);
         });

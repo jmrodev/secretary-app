@@ -38,7 +38,7 @@ export const AppointmentsPage = () => {
         searchTerm, searchPatientId, patientAppointments, searchLoading,
         paymentModal, actionModal, historyModal,
         prescribeModal, whatsappModal, setWhatsappModal, showNextSlotModal, setShowNextSlotModal,
-        editPatientModalOpen, authModalOpen,
+        editPatientModalOpen, editPatientStep, authModalOpen,
         handlers, booking, nextSlot, rescheduleAppt, exitRescheduleMode,
         isStaff, isAdmin, isSecretary, isPatient, isMedicalStaff, fetched
     } = controller;
@@ -46,7 +46,7 @@ export const AppointmentsPage = () => {
     const {
         setShowOutOfHours,
         setSearchPatientId, setPaymentModal, setActionModal, setHistoryModal,
-        setPrescribeModal, setEditPatientModalOpen, setAuthModalOpen
+        setPrescribeModal, setEditPatientModalOpen, setEditPatientStep, setAuthModalOpen
     } = handlers;
 
     if (!user) return <Loading variant="full-page" />;
@@ -150,6 +150,7 @@ export const AppointmentsPage = () => {
                 showNextSlotModal={false}
                 setShowNextSlotModal={setShowNextSlotModal}
                 editPatientModalOpen={editPatientModalOpen} setEditPatientModalOpen={setEditPatientModalOpen}
+                editPatientStep={editPatientStep} setEditPatientStep={setEditPatientStep}
                 authModalOpen={authModalOpen}
                 handlers={handlers} t={t}
                 prescriptionModalSlot={
@@ -174,7 +175,11 @@ export const AppointmentsPage = () => {
                 patientManagerModalSlot={
                     <PatientManagerModal
                         isOpen={editPatientModalOpen}
-                        onClose={() => setEditPatientModalOpen(false)}
+                        initialStep={editPatientStep}
+                        onClose={() => {
+                            setEditPatientModalOpen(false);
+                            if (setEditPatientStep) setEditPatientStep(null);
+                        }}
                         patient={booking.selectedPatientData}
                         referenceInfo={booking.syncReferenceInfo}
                         onUpdate={(updatedData) => {

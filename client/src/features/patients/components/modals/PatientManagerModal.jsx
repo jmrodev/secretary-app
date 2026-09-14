@@ -20,7 +20,8 @@ export const PatientManagerModal = ({
     onUpdate,
     referenceInfo,
     insurances = EMPTY_ARRAY,
-    doctors = EMPTY_ARRAY
+    doctors = EMPTY_ARRAY,
+    initialStep = null
 }) => {
     const isEdit = !!(patient && patient.id);
 
@@ -39,7 +40,6 @@ export const PatientManagerModal = ({
     } = controller;
 
     const title = isEdit ? t('edit_patient') : t('register_new_patient');
-    const baseClass = styles.PatientManagerModal__root;
 
     return (
         <Modal
@@ -48,14 +48,14 @@ export const PatientManagerModal = ({
             title={title}
             size="lg"
         >
-            <article className={`${baseClass} ${baseClass}--full-width`}>
+            <article className={`${styles.PatientManagerModal__root} ${styles.PatientManagerModal__fullWidth}`}>
                 {referenceInfo && !isEdit && (
-                    <header className={`${baseClass}__reference`}>
-                        <span className={`${baseClass}__reference-label`}>
+                    <header className={styles.PatientManagerModal__reference}>
+                        <span className={styles.PatientManagerModal__referenceLabel}>
                             <Icon name="description" size="1.2rem" />
                             {t('appointment_info_reference')}
                         </span>
-                        <div className={`${baseClass}__reference-content`}>
+                        <div className={styles.PatientManagerModal__referenceContent}>
                             {referenceInfo}
                         </div>
                     </header>
@@ -65,10 +65,12 @@ export const PatientManagerModal = ({
                     <Loading text={t('loading_data')} />
                 ) : (
                     <PatientForm
+                        key={`${patient?.id || 'new'}_${initialStep || 'default'}`}
                         controller={controller}
                         onCancel={onClose}
                         isEdit={isEdit}
                         isAdmin={true}
+                        initialStep={initialStep}
                     />
                 )}
             </article>
