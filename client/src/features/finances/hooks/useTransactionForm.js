@@ -7,7 +7,7 @@ import { getServiceTypes } from '@/constants/transactionOptions';
 import { capitalizeFirst } from '@/utils/core/stringUtils';
 import { toInputDateTime, getNow } from '@/utils/core/dateUtils';
 
-export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0) => {
+export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0, explicitTotal = null) => {
     if (!appt) return '';
     const formatTime = (ts) => {
         if (!ts) return null;
@@ -27,7 +27,10 @@ export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0
     if (appt.completed_at) milestones.push(`Atendido: ${formatTime(appt.completed_at)}`);
     if (appt.paid_at) milestones.push(`Pagado: ${formatTime(appt.paid_at)}`);
 
-    const totalCost = Number(appt.cost) || 0;
+    const totalCost = (explicitTotal !== null && explicitTotal !== undefined && Number(explicitTotal) > 0)
+        ? Number(explicitTotal)
+        : (Number(appt.cost) > 0 ? Number(appt.cost) : (Number(appt.pending_amount) || 0));
+
     const prevPaid = Number(appt.paid_amount) || 0;
     const currentPaid = Number(paymentAmount) || 0;
     const totalCobrado = prevPaid + currentPaid;
@@ -41,7 +44,9 @@ export const generateAppointmentBitacora = (appt, patientName, paymentAmount = 0
         desc += ` - ${new Date(appt.appointment_date).toLocaleDateString()}`;
     }
 
-    desc += ` | Total: $${totalCost} | Cobrado: $${totalCobrado} | Saldo: $${saldoTurno}`;
+    if (totalCost > 0 || totalCobrado > 0) {
+        desc += ` | Total: $${totalCost} | Cobrado: $${totalCobrado} | Saldo: $${saldoTurno}`;
+    }
     return desc;
 };
 
@@ -75,6 +80,8 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     // Filter/Search State
     const [patientSearch, setPatientSearch] = useState('');
     const [showPatientList, setShowPatientList] = useState(false);
+    const [isUserEditedDescription, setIsUserEditedDescription] = useState(false);
+    const [appliedCredit, setAppliedCredit] = useState(0);
 
     // --- Effects ---
     const fetchDoctors = useCallback(async () => {
@@ -86,6 +93,21 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             console.error("Failed to fetch doctors", err);
         }
     }, []);
+
+    const getProjectedDescription = useCallback((payments, total, credit = appliedCredit) => {
+        if (!initialData?.appointment) return null;
+        const currentPaid = payments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
+        let desc = generateAppointmentBitacora(
+            initialData.appointment,
+            initialData.patientName,
+            currentPaid,
+            total
+        );
+        if (credit > 0) {
+            desc += ` (Aplicado crédito: $${credit})`;
+        }
+        return desc;
+    }, [initialData, appliedCredit]);
 
     const fetchPricing = useCallback(async (docId, patId, serviceType = 'consultation', initialAmount = null) => {
         if (!docId) return;
@@ -100,11 +122,25 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
                 setFormData(prev => {
                     const newPayments = prev.payments.map((p, index) => 
-                        index === 0 ? { ...p, amount: finalPrice } : p
+                        index === 0 && (!p.amount || Number(p.amount) === 0) ? { ...p, amount: finalPrice } : p
                     );
-                    return { ...prev, payments: newPayments };
+                    const next = { ...prev, payments: newPayments };
+                    if (!isUserEditedDescription && initialData?.appointment) {
+                        const currentPaid = newPayments.reduce((acc, p) => acc + (Number(p.amount) || 0), 0);
+                        let desc = generateAppointmentBitacora(
+                            initialData.appointment,
+                            initialData.patientName,
+                            currentPaid,
+                            finalPrice
+                        );
+                        if (appliedCredit > 0) {
+                            desc += ` (Aplicado crédito: $${appliedCredit})`;
+                        }
+                        next.description = desc;
+                    }
+                    return next;
                 });
-                setTotalPrice(finalPrice);
+                setTotalPrice(prev => (prev > 0 ? prev : finalPrice));
                 if (data.explanation) {
                     setPricingInfo(data.explanation);
                 }
@@ -112,7 +148,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         } catch (err) {
             console.error("Failed to fetch pricing", err);
         }
-    }, []);
+    }, [initialData, isUserEditedDescription, appliedCredit]);
 
     const [patientCredit, setPatientCredit] = useState(0);
 
@@ -135,6 +171,7 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         const discountAmount = Math.min(patientCredit, totalPrice);
         if (discountAmount <= 0) return;
 
+        setAppliedCredit(discountAmount);
         setFormData(prev => {
             const updatedPayments = prev.payments.map((p, index) => {
                 if (index === 0) {
@@ -142,10 +179,15 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
                 }
                 return p;
             });
+            const creditTag = `(Aplicado crédito: $${discountAmount})`;
+            const newDesc = prev.description.includes('Aplicado crédito:')
+                ? prev.description
+                : `${prev.description} ${creditTag}`.trim();
+
             return {
                 ...prev,
                 payments: updatedPayments,
-                description: `${prev.description} (Aplicado crédito: $${discountAmount})`
+                description: newDesc
             };
         });
         showMessage(`Crédito de $${discountAmount} aplicado correctamente`, 'success');
@@ -162,14 +204,30 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
         const localIso = toInputDateTime(getNow());
 
+        const appt = data.appointment;
+        const effectiveCost = (appt && Number(appt.cost) > 0)
+            ? Number(appt.cost)
+            : (appt && Number(appt.pending_amount) > 0
+                ? Number(appt.pending_amount)
+                : (Number(data.amount) || 0));
+
+        const initialAmount = (data.amount !== undefined && data.amount !== null && data.amount !== '')
+            ? (Number(data.amount) > 0 ? Number(data.amount) : (effectiveCost > 0 ? effectiveCost : ''))
+            : (effectiveCost > 0 ? effectiveCost : '');
+
         let initialDescription = data.description || '';
         if (data.appointment) {
-            initialDescription = generateAppointmentBitacora(data.appointment, data.patientName, data.amount !== undefined ? data.amount : 0);
+            initialDescription = generateAppointmentBitacora(
+                data.appointment,
+                data.patientName,
+                initialAmount !== '' ? Number(initialAmount) : 0,
+                effectiveCost
+            );
         }
 
         const newFormState = {
             type: data.type || 'income_patient',
-            payments: data.payments ? data.payments.map(p => ({ ...p, _tmpId: p._tmpId || Math.random() })) : [{ _tmpId: Date.now(), amount: data.amount !== undefined ? data.amount : '', method: data.method || 'cash' }],
+            payments: data.payments ? data.payments.map(p => ({ ...p, _tmpId: p._tmpId || Math.random() })) : [{ _tmpId: Date.now(), amount: initialAmount, method: data.method || 'cash' }],
             description: initialDescription,
             related_user_id: (data.related_user_id || data.patientUserId) ? String(data.related_user_id || data.patientUserId) : '',
             patient_id: data.patientId || data.patient_id || '',
@@ -185,6 +243,8 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         }
 
         setFormData(newFormState);
+        setIsUserEditedDescription(false);
+        setAppliedCredit(0);
         setMedications([]); 
 
         if (data.patientId) {
@@ -199,12 +259,14 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
             setPatientCredit(0);
         }
 
-        if (data.amount !== undefined && data.amount !== null && data.amount !== '' && Number(data.amount) > 0) {
+        if (effectiveCost > 0) {
+            setTotalPrice(effectiveCost);
+        } else if (data.amount !== undefined && data.amount !== null && data.amount !== '' && Number(data.amount) > 0) {
             setTotalPrice(Number(data.amount));
         }
 
         if (data.doctorId) {
-            fetchPricing(data.doctorId, data.patientId || null, initialServiceType, data.amount);
+            fetchPricing(data.doctorId, data.patientId || null, initialServiceType, initialAmount !== '' ? initialAmount : data.amount);
         }
     }, [initialData, fetchPricing, fetchPatientCredit]);
 
@@ -236,11 +298,26 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
 
     // --- Handlers ---
     const updateField = (field, value) => {
-        if (field === 'description' && typeof value === 'string') {
-            value = capitalizeFirst(value);
+        if (field === 'description') {
+            setIsUserEditedDescription(true);
+            if (typeof value === 'string') {
+                value = capitalizeFirst(value);
+            }
         }
         setFormData(prev => ({ ...prev, [field]: value }));
     };
+
+    const handleTotalPriceChange = useCallback((val) => {
+        const numVal = Number(val);
+        setTotalPrice(numVal);
+        setFormData(prev => {
+            if (!isUserEditedDescription && initialData?.appointment) {
+                const desc = getProjectedDescription(prev.payments, numVal);
+                return { ...prev, description: desc };
+            }
+            return prev;
+        });
+    }, [isUserEditedDescription, initialData, getProjectedDescription]);
 
     const updateServiceType = (newType) => {
         setFormData(prev => {
@@ -280,10 +357,16 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     };
 
     const handlePaymentChange = (index, field, val) => {
-        const newPayments = formData.payments.map((p, i) => 
-            i === index ? { ...p, [field]: val } : p
-        );
-        setFormData(prev => ({ ...prev, payments: newPayments }));
+        setFormData(prev => {
+            const newPayments = prev.payments.map((p, i) => 
+                i === index ? { ...p, [field]: val } : p
+            );
+            const next = { ...prev, payments: newPayments };
+            if (field === 'amount' && !isUserEditedDescription && initialData?.appointment) {
+                next.description = getProjectedDescription(newPayments, totalPrice);
+            }
+            return next;
+        });
     };
 
     const addPaymentMethod = () => {
@@ -291,7 +374,14 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
     };
 
     const removePaymentMethod = (index) => {
-        setFormData(prev => ({ ...prev, payments: prev.payments.filter((_, i) => i !== index) }));
+        setFormData(prev => {
+            const newPayments = prev.payments.filter((_, i) => i !== index);
+            const next = { ...prev, payments: newPayments };
+            if (!isUserEditedDescription && initialData?.appointment) {
+                next.description = getProjectedDescription(newPayments, totalPrice);
+            }
+            return next;
+        });
     };
 
     const addMedication = (med) => {
@@ -327,7 +417,9 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
                     payload.append('debt_amount', debt);
                     // Enrich description with partial payment details
                     const existingDesc = payload.get('description') || '';
-                    payload.set('description', `${existingDesc} [Pago Parcial: $${totalPaid} / Resto: $${debt}]`);
+                    if (!existingDesc.includes('Saldo:') && !existingDesc.includes('Pago Parcial:')) {
+                        payload.set('description', `${existingDesc} [Pago Parcial: $${totalPaid} / Resto: $${debt}]`);
+                    }
                 }
             }
 
@@ -380,6 +472,6 @@ export const useTransactionForm = (isOpen, initialData, requestId, onSuccess, on
         saveTransaction,
         addMedication,
         removeMedication,
-        setTotalPrice
+        setTotalPrice: handleTotalPriceChange
     };
 };
