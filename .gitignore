@@ -143,6 +143,8 @@ lint_report.txt
 BACKUP_V1.0_CIMA.tar.gz.gpg
 examplestore.db
 scratch/
+server/services/certs/
+sdd/
 
 # DB Schema and Seeds (Ignore live ones, keep templates)
 *.sql

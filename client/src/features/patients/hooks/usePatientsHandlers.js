@@ -27,8 +27,10 @@ export const usePatientsHandlers = ({
     setEditModal,
     setDebtModal,
     setQrModal,
+    setBehaviorRatingModal,
     fetchPatients,
     fetchRecycleBin,
+    onCloseDetails,
 }) => {
 
     const handleViewDetailsAction = useCallback(async (id) => {
@@ -65,13 +67,14 @@ export const usePatientsHandlers = ({
             useDoubleConfirm: true,
             adminPassword,
             onSuccess: () => {
+                if (onCloseDetails) onCloseDetails();
                 setSelectedPatientId(null);
                 setPatientDetails(null);
                 fetchPatients();
                 fetchRecycleBin();
             }
         });
-    }, [prompt, deleteUser, setSelectedPatientId, setPatientDetails, fetchPatients, fetchRecycleBin, t]);
+    }, [prompt, deleteUser, onCloseDetails, setSelectedPatientId, setPatientDetails, fetchPatients, fetchRecycleBin, t]);
 
     const handleEditClick = useCallback((patient) => {
         const data = patient || patientDetails;
@@ -173,6 +176,58 @@ export const usePatientsHandlers = ({
         handleRatingChange(patientId, nextRating);
     }, [handleRatingChange]);
 
+    const handleOpenBehaviorRatingModal = useCallback((e, patient) => {
+        if (e) e.stopPropagation();
+        setBehaviorRatingModal({ open: true, patient });
+    }, [setBehaviorRatingModal]);
+
+    const handleCloseBehaviorRatingModal = useCallback(() => {
+        setBehaviorRatingModal({ open: false, patient: null });
+    }, [setBehaviorRatingModal]);
+
+    const handleSaveBehaviorRating = useCallback(async (patientId, newRating, note) => {
+        try {
+            await api.put(`/users/patients/${patientId}`, {
+                behavior_rating: newRating,
+                behavior_rating_note: note
+            });
+            showMessage(t('patient_updated'), 'success');
+            setBehaviorRatingModal({ open: false, patient: null });
+            if (setPatients) {
+                setPatients(prev => prev.map(p => {
+                    if (p.id !== patientId) return p;
+                    const fin = Number(p.financial_rating) || 5;
+                    const att = Number(p.attendance_rating) || 5;
+                    const derived = Math.round((fin + att) / 2);
+                    const isManual = Boolean(note && note.trim() && newRating !== null && newRating !== undefined);
+                    return {
+                        ...p,
+                        behavior_rating: isManual ? newRating : derived,
+                        behavior_rating_note: isManual ? note.trim() : null
+                    };
+                }));
+            }
+            setPatientDetails(prev => {
+                if (prev?.id !== patientId) return prev;
+                const fin = Number(prev.financial_rating) || 5;
+                const att = Number(prev.attendance_rating) || 5;
+                const derived = Math.round((fin + att) / 2);
+                const isManual = Boolean(note && note.trim() && newRating !== null && newRating !== undefined);
+                return {
+                    ...prev,
+                    behavior_rating: isManual ? newRating : derived,
+                    behavior_rating_note: isManual ? note.trim() : null
+                };
+            });
+            if (fetchPatients) {
+                fetchPatients();
+            }
+        } catch (err) {
+            console.error(err);
+            showMessage(t('failed_update_patient'), 'error');
+        }
+    }, [t, showMessage, setPatients, fetchPatients, setPatientDetails, setBehaviorRatingModal]);
+
     const handleToggleNew = useCallback(async (patientId) => {
         try {
             const res = await api.put(`/users/patients/${patientId}/toggle-new`);
@@ -245,6 +300,9 @@ export const usePatientsHandlers = ({
         handlePayDebt,
         handleRatingChange,
         handleCycleRating,
+        handleOpenBehaviorRatingModal,
+        handleCloseBehaviorRatingModal,
+        handleSaveBehaviorRating,
         handleToggleNew,
         handleGenerateQR,
         handleGeneratePrescriptionLink,

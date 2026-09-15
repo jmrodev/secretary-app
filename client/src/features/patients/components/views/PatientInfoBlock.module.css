@@ -79,6 +79,11 @@
     color: var(--text-main);
 }
 
+.PatientInfoBlock__cellBold {
+    font-weight: 700;
+    color: var(--text-main);
+}
+
 .PatientInfoBlock__infoHint {
     font-size: 0.85rem;
     font-weight: 500;

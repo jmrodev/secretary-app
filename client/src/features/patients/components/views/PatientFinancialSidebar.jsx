@@ -89,7 +89,7 @@ export const PatientFinancialSidebar = ({
     const totalBilled = allLedgerItems.reduce((acc, item) => acc + item.cost, 0);
 
     return (
-        <aside className={`${styles.PatientFinancialSidebar__sidebar} ${styles.PatientFinancialSidebar__sidebarFull}`}>
+        <section className={`${styles.PatientFinancialSidebar__sidebar} ${styles.PatientFinancialSidebar__sidebarFull}`}>
             {/* Header Financial Summary Cards */}
             <div className={styles.PatientFinancialSidebar__summaryGrid}>
                 {/* Stat 1: Current Debt */}
@@ -249,7 +249,7 @@ export const PatientFinancialSidebar = ({
                     </table>
                 </div>
             </div>
-        </aside>
+        </section>
     );
 };
 

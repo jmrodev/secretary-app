@@ -1,0 +1,193 @@
+.PatientMedicationsTab__root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}
+
+.PatientMedicationsTab__block {
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.PatientMedicationsTab__blockHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--card-surface-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.PatientMedicationsTab__blockTitle {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin: 0;
+}
+
+.PatientMedicationsTab__blockContent {
+    padding: var(--spacing-md);
+}
+
+.PatientMedicationsTab__medsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.PatientMedicationsTab__medCard {
+    background-color: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.PatientMedicationsTab__medCardTop {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.PatientMedicationsTab__medCardHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.PatientMedicationsTab__iconPrimary {
+    color: var(--primary-color);
+}
+
+.PatientMedicationsTab__medName {
+    font-weight: 700;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+
+.PatientMedicationsTab__medMono {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.PatientMedicationsTab__medTags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-top: 4px;
+}
+
+.PatientMedicationsTab__tagDose,
+.PatientMedicationsTab__tagFreq,
+.PatientMedicationsTab__tagBoxes {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+.PatientMedicationsTab__medNotes {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    background-color: rgb(128, 128, 128, 0.06);
+    padding: 4px 6px;
+    border-radius: var(--radius-sm);
+    margin-top: 4px;
+}
+
+.PatientMedicationsTab__emptyState {
+    text-align: center;
+    padding: var(--spacing-lg) var(--spacing-md);
+}
+
+.PatientMedicationsTab__emptyText {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-sm);
+}
+
+.PatientMedicationsTab__tableResponsive {
+    overflow-x: auto;
+}
+
+.PatientMedicationsTab__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.PatientMedicationsTab__table th {
+    text-align: left;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    color: var(--text-muted);
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.PatientMedicationsTab__table td {
+    padding: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+.PatientMedicationsTab__thRight {
+    text-align: right !important;
+}
+
+.PatientMedicationsTab__tdDate {
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.PatientMedicationsTab__tdDoctor {
+    white-space: nowrap;
+    color: var(--text-secondary);
+}
+
+.PatientMedicationsTab__medText {
+    font-weight: 600;
+}
+
+.PatientMedicationsTab__dx {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    margin-top: 2px;
+}
+
+.PatientMedicationsTab__status {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+}
+
+.PatientMedicationsTab__statusOfficial {
+    background-color: rgb(13, 148, 136, 0.15);
+    color: var(--primary-color);
+}
+
+.PatientMedicationsTab__statusRequest {
+    background-color: rgb(245, 158, 11, 0.15);
+    color: var(--warning);
+}
+
+.PatientMedicationsTab__actionsGroup {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
