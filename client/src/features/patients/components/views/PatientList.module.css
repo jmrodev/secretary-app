@@ -6,11 +6,12 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm, 6px);
     box-shadow: none;
-    overflow: auto hidden;
+    overflow-x: auto;
 }
 
 .PatientList__table {
     width: 100%;
+    min-width: 800px;
     border-collapse: collapse;
     border-spacing: 0;
     table-layout: auto;
@@ -33,7 +34,6 @@
 
 .PatientList__row {
     background-color: transparent;
-    cursor: pointer;
     transition: background-color 0.15s ease;
 }
 
@@ -46,7 +46,7 @@
     font-size: 0.875rem;
     vertical-align: middle;
     color: var(--text-secondary);
-    border-bottom: 1px solid rgb(128 128 128 / 10%);
+    border-bottom: 1px solid var(--border-color);
 }
 
 .PatientList__table tr:last-child td {
@@ -156,35 +156,110 @@
     text-decoration: underline;
 }
 
-.PatientList__ratingGroup {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+.PatientList__idItem {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35rem;
 }
 
-.PatientList__ratingItem {
-    display: flex;
+.PatientList__noContact {
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.125rem 0;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
 
-.PatientList__ratingLabel {
-    font-size: 0.625rem;
-    font-weight: 900;
-    color: var(--gray-400);
-    width: 2.5rem;
-    letter-spacing: 0.05em;
+.PatientList__contactLinkEmail {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    text-decoration: none;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.PatientList__stars {
-    display: flex;
-    gap: 2px;
+.PatientList__contactLinkEmail:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
 }
 
-.PatientList__starsGold { color: var(--amber-500); }
-.PatientList__starsBlue { color: var(--primary-color); }
-.PatientList__starsPink { color: var(--rose-600); }
+.PatientList__ratingsGroupHeader {
+    text-align: center !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    letter-spacing: 0.08em;
+}
+
+.PatientList__subRatingHeader {
+    text-align: center !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    padding: 0.35rem 0.6rem !important;
+    color: var(--text-secondary) !important;
+    letter-spacing: 0.04em;
+    background: var(--card-surface-bg) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    white-space: nowrap;
+}
+
+.PatientList__subRatingCell {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.5rem 0.6rem !important;
+    white-space: nowrap;
+}
+
+.PatientList__behaviorWrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+}
+
+.PatientList__ratingItemInteractive {
+    cursor: pointer;
+    border-radius: var(--radius-sm, 4px);
+    padding: 0.25rem 0.4rem !important;
+    transition: background-color 0.15s ease;
+}
+
+.PatientList__ratingItemInteractive:hover,
+.PatientList__ratingItemInteractive:focus-visible {
+    background-color: rgb(225 29 72 / 12%);
+    outline: none;
+}
+
+.PatientList__ratingEditHint {
+    color: var(--rose-600);
+    opacity: 0.4;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.PatientList__ratingItemInteractive:hover .PatientList__ratingEditHint {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+.PatientList__noteBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--rose-600);
+    background: rgb(225 29 72 / 15%);
+    border-radius: 50%;
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: help;
+    transition: transform 0.15s ease;
+}
+
+.PatientList__noteBadge:hover {
+    transform: scale(1.2);
+}
 
 .PatientList__debtBadge {
     font-weight: 700 !important;
@@ -203,7 +278,7 @@
     font-size: 0.813rem;
     font-weight: 700;
     color: var(--text-muted);
-    background: rgb(128, 128, 128, 0.08);
+    background: rgb(128 128 128 / 8%);
     padding: 0.35rem 0.75rem;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-color);
@@ -211,11 +286,6 @@
 
 .PatientList__actions {
     text-align: right;
-}
-
-.PatientList__viewBtn {
-    font-weight: 800 !important;
-    letter-spacing: 0.3px;
 }
 
 .PatientList__empty {

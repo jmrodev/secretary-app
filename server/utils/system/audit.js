@@ -21,7 +21,9 @@ exports.logAction = async (req, action, details) => {
         const username = req.user ? req.user.username : 'Anonymous';
         const ip_address = req?.ip || req?.socket?.remoteAddress || req?.connection?.remoteAddress || '127.0.0.1';
 
-        const detailsStr = typeof details === 'object' ? JSON.stringify(details) : details;
+        const detailsStr = typeof details === 'object'
+            ? JSON.stringify(details, (_k, v) => (typeof v === 'bigint' ? v.toString() : v))
+            : details;
 
         await auditRepository.create({
             user_id,

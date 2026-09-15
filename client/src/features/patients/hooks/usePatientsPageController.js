@@ -1,4 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -18,8 +19,13 @@ import { usePatientQuery } from '@/features/patients/hooks/usePatientQuery';
  * Coordinates data fetching, filtering, pagination, and various modals using useFetch.
  */
 export const usePatientsPageController = () => {
+    // Router & URL State
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const urlPatientId = searchParams.get('id');
+
     // Contexts & Hooks
-    const { isStaff } = usePermissions();
+    const { isStaff, user } = usePermissions();
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const { settings } = useConfig();
@@ -31,10 +37,23 @@ export const usePatientsPageController = () => {
 
     // View State (Pagination)
     const [itemsPerPage] = useState(50);
-    const [activeTab, setActiveTab] = useState('list'); // 'list' | 'recycle'
+    const activeTab = searchParams.get('tab') === 'recycle' ? 'recycle' : 'list';
+
+    const setActiveTab = useCallback((tab) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            if (tab === 'recycle') {
+                next.set('tab', 'recycle');
+            } else {
+                next.delete('tab');
+            }
+            return next;
+        });
+    }, [setSearchParams]);
 
     const { 
         patients, 
+        setPatients,
         totalCount, 
         totalPages, 
         currentPage, 
@@ -64,7 +83,7 @@ export const usePatientsPageController = () => {
     const recycleItems = Array.isArray(recycleData) ? recycleData : (recycleData?.data || []);
 
     // Details View State
-    const [selectedPatientId, setSelectedPatientId] = useState(null);
+    const selectedPatientId = urlPatientId || null;
     const [patientDetails, setPatientDetails] = useState(null);
     const [detailsLoading, setDetailsLoading] = useState(false);
 
@@ -73,16 +92,56 @@ export const usePatientsPageController = () => {
     const [debtModal, setDebtModal] = useState({ open: false, params: { patientId: null, amount: '', method: 'cash' } });
     const [prescribeModal, setPrescribeModal] = useState({ open: false, data: { apptId: null, patientId: null, patientName: '', medications: '', instructions: '' } });
     const [qrModal, setQrModal] = useState({ open: false, url: '', expiry: null, patientName: '', patientPhone: '' });
+    const [behaviorRatingModal, setBehaviorRatingModal] = useState({ open: false, patient: null });
+
+    const handleBackToList = useCallback(() => {
+        if (window.history.state && window.history.state.idx > 0) {
+            navigate(-1);
+        } else {
+            setSearchParams((prev) => {
+                const next = new URLSearchParams(prev);
+                next.delete('id');
+                return next;
+            });
+        }
+    }, [navigate, setSearchParams]);
+
+    const handleOpenDetails = useCallback((id) => {
+        setSearchParams((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set('id', id);
+            return next;
+        });
+    }, [setSearchParams]);
+
+    const setSelectedPatientId = useCallback((id) => {
+        if (id) {
+            handleOpenDetails(id);
+        } else {
+            handleBackToList();
+        }
+    }, [handleOpenDetails, handleBackToList]);
 
     // --- Handlers Hook ---
     const hookHandlers = usePatientsHandlers({
         t, showMessage, confirm, prompt, deleteUser, settings,
         patients, patientDetails,
-        setPatients: () => fetchPatients(), // Use fetchPatients instead of manual setPatients if possible
+        setPatients,
         setPatientDetails, setSelectedPatientId, setDetailsLoading,
         setEditModal, setDebtModal, setQrModal, setPrescribeModal, 
+        setBehaviorRatingModal,
         fetchPatients, fetchRecycleBin,
+        onCloseDetails: handleBackToList,
     });
+
+    const { handleViewDetails: fetchPatientDetails } = hookHandlers;
+
+    // Fetch patient details when selectedPatientId changes via URL
+    useEffect(() => {
+        if (selectedPatientId) {
+            fetchPatientDetails(selectedPatientId);
+        }
+    }, [selectedPatientId, fetchPatientDetails]);
 
     // Prescription (Special case needs savePrescription from appointments hook)
     const handleSavePrescription = useCallback(async () => {
@@ -92,11 +151,9 @@ export const usePatientsPageController = () => {
         });
     }, [prescribeModal.data, savePrescription]);
 
-
-
     return {
         // State
-        user: usePermissions().user, 
+        user, 
         t, settings,
         patients, 
         totalCount,
@@ -108,17 +165,20 @@ export const usePatientsPageController = () => {
         viewDoctorId, setViewDoctorId,
         searchTerm, setSearchTerm, executeSearch,
         selectedPatientId, setSelectedPatientId,
-        patientDetails, setPatientDetails,
+        patientDetails: selectedPatientId ? patientDetails : null, setPatientDetails,
 
         // Modals
         editModal, setEditModal,
         debtModal, setDebtModal,
         qrModal, setQrModal,
         prescribeModal, setPrescribeModal,
+        behaviorRatingModal, setBehaviorRatingModal,
 
         // Handlers Group
         handlers: {
             ...hookHandlers,
+            handleViewDetails: handleOpenDetails,
+            handleBackToList,
             fetchPatients, fetchRecycleBin,
             handleSavePrescription,
         },

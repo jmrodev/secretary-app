@@ -9,7 +9,7 @@ const PATIENT_FIELDS = new Set([
     'street_name', 'street_number', 'floor', 'apartment',
     'city', 'province', 'country', 'medical_history', 'dni',
     'affiliate_number', 'insurance_id', 'institution_id',
-    'tariff_percent', 'tariff_override', 'behavior_rating',
+    'tariff_percent', 'tariff_override', 'behavior_rating', 'behavior_rating_note',
     'visit_interval_days', 'prescription_interval_days',
     'next_suggested_visit_date', 'next_suggested_prescription_date',
     'license_expiry_date', 'is_new_patient', 'marked_new_at'

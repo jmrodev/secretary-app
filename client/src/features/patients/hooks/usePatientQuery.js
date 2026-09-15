@@ -29,7 +29,7 @@ export const usePatientQuery = (options = {}) => {
 
     const shouldSearch = executedSearch.length >= minChars || executedSearch.length === 0;
 
-    const { data: response, loading, fetched: hasFetchedOnce, refetch } = useFetch('/users/patients', {
+    const { data: response, loading, fetched: hasFetchedOnce, refetch, setData } = useFetch('/users/patients', {
         initialData: { success: true, data: [], meta: { totalCount: 0 } },
         params: {
             page: currentPage,
@@ -45,6 +45,18 @@ export const usePatientQuery = (options = {}) => {
     const totalCount = (meta.totalCount !== undefined && meta.totalCount !== null) ? Number(meta.totalCount) : patients.length;
     const totalPages = Math.max(1, Math.ceil(totalCount / limit));
 
+    const setPatients = useCallback((updater) => {
+        setData((prev) => {
+            if (!prev) return prev;
+            const currentPatients = Array.isArray(prev?.data) ? prev.data : [];
+            const nextPatients = typeof updater === 'function' ? updater(currentPatients) : updater;
+            return {
+                ...prev,
+                data: nextPatients
+            };
+        });
+    }, [setData]);
+
     const handlePageChange = useCallback((newPage) => {
         if (newPage >= 1 && newPage <= totalPages) {
             setCurrentPage(newPage);
@@ -53,6 +65,7 @@ export const usePatientQuery = (options = {}) => {
 
     return {
         patients,
+        setPatients,
         totalCount,
         totalPages,
         currentPage,

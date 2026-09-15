@@ -1,0 +1,170 @@
+.PatientDetailsHeader__root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--dashboard-card-border);
+}
+
+.PatientDetailsHeader__topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.PatientDetailsHeader__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.PatientDetailsHeader__deleteBtn {
+    color: var(--danger) !important;
+}
+
+.PatientDetailsHeader__identityCard {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.PatientDetailsHeader__mainInfo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    flex: 1;
+    min-width: 260px;
+}
+
+.PatientDetailsHeader__title {
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: var(--text-main);
+    letter-spacing: -0.03em;
+    margin: 0;
+    line-height: 1.2;
+    text-transform: capitalize;
+}
+
+.PatientDetailsHeader__chipsRow {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+    margin-top: var(--spacing-xs);
+}
+
+.PatientDetailsHeader__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.813rem;
+    color: var(--text-secondary);
+    background-color: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+}
+
+.PatientDetailsHeader__debtBtn {
+    font-weight: 700 !important;
+    font-size: 0.813rem !important;
+    border-radius: var(--radius-sm) !important;
+}
+
+.PatientDetailsHeader__ratingsGrid {
+    display: flex;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+    flex-wrap: wrap;
+}
+
+.PatientDetailsHeader__ratingCard {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-sm);
+    min-width: 105px;
+}
+
+.PatientDetailsHeader__ratingCardBehavior {
+    position: relative;
+    border-color: rgb(225, 29, 72, 0.25);
+}
+
+.PatientDetailsHeader__ratingCardInteractive {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.PatientDetailsHeader__ratingCardInteractive:hover {
+    background-color: var(--card-hover-bg);
+    border-color: var(--rose-500);
+    box-shadow: var(--shadow-sm);
+}
+
+.PatientDetailsHeader__behaviorHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-xs);
+}
+
+.PatientDetailsHeader__ratingLabel {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.PatientDetailsHeader__badge {
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+}
+
+.PatientDetailsHeader__badgeManual {
+    background-color: rgb(225, 29, 72, 0.15);
+    color: var(--rose-500);
+}
+
+.PatientDetailsHeader__badgeAuto {
+    background-color: rgb(128, 128, 128, 0.12);
+    color: var(--text-muted);
+}
+
+.PatientDetailsHeader__behaviorRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.PatientDetailsHeader__noteBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--rose-500);
+    cursor: help;
+}
+
+.PatientDetailsHeader__editHint {
+    color: var(--text-muted);
+    opacity: 0.6;
+    margin-left: auto;
+}
+
+.PatientDetailsHeader__ratingCardInteractive:hover .PatientDetailsHeader__editHint {
+    opacity: 1;
+    color: var(--primary-color);
+}

@@ -22,9 +22,17 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
             GROUP BY patient_id
         ) appt_stats`, 'appt_stats.patient_id = p.id');
 
-        // Campos base incluyendo los calculados
+        // Campos base incluyendo los calculados (excluye p.behavior_rating crudo para evitar ER_DUPLICATE_FIELD con el cálculo derivado)
         this.select([
-            'p.*',
+            'p.id', 'p.user_id', 'p.first_name', 'p.last_name', 'p.full_name', 'p.dob',
+            'p.phone', 'p.email', 'p.medical_history', 'p.dni', 'p.affiliate_number',
+            'p.insurance_id', 'p.tariff_percent', 'p.tariff_override', 'p.behavior_rating_note',
+            'p.is_new_patient', 'p.marked_new_at', 'p.visit_interval_days',
+            'p.prescription_interval_days', 'p.next_suggested_visit_date',
+            'p.next_suggested_prescription_date', 'p.license_expiry_date',
+            'p.institution_id', 'p.street_name', 'p.street_number', 'p.floor',
+            'p.apartment', 'p.city', 'p.province', 'p.country', 'p.visit_notified',
+            'p.prescription_notified', 'p.license_notified',
             'u.username',
             'u.role',
             'COALESCE(appt_stats.total_appointments, 0) as total_appointments',
@@ -48,7 +56,27 @@ class PatientsQueryBuilder extends BaseQueryBuilder {
                 WHEN (appt_stats.total_appointments - appt_stats.missed_appointments) / appt_stats.total_appointments >= 0.70 THEN 3
                 WHEN (appt_stats.total_appointments - appt_stats.missed_appointments) / appt_stats.total_appointments >= 0.50 THEN 2
                 ELSE 1 
-            END as attendance_rating`
+            END as attendance_rating`,
+            `CASE 
+                WHEN p.behavior_rating_note IS NOT NULL AND TRIM(p.behavior_rating_note) != '' AND p.behavior_rating IS NOT NULL THEN p.behavior_rating
+                ELSE ROUND((
+                    (CASE 
+                        WHEN COALESCE(b.total_debt_calculated, 0) <= 0 THEN 5 
+                        WHEN b.total_debt_calculated < 1000 THEN 4 
+                        WHEN b.total_debt_calculated < 5000 THEN 3 
+                        WHEN b.total_debt_calculated < 10000 THEN 2 
+                        ELSE 1 
+                    END) +
+                    (CASE 
+                        WHEN COALESCE(appt_stats.total_appointments, 0) = 0 THEN 5
+                        WHEN (appt_stats.total_appointments - appt_stats.missed_appointments) / appt_stats.total_appointments >= 0.95 THEN 5
+                        WHEN (appt_stats.total_appointments - appt_stats.missed_appointments) / appt_stats.total_appointments >= 0.85 THEN 4
+                        WHEN (appt_stats.total_appointments - appt_stats.missed_appointments) / appt_stats.total_appointments >= 0.70 THEN 3
+                        WHEN (appt_stats.total_appointments - appt_stats.missed_appointments) / appt_stats.total_appointments >= 0.50 THEN 2
+                        ELSE 1 
+                    END)
+                ) / 2)
+            END as behavior_rating`
         ]);
     }
 
