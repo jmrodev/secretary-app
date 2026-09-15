@@ -5,7 +5,6 @@ import { Icon } from '@/components/atoms/Icon';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useAuth } from '@/features/auth/AuthContext';
 import { useModal } from '@/context/ModalContext';
-import { useConfig } from '@/context/ConfigContext';
 import { usePermissions } from '@/hooks/usePermissions';
 import { AppointmentHeader } from '../sections/AppointmentHeader.jsx';
 import { AppointmentMedicalPanel } from '../sections/AppointmentMedicalPanel.jsx';
@@ -24,14 +23,12 @@ export const AppointmentActionModal = ({
     const { t } = useLanguage();
     const { user } = useAuth();
     const { confirm } = useModal();
-    const { settings } = useConfig();
     const permissions = usePermissions();
     const [note, setNote] = useState(appt?.reason || '');
 
     if (!appt) return null;
 
     const isGoogle = appt.source === 'google' || appt.source === 'google-incomplete';
-    const canUnrestricted = settings.enable_secretary_unrestricted_crud === 'true';
     const showMedicalPanel = (user.role === 'doctor' || user.role === 'admin');
 
     const handleSaveNoteAction = async () => {
@@ -70,7 +67,7 @@ export const AppointmentActionModal = ({
 
                 {(user.role === 'secretary' || user.role === 'admin') && (
                     <AppointmentAdminPanel
-                        appt={appt} user={user} isGoogle={isGoogle} canUnrestricted={canUnrestricted}
+                        appt={appt} user={user} isGoogle={isGoogle}
                         t={t} onPay={onPay} onUpdateStatus={onUpdateStatus} onReschedule={onReschedule}
                         onCancel={onCancel} onDelete={onDelete} onUpdateType={onUpdateType}
                         onBonify={onBonify} onClose={onClose} note={note}
