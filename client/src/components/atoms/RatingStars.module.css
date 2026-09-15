@@ -1,0 +1,18 @@
+.RatingStars__root {
+    display: inline-flex;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
+}
+
+.RatingStars--gold {
+    color: var(--amber-500);
+}
+
+.RatingStars--blue {
+    color: var(--primary-color);
+}
+
+.RatingStars--pink {
+    color: var(--rose-600);
+}

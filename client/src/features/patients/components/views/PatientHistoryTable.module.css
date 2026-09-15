@@ -1,8 +1,52 @@
 
 /* PatientHistoryTable Styles (BEM) */
 
+.PatientHistoryTable__detailsBlock {
+    background-color: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+}
+
+.PatientHistoryTable__header {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--card-surface-bg);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.PatientHistoryTable__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin: 0;
+}
+
+.PatientHistoryTable__content {
+    padding: 0;
+}
+
+.PatientHistoryTable__historyTh {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--dashboard-card-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
 .PatientHistoryTable__detailsBlockHistory .PatientHistoryTable__header {
-    border-bottom-color: var(--slate-700);
+    border-bottom-color: var(--primary-color);
 }
 
 .PatientHistoryTable__historyContainer {

@@ -2,7 +2,6 @@
 
 .PatientRecycleBin__root {
     width: 100%;
-    margin-top: 1rem;
 }
 
 .PatientRecycleBin__emptyState {
@@ -10,51 +9,87 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 3rem;
+    padding: var(--spacing-xl) var(--spacing-md);
     text-align: center;
     background: var(--dashboard-card-bg);
-    border: 2px dashed var(--border-color);
-    border-radius: var(--radius-sm);
+    border: 2px dashed var(--dashboard-card-border);
+    border-radius: var(--radius-lg);
     color: var(--text-muted);
 }
 
 .PatientRecycleBin__emptyIcon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
+    margin-bottom: var(--spacing-md);
     opacity: 0.5;
+}
+
+.PatientRecycleBin__emptyTitle {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.PatientRecycleBin__emptyText {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-sm);
 }
 
 .PatientRecycleBin__container {
     background: var(--dashboard-card-bg);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
-    overflow: hidden;
+    overflow-x: auto;
 }
 
 .PatientRecycleBin__table {
     width: 100%;
+    min-width: 600px;
     border-collapse: collapse;
 }
 
 .PatientRecycleBin__table th {
-    background: var(--dashboard-card-bg);
-    padding: 1rem;
+    background: var(--card-surface-bg);
+    padding: 0.75rem 1rem;
     text-align: left;
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: var(--text-muted);
-    border-bottom: 2px solid var(--border-color);
+    color: var(--text-main);
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.PatientRecycleBin__thPatient {
+    width: 35%;
+}
+
+.PatientRecycleBin__thContact {
+    width: 25%;
+}
+
+.PatientRecycleBin__thDate {
+    width: 20%;
+}
+
+.PatientRecycleBin__thActions {
+    width: 20%;
+    text-align: right !important;
 }
 
 .PatientRecycleBin__table td {
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--border-color);
+    vertical-align: middle;
 }
 
 .PatientRecycleBin__row:hover {
     background-color: var(--row-hover-bg);
+}
+
+.PatientRecycleBin__patientWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
 }
 
 .PatientRecycleBin__patientName {
@@ -65,11 +100,13 @@
 .PatientRecycleBin__patientDni {
     font-family: monospace;
     color: var(--text-secondary);
-    background: var(--gray-50);
+    background: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
     padding: 0.1rem 0.4rem;
-    border-radius: 0.25rem;
+    border-radius: var(--radius-sm);
     font-size: 0.8rem;
     display: inline-block;
+    align-self: flex-start;
 }
 
 .PatientRecycleBin__contactInfo {
@@ -77,13 +114,24 @@
     color: var(--text-secondary);
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--spacing-xs);
 }
 
 .PatientRecycleBin__contactItem {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
+}
+
+.PatientRecycleBin__contactIcon {
+    opacity: 0.7;
+    display: inline-flex;
+    align-items: center;
+}
+
+.PatientRecycleBin__contactMissing {
+    font-style: italic;
+    color: var(--text-muted);
 }
 
 .PatientRecycleBin__dateWrapper {
@@ -91,64 +139,51 @@
     flex-direction: column;
 }
 
-.PatientRecycleBin__time {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
 .PatientRecycleBin__date {
     font-size: 0.85rem;
     color: var(--text-secondary);
 }
 
+.PatientRecycleBin__time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.PatientRecycleBin__tdActions {
+    text-align: right;
+}
+
 .PatientRecycleBin__actions {
     display: flex;
     justify-content: flex-end;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
+}
+
+.PatientRecycleBin__actionBtnRestore {
+    color: var(--success);
+    border-color: rgb(16 185 129 / 30%);
+    font-weight: 700;
+}
+
+.PatientRecycleBin__actionBtnRestore:hover {
+    background-color: rgb(16 185 129 / 12%);
+    border-color: var(--success);
 }
 
 .PatientRecycleBin__loading {
     display: flex;
     justify-content: center;
-    padding: 3rem;
-}
-
-.PatientRecycleBin__emptyTitle {
-    color: var(--text-muted);
-    font-weight: 500;
-}
-
-.PatientRecycleBin__emptyText {
-    font-size: 0.875rem;
-    color: var(--gray-400);
-    margin-top: 0.5rem;
-}
-
-.PatientRecycleBin__patientWrapper {
-    display: flex;
-    flex-direction: column;
-}
-
-.PatientRecycleBin__contactMissing {
-    font-style: italic;
-    color: var(--slate-400);
-}
-
-.PatientRecycleBin__actionBtnRestore {
-    color: var(--green-600);
-    border-color: var(--green-200);
-    font-weight: 700;
-}
-
-.PatientRecycleBin__actionBtnRestore:hover {
-    background-color: var(--green-50);
-    border-color: var(--green-300);
+    padding: var(--spacing-xl);
 }
 
 .PatientRecycleBin__footerHint {
-    margin-top: 1rem;
+    margin-top: var(--spacing-md);
     text-align: center;
     font-size: 0.75rem;
-    color: var(--gray-400);
+    color: var(--text-muted);
 }
 
+.PatientRecycleBin__warningIcon {
+    margin-right: var(--spacing-xs);
+    vertical-align: middle;
+}

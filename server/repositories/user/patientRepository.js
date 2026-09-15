@@ -12,7 +12,7 @@ class PatientRepository {
 static ALLOWED_FIELDS = [
     'user_id', 'first_name', 'last_name', 'full_name', 'dob', 'phone', 'email',
     'medical_history', 'dni', 'affiliate_number', 'insurance_id', 'tariff_percent',
-    'tariff_override', 'behavior_rating', 'is_new_patient', 'marked_new_at',
+    'tariff_override', 'behavior_rating', 'behavior_rating_note', 'is_new_patient', 'marked_new_at',
     'visit_interval_days', 'prescription_interval_days', 'next_suggested_visit_date',
     'next_suggested_prescription_date', 'license_expiry_date', 'institution_id',
     'street_name', 'street_number', 'floor', 'apartment', 'city', 'province',
