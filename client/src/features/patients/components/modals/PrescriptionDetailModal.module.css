@@ -1,0 +1,90 @@
+.PrescriptionDetailModal__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.PrescriptionDetailModal__header {
+    background-color: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.PrescriptionDetailModal__name {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.PrescriptionDetailModal__dni {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.PrescriptionDetailModal__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    font-size: 0.813rem;
+    color: var(--text-secondary);
+    margin-top: var(--spacing-xs);
+}
+
+.PrescriptionDetailModal__meta > div {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.PrescriptionDetailModal__subtitle,
+.PrescriptionDetailModal__diagTitle {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin: 0 0 var(--spacing-xs) 0;
+}
+
+.PrescriptionDetailModal__medsList {
+    background-color: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.PrescriptionDetailModal__medLine {
+    font-size: 0.875rem;
+    color: var(--text-main);
+    padding: 2px 0;
+}
+
+.PrescriptionDetailModal__diagContent {
+    background-color: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-sm);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    white-space: pre-wrap;
+}
+
+.PrescriptionDetailModal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-sm);
+}

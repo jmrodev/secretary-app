@@ -1,27 +1,103 @@
 .GlobalWhatsappMessenger__globalWaTriggerContainer {
     position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
+    bottom: var(--spacing-lg, 1.5rem);
+    right: var(--spacing-lg, 1.5rem);
     z-index: 9999;
-    animation: slide-up-wa 0.5s ease-out;
+    animation: slide-up-wa 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.GlobalWhatsappMessenger__globalWaSimpleBtn:is(.btn) {
-    border-radius: 12px;
-    padding: 0.75rem 1.25rem;
-    font-weight: 700;
-    box-shadow: 0 4px 15px rgb(16 185 129 / 20%);
-    display: flex;
+.GlobalWhatsappMessenger__globalWaSimpleBtn {
+    height: 3.5rem;
+    min-height: 3.5rem;
+    width: 3.5rem;
+    min-width: 3.5rem;
+    padding: 0;
+    margin: 0;
+    border-radius: 9999px;
+    gap: 0;
+    display: inline-flex;
     align-items: center;
-    gap: 0.75rem;
-    text-transform: none;
-    letter-spacing: normal;
-    font-size: 0.95rem;
+    justify-content: flex-start;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: var(--success);
+    border: 1px solid rgb(255 255 255 / 20%);
+    color: var(--white);
+    font-family: var(--font-main);
+    box-shadow: 0 4px 14px rgb(var(--success-rgb, 16 185 129) / 35%), var(--shadow-md);
+    outline: none;
+    user-select: none;
+    text-decoration: none;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s ease,
+                background-color 0.2s ease;
 }
 
-@keyframes slide-up-wa {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+.GlobalWhatsappMessenger__globalWaSimpleBtn > span:first-child {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 3.5rem;
+    min-width: 3.5rem;
+    height: 3.5rem;
+}
+
+.GlobalWhatsappMessenger__globalWaSimpleBtn > span:last-child {
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.GlobalWhatsappMessenger__btnLabel {
+    display: inline-block;
+    max-width: 0;
+    opacity: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: normal;
+    text-transform: none;
+    padding-right: 0;
+    transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.25s ease 0.05s,
+                padding-right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover and focus-visible states: expands and enlarges the button */
+.GlobalWhatsappMessenger__globalWaTriggerContainer:hover .GlobalWhatsappMessenger__globalWaSimpleBtn,
+.GlobalWhatsappMessenger__globalWaSimpleBtn:hover,
+.GlobalWhatsappMessenger__globalWaSimpleBtn:focus-visible {
+    width: max-content;
+    max-width: 26rem;
+    transform: translateY(-2px) scale(1.05);
+    background-color: var(--success-hover);
+    box-shadow: 0 8px 25px rgb(var(--success-rgb, 16 185 129) / 45%), var(--shadow-lg);
+}
+
+.GlobalWhatsappMessenger__globalWaTriggerContainer:hover .GlobalWhatsappMessenger__btnLabel,
+.GlobalWhatsappMessenger__globalWaSimpleBtn:hover .GlobalWhatsappMessenger__btnLabel,
+.GlobalWhatsappMessenger__globalWaSimpleBtn:focus-visible .GlobalWhatsappMessenger__btnLabel {
+    max-width: 22rem;
+    opacity: 1;
+    padding-right: 1.5rem;
+}
+
+.GlobalWhatsappMessenger__globalWaSimpleBtn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .GlobalWhatsappMessenger__globalWaTriggerContainer {
+        animation: none;
+    }
+
+    .GlobalWhatsappMessenger__globalWaSimpleBtn,
+    .GlobalWhatsappMessenger__btnLabel {
+        transition: none;
+    }
 }
 
 /* The open messenger panel - MOBILE/MINIMALIST LAYOUT */
@@ -477,7 +553,24 @@
     background: var(--surface-primary, var(--text-main));
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+}
+
+.GlobalWhatsappMessenger__overlayHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    border-bottom: 1px solid var(--border-color, #e0e0e0);
+    background: var(--dashboard-card-bg, #fff);
+    flex-shrink: 0;
+}
+
+.GlobalWhatsappMessenger__overlayBody {
+    flex: 1;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .GlobalWhatsappMessenger__pairing {

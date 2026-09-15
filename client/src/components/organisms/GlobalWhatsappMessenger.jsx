@@ -182,6 +182,18 @@ export const GlobalWhatsappMessenger = ({ t }) => {
         return () => window.removeEventListener('whatsapp:open-chat', handleOpenChat);
     }, [fetchConversations]);
 
+    // Close messenger on Escape key press
+    useEffect(() => {
+        if (!isOpen) return;
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                setIsOpen(false);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isOpen]);
+
     const handlePatientClick = (conv) => {
         setActiveChat({ patientId: conv.patientId || conv.patient_id, phone: conv.patient_phone });
     };
@@ -193,14 +205,18 @@ export const GlobalWhatsappMessenger = ({ t }) => {
 
     if (!isOpen) {
         return (
-            <div className={`${styles.GlobalWhatsappMessenger__globalWaTriggerContainer}`}>
+            <div className={styles.GlobalWhatsappMessenger__globalWaTriggerContainer}>
                 <Button 
-                    className={`${styles.GlobalWhatsappMessenger__globalWaSimpleBtn}`} 
+                    unstyled
+                    className={styles.GlobalWhatsappMessenger__globalWaSimpleBtn} 
                     onClick={() => setIsOpen(true)}
-                    variant="success"
-                    icon={<Icon name="CHAT" size="1.2rem" />}
+                    icon={<Icon name="CHAT" size="1.35rem" />}
+                    aria-label={t('whatsapp_messenger')}
+                    title={t('whatsapp_messenger')}
                 >
-                    {t('whatsapp_messenger')}
+                    <span className={styles.GlobalWhatsappMessenger__btnLabel}>
+                        {t('whatsapp_messenger')}
+                    </span>
                 </Button>
             </div>
         );
@@ -318,12 +334,29 @@ export const GlobalWhatsappMessenger = ({ t }) => {
             {/* Pairing overlay — visible in sidebar when bridge is not connected */}
             {bridgeStatus.status !== 'connected' && (
                 <div className={styles.GlobalWhatsappMessenger__pairingOverlay}>
-                    <WhatsappPairing
-                        bridgeStatus={bridgeStatus}
-                        onRefresh={handleManualRefresh}
-                        statusLoading={statusLoading}
-                        t={t}
-                    />
+                    <header className={styles.GlobalWhatsappMessenger__overlayHeader}>
+                        <div className={styles.GlobalWhatsappMessenger__title}>
+                            <Icon name="CHAT" size="1.25rem" color="var(--success, #10b981)" />
+                            <h3>{t('whatsapp_messenger')}</h3>
+                        </div>
+                        <Button 
+                            variant="ghost"
+                            size="sm"
+                            className={styles.GlobalWhatsappMessenger__closeBtn} 
+                            onClick={() => setIsOpen(false)}
+                            icon={<Icon name="close" size="1.2rem" />}
+                            aria-label={t('close')}
+                            title={t('close')}
+                        />
+                    </header>
+                    <div className={styles.GlobalWhatsappMessenger__overlayBody}>
+                        <WhatsappPairing
+                            bridgeStatus={bridgeStatus}
+                            onRefresh={handleManualRefresh}
+                            statusLoading={statusLoading}
+                            t={t}
+                        />
+                    </div>
                 </div>
             )}
         </aside>

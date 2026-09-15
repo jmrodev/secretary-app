@@ -1,0 +1,176 @@
+.BehaviorRatingModal__root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md, 1rem);
+}
+
+.BehaviorRatingModal__patientInfo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm, 0.5rem);
+    padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 1rem);
+    background: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm, 6px);
+}
+
+.BehaviorRatingModal__patientLabel {
+    font-size: 0.813rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.BehaviorRatingModal__patientName {
+    font-size: 0.938rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+.BehaviorRatingModal__field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs, 0.25rem);
+}
+
+.BehaviorRatingModal__label {
+    font-size: 0.813rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.BehaviorRatingModal__ratingSelector {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md, 1rem);
+    padding: var(--spacing-sm, 0.5rem) 0;
+}
+
+.BehaviorRatingModal__starsRow {
+    display: flex;
+    gap: 4px;
+}
+
+.BehaviorRatingModal__starBtn {
+    background: transparent;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    color: var(--rose-600, #e11d48);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm, 4px);
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.BehaviorRatingModal__starBtn:hover,
+.BehaviorRatingModal__starBtn:focus-visible {
+    transform: scale(1.2);
+    outline: none;
+}
+
+.BehaviorRatingModal__starBtn--empty {
+    color: var(--text-muted);
+    opacity: 0.4;
+}
+
+.BehaviorRatingModal__ratingScore {
+    font-size: 0.938rem;
+    font-weight: 800;
+    color: var(--rose-600, #e11d48);
+    background: rgb(225 29 72 / 10%);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm, 4px);
+}
+
+.BehaviorRatingModal__textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: var(--spacing-sm, 0.5rem) var(--spacing-md, 0.75rem);
+    background: var(--background-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm, 6px);
+    color: var(--text-main);
+    font-family: var(--font-main, inherit);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.BehaviorRatingModal__textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgb(20 184 166 / 20%);
+}
+
+.BehaviorRatingModal__help {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.3;
+}
+
+.BehaviorRatingModal__derivedBox {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs, 0.25rem);
+    padding: var(--spacing-sm, 0.75rem) var(--spacing-md, 1rem);
+    background: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm, 6px);
+}
+
+.BehaviorRatingModal__derivedHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm, 0.5rem);
+}
+
+.BehaviorRatingModal__derivedTitle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs, 0.35rem);
+    font-size: 0.813rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+}
+
+.BehaviorRatingModal__derivedDetails {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.BehaviorRatingModal__badgeAuto {
+    font-size: 0.688rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-sm, 4px);
+    background: rgb(20 184 166 / 15%);
+    color: var(--primary-color);
+}
+
+.BehaviorRatingModal__badgeManual {
+    font-size: 0.688rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.5rem;
+    border-radius: var(--radius-sm, 4px);
+    background: rgb(245 158 11 / 15%);
+    color: var(--warning, #d97706);
+}
+
+.BehaviorRatingModal__errorText {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--danger, #ef4444);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+

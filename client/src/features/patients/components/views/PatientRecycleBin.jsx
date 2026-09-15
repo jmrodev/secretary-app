@@ -48,10 +48,10 @@ const PatientRecycleBinBase = ({
                 <table className={`${styles.PatientRecycleBin__table}`}>
                     <thead>
                         <tr>
-                            <th className="w-1/3">{t('patient')}</th>
-                            <th className="w-1/4">{t('contact_info')}</th>
-                            <th className="w-1/4">{t('deleted_date')}</th>
-                            <th className="w-1/6 text-right">{t('actions')}</th>
+                            <th className={styles.PatientRecycleBin__thPatient}>{t('patient')}</th>
+                            <th className={styles.PatientRecycleBin__thContact}>{t('contact_info')}</th>
+                            <th className={styles.PatientRecycleBin__thDate}>{t('deleted_date')}</th>
+                            <th className={styles.PatientRecycleBin__thActions}>{t('actions')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -75,14 +75,14 @@ const PatientRecycleBinBase = ({
                                     <div className={`${styles.PatientRecycleBin__contactInfo}`}>
                                         {item.phone ? (
                                             <div className={`${styles.PatientRecycleBin__contactItem}`}>
-                                                <span className="opacity-70"><Icon name="phone" size="1rem" /></span> {item.phone}
+                                                <span className={styles.PatientRecycleBin__contactIcon}><Icon name="phone" size="1rem" /></span> {item.phone}
                                             </div>
                                         ) : (
                                             <span className={`${styles.PatientRecycleBin__contactMissing}`}>{t('no_phone_short')}</span>
                                         )}
                                         {item.email ? (
                                             <div className={`${styles.PatientRecycleBin__contactItem}`}>
-                                                <span className="opacity-70"><Icon name="mail" size="1rem" /></span> {item.email}
+                                                <span className={styles.PatientRecycleBin__contactIcon}><Icon name="mail" size="1rem" /></span> {item.email}
                                             </div>
                                         ) : null}
                                     </div>
@@ -97,7 +97,7 @@ const PatientRecycleBinBase = ({
                                         </span>
                                     </div>
                                 </td>
-                                <td className="text-right">
+                                <td className={styles.PatientRecycleBin__tdActions}>
                                     <div className={`${styles.PatientRecycleBin__actions}`}>
                                         <Button
                                             size="sm"
@@ -117,7 +117,7 @@ const PatientRecycleBinBase = ({
                 </table>
             </div>
             <div className={`${styles.PatientRecycleBin__footerHint}`}>
-                <p><Icon name="warning" size="1rem" className="mr-1" />{t('permanent_delete_warning')}</p>
+                <p><Icon name="warning" size="1rem" className={styles.PatientRecycleBin__warningIcon} />{t('permanent_delete_warning')}</p>
             </div>
         </div>
     );

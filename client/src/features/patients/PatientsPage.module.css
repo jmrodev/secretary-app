@@ -1,5 +1,22 @@
-/* PatientsPage Styles (BEM) */
+/* PatientsPage Feature Styles (BEM) */
 
-.PatientsPage__paginationTop {
-    margin-bottom: var(--spacing-md);
+.PatientsPage__root {
+    width: 100%;
+}
+
+.PatientsPage__listView {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.PatientsPage__content {
+    width: 100%;
+}
+
+.PatientsPage__tableWrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
 }

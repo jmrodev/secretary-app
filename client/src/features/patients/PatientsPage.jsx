@@ -14,7 +14,7 @@ import { QRCodeModal } from '@/features/patients/components/modals/QRCodeModal';
 import { Pagination } from '@/components/atoms/Pagination';
 
 import { FeatureToolbar } from '@/components/organisms/FeatureToolbar';
-import { SearchBar } from '@/components/ui/SearchBar';
+import { SearchBar } from '@/components/molecules/SearchBar';
 
 // Feature Components
 import { PatientList } from './components/views/PatientList';
@@ -22,6 +22,7 @@ import { PatientRecycleBin } from './components/views/PatientRecycleBin';
 import { PatientDetailsView } from './components/views/PatientDetailsView';
 import { PatientManagerModal } from './components/modals/PatientManagerModal';
 import { DebtPaymentModal } from './components/modals/DebtPaymentModal';
+import { BehaviorRatingModal } from './components/modals/BehaviorRatingModal';
 import styles from './PatientsPage.module.css';
 
 /**
@@ -44,6 +45,7 @@ export const PatientsPage = () => {
         editModal, setEditModal,
         debtModal, setDebtModal,
         qrModal, setQrModal,
+        behaviorRatingModal,
 
         handlers,
     } = controller;
@@ -53,6 +55,7 @@ export const PatientsPage = () => {
         handleNewClick,
         handleViewDetails,
         handleDeletePatient,
+        handleBackToList,
         handleEditClick,
         handleUpdatePatient,
         handleOpenDebtModal,
@@ -60,6 +63,9 @@ export const PatientsPage = () => {
         handleDebtMethodChange,
         handlePayDebt,
         handleCycleRating,
+        handleOpenBehaviorRatingModal,
+        handleCloseBehaviorRatingModal,
+        handleSaveBehaviorRating,
         handleToggleNew,
         handleGenerateQR,
         handleGeneratePrescriptionLink,
@@ -85,27 +91,28 @@ export const PatientsPage = () => {
 
     return (
         <MainLayout hideSearch title={(!selectedPatientId || !patientDetails) ? t('patients') : null}>
-            <div>
+            <div className={styles.PatientsPage__root}>
                 {(selectedPatientId && patientDetails) ? (
                     // --- DETAILS VIEW ---
                     <PatientDetailsView
                         details={patientDetails}
                         t={t}
                         user={user}
-                        onBack={() => setSelectedPatientId(null)}
+                        onBack={handleBackToList}
                         onEdit={() => handleEditClick(patientDetails)}
                         onDelete={handleDeletePatient}
                         onGenerateQR={handleGenerateQR}
                         onGeneratePrescriptionLink={handleGeneratePrescriptionLink}
                         onToggleNew={handleToggleNew}
                         onPayDebt={handleOpenDebtModal}
+                        onEditRating={handleOpenBehaviorRatingModal}
+                        canEditRating={isStaff}
                     />
 
                 ) : (
                     // --- LIST VIEW ---
-                    <div className="patients-page__list-view">
+                    <div className={styles.PatientsPage__listView}>
                         <FeatureToolbar
-                            className="__toolbar"
                             tabs={[
                                 { id: 'list', label: t('active_list'), icon: 'groups' },
                                 { 
@@ -125,7 +132,13 @@ export const PatientsPage = () => {
                                 activeTab === 'list' && (
                                     <SearchBar
                                         value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setSearchTerm(val);
+                                            if (val === '') {
+                                                executeSearch('');
+                                            }
+                                        }}
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
                                                 executeSearch();
@@ -153,9 +166,9 @@ export const PatientsPage = () => {
                             }
                         />
 
-                        <section>
+                        <section className={styles.PatientsPage__content}>
                             {activeTab === 'list' ? (
-                                <div className="patients-page__table-wrapper">
+                                <div className={styles.PatientsPage__tableWrapper}>
                                     <PatientList
                                         patients={patients}
                                         institutions={institutions}
@@ -163,6 +176,8 @@ export const PatientsPage = () => {
                                         onViewDetails={handleViewDetails}
                                         onOpenDebt={handleOpenDebtModal}
                                         onToggleRating={handleCycleRating}
+                                        onEditRating={handleOpenBehaviorRatingModal}
+                                        canEditRating={isStaff}
                                         calculateFinancialRating={calculateFinancialRating}
                                         calculateAttendanceRating={calculateAttendanceRating}
                                     />
@@ -217,6 +232,14 @@ export const PatientsPage = () => {
                 onAmountChange={handleDebtAmountChange}
                 method={debtModal.params.method}
                 onMethodChange={handleDebtMethodChange}
+                t={t}
+            />
+
+            <BehaviorRatingModal
+                isOpen={behaviorRatingModal.open}
+                patient={behaviorRatingModal.patient}
+                onClose={handleCloseBehaviorRatingModal}
+                onSave={handleSaveBehaviorRating}
                 t={t}
             />
         </MainLayout>
