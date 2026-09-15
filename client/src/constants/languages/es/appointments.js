@@ -3,6 +3,7 @@ export const appointments = {
     appointment_title: "Turno",
     attendance: "Asistencia",
     attendance_flow: "Flujo de Asistencia",
+    payment: "Pago",
     attended: "Atendido",
     management: "Gestión",
     appointment_modification: "Modificación del Turno",

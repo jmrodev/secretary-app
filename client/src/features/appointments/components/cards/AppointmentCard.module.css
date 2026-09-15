@@ -1,6 +1,6 @@
 .AppointmentCard__root {
     display: grid;
-    grid-template-columns: 4rem minmax(150px, 1.4fr) minmax(130px, 1fr) minmax(95px, 0.8fr) 115px;
+    grid-template-columns: 4rem minmax(140px, 1.3fr) minmax(120px, 1fr) minmax(115px, 0.9fr) 115px;
     align-items: center;
     width: 100%;
     min-height: 3.5rem;
@@ -208,22 +208,61 @@
     border-color: #7c3aed !important; 
 }
 
-/* --- Payment Amount Indicators --- */
-.AppointmentCard__paymentInfo {
-    display: flex;
+/* --- Payment Status Badge --- */
+.AppointmentCard__paymentBadge {
+    display: inline-flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 0.35rem;
-    font-weight: 800;
-    font-size: 0.95rem;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    background: rgb(255 255 255 / 4%);
+    color: var(--text-main);
     white-space: nowrap;
-    margin-right: 0.25rem;
+    line-height: 1.2;
 }
 
-.AppointmentCard__paymentInfoPaid { color: #16a34a; }
-.AppointmentCard__paymentInfoPending { color: var(--text-muted); }
-.AppointmentCard__paymentInfoDebt { color: #dc2626; }
-.AppointmentCard__paymentInfoBonified { color: #0284c7; }
+.AppointmentCard__paymentBadgeIcon {
+    flex-shrink: 0;
+}
+
+.AppointmentCard__paymentBadgeLabel {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    opacity: 0.85;
+}
+
+.AppointmentCard__paymentBadgeAmount {
+    font-weight: 800;
+}
+
+.AppointmentCard__paymentBadgePaid {
+    background: rgb(16 185 129 / 12%);
+    border-color: rgb(16 185 129 / 30%);
+    color: var(--success);
+}
+
+.AppointmentCard__paymentBadgeDebt {
+    background: rgb(239 68 68 / 12%);
+    border-color: rgb(239 68 68 / 30%);
+    color: var(--danger);
+}
+
+.AppointmentCard__paymentBadgePending {
+    background: rgb(255 255 255 / 4%);
+    border-color: var(--border-color);
+    color: var(--text-muted);
+}
+
+.AppointmentCard__paymentBadgeBonified {
+    background: rgb(2 132 199 / 12%);
+    border-color: rgb(2 132 199 / 30%);
+    color: var(--accent-color);
+}
 
 /* --- Skeleton Loading State --- */
 .AppointmentCard__skeleton {
@@ -261,10 +300,4 @@
 
 @keyframes skeleton-shimmer {
     100% { transform: translateX(100%); }
-}
-
-.AppointmentCard__restAmount {
-    font-size: 0.75rem;
-    opacity: 0.85;
-    margin-right: 0.2rem;
 }
