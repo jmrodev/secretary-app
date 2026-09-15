@@ -12,7 +12,7 @@ import styles from './AppointmentAdminPanel.module.css';
  * Orchestrates administrative actions for an appointment using a tabbed interface.
  */
 export const AppointmentAdminPanel = ({
-    appt, user: _user, isGoogle, canUnrestricted, t, onPay, onUpdateStatus, onReschedule, onCancel, onDelete, onClose, onUpdateType, onBonify, note, onWhatsApp, onWhatsAppConfirmation
+    appt, user: _user, isGoogle, t, onPay, onUpdateStatus, onReschedule, onCancel, onDelete, onClose, onUpdateType, onBonify, note, onWhatsApp, onWhatsAppConfirmation
 }) => {
     const [activeTab, setActiveTab] = useState('attendance');
     const { showMessage } = useMessage();
@@ -34,7 +34,7 @@ export const AppointmentAdminPanel = ({
             .then(() => showMessage(t('phone_copied'), "success"))
             .catch((err) => {
                 console.error("Failed to copy phone to clipboard:", err);
-                showMessage(t('copy_phone_error') || t('error') || 'Error al copiar', "error");
+                showMessage(t('copy_phone_error') || t('error'), "error");
             });
     };
 
@@ -180,22 +180,30 @@ export const AppointmentAdminPanel = ({
                         <section className={styles.AppointmentAdminPanel__group}>
                             <h4 className={styles.AppointmentAdminPanel__groupTitle}>{t('patient_contact')}</h4>
                             <div className={styles.AppointmentAdminPanel__phoneDisplay}>
-                                <span className={styles.AppointmentAdminPanel__phoneNumber}>{appt.patient_phone}</span>
+                                <span className={styles.AppointmentAdminPanel__phoneNumber}>
+                                    <Icon name="phone" size="0.95rem" />
+                                    {appt.patient_phone}
+                                </span>
                                 <Button
-                                    variant="secondary" size="sm" onClick={handleCopyPhone}
-                                    icon={<Icon name="content_copy" size="1rem" />}
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={handleCopyPhone}
+                                    icon={<Icon name="content_copy" size="0.9rem" />}
+                                    title={t('copy_phone')}
                                 />
                             </div>
                             <div className={styles.AppointmentAdminPanel__grid}>
                                 <Button
                                     to={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
-                                    variant="primary" className={styles.AppointmentAdminPanel__action}
+                                    variant="secondary"
+                                    className={styles.AppointmentAdminPanel__action}
                                     icon={<Icon name="call" size="1.1rem" />}
                                 >
                                     {t('call')}
                                 </Button>
                                 <Button
-                                    variant="success" className={styles.AppointmentAdminPanel__action}
+                                    variant="success"
+                                    className={styles.AppointmentAdminPanel__action}
                                     onClick={() => onWhatsApp(appt, 'chat')}
                                     icon={<Icon name="chat" size="1.1rem" />}
                                 >
@@ -203,7 +211,8 @@ export const AppointmentAdminPanel = ({
                                 </Button>
                                 {appt.status !== 'completed' && (
                                     <Button
-                                        variant="accent" className={styles.AppointmentAdminPanel__action}
+                                        variant="accent"
+                                        className={styles.AppointmentAdminPanel__action}
                                         onClick={() => onWhatsAppConfirmation(appt)}
                                         icon={<Icon name="notifications" size="1.1rem" />}
                                         title={t('notify_appointment_whatsapp_title')}
@@ -212,15 +221,6 @@ export const AppointmentAdminPanel = ({
                                     </Button>
                                 )}
                             </div>
-                            {appt.status !== 'completed' && (
-                                <p className={styles.AppointmentAdminPanel__whatsappHint}>
-                                    <Icon name="info" size="1rem" className={styles.AppointmentAdminPanel__whatsappHintIcon} />
-                                    <span>
-                                        <strong>{t('whatsapp_chat')}</strong> {t('whatsapp_admin_panel_hint_1')}
-                                        {' '}<strong>{t('notify_whatsapp')}</strong> {t('whatsapp_admin_panel_hint_2')}
-                                    </span>
-                                </p>
-                            )}
                         </section>
                     </article>
                 )}
