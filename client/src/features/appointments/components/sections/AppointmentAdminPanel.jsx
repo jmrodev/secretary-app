@@ -40,12 +40,10 @@ export const AppointmentAdminPanel = ({
 
     if (isGoogle) return null;
 
-    const baseClass = styles.AppointmentAdminPanel__root;
-
     return (
-        <section className={baseClass}>
+        <section className={styles.AppointmentAdminPanel__root}>
             {/* Tab Navigation */}
-            <TabNav className={`${baseClass}__tabs`}>
+            <TabNav className={styles.AppointmentAdminPanel__tabs}>
                 <TabButton
                     isActive={activeTab === 'attendance'}
                     onClick={() => setActiveTab('attendance')}
@@ -88,68 +86,68 @@ export const AppointmentAdminPanel = ({
             <div className={styles.AppointmentAdminPanel__content}>
                 {/* ATTENDANCE TAB */}
                 {activeTab === 'attendance' && (
-                    <article className="animate-fade-in">
-                        <div className={styles.AppointmentAdminPanel__horizontalGroups}>
-                            {!isGoogle && !isBonified && appt.payment_status !== 'paid' && (
-                                <section className={`${styles.AppointmentAdminPanel__group} ${styles.AppointmentAdminPanel__groupHighlight}`}>
-                                    <h4 className={styles.AppointmentAdminPanel__groupTitle}>
-                                        {isPendingPayment ? (t('pending_payment')) : (t('record_payment'))}
-                                    </h4>
-                                    <div className={styles.AppointmentAdminPanel__grid}>
-                                        <Button
-                                            variant="success" className={styles.AppointmentAdminPanel__action} onClick={() => { onPay(appt); onClose(); }}
-                                            icon={<Icon name="payments" size="1.1rem" />}
-                                        >
-                                            {isPendingPayment ? (t('pay')) : (t('record_payment'))}
-                                        </Button>
-                                        <Button
-                                            variant="purple" className={styles.AppointmentAdminPanel__action} onClick={() => onBonify(appt)}
-                                            icon={<Icon name="card_giftcard" size="1.1rem" />}
-                                        >
-                                            {t('bonify')}
-                                        </Button>
+                    <article className={styles.AppointmentAdminPanel__tabPane}>
+                        <section className={styles.AppointmentAdminPanel__group}>
+                            <div className={styles.AppointmentAdminPanel__subgroups}>
+                                {showAdminPanel && hasAttendanceActions && (
+                                    <div className={styles.AppointmentAdminPanel__subgroup}>
+                                        <h4 className={styles.AppointmentAdminPanel__groupTitle}>{t('attendance')}</h4>
+                                        <div className={styles.AppointmentAdminPanel__grid}>
+                                            {canConfirm && (
+                                                <Button
+                                                    variant="primary" className={styles.AppointmentAdminPanel__action} onClick={() => { onUpdateStatus(appt.id, 'confirmed'); }}
+                                                    icon={<Icon name="check_circle" size="1.1rem" />}
+                                                >
+                                                    {t('confirm')}
+                                                </Button>
+                                            )}
+                                            {canArrive && (
+                                                <Button
+                                                    variant="teal" className={styles.AppointmentAdminPanel__action} onClick={() => { onUpdateStatus(appt.id, 'arrived'); }}
+                                                    icon={<Icon name="meeting_room" size="1.1rem" />}
+                                                >
+                                                    {t('patient_arrived')}
+                                                </Button>
+                                            )}
+                                            {canAttend && (
+                                                <Button
+                                                    variant="success" className={styles.AppointmentAdminPanel__action} onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }}
+                                                    icon={<Icon name="task_alt" size="1.1rem" />}
+                                                >
+                                                    {t('attended')}
+                                                </Button>
+                                            )}
+                                        </div>
                                     </div>
-                                </section>
-                            )}
+                                )}
 
-                            {showAdminPanel && hasAttendanceActions && (
-                                <section className={styles.AppointmentAdminPanel__group}>
-                                    <h4 className={styles.AppointmentAdminPanel__groupTitle}>{t('attendance_flow')}</h4>
-                                    <div className={styles.AppointmentAdminPanel__grid}>
-                                        {canConfirm && (
+                                {!isGoogle && !isBonified && appt.payment_status !== 'paid' && (
+                                    <div className={styles.AppointmentAdminPanel__subgroup}>
+                                        <h4 className={styles.AppointmentAdminPanel__groupTitle}>{t('payment')}</h4>
+                                        <div className={styles.AppointmentAdminPanel__grid}>
                                             <Button
-                                                variant="primary" className={styles.AppointmentAdminPanel__action} onClick={() => { onUpdateStatus(appt.id, 'confirmed'); }}
-                                                icon={<Icon name="check_circle" size="1.1rem" />}
+                                                variant="success" className={styles.AppointmentAdminPanel__action} onClick={() => { onPay(appt); onClose(); }}
+                                                icon={<Icon name="payments" size="1.1rem" />}
                                             >
-                                                {t('confirm')}
+                                                {isPendingPayment ? (t('pay')) : (t('record_payment'))}
                                             </Button>
-                                        )}
-                                        {canArrive && (
                                             <Button
-                                                variant="teal" className={styles.AppointmentAdminPanel__action} onClick={() => { onUpdateStatus(appt.id, 'arrived'); }}
-                                                icon={<Icon name="meeting_room" size="1.1rem" />}
+                                                variant="purple" className={styles.AppointmentAdminPanel__action} onClick={() => onBonify(appt)}
+                                                icon={<Icon name="card_giftcard" size="1.1rem" />}
                                             >
-                                                {t('patient_arrived')}
+                                                {t('bonify')}
                                             </Button>
-                                        )}
-                                        {canAttend && (
-                                            <Button
-                                                variant="success" className={styles.AppointmentAdminPanel__action} onClick={() => { onUpdateStatus(appt.id, 'completed'); onClose(); }}
-                                                icon={<Icon name="task_alt" size="1.1rem" />}
-                                            >
-                                                {t('attended')}
-                                            </Button>
-                                        )}
+                                        </div>
                                     </div>
-                                </section>
-                            )}
-                        </div>
+                                )}
+                            </div>
+                        </section>
                     </article>
                 )}
 
                 {/* MANAGEMENT TAB */}
                 {activeTab === 'management' && showAdminPanel && (
-                    <article className="animate-fade-in">
+                    <article className={styles.AppointmentAdminPanel__tabPane}>
                         <section className={styles.AppointmentAdminPanel__group}>
                             <h4 className={styles.AppointmentAdminPanel__groupTitle}>{t('appointment_modification')}</h4>
                             <div className={styles.AppointmentAdminPanel__grid}>
@@ -176,22 +174,9 @@ export const AppointmentAdminPanel = ({
 
                 {/* CONTACT TAB */}
                 {activeTab === 'contact' && appt.patient_phone && (
-                    <article className="animate-fade-in">
+                    <article className={styles.AppointmentAdminPanel__tabPane}>
                         <section className={styles.AppointmentAdminPanel__group}>
                             <h4 className={styles.AppointmentAdminPanel__groupTitle}>{t('patient_contact')}</h4>
-                            <div className={styles.AppointmentAdminPanel__phoneDisplay}>
-                                <span className={styles.AppointmentAdminPanel__phoneNumber}>
-                                    <Icon name="phone" size="0.95rem" />
-                                    {appt.patient_phone}
-                                </span>
-                                <Button
-                                    variant="secondary"
-                                    size="sm"
-                                    onClick={handleCopyPhone}
-                                    icon={<Icon name="content_copy" size="0.9rem" />}
-                                    title={t('copy_phone')}
-                                />
-                            </div>
                             <div className={styles.AppointmentAdminPanel__grid}>
                                 <Button
                                     to={`tel:${appt.patient_phone.replace(/[^0-9+]/g, '')}`}
@@ -220,6 +205,20 @@ export const AppointmentAdminPanel = ({
                                         {t('notify_whatsapp')}
                                     </Button>
                                 )}
+                                <div className={styles.AppointmentAdminPanel__phoneInline}>
+                                    <span className={styles.AppointmentAdminPanel__phoneNumber}>
+                                        <Icon name="phone" size="0.95rem" />
+                                        {appt.patient_phone}
+                                    </span>
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={handleCopyPhone}
+                                        icon={<Icon name="content_copy" size="0.85rem" />}
+                                        title={t('copy_phone')}
+                                        className={styles.AppointmentAdminPanel__copyBtn}
+                                    />
+                                </div>
                             </div>
                         </section>
                     </article>
@@ -227,7 +226,7 @@ export const AppointmentAdminPanel = ({
 
                 {/* STATUS TAB */}
                 {activeTab === 'status' && showAdminPanel && (
-                    <article className="animate-fade-in">
+                    <article className={styles.AppointmentAdminPanel__tabPane}>
                         <section className={styles.AppointmentAdminPanel__group}>
                             <h4 className={styles.AppointmentAdminPanel__groupTitle}>{t('exception_status')}</h4>
                             <div className={styles.AppointmentAdminPanel__grid}>
@@ -254,7 +253,7 @@ export const AppointmentAdminPanel = ({
 
                 {/* DANGER/SYSTEM TAB */}
                 {activeTab === 'danger' && !isGoogle && (
-                    <article className="animate-fade-in">
+                    <article className={styles.AppointmentAdminPanel__tabPane}>
                         <section className={`${styles.AppointmentAdminPanel__group} ${styles.AppointmentAdminPanel__groupDanger}`}>
                             <h4 className={styles.AppointmentAdminPanel__groupTitle}>{t('danger_zone')}</h4>
                             <div className={styles.AppointmentAdminPanel__grid}>
