@@ -29,12 +29,12 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
     // --- Conditional Render AFTER Hooks ---
     if (isLoading) {
         return (
-            <div className={`${styles.AppointmentCard__root} ${styles.AppointmentCard__skeleton}`}>
+            <div className={`${styles.AppointmentCard__root} ${styles.AppointmentCard__skeleton}`} aria-busy="true">
                 <div className={`${styles.AppointmentCard__info}`}>
-                    <div className={`${styles.AppointmentCard__patientName}`}>Loading…</div>
+                    <div className={`${styles.AppointmentCard__patientName}`}>{t('loading')}</div>
                     <div className={`${styles.AppointmentCard__details}`}>
-                        <span className={`${styles.timeLine}`}>00:00</span>
-                        <span className={`${styles.AppointmentCard__doctor}`}>Loading details…</span>
+                        <span className={`${styles.timeLine}`}>--:--</span>
+                        <span className={`${styles.AppointmentCard__doctor}`}>{t('loading')}</span>
                     </div>
                 </div>
                 <div className={`${styles.AppointmentCard__status}`}>
@@ -115,7 +115,7 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
                         </span>
                     )}
                     {appt.rescheduled_from_date && (
-                        <span className={styles.rescheduledInfo} title={`Reprogramado del ${rescheduledFull}`}>
+                        <span className={styles.rescheduledInfo} title={`${t('rescheduled')}: ${rescheduledFull}`}>
                             <Icon name="history" size="0.9rem" />
                             {rescheduledDate}
                         </span>
@@ -137,9 +137,9 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
 
                     if (appt.bonified === 1 || appt.bonified === true || appt.bonified === 'true') {
                         return (
-                            <div className={`${styles.AppointmentCard__paymentInfo} ${styles.AppointmentCard__paymentInfoBonified}`}>
-                                <span>{t('bonified')}</span>
-                                <Icon name="verified" className={styles.paymentIcon} />
+                            <div className={`${styles.AppointmentCard__paymentBadge} ${styles.AppointmentCard__paymentBadgeBonified}`} title={t('bonified')}>
+                                <Icon name="verified" size="0.85rem" className={styles.AppointmentCard__paymentBadgeIcon} />
+                                <span className={styles.AppointmentCard__paymentBadgeLabel}>{t('bonified')}</span>
                             </div>
                         );
                     }
@@ -148,46 +148,57 @@ export const AppointmentCard = ({ appt, onClick, showActions: _showActions = fal
 
                     let colorModifier = '';
                     let amountToDisplay = effectiveTotal;
-                    let statusIcon = null;
+                    let statusIconName = null;
                     let titleTooltip = '';
+                    let statusLabel = '';
 
                     if (paid >= effectiveTotal && effectiveTotal > 0) {
-                        colorModifier = 'paid';
+                        colorModifier = 'Paid';
                         amountToDisplay = paid;
-                        statusIcon = <Icon name="check_circle" className={styles.paymentIcon} />;
-                        titleTooltip = `Pagado totalmente: $${paid}`;
+                        statusIconName = 'check_circle';
+                        titleTooltip = `${t('paid')}: ${formatCurrency(paid)}`;
+                        statusLabel = t('paid');
                     } else if (paid > 0 && paid < effectiveTotal) {
                         // Pago Parcial: Mostrar el saldo restante en rojo adeudado
-                        colorModifier = 'debt';
+                        colorModifier = 'Debt';
                         const remaining = effectiveTotal - paid;
                         amountToDisplay = remaining;
-                        statusIcon = <Icon name="error" className={styles.paymentIcon} />;
-                        titleTooltip = `Pago parcial: Cobrado $${paid} de $${effectiveTotal}. Saldo adeudado: $${remaining}`;
+                        statusIconName = 'error';
+                        titleTooltip = `${t('partial')}: ${formatCurrency(paid)} / ${formatCurrency(effectiveTotal)}`;
+                        statusLabel = t('partial') || 'Resto';
                     } else if (!isAttended) {
-                        colorModifier = 'pending';
-                        statusIcon = <Icon name="payments" className={styles.paymentIcon} />;
-                        titleTooltip = `Pendiente de cobro: $${effectiveTotal}`;
+                        colorModifier = 'Pending';
+                        statusIconName = 'payments';
+                        titleTooltip = `${t('pending')}: ${formatCurrency(effectiveTotal)}`;
+                        statusLabel = t('pending');
                     } else if (pending > 0 || (!hasTransactions && cost > 0)) {
-                        colorModifier = 'debt';
+                        colorModifier = 'Debt';
                         amountToDisplay = pending > 0 ? pending : cost;
-                        statusIcon = <Icon name="error" className={styles.paymentIcon} />;
-                        titleTooltip = `Deuda pendiente: $${amountToDisplay}`;
+                        statusIconName = 'error';
+                        titleTooltip = `${t('debt')}: ${formatCurrency(amountToDisplay)}`;
+                        statusLabel = t('debt');
                     }
 
                     if (amountToDisplay === 0 && appt.payment_status !== 'paid') return null;
 
+                    const badgeModifierClass = styles[`AppointmentCard__paymentBadge${colorModifier}`] || '';
+
                     return (
                         <div 
-                            className={`${styles.AppointmentCard__paymentInfo} ${styles['paymentInfo' + colorModifier.charAt(0).toUpperCase() + colorModifier.slice(1)]}`}
+                            className={`${styles.AppointmentCard__paymentBadge} ${badgeModifierClass}`}
                             title={titleTooltip}
                         >
-                            {paid > 0 && paid < effectiveTotal && (
-                                <span className={styles.restAmount}>
-                                    (Resto)
+                            {statusIconName && (
+                                <Icon name={statusIconName} size="0.85rem" className={styles.AppointmentCard__paymentBadgeIcon} />
+                            )}
+                            {statusLabel && (
+                                <span className={styles.AppointmentCard__paymentBadgeLabel}>
+                                    {statusLabel}
                                 </span>
                             )}
-                            <span>{formatCurrency(amountToDisplay)}</span>
-                            {statusIcon}
+                            <span className={styles.AppointmentCard__paymentBadgeAmount}>
+                                {formatCurrency(amountToDisplay)}
+                            </span>
                         </div>
                     );
                 })()}
