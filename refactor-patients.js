@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const rootDir = '/home/jmro/secretary-app/client/src';
+const rootDir = path.join(__dirname, 'client/src');
 
 const filesToMigrate = [
     'features/patients/PatientsPage.jsx',
