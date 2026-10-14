@@ -364,17 +364,17 @@
 }
 
 .PatientFinancialSidebar__statusPaid {
-    background: rgba(16, 185, 129, 0.15);
+    background: rgb(16, 185, 129, 0.15);
     color: var(--success);
 }
 
 .PatientFinancialSidebar__statusPending {
-    background: rgba(239, 68, 68, 0.15);
+    background: rgb(239, 68, 68, 0.15);
     color: var(--danger);
 }
 
 .PatientFinancialSidebar__statusBonified {
-    background: rgba(2, 132, 199, 0.15);
+    background: rgb(2, 132, 199, 0.15);
     color: var(--accent-color);
 }
 

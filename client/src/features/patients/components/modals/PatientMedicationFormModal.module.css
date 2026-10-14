@@ -31,10 +31,10 @@
     left: 0;
     right: 0;
     z-index: 100;
-    background: var(--dashboard-card-bg, #ffffff);
+    background: var(--dashboard-card-bg, #fff);
     border: 1px solid var(--border-color, #ced4da);
     border-radius: var(--radius-md, 8px);
-    box-shadow: var(--shadow-lg, 0 8px 24px rgba(0, 0, 0, 0.2));
+    box-shadow: var(--shadow-lg, 0 8px 24px rgb(0, 0, 0, 0.2));
     max-height: 220px;
     overflow-y: auto;
     margin-top: 0.25rem;
