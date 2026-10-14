@@ -81,7 +81,7 @@ filesToMigrate.forEach(relPath => {
     console.log('Migrated export in', relPath);
 });
 
-// 2. Fix index.js files doing `export { default as X } from ...`
+// 2. Update index.js files doing `export { default as X } from ...`
 const indexJsFiles = execSync(`find ${rootDir} -name index.js`).toString().split('\n').filter(Boolean);
 indexJsFiles.forEach(fullPath => {
     let content = fs.readFileSync(fullPath, 'utf8');
@@ -100,7 +100,7 @@ indexJsFiles.forEach(fullPath => {
     }
 });
 
-// 3. Fix importers: `import X from '...'` to `import { X } from '...'`
+// 3. Update importers: `import X from '...'` to `import { X } from '...'`
 const allFiles = execSync(`find ${rootDir} -name "*.js" -o -name "*.jsx"`).toString().split('\n').filter(Boolean);
 allFiles.forEach(fullPath => {
     let content = fs.readFileSync(fullPath, 'utf8');

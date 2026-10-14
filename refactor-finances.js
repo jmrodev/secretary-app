@@ -51,18 +51,11 @@ filesToMigrate.forEach(relPath => {
     }
     
     // Check for export default React.memo(...)
-    const defaultMemoRegex = new RegExp(`^export\\s+default\\s+React\\.memo\\(${compName}\\);\\s*$`, 'm');
+    const defaultMemoRegex = new RegExp(`^export\\s+default\\s+(?:React\\.)?memo\\(${compName}\\);\\s*$`, 'm');
     if (defaultMemoRegex.test(content)) {
-        // We have `const CompName = ...` and `export default React.memo(CompName)`.
-        // To fix this: `export const CompNameMemo = React.memo(CompName);` or rename the inner.
-        // Easiest is to keep `export const CompName` if it's not a memo, but if we need memo:
-        // Actually atomic design is better to just do `export const CompName = React.memo(...)` originally.
-        // Let's just do a string replacement for `export const CompName =` -> `const CompName =` and then
-        // `export default React.memo(CompName)` -> `export const CompNameMemo = React.memo(CompName)`
-        // Wait, other places import `CompName`. Let's just do:
         content = content.replace(`export const ${compName} =`, `const ${compName} =`);
-        content = content.replace(defaultMemoRegex, `export const ${compName} = React.memo(_${compName});`);
-        content = content.replace(new RegExp(`const\\s+${compName}\\s*=`, 'm'), `const _${compName} =`);
+        content = content.replace(defaultMemoRegex, `export const ${compName} = React.memo(${compName}Base);`);
+        content = content.replace(new RegExp(`const\\s+${compName}\\s*=`, 'm'), `const ${compName}Base =`);
     } else {
         const defaultExportRegex = new RegExp(`^export\\s+default\\s+${compName};\\s*$`, 'm');
         content = content.replace(defaultExportRegex, '');
@@ -72,7 +65,7 @@ filesToMigrate.forEach(relPath => {
     console.log('Migrated export in', relPath);
 });
 
-// 2. Fix index.js files doing `export { default as X } from ...`
+// 2. Update index.js files doing `export { default as X } from ...`
 const indexJsFiles = execSync(`find ${rootDir} -name index.js`).toString().split('\n').filter(Boolean);
 indexJsFiles.forEach(fullPath => {
     let content = fs.readFileSync(fullPath, 'utf8');
@@ -91,7 +84,7 @@ indexJsFiles.forEach(fullPath => {
     }
 });
 
-// 3. Fix importers: `import X from '...'` to `import { X } from '...'`
+// 3. Update importers: `import X from '...'` to `import { X } from '...'`
 const allFiles = execSync(`find ${rootDir} -name "*.js" -o -name "*.jsx"`).toString().split('\n').filter(Boolean);
 allFiles.forEach(fullPath => {
     let content = fs.readFileSync(fullPath, 'utf8');
