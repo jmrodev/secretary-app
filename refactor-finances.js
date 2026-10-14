@@ -51,18 +51,11 @@ filesToMigrate.forEach(relPath => {
     }
     
     // Check for export default React.memo(...)
-    const defaultMemoRegex = new RegExp(`^export\\s+default\\s+React\\.memo\\(${compName}\\);\\s*$`, 'm');
+    const defaultMemoRegex = new RegExp(`^export\\s+default\\s+(?:React\\.)?memo\\(${compName}\\);\\s*$`, 'm');
     if (defaultMemoRegex.test(content)) {
-        // We have `const CompName = ...` and `export default React.memo(CompName)`.
-        // To fix this: `export const CompNameMemo = React.memo(CompName);` or rename the inner.
-        // Easiest is to keep `export const CompName` if it's not a memo, but if we need memo:
-        // Actually atomic design is better to just do `export const CompName = React.memo(...)` originally.
-        // Let's just do a string replacement for `export const CompName =` -> `const CompName =` and then
-        // `export default React.memo(CompName)` -> `export const CompNameMemo = React.memo(CompName)`
-        // Wait, other places import `CompName`. Let's just do:
         content = content.replace(`export const ${compName} =`, `const ${compName} =`);
-        content = content.replace(defaultMemoRegex, `export const ${compName} = React.memo(_${compName});`);
-        content = content.replace(new RegExp(`const\\s+${compName}\\s*=`, 'm'), `const _${compName} =`);
+        content = content.replace(defaultMemoRegex, `export const ${compName} = React.memo(${compName}Base);`);
+        content = content.replace(new RegExp(`const\\s+${compName}\\s*=`, 'm'), `const ${compName}Base =`);
     } else {
         const defaultExportRegex = new RegExp(`^export\\s+default\\s+${compName};\\s*$`, 'm');
         content = content.replace(defaultExportRegex, '');
