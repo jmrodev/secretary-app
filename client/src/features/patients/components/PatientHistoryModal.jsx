@@ -1,8 +1,8 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import Modal from '@/components/molecules/Modal';
 import TabButton from '@/components/atoms/TabButton';
-import api from '@/api/axios';
+import { useFetch } from '@/hooks/useFetch';
 import { useLanguage } from '@/context/LanguageContext';
 import Icon from '@/components/atoms/Icon';
 import './PatientHistoryModal.css';
@@ -14,43 +14,33 @@ import './PatientHistoryModal.css';
 const PatientHistoryModal = ({ isOpen, onClose, patientId, patientName }) => {
     const { t } = useLanguage();
     const [activeTab, setActiveTab] = useState('appointments');
-    const [loading, setLoading] = useState(true);
 
-    const [history, setHistory] = useState({
-        appointments: [],
-        prescriptions: [],
-        licenses: [],
-        requests: []
-    });
+    // Data fetching using useFetch hook
+    const { data: appointments = [], loading: loadingAppt } = useFetch(
+        isOpen && patientId ? `/appointments?patientId=${patientId}` : null,
+        { initialData: [] }
+    );
+    const { data: prescriptions = [], loading: loadingPresc } = useFetch(
+        isOpen && patientId ? `/medical/prescriptions?patientId=${patientId}` : null,
+        { initialData: [] }
+    );
+    const { data: licenses = [], loading: loadingLic } = useFetch(
+        isOpen && patientId ? `/medical/licenses?patientId=${patientId}` : null,
+        { initialData: [] }
+    );
+    const { data: requests = [], loading: loadingReq } = useFetch(
+        isOpen && patientId ? `/medical/requests?patientId=${patientId}` : null,
+        { initialData: [] }
+    );
 
-    const fetchHistory = useCallback(async () => {
-        setLoading(true);
-        try {
-            const [apptRes, prescRes, licRes, reqRes] = await Promise.all([
-                api.get(`/appointments?patientId=${patientId}`),
-                api.get(`/medical/prescriptions?patientId=${patientId}`),
-                api.get(`/medical/licenses?patientId=${patientId}`),
-                api.get(`/medical/requests?patientId=${patientId}`)
-            ]);
+    const loading = loadingAppt || loadingPresc || loadingLic || loadingReq;
 
-            setHistory({
-                appointments: apptRes.data,
-                prescriptions: prescRes.data,
-                licenses: licRes.data,
-                requests: reqRes.data
-            });
-        } catch (err) {
-            console.error("Failed to fetch patient history", err);
-        } finally {
-            setLoading(false);
-        }
-    }, [patientId]);
-
-    useEffect(() => {
-        if (isOpen && patientId) {
-            queueMicrotask(() => fetchHistory());
-        }
-    }, [isOpen, patientId, fetchHistory]);
+    const history = useMemo(() => ({
+        appointments,
+        prescriptions,
+        licenses,
+        requests
+    }), [appointments, prescriptions, licenses, requests]);
 
     const formatDate = (dateStr) => {
         if (!dateStr) return '';
