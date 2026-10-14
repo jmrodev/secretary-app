@@ -1,3 +1,9 @@
+jest.mock('mariadb', () => ({
+    createPool: jest.fn(() => ({
+        getConnection: jest.fn()
+    }))
+}), { virtual: true });
+jest.mock('dotenv', () => ({ config: jest.fn() }), { virtual: true });
 const userStatsService = require('../../services/userStatsService');
 const statsRepository = require('../../repositories/statsRepository');
 const doctorRepository = require('../../repositories/doctorRepository');
@@ -20,18 +26,8 @@ describe('UserStatsService', () => {
         // By setting it to a specific time, say noon UTC, local get* methods might shift days
         // if timezone offset is large. Wait, the service uses:
         // const now = new Date();
-        // const pad = (d) => d.toISOString().split('T')[0];
-        // const todayStart = pad(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
-        //
-        // new Date(year, month, day) creates a date in LOCAL time for that year/month/day at 00:00:00.
-        // Then .toISOString() is called, which converts it to UTC.
-        // If the timezone is positive (e.g. +0200), 00:00 local is 22:00 the previous day UTC.
-        // So .toISOString().split('T')[0] will return the previous day!
-        // This is exactly the bug in the service logic for timezones ahead of UTC.
-        // However, we are testing the service logic. We should mock the Date object
-        // but we need to verify what the service ACTUALLY computes based on the local time of the execution environment.
-        // The most robust way to test this without changing the service code
-        // is to replicate exactly what the service does for our expected values.
+        // The service now uses formatDateLocal which uses local getters
+        // (getFullYear, getMonth, getDate) to avoid UTC shifts.
 
         // For testing we will use a fixed UTC date.
         const FIXED_DATE = new originalDate('2023-10-18T12:00:00Z');
@@ -51,21 +47,22 @@ describe('UserStatsService', () => {
         global.Date = originalDate;
     });
 
-    // Helper to calculate expected ISO dates EXACTLY like the service does
+    // Helper to calculate expected ISO dates using local time getters
     const getExpectedDates = (fixedDate) => {
         const now = new originalDate(fixedDate.getTime());
-        const pad = (d) => d.toISOString().split('T')[0];
+        const pad = (n) => n.toString().padStart(2, '0');
+        const formatDateLocal = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
-        const todayStart = pad(new originalDate(now.getFullYear(), now.getMonth(), now.getDate()));
-        const todayEnd = pad(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + 1));
+        const todayStart = formatDateLocal(new originalDate(now.getFullYear(), now.getMonth(), now.getDate()));
+        const todayEnd = formatDateLocal(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + 1));
 
         const dayOfWeek = now.getDay();
         const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-        const weekStart = pad(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset));
-        const weekEnd = pad(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset + 7));
+        const weekStart = formatDateLocal(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset));
+        const weekEnd = formatDateLocal(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset + 7));
 
-        const monthStart = pad(new originalDate(now.getFullYear(), now.getMonth(), 1));
-        const monthEnd = pad(new originalDate(now.getFullYear(), now.getMonth() + 1, 1));
+        const monthStart = formatDateLocal(new originalDate(now.getFullYear(), now.getMonth(), 1));
+        const monthEnd = formatDateLocal(new originalDate(now.getFullYear(), now.getMonth() + 1, 1));
 
         return { todayStart, todayEnd, weekStart, weekEnd, monthStart, monthEnd };
     };

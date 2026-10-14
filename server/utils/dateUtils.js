@@ -54,9 +54,21 @@ function formatDateOnlySQL(dateInput) {
     return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
 }
 
+/**
+ * Formats a Date object to YYYY-MM-DD using local time.
+ * This avoids UTC shifts when we want the calendar date as perceived by the user.
+ */
+function formatDateLocal(date) {
+    if (!date || isNaN(new Date(date).getTime())) return null;
+    const d = new Date(date);
+    const pad = (n) => n.toString().padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
 module.exports = {
     TIMEZONE,
     formatLocalSQL,
     formatDateOnlySQL,
+    formatDateLocal,
     nowLocalSQL
 };
