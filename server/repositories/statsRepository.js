@@ -84,6 +84,11 @@ class StatsRepository {
     }
 
     async getAppointmentSummaryStats(dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {
+        const allowedColumns = ['appointment_date', 'created_at', 'updated_at'];
+        if (!allowedColumns.includes(dateColumn)) {
+            throw new Error(`Invalid date column: ${dateColumn}`);
+        }
+
         const doctorFilter = doctor_id ? " AND a.doctor_id = ?" : "";
         const dateFilter = isExactDate ? `DATE(a.${dateColumn}) = ?` : `a.${dateColumn} >= ?`;
         const query = `
@@ -166,6 +171,11 @@ class StatsRepository {
     }
 
     async getRequestAggregates(type, dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {
+        const allowedColumns = ['created_at', 'updated_at'];
+        if (!allowedColumns.includes(dateColumn)) {
+            throw new Error(`Invalid date column: ${dateColumn}`);
+        }
+
         const doctorFilter = doctor_id ? " AND r.doctor_id = ?" : "";
         const dateFilter = isExactDate ? `DATE(r.${dateColumn}) = ?` : `r.${dateColumn} >= ?`;
         const query = `
@@ -189,6 +199,12 @@ class StatsRepository {
 
     async getAllTypesRequestAggregates(types, dateColumn, dateValue, isExactDate, doctor_id, conn = pool) {
         if (!types || types.length === 0) return [];
+
+        const allowedColumns = ['created_at', 'updated_at'];
+        if (!allowedColumns.includes(dateColumn)) {
+            throw new Error(`Invalid date column: ${dateColumn}`);
+        }
+
         const doctorFilter = doctor_id ? " AND r.doctor_id = ?" : "";
         const dateFilter = isExactDate ? `DATE(r.${dateColumn}) = ?` : `r.${dateColumn} >= ?`;
         const typePlaceholders = types.map(() => '?').join(',');
