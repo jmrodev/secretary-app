@@ -9,8 +9,11 @@ const { pool } = require('../db');
 class InstitutionService {
     async getAllInstitutions() {
         const rows = await institutionRepository.findAll();
+        const ids = rows.map(r => r.id);
+        const phonesLookup = await phoneRepository.findByEntities('institution', ids);
+
         for (const row of rows) {
-            row.phoneNumbers = await phoneRepository.findByEntity('institution', row.id);
+            row.phoneNumbers = phonesLookup[row.id] || [];
         }
         return { institutions: rows, totalCount: rows.length };
     }
