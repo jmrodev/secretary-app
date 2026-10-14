@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
+const logger = require('./utils/core/logger');
 const db = require('./db');
 const systemSettingsRepository = require('./repositories/system/systemSettingsRepository');
 const { safeJsonReplacer } = require('./utils/system/safeJson');
@@ -69,13 +70,13 @@ app.use(async (req, res, next) => {
                 if (lastDetectedStaffIp !== staffUrl) {
                     lastDetectedStaffIp = staffUrl;
                     await systemSettingsRepository.upsert('staff_base_url', staffUrl);
-                    console.log(`🤖 Auto-detected Staff LAN IP: ${staffUrl}`);
+                    logger.info(`🤖 Auto-detected Staff LAN IP: ${staffUrl}`);
                 }
             }
         }
     } catch (err) {
         // Log and continue — IP detection must never block the request
-        console.error('Staff IP detection failed:', err);
+        logger.error('Staff IP detection failed:', err);
     }
 
     next();
@@ -126,15 +127,15 @@ app.use('/uploads', express.static('uploads'));
 
 // Start server
 const server = app.listen(PORT, '0.0.0.0', async () => {
-    console.log(`Server running on port ${PORT}`);
+    logger.info(`Server running on port ${PORT}`);
     try {
         await db.dbReady;
         const conn = await db.pool.getConnection();
-        console.log('Connected to MariaDB');
+        logger.info('Connected to MariaDB');
 
-        // Debug: Identify DB
+        // Identify and log connected database
         const dbInfo = await conn.query("SELECT DATABASE() as db, @@hostname as host");
-        console.log("!!! CONNECTED TO DB:", dbInfo[0]?.db);
+        logger.info("!!! CONNECTED TO DB:", dbInfo[0]?.db);
 
         conn.release();
 
@@ -151,27 +152,27 @@ const server = app.listen(PORT, '0.0.0.0', async () => {
 
 
     } catch (err) {
-        console.error('Failed to connect to MariaDB:', err);
+        logger.error('Failed to connect to MariaDB:', err);
     }
 });
 
 // Graceful Shutdown Logic
 const gracefulShutdown = async (signal) => {
-    console.log(`\n🛑 Received ${signal}. Shutting down gracefully...`);
+    logger.info(`\n🛑 Received ${signal}. Shutting down gracefully...`);
     server.close(() => {
-        console.log('👋 HTTP server closed.');
+        logger.info('👋 HTTP server closed.');
         db.pool.end().then(() => {
-            console.log('💾 Database connections closed.');
+            logger.info('💾 Database connections closed.');
             process.exit(0);
         }).catch((err) => {
-            console.error('Failed to close database connections:', err);
+            logger.error('Failed to close database connections:', err);
             process.exit(1);
         });
     });
 
     // Force shutdown after 10s
     setTimeout(() => {
-        console.error('⚠️ Could not close connections in time, forceful shutdown.');
+        logger.error('⚠️ Could not close connections in time, forceful shutdown.');
         process.exit(1);
     }, 10000);
 };
