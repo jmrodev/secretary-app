@@ -41,7 +41,26 @@ initScheduler();
 
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+// Configure CORS with restricted origins
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+    : ['http://localhost:5173'];
+
+app.use(cors({
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.error(`Blocked by CORS: ${origin}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
+}));
+
 app.use(express.json());
 
 // Health Check Endpoint for Monitoring/Docker
