@@ -1484,12 +1484,15 @@ SET character_set_client = utf8mb4;
  NULL AS `id`,
  NULL AS `appointment_date`,
  NULL AS `reason`,
+ NULL AS `cancellation_reason`,
  NULL AS `status`,
  NULL AS `payment_status`,
+ NULL AS `is_paid`,
  NULL AS `type`,
  NULL AS `is_out_of_hours`,
  NULL AS `bonified`,
  NULL AS `cost`,
+ NULL AS `total_cost`,
  NULL AS `google_event_id`,
  NULL AS `rescheduled_from_date`,
  NULL AS `duration`,
@@ -1511,6 +1514,9 @@ SET character_set_client = utf8mb4;
  NULL AS `institution_base_price`,
  NULL AS `paid_amount`,
  NULL AS `pending_amount`,
+ NULL AS `institution_paid_amount`,
+ NULL AS `institution_pending_amount`,
+ NULL AS `payment_method`,
  NULL AS `invoice_number`,
  NULL AS `invoice_punto_vta`,
  NULL AS `invoice_cae`,
@@ -2819,13 +2825,15 @@ ALTER DATABASE `clinical_management` CHARACTER SET utf8mb4 COLLATE utf8mb4_unico
 /*!50003 SET collation_connection  = utf8mb3_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `sp_search_patients`(
-    IN  p_search    VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
-    IN  p_page      INT,
-    IN  p_limit     INT,
-    IN  p_doctor_id INT,
-    IN  p_role      VARCHAR(50),
-    IN  p_user_id   INT,
-    OUT p_total     INT
+    IN  p_search     VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci,
+    IN  p_page       INT,
+    IN  p_limit      INT,
+    IN  p_doctor_id  INT,
+    IN  p_role       VARCHAR(50),
+    IN  p_user_id    INT,
+    IN  p_sort_by    VARCHAR(50),
+    IN  p_sort_order VARCHAR(10),
+    OUT p_total      INT
 )
 BEGIN
     DECLARE v_offset INT DEFAULT 0;
@@ -2863,7 +2871,22 @@ BEGIN
     SELECT p.*
     FROM view_patients_extended p
     INNER JOIN _tmp_patient_search t ON t.id = p.id
-    ORDER BY p.full_name ASC
+    ORDER BY
+        CASE WHEN p_sort_by = 'debt' AND (p_sort_order = 'DESC' OR p_sort_order = 'desc') THEN p.total_debt_calculated END DESC,
+        CASE WHEN p_sort_by = 'debt' AND (p_sort_order = 'ASC' OR p_sort_order = 'asc') THEN p.total_debt_calculated END ASC,
+        CASE WHEN p_sort_by = 'financial_rating' AND (p_sort_order = 'ASC' OR p_sort_order = 'asc') THEN p.financial_rating END ASC,
+        CASE WHEN p_sort_by = 'financial_rating' AND (p_sort_order = 'DESC' OR p_sort_order = 'desc') THEN p.financial_rating END DESC,
+        CASE WHEN p_sort_by = 'attendance_rating' AND (p_sort_order = 'ASC' OR p_sort_order = 'asc') THEN p.attendance_rating END ASC,
+        CASE WHEN p_sort_by = 'attendance_rating' AND (p_sort_order = 'DESC' OR p_sort_order = 'desc') THEN p.attendance_rating END DESC,
+        CASE WHEN p_sort_by = 'behavior_rating' AND (p_sort_order = 'ASC' OR p_sort_order = 'asc') THEN p.behavior_rating END ASC,
+        CASE WHEN p_sort_by = 'behavior_rating' AND (p_sort_order = 'DESC' OR p_sort_order = 'desc') THEN p.behavior_rating END DESC,
+        CASE WHEN p_sort_by = 'identification' AND (p_sort_order = 'DESC' OR p_sort_order = 'desc') THEN p.dni END DESC,
+        CASE WHEN p_sort_by = 'identification' AND (p_sort_order = 'ASC' OR p_sort_order = 'asc') THEN p.dni END ASC,
+        CASE WHEN p_sort_by = 'contact' AND (p_sort_order = 'DESC' OR p_sort_order = 'desc') THEN p.phone END DESC,
+        CASE WHEN p_sort_by = 'contact' AND (p_sort_order = 'ASC' OR p_sort_order = 'asc') THEN p.phone END ASC,
+        CASE WHEN (p_sort_by = 'patient' OR p_sort_by = 'name' OR p_sort_by IS NULL OR p_sort_by = '') AND (p_sort_order = 'DESC' OR p_sort_order = 'desc') THEN p.full_name END DESC,
+        CASE WHEN (p_sort_by = 'patient' OR p_sort_by = 'name' OR p_sort_by IS NULL OR p_sort_by = '') AND (p_sort_order = 'ASC' OR p_sort_order = 'asc' OR p_sort_order IS NULL OR p_sort_order = '') THEN p.full_name END ASC,
+        p.full_name ASC
     LIMIT p_limit OFFSET v_offset;
 
     DROP TEMPORARY TABLE IF EXISTS _tmp_patient_search;
@@ -3091,8 +3114,7 @@ ALTER DATABASE `clinical_management` CHARACTER SET utf8mb4 COLLATE utf8mb4_gener
 /*!50001 SET character_set_results     = utf8mb3 */;
 /*!50001 SET collation_connection      = utf8mb3_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `v_appointment_details` AS select `a`.`id` AS `id`,`a`.`appointment_date` AS `appointment_date`,`a`.`reason` AS `reason`,`a`.`status` AS `status`,`a`.`payment_status` AS `payment_status`,`a`.`type` AS `type`,`a`.`is_out_of_hours` AS `is_out_of_hours`,`a`.`bonified` AS `bonified`,`a`.`cost` AS `cost`,`a`.`google_event_id` AS `google_event_id`,`a`.`rescheduled_from_date` AS `rescheduled_from_date`,`a`.`duration` AS `duration`,`a`.`created_at` AS `created_at`,`a`.`confirmed_at` AS `confirmed_at`,`a`.`arrived_at` AS `arrived_at`,`a`.`completed_at` AS `completed_at`,`a`.`paid_at` AS `paid_at`,`a`.`patient_id` AS `patient_id`,`p`.`full_name` AS `patient_name`,`p`.`dni` AS `patient_dni`,`p`.`phone` AS `patient_phone`,`p`.`behavior_rating` AS `behavior_rating`,`a`.`doctor_id` AS `doctor_id`,`d`.`full_name` AS `doctor_name`,`d`.`afip_cuit` AS `doctor_cuit`,`a`.`institution_id` AS `institution_id`,`inst`.`name` AS `institution_name`,`inst`.`base_price` AS `institution_base_price`,coalesce(`tx`.`paid_amount`,0) AS `paid_amount`,coalesce(`tx`.`pending_amount`,0) AS `pending_amount`,`inv`.`invoice_number` AS `invoice_number`,`inv`.`invoice_punto_vta` AS `invoice_punto_vta`,`inv`.`invoice_cae` AS `invoice_cae`,(select count(0) from `appointments` `a2` where `a2`.`patient_id` = `a`.`patient_id` and `a2`.`status` in ('attended','completed')) AS `attended_appointments` from (((((`appointments` `a` left join `patients` `p` on(`a`.`patient_id` = `p`.`id`)) join `doctors` `d` on(`a`.`doctor_id` = `d`.`id`)) left join `institutions` `inst` on(`a`.`institution_id` = `inst`.`id`)) left join (select `transactions`.`appointment_id` AS `appointment_id`,sum(case when `transactions`.`status` = 'paid' then `transactions`.`amount` else 0 end) AS `paid_amount`,sum(case when `transactions`.`status` = 'pending' then `transactions`.`amount` else 0 end) AS `pending_amount` from `transactions` where `transactions`.`is_withdrawal` = 0 group by `transactions`.`appointment_id`) `tx` on(`tx`.`appointment_id` = `a`.`id`)) left join (select `t`.`appointment_id` AS `appointment_id`,min(`i`.`cbte_nro`) AS `invoice_number`,min(`i`.`punto_vta`) AS `invoice_punto_vta`,min(`i`.`cae`) AS `invoice_cae` from (`invoices` `i` join `transactions` `t` on(`i`.`transaction_id` = `t`.`id`)) where `t`.`appointment_id` is not null group by `t`.`appointment_id`) `inv` on(`inv`.`appointment_id` = `a`.`id`)) */;
+/*!50001 VIEW `v_appointment_details` AS select `a`.`id` AS `id`,`a`.`appointment_date` AS `appointment_date`,`a`.`reason` AS `reason`,`a`.`cancellation_reason` AS `cancellation_reason`,`a`.`status` AS `status`,`a`.`payment_status` AS `payment_status`,case when `a`.`bonified` = 1 then 1 when coalesce(`tx`.`pending_amount`,0) > 0 then 0 when `a`.`institution_id` is not null and coalesce(`tx`.`paid_amount`,0) + coalesce(`tx`.`pending_amount`,0) = 0 then 1 else `a`.`is_paid` end AS `is_paid`,`a`.`type` AS `type`,`a`.`is_out_of_hours` AS `is_out_of_hours`,`a`.`bonified` AS `bonified`,case when `a`.`bonified` = 1 then 0.00 when `a`.`institution_id` is not null then coalesce(`tx`.`paid_amount`,0) + coalesce(`tx`.`pending_amount`,0) else greatest(coalesce(`a`.`cost`,0),coalesce(`tx`.`paid_amount`,0) + coalesce(`tx`.`pending_amount`,0)) end AS `cost`,greatest(coalesce(`a`.`cost`,0),coalesce(`tx`.`paid_amount`,0) + coalesce(`tx`.`pending_amount`,0) + coalesce(`tx`.`institution_paid_amount`,0) + coalesce(`tx`.`institution_pending_amount`,0),coalesce(`inst`.`base_price`,0)) AS `total_cost`,`a`.`google_event_id` AS `google_event_id`,`a`.`rescheduled_from_date` AS `rescheduled_from_date`,`a`.`duration` AS `duration`,`a`.`created_at` AS `created_at`,`a`.`confirmed_at` AS `confirmed_at`,`a`.`arrived_at` AS `arrived_at`,`a`.`completed_at` AS `completed_at`,`a`.`paid_at` AS `paid_at`,`a`.`patient_id` AS `patient_id`,`p`.`full_name` AS `patient_name`,`p`.`dni` AS `patient_dni`,`p`.`phone` AS `patient_phone`,`p`.`behavior_rating` AS `behavior_rating`,`a`.`doctor_id` AS `doctor_id`,`d`.`full_name` AS `doctor_name`,`d`.`afip_cuit` AS `doctor_cuit`,`a`.`institution_id` AS `institution_id`,`inst`.`name` AS `institution_name`,coalesce(`inst`.`base_price`,0) AS `institution_base_price`,coalesce(`tx`.`paid_amount`,0) AS `paid_amount`,coalesce(`tx`.`pending_amount`,0) AS `pending_amount`,coalesce(`tx`.`institution_paid_amount`,0) AS `institution_paid_amount`,coalesce(`tx`.`institution_pending_amount`,0) AS `institution_pending_amount`,`tx`.`payment_method` AS `payment_method`,`inv`.`invoice_number` AS `invoice_number`,`inv`.`invoice_punto_vta` AS `invoice_punto_vta`,`inv`.`invoice_cae` AS `invoice_cae`,(select count(0) from `appointments` `a2` where `a2`.`patient_id` = `a`.`patient_id` and `a2`.`status` in ('attended','completed')) AS `attended_appointments` from (((((`appointments` `a` left join `patients` `p` on(`a`.`patient_id` = `p`.`id`)) join `doctors` `d` on(`a`.`doctor_id` = `d`.`id`)) left join `institutions` `inst` on(`a`.`institution_id` = `inst`.`id`)) left join (select `transactions`.`appointment_id` AS `appointment_id`,sum(case when `transactions`.`status` = 'paid' and `transactions`.`institution_id` is null then `transactions`.`amount` else 0 end) AS `paid_amount`,sum(case when `transactions`.`status` = 'pending' and `transactions`.`institution_id` is null then `transactions`.`amount` else 0 end) AS `pending_amount`,sum(case when `transactions`.`status` = 'paid' and `transactions`.`institution_id` is not null then `transactions`.`amount` else 0 end) AS `institution_paid_amount`,sum(case when `transactions`.`status` = 'pending' and `transactions`.`institution_id` is not null then `transactions`.`amount` else 0 end) AS `institution_pending_amount`,max(case when `transactions`.`institution_id` is null then `transactions`.`method` else null end) AS `payment_method` from `transactions` where `transactions`.`is_withdrawal` = 0 group by `transactions`.`appointment_id`) `tx` on(`tx`.`appointment_id` = `a`.`id`)) left join (select `t`.`appointment_id` AS `appointment_id`,min(`i`.`cbte_nro`) AS `invoice_number`,min(`i`.`punto_vta`) AS `invoice_punto_vta`,min(`i`.`cae`) AS `invoice_cae` from (`invoices` `i` join `transactions` `t` on(`i`.`transaction_id` = `t`.`id`)) where `t`.`appointment_id` is not null group by `t`.`appointment_id`) `inv` on(`inv`.`appointment_id` = `a`.`id`)) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
