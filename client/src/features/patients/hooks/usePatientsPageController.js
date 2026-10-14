@@ -36,7 +36,7 @@ export const usePatientsPageController = () => {
     const { searchTerm, setSearchTerm } = useSearch();
 
     // View State (Pagination)
-    const [itemsPerPage] = useState(50);
+    const [itemsPerPage] = useState(10);
     const activeTab = searchParams.get('tab') === 'recycle' ? 'recycle' : 'list';
 
     const setActiveTab = useCallback((tab) => {
@@ -62,6 +62,10 @@ export const usePatientsPageController = () => {
         hasFetchedOnce,
         executeSearch,
         refetch: fetchPatients,
+        sortBy,
+        sortOrder,
+        handleSort,
+        sortConfig,
     } = usePatientQuery({
         limit: itemsPerPage,
         doctorId: null,
@@ -158,6 +162,7 @@ export const usePatientsPageController = () => {
         patients, 
         totalCount,
         currentPage, totalPages, handlePageChange,
+        sortBy, sortOrder, handleSort, sortConfig,
         doctors, insurances, recycleItems, institutions,
         loading: patientsLoading, 
         detailsLoading,

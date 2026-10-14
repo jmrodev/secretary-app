@@ -138,19 +138,19 @@
 }
 
 .PatientFinancialSidebar__cardBorderRed {
-    border-left: 5px solid #ea4335;
+    border-left: 5px solid var(--danger);
 }
 
 .PatientFinancialSidebar__cardBorderGreen {
-    border-left: 5px solid #34a853;
+    border-left: 5px solid var(--success);
 }
 
 .PatientFinancialSidebar__cardBorderGreenDark {
-    border-left: 5px solid #137333;
+    border-left: 5px solid var(--primary-color);
 }
 
 .PatientFinancialSidebar__cardBorderBlue {
-    border-left: 5px solid #1a73e8;
+    border-left: 5px solid var(--accent-color);
 }
 
 .PatientFinancialSidebar__financialContentPadded {
@@ -158,12 +158,12 @@
 }
 
 .PatientFinancialSidebar__smallDebt {
-    color: #ea4335;
+    color: var(--danger);
     font-weight: 600;
 }
 
 .PatientFinancialSidebar__smallClear {
-    color: #34a853;
+    color: var(--success);
     font-weight: 600;
 }
 
@@ -181,34 +181,34 @@
 .PatientFinancialSidebar__financialAmountBig {
     font-size: 2.5rem;
     font-weight: 900;
-    color: #137333;
+    color: var(--success);
     line-height: 1;
 }
 
 .PatientFinancialSidebar__financialAmountBlue {
     font-size: 2.5rem;
     font-weight: 900;
-    color: #1a73e8;
+    color: var(--accent-color);
     line-height: 1;
 }
 
 .PatientFinancialSidebar__smallMuted {
-    color: var(--gray-600);
+    color: var(--text-muted);
     font-weight: 600;
 }
 
 .PatientFinancialSidebar__ledgerCard {
-    background: #fff;
-    border: 1px solid var(--gray-200);
-    border-radius: 12px;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
     overflow: hidden;
-    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.04);
+    box-shadow: var(--shadow-sm);
 }
 
 .PatientFinancialSidebar__ledgerHeader {
-    padding: 1rem 1.25rem;
-    background: var(--gray-100);
-    border-bottom: 1px solid var(--gray-200);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--card-surface-bg);
+    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -221,16 +221,16 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--gray-800);
+    color: var(--text-main);
 }
 
 .PatientFinancialSidebar__iconPrimary {
-    color: var(--primary-color, #1a73e8);
+    color: var(--primary-color);
 }
 
 .PatientFinancialSidebar__ledgerRecords {
     font-size: 0.85rem;
-    color: var(--gray-600);
+    color: var(--text-muted);
     font-weight: 600;
 }
 
@@ -242,45 +242,68 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
+    text-align: left;
 }
 
 .PatientFinancialSidebar__ledgerTheadRow {
-    background: #f8f9fa;
-    border-bottom: 2px solid var(--gray-200);
-    color: var(--gray-700);
-    text-align: left;
+    background: var(--dashboard-card-bg);
+    border-bottom: 2px solid var(--border-color);
+    color: var(--text-muted);
 }
 
 .PatientFinancialSidebar__ledgerTh {
     padding: 0.75rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
 }
 
 .PatientFinancialSidebar__ledgerThRight {
     padding: 0.75rem 1rem;
     text-align: right;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
 }
 
 .PatientFinancialSidebar__ledgerThCenter {
     padding: 0.75rem 1rem;
     text-align: center;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
 }
 
 .PatientFinancialSidebar__ledgerRow {
-    border-bottom: 1px solid var(--gray-100);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+.PatientFinancialSidebar__ledgerRow:hover {
+    background-color: var(--row-hover-bg);
 }
 
 .PatientFinancialSidebar__ledgerTd {
     padding: 0.75rem 1rem;
+    color: var(--text-main);
 }
 
 .PatientFinancialSidebar__ledgerTdRight {
     padding: 0.75rem 1rem;
     text-align: right;
+    color: var(--text-main);
 }
 
 .PatientFinancialSidebar__ledgerTdCenter {
     padding: 0.75rem 1rem;
     text-align: center;
+    color: var(--text-main);
 }
 
 .PatientFinancialSidebar__ledgerTdRightStrong {
@@ -294,64 +317,69 @@
 }
 
 .PatientFinancialSidebar__tdDate {
-    font-weight: 600;
+    font-weight: 700;
+    color: var(--text-main);
 }
 
 .PatientFinancialSidebar__tdTime {
-    color: var(--gray-500);
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
 
 .PatientFinancialSidebar__tdConcept {
     font-weight: 600;
-    color: var(--gray-900);
+    color: var(--text-main);
 }
 
 .PatientFinancialSidebar__tdConceptSub {
-    color: var(--gray-600);
+    font-size: 0.8rem;
+    color: var(--text-muted);
     text-transform: capitalize;
 }
 
 .PatientFinancialSidebar__tdDoctor {
-    color: var(--gray-700);
+    color: var(--text-secondary);
 }
 
 .PatientFinancialSidebar__tdAmount {
     font-weight: 700;
-    color: var(--gray-900);
+    color: var(--text-main);
 }
 
 .PatientFinancialSidebar__tdPaidPositive {
-    color: #137333;
+    color: var(--success);
 }
 
 .PatientFinancialSidebar__tdPaidZero {
-    color: var(--gray-500);
+    color: var(--text-muted);
 }
 
 .PatientFinancialSidebar__ledgerStatus {
     padding: 0.25rem 0.65rem;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
     font-size: 0.75rem;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .PatientFinancialSidebar__statusPaid {
-    background: #e6f4ea;
-    color: #137333;
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--success);
 }
 
 .PatientFinancialSidebar__statusPending {
-    background: #fce8e6;
-    color: #c5221f;
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--danger);
 }
 
 .PatientFinancialSidebar__statusBonified {
-    background: #e8f0fe;
-    color: #1a73e8;
+    background: rgba(2, 132, 199, 0.15);
+    color: var(--accent-color);
 }
 
 .PatientFinancialSidebar__ledgerEmpty {
     text-align: center;
     padding: 2rem;
-    color: var(--gray-600);
+    color: var(--text-muted);
 }

@@ -19,4 +19,16 @@ describe('RatingStars Atom', () => {
         render(<RatingStars rating={null} colorClass="pink" />);
         expect(screen.getByRole('img', { name: '5 / 5' })).toBeInTheDocument();
     });
+
+    it('applies filled class to active stars and empty class to remaining stars', () => {
+        const { container } = render(<RatingStars rating={1} colorClass="gold" />);
+        const icons = container.querySelectorAll('.material-symbols-outlined');
+        expect(icons).toHaveLength(5);
+        expect(icons[0].className).toContain('RatingStars__star--filled');
+        expect(icons[1].className).toContain('RatingStars__star--empty');
+        expect(icons[2].className).toContain('RatingStars__star--empty');
+        expect(icons[3].className).toContain('RatingStars__star--empty');
+        expect(icons[4].className).toContain('RatingStars__star--empty');
+    });
 });
+

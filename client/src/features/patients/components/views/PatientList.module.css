@@ -18,10 +18,10 @@
 }
 
 .PatientList__table th {
-    padding: 0.65rem 0.85rem;
+    padding: 0.45rem 0.65rem;
     text-align: left;
     background: var(--card-surface-bg);
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 800;
     color: var(--text-main);
     text-transform: uppercase;
@@ -29,8 +29,8 @@
     border-bottom: 1px solid var(--border-color);
 }
 
-.PatientList__table th:first-child { padding-left: 1rem; }
-.PatientList__table th:last-child { padding-right: 1rem; }
+.PatientList__table th:first-child { padding-left: 0.85rem; }
+.PatientList__table th:last-child { padding-right: 0.85rem; }
 
 .PatientList__row {
     background-color: transparent;
@@ -42,8 +42,8 @@
 }
 
 .PatientList__table td {
-    padding: 0.65rem 0.85rem;
-    font-size: 0.875rem;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.825rem;
     vertical-align: middle;
     color: var(--text-secondary);
     border-bottom: 1px solid var(--border-color);
@@ -54,32 +54,32 @@
 }
 
 .PatientList__table td:first-child {
-    padding-left: 1rem;
+    padding-left: 0.85rem;
 }
 
 .PatientList__table td:last-child {
-    padding-right: 1rem;
+    padding-right: 0.85rem;
 }
 
 .PatientList__patientCol {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.15rem;
     align-items: flex-start;
 }
 
 .PatientList__badgeRow {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.35rem;
 }
 
 .PatientList__name {
     display: flex;
     align-items: baseline;
-    gap: 0.35rem;
-    font-size: 0.95rem;
-    line-height: 1.25;
+    gap: 0.3rem;
+    font-size: 0.875rem;
+    line-height: 1.2;
     white-space: nowrap;
 }
 
@@ -117,8 +117,8 @@
 .PatientList__idInfo {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
-    font-size: 0.813rem;
+    gap: 0.2rem;
+    font-size: 0.775rem;
     color: var(--gray-600);
 }
 
@@ -134,12 +134,12 @@
 .PatientList__contactInfo {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.25rem;
 }
 
 .PatientList__contactRow {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.35rem;
     align-items: center;
 }
 
@@ -209,7 +209,7 @@
 .PatientList__subRatingCell {
     text-align: center;
     vertical-align: middle;
-    padding: 0.5rem 0.6rem !important;
+    padding: 0.35rem 0.5rem !important;
     white-space: nowrap;
 }
 
@@ -301,3 +301,44 @@
     font-size: 1.125rem;
     font-weight: 600;
 }
+
+.PatientList__sortableHeader {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.PatientList__sortableHeader:hover,
+.PatientList__sortableHeader:focus-visible {
+    background-color: var(--card-hover-bg, rgb(255 255 255 / 4%)) !important;
+    color: var(--primary-color) !important;
+    outline: none;
+}
+
+.PatientList__headerContent {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs, 4px);
+}
+
+.PatientList__headerContent--center {
+    justify-content: center;
+    width: 100%;
+}
+
+.PatientList__sortIcon {
+    color: var(--primary-color);
+    flex-shrink: 0;
+}
+
+.PatientList__sortIconIdle {
+    opacity: 0.3;
+    flex-shrink: 0;
+    transition: opacity 0.15s ease;
+}
+
+.PatientList__sortableHeader:hover .PatientList__sortIconIdle,
+.PatientList__sortableHeader:focus-visible .PatientList__sortIconIdle {
+    opacity: 0.8;
+}
+

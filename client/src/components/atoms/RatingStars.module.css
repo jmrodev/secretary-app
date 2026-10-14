@@ -16,3 +16,14 @@
 .RatingStars--pink {
     color: var(--rose-600);
 }
+
+.RatingStars__star--filled {
+    font-variation-settings: 'FILL' 1;
+}
+
+.RatingStars__star--empty {
+    font-variation-settings: 'FILL' 0;
+    color: var(--text-muted);
+    opacity: 0.3;
+}
+
