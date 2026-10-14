@@ -8,7 +8,7 @@ import { useSearch } from '@/hooks/useSearch';
 export const usePatientQuery = (options = {}) => {
     const { 
         doctorId = null, 
-        limit = 50, 
+        limit = 10, 
         useGlobalSearch = false,
         minChars = 2,
     } = options;
@@ -20,12 +20,24 @@ export const usePatientQuery = (options = {}) => {
 
     const [executedSearch, setExecutedSearch] = useState(searchTerm);
     const [currentPage, setCurrentPage] = useState(1);
+    const [sortBy, setSortBy] = useState('patient');
+    const [sortOrder, setSortOrder] = useState('ASC');
 
     const executeSearch = useCallback((overrideTerm) => {
         const termToUse = overrideTerm !== undefined ? overrideTerm : searchTerm;
         setExecutedSearch(termToUse);
         setCurrentPage(1);
     }, [searchTerm]);
+
+    const handleSort = useCallback((key, defaultDirection = 'asc') => {
+        setCurrentPage(1);
+        if (sortBy === key) {
+            setSortOrder(prev => (prev?.toLowerCase() === 'asc' ? 'DESC' : 'ASC'));
+        } else {
+            setSortBy(key);
+            setSortOrder(defaultDirection.toUpperCase());
+        }
+    }, [sortBy]);
 
     const shouldSearch = executedSearch.length >= minChars || executedSearch.length === 0;
 
@@ -35,7 +47,9 @@ export const usePatientQuery = (options = {}) => {
             page: currentPage,
             limit: limit,
             search: executedSearch,
-            doctor_id: doctorId
+            doctor_id: doctorId,
+            sortBy,
+            sortOrder
         },
         immediate: shouldSearch
     });
@@ -75,6 +89,12 @@ export const usePatientQuery = (options = {}) => {
         setSearchTerm,
         executeSearch,
         handlePageChange,
-        refetch
+        refetch,
+        sortBy,
+        setSortBy,
+        sortOrder,
+        setSortOrder,
+        handleSort,
+        sortConfig: { key: sortBy, direction: (sortOrder || 'ASC').toLowerCase() },
     };
 };
