@@ -231,12 +231,9 @@ class AppointmentRepository {
 
     async findByPatientId(patientId, conn = this.pool) {
         return await conn.query(`
-            SELECT a.*, d.full_name as doctor_name, t.method as payment_method 
-            FROM appointments a 
-            JOIN doctors d ON a.doctor_id = d.id 
-            LEFT JOIN transactions t ON t.appointment_id = a.id
-            WHERE a.patient_id = ? 
-            ORDER BY a.appointment_date DESC`, [patientId]);
+            SELECT * FROM v_appointment_details
+            WHERE patient_id = ? 
+            ORDER BY appointment_date DESC`, [patientId]);
     }
 
     async findTomorrowAppointments(conn = this.pool) {

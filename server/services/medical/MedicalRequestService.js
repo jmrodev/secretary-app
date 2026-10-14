@@ -28,10 +28,50 @@ class MedicalRequestService {
         try {
             await conn.beginTransaction();
 
+            const sanitizeId = (val) => {
+                if (!val || val === 'undefined' || val === 'null') return null;
+                const n = Number(val);
+                return !isNaN(n) && n > 0 ? n : null;
+            };
+
+            // Validate that a candidate doctor_id actually exists in the doctors table
+            const validateDoctorId = async (id) => {
+                const candidate = sanitizeId(id);
+                if (!candidate) return null;
+                const rows = await conn.query("SELECT id FROM doctors WHERE id = ? LIMIT 1", [candidate]);
+                return rows.length > 0 ? candidate : null;
+            };
+
+            let finalDoctorId =
+                await validateDoctorId(doctor_id) ||
+                await validateDoctorId(req.doctorId) ||
+                await validateDoctorId(req.headers['x-doctor-id']) ||
+                await validateDoctorId(req.user?.doctor_id) ||
+                await validateDoctorId(pat.doctor_id);
+
+            if (!finalDoctorId) {
+                throw new Error('doctor_required');
+            }
+
+            // Resolve secretary_id: the FK references users(id), so store the caller's user_id
+            // only when the caller is actually a secretary profile in the secretaries table
+            const callerUserId = req.user?.user_id || req.user?.id;
+            let finalSecretaryId = null;
+            if (callerUserId) {
+                const secRows = await conn.query(
+                    "SELECT id FROM secretaries WHERE user_id = ? LIMIT 1",
+                    [callerUserId]
+                );
+                if (secRows.length > 0) {
+                    finalSecretaryId = Number(callerUserId); // FK → users(id)
+                }
+            }
+
             const requestId = await medicalRequestRepository.create({
                 type,
                 patient_id: finalPatientId,
-                doctor_id,
+                doctor_id: finalDoctorId,
+                secretary_id: finalSecretaryId,
                 request_note,
                 status: initialStatus,
                 raw_medication_data: raw_medication_data ? (typeof raw_medication_data === 'string' ? raw_medication_data : JSON.stringify(raw_medication_data)) : null,
@@ -39,13 +79,14 @@ class MedicalRequestService {
                 completed_at: initialStatus === 'completed' ? new Date() : null
             }, conn);
 
+
             if (raw_medication_data) {
                 await this._processRequestItems(conn, requestId, finalPatientId, raw_medication_data);
             }
 
             // ECC Improvement: Automatic Debt Generation with Idempotency context
             if (initialStatus === 'completed' && !bonified) {
-                await this.generateRequestDebt(conn, requestId, req.user.user_id);
+                await this.generateRequestDebt(conn, requestId, req.user?.user_id || req.user?.id);
             }
 
             await conn.commit();

@@ -12,20 +12,24 @@ exports.getAllPatients = async (req, res) => {
     try {
         if (req.user.role === 'patient') return sendResponse(res, false, null, null, "Unauthorized", 403);
         
-        const { page = 1, limit = 50, search = '', doctor_id } = req.query;
+        const { page = 1, limit = 50, search = '', doctor_id, sortBy = 'patient', sortOrder = 'ASC' } = req.query;
         
         const result = await patientService.getAllPatients(
             req.user, 
             search, 
             parseInt(page), 
             parseInt(limit), 
-            doctor_id
+            doctor_id,
+            sortBy,
+            sortOrder
         );
 
         sendResponse(res, true, result.patients, {
             totalCount: result.totalCount,
             page: parseInt(page),
-            limit: parseInt(limit)
+            limit: parseInt(limit),
+            sortBy,
+            sortOrder
         });
     } catch (err) {
         console.error("[ECC-Controller] getAllPatients error:", err);

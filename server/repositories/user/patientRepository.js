@@ -199,17 +199,26 @@ static ALLOWED_FIELDS = [
         }
     }
     async searchPatients(filters, user, conn) {
-        const { search = '', page = 1, limit = 50, doctor_id = null } = filters;
+        const {
+            search = '',
+            page = 1,
+            limit = 50,
+            doctor_id = null,
+            sortBy = 'patient',
+            sortOrder = 'ASC'
+        } = filters;
         const normalizedDoctorId = doctor_id || null;
         const trimmed = (search || '').trim();
+        const normalizedSortBy = (sortBy || 'patient').trim();
+        const normalizedSortOrder = (sortOrder || 'ASC').toUpperCase().trim();
 
         const activePool = (conn && conn.getConnection) ? conn : (this.pool || require('../../db').pool);
         const connection = (activePool.getConnection) ? await activePool.getConnection() : activePool;
 
         try {
             const results = await connection.query(
-                "CALL sp_search_patients(?, ?, ?, ?, ?, ?, @p_total_count)",
-                [trimmed, page, limit, normalizedDoctorId, user.role, user.user_id]
+                "CALL sp_search_patients(?, ?, ?, ?, ?, ?, ?, ?, @p_total_count)",
+                [trimmed, page, limit, normalizedDoctorId, user.role, user.user_id, normalizedSortBy, normalizedSortOrder]
             );
             const resultsCount = await connection.query("SELECT @p_total_count as total");
             return {

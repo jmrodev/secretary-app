@@ -1,56 +1,117 @@
-# Welcome to your Expo app 👋
+# Secretary App - Mobile Companion 📱🩺
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicación móvil complementaria para profesionales médicos de **Secretary App**, construida con **React Native**, **Expo SDK 57** y **TypeScript**.
 
-## Get started
+Permite a los profesionales consultar su agenda médica diaria, gestionar estados de turnos, y acceder a la ficha clínica del paciente (medicaciones, prescripciones con vademécum, consultas anteriores y archivos médicos).
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 🛠️ Stack Tecnológico
 
-2. Start the app
+- **Framework:** React Native `0.86.3` + Expo SDK `57`
+- **Ruteo:** Expo Router `57.0.24` (File-based Routing con Thin Routes)
+- **Lenguaje:** TypeScript (`strict` mode)
+- **Persistencia Local:** `@react-native-async-storage/async-storage`
+- **Gestión de Sesión:** Context API (`AuthContext`) con tokens JWT
+- **Comunicación con Backend:** Cliente HTTP tipado con inyección de headers (`Authorization`, `x-doctor-id`)
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## 📂 Arquitectura del Proyecto (`src/`)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+El proyecto sigue una arquitectura guiada por dominio (**Feature-Driven / Screaming Architecture**) con rutas delgadas (*Thin Routes*):
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```text
+mobile/src/
+├── app/                          # SOLO ruteo delgado (Expo Router)
+│   ├── _layout.tsx               # Root Layout con AuthProvider y StatusBar
+│   ├── index.tsx                 # Redirección según estado de autenticación
+│   ├── (auth)/
+│   │   ├── _layout.tsx           # Stack de autenticación (guardia inversa)
+│   │   └── login.tsx             # Wrapper de <LoginForm />
+│   └── (app)/
+│       ├── _layout.tsx           # Stack protegido (requiere sesión activa)
+│       ├── index.tsx             # Redirección a /appointments
+│       ├── appointments.tsx      # Agenda diaria (<AppointmentsView />)
+│       └── patient/
+│           └── [id].tsx          # Ficha del paciente (<PatientDetailView />)
+│
+├── features/                     # Módulos de dominio aislados
+│   ├── auth/
+│   │   └── components/LoginForm.tsx
+│   ├── appointments/
+│   │   ├── AppointmentsView.tsx
+│   │   ├── components/           # WeeklyCalendarBar, AppointmentCard, AppointmentsHeader
+│   │   └── hooks/useDailyAppointments.ts
+│   └── patients/
+│       ├── PatientDetailView.tsx
+│       ├── components/           # PatientHeader, MedicationsTab, VisitsTab, FilesTab, Modales
+│       └── hooks/usePatientDetail.ts
+│
+├── shared/                       # Infraestructura y utilidades compartidas
+│   ├── context/AuthContext.tsx   # Proveedor global de autenticación
+│   ├── services/api.ts           # Cliente HTTP tipado
+│   └── theme/colors.ts           # Paleta de diseño y tokens visuales
+│
+└── types/                        # Definiciones TypeScript de dominio
+    ├── auth.ts                   # User, LoginCredentials, AuthResponse
+    ├── appointments.ts           # Appointment, AppointmentStats
+    └── patients.ts               # Patient, Prescription, MedicalFile, VademecumItem
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-### Other setup steps
+## 🚀 Puesta en Marcha
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+### Prerrequisitos
+1. **Node.js** `20+` o `22+`.
+2. Servidor backend de **Secretary App** corriendo (por defecto en `http://localhost:5000` o IP de red local).
 
-## Learn more
+### 1. Instalación de dependencias
+```bash
+cd mobile
+npm install --legacy-peer-deps
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 2. Ejecutar la aplicación
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- **En navegador web (la opción más rápida para desarrollo):**
+  ```bash
+  npm run web
+  ```
+  Abre la aplicación en `http://localhost:8081`.
 
-## Join the community
+- **En teléfono físico (con Expo Go):**
+  1. Instalar la app **Expo Go** desde Google Play o App Store.
+  2. Conectar la compu y el celular a la **misma red Wi-Fi**.
+  3. Ejecutar:
+     ```bash
+     npm run dev
+     # o
+     npm start
+     ```
+  4. Escanear el código QR impreso en la terminal desde la app Expo Go.
 
-Join our community of developers creating universal apps.
+- **En emulador Android:**
+  ```bash
+  npm run android
+  ```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+## ⚙️ Conectividad con el Backend
+
+El cliente de API en [`src/shared/services/api.ts`](src/shared/services/api.ts) resuelve automáticamente el host:
+1. Detecta la IP del host donde corre Metro (`Constants.expoConfig?.hostUri`).
+2. Utiliza fallback a la IP local configurada en el archivo.
+3. Se comunica con el backend a través del puerto `5000` (`/api`).
+
+---
+
+## 🔍 Comprobación de Tipos y Calidad
+
+Para validar que todo el código TypeScript compile sin errores:
+
+```bash
+npx tsc --noEmit
+```

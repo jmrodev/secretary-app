@@ -40,9 +40,10 @@ export const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                             <tbody>
                                 {details.appointments.map(app => {
                                     const isPaid = app.is_paid === 1 || app.payment_status === 'paid';
-                                    const costVal = Number(app.cost || app.price || 0);
-                                    const paidVal = isPaid ? costVal : Number(app.amount_paid || app.paid_amount || 0);
-                                    const pendingVal = isPaid ? 0 : Math.max(0, costVal - paidVal);
+                                    const isBonified = app.bonified === 1;
+                                    const costVal = Number(app.cost || 0);
+                                    const paidVal = (app.paid_amount !== undefined && app.paid_amount !== null) ? Number(app.paid_amount) : (isPaid ? costVal : 0);
+                                    const pendingVal = (isPaid || isBonified) ? 0 : ((app.pending_amount !== undefined && app.pending_amount !== null) ? Number(app.pending_amount) : Math.max(0, costVal - paidVal));
 
                                     return (
                                         <tr key={app.id} className={styles.PatientHistoryTable__historyRow}>
@@ -61,7 +62,7 @@ export const PatientHistoryTable = ({ details, t, onPayDebt }) => {
                                                 </span>
                                             </td>
                                             <td className={`${styles.PatientHistoryTable__historyCell} ${isPaid ? styles.PatientHistoryTable__historyCellSuccess : ''} ${styles.PatientHistoryTable__tableCellBold}`}>
-                                                {isPaid ? `$${costVal.toLocaleString()}` : (paidVal > 0 ? `$${paidVal.toLocaleString()}` : '$0')}
+                                                {isPaid ? `$${paidVal.toLocaleString()}` : (paidVal > 0 ? `$${paidVal.toLocaleString()}` : '$0')}
                                             </td>
                                             <td className={styles.PatientHistoryTable__historyCell}>
                                                 <div className={`${styles.PatientHistoryTable__tableCellBold} ${pendingVal > 0 ? styles.PatientHistoryTable__tableCellBoldDanger : styles.PatientHistoryTable__tableCellBoldMuted}`}>
