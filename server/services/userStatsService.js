@@ -1,5 +1,6 @@
 const statsRepository = require('../repositories/statsRepository');
 const doctorRepository = require('../repositories/doctorRepository');
+const { formatDateLocal } = require('../utils/dateUtils');
 
 /**
  * UserStatsService
@@ -10,18 +11,17 @@ class UserStatsService {
         const { role, user_id } = user;
 
         const now = new Date();
-        const pad = (d) => d.toISOString().split('T')[0];
 
-        const todayStart = pad(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
-        const todayEnd = pad(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1));
+        const todayStart = formatDateLocal(new Date(now.getFullYear(), now.getMonth(), now.getDate()));
+        const todayEnd = formatDateLocal(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1));
 
         const dayOfWeek = now.getDay();
         const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-        const weekStart = pad(new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset));
-        const weekEnd = pad(new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset + 7));
+        const weekStart = formatDateLocal(new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset));
+        const weekEnd = formatDateLocal(new Date(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset + 7));
 
-        const monthStart = pad(new Date(now.getFullYear(), now.getMonth(), 1));
-        const monthEnd = pad(new Date(now.getFullYear(), now.getMonth() + 1, 1));
+        const monthStart = formatDateLocal(new Date(now.getFullYear(), now.getMonth(), 1));
+        const monthEnd = formatDateLocal(new Date(now.getFullYear(), now.getMonth() + 1, 1));
 
         let doctorId = null;
         if (role === 'doctor') {

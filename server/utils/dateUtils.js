@@ -42,8 +42,21 @@ function nowLocalSQL() {
     return formatLocalSQL(new Date());
 }
 
+/**
+ * Formats a date object into a YYYY-MM-DD string in local time.
+ */
+function formatDateLocal(date) {
+    if (!date) return null;
+    const d = new Date(date);
+    const YYYY = d.getFullYear();
+    const MM = (d.getMonth() + 1).toString().padStart(2, '0');
+    const DD = d.getDate().toString().padStart(2, '0');
+    return `${YYYY}-${MM}-${DD}`;
+}
+
 module.exports = {
     TIMEZONE,
     formatLocalSQL,
-    nowLocalSQL
+    nowLocalSQL,
+    formatDateLocal
 };

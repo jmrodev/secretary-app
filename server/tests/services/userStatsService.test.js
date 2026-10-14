@@ -1,3 +1,11 @@
+jest.mock('../../db', () => ({
+    pool: {
+        query: jest.fn(),
+        end: jest.fn(),
+        getConnection: jest.fn()
+    }
+}), { virtual: true });
+
 const userStatsService = require('../../services/userStatsService');
 const statsRepository = require('../../repositories/statsRepository');
 const doctorRepository = require('../../repositories/doctorRepository');
@@ -51,21 +59,26 @@ describe('UserStatsService', () => {
         global.Date = originalDate;
     });
 
-    // Helper to calculate expected ISO dates EXACTLY like the service does
+    // Helper to calculate expected ISO dates using local time
     const getExpectedDates = (fixedDate) => {
         const now = new originalDate(fixedDate.getTime());
-        const pad = (d) => d.toISOString().split('T')[0];
+        const formatDate = (d) => {
+            const YYYY = d.getFullYear();
+            const MM = (d.getMonth() + 1).toString().padStart(2, '0');
+            const DD = d.getDate().toString().padStart(2, '0');
+            return `${YYYY}-${MM}-${DD}`;
+        };
 
-        const todayStart = pad(new originalDate(now.getFullYear(), now.getMonth(), now.getDate()));
-        const todayEnd = pad(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + 1));
+        const todayStart = formatDate(new originalDate(now.getFullYear(), now.getMonth(), now.getDate()));
+        const todayEnd = formatDate(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + 1));
 
         const dayOfWeek = now.getDay();
         const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-        const weekStart = pad(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset));
-        const weekEnd = pad(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset + 7));
+        const weekStart = formatDate(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset));
+        const weekEnd = formatDate(new originalDate(now.getFullYear(), now.getMonth(), now.getDate() + mondayOffset + 7));
 
-        const monthStart = pad(new originalDate(now.getFullYear(), now.getMonth(), 1));
-        const monthEnd = pad(new originalDate(now.getFullYear(), now.getMonth() + 1, 1));
+        const monthStart = formatDate(new originalDate(now.getFullYear(), now.getMonth(), 1));
+        const monthEnd = formatDate(new originalDate(now.getFullYear(), now.getMonth() + 1, 1));
 
         return { todayStart, todayEnd, weekStart, weekEnd, monthStart, monthEnd };
     };
