@@ -36,6 +36,7 @@ export const PatientsPage = () => {
         user, t,
         patients, loading, detailsLoading,
         totalCount, currentPage, totalPages, handlePageChange,
+        handleSort, sortConfig,
         doctors, insurances, recycleItems, institutions,
         activeTab, setActiveTab,
         selectedPatientId, setSelectedPatientId, patientDetails,
@@ -69,8 +70,6 @@ export const PatientsPage = () => {
         handleToggleNew,
         handleGenerateQR,
         handleGeneratePrescriptionLink,
-        calculateFinancialRating,
-        calculateAttendanceRating,
         handleRestorePatient,
     } = handlers;
 
@@ -173,13 +172,13 @@ export const PatientsPage = () => {
                                         patients={patients}
                                         institutions={institutions}
                                         t={t}
+                                        sortConfig={sortConfig}
+                                        onSort={handleSort}
                                         onViewDetails={handleViewDetails}
                                         onOpenDebt={handleOpenDebtModal}
                                         onToggleRating={handleCycleRating}
                                         onEditRating={handleOpenBehaviorRatingModal}
                                         canEditRating={isStaff}
-                                        calculateFinancialRating={calculateFinancialRating}
-                                        calculateAttendanceRating={calculateAttendanceRating}
                                     />
 
                                     {totalPages > 1 && (

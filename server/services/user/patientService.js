@@ -15,8 +15,8 @@ const { PATIENT_FIELDS } = require('../../constants/patientConstants');
  * Handles business logic for patient management.
  */
 class PatientService {
-    async getAllPatients(user, search, page = 1, limit = 50, doctor_id = null) {
-        const { patients, totalCount } = await patientRepository.searchPatients({ search, page, limit, doctor_id }, user);
+    async getAllPatients(user, search, page = 1, limit = 50, doctor_id = null, sortBy = 'patient', sortOrder = 'ASC') {
+        const { patients, totalCount } = await patientRepository.searchPatients({ search, page, limit, doctor_id, sortBy, sortOrder }, user);
         
         // Enrich with phones (optional if not in SP)
         if (patients.length > 0) {
@@ -39,6 +39,7 @@ class PatientService {
         const safeStats = stats || { total: 0, attended: 0, absent: 0, cancelled: 0 };
 
         const prescriptions = await medicalRequestRepository.getPatientMedicalHistory(id);
+        const requests = await medicalRequestRepository.findAll({ patientId: id });
         const files = await medicalFileRepository.findAll({ patient_id: id });
         const assignedDoctors = await patientRepository.getAssignedDoctors(id);
         const phoneNumbers = await phoneRepository.findByEntity('patient', id);
@@ -48,6 +49,7 @@ class PatientService {
             total_debt: Number(patient.total_debt_calculated || 0),
             appointments,
             prescriptions,
+            requests,
             files,
             accumulated_days: Number(safeStats.attended || 0),
             assignedDoctors,

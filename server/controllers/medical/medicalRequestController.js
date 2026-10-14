@@ -12,16 +12,26 @@ exports.createRequest = async (req, res) => {
         console.error("[ECC-Medical] createRequest error:", err);
         if (err.message === 'Invalid type') return sendResponse(res, false, null, null, 'invalid_type', 400);
         if (err.message === 'Patient not found') return sendResponse(res, false, null, null, 'patient_not_found', 404);
-        sendResponse(res, false, null, null, 'server_error', 500);
+        if (err.message === 'doctor_required') return sendResponse(res, false, null, null, 'doctor_required', 422);
+        sendResponse(res, false, null, null, err.message || 'server_error', 500);
     }
 };
 
 exports.getRequests = async (req, res) => {
     try {
         const { page = 1, limit = 50, status, type, patientId, doctorId: queryDoctorId, search } = req.query;
+        // The x-doctor-id header (req.doctorId) normally wins over the query
+        // param. An explicit ?doctorId=all clears that implicit scope for staff
+        // roles (secretary/admin). Doctors stay scoped to their own records:
+        // the service layer forces the caller's own doctor id for that role.
+        let effectiveDoctorId = req.doctorId || queryDoctorId;
+        if (queryDoctorId === 'all') {
+            const role = req.user?.role;
+            effectiveDoctorId = (role === 'secretary' || role === 'admin') ? null : (req.doctorId || null);
+        }
         const filters = {
             patientId,
-            doctorId: req.doctorId || queryDoctorId,
+            doctorId: effectiveDoctorId,
             type,
             status,
             search: search?.trim() || undefined,

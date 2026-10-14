@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/atoms/Button';
 import { Badge } from '@/components/atoms/Badge';
 import { Icon } from '@/components/atoms/Icon';
@@ -242,9 +242,140 @@ const PatientListBase = ({
     onToggleRating,
     onEditRating,
     canEditRating = true,
-    t
+    t,
+    sortConfig: controlledSortConfig,
+    onSort: controlledOnSort,
 }) => {
     const institutions = Array.isArray(rawInstitutions) ? rawInstitutions : (rawInstitutions?.institutions || EMPTY_ARRAY);
+
+    const [internalSortConfig, setInternalSortConfig] = useState({ key: null, direction: null });
+    const sortConfig = controlledSortConfig || internalSortConfig;
+
+    const handleSort = (key, defaultDirection = 'asc') => {
+        if (controlledOnSort) {
+            controlledOnSort(key, defaultDirection);
+            return;
+        }
+
+        setInternalSortConfig(prev => {
+            if (prev.key === key) {
+                return {
+                    key,
+                    direction: prev.direction === 'asc' ? 'desc' : 'asc'
+                };
+            }
+            return {
+                key,
+                direction: defaultDirection
+            };
+        });
+    };
+
+    const sortedPatients = useMemo(() => {
+        if (controlledOnSort) {
+            // In controlled mode, database has already performed global sorting
+            return patients;
+        }
+
+        if (!sortConfig.key || !patients || patients.length === 0) return patients;
+
+        const { key, direction } = sortConfig;
+        const modifier = direction === 'asc' ? 1 : -1;
+
+        return [...patients].sort((a, b) => {
+            switch (key) {
+                case 'patient': {
+                    const nameA = (a.last_name ? `${a.last_name} ${a.first_name || ''}` : (a.full_name || '')).trim().toLowerCase();
+                    const nameB = (b.last_name ? `${b.last_name} ${b.first_name || ''}` : (b.full_name || '')).trim().toLowerCase();
+                    return nameA.localeCompare(nameB) * modifier;
+                }
+                case 'identification': {
+                    const dniA = (a.dni || '').toString();
+                    const dniB = (b.dni || '').toString();
+                    const dniCompare = dniA.localeCompare(dniB, undefined, { numeric: true });
+                    if (dniCompare !== 0) return dniCompare * modifier;
+                    const insA = (a.insurance_name || a.insurance || '').toLowerCase();
+                    const insB = (b.insurance_name || b.insurance || '').toLowerCase();
+                    return insA.localeCompare(insB) * modifier;
+                }
+                case 'contact': {
+                    const phoneA = (a.phone || '').toString();
+                    const phoneB = (b.phone || '').toString();
+                    const phoneCompare = phoneA.localeCompare(phoneB, undefined, { numeric: true });
+                    if (phoneCompare !== 0) return phoneCompare * modifier;
+                    const emailA = (a.email || '').toLowerCase();
+                    const emailB = (b.email || '').toLowerCase();
+                    return emailA.localeCompare(emailB) * modifier;
+                }
+                case 'financial_rating': {
+                    const finA = Number(a.financial_rating ?? 5);
+                    const finB = Number(b.financial_rating ?? 5);
+                    if (finA !== finB) return (finA - finB) * modifier;
+                    const nameA = (a.last_name || a.full_name || '').toLowerCase();
+                    const nameB = (b.last_name || b.full_name || '').toLowerCase();
+                    return nameA.localeCompare(nameB);
+                }
+                case 'attendance_rating': {
+                    const attA = Number(a.attendance_rating ?? 5);
+                    const attB = Number(b.attendance_rating ?? 5);
+                    if (attA !== attB) return (attA - attB) * modifier;
+                    const nameA = (a.last_name || a.full_name || '').toLowerCase();
+                    const nameB = (b.last_name || b.full_name || '').toLowerCase();
+                    return nameA.localeCompare(nameB);
+                }
+                case 'behavior_rating': {
+                    const behA = Number(a.behavior_rating ?? 5);
+                    const behB = Number(b.behavior_rating ?? 5);
+                    if (behA !== behB) return (behA - behB) * modifier;
+                    const nameA = (a.last_name || a.full_name || '').toLowerCase();
+                    const nameB = (b.last_name || b.full_name || '').toLowerCase();
+                    return nameA.localeCompare(nameB);
+                }
+                case 'debt': {
+                    const debtA = Number(a.total_debt ?? a.total_debt_calculated ?? 0);
+                    const debtB = Number(b.total_debt ?? b.total_debt_calculated ?? 0);
+                    if (debtA !== debtB) return (debtA - debtB) * modifier;
+                    const nameA = (a.last_name || a.full_name || '').toLowerCase();
+                    const nameB = (b.last_name || b.full_name || '').toLowerCase();
+                    return nameA.localeCompare(nameB);
+                }
+                default:
+                    return 0;
+            }
+        });
+    }, [patients, sortConfig]);
+
+    const sortedInstitutions = useMemo(() => {
+        if (!institutions.length) return institutions;
+        if (sortConfig.key === 'debt') {
+            const modifier = sortConfig.direction === 'asc' ? 1 : -1;
+            return [...institutions].sort((a, b) => (Number(a.total_debt || 0) - Number(b.total_debt || 0)) * modifier);
+        }
+        if (sortConfig.key === 'patient') {
+            const modifier = sortConfig.direction === 'asc' ? 1 : -1;
+            return [...institutions].sort((a, b) => (a.name || '').localeCompare(b.name || '') * modifier);
+        }
+        return institutions;
+    }, [institutions, sortConfig]);
+
+    const renderSortIcon = (key) => {
+        if (sortConfig.key === key) {
+            return (
+                <Icon
+                    name={sortConfig.direction === 'asc' ? 'arrow_upward' : 'arrow_downward'}
+                    size="0.85rem"
+                    className={styles.PatientList__sortIcon}
+                />
+            );
+        }
+        return (
+            <Icon
+                name="unfold_more"
+                size="0.85rem"
+                className={styles.PatientList__sortIconIdle}
+            />
+        );
+    };
 
     if (patients.length === 0 && institutions.length === 0) {
         return (
@@ -259,31 +390,151 @@ const PatientListBase = ({
             <table className={`${styles.PatientList__table}`}>
                 <thead>
                     <tr>
-                        <th rowSpan={2}>{t('patient')}</th>
-                        <th rowSpan={2}>{t('identification')} / {t('insurance_short') || 'OS'}</th>
-                        <th rowSpan={2}>{t('contact')}</th>
+                        <th
+                            rowSpan={2}
+                            className={styles.PatientList__sortableHeader}
+                            onClick={() => handleSort('patient', 'asc')}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleSort('patient', 'asc');
+                                }
+                            }}
+                            tabIndex={0}
+                            role="columnheader"
+                            aria-sort={sortConfig.key === 'patient' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+                        >
+                            <div className={styles.PatientList__headerContent}>
+                                <span>{t('patient')}</span>
+                                {renderSortIcon('patient')}
+                            </div>
+                        </th>
+                        <th
+                            rowSpan={2}
+                            className={styles.PatientList__sortableHeader}
+                            onClick={() => handleSort('identification', 'asc')}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleSort('identification', 'asc');
+                                }
+                            }}
+                            tabIndex={0}
+                            role="columnheader"
+                            aria-sort={sortConfig.key === 'identification' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+                        >
+                            <div className={styles.PatientList__headerContent}>
+                                <span>{t('identification')} / {t('insurance_short') || 'OS'}</span>
+                                {renderSortIcon('identification')}
+                            </div>
+                        </th>
+                        <th
+                            rowSpan={2}
+                            className={styles.PatientList__sortableHeader}
+                            onClick={() => handleSort('contact', 'asc')}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleSort('contact', 'asc');
+                                }
+                            }}
+                            tabIndex={0}
+                            role="columnheader"
+                            aria-sort={sortConfig.key === 'contact' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+                        >
+                            <div className={styles.PatientList__headerContent}>
+                                <span>{t('contact')}</span>
+                                {renderSortIcon('contact')}
+                            </div>
+                        </th>
                         <th colSpan={3} className={styles.PatientList__ratingsGroupHeader}>{t('ratings')}</th>
-                        <th rowSpan={2}>{t('debt')}</th>
+                        <th
+                            rowSpan={2}
+                            className={styles.PatientList__sortableHeader}
+                            onClick={() => handleSort('debt', 'desc')}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleSort('debt', 'desc');
+                                }
+                            }}
+                            tabIndex={0}
+                            role="columnheader"
+                            aria-sort={sortConfig.key === 'debt' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+                        >
+                            <div className={styles.PatientList__headerContent}>
+                                <span>{t('debt')}</span>
+                                {renderSortIcon('debt')}
+                            </div>
+                        </th>
                         <th rowSpan={2} className={styles.PatientList__actions}>{t('actions')}</th>
                     </tr>
                     <tr>
-                        <th className={styles.PatientList__subRatingHeader} title={t('rating_financial_tooltip')}>
-                            {t('rating_financial')}
+                        <th
+                            className={`${styles.PatientList__subRatingHeader} ${styles.PatientList__sortableHeader}`}
+                            title={t('rating_financial_tooltip')}
+                            onClick={() => handleSort('financial_rating', 'asc')}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleSort('financial_rating', 'asc');
+                                }
+                            }}
+                            tabIndex={0}
+                            role="columnheader"
+                            aria-sort={sortConfig.key === 'financial_rating' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+                        >
+                            <div className={`${styles.PatientList__headerContent} ${styles['PatientList__headerContent--center']}`}>
+                                <span>{t('rating_financial')}</span>
+                                {renderSortIcon('financial_rating')}
+                            </div>
                         </th>
-                        <th className={styles.PatientList__subRatingHeader} title={t('rating_attendance_tooltip')}>
-                            {t('rating_attendance')}
+                        <th
+                            className={`${styles.PatientList__subRatingHeader} ${styles.PatientList__sortableHeader}`}
+                            title={t('rating_attendance_tooltip')}
+                            onClick={() => handleSort('attendance_rating', 'asc')}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleSort('attendance_rating', 'asc');
+                                }
+                            }}
+                            tabIndex={0}
+                            role="columnheader"
+                            aria-sort={sortConfig.key === 'attendance_rating' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+                        >
+                            <div className={`${styles.PatientList__headerContent} ${styles['PatientList__headerContent--center']}`}>
+                                <span>{t('rating_attendance')}</span>
+                                {renderSortIcon('attendance_rating')}
+                            </div>
                         </th>
-                        <th className={styles.PatientList__subRatingHeader} title={t('rating_behavior_tooltip')}>
-                            {t('rating_conduct') || t('rating_behavior')}
+                        <th
+                            className={`${styles.PatientList__subRatingHeader} ${styles.PatientList__sortableHeader}`}
+                            title={t('rating_behavior_tooltip')}
+                            onClick={() => handleSort('behavior_rating', 'asc')}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    handleSort('behavior_rating', 'asc');
+                                }
+                            }}
+                            tabIndex={0}
+                            role="columnheader"
+                            aria-sort={sortConfig.key === 'behavior_rating' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+                        >
+                            <div className={`${styles.PatientList__headerContent} ${styles['PatientList__headerContent--center']}`}>
+                                <span>{t('rating_conduct') || t('rating_behavior')}</span>
+                                {renderSortIcon('behavior_rating')}
+                            </div>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {institutions.map(inst => (
+                    {sortedInstitutions.map(inst => (
                         <InstitutionRow key={`inst-${inst.id}`} inst={inst} t={t} />
                     ))}
 
-                    {patients.map(p => (
+                    {sortedPatients.map(p => (
                         <PatientRow 
                             key={p.id} 
                             p={p} 

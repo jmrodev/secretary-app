@@ -36,9 +36,9 @@ export const PatientFinancialSidebar = ({
     const apptItems = (details.appointments || []).map(a => {
         const isPaid = a.is_paid === 1 || a.payment_status === 'paid';
         const isBonified = a.bonified === 1;
-        const cost = Number(a.cost || a.price || 0);
-        const paid = isPaid ? cost : Number(a.amount_paid || a.paid_amount || 0);
-        const pending = (isPaid || isBonified) ? 0 : Math.max(0, cost - paid);
+        const cost = Number(a.cost || 0);
+        const paid = (a.paid_amount !== undefined && a.paid_amount !== null) ? Number(a.paid_amount) : (isPaid ? cost : 0);
+        const pending = (isPaid || isBonified) ? 0 : ((a.pending_amount !== undefined && a.pending_amount !== null) ? Number(a.pending_amount) : Math.max(0, cost - paid));
         return {
             id: `appt-${a.id}`,
             rawId: a.id,
@@ -47,7 +47,7 @@ export const PatientFinancialSidebar = ({
             typeLabel: t('appointment'),
             concept: `Turno Médico (${a.reason || 'Consulta'})`,
             doctor: a.doctor_name || '—',
-            cost,
+            cost: cost || (paid + pending),
             paid,
             pending,
             status: isBonified ? 'bonified' : (isPaid ? 'paid' : (pending > 0 ? 'pending' : 'paid')),

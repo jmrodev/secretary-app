@@ -10,7 +10,9 @@ const institutionRoutes = require('./routes/core/institutionRoutes');
 
 const morgan = require('morgan');
 const { rateLimit } = require('express-rate-limit');
-dotenv.config();
+const path = require('path');
+dotenv.config({ path: path.join(__dirname, '../.env') });
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 // Define Global Rate Limiter (satisfies CodeQL js/missing-rate-limiting)
 const globalLimiter = rateLimit({

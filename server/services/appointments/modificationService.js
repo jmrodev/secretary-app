@@ -199,6 +199,32 @@ class ModificationService {
         }
     }
 
+    async updatePaymentStatus(id, paymentStatus, userId) {
+        const conn = await pool.getConnection();
+        try {
+            await conn.beginTransaction();
+            const appt = await appointmentRepository.findById(id, conn);
+            if (!appt) throw new Error("Appointment not found");
+
+            const normalizedStatus = paymentStatus === 'partially_paid' ? 'partial' : paymentStatus;
+            const isPaid = normalizedStatus === 'paid' ? 1 : 0;
+            const updates = {
+                payment_status: normalizedStatus,
+                is_paid: isPaid,
+                paid_at: isPaid ? nowLocalSQL() : null
+            };
+            await appointmentRepository.update(id, updates, conn);
+
+            await conn.commit();
+            return true;
+        } catch (err) {
+            await conn.rollback();
+            throw err;
+        } finally {
+            conn.release();
+        }
+    }
+
     // --- Private Helpers ---
 
     async _handleCompletion(conn, appt) {

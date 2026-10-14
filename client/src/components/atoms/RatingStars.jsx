@@ -29,13 +29,17 @@ export const RatingStars = ({
             role="img"
             aria-label={`${numericRating} / 5`}
         >
-            {[1, 2, 3, 4, 5].map(s => (
-                <Icon
-                    key={s}
-                    name={s <= numericRating ? 'star' : 'star_outline'}
-                    size={size}
-                />
-            ))}
+            {[1, 2, 3, 4, 5].map(s => {
+                const isFilled = s <= numericRating;
+                return (
+                    <Icon
+                        key={s}
+                        name={isFilled ? 'star' : 'star_outline'}
+                        size={size}
+                        className={isFilled ? styles['RatingStars__star--filled'] : styles['RatingStars__star--empty']}
+                    />
+                );
+            })}
         </div>
     );
 };

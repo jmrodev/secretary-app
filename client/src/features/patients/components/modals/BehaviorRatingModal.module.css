@@ -63,6 +63,7 @@
     justify-content: center;
     border-radius: var(--radius-sm, 4px);
     transition: transform 0.15s ease, color 0.15s ease;
+    font-variation-settings: 'FILL' 1;
 }
 
 .BehaviorRatingModal__starBtn:hover,
@@ -72,6 +73,7 @@
 }
 
 .BehaviorRatingModal__starBtn--empty {
+    font-variation-settings: 'FILL' 0;
     color: var(--text-muted);
     opacity: 0.4;
 }

@@ -17,7 +17,8 @@ Una solución integral para la gestión de consultorios médicos, diseñada para
 
 ## 🛠️ Tecnologías
 
-*   **Frontend**: React 19 (Vite), Vanilla CSS (BEM), Context API, React Router.
+*   **Frontend Web**: React 19 (Vite), Vanilla CSS (BEM), Context API, React Router.
+*   **Mobile Companion**: React Native (Expo SDK 57), Expo Router, TypeScript.
 *   **Backend**: Node.js + Express v5, Knex (MySQL / MariaDB).
 *   **WhatsApp Bridge**: Go 1.25 (whatsmeow, SQLite).
 
@@ -25,10 +26,11 @@ Una solución integral para la gestión de consultorios médicos, diseñada para
 
 ## 📖 Documentación y Guías
 
-Toda la documentación detallada del proyecto se encuentra organizada dentro de la carpeta `docs/`:
+Toda la documentación detallada del proyecto se encuentra organizada dentro de la carpeta `docs/` y en cada módulo:
 
 *   [**Arquitectura y Estándares de Código**](docs/ARQUITECTURA.md): Reglas de oro del repositorio, Atomic Design, CSS Modules, BEM y patrones del backend.
 *   [**Guía de Configuración General**](docs/GUIA_CONFIGURACION_GENERAL.md): Pasos para la instalación inicial, variables de entorno (.env) y comandos de ejecución.
+*   [**App Móvil (Expo & React Native)**](mobile/README.md): Arquitectura Feature-Driven, ruteo con Expo Router y puesta en marcha de la app móvil.
 
 ---
 
@@ -41,8 +43,9 @@ Toda la documentación detallada del proyecto se encuentra organizada dentro de 
 2.  **Configurar entorno**:
     Copia `.env.example` a `.env` en la raíz y completa los valores.
 3.  **Ejecutar en desarrollo**:
-    *   Cliente: `pnpm --filter client dev`
+    *   Cliente Web: `pnpm --filter client dev`
     *   Servidor: `pnpm --filter server start`
+    *   App Móvil: `cd mobile && npm run dev` (o `npm run web`)
 
 ---
 Desarrollado con ❤️ para profesionales de la salud.
