@@ -49,3 +49,9 @@ Toda la documentación detallada del proyecto se encuentra organizada dentro de 
 
 ---
 Desarrollado con ❤️ para profesionales de la salud.
+
+## 📄 Licencia
+
+Este proyecto está bajo la licencia **GNU Affero General Public License v3.0 (AGPLv3)**.
+
+Copyright (c) 2026 **Juan Marcelo Rodríguez** ([@jmrodev](https://github.com/jmrodev)). Todos los derechos reservados.
