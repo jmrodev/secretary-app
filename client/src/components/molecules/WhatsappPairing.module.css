@@ -92,7 +92,7 @@
 .WhatsappPairing__qrContainer {
     position: relative;
     padding: 1rem;
-    background: #ffffff;
+    background: #fff;
     border: 1px solid var(--border-color, #e5e7eb);
     border-radius: 12px;
     box-shadow: 0 10px 25px rgb(0 0 0 / 15%);
