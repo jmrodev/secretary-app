@@ -1,4 +1,5 @@
-/* ChatPage.css */
+/* ChatPage.module.css */
+
 .ChatPage__bridgeStatus {
     display: flex;
     gap: var(--spacing-sm);
@@ -8,6 +9,7 @@
     border: 1px solid var(--dashboard-card-border);
     border-radius: var(--radius);
     margin-bottom: var(--spacing-sm);
+    color: var(--text-main);
 }
 
 .ChatPage__statusDot {
@@ -23,13 +25,40 @@
 .ChatPage__statusDot--awaiting-admin { background: var(--danger); }
 .ChatPage__statusDot--offline { background: var(--gray-500); }
 
-.ChatPage__container {
-    display: flex;
-    gap: var(--spacing-md);
-    height: calc(100vh - 200px);
+.ChatPage__qrToggleBtn {
+    margin-left: auto;
+    background: var(--secondary-color);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.2s;
 }
 
+.ChatPage__qrToggleBtn:hover {
+    background: var(--card-hover-bg);
+}
 
+.ChatPage__qrWrapperHidden {
+    display: none;
+}
+
+.ChatPage__qrWrapperVisible {
+    display: block;
+    margin-bottom: var(--spacing-md);
+}
+
+.ChatPage__container {
+    display: flex;
+    gap: 0;
+    height: calc(100vh - 200px);
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
 
 @media (width <= 768px) {
     .ChatPage__chatPageOrchestrator .ChatPage__chatSidebar {

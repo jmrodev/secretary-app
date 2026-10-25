@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { MessageProvider } from '@/context/MessageContext';
 import { LanguageProvider } from '@/context/LanguageProvider';
 import { PendingApprovalProvider } from '@/context/PendingApprovalContext';
@@ -46,13 +47,15 @@ const pending = (overrides = {}) => ({
 });
 
 const renderQueue = () => render(
-    <MessageProvider>
-        <LanguageProvider>
-            <PendingApprovalProvider>
-                <PendingApprovalQueue />
-            </PendingApprovalProvider>
-        </LanguageProvider>
-    </MessageProvider>
+    <MemoryRouter>
+        <MessageProvider>
+            <LanguageProvider>
+                <PendingApprovalProvider>
+                    <PendingApprovalQueue />
+                </PendingApprovalProvider>
+            </LanguageProvider>
+        </MessageProvider>
+    </MemoryRouter>
 );
 
 const expandQueue = async () => {
@@ -186,5 +189,28 @@ describe('PendingApprovalQueue', () => {
         const trigger = await screen.findByRole('button', { name: 'Abrir aprobaciones pendientes' });
         expect(trigger).toHaveTextContent(/1 aprobación pendiente/);
         expect(PendingBookingBanner).toBeTruthy();
+    });
+
+    it('renders the patient WhatsApp message quote and handles view chat', async () => {
+        const dispatchSpy = vi.spyOn(window, 'dispatchEvent');
+        mockListPending.mockResolvedValue([
+            pending({ patient_message: 'Hola doctor, necesito un turno urgente' })
+        ]);
+        renderQueue();
+        await expandQueue();
+
+        expect(screen.getByText('"Hola doctor, necesito un turno urgente"')).toBeInTheDocument();
+        const chatBtn = screen.getByRole('button', { name: /ver chat/i });
+        fireEvent.click(chatBtn);
+
+        expect(dispatchSpy).toHaveBeenCalled();
+        const event = dispatchSpy.mock.calls[0][0];
+        expect(event.type).toBe('whatsapp:open-chat');
+        expect(event.detail).toEqual({
+            phone: '5491112345678',
+            patientId: 1,
+            patientName: 'Juan Pérez'
+        });
+        dispatchSpy.mockRestore();
     });
 });

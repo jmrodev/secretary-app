@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Icon } from '@/components/atoms/Icon';
 import { Loading } from '@/components/atoms/Loading';
 import { Button } from '@/components/atoms/Button';
@@ -19,12 +20,34 @@ import styles from './PendingApprovalQueue.module.css';
  * only valid for status 'pending' per the backend optimistic lock).
  */
 export const PendingApprovalQueue = () => {
+    const navigate = useNavigate();
     const { pendingItems, loading, accept, suggestAlternative, reject } = usePendingApproval();
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const [expanded, setExpanded] = useState(false);
     const [busyId, setBusyId] = useState(null);
     const [suggestItem, setSuggestItem] = useState(null);
+
+    const handleViewInAgenda = (item) => {
+        navigate('/appointments', {
+            state: {
+                selectedDate: item.requested_slot_date,
+                viewDoctorId: String(item.doctor_id)
+            }
+        });
+    };
+
+    const handleOpenChat = (item) => {
+        window.dispatchEvent(
+            new CustomEvent('whatsapp:open-chat', {
+                detail: {
+                    phone: item.patient_phone,
+                    patientId: item.patient_id || item.id,
+                    patientName: item.patient_name
+                }
+            })
+        );
+    };
 
     const handleAccept = async (item) => {
         setBusyId(item.id);
@@ -94,18 +117,39 @@ export const PendingApprovalQueue = () => {
                                 {pendingItems.map((item) => (
                                     <li key={item.id} className={styles.PendingApprovalQueue__item}>
                                         <div className={styles.PendingApprovalQueue__info}>
-                                            <strong className={styles.PendingApprovalQueue__patient}>{item.patient_name}</strong>
-                                            <span className={styles.PendingApprovalQueue__doctor}>
-                                                <Icon name="DOCTORS" size="0.85rem" />
-                                                {item.doctor_name}
-                                            </span>
-                                            <span className={styles.PendingApprovalQueue__slot}>
-                                                <Icon name="TIME" size="0.85rem" />
-                                                {formatDate(
-                                                    new Date(`${item.requested_slot_date}T${item.requested_slot_time}:00`),
-                                                    { monthName: true }
-                                                )} · {item.requested_slot_time} hs
-                                            </span>
+                                            <div className={styles.PendingApprovalQueue__headerRow}>
+                                                <strong className={styles.PendingApprovalQueue__patient}>{item.patient_name}</strong>
+                                                <span className={styles.PendingApprovalQueue__doctor}>
+                                                    <Icon name="DOCTORS" size="0.85rem" />
+                                                    {item.doctor_name}
+                                                </span>
+                                            </div>
+
+                                            {item.patient_message && (
+                                                <div className={styles.PendingApprovalQueue__messageQuote} title={t('pending_approval_patient_message')}>
+                                                    <Icon name="CHAT" size="0.85rem" className={styles.PendingApprovalQueue__quoteIcon} />
+                                                    <p className={styles.PendingApprovalQueue__quoteText}>"{item.patient_message}"</p>
+                                                </div>
+                                            )}
+
+                                            <div className={styles.PendingApprovalQueue__slotRow}>
+                                                <span className={styles.PendingApprovalQueue__slotLabel}>
+                                                    <Icon name="AUTO_AWESOME" size="0.85rem" />
+                                                    {t('pending_approval_suggested_slot')}
+                                                </span>
+                                                <button
+                                                    type="button"
+                                                    className={styles.PendingApprovalQueue__slotLink}
+                                                    onClick={() => handleViewInAgenda(item)}
+                                                    title={t('pending_approval_view_in_agenda') || 'Ver en la agenda para corroborar'}
+                                                >
+                                                    <Icon name="CALENDAR" size="0.85rem" />
+                                                    {formatDate(
+                                                        new Date(`${item.requested_slot_date}T${item.requested_slot_time}:00`),
+                                                        { monthName: true }
+                                                    )} · {item.requested_slot_time} hs
+                                                </button>
+                                            </div>
                                         </div>
                                         {item.status === 'pending' ? (
                                             <div className={styles.PendingApprovalQueue__actions}>
@@ -133,6 +177,16 @@ export const PendingApprovalQueue = () => {
                                                     onClick={() => handleReject(item)}
                                                 >
                                                     {t('pending_approval_reject')}
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    className={styles.PendingApprovalQueue__chatBtn}
+                                                    onClick={() => handleOpenChat(item)}
+                                                    title={t('pending_approval_view_chat')}
+                                                    icon={<Icon name="CHAT" size="0.9rem" />}
+                                                >
+                                                    {t('pending_approval_view_chat')}
                                                 </Button>
                                             </div>
                                         ) : (

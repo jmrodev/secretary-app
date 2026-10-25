@@ -275,8 +275,12 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                         <div className={`${styles.GlobalWhatsappMessenger__chatUser}`}>
                             {activeChat ? (
                                 <>
-                                    <strong>{activeChat.patientId ? (conversations.find(c => (c.patientId === activeChat.patientId || c.patient_id === activeChat.patientId))?.patient_name) : activeChat.phone}</strong>
-                                    <span className={`${styles.GlobalWhatsappMessenger__onlineStatus}`}>{t('live')}</span>
+                                    <strong>
+                                        {activeChat.patientName || (activeChat.patientId ? (conversations.find(c => (c.patientId === activeChat.patientId || c.patient_id === activeChat.patientId))?.patient_name) : activeChat.phone)}
+                                    </strong>
+                                    <span className={bridgeStatus.status === 'connected' ? styles.GlobalWhatsappMessenger__onlineStatus : styles.GlobalWhatsappMessenger__offlineStatus}>
+                                        {bridgeStatus.status === 'connected' ? t('live') : (t('whatsapp_offline_history_only') || 'Historial')}
+                                    </span>
                                 </>
                             ) : (
                                 <div className={`${styles.GlobalWhatsappMessenger__chatPlaceholderHeader}`}>
@@ -331,8 +335,8 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                 </div>
             </section>
 
-            {/* Pairing overlay — visible in sidebar when bridge is not connected */}
-            {bridgeStatus.status !== 'connected' && (
+            {/* Pairing overlay — visible in sidebar when bridge is not connected and no chat is selected */}
+            {bridgeStatus.status !== 'connected' && !activeChat && (
                 <div className={styles.GlobalWhatsappMessenger__pairingOverlay}>
                     <header className={styles.GlobalWhatsappMessenger__overlayHeader}>
                         <div className={styles.GlobalWhatsappMessenger__title}>
