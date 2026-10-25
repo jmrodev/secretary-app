@@ -141,7 +141,7 @@ export const PendingApprovalQueue = () => {
                                                     type="button"
                                                     className={styles.PendingApprovalQueue__slotLink}
                                                     onClick={() => handleViewInAgenda(item)}
-                                                    title={t('pending_approval_view_in_agenda') || 'Ver en la agenda para corroborar'}
+                                                    title={t('pending_approval_view_in_agenda')}
                                                 >
                                                     <Icon name="CALENDAR" size="0.85rem" />
                                                     {formatDate(

@@ -279,7 +279,7 @@ export const GlobalWhatsappMessenger = ({ t }) => {
                                         {activeChat.patientName || (activeChat.patientId ? (conversations.find(c => (c.patientId === activeChat.patientId || c.patient_id === activeChat.patientId))?.patient_name) : activeChat.phone)}
                                     </strong>
                                     <span className={bridgeStatus.status === 'connected' ? styles.GlobalWhatsappMessenger__onlineStatus : styles.GlobalWhatsappMessenger__offlineStatus}>
-                                        {bridgeStatus.status === 'connected' ? t('live') : (t('whatsapp_offline_history_only') || 'Historial')}
+                                        {bridgeStatus.status === 'connected' ? t('live') : t('whatsapp_offline_history_only')}
                                     </span>
                                 </>
                             ) : (

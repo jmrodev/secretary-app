@@ -53,4 +53,5 @@ export const whatsapp_automation = {
     pending_approval_patient_message: "Patient message:",
     pending_approval_suggested_slot: "Suggested slot:",
     pending_approval_view_chat: "View chat",
+    pending_approval_view_in_agenda: "View in agenda to verify",
 };

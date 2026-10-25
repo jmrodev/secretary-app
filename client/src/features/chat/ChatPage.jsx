@@ -51,7 +51,7 @@ export const ChatPage = () => {
                                 className={styles.ChatPage__qrToggleBtn}
                                 onClick={() => setShowQr(prev => !prev)}
                             >
-                                {showQr ? (t('hide_qr') || 'Ocultar QR') : (t('show_qr') || 'Ver QR de vinculación')}
+                                {showQr ? t('hide_qr') : t('show_qr')}
                             </button>
                             <button type="button" onClick={handleRefreshBridge} disabled={bridgeStatusLoading} data-testid="bridge-reconnect">
                                 {t('whatsapp_refresh')}
