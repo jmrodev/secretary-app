@@ -72,7 +72,10 @@ async function analyzeIntentWithOllama(messageText, doctorId) {
             { role: 'user', content: messageText }
         ],
         tools,
-        stream: false
+        stream: false,
+        options: {
+            temperature: 0.0
+        }
     };
 
     const res = await axios.post(`${OLLAMA_BASE_URL}/api/chat`, payload, { timeout: OLLAMA_TIMEOUT_MS });

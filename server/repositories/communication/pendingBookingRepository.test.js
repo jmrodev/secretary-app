@@ -20,15 +20,34 @@ describe('PendingBookingRepository', () => {
                 patient_id: 5,
                 doctor_id: 3,
                 patient_phone: '+5411111111',
+                patient_message: 'Turno para el lunes por favor',
                 requested_slot_date: '2026-08-03',
                 requested_slot_time: '09:00'
             });
 
             expect(mockPool.query).toHaveBeenCalledWith(
                 expect.stringContaining('INSERT INTO whatsapp_pending_bookings'),
-                [5, 3, '+5411111111', '2026-08-03', '09:00']
+                [5, 3, '+5411111111', 'Turno para el lunes por favor', '2026-08-03', '09:00']
             );
             expect(id).toBe(7);
+        });
+
+        it('should default patient_message to null when not provided', async () => {
+            mockPool.query.mockResolvedValue({ insertId: 8 });
+
+            const id = await repo.create({
+                patient_id: 5,
+                doctor_id: 3,
+                patient_phone: '+5411111111',
+                requested_slot_date: '2026-08-03',
+                requested_slot_time: '09:00'
+            });
+
+            expect(mockPool.query).toHaveBeenCalledWith(
+                expect.stringContaining('INSERT INTO whatsapp_pending_bookings'),
+                [5, 3, '+5411111111', null, '2026-08-03', '09:00']
+            );
+            expect(id).toBe(8);
         });
     });
 

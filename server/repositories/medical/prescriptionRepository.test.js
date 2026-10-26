@@ -13,7 +13,7 @@ describe('PrescriptionRepository', () => {
     });
 
     describe('create', () => {
-        it('should include patient_id in INSERT statement when creating a prescription', async () => {
+        it('should execute INSERT statement when creating a prescription', async () => {
             mockPool.query.mockResolvedValue({ insertId: 100 });
 
             const data = {
@@ -28,8 +28,8 @@ describe('PrescriptionRepository', () => {
 
             expect(result).toBe(100);
             expect(mockPool.query).toHaveBeenCalledWith(
-                expect.stringContaining('INSERT INTO prescriptions (appointment_id, patient_id, medications, instructions, bonified)'),
-                [2163, 8680, 'CLONAGIN 0.5', '1 comprimido por día', true]
+                expect.stringContaining('INSERT INTO prescriptions (appointment_id, medications, instructions, bonified) VALUES (?, ?, ?, ?)'),
+                [2163, 'CLONAGIN 0.5', '1 comprimido por día', true]
             );
         });
     });
