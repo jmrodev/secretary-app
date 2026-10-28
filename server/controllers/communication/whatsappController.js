@@ -1,6 +1,10 @@
 const axios = require('axios');
 const whatsappService = require('../../services/communication/whatsappService');
 const pendingBookingService = require('../../services/communication/pendingBookingService');
+const patientRepository = require('../../repositories/user/patientRepository');
+const doctorRepository = require('../../repositories/user/doctorRepository');
+const availabilitySearchService = require('../../services/appointments/availabilitySearchService');
+const whatsappAiBookingService = require('../../services/communication/whatsappAiBookingService');
 
 /**
  * ECC-Pattern: WhatsAppController
@@ -92,14 +96,69 @@ const getAiSuggestion = async (req, res) => {
             return res.status(503).json({ error: 'Configuración de IA incompleta (Falta GEMINI_API_KEY).' });
         }
 
+        let patientName = '';
+        let doctorName = 'el profesional asignado';
+        let freeSlotsText = 'Sin turnos disponibles próximos.';
+        let prescriptionInfo = 'Valor receta: $15.000, demora 48 hs hábiles, alias: bici.soja.risa';
+
+        try {
+            let patient = null;
+            if (patientId) {
+                patient = await patientRepository.findById(patientId);
+            }
+            if (patient) {
+                patientName = patient.first_name || patient.full_name || '';
+            }
+
+            const doctorId = await whatsappAiBookingService.resolveDoctorForPatient(patientId);
+            if (doctorId) {
+                const doctor = await doctorRepository.findById(doctorId);
+                if (doctor) {
+                    doctorName = `Dr/a. ${doctor.full_name} (${doctor.specialty || 'Profesional'})`;
+                    if (doctor.prescription_price || doctor.alias) {
+                        const price = Number(doctor.prescription_price || 15000).toLocaleString('es-AR');
+                        const alias = doctor.alias || 'bici.soja.risa';
+                        prescriptionInfo = `Valor receta: $${price}, demora 48 hs hábiles, alias: ${alias}`;
+                    }
+                }
+
+                const availability = await availabilitySearchService.getNextFreeSlot({
+                    doctor_id: doctorId,
+                    start_date: new Date(),
+                    include_out_of_hours: 'false'
+                });
+
+                if (availability?.results?.length > 0) {
+                    const formatted = [];
+                    for (const day of availability.results.slice(0, 3)) {
+                        const times = day.slots.slice(0, 3).map(s => s.time).join(', ');
+                        formatted.push(`${day.dayName || day.date}: ${times} hs`);
+                    }
+                    freeSlotsText = formatted.join(' | ');
+                }
+            }
+        } catch (ctxErr) {
+            console.warn('[WhatsApp getAiSuggestion] Could not build full context:', ctxErr.message);
+        }
+
         const model = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-        const prompt = `Actuá como la secretaría de un consultorio médico privado. Basado en el siguiente historial de mensajes de WhatsApp entre el consultorio y el paciente, redactá una respuesta breve, educada, empática y profesional en español para responderle al paciente (máximo 35 palabras).
-Respondé ÚNICAMENTE con el texto del mensaje que la secretaría debe enviarle al paciente, sin comillas, sin introducciones ni notas adicionales.
+        const prompt = `Actuá como la secretaría de Cima Salud Tandil.
+Paciente: ${patientName || 'Paciente'}
+Profesional asignado: ${doctorName}
+Turnos libres reales en agenda: ${freeSlotsText}
+Información de recetas: ${prescriptionInfo}
 
-Historial:
+Historial de WhatsApp:
 ${lastMessages}
+
+Instrucciones:
+- Redactá una respuesta breve, educada, empática y profesional para la secretaría (máximo 35 palabras).
+- Si el paciente consulta por turnos: ofrecele amablemente el próximo turno disponible real de la agenda. Si no hay lugar para el día pedido, aclará que no hay disponibilidad para esa fecha y ofrecele el primer turno disponible real.
+- Si el paciente consulta por recetas o medicación: brindá la información de recetas (demora 48 hs, arancel y alias) y pedile el comprobante de pago.
+- NUNCA uses comodines entre corchetes como [Día], [Horario] o [Nombre]. Usa los datos reales provistos.
+- Respondé ÚNICAMENTE con el texto del mensaje que la secretaría debe enviarle al paciente, sin comillas ni notas adicionales.
 
 Respuesta:`;
 
