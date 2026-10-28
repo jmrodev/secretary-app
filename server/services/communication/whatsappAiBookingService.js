@@ -38,6 +38,64 @@ async function resolveDoctorForPatient(patientId) {
 }
 
 /**
+ * Calls Gemini with function declarations to detect appointment intent and slots.
+ */
+async function analyzeIntentWithGemini(messageText, doctorId) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) return [];
+    const model = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+    const tools = [
+        {
+            functionDeclarations: [
+                {
+                    name: 'buscar_turnos_disponibles',
+                    description: 'Busca el próximo turno disponible para el paciente con su médico.',
+                    parameters: {
+                        type: 'OBJECT',
+                        properties: {
+                            doctor_id: { type: 'NUMBER', description: 'ID del médico' },
+                            dias_adelante: { type: 'NUMBER', description: 'Cantidad de días hacia adelante para buscar disponibilidad' }
+                        },
+                        required: ['doctor_id']
+                    }
+                }
+            ]
+        }
+    ];
+
+    const systemPrompt =
+        'Eres el asistente virtual del consultorio médico. ' +
+        'Si el paciente en su mensaje solicita, pide, necesita o consulta por un turno médico, ' +
+        'invoca la herramienta "buscar_turnos_disponibles". ' +
+        `El ID del médico del paciente es ${doctorId}.`;
+
+    const payload = {
+        systemInstruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ parts: [{ text: messageText }] }],
+        tools
+    };
+
+    const res = await axios.post(url, payload, {
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 25000
+    });
+
+    const parts = res.data?.candidates?.[0]?.content?.parts || [];
+    const calls = [];
+    for (const part of parts) {
+        if (part.functionCall) {
+            calls.push({
+                name: part.functionCall.name,
+                arguments: part.functionCall.args || {}
+            });
+        }
+    }
+    return calls;
+}
+
+/**
  * Calls Ollama with tool definitions to detect appointment intent and slots.
  */
 async function analyzeIntentWithOllama(messageText, doctorId) {
@@ -148,16 +206,25 @@ async function processInboundMessage({ sender, message, patientId, phone }) {
         return null;
     }
 
-    // 3. Ask Ollama with Tool Calling
-    let responseMessage;
-    try {
-        responseMessage = await analyzeIntentWithOllama(message, doctorId);
-    } catch (err) {
-        console.warn(`[AI Booking] Ollama unreachable or error (${err.message}). Skipping AI queue creation.`);
-        return null;
+    // 3. Ask AI with Tool Calling (Gemini preferred if key is set, fallback to Ollama)
+    let toolCalls = [];
+    if (process.env.GEMINI_API_KEY) {
+        try {
+            toolCalls = await analyzeIntentWithGemini(message, doctorId);
+        } catch (err) {
+            console.warn(`[AI Booking] Gemini intent error (${err.message}). Trying Ollama fallback.`);
+        }
+    }
+    if (toolCalls.length === 0) {
+        try {
+            const responseMessage = await analyzeIntentWithOllama(message, doctorId);
+            toolCalls = extractToolCalls(responseMessage);
+        } catch (err) {
+            console.warn(`[AI Booking] Ollama unreachable or error (${err.message}). Skipping AI queue creation.`);
+            return null;
+        }
     }
 
-    const toolCalls = extractToolCalls(responseMessage);
     const wantsBooking = toolCalls.some(tc => tc.name === 'buscar_turnos_disponibles');
 
     if (!wantsBooking) {
