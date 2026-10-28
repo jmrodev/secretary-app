@@ -5,7 +5,7 @@
  * Handles data access for secretaries.
  */
 const ALLOWED_UPDATES = [
-    'user_id', 'full_name', 'phone', 'dni'
+    'user_id', 'first_name', 'last_name', 'full_name', 'phone', 'email', 'address', 'dni'
 ];
 
 class SecretaryRepository {
@@ -14,10 +14,10 @@ class SecretaryRepository {
     }
 
     async create(data, conn = this.pool) {
-        const { user_id, full_name, dni, phone } = data;
+        const { user_id, first_name, last_name, full_name, dni, phone, email, address } = data;
         const result = await conn.query(
-            "INSERT INTO secretaries (user_id, full_name, dni, phone) VALUES (?, ?, ?, ?)",
-            [user_id, full_name, dni, phone]
+            "INSERT INTO secretaries (user_id, first_name, last_name, full_name, dni, phone, email, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            [user_id, first_name || null, last_name || null, full_name, dni || null, phone || null, email || null, address || null]
         );
         return Number(result.insertId);
     }

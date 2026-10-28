@@ -6,9 +6,13 @@
  */
 const ALLOWED_FIELDS = [
     "user_id",
+    "first_name",
+    "last_name",
     "full_name",
     "specialty",
     "phone",
+    "email",
+    "address",
     "cbu",
     "alias",
     "bio",

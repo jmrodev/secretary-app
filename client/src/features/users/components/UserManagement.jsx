@@ -16,7 +16,7 @@ import styles from './UserManagement.module.css';
 
 const EMPTY_EXCLUDE = [];
 
-export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) => {
+export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null, defaultCreateRole = 'secretary' }) => {
     const { t } = useLanguage();
     const {
         users,
@@ -44,7 +44,7 @@ export const UserManagement = ({ excludeRoles = EMPTY_EXCLUDE, role = null }) =>
     const openModal = (type, u = null) => {
         let initialData = {};
         if (type === 'CREATE') {
-            initialData = { username: '', password: '', role: role || 'doctor', full_name: '', dni: '', phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }], specialty: '', adminPassword: '' };
+            initialData = { username: '', password: '', role: role || defaultCreateRole, full_name: '', dni: '', phoneNumbers: [{ phone_number: '+549', label: 'Celular', is_primary: true }], specialty: '', adminPassword: '' };
         } else if (type === 'EDIT') {
             initialData = {
                 username: u.username,
