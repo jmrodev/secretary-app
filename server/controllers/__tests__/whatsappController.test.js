@@ -9,6 +9,9 @@ jest.mock('../../services/communication/whatsappService', () => ({
 jest.mock('../../repositories/communication/pendingBookingRepository');
 jest.mock('../../services/appointments/bookingService');
 jest.mock('../../repositories/user/patientRepository');
+jest.mock('../../repositories/user/doctorRepository');
+jest.mock('../../services/communication/whatsappAiBookingService');
+jest.mock('../../services/appointments/availabilitySearchService');
 jest.mock('../../repositories/system/systemSettingsRepository', () => ({
     findManyByKeys: jest.fn(),
     findByKey: jest.fn()
@@ -23,6 +26,9 @@ const whatsappService = require('../../services/communication/whatsappService');
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
 const bookingService = require('../../services/appointments/bookingService');
 const patientRepository = require('../../repositories/user/patientRepository');
+const doctorRepository = require('../../repositories/user/doctorRepository');
+const whatsappAiBookingService = require('../../services/communication/whatsappAiBookingService');
+const availabilitySearchService = require('../../services/appointments/availabilitySearchService');
 const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 
 describe('WhatsAppController - pending bookings', () => {
@@ -297,7 +303,55 @@ describe('WhatsAppController - pending bookings', () => {
             expect(res.statusCode).toBe(200);
             expect(res._getJSONData()).toEqual({
                 success: true,
-                suggestion: 'Hola! Para hoy no nos quedan turnos disponibles con el Dr. House.'
+                suggestion: 'Hola! Para hoy no nos quedan turnos disponibles con el Dr. House.',
+                suggestedSlot: null
+            });
+        });
+
+        it('returns suggestedSlot when doctor and free slots are found', async () => {
+            whatsappService.getPatientHistory.mockResolvedValue([
+                { direction: 'inbound', body: 'Tienen turno con el Dr. House?' }
+            ]);
+            req.body = { patientId: 5, phone: '+5491112345678' };
+
+            patientRepository.findById.mockResolvedValue({ id: 5, first_name: 'Juan' });
+            whatsappAiBookingService.resolveDoctorForPatient.mockResolvedValue(3);
+            doctorRepository.findById.mockResolvedValue({ id: 3, full_name: 'Dr. House' });
+            availabilitySearchService.getNextFreeSlot.mockResolvedValue({
+                results: [
+                    {
+                        date: '2026-10-30',
+                        dayName: 'viernes 30 de octubre',
+                        slots: [{ time: '16:00' }]
+                    }
+                ]
+            });
+
+            axios.post.mockResolvedValue({
+                data: {
+                    candidates: [
+                        {
+                            content: {
+                                parts: [{ text: 'Hola Juan! Tengo turno para el viernes 30 de octubre a las 16:00 hs con el Dr. House.' }]
+                            }
+                        }
+                    ]
+                }
+            });
+
+            await whatsappController.getAiSuggestion(req, res);
+
+            expect(res.statusCode).toBe(200);
+            expect(res._getJSONData()).toEqual({
+                success: true,
+                suggestion: 'Hola Juan! Tengo turno para el viernes 30 de octubre a las 16:00 hs con el Dr. House.',
+                suggestedSlot: {
+                    date: '2026-10-30',
+                    time: '16:00',
+                    dayName: 'viernes 30 de octubre',
+                    doctorId: 3,
+                    doctorName: 'Dr. House'
+                }
             });
         });
     });

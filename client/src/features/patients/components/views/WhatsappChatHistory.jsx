@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { api } from '@/api/axios';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
@@ -45,7 +46,18 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
         fetchHistory
     } = useWhatsappChatController(patientId, phone, showMessage, t);
     
-    const { messages, loading, newMessage, sending, aiLoading } = state;
+    const navigate = useNavigate();
+    const { messages, loading, newMessage, sending, aiLoading, suggestedSlot } = state;
+
+    const handleViewInCalendar = (slot) => {
+        if (!slot?.date) return;
+        navigate('/appointments', {
+            state: {
+                selectedDate: slot.date,
+                viewDoctorId: slot.doctorId ? String(slot.doctorId) : undefined
+            }
+        });
+    };
 
     const handleDeleteConversation = async () => {
         if (window.confirm(t('confirm_delete_conversation_history'))) {
@@ -129,13 +141,57 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                 <div ref={messagesEndRef} />
             </div>
 
+            {suggestedSlot && (
+                <div className={styles.WhatsappChatHistory__suggestedSlotBanner}>
+                    <div className={styles.WhatsappChatHistory__suggestedSlotInfo}>
+                        <Icon name="event_available" size="1.25rem" className={styles.WhatsappChatHistory__suggestedSlotIcon} />
+                        <div className={styles.WhatsappChatHistory__suggestedSlotContent}>
+                            <div className={styles.WhatsappChatHistory__suggestedSlotLabel}>
+                                {t('suggested_slot_label', 'Turno sugerido en agenda:')}
+                            </div>
+                            <div className={styles.WhatsappChatHistory__suggestedSlotDetails}>
+                                {suggestedSlot.dayName ? `${suggestedSlot.dayName} ` : ''}
+                                <strong>{suggestedSlot.date}</strong> a las <strong>{suggestedSlot.time} hs</strong>
+                                {suggestedSlot.doctorName ? ` • ${suggestedSlot.doctorName}` : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.WhatsappChatHistory__suggestedSlotActions}>
+                        <button
+                            type="button"
+                            className={styles.WhatsappChatHistory__suggestedSlotCalendarBtn}
+                            onClick={() => handleViewInCalendar(suggestedSlot)}
+                            title={t('view_in_calendar', 'Ver en Calendario')}
+                        >
+                            <Icon name="calendar_month" size="1rem" />
+                            <span>{t('view_in_calendar', 'Ver en Calendario')}</span>
+                        </button>
+                        <button
+                            type="button"
+                            className={styles.WhatsappChatHistory__suggestedSlotDismissBtn}
+                            onClick={() => dispatch({ type: 'CLEAR_SUGGESTED_SLOT' })}
+                            title={t('dismiss_suggestion', 'Descartar')}
+                            aria-label={t('dismiss_suggestion', 'Descartar')}
+                        >
+                            <Icon name="close" size="1rem" />
+                        </button>
+                    </div>
+                </div>
+            )}
+
             <form className={`${styles.WhatsappChatHistory__inputArea}`} onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
-                <input
-                    type="text"
-                    className={`${styles.WhatsappChatHistory__input}`}
+                <textarea
+                    className={`${styles.WhatsappChatHistory__input} ${styles.WhatsappChatHistory__textarea}`}
                     placeholder={t('write_message')}
                     value={newMessage}
+                    rows={newMessage.length > 70 || newMessage.includes('\n') ? 3 : 1}
                     onChange={(e) => dispatch({ type: 'SET_NEW_MESSAGE', payload: e.target.value })}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            handleSendMessage();
+                        }
+                    }}
                     disabled={sending}
                 />
                 <button 

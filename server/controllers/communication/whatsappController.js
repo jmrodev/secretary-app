@@ -100,6 +100,7 @@ const getAiSuggestion = async (req, res) => {
         let doctorName = 'el profesional asignado';
         let freeSlotsText = 'Sin turnos disponibles próximos.';
         let prescriptionInfo = 'Valor receta: $15.000, demora 48 hs hábiles, alias: bici.soja.risa';
+        let suggestedSlot = null;
 
         try {
             let patient = null;
@@ -129,6 +130,18 @@ const getAiSuggestion = async (req, res) => {
                 });
 
                 if (availability?.results?.length > 0) {
+                    const firstDay = availability.results[0];
+                    const firstSlot = firstDay?.slots?.[0];
+                    if (firstDay && firstSlot) {
+                        suggestedSlot = {
+                            date: firstDay.date,
+                            time: firstSlot.time,
+                            dayName: firstDay.dayName,
+                            doctorId: doctorId,
+                            doctorName: doctor?.full_name || 'Profesional'
+                        };
+                    }
+
                     const formatted = [];
                     for (const day of availability.results.slice(0, 3)) {
                         const times = day.slots.slice(0, 3).map(s => s.time).join(', ');
@@ -179,7 +192,7 @@ Respuesta:`;
             return res.status(500).json({ error: 'No se obtuvo sugerencia de la IA' });
         }
 
-        res.json({ success: true, suggestion });
+        res.json({ success: true, suggestion, suggestedSlot });
     } catch (error) {
         console.error('[WhatsApp getAiSuggestion Error]:', error.response?.data || error.message);
         const status = error.response?.status || 500;
