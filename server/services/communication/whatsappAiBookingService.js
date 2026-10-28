@@ -79,7 +79,7 @@ async function analyzeIntentWithGemini(messageText, doctorId) {
 
     const res = await axios.post(url, payload, {
         headers: { 'Content-Type': 'application/json' },
-        timeout: 25000
+        timeout: 60000
     });
 
     const parts = res.data?.candidates?.[0]?.content?.parts || [];
