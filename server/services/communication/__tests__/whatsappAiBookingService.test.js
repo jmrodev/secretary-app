@@ -58,11 +58,71 @@ describe('whatsappAiBookingService - extractToolCalls', () => {
 });
 
 describe('whatsappAiBookingService - processInboundMessage', () => {
+    const origGeminiKey = process.env.GEMINI_API_KEY;
+
     beforeEach(() => {
         jest.clearAllMocks();
+        delete process.env.GEMINI_API_KEY;
     });
 
-    it('creates a pending booking when patient requests an appointment and a free slot exists', async () => {
+    afterEach(() => {
+        if (origGeminiKey) process.env.GEMINI_API_KEY = origGeminiKey;
+    });
+
+    it('creates a pending booking using Gemini when GEMINI_API_KEY is configured', async () => {
+        process.env.GEMINI_API_KEY = 'test-gemini-key';
+        pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+        appointmentRepository.findLastByPatientId.mockResolvedValueOnce({ doctor_id: 7 });
+
+        axios.post.mockResolvedValueOnce({
+            data: {
+                candidates: [
+                    {
+                        content: {
+                            parts: [
+                                {
+                                    functionCall: {
+                                        name: 'buscar_turnos_disponibles',
+                                        args: { doctor_id: 7 }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        });
+
+        availabilitySearchService.getNextFreeSlot.mockResolvedValueOnce({
+            results: [
+                {
+                    date: '2026-10-28',
+                    slots: [{ time: '11:15' }]
+                }
+            ]
+        });
+
+        pendingBookingRepository.create.mockResolvedValueOnce(42);
+
+        const result = await processInboundMessage({
+            sender: '5491112345678@s.whatsapp.net',
+            message: 'Hola! Necesito un turno para la semana que viene por favor',
+            patientId: 10,
+            phone: '5491112345678'
+        });
+
+        expect(result).toEqual({ pendingId: 42, date: '2026-10-28', time: '11:15' });
+        expect(pendingBookingRepository.create).toHaveBeenCalledWith({
+            patient_id: 10,
+            doctor_id: 7,
+            patient_phone: '5491112345678',
+            patient_message: 'Hola! Necesito un turno para la semana que viene por favor',
+            requested_slot_date: '2026-10-28',
+            requested_slot_time: '11:15'
+        });
+    });
+
+    it('creates a pending booking when patient requests an appointment via Ollama fallback', async () => {
         // Mock active check: no active pending booking
         pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
 
