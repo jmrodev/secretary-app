@@ -1,3 +1,4 @@
+const axios = require('axios');
 const whatsappService = require('../../services/communication/whatsappService');
 const pendingBookingService = require('../../services/communication/pendingBookingService');
 
@@ -71,6 +72,61 @@ const getPatientHistory = async (req, res) => {
         const history = await whatsappService.getPatientHistory(patientId, phone);
         res.json({ success: true, data: history });
     } catch (error) { console.error('[WhatsApp getPatientHistory Error]:', error); res.status(500).json({ error: error.message }); }
+};
+
+const getAiSuggestion = async (req, res) => {
+    try {
+        const { patientId, phone } = req.body;
+        const history = await whatsappService.getPatientHistory(patientId, phone);
+        const lastMessages = (history || [])
+            .slice(-10)
+            .map(m => `${m.direction === 'inbound' ? 'Paciente' : 'Secretaría'}: ${m.body}`)
+            .join('\n');
+
+        if (!lastMessages.trim()) {
+            return res.json({ success: true, suggestion: 'No hay mensajes previos para generar una sugerencia.' });
+        }
+
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            return res.status(503).json({ error: 'Configuración de IA incompleta (Falta GEMINI_API_KEY).' });
+        }
+
+        const model = process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite';
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+        const prompt = `Actuá como la secretaría de un consultorio médico privado. Basado en el siguiente historial de mensajes de WhatsApp entre el consultorio y el paciente, redactá una respuesta breve, educada, empática y profesional en español para responderle al paciente (máximo 35 palabras).
+Respondé ÚNICAMENTE con el texto del mensaje que la secretaría debe enviarle al paciente, sin comillas, sin introducciones ni notas adicionales.
+
+Historial:
+${lastMessages}
+
+Respuesta:`;
+
+        const response = await axios.post(url, {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: {
+                maxOutputTokens: 250,
+                temperature: 0.7
+            }
+        }, {
+            headers: { 'Content-Type': 'application/json' },
+            timeout: 10000
+        });
+
+        const data = response.data;
+        const suggestion = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+        if (!suggestion) {
+            return res.status(500).json({ error: 'No se obtuvo sugerencia de la IA' });
+        }
+
+        res.json({ success: true, suggestion });
+    } catch (error) {
+        console.error('[WhatsApp getAiSuggestion Error]:', error.response?.data || error.message);
+        const status = error.response?.status || 500;
+        const errorMsg = error.response?.data?.error?.message || error.message;
+        res.status(status).json({ error: errorMsg });
+    }
 };
 
 
@@ -219,6 +275,6 @@ const rejectPending = async (req, res) => {
 
 module.exports = {
     sendMessage, broadcastMessage, broadcastDirect, broadcastPreview, testConnection, sendDirectMessage,
-    receiveWebhook, getPatientHistory, getRecentConversations, getBridgeStatus, getBridgeHealth, logoutBridge, refreshBridge, deleteConversation,
+    receiveWebhook, getPatientHistory, getAiSuggestion, getRecentConversations, getBridgeStatus, getBridgeHealth, logoutBridge, refreshBridge, deleteConversation,
     listPending, acceptPending, suggestAlternative, rejectPending
 };
