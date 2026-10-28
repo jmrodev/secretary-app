@@ -254,7 +254,7 @@
     align-items: center;
     gap: 0.35rem;
     background: var(--primary-color, #0d9488);
-    color: #ffffff;
+    color: #fff;
     border: none;
     border-radius: var(--radius-sm, 4px);
     padding: 0.35rem 0.65rem;
