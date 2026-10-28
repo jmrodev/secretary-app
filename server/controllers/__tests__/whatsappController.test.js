@@ -1,8 +1,10 @@
 const httpMocks = require('node-mocks-http');
 const { ConflictError } = require('../../utils/core/errors');
 
+jest.mock('axios');
 jest.mock('../../services/communication/whatsappService', () => ({
-    sendMessageDirect: jest.fn().mockResolvedValue({ ok: true })
+    sendMessageDirect: jest.fn().mockResolvedValue({ ok: true }),
+    getPatientHistory: jest.fn()
 }));
 jest.mock('../../repositories/communication/pendingBookingRepository');
 jest.mock('../../services/appointments/bookingService');
@@ -15,6 +17,7 @@ jest.mock('../../db', () => ({
     pool: { query: jest.fn() }
 }));
 
+const axios = require('axios');
 const whatsappController = require('../communication/whatsappController');
 const whatsappService = require('../../services/communication/whatsappService');
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
@@ -226,6 +229,76 @@ describe('WhatsAppController - pending bookings', () => {
 
             expect(pendingBookingRepository.rejectById).toHaveBeenCalledWith(4, 11, null);
             expect(res._getJSONData()).toEqual({ success: true });
+        });
+    });
+
+    describe('getAiSuggestion', () => {
+        const origKey = process.env.GEMINI_API_KEY;
+
+        beforeEach(() => {
+            process.env.GEMINI_API_KEY = 'test-gemini-key';
+        });
+
+        afterEach(() => {
+            process.env.GEMINI_API_KEY = origKey;
+        });
+
+        it('returns fallback message when there are no previous messages', async () => {
+            whatsappService.getPatientHistory.mockResolvedValue([]);
+            req.body = { patientId: 5 };
+
+            await whatsappController.getAiSuggestion(req, res);
+
+            expect(res.statusCode).toBe(200);
+            expect(res._getJSONData()).toEqual({
+                success: true,
+                suggestion: 'No hay mensajes previos para generar una sugerencia.'
+            });
+        });
+
+        it('returns 503 when GEMINI_API_KEY is not configured', async () => {
+            delete process.env.GEMINI_API_KEY;
+            whatsappService.getPatientHistory.mockResolvedValue([
+                { direction: 'inbound', body: 'Hola' }
+            ]);
+            req.body = { patientId: 5 };
+
+            await whatsappController.getAiSuggestion(req, res);
+
+            expect(res.statusCode).toBe(503);
+            expect(res._getJSONData()).toEqual({
+                error: 'Configuración de IA incompleta (Falta GEMINI_API_KEY).'
+            });
+        });
+
+        it('calls Gemini endpoint and returns AI suggestion text', async () => {
+            whatsappService.getPatientHistory.mockResolvedValue([
+                { direction: 'inbound', body: 'Tienen turno para hoy?' },
+                { direction: 'outbound', body: 'Hola, con qué doctor?' },
+                { direction: 'inbound', body: 'Con el Dr. House por favor' }
+            ]);
+            req.body = { patientId: 5, phone: '+5491112345678' };
+
+            axios.post.mockResolvedValue({
+                data: {
+                    candidates: [
+                        {
+                            content: {
+                                parts: [{ text: 'Hola! Para hoy no nos quedan turnos disponibles con el Dr. House.' }]
+                            }
+                        }
+                    ]
+                }
+            });
+
+            await whatsappController.getAiSuggestion(req, res);
+
+            expect(axios.post).toHaveBeenCalledTimes(1);
+            expect(res.statusCode).toBe(200);
+            expect(res._getJSONData()).toEqual({
+                success: true,
+                suggestion: 'Hola! Para hoy no nos quedan turnos disponibles con el Dr. House.'
+            });
         });
     });
 

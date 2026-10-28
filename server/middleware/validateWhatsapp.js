@@ -88,9 +88,20 @@ const validateWebhook = (req, res, next) => {
     if (!sender || typeof sender !== 'string' || !message || typeof message !== 'string') {
         return res.status(400).json({ error: 'sender and message are required and must be strings' });
     }
-    // Basic format check: sender should contain '@' (WhatsApp JID)
-    if (!sender.includes('@')) {
+    const cleanSender = sender.trim();
+    // Allow both WhatsApp JIDs (e.g. 549...s.whatsapp.net) and raw phone numbers (e.g. 5492494251686, +5491112345678)
+    const isValidJid = cleanSender.includes('@');
+    const isValidPhone = /^\+?[0-9]{7,15}$/.test(cleanSender.replace(/[\s-]/g, ''));
+    if (!isValidJid && !isValidPhone) {
         return res.status(400).json({ error: 'Invalid sender format' });
+    }
+    next();
+};
+
+const validateAiSuggestion = (req, res, next) => {
+    const { patientId, phone } = req.body;
+    if (!patientId && !phone) {
+        return res.status(400).json({ error: 'patientId or phone is required' });
     }
     next();
 };
@@ -109,4 +120,18 @@ const verifyBridgeSecret = (req, res, next) => {
     next();
 };
 
-module.exports = { validateSendMessage, validateSendDirect, validateBroadcast, validateSuggestAlternative, validatePendingId, validateHistory, validateDeleteConversation, validateTestConnection, validateBroadcastDirect, validateBroadcastPreview, validateWebhook, verifyBridgeSecret };
+module.exports = {
+    validateSendMessage,
+    validateSendDirect,
+    validateBroadcast,
+    validateSuggestAlternative,
+    validatePendingId,
+    validateHistory,
+    validateDeleteConversation,
+    validateTestConnection,
+    validateBroadcastDirect,
+    validateBroadcastPreview,
+    validateWebhook,
+    validateAiSuggestion,
+    verifyBridgeSecret
+};

@@ -4,7 +4,7 @@ const whatsappController = require('../../controllers/communication/whatsappCont
 const { verifyToken } = require('../../middleware/authMiddleware');
 const { authorize } = require('../../middleware/authorize');
 const { ACCESS_LEVELS } = require('../../constants/roles');
-const { validateSendMessage, validateSendDirect, validateBroadcast, validateSuggestAlternative, validatePendingId, validateHistory, validateDeleteConversation, validateTestConnection, validateBroadcastDirect, validateBroadcastPreview, validateWebhook, verifyBridgeSecret } = require('../../middleware/validateWhatsapp');
+const { validateSendMessage, validateSendDirect, validateBroadcast, validateSuggestAlternative, validatePendingId, validateHistory, validateDeleteConversation, validateTestConnection, validateBroadcastDirect, validateBroadcastPreview, validateWebhook, validateAiSuggestion, verifyBridgeSecret } = require('../../middleware/validateWhatsapp');
 
 // Webhook from Go Bridge — machine-to-machine auth via X-Bridge-Secret (not user verifyToken).
 // This is an intentional exception to the verifyToken+authorize rule: the bridge has no user JWT,
@@ -16,6 +16,9 @@ router.use(verifyToken);
 
 // Get WhatsApp history for a patient (POST to avoid sensitive data in URL)
 router.post('/history', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), validateHistory, whatsappController.getPatientHistory);
+
+// Get AI suggestion for a response (Gemini)
+router.post('/ai-suggestion', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), validateAiSuggestion, whatsappController.getAiSuggestion);
 
 
 // Supervised WhatsApp auto-booking: pending bookings queue (secretary approval)
