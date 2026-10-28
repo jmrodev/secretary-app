@@ -34,14 +34,14 @@
 .WhatsappBroadcast__select {
     flex: 1;
     padding: 0.55rem 0.75rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color, rgb(255 255 255 / 10%));
     border-radius: 8px;
     font-size: 0.85rem;
-    background: var(--text-main);
-    color: #1f2937;
+    background: var(--card-surface-bg, #1e293b);
+    color: var(--text-main, #f8fafc);
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
     padding-right: 2rem;
@@ -49,17 +49,17 @@
 
 .WhatsappBroadcast__select:focus {
     outline: none;
-    border-color: #075e54;
-    box-shadow: 0 0 0 3px rgb(7 94 84 / 10%);
+    border-color: var(--primary-color, #0d9488);
+    box-shadow: 0 0 0 3px rgb(13 148 136 / 15%);
 }
 
 .WhatsappBroadcast__countBadge {
     flex-shrink: 0;
     font-size: 0.8rem;
     font-weight: 700;
-    color: #075e54;
-    background: #dcfce7;
-    border: 1px solid #bbf7d0;
+    color: var(--success, #10b981);
+    background: rgb(16 185 129 / 15%);
+    border: 1px solid rgb(16 185 129 / 30%);
     border-radius: 20px;
     padding: 0.25rem 0.65rem;
     white-space: nowrap;
@@ -68,13 +68,13 @@
 .WhatsappBroadcast__textarea {
     width: 100%;
     padding: 0.65rem 0.75rem;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border-color, rgb(255 255 255 / 10%));
     border-radius: 8px;
     font-size: 0.9rem;
     font-family: inherit;
     resize: vertical;
-    background: var(--text-main);
-    color: #1f2937;
+    background: var(--card-surface-bg, #1e293b);
+    color: var(--text-main, #f8fafc);
     line-height: 1.5;
     box-sizing: border-box;
     transition: border-color 0.2s;
@@ -82,8 +82,8 @@
 
 .WhatsappBroadcast__textarea:focus {
     outline: none;
-    border-color: #075e54;
-    box-shadow: 0 0 0 3px rgb(7 94 84 / 10%);
+    border-color: var(--primary-color, #0d9488);
+    box-shadow: 0 0 0 3px rgb(13 148 136 / 15%);
 }
 
 .WhatsappBroadcast__hint {
@@ -91,18 +91,18 @@
     align-items: flex-start;
     gap: 0.35rem;
     font-size: 0.75rem;
-    color: #6b7280;
+    color: var(--text-muted, #94a3b8);
     margin: 0;
     line-height: 1.4;
 }
 
 .WhatsappBroadcast__preview {
-    background: var(--text-main);
-    border: 1px solid #e5e7eb;
+    background: var(--card-surface-bg, #1e293b);
+    border: 1px solid var(--border-color, rgb(255 255 255 / 10%));
     border-radius: 8px;
     padding: 0.65rem 0.75rem;
     font-size: 0.85rem;
-    color: #374151;
+    color: var(--text-secondary, #cbd5e1);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     line-height: 1.5;

@@ -56,6 +56,10 @@ function nowLocalSQL() {
  */
 function formatDateOnlySQL(dateInput) {
     if (!dateInput) return null;
+    if (typeof dateInput === 'string') {
+        const match = dateInput.match(/^\d{4}-\d{2}-\d{2}/);
+        if (match) return match[0];
+    }
     const d = new Date(dateInput);
     if (isNaN(d.getTime())) return null;
     

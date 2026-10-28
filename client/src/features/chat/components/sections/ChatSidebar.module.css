@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    background: var(--white);
+    background: var(--dashboard-card-bg);
     border-right: 1px solid var(--border-color);
     width: 320px;
     flex-shrink: 0;
@@ -13,8 +13,8 @@
 .ChatSidebar__header {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    padding: 1.5rem;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
     border-bottom: 1px solid var(--border-color);
 }
 
@@ -31,15 +31,15 @@
     margin: 0;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
 }
 
 .ChatSidebar__badge {
-    background: var(--primary);
-    color: var(--white);
+    background: var(--primary-color);
+    color: var(--text-main);
     font-size: 0.75rem;
     padding: 2px 8px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     font-weight: 700;
 }
 
@@ -49,10 +49,10 @@
 
 .ChatSidebar__searchIcon {
     position: absolute;
-    left: 0.75rem;
+    left: var(--spacing-sm);
     top: 50%;
     transform: translateY(-50%);
-    color: var(--gray-400);
+    color: var(--text-muted);
     pointer-events: none;
     z-index: 1;
 }
@@ -60,16 +60,19 @@
 /* Override input padding for search icon */
 .ChatSidebar__searchInput input {
     padding-left: 2.5rem !important;
+    background: var(--background-bg) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
 }
 
 .ChatSidebar__list {
     flex: 1;
     overflow-y: auto;
-    padding: 0.5rem 0;
+    padding: var(--spacing-xs) 0;
 }
 
 .ChatSidebar__empty {
-    padding: 2rem;
+    padding: var(--spacing-xl);
     text-align: center;
     color: var(--text-muted);
 }
@@ -77,37 +80,38 @@
 /* Conversation Item */
 .ChatSidebar__convoItem {
     display: flex;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
     cursor: pointer;
     transition: background 0.2s;
     border-left: 4px solid transparent;
 }
 
 .ChatSidebar__convoItem:hover {
-    background: var(--gray-50);
+    background: var(--row-hover-bg);
 }
 
 .ChatSidebar__convoItemActive {
-    background: var(--blue-50);
-    border-left-color: var(--primary);
+    background: var(--row-hover-bg-selected);
+    border-left-color: var(--primary-color);
 }
 
 .ChatSidebar__convoItemUnread {
-    background: var(--gray-50);
+    background: var(--row-hover-bg);
 }
 
 .ChatSidebar__convoAvatar {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: var(--primary-light, #e0f2fe);
-    color: var(--primary);
+    background: var(--secondary-color);
+    color: var(--primary-color);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
     flex-shrink: 0;
+    border: 1px solid var(--border-color);
 }
 
 .ChatSidebar__convoInfo {
@@ -122,7 +126,7 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
 }
 
 .ChatSidebar__convoName {
@@ -143,7 +147,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--spacing-sm);
 }
 
 .ChatSidebar__convoText {
@@ -155,24 +159,25 @@
 }
 
 .ChatSidebar__sectionLabel {
-    padding: 1rem 1.5rem 0.5rem;
+    padding: var(--spacing-md) var(--spacing-md) var(--spacing-xs);
     font-size: 0.75rem;
     font-weight: 800;
-    color: var(--gray-400);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 .ChatSidebar__recipientRole {
     font-size: 0.7rem;
-    background: var(--gray-100);
+    background: var(--card-surface-bg);
     padding: 2px 6px;
-    border-radius: 4px;
-    color: var(--gray-600);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
 }
 
 .ChatSidebar__recipientHint {
     font-size: 0.75rem;
-    color: var(--primary);
+    color: var(--primary-color);
     font-weight: 500;
 }

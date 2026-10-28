@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useMessagesPageController } from '@/features/chat/hooks/useMessagesPageController';
 import { ChatSidebar } from '@/features/chat/components/sections/ChatSidebar';
 import { ChatWindow } from '@/features/chat/components/sections/ChatWindow';
@@ -14,6 +14,7 @@ import styles from './ChatPage.module.css';
  */
 export const ChatPage = () => {
     const { t } = useLanguage();
+    const [showQr, setShowQr] = useState(false);
     const {
         user,
         conversations,
@@ -44,13 +45,22 @@ export const ChatPage = () => {
                     <span className={`${styles.ChatPage__statusDot} ${styles[`ChatPage__statusDot--${bridgeStatus.status.replace(/_/g, '-')}`]}`} />
                     <span>{t(`bridge_status_${bridgeStatus.status}`)}</span>
                     {!isBridgeConnected && (
-                        <button type="button" onClick={handleRefreshBridge} disabled={bridgeStatusLoading} data-testid="bridge-reconnect">
-                            {t('whatsapp_refresh')}
-                        </button>
+                        <>
+                            <button
+                                type="button"
+                                className={styles.ChatPage__qrToggleBtn}
+                                onClick={() => setShowQr(prev => !prev)}
+                            >
+                                {showQr ? t('hide_qr') : t('show_qr')}
+                            </button>
+                            <button type="button" onClick={handleRefreshBridge} disabled={bridgeStatusLoading} data-testid="bridge-reconnect">
+                                {t('whatsapp_refresh')}
+                            </button>
+                        </>
                     )}
                 </div>
                 {showInlineQR && (
-                    <div data-testid="bridge-qr">
+                    <div data-testid="bridge-qr" className={showQr ? styles.ChatPage__qrWrapperVisible : styles.ChatPage__qrWrapperHidden}>
                         <WhatsappPairing bridgeStatus={bridgeStatus} onRefresh={handleRefreshBridge} statusLoading={bridgeStatusLoading} t={t} qrCode={bridgeStatus.qr_code} />
                     </div>
                 )}

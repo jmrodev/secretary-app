@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import { MessageProvider } from '@/context/MessageContext';
 import { LanguageProvider } from '@/context/LanguageProvider';
 import { SearchProvider } from '@/context/SearchProvider';
@@ -29,15 +30,17 @@ vi.mock('@/features/doctors/components/ui/DoctorSelector', () => ({
 }));
 
 const renderLayout = () => render(
-    <MessageProvider>
-        <LanguageProvider>
-            <SearchProvider>
-                <MainLayout>
-                    <p>child content</p>
-                </MainLayout>
-            </SearchProvider>
-        </LanguageProvider>
-    </MessageProvider>
+    <MemoryRouter>
+        <MessageProvider>
+            <LanguageProvider>
+                <SearchProvider>
+                    <MainLayout>
+                        <p>child content</p>
+                    </MainLayout>
+                </SearchProvider>
+            </LanguageProvider>
+        </MessageProvider>
+    </MemoryRouter>
 );
 
 describe('MainLayout', () => {
@@ -52,15 +55,17 @@ describe('MainLayout', () => {
     it('applies preset contained modifier when specified', () => {
         mockUseAuth.mockReturnValue({ user: { role: 'secretary', user_id: 1 } });
         const { container } = render(
-            <MessageProvider>
-                <LanguageProvider>
-                    <SearchProvider>
-                        <MainLayout preset="contained">
-                            <p>contained content</p>
-                        </MainLayout>
-                    </SearchProvider>
-                </LanguageProvider>
-            </MessageProvider>
+            <MemoryRouter>
+                <MessageProvider>
+                    <LanguageProvider>
+                        <SearchProvider>
+                            <MainLayout preset="contained">
+                                <p>contained content</p>
+                            </MainLayout>
+                        </SearchProvider>
+                    </LanguageProvider>
+                </MessageProvider>
+            </MemoryRouter>
         );
 
         const pageShell = container.querySelector('p')?.parentElement;

@@ -14,13 +14,14 @@ class PendingBookingRepository {
     async create(data, conn = this.pool) {
         const query = `
             INSERT INTO whatsapp_pending_bookings
-                (patient_id, doctor_id, patient_phone, requested_slot_date, requested_slot_time)
-            VALUES (?, ?, ?, ?, ?)
+                (patient_id, doctor_id, patient_phone, patient_message, requested_slot_date, requested_slot_time)
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
         const result = await conn.query(query, [
             data.patient_id,
             data.doctor_id,
             data.patient_phone,
+            data.patient_message || null,
             data.requested_slot_date,
             data.requested_slot_time
         ]);
@@ -30,9 +31,36 @@ class PendingBookingRepository {
     async findActive(conn = this.pool) {
         const query = `
             SELECT
-                wb.*,
+                wb.id,
+                wb.patient_id,
+                wb.doctor_id,
+                wb.patient_phone,
+                wb.requested_slot_date,
+                wb.requested_slot_time,
+                wb.status,
+                wb.accepted_by,
+                wb.accepted_at,
+                wb.alternative_slot_iso,
+                wb.alternative_note,
+                wb.alternative_sent_at,
+                wb.rejected_by,
+                wb.rejected_reason,
+                wb.appointment_id,
+                wb.created_at,
+                wb.updated_at,
                 p.full_name AS patient_name,
-                d.full_name AS doctor_name
+                d.full_name AS doctor_name,
+                COALESCE(
+                    wb.patient_message,
+                    (
+                        SELECT wm.body 
+                        FROM whatsapp_messages wm 
+                        WHERE (wm.patient_id = wb.patient_id OR wm.sender_phone = wb.patient_phone)
+                          AND wm.direction = 'inbound'
+                        ORDER BY wm.created_at DESC 
+                        LIMIT 1
+                    )
+                ) AS patient_message
             FROM whatsapp_pending_bookings wb
             INNER JOIN patients p ON p.id = wb.patient_id
             INNER JOIN doctors d ON d.id = wb.doctor_id
@@ -57,10 +85,37 @@ class PendingBookingRepository {
     async findById(id, conn = this.pool) {
         const query = `
             SELECT
-                wb.*,
+                wb.id,
+                wb.patient_id,
+                wb.doctor_id,
+                wb.patient_phone,
+                wb.requested_slot_date,
+                wb.requested_slot_time,
+                wb.status,
+                wb.accepted_by,
+                wb.accepted_at,
+                wb.alternative_slot_iso,
+                wb.alternative_note,
+                wb.alternative_sent_at,
+                wb.rejected_by,
+                wb.rejected_reason,
+                wb.appointment_id,
+                wb.created_at,
+                wb.updated_at,
                 p.full_name AS patient_name,
                 d.full_name AS doctor_name,
-                s.full_name AS accepted_by_name
+                s.full_name AS accepted_by_name,
+                COALESCE(
+                    wb.patient_message,
+                    (
+                        SELECT wm.body 
+                        FROM whatsapp_messages wm 
+                        WHERE (wm.patient_id = wb.patient_id OR wm.sender_phone = wb.patient_phone)
+                          AND wm.direction = 'inbound'
+                        ORDER BY wm.created_at DESC 
+                        LIMIT 1
+                    )
+                ) AS patient_message
             FROM whatsapp_pending_bookings wb
             INNER JOIN patients p ON p.id = wb.patient_id
             INNER JOIN doctors d ON d.id = wb.doctor_id

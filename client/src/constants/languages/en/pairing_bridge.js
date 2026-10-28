@@ -58,6 +58,9 @@ export const pairing_bridge = {
     generating_qr: "Generating code...",
     offline: "Offline",
     connected: "Connected",
+    hide_qr: "Hide QR",
+    show_qr: "Show pairing QR",
+    whatsapp_offline_history_only: "History",
     // Bridge reconnection statuses
     bridge_status_connected: "Connected",
     bridge_status_disconnected: "Disconnected",

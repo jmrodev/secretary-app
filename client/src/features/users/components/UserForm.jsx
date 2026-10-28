@@ -26,6 +26,14 @@ export const UserForm = ({ type, formData, setFormData }) => {
                     <br />
                     <span className={`${styles.UserForm__hintDanger}`}>{t('action_cannot_undone')}</span>
                 </p>
+                <FormGroup label={t('your_admin_password')} required>
+                    <Input
+                        type="password"
+                        placeholder={t('enter_your_password')}
+                        value={formData.adminPassword || ''}
+                        onChange={e => handleUserUpdate('adminPassword', e.target.value)}
+                    />
+                </FormGroup>
             </div>
         );
     }
@@ -74,6 +82,18 @@ export const UserForm = ({ type, formData, setFormData }) => {
                     </FormGroup>
                 )}
             </div>
+
+            {type === 'CREATE' && (
+                <FormGroup label={t('your_admin_password')} required>
+                    <Input
+                        type="password"
+                        autoComplete="current-password"
+                        placeholder={t('enter_your_password')}
+                        value={formData.adminPassword || ''}
+                        onChange={e => handleUserUpdate('adminPassword', e.target.value)}
+                    />
+                </FormGroup>
+            )}
 
             <FormGroup label={t('role_header')}>
                 <Select
