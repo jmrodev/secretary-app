@@ -4,6 +4,7 @@ const systemSettingsRepository = require('../../repositories/system/systemSettin
 const whatsappService = require('./whatsappService');
 const bookingService = require('../appointments/bookingService');
 const { ConflictError } = require('../../utils/core/errors');
+const { formatDateOnlySQL } = require('../../utils/core/dateUtils');
 
 /**
  * PendingBookingService — encapsulates business logic for supervised WhatsApp auto-booking.
@@ -54,10 +55,13 @@ const acceptPending = async (id, secretaryId) => {
     }
 
     try {
+        const dateStr = formatDateOnlySQL(pending.requested_slot_date);
+        const timeStr = String(pending.requested_slot_time).slice(0, 5);
+
         const result = await bookingService.createAppointment(secretaryId, 'secretary', {
             patient_id: pending.patient_id,
             doctor_id: pending.doctor_id,
-            appointment_date: `${pending.requested_slot_date} ${pending.requested_slot_time}:00`,
+            appointment_date: `${dateStr} ${timeStr}:00`,
             reason: 'Turno aprobado por Secretaría'
         });
 
@@ -68,21 +72,22 @@ const acceptPending = async (id, secretaryId) => {
 
         const message = templateSetting.setting_value
             .replace(/{patient_name}/g, pending.patient_name)
-            .replace(/{date}/g, pending.requested_slot_date)
-            .replace(/{time}/g, pending.requested_slot_time)
+            .replace(/{date}/g, dateStr)
+            .replace(/{time}/g, timeStr)
             .replace(/{doctor_name}/g, pending.doctor_name);
 
         await whatsappService.sendMessageDirect(pending.patient_phone, message, pending.patient_id);
 
         return { appointment_id: result.id };
     } catch (err) {
-        await pendingBookingRepository.rejectById(id, null, 'slot_taken');
         if (err instanceof ConflictError) {
+            await pendingBookingRepository.rejectById(id, null, 'slot_taken');
             const conflictErr = new Error('Slot no longer available');
             conflictErr.statusCode = 409;
             conflictErr.meta = { status: 'slot_taken' };
             throw conflictErr;
         }
+        await pendingBookingRepository.rejectById(id, null, 'error');
         throw err;
     }
 };

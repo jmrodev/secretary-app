@@ -23,19 +23,25 @@ export const useAgendaState = (setViewDoctorId) => {
         navigate(location.pathname, { replace: true, state: {} }), 
     [navigate, location.pathname]);
 
-    // Handle initial state sync from router (reschedule/sync)
+    // Handle initial state sync from router (reschedule/sync/direct navigation)
     useEffect(() => {
-        if (rescheduleAppt || syncAppt) {
+        if (rescheduleAppt || syncAppt || location.state?.viewDoctorId) {
             const updates = {};
             if (rescheduleAppt) {
                 updates.viewDoctorId = String(rescheduleAppt.doctor_id);
             } else if (syncAppt) {
                 updates.viewDoctorId = String(syncAppt.doctor_id);
+            } else if (location.state?.viewDoctorId) {
+                updates.viewDoctorId = String(location.state.viewDoctorId);
             }
             
             if (updates.viewDoctorId) setViewDoctorId(updates.viewDoctorId);
         }
-    }, [rescheduleAppt, syncAppt, setViewDoctorId]);
+
+        if (location.state?.selectedDate) {
+            setSelectedDate(parseDate(location.state.selectedDate));
+        }
+    }, [rescheduleAppt, syncAppt, location.state, setViewDoctorId, setSelectedDate]);
 
     return {
         selectedDate,

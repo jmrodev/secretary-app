@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useMessage } from '@/context/MessageContext';
@@ -144,8 +144,18 @@ export const useAppointmentsPageController = () => {
             calendarStatsHook.refetch(),
             searchTerm ? fetchSearch() : Promise.resolve()
         ]);
-        window.dispatchEvent(new CustomEvent('appointments-updated'));
+        window.dispatchEvent(new CustomEvent('appointments-updated', { detail: { origin: 'internal-fetch' } }));
     }, [agendaAppointmentsHook, calendarStatsHook, fetchSearch, searchTerm]);
+
+    useEffect(() => {
+        const handleExternalUpdate = (e) => {
+            if (e?.detail?.origin === 'internal-fetch') return;
+            agendaAppointmentsHook.refetch();
+            calendarStatsHook.refetch();
+        };
+        window.addEventListener('appointments-updated', handleExternalUpdate);
+        return () => window.removeEventListener('appointments-updated', handleExternalUpdate);
+    }, [agendaAppointmentsHook, calendarStatsHook]);
 
     const hookHandlers = useAppointmentsHandlers({
         user, t, showMessage, confirm, prompt, navigate, selectedDate, setSelectedDate,

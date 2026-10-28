@@ -2,18 +2,18 @@
 
 .ChatWindow__root {
     /* --- Local Component Tokens --- */
-    --chat-bg: var(--gray-50);
-    --chat-header-bg: var(--white);
-    --chat-input-bg: var(--white);
+    --chat-bg: var(--background-bg);
+    --chat-header-bg: var(--dashboard-card-bg);
+    --chat-input-bg: var(--dashboard-card-bg);
     --chat-border: var(--border-color);
-    --chat-avatar-bg: var(--primary-light, #e0f2fe);
+    --chat-avatar-bg: var(--secondary-color);
 
     /* ------------------------------ */
 
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: var(--white);
+    background-color: var(--dashboard-card-bg);
     position: relative;
     flex: 1;
     min-width: 0;
@@ -24,12 +24,12 @@
     justify-content: center;
     background-color: var(--chat-bg);
     text-align: center;
-    padding: 3rem;
-    gap: 1.5rem;
+    padding: var(--spacing-xl);
+    gap: var(--spacing-md);
 }
 
 .ChatWindow__emptyIcon {
-    opacity: 0.15;
+    opacity: 0.25;
     color: var(--text-muted);
 }
 
@@ -50,12 +50,11 @@
 .ChatWindow__header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm) var(--spacing-md);
     border-bottom: 1px solid var(--chat-border);
     background-color: var(--chat-header-bg);
     z-index: 10;
-    box-shadow: var(--shadow-sm);
 }
 
 .ChatWindow__convoAvatar {
@@ -63,12 +62,13 @@
     height: 2.75rem;
     font-size: 1.25rem;
     background-color: var(--chat-avatar-bg);
-    color: var(--primary);
+    color: var(--primary-color);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
+    border: 1px solid var(--border-color);
 }
 
 .ChatWindow__headerInfo {
@@ -92,11 +92,11 @@
 .ChatWindow__messages {
     flex: 1;
     overflow-y: auto;
-    padding: 1.5rem;
+    padding: var(--spacing-md);
     background-color: var(--chat-bg);
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: var(--spacing-md);
 }
 
 .ChatWindow__messagesStatus {
@@ -109,7 +109,7 @@
 .ChatWindow__messagesStatusEmpty {
     flex-direction: column;
     opacity: 0.5;
-    gap: 1rem;
+    gap: var(--spacing-md);
 }
 
 /* Bubbles */
@@ -137,17 +137,17 @@
 }
 
 .ChatWindow__bubbleSent .ChatWindow__bubbleContent {
-    background-color: var(--primary);
-    color: var(--white);
+    background-color: var(--primary-color);
+    color: var(--text-main);
     border-bottom-right-radius: 0.25rem;
 }
 
 .ChatWindow__bubbleReceived .ChatWindow__bubbleContent {
-    background-color: var(--white);
+    background-color: var(--card-surface-bg);
     color: var(--text-main);
     border: 1px solid var(--border-color);
     border-bottom-left-radius: 0.25rem;
-    border-left: 3px solid var(--primary);
+    border-left: 3px solid var(--accent-color);
 }
 
 .ChatWindow__bubbleTime {
@@ -156,6 +156,7 @@
     opacity: 0.7;
     display: block;
     text-align: right;
+    color: var(--text-muted);
 }
 
 .ChatWindow__bubbleReceived .ChatWindow__bubbleTime {
@@ -164,14 +165,14 @@
 
 /* Footer / Input Area */
 .ChatWindow__footer {
-    padding: 1.25rem 1.5rem;
+    padding: var(--spacing-md);
     background-color: var(--chat-input-bg);
     border-top: 1px solid var(--chat-border);
 }
 
 .ChatWindow__inputArea {
     display: flex;
-    gap: 0.75rem;
+    gap: var(--spacing-sm);
     align-items: center;
 }
 
@@ -193,49 +194,50 @@
     width: 100%;
     padding: 0.75rem 1.25rem;
     border-radius: 2rem;
-    background-color: var(--gray-100);
-    border: 2px solid transparent;
+    background-color: var(--background-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
     outline: none;
     transition: all 0.2s ease;
     font-size: 0.9375rem;
 }
 
 .ChatWindow__input:focus {
-    background-color: var(--white);
-    border-color: var(--primary-light);
-    box-shadow: 0 0 0 4px rgb(59 130 246 / 10%);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgb(var(--primary-rgb), 0.2);
 }
 
-.ChatWindow__sendButton {
-    width: 3.25rem;
-    height: 3.25rem;
+.ChatWindow__actionBtn {
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 50%;
-    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-}
-
-.ChatWindow__backButton {
-    display: none; /* Hidden by default on desktop */
-    background: none;
     border: none;
-    padding: 0.5rem;
     cursor: pointer;
-    color: var(--text-muted);
-    border-radius: 50%;
-    transition: background 0.2s;
-    margin-right: 0.5rem;
+    transition: all 0.2s;
+    background-color: var(--secondary-color);
+    color: var(--text-secondary);
 }
 
-.ChatWindow__backButton:hover {
-    background: var(--gray-100);
+.ChatWindow__actionBtn:hover {
+    background-color: var(--card-hover-bg);
     color: var(--text-main);
 }
 
-@media (width <= 768px) {
-    .ChatWindow__backButton {
-        display: flex;
-    }
+.ChatWindow__sendBtn {
+    background-color: var(--primary-color);
+    color: var(--text-main);
+}
+
+.ChatWindow__sendBtn:hover:not(:disabled) {
+    background-color: var(--primary-hover);
+    transform: scale(1.05);
+}
+
+.ChatWindow__sendBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: var(--secondary-color);
 }

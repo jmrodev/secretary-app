@@ -17,31 +17,33 @@ const formatDate = (dateString) => {
  * Renders the sidebar for the full-screen chat page.
  */
 export const ChatSidebar = ({
-    conversations,
+    conversations = [],
     selectedConvo,
     onSelectConvo,
-    searchTerm,
+    searchTerm = '',
     setSearchTerm,
-    recipients,
+    recipients = [],
     onStartNewChat,
     unreadCount
 }) => {
     const { t } = useLanguage();
 
-    const q = searchTerm.toLowerCase().trim();
+    const q = (searchTerm || '').toLowerCase().trim();
+    const convos = Array.isArray(conversations) ? conversations : [];
+    const recipientList = Array.isArray(recipients) ? recipients : [];
 
     // Filter active conversations
-    const filteredConvos = conversations.filter(c =>
+    const filteredConvos = convos.filter(c =>
         (c.other_display_name || c.other_username || '').toLowerCase().includes(q) ||
         (c.message || '').toLowerCase().includes(q) ||
         (c.other_phone || '').toLowerCase().includes(q)
     );
 
     // If searching, also suggest recipients (staff) that are not in conversations
-    const existingUserIds = new Set(conversations.map(c => c.other_user_id));
-    const suggestedRecipients = recipients.filter(r =>
+    const existingUserIds = new Set(convos.map(c => c.other_user_id));
+    const suggestedRecipients = recipientList.filter(r =>
         !existingUserIds.has(r.id) &&
-        (q.length === 0 || r.display_name.toLowerCase().includes(q) || r.role.toLowerCase().includes(q))
+        (q.length === 0 || (r.display_name || '').toLowerCase().includes(q) || (r.role || '').toLowerCase().includes(q))
     );
 
     return (

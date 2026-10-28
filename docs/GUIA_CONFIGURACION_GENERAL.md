@@ -36,22 +36,26 @@ GOOGLE_CLIENT_SECRET=...
 
 ---
 
-## 3. Comandos de Desarrollo
+## 3. Instalación Inicial y Comandos de Desarrollo
 
-### Instalar todas las dependencias del monorepo:
+### Setup inicial automatizado (recomendado):
 ```bash
-pnpm install
+pnpm run setup
 ```
+Este script realiza toda la configuración guiada:
+- Verifica Node.js, pnpm, Docker, Go y Ollama.
+- Genera el `.env` con claves seguras.
+- Levanta MariaDB en Docker y prepara las tablas.
+- Pregunta si se desean cargar datos de prueba (seeds) o una base limpia.
+- Compila el WhatsApp Bridge y descarga el modelo Ollama (`qwen2.5-coder:3b`).
 
-### Ejecutar el Servidor Express (Backend) en modo desarrollo:
-```bash
-pnpm --filter server start
-```
+*Modo sin preguntas:* `pnpm run setup -- --seed` (con prueba) o `pnpm run setup -- --no-seed` (limpio).
 
-### Ejecutar el Cliente React (Frontend) en modo desarrollo:
+### Ejecutar todo el entorno en desarrollo:
 ```bash
-pnpm --filter client dev
+pnpm dev
 ```
+*(Inicia Cliente Web y Servidor Express en simultáneo).*
 
 ---
 

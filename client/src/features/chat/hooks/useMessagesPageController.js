@@ -26,12 +26,13 @@ export const useMessagesPageController = () => {
 
     // Conversations
     const { 
-        data: conversations = [], 
+        data: rawConversations = [], 
         refetch: fetchConversations 
     } = useFetch('/messages/conversations', { 
         initialData: [],
         immediate: true 
     });
+    const conversations = Array.isArray(rawConversations) ? rawConversations : (rawConversations?.data || []);
 
     // Unread Count
     const { 
@@ -44,26 +45,29 @@ export const useMessagesPageController = () => {
     const unreadCount = unreadData?.unread_count || 0;
 
     // Recipients
-    const { data: recipients = [] } = useFetch('/messages/recipients', { 
+    const { data: rawRecipients = [] } = useFetch('/messages/recipients', { 
         initialData: [],
         immediate: true 
     });
+    const recipients = Array.isArray(rawRecipients) ? rawRecipients : (rawRecipients?.data || []);
 
     // Selected Thread
     const { 
-        data: thread = [], 
+        data: rawThread = [], 
         loading, 
         refetch: fetchThread 
     } = useFetch(selectedConvo ? `/messages/thread/${selectedConvo.other_user_id}` : null, {
         initialData: [],
         onSuccess: (data) => {
-            const hasUnread = data.some(msg => msg.sender_id == selectedConvo?.other_user_id && msg.read_status < 2);
+            const list = Array.isArray(data) ? data : (data?.data || []);
+            const hasUnread = list.some(msg => msg.sender_id == selectedConvo?.other_user_id && msg.read_status < 2);
             if (hasUnread) {
                 fetchUnreadCount();
                 fetchConversations();
             }
         }
     });
+    const thread = Array.isArray(rawThread) ? rawThread : (rawThread?.data || []);
 
     const fetchBridgeStatus = useCallback(async (isAuto = false) => {
         if (!isAuto) setBridgeStatusLoading(true);

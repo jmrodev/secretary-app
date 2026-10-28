@@ -3,6 +3,7 @@ const systemSettingsRepository = require('../../repositories/system/systemSettin
 const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
 const whatsappRepository = require('../../repositories/communication/whatsappRepository');
 const whatsappRetryQueue = require('./whatsappRetryQueue');
+const whatsappAiBookingService = require('./whatsappAiBookingService');
 const { formatDateDisplay, formatTimeDisplay } = require('../../utils/core/dateUtils');
 
 const getMetaCredentials = async () => {
@@ -325,6 +326,11 @@ const handleWebhook = async (sender, message, isFromMe) => {
     const patientId = await whatsappRepository.findPatientByPhone(phone);
     const direction = isFromMe ? 'outbound' : 'inbound';
     await whatsappRepository.createMessage(patientId, direction, message, null, 'delivered', patientId ? null : phone);
+
+    if (!isFromMe && patientId) {
+        whatsappAiBookingService.processInboundMessage({ sender, message, patientId, phone })
+            .catch(err => console.error('[WhatsApp AI Booking Error]:', err.message));
+    }
 };
 
 const getPatientHistory = async (patientId, phone) => {

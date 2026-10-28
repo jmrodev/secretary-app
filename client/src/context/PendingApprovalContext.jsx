@@ -58,7 +58,11 @@ export const PendingApprovalProvider = ({ children }) => {
 
     const accept = useCallback(async (id) => {
         try {
-            return await acceptPendingRequest(id);
+            const result = await acceptPendingRequest(id);
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('appointments-updated', { detail: { origin: 'pending-approval' } }));
+            }
+            return result;
         } finally {
             await refresh();
         }

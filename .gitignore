@@ -162,6 +162,7 @@ android_sdk/
 .atl/
 
 # Go bridge binary (built locally, never commit)
+whatsapp-bridge-go/whatsapp-bridge
 whatsapp-bridge-go/whatsapp-bridge-go
 
 # OpenSpec cache
