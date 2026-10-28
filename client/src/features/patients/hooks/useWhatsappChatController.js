@@ -7,6 +7,7 @@ const initialState = {
     newMessage: '',
     sending: false,
     aiLoading: false,
+    suggestedSlot: null
 };
 
 function chatReducer(state, action) {
@@ -16,7 +17,16 @@ function chatReducer(state, action) {
         case 'SET_NEW_MESSAGE': return { ...state, newMessage: action.payload };
         case 'SET_SENDING': return { ...state, sending: action.payload };
         case 'SET_AI_LOADING': return { ...state, aiLoading: action.payload };
-        case 'SEND_SUCCESS': return { ...state, newMessage: '', sending: false };
+        case 'SET_AI_SUGGESTION':
+            return {
+                ...state,
+                newMessage: action.payload.suggestion,
+                suggestedSlot: action.payload.suggestedSlot || null,
+                aiLoading: false
+            };
+        case 'CLEAR_SUGGESTED_SLOT':
+            return { ...state, suggestedSlot: null };
+        case 'SEND_SUCCESS': return { ...state, newMessage: '', sending: false, suggestedSlot: null };
         default: return state;
     }
 }
@@ -108,7 +118,13 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
             });
             
             if (res.data.success && res.data.suggestion) {
-                dispatch({ type: 'SET_NEW_MESSAGE', payload: res.data.suggestion });
+                dispatch({
+                    type: 'SET_AI_SUGGESTION',
+                    payload: {
+                        suggestion: res.data.suggestion,
+                        suggestedSlot: res.data.suggestedSlot || null
+                    }
+                });
             } else {
                 showMessage(t('ai_no_context'), "warning");
             }
