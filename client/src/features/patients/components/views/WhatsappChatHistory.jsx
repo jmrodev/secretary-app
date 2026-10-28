@@ -61,36 +61,38 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
     };
 
     return (
-        <section className={`${styles.WhatsappChatHistory__root} ${hideHeader ? 'whatsapp-chat--no-header' : ''}`}>
-            <header className={`${styles.WhatsappChatHistory__header}`}>
-                <div className={`${styles.WhatsappChatHistory__headerInfo}`}>
-                    <Icon name="whatsapp" size="1.2rem" />
-                    <h3 className={`${styles.WhatsappChatHistory__title}`}>{t('whatsapp_history')}</h3>
-                    <div className={styles.WhatsappChatHistory__phoneInputContainer} title={t('whatsmeow_phone_hint')}>
-                        <label htmlFor="whatsapp-target-phone" className={styles.WhatsappChatHistory__label}>
-                            {t('whatsapp_target_phone')}
-                        </label>
-                        <div className={styles.WhatsappChatHistory__phoneInputRow}>
-                            <Icon name="edit" size="0.85rem" />
-                            <input
-                                id="whatsapp-target-phone"
-                                type="text"
-                                className={styles.WhatsappChatHistory__targetPhoneInput}
-                                value={targetPhoneInput}
-                                onChange={(e) => handleTargetPhoneChange(e.target.value)}
-                                placeholder="542494521825..."
-                            />
+        <section className={`${styles.WhatsappChatHistory__root} ${hideHeader ? styles.WhatsappChatHistory__noHeader : ''}`}>
+            {!hideHeader && (
+                <header className={`${styles.WhatsappChatHistory__header}`}>
+                    <div className={`${styles.WhatsappChatHistory__headerInfo}`}>
+                        <Icon name="whatsapp" size="1.2rem" />
+                        <h3 className={`${styles.WhatsappChatHistory__title}`}>{t('whatsapp_history')}</h3>
+                        <div className={styles.WhatsappChatHistory__phoneInputContainer} title={t('whatsmeow_phone_hint')}>
+                            <label htmlFor="whatsapp-target-phone" className={styles.WhatsappChatHistory__label}>
+                                {t('whatsapp_target_phone')}
+                            </label>
+                            <div className={styles.WhatsappChatHistory__phoneInputRow}>
+                                <Icon name="edit" size="0.85rem" />
+                                <input
+                                    id="whatsapp-target-phone"
+                                    type="text"
+                                    className={styles.WhatsappChatHistory__targetPhoneInput}
+                                    value={targetPhoneInput}
+                                    onChange={(e) => handleTargetPhoneChange(e.target.value)}
+                                    placeholder="542494521825..."
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className={styles.WhatsappChatHistory__headerActions}>
-                    <Button size="sm" variant="ghost" onClick={fetchHistory} title={t('refresh')} icon={<Icon name="refresh" size="1rem" />}>
-                        {t('refresh')}
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={handleDeleteConversation} title={t('delete_conversation')} icon={<Icon name="delete" size="1rem" />}>
-                    </Button>
-                </div>
-            </header>
+                    <div className={styles.WhatsappChatHistory__headerActions}>
+                        <Button size="sm" variant="ghost" onClick={fetchHistory} title={t('refresh')} icon={<Icon name="refresh" size="1rem" />}>
+                            {t('refresh')}
+                        </Button>
+                        <Button size="sm" variant="ghost" onClick={handleDeleteConversation} title={t('delete_conversation')} icon={<Icon name="delete" size="1rem" />}>
+                        </Button>
+                    </div>
+                </header>
+            )}
             
             <div className={`${styles.WhatsappChatHistory__messages}`}>
                 {loading && messages.length === 0 ? (

@@ -63,9 +63,9 @@ export const WhatsappInbox = ({
             
             <div className={styles.GlobalWhatsappMessenger__inbox}>
                 {loading && conversations.length === 0 ? (
-                    <div>{t('loading')}</div>
+                    <div className={styles.GlobalWhatsappMessenger__emptyInbox}>{t('loading')}</div>
                 ) : conversations.length === 0 ? (
-                    <div>{t('no_recent_chats')}</div>
+                    <div className={styles.GlobalWhatsappMessenger__emptyInbox}>{t('no_recent_chats')}</div>
                 ) : (
                     <ul className={`${styles.GlobalWhatsappMessenger__list} custom-scrollbar`}>
                          {conversations.map(conv => {

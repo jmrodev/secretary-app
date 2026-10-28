@@ -131,7 +131,7 @@
     border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
-    background: var(--white);
+    background: var(--dashboard-card-bg, #151d2a);
     transition: transform 0.3s ease;
 }
 
@@ -146,7 +146,7 @@
     transform: translateX(100%);
     display: flex;
     flex-direction: column;
-    background: var(--white);
+    background: var(--dashboard-card-bg, #151d2a);
     transition: transform 0.3s ease;
 }
 
@@ -162,7 +162,7 @@
 .GlobalWhatsappMessenger__sidebarHeader {
     padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--border-color);
-    background: var(--gray-50, #f9fafb);
+    background: var(--card-surface-bg, var(--dashboard-card-bg, #1e293b));
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -243,17 +243,39 @@
     gap: 10px;
     padding: 0.75rem 1rem;
     cursor: pointer;
-    border-bottom: 1px solid rgb(0 0 0 / 5%);
+    border-bottom: 1px solid var(--border-color, rgb(255 255 255 / 8%));
     transition: background-color 0.2s;
     position: relative;
 }
 
 .GlobalWhatsappMessenger__listItem:hover {
-    background-color: var(--gray-50);
+    background-color: var(--card-surface-bg, var(--gray-50));
 }
 
 .GlobalWhatsappMessenger__listItemActive {
-    background-color: #e7fce3;
+    background-color: rgb(37 211 102 / 15%);
+}
+
+.GlobalWhatsappMessenger__listItemButton {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+}
+
+.GlobalWhatsappMessenger__emptyInbox {
+    padding: 2.5rem 1rem;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
 }
 
 /* Unread Dot */
@@ -265,7 +287,7 @@
     height: 10px;
     background-color: #25D366;
     border-radius: 50%;
-    box-shadow: 0 0 0 2px white;
+    box-shadow: 0 0 0 2px var(--dashboard-card-bg, #151d2a);
 }
 
 .GlobalWhatsappMessenger__itemAvatar {
@@ -296,7 +318,7 @@
 
 .GlobalWhatsappMessenger__itemHeader strong {
     font-size: 0.95rem;
-    color: #1f2937;
+    color: var(--text-main);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -304,13 +326,13 @@
 
 .GlobalWhatsappMessenger__itemTime {
     font-size: 0.85rem;
-    color: #374151;
+    color: var(--text-muted);
 }
 
 .GlobalWhatsappMessenger__itemBody {
     margin: 0;
     font-size: 0.85rem;
-    color: #1f2937;
+    color: var(--text-muted);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -413,7 +435,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: #e5ddd5; /* Classic WA Background Color */
+    background: var(--card-surface-bg, var(--dashboard-card-bg, #151d2a));
 }
 
 /* Chat History Override */
@@ -436,8 +458,9 @@
 }
 
 .GlobalWhatsappMessenger__placeholderIcon {
-    color: #e0e0e0;
+    color: var(--text-muted, #94a3b8);
     margin-bottom: 1.5rem;
+    opacity: 0.6;
 }
 
 .GlobalWhatsappMessenger__placeholder h3 {
@@ -448,8 +471,8 @@
 /* Tab bar */
 .GlobalWhatsappMessenger__tabBar {
     display: flex;
-    border-bottom: 1px solid var(--border-color, #e0e0e0);
-    background: var(--gray-50, #f9fafb);
+    border-bottom: 1px solid var(--border-color, rgb(255 255 255 / 8%));
+    background: var(--card-surface-bg, var(--dashboard-card-bg, #1e293b));
     flex-shrink: 0;
 }
 
