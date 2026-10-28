@@ -1,5 +1,6 @@
 import React from 'react';
 import { Icon } from '@/components/atoms/Icon';
+import styles from '../organisms/GlobalWhatsappMessenger.module.css';
 
 /**
  * WhatsappChatPlaceholder Molecule.
@@ -7,8 +8,8 @@ import { Icon } from '@/components/atoms/Icon';
  */
 export const WhatsappChatPlaceholder = ({ t }) => {
     return (
-        <div className="global-wa-messenger__placeholder">
-            <div className="global-wa-messenger__placeholder-icon">
+        <div className={styles.GlobalWhatsappMessenger__placeholder}>
+            <div className={styles.GlobalWhatsappMessenger__placeholderIcon}>
                 <Icon name="whatsapp" size="4rem" />
             </div>
             <h3>{t('select_chat_title')}</h3>
