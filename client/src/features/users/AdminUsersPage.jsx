@@ -40,7 +40,8 @@ export const AdminUsersPage = () => {
     const renderSecretariesTab = () => (
         <section className={`${styles.AdminUsersPage__tableWrapper}`}>
             <UserManagement
-                excludeRoles={['patient']}
+                excludeRoles={['patient', 'doctor']}
+                defaultCreateRole="secretary"
             />
         </section>
     );

@@ -36,15 +36,18 @@ Toda la documentación detallada del proyecto se encuentra organizada dentro de 
 
 ## 📦 Inicio Rápido
 
-1.  **Instalar dependencias**:
+1.  **Setup e Instalación Inicial**:
     ```bash
-    pnpm install
+    pnpm run setup
     ```
-2.  **Configurar entorno**:
-    Copia `.env.example` a `.env` en la raíz y completa los valores.
-3.  **Ejecutar en desarrollo**:
-    *   Cliente Web: `pnpm --filter client dev`
-    *   Servidor: `pnpm --filter server start`
+    *Verifica herramientas, genera `.env`, levanta MariaDB con Docker, compila el WhatsApp Bridge, descarga el modelo de IA (`qwen2.5-coder:3b`) y te consulta si querés cargar datos de prueba (seeds) o dejar la instalación limpia.*
+
+    *Flags disponibles:*
+    * `pnpm run setup -- --seed` (carga automática de datos demo/seeds)
+    * `pnpm run setup -- --no-seed` (instalación limpia para producción)
+
+2.  **Ejecutar en desarrollo**:
+    *   Cliente Web + Servidor: `pnpm dev`
     *   App Móvil: `cd mobile && npm run dev` (o `npm run web`)
 
 ---

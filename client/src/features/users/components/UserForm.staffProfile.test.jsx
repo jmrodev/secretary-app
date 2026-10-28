@@ -30,4 +30,14 @@ describe('UserForm - staff profile fields (spec REQ-03)', () => {
         render(<UserForm {...baseProps} />);
         expect(screen.queryByText('full_name')).toBeNull();
     });
+
+    it('renders your_admin_password input for CREATE type', () => {
+        render(<UserForm {...baseProps} type="CREATE" />);
+        expect(screen.getByText('your_admin_password')).toBeTruthy();
+    });
+
+    it('renders your_admin_password input for DELETE type', () => {
+        render(<UserForm {...baseProps} type="DELETE" formData={{ username: 'testuser' }} />);
+        expect(screen.getByText('your_admin_password')).toBeTruthy();
+    });
 });

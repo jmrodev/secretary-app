@@ -141,7 +141,7 @@ class UserAccountService {
         try {
             await conn.beginTransaction();
 
-            const { username, password, role, fullName, dni, email, phone, specialty, phoneNumbers } = userData;
+            const { username, password, role, fullName, first_name, last_name, address, dni, email, phone, specialty, phoneNumbers } = userData;
 
             // 1. Create User
             const hash = await bcrypt.hash(password, 10);
@@ -149,9 +149,28 @@ class UserAccountService {
 
             let profileId;
             if (role === 'doctor') {
-                profileId = await doctorRepository.create({ user_id: userId, full_name: fullName, dni, specialty, phone }, conn);
+                profileId = await doctorRepository.create({
+                    user_id: userId,
+                    first_name,
+                    last_name,
+                    full_name: fullName,
+                    dni,
+                    specialty,
+                    phone,
+                    email,
+                    address
+                }, conn);
             } else if (role === 'secretary') {
-                profileId = await secretaryRepository.create({ user_id: userId, full_name: fullName, dni, phone }, conn);
+                profileId = await secretaryRepository.create({
+                    user_id: userId,
+                    first_name,
+                    last_name,
+                    full_name: fullName,
+                    dni,
+                    phone,
+                    email,
+                    address
+                }, conn);
             } else if (role === 'patient') {
                 const { street_name, street_number, floor, apartment, city = 'Tandil', province = 'Buenos Aires', country = 'Argentina' } = userData;
                 profileId = await patientRepository.create({
@@ -193,7 +212,7 @@ class UserAccountService {
         try {
             await conn.beginTransaction();
 
-            const { username, role, full_name, dni, phone, specialty, phoneNumbers } = userData;
+            const { username, role, full_name, first_name, last_name, address, dni, email, phone, specialty, phoneNumbers } = userData;
 
             // 1. Update User Record
             await userRepository.update(userId, { username, role }, conn);
@@ -204,11 +223,11 @@ class UserAccountService {
             if (role === 'doctor') {
                 const p = await doctorRepository.findByUserId(userId, conn);
                 profileId = p?.id;
-                if (profileId) await doctorRepository.updateById(profileId, { full_name, dni, phone, specialty }, conn);
+                if (profileId) await doctorRepository.updateById(profileId, { full_name, first_name, last_name, email, address, dni, phone, specialty }, conn);
             } else if (role === 'secretary') {
                 const p = await secretaryRepository.findByUserId(userId, conn);
                 profileId = p?.id;
-                if (profileId) await secretaryRepository.update(profileId, { full_name, dni, phone }, conn);
+                if (profileId) await secretaryRepository.update(profileId, { full_name, first_name, last_name, email, address, dni, phone }, conn);
             } else if (role === 'patient') {
                 const p = await patientRepository.findByUserId(userId, conn);
                 profileId = p?.id;
