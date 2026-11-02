@@ -67,7 +67,6 @@
     background-color: var(--card-surface-bg);
     color: var(--text-main);
     border: 1px solid var(--border-color);
-    border-left: 4px solid var(--primary-color);
     padding: 1rem;
     border-radius: var(--radius-sm, 4px);
     font-size: 0.9rem;
@@ -86,7 +85,7 @@
 }
 
 .DoctorFiscalWizard__statusBoxSuccess {
-    border-left: 4px solid var(--success);
+    border-left: 2px solid var(--success);
 }
 
 :global(.material-symbols-outlined) {
@@ -94,7 +93,7 @@
 }
 
 .DoctorFiscalWizard__statusBoxError {
-    border-left: 4px solid var(--danger);
+    border-left: 2px solid var(--danger);
 }
 
 .DoctorFiscalWizard__statusDetails {

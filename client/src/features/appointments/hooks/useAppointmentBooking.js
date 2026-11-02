@@ -36,7 +36,7 @@ export const useAppointmentBooking = (doctors) => {
     const [selectedPatient, setSelectedPatient] = useState('');
     const [selectedPatientData, setSelectedPatientData] = useState(null);
     const [date, setDate] = useState('');
-    const [reason, setReason] = useState(t('appointment_default_reason'));
+    const [reason, setReason] = useState(() => t('appointment_default_reason'));
     const [bonified, setBonified] = useState(false);
     const [type, setType] = useState('consultation');
     const [selectedInstitution, setSelectedInstitution] = useState('');
@@ -91,7 +91,7 @@ export const useAppointmentBooking = (doctors) => {
             price: formatCurrency(isVirtual ? (doctor?.virtual_consultation_price || 0) : (doctor?.consultation_price || 0)),
             secretary_name: user?.name || t('default_secretary_name')
         };
-    }, [selectedPatientData, date, doctors, selectedDoctor, type, settings.clinic_address, user?.name]);
+    }, [selectedPatientData, date, doctors, selectedDoctor, type, settings.clinic_address, user?.name, t]);
 
     const handleMetaSend = async (phone, context) => {
         const templateName = settings.meta_confirmation_template_name;
@@ -134,7 +134,7 @@ export const useAppointmentBooking = (doctors) => {
         setEditModeId(null);
         setIsOutOfHours(false);
         setBonified(false);
-    }, []);
+    }, [t]);
 
     const bookAppointment = async (onSuccess) => {
         if (isSubmitting) return;

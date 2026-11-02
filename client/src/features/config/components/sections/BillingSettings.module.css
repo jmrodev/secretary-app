@@ -18,12 +18,12 @@
 }
 
 .BillingSettings__statusSuccess {
-    border-left: 4px solid var(--success);
+    border-left: 2px solid var(--success);
     color: var(--text-main);
 }
 
 .BillingSettings__statusError {
-    border-left: 4px solid var(--error);
+    border-left: 2px solid var(--error);
     color: var(--text-main);
 }
 

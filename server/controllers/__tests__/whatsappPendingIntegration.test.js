@@ -59,12 +59,6 @@ const pendingBookingRepository = require('../../repositories/communication/pendi
 const whatsappService = require('../../services/communication/whatsappService');
 const bookingService = require('../../services/appointments/bookingService');
 const patientRepository = require('../../repositories/user/patientRepository');
-const doctorRepository = require('../../repositories/user/doctorRepository');
-const whatsappRepository = require('../../repositories/communication/whatsappRepository');
-const scheduleRepository = require('../../repositories/appointments/scheduleRepository');
-const holidayRepository = require('../../repositories/appointments/holidayRepository');
-const availabilitySearchService = require('../../services/appointments/availabilitySearchService');
-const { pool } = require('../../db');
 
 const seedPending = {
     id: 4,

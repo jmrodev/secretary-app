@@ -18,12 +18,14 @@ import { ScheduleTimeBlock } from '@/features/appointments/components/schedule/S
 import { UserForm } from '@/features/users/components/UserForm';
 import { MessageTemplateEditor } from '@/features/config/components/forms/MessageTemplateEditor';
 
+const EMPTY_SETTINGS = {};
+
 /**
  * BillingSettings Feature Component.
  * Handles AFIP (Argentine Tax Authority) global environment configuration,
  * server connection status verification, and doctor fiscal status matrix.
  */
-export const BillingSettings = ({ user, settings = {}, updateSetting }) => {
+export const BillingSettings = ({ user, settings = EMPTY_SETTINGS, updateSetting }) => {
     const { showMessage } = useMessage();
     const { t } = useLanguage();
     const [status, setStatus] = useState(null);

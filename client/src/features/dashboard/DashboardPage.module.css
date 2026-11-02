@@ -1,167 +1,230 @@
-/* Dashboard Glassmorphism Bento Grid */
+/* Dashboard Page - Executive Clinical (Impeccable Operate Mode) */
 
-
-
-.DashboardPage__bentoGrid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    grid-auto-rows: minmax(90px, auto);
-    gap: 1rem; /* Compact gaps to fit everything on screen */
-    padding: 0.5rem 0;
+.DashboardPage__container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
     width: 100%;
+    min-height: 0;
 }
 
-.DashboardPage__bentoCard {
-    position: relative;
+/* --- 1. Operational Summary Strip (Single coherent horizon) --- */
+.DashboardPage__summaryStrip {
+    display: flex;
+    align-items: stretch;
     background: var(--dashboard-card-bg);
     border: 1px solid var(--dashboard-card-border);
-    border-radius: 8px; /* Strict 8px radius */
-    padding: 1rem;
-    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.03); /* Soft subtle shadow */
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    min-width: 0;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    gap: var(--spacing-lg);
+    overflow-x: auto;
 }
 
-.DashboardPage__cashMonitorCard {
-    grid-column: span 2;
-    order: 1;
-}
-
-.DashboardPage__statsOverviewCard {
-    grid-column: span 2;
-    order: 2;
-}
-
-.DashboardPage__patientGrowthCard {
-    grid-column: span 2;
-    order: 3;
-}
-
-.DashboardPage__mainContentCard {
-    grid-column: 1 / span 5;
-    order: 4;
-}
-
-.DashboardPage__mainContentCard > div {
-    min-height: 260px;
-    min-width: 0;
-    width: 100%;
-}
-
-.DashboardPage__remindersCard {
-    grid-column: span 4;
-    order: 5;
-}
-
-.DashboardPage__reportsCard {
-    grid-column: span 3;
-    order: 6;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: var(--spacing-sm);
-}
-
-.DashboardPage__reportsCard .DashboardPage__bentoHeader {
-    margin-bottom: 0;
-    flex-shrink: 0;
-}
-
-.DashboardPage__reportsText {
-    flex: 1;
-    margin: 0;
-    color: var(--text-secondary);
-    font-size: 0.875rem;
-}
-
-.DashboardPage__reportsButton {
-    flex-shrink: 0;
-}
-
-.DashboardPage__bentoHeader {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.7rem; /* Refined small label typography */
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.DashboardPage__bentoHeaderIcon {
-    color: var(--primary-color);
-    flex-shrink: 0;
-}
-
-.DashboardPage__bentoHeaderIconPurple {
-    color: var(--primary-color); /* Uniform accent color under sage green */
-    flex-shrink: 0;
-}
-
-.DashboardPage__statsRow {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xs);
-    flex: 1;
-    min-width: 0;
-}
-
-.DashboardPage__statItem {
-    flex: 1;
+.DashboardPage__stripSection {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    min-width: 0;
+    gap: var(--spacing-xs);
+    flex: 1;
+    min-width: 180px;
 }
 
-.DashboardPage__statValue {
-    font-size: 1.25rem;
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 0.15rem;
+.DashboardPage__stripDivider {
+    width: 1px;
+    background: var(--border-color);
+    align-self: stretch;
+    flex-shrink: 0;
+}
+
+.DashboardPage__stripHeader {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-xs);
+}
+
+.DashboardPage__stripTitle {
+    font-family: var(--font-manrope);
+    font-size: var(--font-size-base, 1rem);
+    font-weight: 700;
     color: var(--text-main);
+    letter-spacing: -0.01em;
 }
 
-.DashboardPage__statValuePurple {
-    font-size: 1.25rem;
-    font-weight: 800;
-    line-height: 1;
-    margin-bottom: 0.15rem;
-    color: var(--text-main);
-}
-
-.DashboardPage__statValue--today {
-    font-size: 1.25rem;
-}
-
-.DashboardPage__statValue--year {
-    font-size: 1.15rem;
-}
-
-.DashboardPage__statLabel {
-    font-size: 0.7rem;
-    font-weight: 600;
+.DashboardPage__stripSubtitle {
+    font-size: var(--font-size-xs, 0.75rem);
     color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
-@media (width <= 1024px) {
-    .DashboardPage__bentoGrid { grid-template-columns: 1fr; }
+.DashboardPage__metricRow {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--spacing-md);
+    margin-top: 2px;
+}
 
-    .DashboardPage__cashMonitorCard, .DashboardPage__statsOverviewCard, .DashboardPage__patientGrowthCard, .DashboardPage__mainContentCard, .DashboardPage__remindersCard, .DashboardPage__reportsCard {
-        grid-column: span 12;
+.DashboardPage__metricItem {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.DashboardPage__metricValue {
+    font-family: var(--font-manrope);
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text-main);
+}
+
+.DashboardPage__metricValueSecondary {
+    font-family: var(--font-manrope);
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-secondary);
+}
+
+.DashboardPage__metricValuePill {
+    font-family: var(--font-manrope);
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--success);
+}
+
+.DashboardPage__metricCaption {
+    font-size: var(--font-size-xs, 0.75rem);
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Custom integrated cash monitor presentation */
+.DashboardPage__cashMonitorStrip {
+    border: none;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+}
+
+/* Reports shortcut inside strip */
+.DashboardPage__reportsStrip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    flex: 1.2;
+    min-width: 240px;
+}
+
+.DashboardPage__reportsInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.DashboardPage__reportsText {
+    margin: 0;
+    font-size: var(--font-size-xs, 0.75rem);
+    color: var(--text-muted);
+    line-height: 1.3;
+}
+
+/* --- 2. Main Workstation Grid --- */
+.DashboardPage__workspaceGrid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: var(--spacing-lg);
+    align-items: start;
+    width: 100%;
+}
+
+.DashboardPage__workspacePrimary,
+.DashboardPage__workspaceSecondary {
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--dashboard-card-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.DashboardPage__surfaceHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-bottom: 1px solid var(--dashboard-card-border);
+    background: var(--card-surface-bg);
+}
+
+.DashboardPage__surfaceTitle {
+    margin: 0;
+    font-family: var(--font-manrope);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+}
+
+.DashboardPage__surfaceSubtitle {
+    margin: 2px 0 0;
+    font-size: var(--font-size-xs, 0.75rem);
+    color: var(--text-muted);
+}
+
+.DashboardPage__surfaceBody {
+    padding: var(--spacing-md);
+    min-height: 380px;
+}
+
+/* --- Error Banner --- */
+.DashboardPage__errorBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--dashboard-card-bg);
+    border: 1px solid var(--danger);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.DashboardPage__errorContent {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.DashboardPage__errorIcon {
+    color: var(--danger);
+    font-size: 1.5rem;
+}
+
+.DashboardPage__errorTitle {
+    margin: 0;
+    font-size: var(--font-size-base, 1rem);
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.DashboardPage__errorText {
+    margin: 2px 0 0;
+    font-size: var(--font-size-sm, 0.85rem);
+    color: var(--text-muted);
+}
+
+/* Responsive Breakpoints */
+@media (width <= 1200px) {
+    .DashboardPage__workspaceGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .DashboardPage__summaryStrip {
+        flex-wrap: wrap;
+    }
+
+    .DashboardPage__stripDivider {
+        display: none;
     }
 }

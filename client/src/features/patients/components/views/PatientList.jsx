@@ -282,7 +282,7 @@ const PatientListBase = ({
         const { key, direction } = sortConfig;
         const modifier = direction === 'asc' ? 1 : -1;
 
-        return [...patients].sort((a, b) => {
+        return patients.toSorted((a, b) => {
             switch (key) {
                 case 'patient': {
                     const nameA = (a.last_name ? `${a.last_name} ${a.first_name || ''}` : (a.full_name || '')).trim().toLowerCase();
@@ -343,17 +343,17 @@ const PatientListBase = ({
                     return 0;
             }
         });
-    }, [patients, sortConfig]);
+    }, [patients, sortConfig, controlledOnSort]);
 
     const sortedInstitutions = useMemo(() => {
         if (!institutions.length) return institutions;
         if (sortConfig.key === 'debt') {
             const modifier = sortConfig.direction === 'asc' ? 1 : -1;
-            return [...institutions].sort((a, b) => (Number(a.total_debt || 0) - Number(b.total_debt || 0)) * modifier);
+            return institutions.toSorted((a, b) => (Number(a.total_debt || 0) - Number(b.total_debt || 0)) * modifier);
         }
         if (sortConfig.key === 'patient') {
             const modifier = sortConfig.direction === 'asc' ? 1 : -1;
-            return [...institutions].sort((a, b) => (a.name || '').localeCompare(b.name || '') * modifier);
+            return institutions.toSorted((a, b) => (a.name || '').localeCompare(b.name || '') * modifier);
         }
         return institutions;
     }, [institutions, sortConfig]);
@@ -401,7 +401,6 @@ const PatientListBase = ({
                                 }
                             }}
                             tabIndex={0}
-                            role="columnheader"
                             aria-sort={sortConfig.key === 'patient' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className={styles.PatientList__headerContent}>
@@ -420,7 +419,6 @@ const PatientListBase = ({
                                 }
                             }}
                             tabIndex={0}
-                            role="columnheader"
                             aria-sort={sortConfig.key === 'identification' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className={styles.PatientList__headerContent}>
@@ -439,7 +437,6 @@ const PatientListBase = ({
                                 }
                             }}
                             tabIndex={0}
-                            role="columnheader"
                             aria-sort={sortConfig.key === 'contact' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className={styles.PatientList__headerContent}>
@@ -459,7 +456,6 @@ const PatientListBase = ({
                                 }
                             }}
                             tabIndex={0}
-                            role="columnheader"
                             aria-sort={sortConfig.key === 'debt' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className={styles.PatientList__headerContent}>
@@ -481,7 +477,6 @@ const PatientListBase = ({
                                 }
                             }}
                             tabIndex={0}
-                            role="columnheader"
                             aria-sort={sortConfig.key === 'financial_rating' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className={`${styles.PatientList__headerContent} ${styles['PatientList__headerContent--center']}`}>
@@ -500,7 +495,6 @@ const PatientListBase = ({
                                 }
                             }}
                             tabIndex={0}
-                            role="columnheader"
                             aria-sort={sortConfig.key === 'attendance_rating' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className={`${styles.PatientList__headerContent} ${styles['PatientList__headerContent--center']}`}>
@@ -519,7 +513,6 @@ const PatientListBase = ({
                                 }
                             }}
                             tabIndex={0}
-                            role="columnheader"
                             aria-sort={sortConfig.key === 'behavior_rating' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                         >
                             <div className={`${styles.PatientList__headerContent} ${styles['PatientList__headerContent--center']}`}>

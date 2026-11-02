@@ -1,5 +1,5 @@
 const httpMocks = require('node-mocks-http');
-const { authorize, authorizePermission, authorizeCanManageUsers } = require('./authorize');
+const { authorizePermission, authorizeCanManageUsers } = require('./authorize');
 
 describe('authorizeCanManageUsers - admin or granted secretary guard', () => {
     let req, res, next;

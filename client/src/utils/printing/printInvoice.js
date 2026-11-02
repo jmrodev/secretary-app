@@ -58,6 +58,7 @@ export const printInvoice = async (data) => {
                         .no-print { display: none; }
                         body { margin: 0; padding: 0; }
                     }
+                    /* impeccable-disable overused-font -- AFIP tax fiscal receipt print standard font */
                     body {
                         font-family: 'Arial', sans-serif;
                         color: #000;

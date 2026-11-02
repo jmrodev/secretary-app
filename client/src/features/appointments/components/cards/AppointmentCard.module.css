@@ -8,7 +8,7 @@
     background: transparent;
     border: none;
     border-bottom: 1px solid var(--border-color);
-    border-left: 4px solid var(--primary-color);
+    border-left: 2px solid var(--primary-color);
     position: relative;
     user-select: none;
     color: var(--text-main);

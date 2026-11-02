@@ -199,7 +199,7 @@ class ModificationService {
         }
     }
 
-    async updatePaymentStatus(id, paymentStatus, userId) {
+    async updatePaymentStatus(id, paymentStatus, _userId) {
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();

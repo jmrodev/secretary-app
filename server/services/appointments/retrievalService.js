@@ -33,16 +33,6 @@ const mapAppointment = (a) => ({
     paid_at: a.paid_at
 });
 
-/**
- * Specialized mapper for daily schedule slots
- */
-const mapSlot = (s) => ({
-    ...mapAppointment(s),
-    slot_date: s.slot_date,
-    slot_time: s.slot_time,
-    slot_status: s.slot_status
-});
-
 class RetrievalService {
     async getAppointments(user, query) {
         const { role, user_id } = user;

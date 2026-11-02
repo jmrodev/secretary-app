@@ -24,6 +24,9 @@ importers:
       vite:
         specifier: ^8.0.16
         version: 8.2.2(@types/node@26.4.1)(esbuild@0.28.1)(jiti@2.7.0)(yaml@2.9.0)
+      wikipoke:
+        specifier: ^0.4.1
+        version: 0.4.1
       wrangler:
         specifier: ^4.128.0
         version: 4.128.0
@@ -1121,6 +1124,7 @@ packages:
   '@opentelemetry/sdk-trace-base@2.10.0':
     resolution: {integrity: sha512-GuYQQT7QD2EeO8lcZLRQzcbOyhqAzL+6WWTKTU9mSUBYBazkEDl+VrQcXQhbB08OWM9anD1aHleVadzulpOaUQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
+    deprecated: Use @opentelemetry/sdk-trace package
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
@@ -5222,6 +5226,11 @@ packages:
   why-is-node-running@2.3.0:
     resolution: {integrity: sha512-hUrmaWBdVDcxvYqnyh09zunKzROWjbZTiNy8dBEjkS7ehEDQibXJ7XvlmtbwuTclUiIyN+CyXQD4Vmko8fNm8w==}
     engines: {node: '>=8'}
+    hasBin: true
+
+  wikipoke@0.4.1:
+    resolution: {integrity: sha512-08gl5QUT8ufCxYQh2yyHjLkGURE39UBr3BeC/Kv0Sjnfy0ByuxIwaZUBV0BNljcIeJ4DyTBxtLbCSH9kJfgmuA==}
+    engines: {node: '>=22.18'}
     hasBin: true
 
   word-wrap@1.2.5:
@@ -10682,6 +10691,8 @@ snapshots:
     dependencies:
       siginfo: 2.0.0
       stackback: 0.0.2
+
+  wikipoke@0.4.1: {}
 
   word-wrap@1.2.5: {}
 

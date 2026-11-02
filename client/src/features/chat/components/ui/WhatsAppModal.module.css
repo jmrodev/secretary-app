@@ -26,21 +26,21 @@
 }
 
 .WhatsAppModal__info {
-    padding: 1rem;
-    background-color: rgb(34 197 94 / 10%);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgb(34 197 94 / 20%);
-    box-shadow: 0 8px 32px 0 var(--modal-bg-dark);
+    padding: var(--spacing-md);
+    background-color: var(--card-surface-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
     border-radius: var(--radius-sm);
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--spacing-md);
 }
 
 .WhatsAppModal__icon {
     width: 2.5rem;
     height: 2.5rem;
-    background: rgb(34 197 94 / 20%);
+    background: var(--row-hover-bg);
+    color: var(--success);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -49,15 +49,15 @@
 }
 
 .WhatsAppModal__recipient {
-    font-size: 0.875rem;
-    color: #22c55e;
+    font-size: var(--font-size-sm, 0.85rem);
+    color: var(--success);
     font-weight: 800;
     margin: 0;
 }
 
 .WhatsAppModal__help {
-    font-size: 0.7rem;
-    color: var(--green-700);
+    font-size: var(--font-size-xs, 0.75rem);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.03em;
     font-weight: 500;

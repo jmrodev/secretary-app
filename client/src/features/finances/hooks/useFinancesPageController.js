@@ -87,7 +87,10 @@ export const useFinancesPageController = ({ itemsPerPage = 14 } = {}) => {
     const txData = txResponse?.data || {};
     const transactions = txData.transactions || [];
     const totalCount = txData.totalCount || 0;
-    const stats = statsResponse?.data?.stats || statsResponse?.data || [];
+    const stats = useMemo(
+        () => statsResponse?.data?.stats || statsResponse?.data || [],
+        [statsResponse]
+    );
     const totalDebt = statsResponse?.data?.totalDebt || 0;
     const rentalDebt = statsResponse?.data?.rentalDebt || 0;
     const pendingClosures = closuresResponse?.data || [];

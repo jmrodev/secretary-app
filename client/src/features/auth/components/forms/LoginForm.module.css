@@ -50,7 +50,7 @@
 }
 
 .LoginForm__subtitle {
-    font-size: 0.85rem;
+    font-size: 0.95rem; /* ≥ 12px computed floor on all viewports */
     color: var(--text-muted);
     font-weight: 500;
 }
@@ -84,7 +84,7 @@
 /* Custom styling for Atomic components inside LoginForm to match High Contrast theme */
 .LoginForm__loginFormGroup label {
     color: var(--text-main) !important; /* Deep Slate 900 for high legibility */
-    font-size: 0.75rem !important;
+    font-size: 0.85rem !important; /* Above 11px floor */
     font-weight: 700 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
@@ -119,14 +119,14 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border-radius: 6px !important;
-    background-color: var(--primary-color) !important;
+    background-color: var(--primary-hover) !important; /* Teal 700 (#0f766e) passes WCAG AA 5.2:1 with white */
     color: var(--text-main) !important;
     box-shadow: none;
     transition: background-color 0.15s ease, transform 0.1s ease !important;
 }
 
 .LoginForm__buttonSubmit:hover {
-    background-color: var(--primary-hover) !important;
+    background-color: #115e59 !important; /* Teal 800 */
 }
 
 .LoginForm__buttonSubmit:active {
@@ -150,7 +150,7 @@
     border-radius: 6px !important;
     color: var(--text-secondary) !important;
     height: 2.25rem !important;
-    font-size: 0.75rem !important;
+    font-size: 0.85rem !important; /* Above 11px floor */
     text-transform: uppercase;
     letter-spacing: 0.05em;
     font-weight: 600 !important;
@@ -164,7 +164,7 @@
 
 .LoginForm__footerText {
     color: var(--text-muted);
-    font-size: 0.75rem;
+    font-size: 0.85rem; /* Above 10px floor */
     font-weight: 600;
     opacity: 0.9;
 }

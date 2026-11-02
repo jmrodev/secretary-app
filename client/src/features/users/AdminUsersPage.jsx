@@ -24,6 +24,15 @@ import { resolveTab } from './utils/tabs';
  * split into two tabs: secretaries and doctors.
  * Guarded at route level: admin or secretary with can_manage_users.
  */
+const renderSecretariesTab = () => (
+    <section className={`${styles.AdminUsersPage__tableWrapper}`}>
+        <UserManagement
+            excludeRoles={['patient', 'doctor']}
+            defaultCreateRole="secretary"
+        />
+    </section>
+);
+
 export const AdminUsersPage = () => {
     const { t } = useLanguage();
     const [searchParams, setSearchParams] = useSearchParams();
@@ -36,15 +45,6 @@ export const AdminUsersPage = () => {
         next.set('subtab', tab);
         setSearchParams(next, { replace: true });
     };
-
-    const renderSecretariesTab = () => (
-        <section className={`${styles.AdminUsersPage__tableWrapper}`}>
-            <UserManagement
-                excludeRoles={['patient', 'doctor']}
-                defaultCreateRole="secretary"
-            />
-        </section>
-    );
 
     const renderDoctorsTab = () => (
         <DoctorsManager

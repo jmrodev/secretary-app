@@ -6,7 +6,6 @@ const medicalRequestRepository = require('../../repositories/medical/medicalRequ
 const patientRepository = require('../../repositories/user/patientRepository');
 const medicationRepository = require('../../repositories/medical/medicationRepository');
 const doctorRepository = require('../../repositories/user/doctorRepository');
-const systemSettingsRepository = require('../../repositories/system/systemSettingsRepository');
 const financeService = require('../finance/financeService');
 const debtLifecycleService = require('../finance/debtLifecycleService');
 const { ROLES } = require('../../constants/roles');
@@ -151,7 +150,7 @@ class MedicalRequestService {
         const conn = await pool.getConnection();
         try {
             const { status, doctor_note, secretary_note } = statusData;
-            const { role, user_id } = req.user;
+            const { role: _role, user_id } = req.user;
             const reqInfo = await medicalRequestRepository.findById(id, conn);
             if (!reqInfo) throw new Error("Request not found");
 

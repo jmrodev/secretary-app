@@ -134,7 +134,7 @@
     text-align: right;
     font-weight: 700;
     border-radius: var(--radius-sm, 6px);
-    border-left: 4px solid #dc2626;
+    border: 1px solid #fecaca;
     display: flex;
     justify-content: space-between;
     align-items: center;

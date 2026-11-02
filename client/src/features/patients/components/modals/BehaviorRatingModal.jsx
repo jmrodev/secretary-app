@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import styles from './BehaviorRatingModal.module.css';
 
 /**
- * BehaviorRatingModal (Molecule).
- * Allows staff to edit patient behavior rating (1-5 stars) and enter an explanatory note.
+ * BehaviorRatingDialogContent (Molecule).
+ * Encapsulates the form state cleanly per patient instance without prop-syncing effects.
  */
-export const BehaviorRatingModal = ({
-    isOpen,
+const BehaviorRatingDialogContent = ({
     patient,
     onClose,
     onSave,
@@ -20,23 +19,11 @@ export const BehaviorRatingModal = ({
     const derivedRating = Math.round((fin + att) / 2);
     const isCurrentlyManual = Boolean(patient?.behavior_rating_note && patient.behavior_rating_note.trim());
 
-    const [rating, setRating] = useState(5);
+    const [rating, setRating] = useState(() => Number(patient?.behavior_rating) || derivedRating);
     const [hoverRating, setHoverRating] = useState(0);
-    const [note, setNote] = useState('');
+    const [note, setNote] = useState(() => patient?.behavior_rating_note || '');
     const [validationError, setValidationError] = useState('');
     const [submitting, setSubmitting] = useState(false);
-
-    useEffect(() => {
-        if (isOpen && patient) {
-            setRating(Number(patient.behavior_rating) || derivedRating);
-            setNote(patient.behavior_rating_note || '');
-            setHoverRating(0);
-            setValidationError('');
-            setSubmitting(false);
-        }
-    }, [isOpen, patient, derivedRating]);
-
-    if (!isOpen || !patient) return null;
 
     const activeRating = hoverRating || rating;
 
@@ -72,7 +59,7 @@ export const BehaviorRatingModal = ({
 
     return (
         <Modal
-            isOpen={isOpen}
+            isOpen={true}
             onClose={onClose}
             title={t('edit_behavior_rating')}
             footer={
@@ -196,5 +183,29 @@ export const BehaviorRatingModal = ({
                 </div>
             </div>
         </Modal>
+    );
+};
+
+/**
+ * BehaviorRatingModal (Molecule).
+ * Allows staff to edit patient behavior rating (1-5 stars) and enter an explanatory note.
+ */
+export const BehaviorRatingModal = ({
+    isOpen,
+    patient,
+    onClose,
+    onSave,
+    t
+}) => {
+    if (!isOpen || !patient) return null;
+
+    return (
+        <BehaviorRatingDialogContent
+            key={patient.id}
+            patient={patient}
+            onClose={onClose}
+            onSave={onSave}
+            t={t}
+        />
     );
 };

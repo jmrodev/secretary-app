@@ -74,7 +74,7 @@
     left: 0;
     top: 0;
     bottom: 0;
-    width: 4px;
+    width: 2px;
     background-color: var(--accent-blue);
     opacity: 0;
     transition: opacity 0.2s;

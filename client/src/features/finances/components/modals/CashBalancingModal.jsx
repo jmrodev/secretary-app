@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Input } from '@/components/atoms/Input';
@@ -7,34 +7,23 @@ import { FormGroup } from '@/components/molecules/FormGroup';
 import styles from './CashBalancingModal.module.css';
 
 /**
- * CashBalancingModal Molecule.
- * Handles the actual balancing (Arqueo) of a specific day or today's cash.
+ * CashBalancingDialogContent Molecule.
+ * Internal form body cleanly initialized per active day balancing instance.
  */
-const CashBalancingModalBase = ({ 
-    isOpen, 
-    onClose, 
-    day, 
-    onConfirm, 
-    doctors = [], 
+const CashBalancingDialogContent = ({
+    onClose,
+    day,
+    onConfirm,
+    doctors = [],
     onSelectDoctor,
-    t 
+    t
 }) => {
-    const [selectedDoctorId, setSelectedDoctorId] = useState(day?.doctor_id || '');
-    const [physicalBalance, setPhysicalBalance] = useState('');
+    const [selectedDoctorId, setSelectedDoctorId] = useState(() => day?.doctor_id || '');
+    const theoretical = Number(day?.balance || 0);
+    const [physicalBalance, setPhysicalBalance] = useState(() => (theoretical > 0 ? String(theoretical) : ''));
     const [notes, setNotes] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Initial sync
-    useEffect(() => {
-        if (day) {
-            setSelectedDoctorId(day.doctor_id || '');
-            const initialTheoretical = Number(day.balance || 0);
-            setPhysicalBalance(initialTheoretical > 0 ? String(initialTheoretical) : '');
-            setNotes('');
-        }
-    }, [day]);
-
-    const theoretical = Number(day?.balance || 0);
     const actual = physicalBalance === '' ? 0 : Number(physicalBalance);
     const difference = actual - theoretical;
 
@@ -58,7 +47,8 @@ const CashBalancingModalBase = ({
                 balancing_date: day?.date,
                 theoretical_balance: theoretical,
                 physical_balance: actual,
-                notes
+                difference,
+                notes: notes.trim()
             });
             onClose();
         } catch (err) {
@@ -68,46 +58,35 @@ const CashBalancingModalBase = ({
         }
     };
 
-    const differenceText = difference > 0
-        ? `+$${difference.toLocaleString()}`
-        : (difference < 0 ? `-$${Math.abs(difference).toLocaleString()}` : `$0`);
-
-    const modalTitle = day?.isToday 
-        ? `${t('today_cash_balancing') || 'Arqueo de Hoy'} (${day?.date})`
-        : t('balancing_title', { date: day?.date });
-
     return (
         <Modal
-            isOpen={isOpen}
+            isOpen={true}
             onClose={onClose}
-            title={modalTitle}
-            size="md"
+            title={`${t('cash_balancing_title') || 'Arqueo de Caja'}: ${day?.date}`}
+            size="medium"
             footer={
                 <div className={styles.CashBalancingModal__footer}>
-                    <Button variant="secondary" onClick={onClose}>{t('cancel')}</Button>
-                    <Button 
-                        variant="primary" 
-                        onClick={handleConfirm} 
-                        disabled={loading || physicalBalance === ''}
-                        icon={<Icon name="check" />}
-                    >
-                        {loading ? t('processing') : t('confirm_and_close')}
+                    <Button variant="secondary" onClick={onClose} disabled={loading}>
+                        {t('cancel')}
+                    </Button>
+                    <Button variant="primary" onClick={handleConfirm} disabled={loading || physicalBalance === ''}>
+                        {loading ? t('processing') : (t('confirm_balancing') || 'Confirmar Arqueo')}
                     </Button>
                 </div>
             }
         >
             <div className={`${styles.CashBalancingModal__body} animate-fade-in`}>
                 {day?.isToday && doctors.length > 0 && (
-                    <FormGroup label={t('select_doctor_for_balancing') || 'Seleccionar profesional:'}>
-                        <select 
-                            className={styles.CashBalancingModal__select}
+                    <FormGroup label={t('filter_by_doctor')}>
+                        <select
                             value={selectedDoctorId}
                             onChange={handleDoctorChange}
+                            className={styles.CashBalancingModal__select}
                         >
-                            <option value="">{t('all_doctors') || 'Todos / Clínica General'}</option>
-                            {doctors.map(doc => (
-                                <option key={doc.id} value={doc.id}>
-                                    {doc.full_name}
+                            <option value="">{t('all_doctors_general') || 'General (Todos los Médicos)'}</option>
+                            {doctors.map(d => (
+                                <option key={d.id} value={d.id}>
+                                    {d.full_name}
                                 </option>
                             ))}
                         </select>
@@ -117,26 +96,28 @@ const CashBalancingModalBase = ({
                 <div className={styles.CashBalancingModal__statsGrid}>
                     <div className={styles.CashBalancingModal__statItem}>
                         <div className={styles.CashBalancingModal__statValue}>
-                            ${theoretical.toLocaleString()}
+                            ${theoretical.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                         </div>
                         <div className={styles.CashBalancingModal__statLabel}>
-                            {t('theoretical_balance')} (Sistema)
+                            {t('theoretical_balance') || 'Saldo del Sistema'}
                         </div>
                     </div>
+
                     <div className={`${styles.CashBalancingModal__statItem} ${difference < 0 ? styles.CashBalancingModal__statItemNegative : (difference > 0 ? styles.CashBalancingModal__statItemPositive : '')}`}>
                         <div className={`${styles.CashBalancingModal__statValue} ${difference < 0 ? styles.CashBalancingModal__diffNegative : (difference > 0 ? styles.CashBalancingModal__diffPositive : '')}`}>
-                            {differenceText}
+                            {difference > 0 ? '+' : ''}${difference.toLocaleString('es-AR', { minimumFractionDigits: 2 })}
                         </div>
                         <div className={styles.CashBalancingModal__statLabel}>
-                            {t('difference_label')} {difference > 0 ? '(Sobrante)' : (difference < 0 ? '(Faltante)' : '(Exacto)')}
+                            {difference === 0 ? (t('exact_balance') || 'Cuadre Exacto') : (t('difference') || 'Diferencia')}
                         </div>
                     </div>
                 </div>
 
-                <FormGroup label={t('physical_cash')}>
+                <FormGroup label={t('physical_cash_count') || 'Monto Físico Recontado en Caja'}>
                     <div className={styles.CashBalancingModal__inputWithAction}>
                         <Input
                             type="number"
+                            step="0.01"
                             value={physicalBalance}
                             onChange={e => setPhysicalBalance(e.target.value)}
                             placeholder={t('physical_cash_placeholder') || '0.00'}
@@ -166,6 +147,36 @@ const CashBalancingModalBase = ({
                 </FormGroup>
             </div>
         </Modal>
+    );
+};
+
+/**
+ * CashBalancingModal Molecule.
+ * Handles the actual balancing (Arqueo) of a specific day or today's cash.
+ */
+const CashBalancingModalBase = ({ 
+    isOpen, 
+    onClose, 
+    day, 
+    onConfirm, 
+    doctors = [], 
+    onSelectDoctor, 
+    t 
+}) => {
+    if (!isOpen || !day) return null;
+
+    const key = `${day.date || 'today'}-${day.doctor_id || 'all'}`;
+
+    return (
+        <CashBalancingDialogContent
+            key={key}
+            onClose={onClose}
+            day={day}
+            onConfirm={onConfirm}
+            doctors={doctors}
+            onSelectDoctor={onSelectDoctor}
+            t={t}
+        />
     );
 };
 

@@ -136,12 +136,15 @@ export const DoctorScheduleSettings = ({
 
             <div className={`${styles.DoctorScheduleSettings__days}`}>
                 {DAYS.map(day => {
-                    const dayBlocks = (Array.isArray(schedule) ? schedule : [])
-                        .filter(s => Number(s.day_of_week) === Number(day.id))
-                        .map((s, idx) => ({
-                            ...s,
-                            _key: s._key || (s.id ? `sched-${s.id}` : `sched-dyn-${day.id}-${idx}`)
-                        }));
+                    const dayBlocks = (Array.isArray(schedule) ? schedule : []).reduce((acc, s, idx) => {
+                        if (Number(s.day_of_week) === Number(day.id)) {
+                            acc.push({
+                                ...s,
+                                _key: s._key || (s.id ? `sched-${s.id}` : `sched-dyn-${day.id}-${idx}`)
+                            });
+                        }
+                        return acc;
+                    }, []);
 
                     if (focusedKey === null) {
                         dayBlocks.sort((a, b) => {

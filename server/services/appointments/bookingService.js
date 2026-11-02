@@ -4,10 +4,11 @@ const appointmentEvents = require('../../events/appointmentEvents');
 const { pool } = require('../../db');
 const { ConflictError, NotFoundError } = require('../../utils/core/errors');
 const { formatLocalSQL } = require('../../utils/core/dateUtils');
+const logger = require('../../utils/core/logger');
 
 class BookingService {
     async createAppointment(userId, role, data) {
-        console.log("[BookingService] Incoming Data:", JSON.stringify(data, null, 2));
+        logger.debug("[BookingService] Incoming Data:", JSON.stringify(data, null, 2));
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();

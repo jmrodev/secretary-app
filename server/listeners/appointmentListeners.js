@@ -32,7 +32,7 @@ eventBus.on(EVENTS.APPOINTMENT_CANCELLED, async ({ id, status, userId }) => {
     } catch (e) { console.warn("[Listeners] Google Sync Status Update Failed", e.message); }
 });
 
-eventBus.on(EVENTS.APPOINTMENT_COMPLETED, async ({ id, status, userId }) => {
+eventBus.on(EVENTS.APPOINTMENT_COMPLETED, async ({ id, status: _status, userId }) => {
     try {
         const appt = await appointmentRepository.findById(id);
         if (!appt?.google_event_id) return;

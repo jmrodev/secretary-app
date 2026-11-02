@@ -125,7 +125,8 @@ app.use('/api/schedules', require('./routes/appointments/scheduleRoutes'));
 app.use('/api/billing', require('./routes/finance/billingRoutes'));
 app.use('/uploads', express.static('uploads'));
 
-
+// Centralized Global Error Handler (Linus Torvalds Architectural Invariant)
+app.use(require('./utils/core/errorHandler'));
 
 // Start server
 const server = app.listen(PORT, '0.0.0.0', async () => {

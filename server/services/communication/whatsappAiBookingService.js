@@ -183,7 +183,7 @@ function extractToolCalls(responseMessage) {
 /**
  * Processes an inbound patient message. Non-blocking and failsafe.
  */
-async function processInboundMessage({ sender, message, patientId, phone }) {
+async function processInboundMessage({ sender: _sender, message, patientId, phone }) {
     if (!patientId || !message || typeof message !== 'string') {
         return null;
     }
