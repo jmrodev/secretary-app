@@ -4,7 +4,6 @@ import { Modal } from '@/components/molecules/Modal';
 import { Button } from '@/components/atoms/Button';
 import { Icon } from '@/components/atoms/Icon';
 import { Input } from '@/components/atoms/Input';
-import { Checkbox } from '@/components/atoms/Checkbox';
 import { FormGroup } from '@/components/molecules/FormGroup';
 import { PrescriptionItemsList } from '@/features/medical_documents/components/lists/PrescriptionItemsList';
 import styles from './EditRequestModal.module.css';

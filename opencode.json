@@ -71,5 +71,12 @@
         "edit": "allow"
       }
     }
+  },
+  "mcp": {
+    "cve-now": {
+      "type": "remote",
+      "url": "https://mcp.cve.now/mcp",
+      "enabled": true
+    }
   }
 }

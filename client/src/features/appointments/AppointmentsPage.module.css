@@ -44,7 +44,7 @@
     padding: 0.4rem 1rem;
     background: var(--live-indicator-bg);
     border-radius: 9999px;
-    border: 1px solid rgb(0, 206, 209, 0.3);
+    border: 1px solid var(--dashboard-card-border);
     backdrop-filter: blur(5px);
 }
 
@@ -58,7 +58,7 @@
 }
 
 .AppointmentsPage__liveText {
-    font-size: 0.65rem;
+    font-size: var(--font-size-xs, 0.75rem);
     font-weight: 800;
     color: var(--live-indicator-text);
     text-transform: uppercase;
@@ -75,7 +75,8 @@
 }
 
 .AppointmentsPage__title {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
+    font-family: var(--font-manrope);
     font-weight: 900;
     color: var(--text-main);
     letter-spacing: -0.02em;
@@ -83,7 +84,7 @@
 }
 
 .AppointmentsPage__subtitle {
-    font-size: 0.95rem;
+    font-size: var(--font-size-base, 1rem);
     color: var(--text-muted);
     margin-top: 0.25rem;
 }
@@ -142,8 +143,8 @@
 }
 
 .AppointmentsPage__panelCalendar::-webkit-scrollbar-thumb {
-    background: rgb(128, 128, 128, 0.15);
-    border-radius: 10px;
+    background: var(--border-color);
+    border-radius: var(--radius-sm);
 }
 
 .AppointmentsPage__panelAgenda {
@@ -161,8 +162,8 @@
 }
 
 .AppointmentsPage__panelAgenda::-webkit-scrollbar-thumb {
-    background: rgb(128, 128, 128, 0.15);
-    border-radius: 10px;
+    background: var(--border-color);
+    border-radius: var(--radius-sm);
 }
 
 .AppointmentsPage__panelSearch, .AppointmentsPage__panelUpcoming {
@@ -196,7 +197,7 @@
 }
 
 .AppointmentsPage__contextLabel {
-    font-size: 0.65rem;
+    font-size: var(--font-size-xs, 0.75rem);
     font-weight: 800;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -204,7 +205,7 @@
 }
 
 .AppointmentsPage__contextValue {
-    font-size: 0.9rem;
+    font-size: var(--font-size-base, 1rem);
     font-weight: 700;
     color: var(--text-main);
     margin-top: 0.125rem;

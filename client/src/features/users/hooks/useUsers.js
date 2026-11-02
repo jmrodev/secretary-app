@@ -35,9 +35,7 @@ export const useUsers = (options = {}) => {
     // Filtered data in-memory (as the backend returns all for admin management)
     const users = useMemo(() => {
         const excludeSet = new Set(excludeRoles);
-        return allUsers
-            .filter(u => !role || u.role === role)
-            .filter(u => !excludeSet.has(u.role));
+        return allUsers.filter(u => (!role || u.role === role) && !excludeSet.has(u.role));
     }, [allUsers, role, excludeRoles]);
 
     const createUser = async (formData, onSuccess) => {

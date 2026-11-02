@@ -1,9 +1,8 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ConfigField } from '@/features/config/components/ui/ConfigField';
 import { Icon } from '@/components/atoms/Icon';
 import { MessageTemplateEditor } from '@/features/config/components/forms/MessageTemplateEditor';
 import { useLanguage } from '@/hooks/useLanguage';
-import { useMessage } from '@/context/MessageContext';
 import styles from './CommunicationSettings.module.css';
 import shared from '@/styles/shared.module.css';
 
@@ -11,19 +10,20 @@ import shared from '@/styles/shared.module.css';
  * CommunicationSettings Feature Component.
  * Manages official clinic address and automated WhatsApp messaging templates.
  */
-export const CommunicationSettings = ({ user, settings, updateSetting, insertVariable }) => {
+export const CommunicationSettings = ({ user, settings = {}, updateSetting, insertVariable }) => {
     const { t } = useLanguage();
-    const { showMessage } = useMessage();
     const isAdmin = user?.role === 'admin' || user?.role === 'secretary';
     
-    const [localSettings, setLocalSettings] = useState({});
+    // Track only unsaved local edits overlaying settings
+    const [localDrafts, setLocalDrafts] = useState({});
     
-    useEffect(() => {
-        setLocalSettings(settings || {});
-    }, [settings]);
+    const getSettingValue = (key) => {
+        if (key in localDrafts) return localDrafts[key];
+        return settings[key];
+    };
     
     const handleUpdateSetting = (key, value) => {
-        setLocalSettings(prev => ({ ...prev, [key]: value }));
+        setLocalDrafts(prev => ({ ...prev, [key]: value }));
         
         if (key.startsWith('whatsapp_template_')) {
             const trimmed = (value || '').replace(/\s/g, '');
@@ -82,14 +82,14 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                                     {t('presential_reminder_label')}
                                 </span>
                             }
-                            value={localSettings.whatsapp_template_reminder}
+                            value={getSettingValue('whatsapp_template_reminder')}
                             settingKey="whatsapp_template_reminder"
                             variables={commonVars}
                             updateSetting={handleUpdateSetting}
                             insertVariable={insertVariable}
                             disabled={!isAdmin}
-                            metaTemplateName={localSettings.meta_phone_number_id ? localSettings.meta_reminder_template_name : undefined}
-                            metaParamsOrder={localSettings.meta_phone_number_id ? localSettings.meta_reminder_params_order : undefined}
+                            metaTemplateName={getSettingValue('meta_phone_number_id') ? getSettingValue('meta_reminder_template_name') : undefined}
+                            metaParamsOrder={getSettingValue('meta_phone_number_id') ? getSettingValue('meta_reminder_params_order') : undefined}
                             t={t}
                         />
 
@@ -130,14 +130,14 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                                     {t('presential_confirmation_label')}
                                 </span>
                             }
-                            value={localSettings.whatsapp_template_confirmation}
+                            value={getSettingValue('whatsapp_template_confirmation')}
                             settingKey="whatsapp_template_confirmation"
                             variables={commonVars}
                             updateSetting={handleUpdateSetting}
                             insertVariable={insertVariable}
                             disabled={!isAdmin}
-                            metaTemplateName={localSettings.meta_phone_number_id ? localSettings.meta_confirmation_template_name : undefined}
-                            metaParamsOrder={localSettings.meta_phone_number_id ? localSettings.meta_confirmation_params_order : undefined}
+                            metaTemplateName={getSettingValue('meta_phone_number_id') ? getSettingValue('meta_confirmation_template_name') : undefined}
+                            metaParamsOrder={getSettingValue('meta_phone_number_id') ? getSettingValue('meta_confirmation_params_order') : undefined}
                             description={t('confirmation_message_hint')}
                             t={t}
                         />
@@ -172,7 +172,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                     <MessageTemplateEditor
                         id="debt-template"
                         label={t('debt_template')}
-                        value={localSettings.whatsapp_template_debt}
+                        value={getSettingValue('whatsapp_template_debt')}
                         settingKey="whatsapp_template_debt"
                         variables={['{patient_name}', '{debt_amount}']}
                         updateSetting={handleUpdateSetting}
@@ -194,7 +194,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         <MessageTemplateEditor
                             id="accept-template"
                             label={t('accept_appointment')}
-                            value={localSettings.whatsapp_template_accept}
+                            value={getSettingValue('whatsapp_template_accept')}
                             settingKey="whatsapp_template_accept"
                             variables={['{patient_name}', '{date}', '{time}', '{doctor_name}']}
                             updateSetting={handleUpdateSetting}
@@ -205,7 +205,7 @@ export const CommunicationSettings = ({ user, settings, updateSetting, insertVar
                         <MessageTemplateEditor
                             id="alternative-template"
                             label={t('suggest_alternative')}
-                            value={localSettings.whatsapp_template_alternative}
+                            value={getSettingValue('whatsapp_template_alternative')}
                             settingKey="whatsapp_template_alternative"
                             variables={['{patient_name}', '{date}', '{time}']}
                             updateSetting={handleUpdateSetting}

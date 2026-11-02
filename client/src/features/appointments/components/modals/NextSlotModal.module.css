@@ -120,7 +120,7 @@
 }
 
 .NextSlotModal__slotExtra {
-    border-left: 4px solid var(--warning);
+    border-left: 2px solid var(--warning);
 }
 
 .NextSlotModal__slotTime {

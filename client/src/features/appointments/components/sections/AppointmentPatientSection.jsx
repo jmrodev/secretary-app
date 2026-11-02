@@ -63,8 +63,9 @@ export const AppointmentPatientSection = ({
                         {missingData.map((item, idx) => {
                             const label = typeof item === 'string' ? item : item.label;
                             const step = typeof item === 'string' ? undefined : item.step;
+                            const itemKey = typeof item === 'string' ? item : (item.key || item.field || item.step || label);
                             return (
-                                <React.Fragment key={typeof item === 'string' ? item : item.key || idx}>
+                                <React.Fragment key={itemKey}>
                                     {idx > 0 && ', '}
                                     {step ? (
                                         <button

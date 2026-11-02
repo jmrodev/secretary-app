@@ -15,7 +15,6 @@ jest.mock('axios');
 
 const axios = require('axios');
 const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
-const doctorRepository = require('../../../repositories/user/doctorRepository');
 const pendingBookingRepository = require('../../../repositories/communication/pendingBookingRepository');
 const availabilitySearchService = require('../../appointments/availabilitySearchService');
 const { extractToolCalls, processInboundMessage } = require('../whatsappAiBookingService');

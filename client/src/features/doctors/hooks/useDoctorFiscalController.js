@@ -39,8 +39,8 @@ export const useDoctorFiscalController = (doctorId) => {
                 console.warn("Clipboard auto-copy failed", e);
             }
 
-            // Abrir AFIP en nueva pestaña
-            window.open('https://auth.afip.gob.ar/contribuyente_/login.xhtml', '_blank');
+            // Abrir AFIP en nueva pestaña de forma segura
+            window.open('https://auth.afip.gob.ar/contribuyente_/login.xhtml', '_blank', 'noopener,noreferrer');
 
         } catch (err) {
             const msg = err.response?.data?.error || err.message;

@@ -138,19 +138,19 @@
 }
 
 .PatientFinancialSidebar__cardBorderRed {
-    border-left: 5px solid var(--danger);
+    border-left: 2px solid var(--danger);
 }
 
 .PatientFinancialSidebar__cardBorderGreen {
-    border-left: 5px solid var(--success);
+    border-left: 2px solid var(--success);
 }
 
 .PatientFinancialSidebar__cardBorderGreenDark {
-    border-left: 5px solid var(--primary-color);
+    border-left: 2px solid var(--primary-color);
 }
 
 .PatientFinancialSidebar__cardBorderBlue {
-    border-left: 5px solid var(--accent-color);
+    border-left: 2px solid var(--accent-color);
 }
 
 .PatientFinancialSidebar__financialContentPadded {

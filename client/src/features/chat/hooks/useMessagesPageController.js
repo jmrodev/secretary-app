@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { api } from '@/api/axios';
 import { useAuth } from '@/features/auth/AuthContext';
 import { useMessage } from '@/context/MessageContext';
@@ -67,7 +67,7 @@ export const useMessagesPageController = () => {
             }
         }
     });
-    const thread = Array.isArray(rawThread) ? rawThread : (rawThread?.data || []);
+    const thread = useMemo(() => (Array.isArray(rawThread) ? rawThread : (rawThread?.data || [])), [rawThread]);
 
     const fetchBridgeStatus = useCallback(async (isAuto = false) => {
         if (!isAuto) setBridgeStatusLoading(true);
@@ -110,9 +110,29 @@ export const useMessagesPageController = () => {
     }, [fetchConversations, fetchUnreadCount, fetchThread, selectedConvo]);
 
     useEffect(() => {
-        fetchBridgeStatus();
+        let isMounted = true;
+        api.get('/whatsapp/status')
+            .then(res => {
+                if (isMounted && res.data.success) {
+                    setBridgeStatus({
+                        status: res.data.status,
+                        qr_code: res.data.qr_code,
+                        session_expired_since: res.data.session_expired_since || null
+                    });
+                }
+            })
+            .catch(error => {
+                if (isMounted) {
+                    console.error('[WhatsApp] Failed to fetch initial bridge status:', error);
+                    setBridgeStatus({ status: 'offline', qr_code: '', session_expired_since: null });
+                }
+            });
+
         const bridgeInterval = setInterval(() => fetchBridgeStatus(true), 5000);
-        return () => clearInterval(bridgeInterval);
+        return () => {
+            isMounted = false;
+            clearInterval(bridgeInterval);
+        };
     }, [fetchBridgeStatus]);
 
     // Scroll to bottom

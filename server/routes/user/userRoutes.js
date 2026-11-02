@@ -10,7 +10,7 @@ const restoreController = require('../../controllers/system/restoreController');
 
 const { verifyToken } = require('../../middleware/authMiddleware');
 const { authorize, authorizeCanManageUsers } = require('../../middleware/authorize');
-const { ACCESS_LEVELS, ROLES } = require('../../constants/roles');
+const { ACCESS_LEVELS } = require('../../constants/roles');
 const validate = require('../../middleware/validationMiddleware');
 const schemas = require('../../validators/userSchemas');
 

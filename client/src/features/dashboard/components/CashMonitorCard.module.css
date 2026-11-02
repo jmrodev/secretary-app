@@ -65,7 +65,7 @@
 }
 
 .CashMonitorCard__statValue--muted {
-    font-size: 0.95rem;
+    font-size: var(--font-size-base, 1rem);
     color: var(--text-muted);
 }
 

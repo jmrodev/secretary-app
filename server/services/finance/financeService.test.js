@@ -1,6 +1,5 @@
 const financeService = require('./financeService');
 const transactionRepository = require('../../repositories/finance/transactionRepository');
-const patientRepository = require('../../repositories/user/patientRepository');
 const { pool } = require('../../db');
 
 jest.mock('../../repositories/finance/transactionRepository');
@@ -36,7 +35,7 @@ describe('FinanceService - createTransaction', () => {
         };
 
         // Mock first query verifying user exists
-        mockConnection.query.mockImplementation((sql, params) => {
+        mockConnection.query.mockImplementation((sql, _params) => {
             if (sql.includes('SELECT id FROM users')) {
                 return Promise.resolve([{ id: 1 }]);
             }
@@ -76,7 +75,7 @@ describe('FinanceService - createTransaction', () => {
             description: 'Pago de consulta nueva'
         };
 
-        mockConnection.query.mockImplementation((sql, params) => {
+        mockConnection.query.mockImplementation((sql, _params) => {
             if (sql.includes('SELECT id FROM users')) {
                 return Promise.resolve([{ id: 1 }]);
             }
@@ -114,7 +113,7 @@ describe('FinanceService - createTransaction', () => {
             description: 'Pago parcial de consulta compleja'
         };
 
-        mockConnection.query.mockImplementation((sql, params) => {
+        mockConnection.query.mockImplementation((sql, _params) => {
             if (sql.includes('SELECT id FROM users')) {
                 return Promise.resolve([{ id: 1 }]);
             }
@@ -182,7 +181,7 @@ describe('FinanceService - createTransaction', () => {
             description: 'Pago de licencia'
         };
 
-        mockConnection.query.mockImplementation((sql, params) => {
+        mockConnection.query.mockImplementation((sql, _params) => {
             if (sql.includes('SELECT id FROM users')) {
                 return Promise.resolve([{ id: 1 }]);
             }
@@ -217,7 +216,7 @@ describe('FinanceService - createTransaction', () => {
             description: 'Pago de licencia'
         };
 
-        mockConnection.query.mockImplementation((sql, params) => {
+        mockConnection.query.mockImplementation((sql, _params) => {
             if (sql.includes('SELECT id FROM users')) {
                 return Promise.resolve([{ id: 1 }]);
             }

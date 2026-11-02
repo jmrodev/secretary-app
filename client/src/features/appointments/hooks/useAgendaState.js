@@ -12,6 +12,7 @@ export const useAgendaState = (setViewDoctorId) => {
 
     const rescheduleAppt = location.state?.rescheduleAppt;
     const syncAppt = location.state?.syncAppt;
+    const initialDoctorId = rescheduleAppt?.doctor_id || syncAppt?.doctor_id || location.state?.viewDoctorId;
 
     const [selectedDate, setSelectedDate] = useState(() => {
         if (syncAppt) return parseDate(syncAppt.appointment_date);
@@ -25,23 +26,21 @@ export const useAgendaState = (setViewDoctorId) => {
 
     // Handle initial state sync from router (reschedule/sync/direct navigation)
     useEffect(() => {
-        if (rescheduleAppt || syncAppt || location.state?.viewDoctorId) {
-            const updates = {};
-            if (rescheduleAppt) {
-                updates.viewDoctorId = String(rescheduleAppt.doctor_id);
-            } else if (syncAppt) {
-                updates.viewDoctorId = String(syncAppt.doctor_id);
-            } else if (location.state?.viewDoctorId) {
-                updates.viewDoctorId = String(location.state.viewDoctorId);
-            }
-            
-            if (updates.viewDoctorId) setViewDoctorId(updates.viewDoctorId);
+        if (initialDoctorId) {
+            queueMicrotask(() => {
+                setViewDoctorId(String(initialDoctorId));
+            });
         }
 
         if (location.state?.selectedDate) {
-            setSelectedDate(parseDate(location.state.selectedDate));
+            queueMicrotask(() => {
+                setSelectedDate(prev => {
+                    const target = parseDate(location.state.selectedDate);
+                    return prev.getTime() === target.getTime() ? prev : target;
+                });
+            });
         }
-    }, [rescheduleAppt, syncAppt, location.state, setViewDoctorId, setSelectedDate]);
+    }, [initialDoctorId, location.state?.selectedDate, setViewDoctorId]);
 
     return {
         selectedDate,

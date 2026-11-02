@@ -116,7 +116,7 @@ const sendMessageDirect = async (to, message, patientId = null) => {
         }
 
         const detailMsg = error.response?.data || error.message || 'WhatsApp Bridge error';
-        throw new Error(`No se pudo enviar el mensaje por WhatsApp: ${detailMsg}`);
+        throw new Error(`No se pudo enviar el mensaje por WhatsApp: ${detailMsg}`, { cause: error });
     }
 };
 

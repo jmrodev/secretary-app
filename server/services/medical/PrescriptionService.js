@@ -1,7 +1,6 @@
 const { pool } = require('../../db');
 const { logAction } = require('../../utils/system/audit');
 const { calculatePrice } = require('../../utils/finance/priceCalculator');
-const medicationService = require('./MedicationService');
 const financeService = require('../finance/financeService');
 const prescriptionRepository = require('../../repositories/medical/prescriptionRepository');
 const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
@@ -180,7 +179,7 @@ class PrescriptionService {
 
     // --- Private Helpers ---
 
-    async _processPrescriptionItems(conn, prescriptionId, patientId, items, userId) {
+    async _processPrescriptionItems(conn, prescriptionId, _patientId, items, _userId) {
         for (const item of items) {
             const medName = item.name || item.medication_name;
             await prescriptionRepository.addItem({

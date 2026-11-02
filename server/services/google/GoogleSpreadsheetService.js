@@ -152,7 +152,7 @@ class GoogleSpreadsheetService {
             try {
                 const d = new Date(date);
                 return isNaN(d.getTime()) ? '-' : d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-            } catch (e) {
+            } catch (_e) {
                 return '-';
             }
         };

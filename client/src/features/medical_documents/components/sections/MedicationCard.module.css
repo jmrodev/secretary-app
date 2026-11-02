@@ -8,12 +8,12 @@
 }
 
 .MedicationCard__unknown {
-    border-left: 4px solid var(--error);
+    border-left: 2px solid var(--error);
     background-color: var(--red-900);
 }
 
 .MedicationCard__known {
-    border-left: 4px solid var(--success);
+    border-left: 2px solid var(--success);
 }
 
 .MedicationCard__header {

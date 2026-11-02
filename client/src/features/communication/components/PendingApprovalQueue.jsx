@@ -19,6 +19,18 @@ import styles from './PendingApprovalQueue.module.css';
  * Alternative_sent items only show the waiting status (Accept/Suggest are
  * only valid for status 'pending' per the backend optimistic lock).
  */
+const dispatchOpenChat = (item) => {
+    window.dispatchEvent(
+        new CustomEvent('whatsapp:open-chat', {
+            detail: {
+                phone: item.patient_phone,
+                patientId: item.patient_id || item.id,
+                patientName: item.patient_name
+            }
+        })
+    );
+};
+
 export const PendingApprovalQueue = () => {
     const navigate = useNavigate();
     const { pendingItems, loading, accept, suggestAlternative, reject } = usePendingApproval();
@@ -37,17 +49,7 @@ export const PendingApprovalQueue = () => {
         });
     };
 
-    const handleOpenChat = (item) => {
-        window.dispatchEvent(
-            new CustomEvent('whatsapp:open-chat', {
-                detail: {
-                    phone: item.patient_phone,
-                    patientId: item.patient_id || item.id,
-                    patientName: item.patient_name
-                }
-            })
-        );
-    };
+    const handleOpenChat = dispatchOpenChat;
 
     const handleAccept = async (item) => {
         setBusyId(item.id);

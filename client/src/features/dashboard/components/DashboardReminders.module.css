@@ -45,7 +45,7 @@
     background: var(--dashboard-card-bg);
     border: 1px solid var(--dashboard-card-border);
     color: var(--text-muted);
-    border-radius: 10px;
+    border-radius: var(--radius-lg, 8px);
     font-size: 0.75rem;
 }
 
@@ -89,7 +89,7 @@
 .DashboardReminders__itemName {
     font-weight: 700;
     color: var(--text-main);
-    font-size: 0.95rem;
+    font-size: var(--font-size-base, 1rem);
 }
 
 .DashboardReminders__itemDetails {

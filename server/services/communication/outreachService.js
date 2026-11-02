@@ -119,7 +119,7 @@ async function sendBroadcast(patientIds, body, variants, delayMs = 4000) {
             patientIds
         );
     } catch (err) {
-        throw new Error('Failed to fetch patient details for broadcast: ' + err.message);
+        throw new Error('Failed to fetch patient details for broadcast: ' + err.message, { cause: err });
     }
 
     const sleep = (ms) => new Promise(r => setTimeout(r, ms));

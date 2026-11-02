@@ -1,7 +1,6 @@
 const bookingService = require('./bookingService');
 const appointmentRepository = require('../../repositories/appointments/appointmentRepository');
 const patientRepository = require('../../repositories/user/patientRepository');
-const appointmentEvents = require('../../events/appointmentEvents');
 const { pool } = require('../../db');
 
 jest.mock('../../repositories/appointments/appointmentRepository');
