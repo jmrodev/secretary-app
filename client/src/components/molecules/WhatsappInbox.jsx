@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Icon } from '@/components/atoms/Icon';
 import { Button } from '@/components/atoms/Button';
 import { formatTime } from '@/utils/core/dateUtils';
+import { api } from '@/api/axios';
 import styles from '../organisms/GlobalWhatsappMessenger.module.css';
 
 /**
  * WhatsappInbox Molecule.
- * Renders the list of recent conversations for the WhatsApp messenger.
+ * Renders the list of recent conversations and synchronized phone contacts for the WhatsApp messenger.
  */
 export const WhatsappInbox = ({ 
     conversations, 
@@ -21,6 +22,43 @@ export const WhatsappInbox = ({
     onLogout,
     t 
 }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const [phoneContacts, setPhoneContacts] = useState([]);
+    const [searchingContacts, setSearchingContacts] = useState(false);
+
+    useEffect(() => {
+        if (!searchTerm.trim()) {
+            setPhoneContacts([]);
+            return;
+        }
+
+        const timer = setTimeout(async () => {
+            try {
+                setSearchingContacts(true);
+                const res = await api.get(`/whatsapp/contacts?query=${encodeURIComponent(searchTerm)}&limit=15`);
+                if (res.data?.success) {
+                    setPhoneContacts(res.data.contacts || []);
+                }
+            } catch (err) {
+                console.error("Error buscando contactos del teléfono:", err);
+            } finally {
+                setSearchingContacts(false);
+            }
+        }, 300);
+
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    const filteredConversations = conversations.filter(conv => {
+        if (!searchTerm.trim()) return true;
+        const q = searchTerm.toLowerCase();
+        return (
+            (conv.patient_name || '').toLowerCase().includes(q) ||
+            (conv.patient_phone || '').includes(q) ||
+            (conv.body || '').toLowerCase().includes(q)
+        );
+    });
+
     return (
         <section className={styles.GlobalWhatsappMessenger__sidebar}>
             <header className={styles.GlobalWhatsappMessenger__sidebarHeader}>
@@ -60,20 +98,71 @@ export const WhatsappInbox = ({
                     />
                 </div>
             </header>
+
+            <div style={{ padding: '0.5rem 0.75rem', borderBottom: '1px solid var(--border-color)' }}>
+                <input
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder={t('search_chats_or_contacts', 'Buscar chat o contacto...')}
+                    style={{
+                        width: '100%',
+                        padding: '0.45rem 0.75rem',
+                        fontSize: '0.85rem',
+                        background: 'var(--card-surface-bg, #1e293b)',
+                        border: '1px solid var(--border-color)',
+                        borderRadius: '6px',
+                        color: 'var(--text-main)',
+                        outline: 'none'
+                    }}
+                />
+            </div>
             
             <div className={styles.GlobalWhatsappMessenger__inbox}>
-                {loading && conversations.length === 0 ? (
+                {/* Contactos del Celular encontrados */}
+                {searchTerm.trim() && phoneContacts.length > 0 && (
+                    <div style={{ padding: '0.5rem 0.75rem', background: 'rgba(37, 211, 102, 0.08)', borderBottom: '1px solid var(--border-color)' }}>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#25D366', marginBottom: '0.25rem' }}>
+                            {t('phone_contacts', 'Contactos del teléfono')}
+                        </div>
+                        <ul className={`${styles.GlobalWhatsappMessenger__list}`}>
+                            {phoneContacts.map(c => (
+                                <li key={c.phone} className={styles.GlobalWhatsappMessenger__listItem} style={{ padding: '0.4rem 0.5rem' }}>
+                                    <button
+                                        type="button"
+                                        className={styles.GlobalWhatsappMessenger__listItemButton}
+                                        onClick={() => onPatientClick({
+                                            patient_id: null,
+                                            patient_phone: c.phone,
+                                            patient_name: c.fullName || c.pushName || c.phone
+                                        })}
+                                    >
+                                        <div className={styles.GlobalWhatsappMessenger__itemAvatar} style={{ width: '28px', height: '28px', fontSize: '0.75rem' }}>
+                                            {(c.fullName || c.phone).charAt(0).toUpperCase()}
+                                        </div>
+                                        <div className={styles.GlobalWhatsappMessenger__itemInfo}>
+                                            <strong>{c.fullName || c.pushName || c.phone}</strong>
+                                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{c.phone}</span>
+                                        </div>
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+                {loading && filteredConversations.length === 0 ? (
                     <div className={styles.GlobalWhatsappMessenger__emptyInbox}>{t('loading')}</div>
-                ) : conversations.length === 0 ? (
+                ) : filteredConversations.length === 0 && phoneContacts.length === 0 ? (
                     <div className={styles.GlobalWhatsappMessenger__emptyInbox}>{t('no_recent_chats')}</div>
                 ) : (
                     <ul className={`${styles.GlobalWhatsappMessenger__list} custom-scrollbar`}>
-                         {conversations.map(conv => {
+                         {filteredConversations.map(conv => {
                              const isSelected = activeChat && 
                                 (conv.patient_id ? activeChat.patientId === conv.patient_id : activeChat.phone === conv.patient_phone);
                              const chatKey = conv.patient_id || conv.patient_phone;
                              
-return (
+                             return (
                                   <li key={chatKey} className={`${styles.GlobalWhatsappMessenger__listItem} ${isSelected ? styles.GlobalWhatsappMessenger__listItemActive : ''}`}>
                                       <button
                                           type="button"

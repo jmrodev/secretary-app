@@ -43,11 +43,22 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
         messagesEndRef,
         handleGetAiSuggestion,
         handleSendMessage,
+        handleSendFile,
+        handleRevokeMessage,
+        handleSyncChat,
         fetchHistory
     } = useWhatsappChatController(patientId, phone, showMessage, t);
     
     const navigate = useNavigate();
-    const { messages, loading, newMessage, sending, aiLoading, suggestedSlot } = state;
+    const fileInputRef = React.useRef(null);
+    const { messages, loading, newMessage, sending, aiLoading, suggestedSlot, editingMessage } = state;
+
+    const onFileSelect = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        handleSendFile(file);
+        e.target.value = '';
+    };
 
     const handleViewInCalendar = (slot) => {
         if (!slot?.date) return;
@@ -97,6 +108,9 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                         </div>
                     </div>
                     <div className={styles.WhatsappChatHistory__headerActions}>
+                        <Button size="sm" variant="ghost" onClick={handleSyncChat} title={t('sync_phone_chat', 'Sincronizar del celular')} icon={<Icon name="sync" size="1rem" />}>
+                            {t('sync', 'Sincronizar')}
+                        </Button>
                         <Button size="sm" variant="ghost" onClick={fetchHistory} title={t('refresh')} icon={<Icon name="refresh" size="1rem" />}>
                             {t('refresh')}
                         </Button>
@@ -124,12 +138,38 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                                         <div className={styles.WhatsappChatHistory__meta}>
                                             <span className={styles.WhatsappChatHistory__time}>{formatTime(msg.created_at)}</span>
                                             {isOutbound && (
-                                                <span 
-                                                    className={`${styles.WhatsappChatHistory__status} ${msg.status === 'delivered' ? styles.WhatsappChatHistory__statusDelivered : msg.status === 'failed' ? styles.WhatsappChatHistory__statusFailed : ''}`}
-                                                    title={msg.status === 'failed' ? 'Error al enviar por WhatsApp' : ''}
-                                                >
-                                                    <Icon name={msg.status === 'delivered' ? 'done_all' : msg.status === 'failed' ? 'error_outline' : 'done'} size="12px" />
-                                                </span>
+                                                <>
+                                                    <span 
+                                                        className={`${styles.WhatsappChatHistory__status} ${msg.status === 'delivered' ? styles.WhatsappChatHistory__statusDelivered : msg.status === 'failed' ? styles.WhatsappChatHistory__statusFailed : ''}`}
+                                                        title={msg.status === 'failed' ? 'Error al enviar por WhatsApp' : ''}
+                                                    >
+                                                        <Icon name={msg.status === 'delivered' ? 'done_all' : msg.status === 'failed' ? 'error_outline' : 'done'} size="12px" />
+                                                    </span>
+                                                    {msg.meta_id && (
+                                                        <span className={styles.WhatsappChatHistory__bubbleActions}>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.WhatsappChatHistory__bubbleActionBtn}
+                                                                onClick={() => dispatch({ type: 'SET_EDITING_MESSAGE', payload: { id: msg.meta_id, body: msg.body } })}
+                                                                title={t('edit_message', 'Editar')}
+                                                            >
+                                                                <Icon name="edit" size="11px" />
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className={styles.WhatsappChatHistory__bubbleActionBtn}
+                                                                onClick={() => {
+                                                                    if (window.confirm(t('confirm_revoke_message', '¿Eliminar este mensaje para todos en WhatsApp?'))) {
+                                                                        handleRevokeMessage(msg.meta_id);
+                                                                    }
+                                                                }}
+                                                                title={t('revoke_message', 'Eliminar para todos')}
+                                                            >
+                                                                <Icon name="delete" size="11px" />
+                                                            </button>
+                                                        </span>
+                                                    )}
+                                                </>
                                             )}
                                         </div>
                                     </div>
@@ -179,10 +219,43 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                 </div>
             )}
 
+            {editingMessage && (
+                <div className={styles.WhatsappChatHistory__editingBanner}>
+                    <div className={styles.WhatsappChatHistory__editingInfo}>
+                        <Icon name="edit" size="1rem" />
+                        <span>{t('editing_message_indicator', 'Editando mensaje enviado')}</span>
+                    </div>
+                    <button
+                        type="button"
+                        className={styles.WhatsappChatHistory__suggestedSlotDismissBtn}
+                        onClick={() => dispatch({ type: 'CANCEL_EDIT' })}
+                        title={t('cancel', 'Cancelar')}
+                    >
+                        <Icon name="close" size="1rem" />
+                    </button>
+                </div>
+            )}
+
             <form className={`${styles.WhatsappChatHistory__inputArea}`} onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }}>
+                <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={onFileSelect}
+                    accept="image/*,application/pdf,audio/*"
+                />
+                <button
+                    type="button"
+                    className={styles.WhatsappChatHistory__attachBtn}
+                    onClick={() => fileInputRef.current?.click()}
+                    title={t('attach_file', 'Adjuntar archivo / imagen')}
+                    disabled={sending}
+                >
+                    <Icon name="attach_file" size="1.2rem" />
+                </button>
                 <textarea
                     className={`${styles.WhatsappChatHistory__input} ${styles.WhatsappChatHistory__textarea}`}
-                    placeholder={t('write_message')}
+                    placeholder={editingMessage ? t('edit_message_placeholder', 'Escriba la corrección del mensaje...') : t('write_message')}
                     value={newMessage}
                     rows={newMessage.length > 70 || newMessage.includes('\n') ? 3 : 1}
                     onChange={(e) => dispatch({ type: 'SET_NEW_MESSAGE', payload: e.target.value })}
@@ -199,7 +272,7 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                     className={`${styles.WhatsappChatHistory__aiBtn} ${aiLoading ? styles.WhatsappChatHistory__aiBtnLoading : ''}`}
                     onClick={handleGetAiSuggestion}
                     title={t('ai_suggestion')}
-                    disabled={aiLoading || sending}
+                    disabled={aiLoading || sending || Boolean(editingMessage)}
                 >
                     <Icon name="auto_awesome" size="1.2rem" />
                 </button>
@@ -207,9 +280,10 @@ export const WhatsappChatHistory = ({ patientId, phone, t, hideHeader = false })
                     type="submit"
                     className={`${styles.WhatsappChatHistory__sendBtn}`}
                     disabled={sending || !newMessage.trim()}
-                    aria-label={t('send_message')}
+                    aria-label={editingMessage ? t('save', 'Guardar') : t('send_message')}
+                    title={editingMessage ? t('save_edited_message', 'Guardar edición') : t('send_message')}
                 >
-                    <Icon name="send" size="1.2rem" />
+                    <Icon name={editingMessage ? 'check' : 'send'} size="1.2rem" />
                 </button>
             </form>
         </section>

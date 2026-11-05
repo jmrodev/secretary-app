@@ -387,3 +387,125 @@ module.exports = {
     getBroadcastPreview,
     broadcastDirect
 };
+
+/**
+ * Sends a file / media (PDF, image, audio, voice note) via the WhatsApp bridge.
+ */
+const sendFileDirect = async (to, fileBuffer, filename, caption = '', mediaType = 'auto', patientId = null) => {
+    const formattedRecipient = normalizePhoneForWhatsapp(to);
+    const bridgeBase = (process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status').replace('/api/status', '');
+    const bridgeUrl = `${bridgeBase}/api/send-file`;
+
+    const FormData = require('form-data');
+    const form = new FormData();
+    form.append('recipient', formattedRecipient);
+    if (caption) form.append('caption', caption);
+    if (mediaType) form.append('type', mediaType);
+    form.append('file', fileBuffer, { filename });
+
+    try {
+        console.log(`[WhatsApp Bridge] Sending file '${filename}' to: ${formattedRecipient}`);
+        const response = await axios.post(bridgeUrl, form, {
+            headers: form.getHeaders(),
+            timeout: 30000
+        });
+
+        const logBody = `[Archivo adjunto: ${filename}] ${caption}`.trim();
+        if (patientId) {
+            await whatsappRepository.createMessage(patientId, 'outbound', logBody, null, 'sent');
+        } else {
+            await whatsappRepository.createMessage(null, 'outbound', logBody, null, 'sent', to);
+        }
+
+        return response.data;
+    } catch (error) {
+        console.error('[WhatsApp Bridge] Error sending file:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+/**
+ * Edits a previously sent message in WhatsApp.
+ */
+const editMessageDirect = async (messageId, newText, chat = '') => {
+    const bridgeBase = (process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status').replace('/api/status', '');
+    const bridgeUrl = `${bridgeBase}/api/edit`;
+
+    const payload = { id: messageId, text: newText };
+    if (chat) payload.chat = normalizePhoneForWhatsapp(chat);
+
+    try {
+        const response = await axios.post(bridgeUrl, payload, { timeout: 10000 });
+        return response.data;
+    } catch (error) {
+        console.error('[WhatsApp Bridge] Error editing message:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+/**
+ * Revokes / deletes a message for everyone in WhatsApp.
+ */
+const revokeMessageDirect = async (messageId, chat = '') => {
+    const bridgeBase = (process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status').replace('/api/status', '');
+    const bridgeUrl = `${bridgeBase}/api/revoke`;
+
+    const payload = { id: messageId };
+    if (chat) payload.chat = normalizePhoneForWhatsapp(chat);
+
+    try {
+        const response = await axios.post(bridgeUrl, payload, { timeout: 10000 });
+        return response.data;
+    } catch (error) {
+        console.error('[WhatsApp Bridge] Error revoking message:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+/**
+ * Retrieves the synchronized contacts from the connected phone.
+ */
+const getBridgeContacts = async (query = '', limit = 50) => {
+    const bridgeBase = (process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status').replace('/api/status', '');
+    const bridgeUrl = `${bridgeBase}/api/contacts`;
+
+    try {
+        const response = await axios.get(bridgeUrl, { timeout: 10000 });
+        const list = response.data?.contacts || [];
+        if (!query) return list.slice(0, limit);
+        const q = query.toLowerCase();
+        return list.filter(c =>
+            (c.fullName || '').toLowerCase().includes(q) ||
+            (c.pushName || '').toLowerCase().includes(q) ||
+            (c.phone || '').includes(q)
+        ).slice(0, limit);
+    } catch (error) {
+        console.error('[WhatsApp Bridge] Error fetching contacts:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+/**
+ * Forces on-demand chat synchronization from the phone.
+ */
+const syncChatDirect = async (phone, count = 50) => {
+    const bridgeBase = (process.env.WHATSAPP_BRIDGE_STATUS_URL || 'http://127.0.0.1:8090/api/status').replace('/api/status', '');
+    const bridgeUrl = `${bridgeBase}/api/sync`;
+
+    try {
+        const response = await axios.post(bridgeUrl, {
+            phone: normalizePhoneForWhatsapp(phone),
+            count: Number(count)
+        }, { timeout: 15000 });
+        return response.data;
+    } catch (error) {
+        console.error('[WhatsApp Bridge] Error syncing chat:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+module.exports.sendFileDirect = sendFileDirect;
+module.exports.editMessageDirect = editMessageDirect;
+module.exports.revokeMessageDirect = revokeMessageDirect;
+module.exports.getBridgeContacts = getBridgeContacts;
+module.exports.syncChatDirect = syncChatDirect;

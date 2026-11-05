@@ -7,7 +7,8 @@ const initialState = {
     newMessage: '',
     sending: false,
     aiLoading: false,
-    suggestedSlot: null
+    suggestedSlot: null,
+    editingMessage: null // { id, body }
 };
 
 function chatReducer(state, action) {
@@ -17,6 +18,18 @@ function chatReducer(state, action) {
         case 'SET_NEW_MESSAGE': return { ...state, newMessage: action.payload };
         case 'SET_SENDING': return { ...state, sending: action.payload };
         case 'SET_AI_LOADING': return { ...state, aiLoading: action.payload };
+        case 'SET_EDITING_MESSAGE':
+            return {
+                ...state,
+                editingMessage: action.payload,
+                newMessage: action.payload ? action.payload.body : ''
+            };
+        case 'CANCEL_EDIT':
+            return {
+                ...state,
+                editingMessage: null,
+                newMessage: ''
+            };
         case 'SET_AI_SUGGESTION':
             return {
                 ...state,
@@ -26,7 +39,7 @@ function chatReducer(state, action) {
             };
         case 'CLEAR_SUGGESTED_SLOT':
             return { ...state, suggestedSlot: null };
-        case 'SEND_SUCCESS': return { ...state, newMessage: '', sending: false, suggestedSlot: null };
+        case 'SEND_SUCCESS': return { ...state, newMessage: '', sending: false, suggestedSlot: null, editingMessage: null };
         default: return state;
     }
 }
@@ -162,6 +175,24 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
                 return;
             }
 
+            if (state.editingMessage) {
+                // Modo edición
+                const res = await api.post('/whatsapp/edit', {
+                    messageId: state.editingMessage.id,
+                    newText: state.newMessage,
+                    chat: finalPhone
+                });
+                if (res.data.success) {
+                    showMessage(t('message_edited', 'Mensaje editado'), "success");
+                    dispatch({ type: 'SEND_SUCCESS' });
+                    fetchHistory();
+                } else {
+                    showMessage(t('error_editing_message', "Error al editar mensaje."), "error");
+                    dispatch({ type: 'SET_SENDING', payload: false });
+                }
+                return;
+            }
+
             const res = await api.post('/whatsapp/send-direct', {
                 to: finalPhone,
                 message: state.newMessage,
@@ -183,6 +214,86 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
         }
     };
 
+    const handleSendFile = async (file, caption = '') => {
+        if (!file) return;
+        try {
+            dispatch({ type: 'SET_SENDING', payload: true });
+            let finalPhone = targetPhoneInput ? normalizePhone(targetPhoneInput) : '';
+            if (!finalPhone && patientId) {
+                const patientRes = await api.get(`/users/patients/${patientId}`);
+                const patientData = patientRes.data?.success !== undefined ? patientRes.data.data : patientRes.data;
+                finalPhone = normalizePhone(patientData?.phone);
+            } else if (!finalPhone && phone) {
+                finalPhone = normalizePhone(phone);
+            }
+
+            if (!finalPhone || finalPhone.replace(/\D/g, '').length < 8) {
+                showMessage(t('phone_required'), "error");
+                dispatch({ type: 'SET_SENDING', payload: false });
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('to', finalPhone);
+            if (caption) formData.append('caption', caption);
+            if (patientId) formData.append('patientId', patientId);
+
+            const res = await api.post('/whatsapp/send-file', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+
+            if (res.data.success) {
+                showMessage(t('file_sent_success', 'Archivo enviado con éxito'), 'success');
+                dispatch({ type: 'SEND_SUCCESS' });
+                fetchHistory();
+            } else {
+                showMessage(t('error_sending_file', 'Error al enviar archivo'), 'error');
+                dispatch({ type: 'SET_SENDING', payload: false });
+            }
+        } catch (error) {
+            console.error('Error al enviar archivo:', error);
+            showMessage(t('error_sending_file', 'Error al enviar archivo'), 'error');
+            dispatch({ type: 'SET_SENDING', payload: false });
+        }
+    };
+
+    const handleRevokeMessage = async (messageId) => {
+        if (!messageId) return;
+        let finalPhone = targetPhoneInput ? normalizePhone(targetPhoneInput) : normalizePhone(phone);
+        try {
+            const res = await api.post('/whatsapp/revoke', {
+                messageId,
+                chat: finalPhone
+            });
+            if (res.data.success) {
+                showMessage(t('message_revoked_success', 'Mensaje eliminado para todos'), 'success');
+                fetchHistory();
+            } else {
+                showMessage(t('error_revoking_message', 'Error al eliminar mensaje'), 'error');
+            }
+        } catch (error) {
+            console.error('Error al revocar mensaje:', error);
+            showMessage(t('error_revoking_message', 'Error al eliminar mensaje'), 'error');
+        }
+    };
+
+    const handleSyncChat = async () => {
+        let finalPhone = targetPhoneInput ? normalizePhone(targetPhoneInput) : normalizePhone(phone);
+        if (!finalPhone) return;
+        try {
+            showMessage(t('syncing_chat', 'Sincronizando mensajes con el teléfono...'), 'info');
+            const res = await api.post('/whatsapp/sync', { phone: finalPhone, count: 50 });
+            if (res.data.success) {
+                showMessage(t('sync_success', 'Mensajes sincronizados'), 'success');
+                fetchHistory();
+            }
+        } catch (error) {
+            console.error('Error al sincronizar chat:', error);
+            showMessage(t('sync_error', 'Error al sincronizar con el teléfono'), 'error');
+        }
+    };
+
     return {
         state,
         dispatch,
@@ -191,6 +302,9 @@ export const useWhatsappChatController = (patientId, phone, showMessage, t) => {
         messagesEndRef,
         handleGetAiSuggestion,
         handleSendMessage,
+        handleSendFile,
+        handleRevokeMessage,
+        handleSyncChat,
         fetchHistory
     };
 };

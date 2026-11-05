@@ -2,7 +2,10 @@ jest.mock('../../../repositories/appointments/appointmentRepository', () => ({
     findLastByPatientId: jest.fn()
 }));
 jest.mock('../../../repositories/user/doctorRepository', () => ({
-    findFirst: jest.fn()
+    findFirst: jest.fn(),
+    findAll: jest.fn(),
+    findById: jest.fn(),
+    getDoctorSchedules: jest.fn()
 }));
 jest.mock('../../../repositories/communication/pendingBookingRepository', () => ({
     findActiveByPatient: jest.fn(),
@@ -11,52 +14,89 @@ jest.mock('../../../repositories/communication/pendingBookingRepository', () => 
 jest.mock('../../appointments/availabilitySearchService', () => ({
     getNextFreeSlot: jest.fn()
 }));
+jest.mock('../whatsappService', () => ({
+    sendMessageDirect: jest.fn()
+}));
+jest.mock('@sentry/node', () => ({
+    init: jest.fn(),
+    captureException: jest.fn()
+}));
 jest.mock('axios');
 
 const axios = require('axios');
 const appointmentRepository = require('../../../repositories/appointments/appointmentRepository');
+const doctorRepository = require('../../../repositories/user/doctorRepository');
 const pendingBookingRepository = require('../../../repositories/communication/pendingBookingRepository');
 const availabilitySearchService = require('../../appointments/availabilitySearchService');
-const { extractToolCalls, processInboundMessage } = require('../whatsappAiBookingService');
+const whatsappService = require('../whatsappService');
+const { extractToolCalls, processInboundMessage, resolveDoctorCandidates, checkDoctorShiftConstraint } = require('../whatsappAiBookingService');
 
 describe('whatsappAiBookingService - extractToolCalls', () => {
-    it('extracts native Ollama tool_calls array', () => {
+    it('extracts native Ollama tool_calls array for gestionar_solicitud_turno', () => {
         const msg = {
             tool_calls: [
                 {
                     function: {
-                        name: 'buscar_turnos_disponibles',
-                        arguments: { doctor_id: 3 }
+                        name: 'gestionar_solicitud_turno',
+                        arguments: { doctor_solicitado: 'Cecilia', preferencia_franja: 'manana' }
                     }
                 }
             ]
         };
         const calls = extractToolCalls(msg);
         expect(calls).toHaveLength(1);
-        expect(calls[0].name).toBe('buscar_turnos_disponibles');
-        expect(calls[0].arguments.doctor_id).toBe(3);
+        expect(calls[0].name).toBe('gestionar_solicitud_turno');
+        expect(calls[0].arguments.doctor_solicitado).toBe('Cecilia');
     });
 
     it('extracts tool calls formatted as JSON in content (fallback)', () => {
         const msg = {
-            content: '```json\n{"name": "buscar_turnos_disponibles", "arguments": {"doctor_id": 5}}\n```'
+            content: '```json\n{"name": "gestionar_solicitud_turno", "arguments": {"doctor_solicitado": "Gomez"}}\n```'
         };
         const calls = extractToolCalls(msg);
         expect(calls).toHaveLength(1);
-        expect(calls[0].name).toBe('buscar_turnos_disponibles');
-        expect(calls[0].arguments.doctor_id).toBe(5);
+        expect(calls[0].name).toBe('gestionar_solicitud_turno');
+        expect(calls[0].arguments.doctor_solicitado).toBe('Gomez');
     });
 
     it('returns empty array when content is general conversation without tool calls', () => {
-        const msg = {
-            content: 'Hola! En qué puedo ayudarte?'
-        };
+        const msg = { content: 'Hola! Muchas gracias por la atencion' };
         const calls = extractToolCalls(msg);
         expect(calls).toHaveLength(0);
     });
 });
 
-describe('whatsappAiBookingService - processInboundMessage', () => {
+describe('whatsappAiBookingService - Doctor Disambiguation & Shifts', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('disambiguates when two doctors match the requested name (e.g. Cecilia)', async () => {
+        doctorRepository.findAll.mockResolvedValueOnce([
+            { id: 1, first_name: 'Cecilia', last_name: 'Gomez', specialty: 'Pediatría' },
+            { id: 2, first_name: 'Cecilia', last_name: 'Rossi', specialty: 'Dermatología' },
+            { id: 3, first_name: 'Carlos', last_name: 'Perez', specialty: 'Clínica' }
+        ]);
+
+        const candidates = await resolveDoctorCandidates({ requestedDoctorName: 'Cecilia', patientId: 10 });
+        expect(candidates).toHaveLength(2);
+        expect(candidates[0].last_name).toBe('Gomez');
+        expect(candidates[1].last_name).toBe('Rossi');
+    });
+
+    it('detects when doctor only attends in the morning and patient asks for afternoon', async () => {
+        doctorRepository.getDoctorSchedules.mockResolvedValueOnce([
+            { start_time: '08:00:00', end_time: '12:00:00', day_of_week: 1 },
+            { start_time: '09:00:00', end_time: '13:00:00', day_of_week: 3 }
+        ]);
+
+        const check = await checkDoctorShiftConstraint(1, 'tarde');
+        expect(check.isCompatible).toBe(false);
+        expect(check.reason).toBe('only_morning');
+    });
+});
+
+describe('whatsappAiBookingService - processInboundMessage Full Flow', () => {
     const origGeminiKey = process.env.GEMINI_API_KEY;
 
     beforeEach(() => {
@@ -68,75 +108,17 @@ describe('whatsappAiBookingService - processInboundMessage', () => {
         if (origGeminiKey) process.env.GEMINI_API_KEY = origGeminiKey;
     });
 
-    it('creates a pending booking using Gemini when GEMINI_API_KEY is configured', async () => {
-        process.env.GEMINI_API_KEY = 'test-gemini-key';
-        pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
-        appointmentRepository.findLastByPatientId.mockResolvedValueOnce({ doctor_id: 7 });
-
-        axios.post.mockResolvedValueOnce({
-            data: {
-                candidates: [
-                    {
-                        content: {
-                            parts: [
-                                {
-                                    functionCall: {
-                                        name: 'buscar_turnos_disponibles',
-                                        args: { doctor_id: 7 }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        });
-
-        availabilitySearchService.getNextFreeSlot.mockResolvedValueOnce({
-            results: [
-                {
-                    date: '2026-10-28',
-                    slots: [{ time: '11:15' }]
-                }
-            ]
-        });
-
-        pendingBookingRepository.create.mockResolvedValueOnce(42);
-
-        const result = await processInboundMessage({
-            sender: '5491112345678@s.whatsapp.net',
-            message: 'Hola! Necesito un turno para la semana que viene por favor',
-            patientId: 10,
-            phone: '5491112345678'
-        });
-
-        expect(result).toEqual({ pendingId: 42, date: '2026-10-28', time: '11:15' });
-        expect(pendingBookingRepository.create).toHaveBeenCalledWith({
-            patient_id: 10,
-            doctor_id: 7,
-            patient_phone: '5491112345678',
-            patient_message: 'Hola! Necesito un turno para la semana que viene por favor',
-            requested_slot_date: '2026-10-28',
-            requested_slot_time: '11:15'
-        });
-    });
-
-    it('creates a pending booking when patient requests an appointment via Ollama fallback', async () => {
-        // Mock active check: no active pending booking
+    it('sends disambiguation WhatsApp prompt when multiple doctors match requested name', async () => {
         pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
 
-        // Mock doctor resolution: found doctor 7
-        appointmentRepository.findLastByPatientId.mockResolvedValueOnce({ doctor_id: 7 });
-
-        // Mock Ollama response calling the tool
         axios.post.mockResolvedValueOnce({
             data: {
                 message: {
                     tool_calls: [
                         {
                             function: {
-                                name: 'buscar_turnos_disponibles',
-                                arguments: { doctor_id: 7 }
+                                name: 'gestionar_solicitud_turno',
+                                arguments: { doctor_solicitado: 'Cecilia' }
                             }
                         }
                     ]
@@ -144,49 +126,116 @@ describe('whatsappAiBookingService - processInboundMessage', () => {
             }
         });
 
-        // Mock availability search
-        availabilitySearchService.getNextFreeSlot.mockResolvedValueOnce({
-            results: [
-                {
-                    date: '2026-10-28',
-                    slots: [{ time: '11:15' }]
-                }
-            ]
-        });
+        doctorRepository.findAll.mockResolvedValueOnce([
+            { id: 1, first_name: 'Cecilia', last_name: 'Gomez', specialty: 'Pediatría' },
+            { id: 2, first_name: 'Cecilia', last_name: 'Rossi', specialty: 'Dermatología' }
+        ]);
 
-        // Mock pending booking create
-        pendingBookingRepository.create.mockResolvedValueOnce(42);
-
-        const result = await processInboundMessage({
+        const res = await processInboundMessage({
             sender: '5491112345678@s.whatsapp.net',
-            message: 'Hola! Necesito un turno para la semana que viene por favor',
+            message: 'Hola! Quiero un turno con la Dra. Cecilia',
             patientId: 10,
             phone: '5491112345678'
         });
 
-        expect(result).toEqual({ pendingId: 42, date: '2026-10-28', time: '11:15' });
-        expect(pendingBookingRepository.create).toHaveBeenCalledWith({
-            patient_id: 10,
-            doctor_id: 7,
-            patient_phone: '5491112345678',
-            patient_message: 'Hola! Necesito un turno para la semana que viene por favor',
-            requested_slot_date: '2026-10-28',
-            requested_slot_time: '11:15'
-        });
+        expect(res.status).toBe('disambiguation_required');
+        expect(whatsappService.sendMessageDirect).toHaveBeenCalledTimes(1);
+        expect(whatsappService.sendMessageDirect.mock.calls[0][1]).toContain('Cecilia Gomez');
+        expect(whatsappService.sendMessageDirect.mock.calls[0][1]).toContain('Cecilia Rossi');
+        expect(pendingBookingRepository.create).not.toHaveBeenCalled();
     });
 
-    it('skips duplicate creation if patient already has an active pending booking', async () => {
-        pendingBookingRepository.findActiveByPatient.mockResolvedValue({ id: 1, status: 'pending' });
+    it('notifies patient when doctor has no free slots (fully booked / saturation)', async () => {
+        pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
 
-        const result = await processInboundMessage({
+        axios.post.mockResolvedValueOnce({
+            data: {
+                message: {
+                    tool_calls: [
+                        {
+                            function: {
+                                name: 'gestionar_solicitud_turno',
+                                arguments: { doctor_solicitado: 'Cecilia' }
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+
+        doctorRepository.findAll.mockResolvedValueOnce([
+            { id: 1, first_name: 'Cecilia', last_name: 'Gomez', specialty: 'Pediatría' }
+        ]);
+
+        availabilitySearchService.getNextFreeSlot.mockResolvedValueOnce({ results: [] });
+
+        const res = await processInboundMessage({
             sender: '5491112345678@s.whatsapp.net',
-            message: 'Hola turno porfa',
+            message: 'Hola, turno con la Dra. Gomez',
             patientId: 10,
             phone: '5491112345678'
         });
 
-        expect(result).toBeNull();
-        expect(axios.post).not.toHaveBeenCalled();
+        expect(res.status).toBe('fully_booked');
+        expect(whatsappService.sendMessageDirect).toHaveBeenCalledTimes(1);
+        expect(whatsappService.sendMessageDirect.mock.calls[0][1]).toContain('no dispone de turnos libres');
         expect(pendingBookingRepository.create).not.toHaveBeenCalled();
+    });
+
+    it('creates pending booking and sends immediate acknowledgment with shift notice', async () => {
+        pendingBookingRepository.findActiveByPatient.mockResolvedValue(null);
+
+        axios.post.mockResolvedValueOnce({
+            data: {
+                message: {
+                    tool_calls: [
+                        {
+                            function: {
+                                name: 'gestionar_solicitud_turno',
+                                arguments: { doctor_solicitado: 'Cecilia', preferencia_franja: 'tarde' }
+                            }
+                        }
+                    ]
+                }
+            }
+        });
+
+        doctorRepository.findAll.mockResolvedValueOnce([
+            { id: 1, first_name: 'Cecilia', last_name: 'Gomez', specialty: 'Pediatría' }
+        ]);
+
+        doctorRepository.getDoctorSchedules.mockResolvedValueOnce([
+            { start_time: '08:00:00', end_time: '12:00:00', day_of_week: 1 }
+        ]);
+
+        availabilitySearchService.getNextFreeSlot.mockResolvedValueOnce({
+            results: [{ date: '2026-11-15', slots: [{ time: '09:30' }] }]
+        });
+
+        pendingBookingRepository.create.mockResolvedValueOnce(99);
+
+        const res = await processInboundMessage({
+            sender: '5491112345678@s.whatsapp.net',
+            message: 'Quiero turno con Cecilia por la tarde',
+            patientId: 10,
+            phone: '5491112345678'
+        });
+
+        expect(res.pendingId).toBe(99);
+        expect(pendingBookingRepository.create).toHaveBeenCalledWith({
+            patient_id: 10,
+            doctor_id: 1,
+            patient_phone: '5491112345678',
+            patient_message: 'Quiero turno con Cecilia por la tarde',
+            requested_slot_date: '2026-11-15',
+            requested_slot_time: '09:30'
+        });
+
+        expect(whatsappService.sendMessageDirect).toHaveBeenCalledTimes(1);
+        const sentText = whatsappService.sendMessageDirect.mock.calls[0][1];
+        expect(sentText).toContain('Registramos tu pedido');
+        expect(sentText).toContain('atiende únicamente por la mañana');
+        expect(sentText).toContain('2026-11-15');
+        expect(sentText).toContain('09:30 hs');
     });
 });

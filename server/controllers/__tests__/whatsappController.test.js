@@ -23,6 +23,11 @@ jest.mock('../../db', () => ({
 const axios = require('axios');
 const whatsappController = require('../communication/whatsappController');
 const whatsappService = require('../../services/communication/whatsappService');
+whatsappService.sendFileDirect = jest.fn();
+whatsappService.editMessageDirect = jest.fn();
+whatsappService.revokeMessageDirect = jest.fn();
+whatsappService.getBridgeContacts = jest.fn();
+whatsappService.syncChatDirect = jest.fn();
 const pendingBookingRepository = require('../../repositories/communication/pendingBookingRepository');
 const bookingService = require('../../services/appointments/bookingService');
 const patientRepository = require('../../repositories/user/patientRepository');
@@ -352,6 +357,120 @@ describe('WhatsAppController - pending bookings', () => {
                     doctorId: 3,
                     doctorName: 'Dr. House'
                 }
+            });
+        });
+    });
+
+    describe('Advanced Bridge Capabilities (Parity with System CLI)', () => {
+        describe('sendDirectFile', () => {
+            it('returns 400 when recipient or file is missing', async () => {
+                req.body = { to: '+5491112345678' };
+                // file missing
+                await whatsappController.sendDirectFile(req, res);
+                expect(res.statusCode).toBe(400);
+            });
+
+            it('calls sendFileDirect and returns success', async () => {
+                req.body = { to: '+5491112345678', caption: 'Estudio médico', patientId: '10' };
+                req.file = {
+                    buffer: Buffer.from('dummy data'),
+                    originalname: 'analisis.pdf'
+                };
+                whatsappService.sendFileDirect.mockResolvedValue({ status: 'sent', id: 'wamid.123' });
+
+                await whatsappController.sendDirectFile(req, res);
+
+                expect(whatsappService.sendFileDirect).toHaveBeenCalledWith(
+                    '+5491112345678',
+                    req.file.buffer,
+                    'analisis.pdf',
+                    'Estudio médico',
+                    'auto',
+                    10
+                );
+                expect(res.statusCode).toBe(200);
+                expect(res._getJSONData()).toEqual({
+                    success: true,
+                    result: { status: 'sent', id: 'wamid.123' }
+                });
+            });
+        });
+
+        describe('editDirectMessage', () => {
+            it('returns 400 when messageId or newText is missing', async () => {
+                req.body = { messageId: 'msg-1' };
+                await whatsappController.editDirectMessage(req, res);
+                expect(res.statusCode).toBe(400);
+            });
+
+            it('calls editMessageDirect and returns success', async () => {
+                req.body = { messageId: 'msg-1', newText: 'Texto corregido', chat: '5491112345678' };
+                whatsappService.editMessageDirect.mockResolvedValue({ success: true, id: 'msg-1' });
+
+                await whatsappController.editDirectMessage(req, res);
+
+                expect(whatsappService.editMessageDirect).toHaveBeenCalledWith('msg-1', 'Texto corregido', '5491112345678');
+                expect(res.statusCode).toBe(200);
+                expect(res._getJSONData().success).toBe(true);
+            });
+        });
+
+        describe('revokeDirectMessage', () => {
+            it('returns 400 when messageId is missing', async () => {
+                req.body = {};
+                await whatsappController.revokeDirectMessage(req, res);
+                expect(res.statusCode).toBe(400);
+            });
+
+            it('calls revokeMessageDirect and returns success', async () => {
+                req.body = { messageId: 'msg-to-delete', chat: '5491112345678' };
+                whatsappService.revokeMessageDirect.mockResolvedValue({ success: true });
+
+                await whatsappController.revokeDirectMessage(req, res);
+
+                expect(whatsappService.revokeMessageDirect).toHaveBeenCalledWith('msg-to-delete', '5491112345678');
+                expect(res.statusCode).toBe(200);
+                expect(res._getJSONData().success).toBe(true);
+            });
+        });
+
+        describe('getPhoneContacts', () => {
+            it('calls getBridgeContacts with query and limit', async () => {
+                req.query = { query: 'Juan', limit: '20' };
+                const mockContacts = [{ phone: '5491112345678', fullName: 'Juan Perez' }];
+                whatsappService.getBridgeContacts.mockResolvedValue(mockContacts);
+
+                await whatsappController.getPhoneContacts(req, res);
+
+                expect(whatsappService.getBridgeContacts).toHaveBeenCalledWith('Juan', 20);
+                expect(res.statusCode).toBe(200);
+                expect(res._getJSONData()).toEqual({
+                    success: true,
+                    contacts: mockContacts,
+                    count: 1
+                });
+            });
+        });
+
+        describe('syncPhoneChat', () => {
+            it('returns 400 when phone is missing', async () => {
+                req.body = {};
+                await whatsappController.syncPhoneChat(req, res);
+                expect(res.statusCode).toBe(400);
+            });
+
+            it('calls syncChatDirect and returns success', async () => {
+                req.body = { phone: '5491112345678', count: 30 };
+                whatsappService.syncChatDirect.mockResolvedValue({ synced: 30 });
+
+                await whatsappController.syncPhoneChat(req, res);
+
+                expect(whatsappService.syncChatDirect).toHaveBeenCalledWith('5491112345678', 30);
+                expect(res.statusCode).toBe(200);
+                expect(res._getJSONData()).toEqual({
+                    success: true,
+                    result: { synced: 30 }
+                });
             });
         });
     });
