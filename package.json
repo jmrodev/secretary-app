@@ -21,7 +21,7 @@
     "@vitejs/plugin-react": "^6.1.2",
     "vite": "^8.0.16",
     "wikipoke": "^0.4.1",
-    "wrangler": "^4.128.0"
+    "wrangler": "^4.156.2"
   },
   "pnpm": {
     "overrides": {
