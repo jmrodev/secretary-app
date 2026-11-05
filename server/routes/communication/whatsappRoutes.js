@@ -62,8 +62,6 @@ router.post('/broadcast-direct', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), vali
 // Preview recipient count without sending
 router.post('/broadcast-preview', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), validateBroadcastPreview, whatsappController.broadcastPreview);
 
-module.exports = router;
-
 // Multer in-memory storage for file uploads (PDF, images, voice notes)
 const multer = require('multer');
 const upload = multer({
@@ -77,3 +75,5 @@ router.post('/edit', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappControll
 router.post('/revoke', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.revokeDirectMessage);
 router.get('/contacts', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.getPhoneContacts);
 router.post('/sync', authorize(ACCESS_LEVELS.MANAGE_CORE_DATA), whatsappController.syncPhoneChat);
+
+module.exports = router;

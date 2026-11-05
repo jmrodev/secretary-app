@@ -374,9 +374,15 @@ async function processInboundMessage({ sender: _sender, message, patientId, phon
     }
 }
 
+async function resolveDoctorForPatient(patientId) {
+    const candidates = await resolveDoctorCandidates({ patientId });
+    return candidates.length > 0 ? candidates[0].id : null;
+}
+
 module.exports = {
     processInboundMessage,
     resolveDoctorCandidates,
+    resolveDoctorForPatient,
     checkDoctorShiftConstraint,
     analyzeIntentWithOllama,
     extractToolCalls
