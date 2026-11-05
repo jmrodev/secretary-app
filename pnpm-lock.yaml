@@ -153,7 +153,7 @@ importers:
         version: 9.0.3
       knex:
         specifier: ^3.3.0
-        version: 3.3.0(mariadb@3.5.4)(mysql2@3.24.2(@types/node@26.4.1))
+        version: 3.3.0(mariadb@3.5.4)(mysql2@3.24.6(@types/node@26.4.1))
       mariadb:
         specifier: 3.5.4
         version: 3.5.4
@@ -164,8 +164,8 @@ importers:
         specifier: ^2.3.0
         version: 2.3.0
       mysql2:
-        specifier: ^3.24.2
-        version: 3.24.2(@types/node@26.4.1)
+        specifier: ^3.24.6
+        version: 3.24.6(@types/node@26.4.1)
       node-cron:
         specifier: ^4.2.1
         version: 4.6.0
@@ -4061,8 +4061,8 @@ packages:
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
-  lru.min@1.1.4:
-    resolution: {integrity: sha512-DqC6n3QQ77zdFpCMASA1a3Jlb64Hv2N2DciFGkO/4L9+q/IpIAuRlKOvCXabtRW6cQf8usbmM6BE/TOPysCdIA==}
+  lru.min@1.1.5:
+    resolution: {integrity: sha512-5J9ysMYUpYIg9RF2vJpy9SinEmSviFSe0GyPpCQ4L5QSkLAgeLXlTAOu2ZwWUU5m+0SBl6gUU1R1ZQB3aKypfA==}
     engines: {bun: '>=1.0.0', deno: '>=1.30.0', node: '>=8.0.0'}
 
   lz-string@1.5.0:
@@ -4212,8 +4212,8 @@ packages:
     resolution: {integrity: sha512-cjNbm3sttszgZeGfJR124D+jFEfkXCVAsoPBmFn9X7UxmDSFHWqE2CoEj0vrmSpuAFnqWR1Szcm9QTsiHr60Xw==}
     engines: {node: '>= 10.16.0'}
 
-  mysql2@3.24.2:
-    resolution: {integrity: sha512-l9kXeKGwd6VCbSjmpO/bLWb+YCYpbvE4whte8ec6InXebvCNyEEydyRCnRU+TSHNqRLJ8B+Tk1uWb+vMCJgJzA==}
+  mysql2@3.24.6:
+    resolution: {integrity: sha512-enu73KhbAua2L3dIxjc6qg6ZJ7H3pt1BImZASWNWY5xSsmJ1ZuUPULTDGXgmJbI61vb+nJAG19IZclIq19UidQ==}
     engines: {node: '>= 8.0'}
     peerDependencies:
       '@types/node': '>= 8'
@@ -4897,8 +4897,8 @@ packages:
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
 
-  sql-escaper@1.5.1:
-    resolution: {integrity: sha512-4toX5E1fQbBrpfXidaHnF0669nkAdETeIPTs2SUjxxD7RRIs9ICG4gtpmfc68JCEKehsdwLFqBu9VlQqZ1P1gg==}
+  sql-escaper@1.5.2:
+    resolution: {integrity: sha512-6CKD38c31SENivxOADeMNLdukOnUxUcflKtzVWzace7Riv1v7cAEym5Cx9Q7gYZ3ezIJI7ZpqecQq8cqNeSSFg==}
     engines: {bun: '>=1.0.0', deno: '>=2.0.0', node: '>=12.0.0'}
 
   sshpk@1.18.0:
@@ -9328,7 +9328,7 @@ snapshots:
 
   kleur@4.1.5: {}
 
-  knex@3.3.0(mariadb@3.5.4)(mysql2@3.24.2(@types/node@26.4.1)):
+  knex@3.3.0(mariadb@3.5.4)(mysql2@3.24.6(@types/node@26.4.1)):
     dependencies:
       colorette: 2.0.19
       commander: 10.0.1
@@ -9346,7 +9346,7 @@ snapshots:
       tildify: 2.0.0
     optionalDependencies:
       mariadb: 3.5.4
-      mysql2: 3.24.2(@types/node@26.4.1)
+      mysql2: 3.24.6(@types/node@26.4.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -9448,7 +9448,7 @@ snapshots:
     dependencies:
       yallist: 3.1.1
 
-  lru.min@1.1.4: {}
+  lru.min@1.1.5: {}
 
   lz-string@1.5.0: {}
 
@@ -9582,20 +9582,20 @@ snapshots:
       concat-stream: 2.0.0
       type-is: 1.6.18
 
-  mysql2@3.24.2(@types/node@26.4.1):
+  mysql2@3.24.6(@types/node@26.4.1):
     dependencies:
       '@types/node': 26.4.1
       aws-ssl-profiles: 1.1.2
       generate-function: 2.3.1
       iconv-lite: 0.7.3
       long: 5.3.2
-      lru.min: 1.1.4
+      lru.min: 1.1.5
       named-placeholders: 1.1.6
-      sql-escaper: 1.5.1
+      sql-escaper: 1.5.2
 
   named-placeholders@1.1.6:
     dependencies:
-      lru.min: 1.1.4
+      lru.min: 1.1.5
 
   nanoid@3.3.18: {}
 
@@ -10453,7 +10453,7 @@ snapshots:
 
   sprintf-js@1.0.3: {}
 
-  sql-escaper@1.5.1: {}
+  sql-escaper@1.5.2: {}
 
   sshpk@1.18.0:
     dependencies:
