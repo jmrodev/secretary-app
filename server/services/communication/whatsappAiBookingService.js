@@ -255,7 +255,7 @@ async function notifyPatient(phone, message, patientId) {
             await whatsappService.sendMessageDirect(phone, message, patientId);
         }
     } catch (err) {
-        console.warn(`[AI Booking] Failed to send WhatsApp notification to ${phone}:`, err.message);
+        console.warn('[AI Booking] Failed to send WhatsApp notification to %s: %s', phone, err.message);
     }
 }
 
