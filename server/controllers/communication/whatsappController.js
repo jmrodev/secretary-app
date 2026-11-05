@@ -350,3 +350,87 @@ module.exports = {
     receiveWebhook, getPatientHistory, getAiSuggestion, getRecentConversations, getBridgeStatus, getBridgeHealth, logoutBridge, refreshBridge, deleteConversation,
     listPending, acceptPending, suggestAlternative, rejectPending
 };
+
+const sendDirectFile = async (req, res) => {
+    try {
+        const { to, caption, mediaType, patientId } = req.body;
+        const file = req.file;
+
+        if (!to || !file) {
+            return res.status(400).json({ error: 'Número de teléfono y archivo son requeridos.' });
+        }
+
+        const result = await whatsappService.sendFileDirect(
+            to,
+            file.buffer,
+            file.originalname,
+            caption || '',
+            mediaType || 'auto',
+            patientId ? Number(patientId) : null
+        );
+
+        res.json({ success: true, result });
+    } catch (error) {
+        console.error('[Send File Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const editDirectMessage = async (req, res) => {
+    try {
+        const { messageId, newText, chat } = req.body;
+        if (!messageId || !newText) {
+            return res.status(400).json({ error: 'messageId y newText son requeridos.' });
+        }
+        const result = await whatsappService.editMessageDirect(messageId, newText, chat);
+        res.json({ success: true, result });
+    } catch (error) {
+        console.error('[Edit Message Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const revokeDirectMessage = async (req, res) => {
+    try {
+        const { messageId, chat } = req.body;
+        if (!messageId) {
+            return res.status(400).json({ error: 'messageId es requerido.' });
+        }
+        const result = await whatsappService.revokeMessageDirect(messageId, chat);
+        res.json({ success: true, result });
+    } catch (error) {
+        console.error('[Revoke Message Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getPhoneContacts = async (req, res) => {
+    try {
+        const { query, limit } = req.query;
+        const contacts = await whatsappService.getBridgeContacts(query, limit ? Number(limit) : 50);
+        res.json({ success: true, contacts, count: contacts.length });
+    } catch (error) {
+        console.error('[Get Contacts Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const syncPhoneChat = async (req, res) => {
+    try {
+        const { phone, count } = req.body;
+        if (!phone) {
+            return res.status(400).json({ error: 'Número de teléfono es requerido.' });
+        }
+        const result = await whatsappService.syncChatDirect(phone, count || 50);
+        res.json({ success: true, result });
+    } catch (error) {
+        console.error('[Sync Chat Error]:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
+module.exports.sendDirectFile = sendDirectFile;
+module.exports.editDirectMessage = editDirectMessage;
+module.exports.revokeDirectMessage = revokeDirectMessage;
+module.exports.getPhoneContacts = getPhoneContacts;
+module.exports.syncPhoneChat = syncPhoneChat;
