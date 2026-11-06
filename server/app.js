@@ -1,6 +1,23 @@
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.join(__dirname, '../.env') });
+dotenv.config({ path: path.join(__dirname, '.env') });
+
+const Sentry = require('@sentry/node');
+if (process.env.SENTRY_DSN) {
+    try {
+        Sentry.init({
+            dsn: process.env.SENTRY_DSN,
+            environment: process.env.NODE_ENV || 'development',
+            tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.2 : 1.0,
+        });
+    } catch (err) {
+        console.warn('[Sentry] Initialization skipped:', err.message);
+    }
+}
+
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
 const logger = require('./utils/core/logger');
 const db = require('./db');
 const systemSettingsRepository = require('./repositories/system/systemSettingsRepository');
@@ -11,9 +28,6 @@ const institutionRoutes = require('./routes/core/institutionRoutes');
 
 const morgan = require('morgan');
 const { rateLimit } = require('express-rate-limit');
-const path = require('path');
-dotenv.config({ path: path.join(__dirname, '../.env') });
-dotenv.config({ path: path.join(__dirname, '.env') });
 
 // Define Global Rate Limiter (satisfies CodeQL js/missing-rate-limiting)
 const globalLimiter = rateLimit({
@@ -124,6 +138,11 @@ app.use('/api/institutions', institutionRoutes);
 app.use('/api/schedules', require('./routes/appointments/scheduleRoutes'));
 app.use('/api/billing', require('./routes/finance/billingRoutes'));
 app.use('/uploads', express.static('uploads'));
+
+// Sentry Error Handler for Express
+if (process.env.SENTRY_DSN) {
+    Sentry.setupExpressErrorHandler(app);
+}
 
 // Centralized Global Error Handler (Linus Torvalds Architectural Invariant)
 app.use(require('./utils/core/errorHandler'));
