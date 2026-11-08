@@ -18,7 +18,7 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^6.1.2",
+    "@vitejs/plugin-react": "^6.2.1",
     "vite": "^8.0.16",
     "wikipoke": "^0.4.1",
     "wrangler": "^4.128.0"
